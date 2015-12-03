@@ -75,9 +75,9 @@ class TransactionController extends Controller
      */
     public function create(Request $request)
     {
-        $input = $request->all();
-
         $request->merge(array('status' => 'Pending'));
+
+        $input = $request->all();
 
         $transaction = new Transaction($input);
 
