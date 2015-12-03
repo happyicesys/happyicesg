@@ -123,7 +123,7 @@
             @include('person.price.form', ['disabled'=>''])
 
             <div class="col-md-12">
-                <div class="form-group pull-right">
+                <div class="form-group pull-right" style="padding-right: 80px">
                     {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}           
                 </div>
 
