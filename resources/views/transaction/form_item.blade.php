@@ -7,7 +7,7 @@
             {!! Form::text('transaction_id', $transaction->id, ['class'=>'hidden form-control']) !!}
 
             <div class="form-group">
-                {!! Form::label('item_id', 'Item', ['class'=>'control-label']) !!}
+                {!! Form::label('item_label', 'Item', ['class'=>'control-label']) !!}
                
                 {{-- <select id="item_id" name="item_id" class="item form-control" 
                         ng-model="itemModel" ng-change="onItemSelected(itemModel)">
