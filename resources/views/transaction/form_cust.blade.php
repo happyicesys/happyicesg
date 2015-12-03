@@ -21,7 +21,7 @@
                 {!! Form::text('person_id', $transaction->person->company, ['class'=>'form-control', 'id'=>'person_id', 'readonly'=>'readonly']) !!}
             @endif
 
-                {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'form-control hidden']) !!}
+                {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
                 {{-- <select id="person_id" name="person_id" class="person_select form-control" 
                         ng-model="personModel" ng-change="onPersonSelected(personModel)">
                         <option ng-selected="person.id == personModel" ng-repeat="person in people" ng-value="person.id" value="@{{person.id}}">@{{person.cust_id}} - @{{person.company}} - @{{person.del_address}}</option>

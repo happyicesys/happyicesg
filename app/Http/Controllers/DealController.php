@@ -51,6 +51,7 @@ class DealController extends Controller
      */
     public function store(DealRequest $request)
     {
+        
         $input = $request->all();
 
         $deal = Deal::create($input);

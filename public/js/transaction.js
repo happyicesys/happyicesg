@@ -91,58 +91,69 @@ var app = angular.module('app', [   'ui.bootstrap',
 
 
 
-        $scope.onPersonSelected = function (person){
-            console.log(person);
+    $scope.onPersonSelected = function (person){
+        console.log(person);
+
+        $http({
+            url: '/transaction/person/'+ person,
+            method: "GET",
+        
+        }).success(function(person){ 
+            $scope.billModel = person.bill_to;
+            $scope.delModel = person.del_address;
+            $scope.paytermModel = person.payterm;
+            $('.date').datetimepicker({
+            format: 'DD-MMMM-YYYY'
+            });
+            $('.date').val('');
+
             $http({
-                url: '/transaction/person/'+ person,
+                url: '/transaction/item/'+ person.id,
                 method: "GET",
             
-            }).success(function(person){ 
-                $scope.billModel = person.bill_to;
-                $scope.delModel = person.del_address;
-                $scope.paytermModel = person.payterm;
-                $('.date').datetimepicker({
-                format: 'DD-MMMM-YYYY'
-                });
-                $('.date').val('');
+            }).success(function(items){
+                $scope.items = items;             
+                $scope.qtyModel = [];
+                $scope.amountModel = [];
+                $scope.unitModel = [];
 
-                $http({
-                    url: '/transaction/item/'+ person.id,
-                    method: "GET",
-                
-                }).success(function(items){
-                    $scope.items = items;
-                    /*$item.empty(); 
-                    $.each(items, function(value, key) {
-                        $item.append($("<option></option>").attr("value", value).text(key)); 
-                    }); */               
-                    $scope.qtyModel = [];
-                    $scope.amountModel = [];
-                    $scope.unitModel = [];
+                /*$http({
+                    url: '/transaction/editperson' + transaction.id ,
+                    method: "POST",
+                    data: $.param($scope.personModel),
+                    }).success(function(response){
+                        console.log('yes');
+                    });
+                });*/
 
-                    $scope.onItemSelected = function (item_id){
+                $http.put('editperson', $scope.personModel)
+                            .success(function(){
 
-                        $http({
-                            url: '/transaction/person/'+ person.id + '/item/' + item_id,
-                            method: "GET",
+                            });
 
-                        }).success(function(prices){
-                            console.log(prices);
-                            $scope.prices = prices;
-                            $scope.qtyModel = 1;
-                            $scope.unitModel = prices.item.unit;
-                            $scope.amountModel = prices.quote_price;
+                $scope.onItemSelected = function (item_id){
 
-                            $scope.onQtyChange = function(){
-                                $scope.amountModel = prices.quote_price * $scope.qtyModel;
-                            }
-                        });                    
+                    $http({
+                        url: '/transaction/person/'+ person.id + '/item/' + item_id,
+                        method: "GET",
 
-                    }
+                    }).success(function(prices){
+                        console.log(prices);
+                        $scope.prices = prices;
+                        $scope.qtyModel = 1;
+                        $scope.unitModel = prices.item.unit;
+                        $scope.amountModel = prices.quote_price;
 
-                });
-            });                            
-        }          
+                        $scope.onQtyChange = function(){
+                            $scope.amountModel = prices.quote_price * $scope.qtyModel;
+                        }
+                    });                    
+
+                }
+
+            });
+        });                                     
+    }          
 
     $scope.currentPage = 1;
     $scope.itemsPerPage = 10;  

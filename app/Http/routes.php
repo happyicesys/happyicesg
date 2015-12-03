@@ -29,6 +29,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
 get('/transaction/person/{person_id}', 'TransactionController@getCust');
 get('/transaction/item/{person_id}', 'TransactionController@getItem');
 get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');

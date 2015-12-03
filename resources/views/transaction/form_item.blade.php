@@ -16,46 +16,26 @@
                         <option value="{{ $item }}">{{ $id }}</option>
                     @endforeach
                 </select> --}}
-                @if($transaction->status == 'Pending')
                 <select id="item_id" name="item_id" class="item form-control" 
                         ng-model="itemModel" ng-change="onItemSelected(itemModel)">
                         <option ng-repeat="item in items" ng-value="item.id" value="@{{item.id}}">
                             @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
                         </option>
-                </select> 
-                @else
-                <select id="item_id" name="item_id" class="item form-control" 
-                        ng-model="itemModel" ng-change="onItemSelected(itemModel)" disabled>
-                        <option ng-repeat="item in items" ng-value="item.id" value="@{{item.id}}">
-                            @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                        </option>
-                </select>  
-                @endif               
+                </select>               
             </div>
 
 
             <div class="col-md-3">
                 <div class="form-group">
                     {!! Form::label('qty', 'Qty', ['class'=>'control-label']) !!}
+                    {!! Form::text('qty', null, [
+                        'class'=>'qty form-control', 
+                        'id'=>'qty', 
+                        'ng-model'=>'qtyModel', 
+                        'ng-change'=>'onQtyChange()'
+                        ]) 
+                    !!}
 
-                    @if($transaction->status == 'Pending')
-                        {!! Form::text('qty', null, [
-                            'class'=>'qty form-control', 
-                            'id'=>'qty', 
-                            'ng-model'=>'qtyModel', 
-                            'ng-change'=>'onQtyChange()'
-                            ]) 
-                        !!}
-                    @else
-                        {!! Form::text('qty', null, [
-                            'class'=>'qty form-control', 
-                            'id'=>'qty', 
-                            'ng-model'=>'qtyModel', 
-                            'ng-change'=>'onQtyChange()',
-                            'readonly'=>'readonly'
-                            ]) 
-                        !!}                    
-                    @endif
                 </div>
             </div>
 
@@ -83,11 +63,13 @@
                     !!}
                 </div>
             </div>
-        @if($transaction->status == 'Pending')
-        {!! Form::submit('Add Item', ['class'=> 'btn btn-success', 'form'=>'form_item', 'style'=>'margin-top:10px;']) !!}   
-        @else
-        {!! Form::submit('Add Item', ['class'=> 'btn btn-success', 'form'=>'form_item', 'style'=>'margin-top:10px;', 'disabled'=>'disabled']) !!} 
-        @endif         
+        {!! Form::submit('Add Item', [
+                    'class'=> 'btn btn-success',
+                    'ng-disabled'=>'! itemModel',
+                    'name'=>'add_item', 
+                    'form'=>'form_item', 
+                    'style'=>'margin-top:10px;'
+        ]) !!}   
 
         </div>
     </div>

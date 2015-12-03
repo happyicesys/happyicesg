@@ -169,24 +169,18 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
+        // dd($request->input('person_id'));
+        // dd($request->input('person_copyid'));
 
         $transaction->update($request->all());
 
-        /*if($request->input('conprint') or $request->input('print')){
+        if($request->input('conprint') or $request->input('print')){
 
             $this->generateInvoice($transaction->id);
 
-            return Redirect::action('TransactionController@edit', $transaction->id);
-
-        }else{
-
-            return redirect('transaction');
-                
-        }*/
+        }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
-
-        
     }
 
     /**
@@ -224,7 +218,23 @@ class TransactionController extends Controller
 
     public function getPrice($person_id, $item_id)
     {
+
         return Price::with('item')->where('person_id', $person_id)->where('item_id', $item_id)->first();
+
+    }
+
+    public function storeCust($trans_id, Request $request)
+    {
+        $input = $request->all();
+
+        $transaction = Transaction::findOrFail($trans_id);
+
+        $transaction->person_id = reset($input);
+
+        $transaction->save();
+
+        return "Sucess updating transaction #" . $transaction->id;
+
     }
 
     private function syncTransaction(Request $request)
