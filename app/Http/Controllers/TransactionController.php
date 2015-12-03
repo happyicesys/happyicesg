@@ -18,6 +18,7 @@ use App\Deal;
 use Carbon\Carbon;
 use App\Profile;
 use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 
 class TransactionController extends Controller
 {
@@ -171,9 +172,9 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        if($request->input('conprint') or $request->input('print')){
+        /*if($request->input('conprint') or $request->input('print')){
 
-            $this->generateExcel($transaction->id);
+            $this->generateInvoice($transaction->id);
 
             return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -181,7 +182,9 @@ class TransactionController extends Controller
 
             return redirect('transaction');
                 
-        }
+        }*/
+
+        return Redirect::action('TransactionController@edit', $transaction->id);
 
         
     }
@@ -258,7 +261,22 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     } 
 
-    private function generateExcel($id)
+    private function generateInvoice($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        $person = Person::findOrFail($transaction->person_id);
+
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+
+        $profile = Profile::firstOrFail();
+
+        $pdf = PDF::loadView('transaction.invoice', $transaction);
+
+        return $pdf->download('invoice.pdf');
+    }
+
+    /*private function generateExcel($id)
     {
         $transaction = Transaction::findOrFail($id);
 
@@ -275,7 +293,7 @@ class TransactionController extends Controller
 
                 /*$sheet->setColumnFormat(array(
                     'A:P' => '@'
-                ));*/
+                ));
 
                 //header
                 $sheet->mergeCells('A2:I2');
@@ -288,10 +306,10 @@ class TransactionController extends Controller
                 $sheet->mergeCells('A10:B10');
                 $sheet->mergeCells('A11:B11');
                 
-                /*
+                
                 $sheet->mergeCells('E8:F8');
                 $sheet->mergeCells('C8:D8');
-    */
+    
                 //desc
                 $sheet->mergeCells('B15:C15');
                 $sheet->setWidth(array(
@@ -317,7 +335,7 @@ class TransactionController extends Controller
                     2     =>  20,
                     3     =>  20,
                     4     =>  20,
-                )); */                           
+                ));                           
 
                 $sheet->loadView('transaction.invoice', compact('transaction', 'person', 'deals', 'profile'));
 
@@ -327,5 +345,5 @@ class TransactionController extends Controller
 
         Flash::success('Reports successfully generated');
 
-    }       
+    } */      
 }

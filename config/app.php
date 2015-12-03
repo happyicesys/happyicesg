@@ -148,6 +148,7 @@ return [
 
         Illuminate\Html\HtmlServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
 
     ],
 
@@ -201,6 +202,8 @@ return [
         'Html'      => Illuminate\Html\HtmlFacade::class,
         'Flash'     => Laracasts\Flash\Flash::class,
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF'       => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'Image'     => Barryvdh\Snappy\Facades\SnappyImage::class,
 
     ],
 

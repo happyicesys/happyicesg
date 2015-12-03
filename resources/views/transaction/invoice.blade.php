@@ -9,7 +9,7 @@
     <tbody>
         <tr></tr>
         <div class="col-md-12">
-            <tr>
+            {{-- <tr>
                 <h2 class="text-center">{{$profile->name}}</h2>
             </tr>
             <tr>
@@ -20,7 +20,7 @@
             </tr>    
             <tr>
                 <h5 class="text-center">Co Reg No: {{$profile->roc_no}}</h5>
-            </tr>             
+            </tr>   --}}           
         </div>
 
         <tr></tr>
@@ -29,13 +29,13 @@
         <div class="col-md-12">
             <tr>
                 <td class="text-center">
-                    <strong>Bill To:</strong> {{$person->cust_id}} {{$person->company}}
+                    {{-- <strong>Bill To:</strong> {{$person->cust_id}} {{$person->company}}
                 </td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td class="text-center col-md-3">
-                    <strong>Send To:</strong> {{$person->company}}
+                    <strong>Send To:</strong> {{$person->company}} --}}
                 </td>
                 <td></td>
                 <td class="text-center col-md-5">
@@ -45,25 +45,25 @@
             </tr>
             <tr>
                 <td class="text-center">
-                    <strong>{{$person->bill_to}}</strong>
+                    {{-- <strong>{{$person->bill_to}}</strong> --}}
                 </td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td  class="text-center">
-                    <strong>{{$person->del_address}}</strong>
+                    {{-- <strong>{{$person->del_address}}</strong> --}}
                 </td>
                 <td></td>
                 <td>
                     DO & INV No: 
                 </td>
-                <td>
+                {{-- <td>
                     <strong>{{$transaction->id}}</strong>
                 </td>
             </tr>
             <tr>
                 <td class="text-center">
-                    <strong>Attn:</strong> {{$person->name}}
+                    {{-- <strong>Attn:</strong> {{$person->name}} --}}
                 </td>
                 <td></td>
                 <td></td>
@@ -74,12 +74,12 @@
                     Order Date: 
                 </td>
                 <td>
-                    <strong>{{$transaction->created_at}}</strong>
+                    {{-- <strong>{{$transaction->created_at}}</strong> --}}
                 </td>                
             </tr>
             <tr>
                 <td class="text-center">
-                   <strong>Tel:</strong> {{$person->contact}} 
+                   {{-- <strong>Tel:</strong> {{$person->contact}}  --}}
                 </td>
                 <td></td>
                 <td></td>
@@ -90,7 +90,7 @@
                     Delivery Date: 
                 </td>
                 <td>
-                    <strong>{{$transaction->delivery_date}}</strong>
+                    {{-- <strong>{{$transaction->delivery_date}}</strong> --}} --}}
                 </td>
             </tr>
             <tr>
@@ -104,7 +104,7 @@
                     Term: 
                 </td>
                 <td>
-                    <strong>{{$person->payterm}}</strong>
+                    {{-- <strong>{{$person->payterm}}</strong> --}}
                 </td>
             </tr> 
             <tr>
