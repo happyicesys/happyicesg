@@ -178,6 +178,10 @@ class TransactionController extends Controller
 
             $this->generateInvoice($transaction->id);
 
+        }elseif($request->input('save')){
+
+            return redirect('transaction');
+
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
