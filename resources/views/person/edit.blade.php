@@ -124,8 +124,7 @@
 
             <div class="col-md-12">
                 <div class="form-group pull-right">
-                    {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}
-                    <a href="/price" class="btn btn-default">Cancel</a>            
+                    {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}           
                 </div>
 
             </div>
