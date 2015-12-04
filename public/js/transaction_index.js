@@ -1,14 +1,24 @@
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination']);
 
-    function personController($scope, $http){
-
+    function transController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;         
+        $scope.itemsPerPage = 10;  
 
         angular.element(document).ready(function () {
-       
-            $http.get('/person/data').success(function(people){
-            $scope.people = people;
+
+            $http.get('/transaction/data').success(function(transactions){
+                $scope.transactions = transactions;
+
+/*            //search company null bug
+            $scope.clear = function(){
+                console.log($scope.search.person.company.length);
+                if($scope.search.person.company.length == 0){
+                    console.log('yes');
+                    // delete $scope.search.person.company;
+                    $scope.transactions = [];
+                    $scope.transactions = transactions;
+                }
+            }   */          
             });
 
             //delete record
@@ -17,7 +27,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 if(isConfirmDelete){
                     $http({
                         method: 'DELETE',
-                        url: '/person/data/' + id
+                        url: '/transaction/data/' + id
                     })
                     .success(function(data){
                         console.log(data);
@@ -40,5 +50,5 @@ function repeatController($scope) {
     })
 }    
 
-app.controller('personController', personController);
+app.controller('transController', transController);
 app.controller('repeatController', repeatController);

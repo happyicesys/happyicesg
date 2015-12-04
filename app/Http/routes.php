@@ -29,6 +29,8 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+get('/transaction/data', 'TransactionController@getData');
+delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
 get('/transaction/person/{person_id}', 'TransactionController@getCust');
 get('/transaction/item/{person_id}', 'TransactionController@getItem');

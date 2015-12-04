@@ -75,7 +75,7 @@ Item
                             <td class="col-md-4">@{{ item.name }}</td>
                             <td class="col-md-3">@{{ item.remark }}</td>
                             <td class="col-md-1 text-center">@{{ item.unit }}</td>
-                            <td class="col-md-2">
+                            <td class="col-md-2 text-center">
                                 <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                 <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(item.id)">Delete</button>
                             </td>

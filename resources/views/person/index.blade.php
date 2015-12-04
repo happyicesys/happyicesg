@@ -31,8 +31,8 @@
 
             <div class="panel-body">
                 <div style="padding-bottom: 10px">
-                    <label for="search_name" class="search">Search Name:</label>
-                    <input type="text" ng-model="search.name">
+                    <label for="search_name" class="search">Search ID:</label>
+                    <input type="text" ng-model="search.cust_id">
                     <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
                     <input type="text" ng-model="search.company">
                     <label for="search_contact" class="search" style="padding-left: 10px">Contact:</label>

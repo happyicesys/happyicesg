@@ -29,6 +29,13 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
+    public function getData()
+    {
+        $transactions =  Transaction::with(['person', 'user'])->get();
+
+        return $transactions;
+    }      
+
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +44,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
 
-        $sortBy = $request->get('sortBy');
+       /* $sortBy = $request->get('sortBy');
 
         $direction = $request->get('direction');
 
@@ -62,11 +69,12 @@ class TransactionController extends Controller
             
             $transactions = Transaction::Paginate(10);
 
-        }
+        }*/
 
         // dd($transactions->first());
 
-        return view('transaction.index', compact('transactions'));
+        // return view('transaction.index', compact('transactions'));
+        return view('transaction.index');
     }
 
     /**
@@ -201,6 +209,21 @@ class TransactionController extends Controller
 
         return redirect('transaction');
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *transaction
+     * @param  int  $id
+     * @return json
+     */
+    public function destroyAjax($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->delete();
+
+        return $transaction->id . 'has been successfully deleted';
+    }    
 
     public function getCust($person_id)
     {

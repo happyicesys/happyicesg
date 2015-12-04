@@ -57,12 +57,12 @@
 
                         <div class="panel-body">
                             <div style="padding-bottom: 10px">
-                                <label for="search_name" class="search">Search Name:</label>
-                                <input type="text" ng-model="search.name">
-                                <label for="search_username" class="search" style="padding-left: 10px">Username:</label>
-                                <input type="text" ng-model="search.username">                    
-                                <label for="search_email" class="search" style="padding-left: 10px">Email:</label>
-                                <input type="text" ng-model="search.email">
+                                <label for="search_id" class="search">Search ID:</label>
+                                <input type="text" ng-model="search.id">
+                                <label for="search_name" class="search" style="padding-left: 10px">Name:</label>
+                                <input type="text" ng-model="search.name">                    
+                                <label for="search_contact" class="search" style="padding-left: 10px">Contact:</label>
+                                <input type="text" ng-model="search.contact">
 
                             </div>
                             <table class="table table-list-search table-hover table-bordered">
@@ -121,7 +121,7 @@
                                         </td>
                                     </tr>
                                     <tr ng-show="(users | filter:search).length == 0 || ! users.length">
-                                        <td colspan="6">No Records Found!</td>
+                                        <td colspan="6">No Records Found</td>
                                     </tr>                         
 
                                 </tbody>
