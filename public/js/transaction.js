@@ -34,14 +34,13 @@ var app = angular.module('app', [   'ui.bootstrap',
             }).success(function(deals){ 
                 $scope.deals = deals;
 
-                $scope.getTotal = function(){
                     var total = 0;
                     for(var i = 0; i < $scope.deals.length; i++){
                         var deal = $scope.deals[i];
                         total += (deal.amount/100*100);
                     }
-                    return total.toFixed(2);
-                }                             
+                    $scope.totalModel = total.toFixed(2);
+
             });
 
             $http({
@@ -128,7 +127,6 @@ var app = angular.module('app', [   'ui.bootstrap',
 
                 $http.put('editperson', $scope.personModel)
                             .success(function(){
-
                             });
 
                 $scope.onItemSelected = function (item_id){

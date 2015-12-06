@@ -6,6 +6,7 @@ use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
+use App;
 use DB;
 use Auth;
 use App\Http\Requests;
@@ -104,29 +105,6 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
 
-        /*if($request->input('choice'))
-        {
-            $choice = $request->input('choice');
-
-            if($choice == 1){
-                
-                $request->merge(array('person_id' => $request->input('person')));
-
-                $this->syncTransaction($request);
-
-            }elseif($choice == 2){
-
-                $person = Person::create($request->all());
-
-                $request->merge(array('person_id' => $person->id));
-
-                $this->syncTransaction($request);
-
-            }
-
-        }
-
-        return redirect('transaction');*/
     }
 
     /**
@@ -164,6 +142,7 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, $id)
     {
+
         if($request->input('save')){
 
             $request->merge(array('status' => 'Pending'));
@@ -256,6 +235,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::findOrFail($trans_id);
 
+        //take the first value of the array
         $transaction->person_id = reset($input);
 
         $transaction->save();
@@ -298,89 +278,67 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     } 
 
-    private function generateInvoice($id)
+    private function generateInvoice($id)    
     {
+
         $transaction = Transaction::findOrFail($id);
 
         $person = Person::findOrFail($transaction->person_id);
 
         $deals = Deal::whereTransactionId($transaction->id)->get();
 
-        $profile = Profile::firstOrFail();
-
-        $pdf = PDF::loadView('transaction.invoice', $transaction);
-
-        return $pdf->download('invoice.pdf');
-    }
-
-    /*private function generateExcel($id)
-    {
-        $transaction = Transaction::findOrFail($id);
-
-        $person = Person::findOrFail($transaction->person_id);
-        // dd($person->bill_to);
-
-        $deals = Deal::whereTransactionId($transaction->id)->get();
+        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
 
         $profile = Profile::firstOrFail();
 
-        Excel::create('Invoice('.$transaction->id.')'.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($transaction, $person, $deals, $profile) {
+        $data = [
+            'transaction'   =>  $transaction,
+            'person'        =>  $person,
+            'deals'         =>  $deals,
+            'totalprice'    =>  $totalprice,
+            'profile'       =>  $profile,
+        ];
 
-            $excel->sheet('sheet1', function($sheet) use ($transaction, $person, $deals, $profile) {
+        $pdf = App::make('snappy.pdf');
 
-                /*$sheet->setColumnFormat(array(
-                    'A:P' => '@'
-                ));
+        $html = view('transaction.invoice', $data)->render();
 
-                //header
-                $sheet->mergeCells('A2:I2');
-                $sheet->mergeCells('A3:I3');
-                $sheet->mergeCells('A4:I4');
-                $sheet->mergeCells('A5:I5');
+        $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHi').'.pdf';
 
-                $sheet->mergeCells('A8:B8');
-                $sheet->mergeCells('A9:B9');
-                $sheet->mergeCells('A10:B10');
-                $sheet->mergeCells('A11:B11');
-                
-                
-                $sheet->mergeCells('E8:F8');
-                $sheet->mergeCells('C8:D8');
-    
-                //desc
-                $sheet->mergeCells('B15:C15');
-                $sheet->setWidth(array(
-                    'A'     =>  20,
-                    'B'     =>  20,
-                    'C'     =>  15,
-                    'D'     =>  10,
-                    'E'     =>  10,
-                    'F'     =>  10,
-                    'G'     =>  15,
-                    'H'     =>  15,
-                    'I'     =>  15                                       
-                ));
+        $path = public_path().'/person_asset/invoice/'.$person->cust_id.'/'.$name;
 
-                $sheet->setPageMargin(0.15);
+        // $pdf->setOption('footer-html', 
 
-                // $sheet->setFontSize(15);
+/*        $pdf->generateFromHtml($html, $path,[
+                'page-height' => null,
+                'page-width'  => null,
+                'dpi' => 300,
+                'image-dpi' => 300, 
+                'lowquality' => false,              
+            ],$overwrite = true);*/
 
-                // $sheet->setAllBorders('none');
+        $pdf->getOutputFromHtml($html,[
+                'page-height' => null,
+                'page-width'  => null,
+                'dpi' => 300,
+                'image-dpi' => 300, 
+                'lowquality' => false,              
+            ]); 
 
-                /*$sheet->setHeight(array(
-                    1     =>  50,
-                    2     =>  20,
-                    3     =>  20,
-                    4     =>  20,
-                ));                           
+return $pdf->stream();
+// return $pdf->download('invoice.pdf');                   
 
-                $sheet->loadView('transaction.invoice', compact('transaction', 'person', 'deals', 'profile'));
+        // return $pdf->download();
 
-            });
+       // $pdf = PDF::loadView('transaction.invoice', $transaction);
 
-        })->export('pdf');
+        // return $pdf->getOutput('invoice.pdf');
+/*$snappy = App::make('snappy.pdf');
+$snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/bill-123.pdf');*/
 
-        Flash::success('Reports successfully generated');
+/*$pdf = PDF::loadView('transaction.invoice', $transaction);
+return $pdf->getOutput('/tmp/invoice.pdf');*/
 
-    } */      
+
+    }     
 }

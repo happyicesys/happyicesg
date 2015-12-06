@@ -23,27 +23,7 @@
                     <th class="col-md-1 text-center">
                         Action
                     </th>                                                           
-                </tr>
-
-               {{--  <tbody>
-                    
-                @unless($deals)
-                <tr>
-                <td class="text-center" colspan="8">No Records Found</td>
-                </tr>
-                @else                
-                    @foreach($deals::where('transaction_id', $transaction->id) as $deal)
-                        <tr>
-                            <td class="col-md-1">{{ $deal->item_id }}</td>
-                            <td class="col-md-5">{{ $deal->items->name }} - {{ $deal->items->remark }}</td>
-                            <td class="col-md-5">{{ $deal->qty }} {{ $deal->items->unit }}</td>
-                            <td class="col-md-5">{{ $deal->items->prices->quote_price }}</td>
-                            <td class="col-md-5">{{ $deal->amount }}</td>
-                        </tr>
-                    @endforeach
-                @endunless
-                
-                </tbody>   --}}  
+                </tr> 
 
                 <tbody>
                     <tr dir-paginate="deal in deals | itemsPerPage:itemsPerPage"  current-page="currentPage">
@@ -53,16 +33,14 @@
                         <td class="col-md-1 text-right">@{{ (deal.amount / deal.qty).toFixed(2)}}</td>
                         <td class="col-md-1 text-right">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
                         <td class="col-md-1 text-center">
-                            @if($transaction->status == 'Pending')
                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                            @else
-                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-                            @endif
                         </td>
                     </tr>
                     <tr ng-if="deals.length">
                         <td class="col-md-1 text-center"><strong>Total</strong></td>
-                        <td colspan="4" class="col-md-2 text-right"><strong>@{{ getTotal() }}</strong></td>
+                        <td colspan="3" class="col-md-3 text-right">
+                            <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>                            
+                        </td>
                     </tr>
                     <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
                         <td colspan="7" class="text-center">No Records Found!</td>

@@ -1,15 +1,48 @@
 <?php
 
 namespace App;
+// namespace MyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Transaction extends Model
 {
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }    
+
+    protected $revisionEnabled = true;
+
+    //Remove old revisions (works only when used with $historyLimit)
+    protected $revisionCleanup = true; 
+
+    //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
+    protected $historyLimit = 500; 
+
+    //storing new creation
+    protected $revisionCreationsEnabled = true;
+
+    //revision appear format name
+    protected $revisionFormattedFieldNames = array(
+        'delivery_date' => 'Delivery Date',
+        'paystatus' => 'Pay or Owe',
+        'transremark' => 'Remark',
+        'status' => 'Status',
+        'person_id' => 'Customer'
+    );    
+
     protected $fillable=[
         'total', 'delivery_date', 'status', 
-        'person_id', 'user_id', 'transremark'
+        'person_id', 'user_id', 'transremark',
+        'paystatus'
+    ];
+
+    protected $dates =[
+        'created_at', 'delivery_date'
     ];
 
     public function setDeliveryDateAttribute($date)
@@ -51,7 +84,7 @@ class Transaction extends Model
     {
         if($date){
 
-            return Carbon::parse($date)->format('d-F-Y');    
+            return Carbon::parse($date)->format('d-M-y');    
 
         }else{
 
@@ -60,10 +93,11 @@ class Transaction extends Model
         
     }
 
-    public function getCreatedAtAttribute($date)
+    /*public function getDates()
     {
-        return Carbon::parse($date)->format('d-M-Y');
-    }  
+         substitute your list of fields you want to be auto-converted to timestamps here: 
+        return array('created_at', 'updated_at', 'deleted_at', 'delivery_date');
+    }*/ 
 
     //select field populate selected
     /*public function getPersonIdAttribute()

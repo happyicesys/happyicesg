@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->foreign('person_id')->references('id')->on('people');
             $table->timestamp('delivery_date')->nullable();
             $table->string('status');
+            $table->string('pay_status');
             $table->timestamps();
             $table->softDeletes();
 

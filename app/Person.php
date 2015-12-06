@@ -11,7 +11,7 @@ class Person extends Model
     use SoftDeletes;
 
         protected $fillable = [
-        'address', 'contact', 'alt_contact',
+        'contact', 'alt_contact',
         'email', 'name', 'cust_id',
         'remark', 'area', 'postcode',
         'company', 'bill_to', 'del_address',
