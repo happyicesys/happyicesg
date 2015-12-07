@@ -278,6 +278,8 @@ class TransactionController extends Controller
         $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHis').'.pdf';
 
         $pdf = PDF::loadView('transaction.invoice', $data);
+
+        $pdf->setPaper('a4');
         
         return $pdf->download($name);
 

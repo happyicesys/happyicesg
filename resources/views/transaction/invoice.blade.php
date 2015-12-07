@@ -102,7 +102,7 @@
             </div> 
 
             <div class="col-xs-12" style="padding-top: 10px">
-                <table class="table table-bordered table-condensed">
+                <table class="table table-bordered">
                     <tr>
                         <th class="col-xs-1 text-center">
                             Item Code
