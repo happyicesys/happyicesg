@@ -12,6 +12,7 @@ use App\Person;
 use Carbon\Carbon;
 use App\StoreFile;
 use App\Price;
+use App\Transaction;
 
 class PersonController extends Controller
 {
@@ -189,6 +190,11 @@ class PersonController extends Controller
             $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
         }
+    }
+
+    public function showTransac($person_id)
+    {
+        return Transaction::with('user')->wherePersonId($person_id)->get();
     }               
   
 }

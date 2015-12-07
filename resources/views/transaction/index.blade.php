@@ -35,8 +35,10 @@
                     <input type="text" ng-model="search.id">
                     <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
                     <input type="text" ng-model="search.person.company">
-                    <label for="search_contact" class="search" style="padding-left: 10px">Status:</label>
+                    <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
                     <input type="text" ng-model="search.status">
+                    <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
+                    <input type="text" ng-model="search.pay_status">                    
                 </div>
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
@@ -101,7 +103,7 @@
                             </td>
                         </tr>
                         <tr ng-show="(transactions | filter:search).length == 0 || ! transactions.length">
-                            <td colspan="8" class="text-center">No Records Found</td>
+                            <td colspan="9" class="text-center">No Records Found</td>
                         </tr>                         
 
                     </tbody>
@@ -113,6 +115,5 @@
                 </div>
         </div>
     </div>  
-
     <script src="/js/transaction_index.js"></script>  
 @stop

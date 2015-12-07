@@ -14,6 +14,7 @@ get('/position/data', 'PositionController@getData');
 delete('/position/data/{id}', 'PositionController@destroyAjax');
 resource('position', 'PositionController');
 
+get('person/transac/{person_id}', 'PersonController@showTransac');
 get('/person/data', 'PersonController@getData');
 delete('/person/data/{id}', 'PersonController@destroyAjax');
 resource('person', 'PersonController');

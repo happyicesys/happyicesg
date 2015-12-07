@@ -36,7 +36,7 @@
 
     <body>
         <div class="container">
-            <div class="col-xs-10 col-xs-offset-1">
+            <div class="col-xs-10 col-xs-offset-1" style="font-size:16px">
                 <h2 class="text-center"><strong>{{$profile->name}}</strong></h2>
                 <h5 class="text-center" style="margin-bottom: -5px">{{$profile->address}}</h5>
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$profile->contact}}</h5>

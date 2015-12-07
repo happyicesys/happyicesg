@@ -36,7 +36,7 @@ Item
                     <label for="search_company" class="search" style="padding-left: 10px">Product:</label>
                     <input type="text" ng-model="search.name">
                     <label for="search_contact" class="search" style="padding-left: 10px">Desc:</label>
-                    <input type="text" ng-model="search.desc">
+                    <input type="text" ng-model="search.remark">
                 </div>
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">

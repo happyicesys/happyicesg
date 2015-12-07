@@ -1,19 +1,14 @@
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize']);
 
-    function transController($scope, $http){
+    function personEditController($scope, $http){
         $scope.currentPage = 1;
         $scope.itemsPerPage = 10;  
 
         angular.element(document).ready(function () {
 
-            $http.get('/transaction/data').success(function(transactions){
-                $scope.transactions = transactions;
-
-                $scope.optionStatus = [
-                    {name: 'All', value: ''}, 
-                    {name: 'Pending', value: 'Pending'},
-                    {name: 'Confirmed', value: 'Confirmed'}
-                ];        
+            $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
+                console.log(transactions);
+                $scope.transactions = transactions;       
             });
 
             //delete record
@@ -45,5 +40,5 @@ function repeatController($scope) {
     })
 }    
 
-app.controller('transController', transController);
+app.controller('personEditController', personEditController);
 app.controller('repeatController', repeatController);
