@@ -44,7 +44,7 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12" style="padding-top: 20px">
+                <div class="col-xs-12" style="padding-top: 50px">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
@@ -101,7 +101,7 @@
                 </div>
             </div> 
 
-            <div class="col-xs-12" style="padding-top: 10px">
+            <div class="col-xs-12" style="padding-top: 80px">
                 <table class="table table-bordered">
                     <tr>
                         <th class="col-xs-1 text-center">
