@@ -8,18 +8,18 @@
             display:inline;
         }
         body{
-            font-size: 12px;
+            font-size: 16px;
         }
         table{
-            font-size: 11px;
+            font-size: 15px;
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 12px;
+            font-size: 16px;
         }
         footer{
             position: fixed;
-            height: 300px;
+            height: 400px;
             bottom: 0;
             width: 100%;
         }   
@@ -27,7 +27,7 @@
             height: 100%;
         } 
         pre{
-            font-size: 11px;
+            font-size: 15px;
             font-family: 'Times New Roman';
             background-color: transparent;            
         }    
