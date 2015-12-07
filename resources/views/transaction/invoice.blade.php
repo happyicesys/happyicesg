@@ -82,7 +82,7 @@
                             </div>
                             <div class="form-group" style="margin-bottom: 0px">
                                 <span class="inline"><strong>Order On:</strong></span>
-                                <span class="inline col-xs-offset-2">{{$transaction->created_at->format('d-M-y')}}</span>
+                                <span class="inline col-xs-offset-2">{{$transaction->created_at}}</span>
                             </div> 
                             <div class="form-group" style="margin-bottom: 0px">
                                 <span class="inline"><strong>Delivery On:</strong></span>
