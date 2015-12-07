@@ -13,7 +13,16 @@ class Transaction extends Model
     public static function boot()
     {
         parent::boot();
-    }    
+    }  
+
+    public function identifiableName()
+    {
+        return $this->title;
+    }  
+
+    protected $dontKeepRevisionOf = array(
+        'person_id'
+    );        
 
     protected $revisionEnabled = true;
 
@@ -29,17 +38,16 @@ class Transaction extends Model
     //revision appear format name
     protected $revisionFormattedFieldNames = array(
         'delivery_date' => 'Delivery Date',
-        'paystatus' => 'Pay or Owe',
-        'transremark' => 'Remark',
+        'transremark' => 'Comment',
         'status' => 'Status',
         'pay_status' => 'Payment',
-        'person_id' => 'Customer'
+        'person_code'  => 'Customer',
     );    
 
     protected $fillable=[
         'total', 'delivery_date', 'status', 
         'person_id', 'user_id', 'transremark',
-        'pay_status'
+        'pay_status', 'person_code'
     ];
 
     protected $dates =[

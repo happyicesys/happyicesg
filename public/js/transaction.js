@@ -41,6 +41,9 @@ var app = angular.module('app', [   'ui.bootstrap',
                     }
                     $scope.totalModel = total.toFixed(2);
 
+                    $http.put('total', $scope.totalModel)
+                                .success(function(){
+                    });                    
             });
 
             $http({
@@ -91,7 +94,6 @@ var app = angular.module('app', [   'ui.bootstrap',
 
 
     $scope.onPersonSelected = function (person){
-        console.log(person);
 
         $http({
             url: '/transaction/person/'+ person,
@@ -101,6 +103,7 @@ var app = angular.module('app', [   'ui.bootstrap',
             $scope.billModel = person.bill_to;
             $scope.delModel = person.del_address;
             $scope.paytermModel = person.payterm;
+            $scope.personcodeModel = person.cust_id;
             $('.date').datetimepicker({
             format: 'DD-MMMM-YYYY'
             });
@@ -116,18 +119,23 @@ var app = angular.module('app', [   'ui.bootstrap',
                 $scope.amountModel = [];
                 $scope.unitModel = [];
 
-                /*$http({
-                    url: '/transaction/editperson' + transaction.id ,
-                    method: "POST",
-                    data: $.param($scope.personModel),
-                    }).success(function(response){
-                        console.log('yes');
-                    });
-                });*/
 
+                console.log($scope.personcodeModel);
                 $http.put('editperson', $scope.personModel)
                             .success(function(){
                             });
+
+                /*$http.put('editpersoncode', $scope.personModel)
+                            .success(function(){
+                            }); */
+                $http({
+                    url: '/transaction/' + $trans_id.val() + '/editpersoncode' ,
+                    method: "POST",
+                    data: {person_code: $scope.personcodeModel},
+                    }).success(function(response){
+                        console.log('yes');
+                    });
+                                                                      
 
                 $scope.onItemSelected = function (item_id){
 
@@ -136,7 +144,6 @@ var app = angular.module('app', [   'ui.bootstrap',
                         method: "GET",
 
                     }).success(function(prices){
-                        console.log(prices);
                         $scope.prices = prices;
                         $scope.qtyModel = 1;
                         $scope.unitModel = prices.item.unit;
@@ -183,16 +190,6 @@ function repeatController($scope) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
 }    
-
- app.filter('sumFilter', function() {
-     return function(data) {
-         var totals = 0;
-         for (i=0; i<data.length; i++) {
-             total = total + data[i].amount;    
-          };
-         return totals;
-     };
- });
 
 app.controller('transactionController', transactionController);
 app.controller('repeatController', repeatController);

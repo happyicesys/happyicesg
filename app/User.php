@@ -76,6 +76,16 @@ class User extends Model implements AuthenticatableContract,
     public function transactions()
     {
         return $this->hasMany('App\Transaction');
-    }         
+    } 
+
+    /**
+     * User Responsible
+     * @return User user responsible for the change
+     */
+    public function userResponsible()
+    {
+        $user_model = \Config::get('auth.model');
+        return $user_model::find($this->user_id);
+    }            
 
 }

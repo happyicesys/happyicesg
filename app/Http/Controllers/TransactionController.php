@@ -6,6 +6,7 @@ use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 // use Illuminate\Http\Response;
+use Venturecraft\Revisionable\Revision;
 use Response;
 use App;
 use DB;
@@ -220,6 +221,35 @@ class TransactionController extends Controller
 
     }
 
+    public function storeCustcode($trans_id, Request $request)
+    {
+
+        $transaction = Transaction::findOrFail($trans_id);
+
+        //take the first value of the array
+        $transaction->person_code = $request->input('person_code');
+
+        $transaction->save();
+
+        return "Sucess updating transaction #" . $transaction->id;
+
+    }    
+
+    public function storeTotal($trans_id, Request $request)
+    {
+        $input = $request->all();
+
+        $transaction = Transaction::findOrFail($trans_id);
+
+        //take the first value of the array
+        $transaction->total = reset($input);
+
+        $transaction->save();
+
+        return "Sucess updating transaction #" . $transaction->id;
+
+    }    
+
     private function syncTransaction(Request $request)
     {
         // dd(Auth::user()->toJson());
@@ -283,5 +313,25 @@ class TransactionController extends Controller
         
         return $pdf->download($name);
 
-    }     
+    }  
+    
+    public function generateLogs($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        // $transaction = $transaction->with('deals')
+
+       
+        $transHistory = $transaction->revisionHistory;
+
+        // dd($transHistory->toJson());
+
+        /*$revisionDeal = Revision::whereRevisionableType('App\Deal')->with(array('deals' => function($query) use ($id){
+                            $query->where('transaction_id', $id);
+                        }))->get();
+        $revisions = Revision::all();
+        dd($revisionDeal->toJson());*/
+
+        return view('transaction.log', compact('transaction', 'transHistory'));  
+    }       
 }

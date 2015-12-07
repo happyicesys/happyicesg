@@ -22,6 +22,7 @@
             @endif
 
                 {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
+                {!! Form::text('person_code', '@{{personcodeModel}}', ['class'=>'hidden form-control']) !!}
                 {{-- <select id="person_id" name="person_id" class="person_select form-control" 
                         ng-model="personModel" ng-change="onPersonSelected(personModel)">
                         <option ng-selected="person.id == personModel" ng-repeat="person in people" ng-value="person.id" value="@{{person.id}}">@{{person.cust_id}} - @{{person.company}} - @{{person.del_address}}</option>
@@ -61,7 +62,7 @@
                 </div>
 
             <div class="col-md-12 form-group">
-                {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
                 {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
             </div>
 

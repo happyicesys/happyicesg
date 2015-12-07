@@ -16,6 +16,7 @@ class CreateTransactionsTable extends Migration
             $table->increments('id');
             $table->decimal('total', 10, 2);
             $table->text('transremark')->nullable();
+            $table->string('person_code')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');
             $table->timestamp('delivery_date')->nullable();

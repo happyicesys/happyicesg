@@ -47,4 +47,9 @@ class Deal extends Model
     {
         return $this->belongsTo('App\Transaction');
     }
+
+/*    public function revision()
+    {
+        return $this->hasOne('App\Revision');
+    }*/    
 }

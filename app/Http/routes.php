@@ -30,10 +30,14 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+
+post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 post('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 get('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
+post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
+put('/transaction/{trans_id}/total', 'TransactionController@storeTotal');
 get('/transaction/person/{person_id}', 'TransactionController@getCust');
 get('/transaction/item/{person_id}', 'TransactionController@getItem');
 get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');
