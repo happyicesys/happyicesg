@@ -32,13 +32,14 @@ class Transaction extends Model
         'paystatus' => 'Pay or Owe',
         'transremark' => 'Remark',
         'status' => 'Status',
+        'pay_status' => 'Payment',
         'person_id' => 'Customer'
     );    
 
     protected $fillable=[
         'total', 'delivery_date', 'status', 
         'person_id', 'user_id', 'transremark',
-        'paystatus'
+        'pay_status'
     ];
 
     protected $dates =[
@@ -75,9 +76,9 @@ class Transaction extends Model
         return $this->hasMany('App\Deal');
     }    
 
-    public function getCreatedAttribute($date)
+    public function getCreatedAtAttribute($date)
     {
-        return Carbon::parse($date)->format('d-F-Y');
+        return Carbon::parse($date)->format('d-M-Y');
     }
 
     public function getDeliveryDateAttribute($date)

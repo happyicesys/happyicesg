@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
+// use Illuminate\Http\Response;
+use Response;
 use App;
 use DB;
 use Auth;
@@ -44,37 +45,6 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-
-       /* $sortBy = $request->get('sortBy');
-
-        $direction = $request->get('direction');
-
-        if($sortBy and $direction)
-        {
-            if($sortBy == 'company'){
-
-                $transactions = Transaction::with(['people' => function($query){
-
-                    $query->orderBy($sortBy, $direction);
-
-                }])->Paginate(10); 
-            
-            }else{
-
-               $transactions = Transaction::orderBy($sortBy, $direction)->Paginate(10); 
-
-            }
-
-
-        }else{
-            
-            $transactions = Transaction::Paginate(10);
-
-        }*/
-
-        // dd($transactions->first());
-
-        // return view('transaction.index', compact('transactions'));
         return view('transaction.index');
     }
 
@@ -86,6 +56,8 @@ class TransactionController extends Controller
     public function create(Request $request)
     {
         $request->merge(array('status' => 'Pending'));
+
+        $request->merge(array('pay_status' => 'Owe'));
 
         $input = $request->all();
 
@@ -147,11 +119,16 @@ class TransactionController extends Controller
 
             $request->merge(array('status' => 'Pending'));
 
+        }elseif($request->input('pay')){
+
+            $request->merge(array('pay_status' => 'Paid'));
+
         }else{
 
             $request->merge(array('status' => 'Confirmed'));
 
         }
+
 
         $transaction = Transaction::findOrFail($id);
 
@@ -161,17 +138,16 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        if($request->input('conprint') or $request->input('print')){
-
-            $this->generateInvoice($transaction->id);
-
-        }elseif($request->input('save')){
+        if($request->input('save')){
 
             return redirect('transaction');
 
-        }
+        }else{
 
-        return Redirect::action('TransactionController@edit', $transaction->id);
+            return Redirect::action('TransactionController@edit', $transaction->id);
+
+        }
+        
     }
 
     /**
@@ -278,7 +254,7 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     } 
 
-    private function generateInvoice($id)    
+    public function generateInvoice($id)    
     {
 
         $transaction = Transaction::findOrFail($id);
@@ -299,46 +275,11 @@ class TransactionController extends Controller
             'profile'       =>  $profile,
         ];
 
-        $pdf = App::make('snappy.pdf');
+        $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHis').'.pdf';
 
-        $html = view('transaction.invoice', $data)->render();
-
-        $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHi').'.pdf';
-
-        $path = public_path().'/person_asset/invoice/'.$person->cust_id.'/'.$name;
-
-        // $pdf->setOption('footer-html', 
-
-/*        $pdf->generateFromHtml($html, $path,[
-                'page-height' => null,
-                'page-width'  => null,
-                'dpi' => 300,
-                'image-dpi' => 300, 
-                'lowquality' => false,              
-            ],$overwrite = true);*/
-
-        $pdf->getOutputFromHtml($html,[
-                'page-height' => null,
-                'page-width'  => null,
-                'dpi' => 300,
-                'image-dpi' => 300, 
-                'lowquality' => false,              
-            ]); 
-
-return $pdf->stream();
-// return $pdf->download('invoice.pdf');                   
-
-        // return $pdf->download();
-
-       // $pdf = PDF::loadView('transaction.invoice', $transaction);
-
-        // return $pdf->getOutput('invoice.pdf');
-/*$snappy = App::make('snappy.pdf');
-$snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/bill-123.pdf');*/
-
-/*$pdf = PDF::loadView('transaction.invoice', $transaction);
-return $pdf->getOutput('/tmp/invoice.pdf');*/
-
+        $pdf = PDF::loadView('transaction.invoice', $data);
+        
+        return $pdf->download($name);
 
     }     
 }

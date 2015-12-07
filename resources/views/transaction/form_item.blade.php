@@ -16,26 +16,45 @@
                         <option value="{{ $item }}">{{ $id }}</option>
                     @endforeach
                 </select> --}}
-                <select id="item_id" name="item_id" class="item form-control" 
-                        ng-model="itemModel" ng-change="onItemSelected(itemModel)">
-                        <option ng-repeat="item in items" ng-value="item.id" value="@{{item.id}}">
-                            @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                        </option>
-                </select>               
+                @if($transaction->pay_status == 'Owe')
+                    <select id="item_id" name="item_id" class="item form-control" 
+                            ng-model="itemModel" ng-change="onItemSelected(itemModel)">
+                            <option ng-repeat="item in items" ng-value="item.id" value="@{{item.id}}">
+                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
+                            </option>
+                    </select> 
+                @else
+                    <select id="item_id" name="item_id" class="item form-control" 
+                            ng-model="itemModel" ng-change="onItemSelected(itemModel)" disabled>
+                            <option ng-repeat="item in items" ng-value="item.id" value="@{{item.id}}">
+                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
+                            </option>
+                    </select> 
+                @endif                             
             </div>
 
 
             <div class="col-md-3">
                 <div class="form-group">
                     {!! Form::label('qty', 'Qty', ['class'=>'control-label']) !!}
-                    {!! Form::text('qty', null, [
-                        'class'=>'qty form-control', 
-                        'id'=>'qty', 
-                        'ng-model'=>'qtyModel', 
-                        'ng-change'=>'onQtyChange()'
-                        ]) 
-                    !!}
-
+                    @if($transaction->pay_status == 'Owe')
+                        {!! Form::text('qty', null, [
+                            'class'=>'qty form-control', 
+                            'id'=>'qty', 
+                            'ng-model'=>'qtyModel', 
+                            'ng-change'=>'onQtyChange()'
+                            ]) 
+                        !!}
+                    @else
+                        {!! Form::text('qty', null, [
+                            'class'=>'qty form-control', 
+                            'id'=>'qty', 
+                            'ng-model'=>'qtyModel', 
+                            'ng-change'=>'onQtyChange()',
+                            'disabled'=>'disabled'
+                            ]) 
+                        !!}
+                    @endif
                 </div>
             </div>
 

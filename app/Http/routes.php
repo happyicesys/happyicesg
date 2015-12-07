@@ -29,6 +29,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+post('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 get('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');

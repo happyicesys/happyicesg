@@ -52,6 +52,9 @@
                         <th class="col-md-2 text-center">
                             Company   
                         </th>
+                         <th class="col-md-1 text-center">
+                            Payment
+                        </th>                         
                         <th class="col-md-2 text-center">
                             <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                             Delivery Date
@@ -87,9 +90,10 @@
                             @{{ transaction.person.company }}
                             </a>
                             </td>
+                            <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
                             <td class="col-md-2 text-center">@{{ transaction.delivery_date }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.status }}</td>
-                            <td class="col-md-2 text-center">@{{ transaction.created_at }}</td>
+                            <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.user.name }}</td>
                             <td class="col-md-2 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a>

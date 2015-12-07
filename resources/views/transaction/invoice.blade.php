@@ -101,7 +101,7 @@
                 </div>
             </div> 
 
-            <div class="col-xs-12">
+            <div class="col-xs-12" style="padding-top: 10px">
                 <table class="table table-bordered table-condensed">
                     <tr>
                         <th class="col-xs-1 text-center">
@@ -154,10 +154,9 @@
                     @endunless                          
                 </table>
             </div>   
-        </div>
 
         <footer class="footer">
-            <div class="container">
+
                 <div class="col-xs-12">
                     <div class="col-xs-12">
                         Payment by cheque should be crossed and made payable to "{{$profile->name}}"
@@ -199,8 +198,9 @@
                     </div>
 
                 </div> 
-            </div>           
-        </footer>
+          
+        </footer>            
+        </div>
 
     </body>
 </html>    
