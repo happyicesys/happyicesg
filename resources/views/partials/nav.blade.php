@@ -1,14 +1,13 @@
   <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="sr-only">Toggle Navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
-        </div>
-
+        </div>       
 
         <ul class="nav navbar-nav navbar-right">
             @if (Auth::guest())
@@ -23,7 +22,7 @@
             @endif
         </ul>
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarCollapse">
             <ul class="nav navbar-nav side-nav">
                 {{-- <li>
                     <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
@@ -73,4 +72,21 @@
             </ul>
         </div>
         <!-- /.navbar-collapse -->
+
+        {{-- <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
+                    <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> Transaction</a>
+                </li>                
+                <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
+                    <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
+                </li>
+                <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
+                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> Item</a>
+                </li>  
+                <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
+                    <a href="/user"><i class="fa fa-fw fa-user"></i> User</a>
+                </li>
+            </ul>
+        </div>  --}}        
     </nav>

@@ -65,67 +65,69 @@
                                 <input type="text" ng-model="search.contact">
 
                             </div>
-                            <table class="table table-list-search table-hover table-bordered">
-                                <tr style="background-color: #DDFDF8">
-                                    <th class="col-md-1">
-                                        #
-                                    </th>                    
-                                    <th class="col-md-1">
-                                        <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
-                                        ID
-                                        <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>                            
-                                    </th>
-                                    <th class="col-md-2">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
-                                        Name
-                                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-2">
-                                        <a href="#" ng-click="sortType = 'username'; sortReverse = !sortReverse"> 
-                                        Username
-                                        <span ng-show="sortType == 'username' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'username' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>                             
-                                    </th>
-                                    <th class="col-md-2">
-                                        Contact
-                                    </th>
-                                    <th class="col-md-2">
-                                        Email
-                                    </th>                       
-                                     <th class="col-md-2">
-                                        Action
-                                    </th>                                                                       
-                                </tr>
-
-                                <tbody>
-                                  
-                                     <tr dir-paginate="user in users | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="user" current-page="currentPage" ng-controller="repeatController">
-                                        <td class="col-md-1">@{{ number }} </td>
-                                        <td class="col-md-1">{{ $USER_PREFIX }}@{{ user.id }}</td>
-                                        <td class="col-md-2">@{{ user.name }}</td>
-                                        <td class="col-md-2">@{{ user.username }}</td>
-                                        <td class="col-md-2">@{{ user.contact }}</td>
-                                        <td class="col-md-2">@{{ user.email }}</td>
-                                        <td class="col-md-2">
-
-
-                                        <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-
-                                        @can('delete_user')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
-                                        @endcan
-                                        </td>
+                            <div class="table-responsive">
+                                <table class="table table-list-search table-hover table-bordered">
+                                    <tr style="background-color: #DDFDF8">
+                                        <th class="col-md-1">
+                                            #
+                                        </th>                    
+                                        <th class="col-md-1">
+                                            <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                            ID
+                                            <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>                            
+                                        </th>
+                                        <th class="col-md-2">
+                                            <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
+                                            Name
+                                            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                            </a>
+                                        </th>
+                                        <th class="col-md-2">
+                                            <a href="#" ng-click="sortType = 'username'; sortReverse = !sortReverse"> 
+                                            Username
+                                            <span ng-show="sortType == 'username' && !sortReverse" class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'username' && sortReverse" class="fa fa-caret-up"></span>
+                                            </a>                             
+                                        </th>
+                                        <th class="col-md-2">
+                                            Contact
+                                        </th>
+                                        <th class="col-md-2">
+                                            Email
+                                        </th>                       
+                                         <th class="col-md-2">
+                                            Action
+                                        </th>                                                                       
                                     </tr>
-                                    <tr ng-show="(users | filter:search).length == 0 || ! users.length">
-                                        <td colspan="6">No Records Found</td>
-                                    </tr>                         
 
-                                </tbody>
-                            </table>            
+                                    <tbody>
+                                      
+                                         <tr dir-paginate="user in users | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="user" current-page="currentPage" ng-controller="repeatController">
+                                            <td class="col-md-1">@{{ number }} </td>
+                                            <td class="col-md-1">{{ $USER_PREFIX }}@{{ user.id }}</td>
+                                            <td class="col-md-2">@{{ user.name }}</td>
+                                            <td class="col-md-2">@{{ user.username }}</td>
+                                            <td class="col-md-2">@{{ user.contact }}</td>
+                                            <td class="col-md-2">@{{ user.email }}</td>
+                                            <td class="col-md-2">
+
+
+                                            <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
+
+                                            @can('delete_user')
+                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
+                                            @endcan
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="(users | filter:search).length == 0 || ! users.length">
+                                            <td colspan="6">No Records Found</td>
+                                        </tr>                         
+
+                                    </tbody>
+                                </table>
+                            </div>            
                         </div>
 
                         <div class="panel-footer">
