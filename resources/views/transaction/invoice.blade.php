@@ -50,8 +50,7 @@
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
                             <div style="border: solid thin">
-                            <span class="col-xs-4">{{$person->cust_id}}</span>
-                            <span class="col-xs-8">{{$person->company}}</span> 
+                            <span class="col-xs-12"> {{$person->cust_id}} - {{$person->company}}</span> 
                             <span class="col-xs-12">{{$person->bill_address}}</span>
                             <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
                             </div>
