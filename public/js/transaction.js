@@ -18,6 +18,7 @@ var app = angular.module('app', [   'ui.bootstrap',
     function transactionController($scope, $http){
 
         $scope.selection = {};
+        $scope.Math = window.Math;
 
         $http.get('/person/data').success(function(people){
         $scope.people = people;
@@ -51,8 +52,8 @@ var app = angular.module('app', [   'ui.bootstrap',
                 method: "GET",
             }).success(function(person){
                 $scope.personModel = person.id;
-                $scope.billModel = person.bill_to;
-                $scope.delModel = person.del_address;
+                $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
+                $scope.delModel = person.del_address + ' ' + person.del_postcode;
                 $scope.paytermModel = person.payterm;
                 $('.date').datetimepicker({
                     format: 'DD-MMMM-YYYY'
@@ -81,6 +82,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                                 $scope.amountModel = prices.quote_price;
 
                                 $scope.onQtyChange = function(){
+                                    // console.log($scope.qtyModel.Math);
                                     $scope.amountModel = prices.quote_price * $scope.qtyModel;
                                 }
                             });                    
@@ -100,8 +102,8 @@ var app = angular.module('app', [   'ui.bootstrap',
             method: "GET",
         
         }).success(function(person){ 
-            $scope.billModel = person.bill_to;
-            $scope.delModel = person.del_address;
+            $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
+            $scope.delModel = person.del_address + ' ' + person.del_postcode;
             $scope.paytermModel = person.payterm;
             $scope.personcodeModel = person.cust_id;
             $('.date').datetimepicker({
@@ -119,8 +121,6 @@ var app = angular.module('app', [   'ui.bootstrap',
                 $scope.amountModel = [];
                 $scope.unitModel = [];
 
-
-                console.log($scope.personcodeModel);
                 $http.put('editperson', $scope.personModel)
                             .success(function(){
                             });
@@ -133,7 +133,6 @@ var app = angular.module('app', [   'ui.bootstrap',
                     method: "POST",
                     data: {person_code: $scope.personcodeModel},
                     }).success(function(response){
-                        console.log('yes');
                     });
                                                                       
 
@@ -150,7 +149,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                         $scope.amountModel = prices.quote_price;
 
                         $scope.onQtyChange = function(){
-                            $scope.amountModel = prices.quote_price * $scope.qtyModel;
+                            $scope.amountModel.Math = prices.quote_price * $scope.qtyModel;
                         }
                     });                    
 

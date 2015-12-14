@@ -15,7 +15,7 @@
 
                     <div class="pull-left display_panel_title">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='10'">
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
                           <option>10</option>
                           <option>20</option>
                           <option>30</option>

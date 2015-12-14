@@ -1,11 +1,11 @@
 @extends('template')
 @section('title')
-Item
+{{ $ITEM_TITLE }}
 @stop
 @section('content')
     
     <div class="row">        
-    <a class="title_hyper pull-left" href="/item"><h1> Item<i class="fa fa-shopping-cart"></i></h1></a>
+    <a class="title_hyper pull-left" href="/item"><h1> {{ $ITEM_TITLE }}<i class="fa fa-shopping-cart"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="itemController">
 
@@ -15,7 +15,7 @@ Item
 
                     <div class="pull-left display_panel_title">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='10'">
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
                           <option>10</option>
                           <option>20</option>
                           <option>30</option>
@@ -24,7 +24,7 @@ Item
                     </div>
 
                     <div class="pull-right">
-                        <a href="/item/create" class="btn btn-success">+ New Item</a>                        
+                        <a href="/item/create" class="btn btn-success">+ New {{ $ITEM_TITLE }}</a>                        
                     </div>
                 </div>
             </div>

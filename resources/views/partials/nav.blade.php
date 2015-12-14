@@ -28,7 +28,7 @@
                     <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                 </li> --}}
                 <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
-                    <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> Transaction</a>
+                    <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
                 </li>                
                 <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
                     <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
@@ -37,7 +37,7 @@
                     <a href="/sale"><i class="fa fa-fw fa-tasks"></i> Sales Pipeline</a>
                 </li> --}}
                 <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
-                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> Item</a>
+                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
                 </li>                
 
                 {{-- <li>
@@ -67,7 +67,7 @@
                     <a href="/person"><i class="fa fa-fw fa-briefcase"></i> {{ $PERSON_TITLE }}</a>
                 </li> --}}
                 <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
-                    <a href="/user"><i class="fa fa-fw fa-user"></i> User</a>
+                    <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
                 </li>
             </ul>
         </div>

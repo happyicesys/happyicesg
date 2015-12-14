@@ -1,6 +1,6 @@
 @extends('template')
 @section('title')
-Item
+{{ $ITEM_TITLE }}
 @stop
 @section('content')
 

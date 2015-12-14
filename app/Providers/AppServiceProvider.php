@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         view()->share('USER_PREFIX', 'U');
 
         //Transaction
+        view()->share('ITEM_TITLE', 'Product');
+        view()->share('ITEM_PREFIX', 'P');         
+
+        //Transaction
         view()->share('TRANS_TITLE', 'Transaction');
         view()->share('TRANS_PREFIX', 'T');  
 

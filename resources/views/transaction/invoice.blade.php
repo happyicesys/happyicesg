@@ -8,14 +8,14 @@
             display:inline;
         }
         body{
-            font-size: 16px;
+            font-size: 15px;
         }
         table{
             font-size: 15px;
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 16px;
+            font-size: 15px;
         }
         footer{
             position: fixed;
@@ -27,15 +27,16 @@
             height: 100%;
         } 
         pre{
-            font-size: 15px;
+            font-size: 14px;
             font-family: 'Times New Roman';
             background-color: transparent;            
-        }    
+        }  
+
     </style>
     </head>
 
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <div class="col-xs-10 col-xs-offset-1" style="font-size:16px">
                 <h2 class="text-center"><strong>{{$profile->name}}</strong></h2>
                 <h5 class="text-center" style="margin-bottom: -5px">{{$profile->address}}</h5>
@@ -43,57 +44,61 @@
                 <h5 class="text-center">Co Reg No: {{$profile->roc_no}}</h5>
             </div>
 
-            <div class="row">
+            <div class="row no-gutter">
                 <div class="col-xs-12" style="padding-top: 50px">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
-                            <span class="col-xs-12">{{$person->company}}</span> 
-                            <span class="col-xs-12">{{$person->bill_to}}</span>
-                            <span class="col-xs-offset-1">{{$person->postcode}}</span> 
+                            <div style="border: solid thin">
+                            <span class="col-xs-4">{{$person->cust_id}}</span>
+                            <span class="col-xs-8">{{$person->company}}</span> 
+                            <span class="col-xs-12">{{$person->bill_address}}</span>
+                            <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
+                            </div>
                         </div>
-                        <div class="form-group" style="margin-bottom: 0px">
-                            <div class="inline"><strong>Attn:</strong></div>
-                            <div class="inline col-xs-offset-1">{{$person->name}}</div>
-                        </div>
-                        <div class="form-group">
-                            <div class="inline"><strong>Tel:</strong></div> 
-                            <div class="inline" style="padding-left: 20px">{{$person->contact}}</div>
+                        <div style="padding-top:10px">
+                            <div class="form-group" style="margin-bottom: 0px">
+                                <div class="inline"><strong>Attn:</strong></div>
+                                <div class="inline col-xs-offset-1">{{$person->name}}</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="inline"><strong>Tel:</strong></div> 
+                                <div class="inline" style="padding-left: 20px">{{$person->contact}}</div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="form-group" style="padding-left: 10px">
+                        <div class="form-group" style="padding: 3px 0px 0px 10px">
                             <div><strong>Send To:</strong></div>
-                            <div>
-                                <span class="col-xs-12">{{$person->company}}</span> 
+                            <div style="border: solid thin">
                                 <span class="col-xs-12">{{$person->del_address}}</span>
-                                <span class="col-xs-offset-1">{{$person->postcode}}</span> 
+                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span> 
                             </div>
                         </div>
                     </div> 
                     <div class="col-xs-4">
-                        <div class="form-group" style="padding-left:20px; margin-top:-12px;">
+                        <div class="form-group" style="padding-left:10px; margin-top:-12px;">
                             <div style="font-size: 145%;" class="text-center">
                                 <strong>DO / INVOICE</strong>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline"><strong>DO/Inv No:</strong></span>
-                                <span class="inline col-xs-offset-2">{{$transaction->id}}</span>
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
+                                <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
                             </div>
                             <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline"><strong>Order On:</strong></span>
+                                <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
                                 <span class="inline col-xs-offset-2">{{$transaction->created_at}}</span>
                             </div> 
                             <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline"><strong>Delivery On:</strong></span>
+                                <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
                                 <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span>
                             </div> 
                             <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline"><strong>Term:</strong></span>
-                                <span class="inline col-xs-offset-3" style="padding-left: 8px">{{$person->payterm}}</span>
+                                <span class="inline" style="font-size: 85%;"><strong>Term:</strong></span>
+                                <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>
                             </div>
                             <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline"><strong>Saleserson:</strong></span>
+                                <span class="inline" style="font-size: 85%;"><strong>Saleserson:</strong></span>
                             </div>                                                                                                                                                
                         </div>
                     </div>                               
@@ -107,13 +112,13 @@
                         <th class="col-xs-1 text-center">
                             Item Code
                         </th>
-                        <th class="col-xs-7 text-center">
+                        <th class="col-xs-6 text-center">
                             Description
                         </th>
                         <th class="col-xs-2 text-center">
                             Quantity
                         </th>
-                        <th class="col-xs-1 text-center">
+                        <th class="col-xs-2 text-center">
                             Unit Price ($)
                         </th>
                         <th class="col-xs-1 text-center">
@@ -129,13 +134,13 @@
                         <td class="col-xs-1 text-center">
                             {{ $deal->item->product_id }}
                         </td>
-                        <td class="col-xs-7">
+                        <td class="col-xs-6">
                             {{ $deal->item->name}} {{ $deal->item->remark }}
                         </td>
                         <td class="col-xs-2 text-center">
                             {{ $deal->qty }}  {{ $deal->item->unit }}
                         </td>                   
-                        <td class="col-xs-1 text-right">
+                        <td class="col-xs-2 text-right">
                             {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
                         </td>  
                         <td class="col-xs-1 text-right">
@@ -163,8 +168,10 @@
                     </div>
                     <div class="col-xs-8" style="padding-top:15px">
                         <div class="form-group">
-                            <label class="control-label">Comments:</label>
-                            <pre>{{ $transaction->transremark }}</pre> 
+                            @if($transaction->transremark)
+                                <label class="control-label">Comments:</label>
+                                <pre>{{ $transaction->transremark }}</pre> 
+                            @endif
                         </div>
                     </div>
 

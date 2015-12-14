@@ -28,9 +28,16 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('bill_to', 'Bill To', ['class'=>'control-label']) !!}
-        {!! Form::text('bill_to', null, ['class'=>'form-control']) !!}
+        {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
+        {!! Form::email('email', null, ['class'=>'form-control']) !!}
+    </div>    
+
+    <div class="form-group">
+        {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}    
+        {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
     </div>
+
+
 </div>
 
 <div class="col-md-6">
@@ -40,19 +47,19 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('postcode', 'Postcode', ['class'=>'control-label']) !!}
-        {!! Form::text('postcode', null, ['class'=>'form-control']) !!}
-    </div>    
+        {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+        {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
+    </div> 
 
     <div class="form-group">
-        {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
-        {!! Form::email('email', null, ['class'=>'form-control']) !!}
-    </div>    
-
-    <div class="form-group">
-        {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}    
-        {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
+        {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'1']) !!}
     </div>
+
+    <div class="form-group">
+        {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
+        {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
+    </div>       
 
     <div class="form-group">
         {!! Form::label('cost_rate', 'Cost Rate (%)', ['class'=>'control-label']) !!}

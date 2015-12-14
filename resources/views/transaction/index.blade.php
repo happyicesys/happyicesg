@@ -58,7 +58,7 @@
                              <th class="col-md-1 text-center">
                                 Payment
                             </th>                         
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Delivery Date
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -69,8 +69,14 @@
                                 Status
                                 <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
-                            </th>                                                
-                             <th class="col-md-2 text-center">
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="#" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                                Total Amount
+                                <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
+                            </th>                                                                             
+                             <th class="col-md-1 text-center">
                                 <a href="#" ng-click="sortType = 'created_at'; sortReverse = !sortReverse">                         
                                 Created On
                                 <span ng-show="sortType == 'created_at' && !sortReverse" class="fa fa-caret-down"></span>
@@ -94,8 +100,9 @@
                                 </a>
                                 </td>
                                 <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
-                                <td class="col-md-2 text-center">@{{ transaction.delivery_date }}</td>
+                                <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.status }}</td>
+                                <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.user.name }}</td>
                                 <td class="col-md-2 text-center">
@@ -104,7 +111,7 @@
                                 </td>
                             </tr>
                             <tr ng-show="(transactions | filter:search).length == 0 || ! transactions.length">
-                                <td colspan="9" class="text-center">No Records Found</td>
+                                <td colspan="10" class="text-center">No Records Found</td>
                             </tr>                         
 
                         </tbody>

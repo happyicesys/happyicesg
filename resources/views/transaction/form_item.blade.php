@@ -38,11 +38,12 @@
                 <div class="form-group">
                     {!! Form::label('qty', 'Qty', ['class'=>'control-label']) !!}
                     @if($transaction->pay_status == 'Owe')
-                        {!! Form::text('qty', null, [
+                        {!! Form::input('number', 'qty', null, [
                             'class'=>'qty form-control', 
                             'id'=>'qty', 
                             'ng-model'=>'qtyModel', 
-                            'ng-change'=>'onQtyChange()'
+                            'ng-change'=>'onQtyChange()',
+                            'ng-model-options'=>'{debounce:800}',
                             ]) 
                         !!}
                     @else

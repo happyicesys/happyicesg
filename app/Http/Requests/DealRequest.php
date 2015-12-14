@@ -25,7 +25,7 @@ class DealRequest extends Request
     {
         return [
             'item_id' =>'required',
-            'qty' => 'integer|required',
+            // 'qty' => 'integer|required',
             'amount' => 'numeric',
         ];
     }

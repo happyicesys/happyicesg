@@ -15,8 +15,8 @@ var app = angular.module('app', [   'ui.bootstrap',
 
 
             $scope.onPersonSelected = function (person){
-                
-            $scope.billModel = person.bill_to;
+                console.log(person.del_address);
+            $scope.billModel = person.bill_address;
             $scope.delModel = person.del_address;
             $scope.paytermModel = person.payterm;
             $('.date').datetimepicker({

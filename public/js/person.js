@@ -3,7 +3,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
     function personController($scope, $http){
 
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;         
+        $scope.itemsPerPage = 30;         
 
         angular.element(document).ready(function () {
        

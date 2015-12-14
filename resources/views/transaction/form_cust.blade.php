@@ -29,8 +29,8 @@
                 </select> --}}
 
                 <div class="col-md-6 form-group">
-                    {!! Form::label('bill_to', 'Bill To :', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('bill_to', null, ['class'=>'form-control',
+                    {!! Form::label('bill_address', 'Bill To :', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                     'ng-model'=>'billModel',  
                     'readonly'=>'readonly',
                     'rows'=>'3']) !!}                

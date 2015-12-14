@@ -13,9 +13,9 @@ class Person extends Model
         protected $fillable = [
         'contact', 'alt_contact',
         'email', 'name', 'cust_id',
-        'remark', 'area', 'postcode',
-        'company', 'bill_to', 'del_address',
-        'payterm', 'cost_rate'
+        'remark', 'area', 'del_postcode',
+        'company', 'bill_address', 'del_address',
+        'payterm', 'cost_rate', 'bill_postcode'
         ];
 
     /**
