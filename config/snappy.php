@@ -5,7 +5,7 @@ return array(
 
     'pdf' => array(
         'enabled' => true,
-        'binary' => '/usr/local/bin/wkhtmltopdf',
+        'binary' => '/usr/local/bin/wkhtmltopdf.sh',
         'timeout' => false,
         'options' => array(),
     ),
