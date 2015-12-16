@@ -191,7 +191,7 @@ class TransactionController extends Controller
     {
         return Item::whereHas('prices', function($query) use ($person_id){
 
-            $query->where('person_id', $person_id);
+            $query->where('person_id', $person_id)->whereNotNull('quote_price');
 
         })->get();
         //select(DB::raw("CONCAT(product_id,' - ',name,' - ',remark) AS full, id"))->lists('full', 'id');

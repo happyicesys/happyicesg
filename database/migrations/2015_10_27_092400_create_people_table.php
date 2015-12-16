@@ -23,7 +23,6 @@ class CreatePeopleTable extends Migration
             $table->string('alt_contact');
             $table->string('bill_address');
             $table->text('del_address');
-            $table->string('bill_postcode');
             $table->string('del_postcode');
             $table->string('email')->unique()->nullable();
             $table->string('payterm');

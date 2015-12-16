@@ -48,23 +48,19 @@
 </div>
 
 <div class="col-md-6">
+
+    <div class="form-group">
+        {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+    </div>
+    
     <div class="form-group">
         {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'1']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
     </div>
 
     <div class="form-group">
         {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-        {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
-    </div> 
-
-    <div class="form-group">
-        {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'1']) !!}
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
         {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
     </div>       
 
