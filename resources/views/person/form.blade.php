@@ -12,6 +12,13 @@
         {!! Form::text('company', null, ['class'=>'form-control']) !!}
     </div>
 
+    @if($person->com_remark)
+    <div class="form-group">
+        {!! Form::label('com_remark', 'Company Remark', ['class'=>'control-label']) !!}
+        {!! Form::text('com_remark', null, ['class'=>'form-control']) !!}
+    </div>    
+    @endif
+
     <div class="form-group">
         {!! Form::label('name', 'Att To', ['class'=>'control-label']) !!}
         {!! Form::text('name', null, ['class'=>'form-control']) !!}

@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use App\StoreFile;
 use App\Price;
 use App\Transaction;
+use App\Freezer;
+use App\Accessory;
 
 class PersonController extends Controller
 {
@@ -114,12 +116,29 @@ class PersonController extends Controller
      */
     public function update(PersonRequest $request, $id)
     {
-        
+
         $person = Person::findOrFail($id);
+
+        if($request->input('active')){
+
+            if($person->active == 'Yes'){
+
+                $request->merge(array('active' => 'No'));
+
+            }else{
+
+                $request->merge(array('active' => 'Yes'));
+            }
+            
+        }        
 
         $input = $request->all();
 
         $person->update($input);
+
+        $this->syncFreezer($person, $request);        
+
+        $this->syncAccessory($person, $request);
 
         return Redirect::action('PersonController@edit', $person->id);
     }
@@ -195,6 +214,54 @@ class PersonController extends Controller
     public function showTransac($person_id)
     {
         return Transaction::with('user')->wherePersonId($person_id)->get();
-    }               
+    } 
+
+    private function syncFreezer($person, $request)
+    {
+        if ( ! $request->has('freezer_list'))
+        {
+            $person->freezers()->detach();
+            return;
+        }
+
+        $allFreezersId = array();
+
+        foreach ($request->freezer_list as $freezerId)
+        {
+            if (substr($freezerId, 0, 4) == 'new:')
+            {
+                $newFreezer = Freezer::create(['name'=>substr($freezerId, 4)]);
+                $allFreezersId[] = $newFreezer->id;
+                continue;
+            }
+            $allFreezersId[] = $freezerId;
+        }
+
+        $person->freezers()->sync($allFreezersId);
+    } 
+
+    private function syncAccessory($person, $request)
+    {
+        if ( ! $request->has('accessory_list'))
+        {
+            $person->accessories()->detach();
+            return;
+        }
+
+        $allAccessoriesId = array();
+
+        foreach ($request->accessory_list as $accessoryId)
+        {
+            if (substr($accessoryId, 0, 4) == 'new:')
+            {
+                $newAccessory = Accessory::create(['name'=>substr($accessoryId, 4)]);
+                $allAccessoriesId[] = $newAccessory->id;
+                continue;
+            }
+            $allAccessoriesId[] = $accessoryId;
+        }
+
+        $person->accessories()->sync($allAccessoriesId);
+    }                        
   
 }

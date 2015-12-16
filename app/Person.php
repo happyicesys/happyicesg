@@ -15,7 +15,8 @@ class Person extends Model
         'email', 'name', 'cust_id',
         'remark', 'area', 'del_postcode',
         'company', 'bill_address', 'del_address',
-        'payterm', 'cost_rate', 'bill_postcode'
+        'payterm', 'cost_rate', 'bill_postcode',
+        'active'
         ];
 
     /**
@@ -23,7 +24,12 @@ class Person extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];    
+    protected $dates = ['deleted_at'];  
+
+
+/*    protected $casts = [
+        'active' => 'boolean',
+    ]; */     
 
     // set default nullable value upon detection
     public function setEmailAttribute($value) 
@@ -44,7 +50,17 @@ class Person extends Model
     public function roles()
     {
         return $this->belongsToMany(Role::class);
-    }    
+    } 
+
+    public function freezers()
+    {
+        return $this->belongsToMany(Freezer::class);
+    } 
+
+    public function accessories()
+    {
+        return $this->belongsToMany(Accessory::class);
+    }              
 
     //select field populate selected
     public function getRoleListAttribute()
@@ -55,7 +71,17 @@ class Person extends Model
     public function getCreatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d-F-Y');
-    }    
+    }
+
+    public function getFreezerListAttribute()
+    {
+        return $this->freezers->lists('id')->all();
+    }
+
+    public function getAccessoryListAttribute()
+    {
+        return $this->accessories->lists('id')->all();
+    }                 
 
     public function transaction()
     {

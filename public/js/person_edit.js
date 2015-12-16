@@ -7,9 +7,33 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         angular.element(document).ready(function () {
 
             $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
-                console.log(transactions);
                 $scope.transactions = transactions;       
             });
+
+
+            $scope.onFreezerSelected = function (freezers){
+
+                console.log('freezers');
+               /* $http({
+                    url: '/transaction/person/'+ person.id + '/item/' + item_id,
+                    method: "GET",
+
+                }).success(function(prices){
+                    $scope.prices = prices;
+                    $scope.qtyModel = 1;
+                    $scope.unitModel = prices.item.unit;
+                    $scope.amountModel = prices.quote_price;
+
+                    $scope.onQtyChange = function(){
+                        console.log(eval($scope.qtyModel));
+                        $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
+                    }
+                }); */                   
+            }
+
+            $scope.onAccessorySelected = function (accessories){
+                console.log(accessories);
+            }             
 
             //delete record
             $scope.confirmDelete = function(id){

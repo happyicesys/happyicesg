@@ -14,7 +14,7 @@ class CreateDealTable extends Migration
     {
         Schema::create('deals', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('qty');
+            $table->decimal('qty', 6, 2);
             $table->decimal('amount', 10, 2);
             $table->timestamps();
 

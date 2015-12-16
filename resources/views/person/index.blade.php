@@ -37,6 +37,8 @@
                     <input type="text" ng-model="search.company">
                     <label for="search_contact" class="search" style="padding-left: 10px">Contact:</label>
                     <input type="text" ng-model="search.contact">
+                    <label for="search_active" class="search" style="padding-left: 10px">Active:</label>
+                    <input type="text" ng-model="search.active">                    
                 </div>
                 <div class="table-responsive">
                     <table class="table table-list-search table-hover table-bordered">
@@ -54,7 +56,7 @@
                                 <span ng-show="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </a>                            
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Att. To
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -66,6 +68,9 @@
                              <th class="col-md-2 text-center">
                                 Delivery Add
                             </th>
+                             <th class="col-md-1 text-center">
+                                Active
+                            </th>                            
                              <th class="col-md-2 text-center">
                                 Action
                             </th>                                                                                                
@@ -76,7 +81,7 @@
                                 <td class="col-md-1 text-center">@{{ number }} </td>
                                 <td class="col-md-1">@{{ person.cust_id }}</td>
                                 <td class="col-md-2">@{{ person.company }}</td>
-                                <td class="col-md-2">@{{ person.name }}</td>
+                                <td class="col-md-1">@{{ person.name }}</td>
                                 <td class="col-md-2">
                                     @{{ person.contact }}
                                     <span ng-show="person.alt_contact.length > 0">
@@ -84,13 +89,14 @@
                                     </span>
                                 </td>
                                 <td class="col-md-2">@{{ person.del_address }}</td>
+                                <td class="col-md-1 text-center">@{{ person.active }}</td>
                                 <td class="col-md-2 text-center">
                                     <a href="/person/@{{ person.id }}/edit" class="btn btn-sm btn-primary">Profile</a>
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(person.id)">Delete</button>
                                 </td>
                             </tr>
                             <tr ng-show="(people | filter:search).length == 0 || ! people.length">
-                                <td colspan="7" class="text-center">No Records Found</td>
+                                <td colspan="8" class="text-center">No Records Found</td>
                             </tr>                         
 
                         </tbody>

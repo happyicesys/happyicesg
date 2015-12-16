@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PaytermSeeder::class);
         $this->call(Item2Seeder::class);
         $this->call(PriceSeeder::class);
+        $this->call(FreezerSeeder::class);
+        $this->call(AccessorySeeder::class);
 
         Model::reguard();
     }

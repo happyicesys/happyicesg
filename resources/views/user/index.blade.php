@@ -260,7 +260,7 @@
                         <div class="panel-title pull-left">
                             <h3 class="panel-title display_num"><strong>Company Profile</strong></h3>
                         </div>
-                        @if($profile->name != '' && $profile->roc_no != '' && $profile->contact != '')
+                        @if($profile->name != '')
                         <div class="pull-right">
                             <a href="/profile/{{$profile->id}}/edit" class="btn btn-primary">Edit Profile</a>  
                         </div>

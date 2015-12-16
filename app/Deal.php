@@ -48,8 +48,33 @@ class Deal extends Model
         return $this->belongsTo('App\Transaction');
     }
 
+    public function setQtyAttribute($value)
+    {
+        if(strstr($value, '/')){
+        
+            $this->attributes['qty'] = $this->fraction($value);
+
+        }else{
+
+            $this->attributes['qty'] = $value;
+        }        
+    }    
+
 /*    public function revision()
     {
         return $this->hasOne('App\Revision');
-    }*/    
+    }*/ 
+
+    private function fraction($frac)
+    {
+
+        $fraction = explode("/",$frac);
+
+        if($fraction[1] != 0) {
+            return $fraction[0]/$fraction[1];
+        }
+
+        return "Division by zero error!";
+
+    }   
 }

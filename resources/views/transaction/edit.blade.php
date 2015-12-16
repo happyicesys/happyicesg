@@ -15,7 +15,16 @@
         </h4>
         </div>
         <div class="col-md-6">
-        <label class="pull-right" style="padding-top: 10px">Created by : {{ $transaction->user->name }}</label>
+            @if($transaction->driver)
+            <div class="col-md-6">
+                <label style="padding-top: 10px" class="pull-right">Delivered by : {{ $transaction->driver }}</label>
+            </div>
+            @else
+            <div class="col-md-6"></div>
+            @endif
+            <div class="col-md-6">
+                <label style="padding-top: 10px" class="pull-right">Created by : {{ $transaction->user->name }}</label>
+            </div>
         </div>
     </div>
 
@@ -45,7 +54,7 @@
             </div>
 
                 @if($transaction->status == 'Pending' and $transaction->pay_status == 'Owe')
-                <div class="col-md-6" style="padding-top:125px;">
+                <div class="col-md-6" style="padding-top:25px;">
                     <div class="pull-left">
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                     </div>
@@ -57,7 +66,7 @@
                     </div>        
                 </div> 
                 @elseif($transaction->status == 'Confirmed' and $transaction->pay_status == 'Owe')
-                <div class="col-md-6" style="padding-top:80px;">
+                <div class="col-md-6" style="padding-top:25px;">
                     <div class="pull-left">
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
                     </div>
@@ -73,7 +82,7 @@
                     </div>        
                 </div>
                 @else 
-                <div class="col-md-6" style="padding-top:80px;">
+                <div class="col-md-6" style="padding-top:25px;">
                     <div class="pull-left">
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
                     </div>

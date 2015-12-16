@@ -84,14 +84,42 @@
                                 <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
                                 <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
-                                <span class="inline col-xs-offset-2">{{$transaction->created_at}}</span>
-                            </div> 
-                            <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
-                                <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span>
-                            </div> 
+                            @if($transaction->order_from && $transaction->order_to)
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Order From:</strong></span>
+                                    <span class="inline col-xs-offset-2">{{$transaction->order_from}}</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Order To:</strong></span>
+                                    <span class="inline col-xs-offset-2">{{$transaction->order_to}}</span>
+                                </div>    
+                            @elseif($transaction->order_from && ! $transaction->order_to)                                                    
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                                    <span class="inline col-xs-offset-2">{{$transaction->order_from}}</span>
+                                </div> 
+                            @else
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                                    <span class="inline col-xs-offset-2">{{$transaction->created_at}}</span>
+                                </div> 
+                            @endif
+
+                            @if($transaction->delivery_from && $transaction->delivery_to)
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Delivery From:</strong></span>
+                                    <span class="inline col-xs-offset-1">{{$transaction->delivery_from}}</span>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Delivery To:</strong></span>
+                                    <span class="inline col-xs-offset-1">{{$transaction->delivery_to}}</span>
+                                </div>
+                            @else
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
+                                    <span class="inline col-xs-offset-1">{{$transaction->delivery_from}}</span>
+                                </div> 
+                            @endif                                                      
                             <div class="form-group" style="margin-bottom: 0px">
                                 <span class="inline" style="font-size: 85%;"><strong>Term:</strong></span>
                                 <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>

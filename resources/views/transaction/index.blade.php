@@ -100,7 +100,12 @@
                                 </a>
                                 </td>
                                 <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
-                                <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
+                                <td ng-if="! transaction.delivery_to"class="col-md-1 text-center">
+                                    @{{ transaction.delivery_from }}
+                                </td>
+                                <td ng-if="transaction.delivery_to"class="col-md-1 text-center">
+                                    @{{ transaction.delivery_from }} / @{{ transaction.delivery_to }}
+                                </td>                                
                                 <td class="col-md-1 text-center">@{{ transaction.status }}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>

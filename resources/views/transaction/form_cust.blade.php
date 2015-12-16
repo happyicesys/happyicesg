@@ -45,7 +45,7 @@
                     'rows'=>'3']) !!}                  
                 </div>
 
-                <div class="col-md-6 form-group">
+                <div class="col-md-12 form-group">
                     {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
                     {!! Form::textarea('payterm', null, ['class'=>'form-control', 
                     'ng-model'=>'paytermModel',
@@ -54,12 +54,36 @@
                 </div>                  
 
                 <div class="col-md-6 form-group">
-                    {!! Form::label('delivery_date', 'Delivery Date :', ['class'=>'control-label']) !!}
+                    {!! Form::label('order_from', 'Order On/From :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
-                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
+                    {!! Form::text('order_from', null, ['class'=>'form-control', 'id'=>'order_from']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
                 </div>
+
+                <div class="col-md-6 form-group">
+                    {!! Form::label('order_to', 'Order To :', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('order_to', null, ['class'=>'clear form-control', 'id'=>'order_to', 'placeholder'=>'Optional. Leave Blank to Use Precise Date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    {!! Form::label('delivery_from', 'Delivery On/From :', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('delivery_from', null, ['class'=>'form-control', 'id'=>'delivery_from']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    {!! Form::label('delivery_to', 'Delivery To :', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('delivery_to', null, ['class'=>'clear form-control', 'id'=>'delivery_to', 'placeholder'=>'Optional. Leave Blank to Use Precise Date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+                </div>                                                
 
             <div class="col-md-12 form-group">
                 {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
@@ -68,5 +92,6 @@
 
         </div>
     </div>
+
 
 

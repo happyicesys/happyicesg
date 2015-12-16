@@ -82,8 +82,8 @@ var app = angular.module('app', [   'ui.bootstrap',
                                 $scope.amountModel = prices.quote_price;
 
                                 $scope.onQtyChange = function(){
-                                    // console.log($scope.qtyModel.Math);
-                                    $scope.amountModel = prices.quote_price * $scope.qtyModel;
+                                    console.log(eval($scope.qtyModel));
+                                    $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
                                 }
                             });                    
 
@@ -149,7 +149,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                         $scope.amountModel = prices.quote_price;
 
                         $scope.onQtyChange = function(){
-                            $scope.amountModel.Math = prices.quote_price * $scope.qtyModel;
+                            $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
                         }
                     });                    
 
@@ -171,11 +171,9 @@ var app = angular.module('app', [   'ui.bootstrap',
                     url: '/deal/data/' + id
                 })
                 .success(function(data){
-                    console.log(data);
                     location.reload();
                 })
                 .error(function(data){
-                    console.log(data);
                     alert('Unable to delete');
                 })
             }else{

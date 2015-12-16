@@ -26,10 +26,9 @@ class PersonRequest extends Request
         $person = $this->route('person');
 
         return [
-            'cust_id' => 'required|unique:people,cust_id,'.$person,
-            'company' => 'required|unique:people,company,'.$person,
-            'bill_to' => 'required',
-            'name'=>'required|min:3',
+            'cust_id' => 'unique:people,cust_id,'.$person,
+            'company' => 'unique:people,company,'.$person,
+            'name'=>'min:3',
             'roc_no' => 'unique:people,roc_no,'.$person,
             'email'=>'email|unique:people,email,'.$person,
             'contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),

@@ -36,20 +36,18 @@
 
             <div class="col-md-3">
                 <div class="form-group">
-                    {!! Form::label('qty', 'Qty', ['class'=>'control-label']) !!}
+                    {!! Form::label('qtyc', 'Qty', ['class'=>'control-label']) !!}
                     @if($transaction->pay_status == 'Owe')
-                        {!! Form::input('number', 'qty', null, [
+                        {!! Form::text('qtyc', null, [
                             'class'=>'qty form-control', 
-                            'id'=>'qty', 
                             'ng-model'=>'qtyModel', 
                             'ng-change'=>'onQtyChange()',
                             'ng-model-options'=>'{debounce:800}',
                             ]) 
                         !!}
                     @else
-                        {!! Form::text('qty', null, [
+                        {!! Form::text('qtyc', null, [
                             'class'=>'qty form-control', 
-                            'id'=>'qty', 
                             'ng-model'=>'qtyModel', 
                             'ng-change'=>'onQtyChange()',
                             'disabled'=>'disabled'
@@ -58,6 +56,7 @@
                     @endif
                 </div>
             </div>
+            {!! Form::text('qty', '@{{qtyModel}}', ['class'=>'hidden form-control']) !!}
 
             <div class="col-md-3">
                 <div class="form-group">  

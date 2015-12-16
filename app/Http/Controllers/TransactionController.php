@@ -56,9 +56,6 @@ class TransactionController extends Controller
      */
     public function create(Request $request)
     {
-        $request->merge(array('status' => 'Pending'));
-
-        $request->merge(array('pay_status' => 'Owe'));
 
         $input = $request->all();
 
@@ -123,6 +120,8 @@ class TransactionController extends Controller
         }elseif($request->input('pay')){
 
             $request->merge(array('pay_status' => 'Paid'));
+
+            $request->merge(array('driver'=>Auth::user()->name));
 
         }else{
 

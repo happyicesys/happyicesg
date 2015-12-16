@@ -15,8 +15,9 @@ class CreatePeopleTable extends Migration
         Schema::create('people', function (Blueprint $table) {
               
             $table->increments('id');  
-            $table->string('cust_id');
+            $table->string('cust_id')->unique();
             $table->string('company');
+            $table->string('com_remark')->nullable();
             $table->string('name');
             $table->string('contact');
             $table->string('alt_contact');
@@ -28,6 +29,7 @@ class CreatePeopleTable extends Migration
             $table->string('payterm');
             $table->text('remark')->nullable();
             $table->integer('cost_rate')->nullable();
+            $table->string('active')->default('Yes');
             $table->timestamps();
             $table->softDeletes();
 

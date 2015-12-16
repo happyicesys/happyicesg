@@ -1,3 +1,6 @@
+@inject('freezers', 'App\Freezer')
+@inject('accessories', 'App\Accessory')
+
 @extends('template')
 @section('title')
 {{ $PERSON_TITLE }}
@@ -8,25 +11,41 @@
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong></h3>
+        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong> 
+        -
+        @if($person->active == 'Yes') 
+        [Active]
+        @else
+        [Inactive]
+        @endif
+        </h3>
     </div>
 
     <div class="panel-body">
-        {!! Form::model($person,['method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}            
+        {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}            
 
             @include('person.form')
 
             <div class="col-md-12">
                 <div class="pull-right">
-                    {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary']) !!}
+                    {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
         {!! Form::close() !!}
 
                     <a href="/person" class="btn btn-default">Cancel</a>            
                 </div>
                 <div class="pull-left">
+                    <div class="col-md-4">
                     {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@destroy', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
                     {!! Form::close() !!}
+                    </div>
+                <div class="col-md-5" style="margin-left: 3px">
+                @if($person->active == 'Yes')
+                    {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}  
+                @else
+                    {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}  
+                @endif
+                </div>
                 </div>                
             </div>
     </div>
@@ -229,7 +248,12 @@
                             </a>
                             </td> --}}
                             <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
-                            <td class="col-md-2 text-center">@{{ transaction.delivery_date }}</td>
+                            <td ng-if="! transaction.delivery_to"class="col-md-1 text-center">
+                                @{{ transaction.delivery_from }}
+                            </td>
+                            <td ng-if="transaction.delivery_to"class="col-md-1 text-center">
+                                @{{ transaction.delivery_from }} / @{{ transaction.delivery_to }}
+                            </td>                              
                             <td class="col-md-1 text-center">@{{ transaction.status }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.user.name }}</td>
@@ -253,6 +277,42 @@
     </div>     
 </div>
 
+{{-- divider --}}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <h3 class="panel-title"><strong>Freezer and Accessories : {{$person->company}}</strong></h3>
+        </div>
+    </div>
+
+    <div class="panel-body">
+    {!! Form::model($person,['id'=>'form_addon', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!} 
+        <div class="col-md-6">
+            {!! Form::label('freezer', 'Freezer', ['class'=>'control-label']) !!}
+            {!! Form::select('freezer_list[]', $freezers::lists('name', 'id'), null, [
+            'class'=>'selectCreate form-control',
+            'multiple',
+            'ng-model'=>'freezerModel', 
+            'ng-change'=>'onFreezerSelected(freezerModel)'
+        ]) !!}
+        </div>
+
+        <div class="col-md-6">
+            {!! Form::label('accessories', 'Accessories', ['class'=>'control-label']) !!}
+            {!! Form::select('accessory_list[]', $accessories::lists('name', 'id'), null, [
+            'class'=>'selectCreate form-control', 
+            'multiple',
+            'ng-model'=>'accessoryModel', 
+            'ng-change'=>'onAccessorySelected(accessoryModel)'            
+        ]) !!}
+        </div>
+    {!! Form::close() !!}
+    </div>
+
+    <div class="panel-footer">
+    {!! Form::submit('Update', ['class'=> 'btn btn-success', 'form'=>'form_addon', 'style'=>'margin-left:15px']) !!}
+    </div>
+</div>
 {{-- divider --}}
 
 <div class="panel panel-primary">
@@ -333,6 +393,19 @@ $(document).ready(function() {
         }
     });
 });
+
+    $('.selectCreate').select2({
+        tags:true,
+
+        createTag: function(newItem){
+         
+         return {
+                    id: 'new:' + newItem.term,
+                    text: newItem.term + ' [new]'
+                };
+        }
+
+    }); 
 </script>
 <script src="/js/person_edit.js"></script>  
 

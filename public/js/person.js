@@ -20,17 +20,15 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         url: '/person/data/' + id
                     })
                     .success(function(data){
-                        console.log(data);
                         location.reload();
                     })
                     .error(function(data){
-                        console.log(data);
                         alert('Unable to delete');
                     })
                 }else{
                     return false;
                 }
-            } 
+            }                           
         });
     }  
 
