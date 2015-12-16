@@ -70,6 +70,9 @@
                         <div class="form-group" style="padding: 3px 0px 0px 10px">
                             <div><strong>Send To:</strong></div>
                             <div style="border: solid thin">
+                                @if($person->com_remark)
+                                <span class="col-xs-12">{{$person->com_remark}}</span>
+                                @endif
                                 <span class="col-xs-12">{{$person->del_address}}</span>
                                 <span class="col-xs-offset-1">{{$person->del_postcode}}</span> 
                             </div>
