@@ -24,7 +24,7 @@ class CreatePeopleTable extends Migration
             $table->string('bill_address');
             $table->text('del_address');
             $table->string('del_postcode');
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->string('payterm');
             $table->text('remark')->nullable();
             $table->integer('cost_rate')->nullable();
