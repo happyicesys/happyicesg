@@ -30,7 +30,7 @@ class CreatePeopleTable extends Migration
             $table->integer('cost_rate')->nullable();
             $table->string('active')->default('Yes');
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes()->nullable();
 
             //record who created and updated
             /*$table->integer('user_id')->unsigned();
