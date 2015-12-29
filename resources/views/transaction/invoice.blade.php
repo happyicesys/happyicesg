@@ -137,10 +137,10 @@
                             Quantity
                         </th>
                         <th class="col-xs-2 text-center">
-                            Unit Price ($)
+                            Unit Price (S$)
                         </th>
                         <th class="col-xs-1 text-center">
-                            Amount ($)
+                            Amount (S$)
                         </th>
                     </tr>
                     
@@ -197,26 +197,26 @@
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
-                                    <strong>{{$profile->name}}</strong>
-                                </span>
-                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
-                                    _______________________________
-                                </span>
-                                <span class="text-center col-xs-12" style="margin-top:0px">
-                                    <strong>Authorised Singnature</strong>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <span class="text-center col-xs-12">
-                                    <strong>GR in Good Order & Conditions</strong>
+                                    <strong>Goods Received in Good Conditions</strong>
                                 </span>
                                 <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
                                     _______________________________
                                 </span>
                                 <span class="text-center col-xs-12" style="margin-top:0px">
                                     <strong>Customer Sign & Co. Stamp</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <span class="text-center col-xs-12">
+                                    <strong>{{$profile->name}}</strong>
+                                </span>
+                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
+                                    _______________________________
+                                </span>
+                                <span class="text-center col-xs-12" style="margin-top:0px">
+                                    <strong>Payment Collected By</strong>
                                 </span>
                             </div>                            
                         </div> 
