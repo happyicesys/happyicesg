@@ -50,7 +50,8 @@
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
                             <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                            <span class="col-xs-12"> {{$person->cust_id}} - {{$person->company}}</span> 
+                            <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span> 
+                            <span class="col-xs-12">{{$person->company}}</span>
                             <span class="col-xs-12">{{$person->bill_address}}</span>
                             <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
                             </div>
@@ -70,8 +71,8 @@
                         <div class="form-group" style="padding: 3px 0px 0px 10px">
                             <div><strong>Send To:</strong></div>
                             <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                @if($person->com_remark)
-                                <span class="col-xs-12">{{$person->com_remark}}</span>
+                                @if($person->site_name)
+                                <span class="col-xs-12">{{$person->site_name}}</span>
                                 @endif
                                 <span class="col-xs-12">{{$person->del_address}}</span>
                                 <span class="col-xs-offset-1">{{$person->del_postcode}}</span> 
