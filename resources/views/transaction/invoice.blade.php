@@ -80,13 +80,13 @@
                     </div> 
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-12px;">
-                            <div class="col-md-12 row">
+                            <div class="col-xs-12 row">
                                 <div style="font-size: 145%;" class="text-center">
                                     <strong>DO / INVOICE</strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-xs-5">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
                                         {{-- <span class="inline col-xs-offset-1">{{$transaction->id}}</span> --}}
