@@ -85,7 +85,7 @@ class PersonController extends Controller
 
         $files = StoreFile::wherePersonId($id)->latest()->paginate(5);
 
-        $prices = Price::wherePersonId($id)->oldest()->paginate(10);
+        $prices = Price::wherePersonId($id)->oldest()->paginate(50);
 
         return view('person.edit', compact('person', 'files', 'prices'));
     }
@@ -102,7 +102,7 @@ class PersonController extends Controller
 
         $files = StoreFile::wherePersonId($id)->oldest()->paginate(5);
 
-        $prices = Price::wherePersonId($id)->oldest()->paginate(10);
+        $prices = Price::wherePersonId($id)->oldest()->paginate(50);
 
         return view('person.edit', compact('person', 'files', 'prices'));
     }
