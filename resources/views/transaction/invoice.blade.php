@@ -114,22 +114,22 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
+                                        <span class="inline">{{$transaction->id}}</span>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span>
+                                        <span class="inline">{{$transaction->order_date}}</span>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span>
+                                        <span class="inline">{{$transaction->delivery_date}}</span>
                                     </div>                                                    
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>
+                                        <span class="inline">{{$person->payterm}}</span>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>
+                                        <span class="inline">{{$transaction->created_by}}</span>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>
+                                        <span class="inline">{{$transaction->updated_by}}</span>
                                     </div>
                                 </div>
                             </div>                                                                 
