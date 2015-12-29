@@ -52,9 +52,10 @@ var app = angular.module('app', [   'ui.bootstrap',
                 method: "GET",
             }).success(function(person){
                 $scope.personModel = person.id;
-                $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
+                $scope.billModel = person.bill_address;
                 $scope.delModel = person.del_address + ' ' + person.del_postcode;
                 $scope.paytermModel = person.payterm;
+                $scope.personcodeModel = person.cust_id;
                 $('.date').datetimepicker({
                     format: 'DD-MMMM-YYYY'
                 });

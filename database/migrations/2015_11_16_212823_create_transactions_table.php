@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Carbon\Carbon;
 
 class CreateTransactionsTable extends Migration
 {
@@ -19,10 +20,8 @@ class CreateTransactionsTable extends Migration
             $table->string('person_code')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');           
-            $table->timestamp('delivery_from')->nullable();
-            $table->timestamp('delivery_to')->nullable();
-            $table->timestamp('order_from')->nullable();
-            $table->timestamp('order_to')->nullable();
+            $table->timestamp('delivery_date')->nullable();
+            $table->timestamp('order_date')->default(Carbon::now());
             $table->string('driver')->nullable();
             $table->string('status')->default('Pending');
             $table->string('pay_status')->default('Owe');
@@ -30,8 +29,8 @@ class CreateTransactionsTable extends Migration
             $table->softDeletes();
 
             //record who created and updated
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');            
+            $table->string('created_by');  
+            $table->string('updated_by')->nullable;
         });
 
         $statement = "ALTER TABLE transactions AUTO_INCREMENT = 100001;";

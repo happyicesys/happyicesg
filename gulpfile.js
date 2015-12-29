@@ -22,7 +22,8 @@ elixir(function(mix) {
             '../bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
             'dropzone.js',
             'fixedScroll.js',
-            '../bower/ui-select/dist/select.min.js'
+            '../bower/ui-select/dist/select.min.js',
+            'filesaver.js'
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

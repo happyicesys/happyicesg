@@ -29,6 +29,7 @@ class CreatePeopleTable extends Migration
             $table->text('remark')->nullable();
             $table->integer('cost_rate')->nullable();
             $table->string('active')->default('Yes');
+            $table->string('site_name');
             $table->timestamps();
             $table->softDeletes()->nullable();
 

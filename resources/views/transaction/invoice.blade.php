@@ -49,13 +49,13 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
-                            <div style="border: solid thin">
+                            <div style="border: solid thin; margin-bottom: 10px">
                             <span class="col-xs-12"> {{$person->cust_id}} - {{$person->company}}</span> 
                             <span class="col-xs-12">{{$person->bill_address}}</span>
                             <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
                             </div>
                         </div>
-                        <div style="padding-top:10px">
+                        <div style="padding-top:30px">
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">{{$person->name}}</div>
@@ -69,7 +69,7 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding: 3px 0px 0px 10px">
                             <div><strong>Send To:</strong></div>
-                            <div style="border: solid thin">
+                            <div style="border: solid thin; margin-bottom: 10px">
                                 @if($person->com_remark)
                                 <span class="col-xs-12">{{$person->com_remark}}</span>
                                 @endif
@@ -87,27 +87,10 @@
                                 <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
                                 <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
                             </div>
-                            @if($transaction->order_from && $transaction->order_to)
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Order From:</strong></span>
-                                    <span class="inline col-xs-offset-2">{{$transaction->order_from}}</span>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Order To:</strong></span>
-                                    <span class="inline col-xs-offset-2">{{$transaction->order_to}}</span>
-                                </div>    
-                            @elseif($transaction->order_from && ! $transaction->order_to)                                                    
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
-                                    <span class="inline col-xs-offset-2">{{$transaction->order_from}}</span>
-                                </div> 
-                            @else
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
-                                    <span class="inline col-xs-offset-2">{{$transaction->created_at}}</span>
-                                </div> 
-                            @endif
-
+                            <div class="form-group" style="margin-bottom: 0px">
+                                <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                                <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span>
+                            </div>
                             @if($transaction->delivery_from && $transaction->delivery_to)
                                 <div class="form-group" style="margin-bottom: 0px">
                                     <span class="inline" style="font-size: 85%;"><strong>Delivery From:</strong></span>
@@ -128,8 +111,13 @@
                                 <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>
                             </div>
                             <div class="form-group" style="margin-bottom: 0px">
-                                <span class="inline" style="font-size: 85%;"><strong>Saleserson:</strong></span>
-                            </div>                                                                                                                                                
+                                <span class="inline" style="font-size: 85%;"><strong>Created by:</strong></span>
+                                <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>                            
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0px">
+                                <span class="inline" style="font-size: 85%;"><strong>Updated by:</strong></span>
+                                <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>                            
+                            </div>                                                                                                                                                                            
                         </div>
                     </div>                               
 

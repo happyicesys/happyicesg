@@ -8,16 +8,19 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('company', 'Company', ['class'=>'control-label']) !!}
-        {!! Form::text('company', null, ['class'=>'form-control']) !!}
+        {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
+        {!! Form::text('com_remark', null, ['class'=>'form-control']) !!}
     </div>
 
-    @if($person->com_remark)
     <div class="form-group">
-        {!! Form::label('com_remark', 'Company Remark', ['class'=>'control-label']) !!}
-        {!! Form::text('com_remark', null, ['class'=>'form-control']) !!}
-    </div>    
-    @endif
+        {!! Form::label('company', 'Company Remark', ['class'=>'control-label']) !!}
+        {!! Form::text('company', null, ['class'=>'form-control']) !!}
+    </div> 
+
+    <div class="form-group">
+        {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+    </div>       
 
     <div class="form-group">
         {!! Form::label('name', 'Att To', ['class'=>'control-label']) !!}
@@ -39,19 +42,13 @@
         {!! Form::email('email', null, ['class'=>'form-control']) !!}
     </div>    
 
-    <div class="form-group">
-        {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}    
-        {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
-    </div>
-
-
 </div>
 
 <div class="col-md-6">
 
     <div class="form-group">
-        {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        {!! Form::label('site_name', 'Site Name', ['class'=>'control-label']) !!}
+        {!! Form::text('site_name', null, ['class'=>'form-control']) !!}
     </div>
     
     <div class="form-group">
@@ -72,7 +69,12 @@
     <div class="form-group">
         {!! Form::label('remark', 'Remark', ['class'=>'control-label']) !!}
         {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
-    </div>        
+    </div> 
+
+    <div class="form-group">
+        {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}    
+        {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
+    </div>           
 </div>
 
 <script>

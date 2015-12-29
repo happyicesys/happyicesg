@@ -30,7 +30,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
-
+post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 post('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 get('/transaction/data', 'TransactionController@getData');

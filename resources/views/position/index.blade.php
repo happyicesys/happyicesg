@@ -55,7 +55,7 @@ Position
 
                     <tbody>
                         <tr dir-paginate="position in positions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
-                            <td class="col-md-1">@{{ number }} </td>
+                            <td class="col-md-1 text-center">@{{ number }} </td>
                             <td class="col-md-3">@{{ position.job_title }}</td>
                             <td class="col-md-6">@{{ position.duty }}</td>
                             <td class="col-md-2">

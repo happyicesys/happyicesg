@@ -1,7 +1,6 @@
 <?php
 
 namespace App;
-// namespace MyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -21,7 +20,7 @@ class Transaction extends Model
     }  
 
     protected $dontKeepRevisionOf = array(
-        'person_id'
+        'person_id', 'updated_by'
     );        
 
     protected $revisionEnabled = true;
@@ -37,76 +36,50 @@ class Transaction extends Model
 
     //revision appear format name
     protected $revisionFormattedFieldNames = array(
-        'delivery_from' => 'Delivery From',
-        'delivery_to' => 'Delivery To',
-        'order_from' => 'Order From',
-        'order_to' => 'Order To',
+        'delivery_date' => 'Delivery Date',
+        'order_date' => 'Order Date',
         'transremark' => 'Comment',
         'status' => 'Status',
         'pay_status' => 'Payment',
         'person_code'  => 'Customer',
-        'driver' => "Driver",
+        'created_by' => 'Created',
+        'updated_by' => 'Updated',
+        'driver' => 'Driver',
     );    
 
     protected $fillable=[
-        'total', 'delivery_from', 'status', 
-        'person_id', 'user_id', 'transremark',
-        'pay_status', 'person_code', 'delivery_to',
-        'order_from', 'order_to', 'driver'
+        'total', 'delivery_date', 'status', 
+        'created_by', 'user_id', 'transremark',
+        'pay_status', 'person_code', 'person_id',
+        'order_date', 'driver', 'updated_by',
     ];
 
     protected $dates =[
-        'created_at', 'delivery_from', 'delivery_to', 'order_from', 'order_to'
+        'created_at', 'delivery_date', 'order_date'
     ];
 
-    public function setDeliveryFromAttribute($date)
+    public function setDeliveryDateAttribute($date)
     {
         if($date){
 
-            $this->attributes['delivery_from'] = Carbon::parse($date);
+            $this->attributes['delivery_date'] = Carbon::parse($date);
 
         }else{
 
-            $this->attributes['delivery_from'] = null;
+            $this->attributes['delivery_date'] = null;
 
         }
     }
 
-    public function setDeliveryToAttribute($date)
+    public function setOrderDateAttribute($date)
     {
         if($date){
 
-            $this->attributes['delivery_to'] = Carbon::parse($date);
+            $this->attributes['order_date'] = Carbon::parse($date);
 
         }else{
 
-            $this->attributes['delivery_to'] = null;
-
-        }        
-    }
-
-    public function setOrderFromAttribute($date)
-    {
-        if($date){
-
-            $this->attributes['order_from'] = Carbon::parse($date);
-
-        }else{
-
-            $this->attributes['order_from'] = null;
-
-        }
-    }
-
-    public function setOrderToAttribute($date)
-    {
-        if($date){
-
-            $this->attributes['order_to'] = Carbon::parse($date);
-
-        }else{
-
-            $this->attributes['order_to'] = null;
+            $this->attributes['order_date'] = null;
 
         }
     }            
@@ -141,20 +114,7 @@ class Transaction extends Model
         return Carbon::parse($date)->format('d-M-Y');
     }
 
-    public function getDeliveryFromAttribute($date)
-    {
-        if($date){
-
-            return Carbon::parse($date)->format('d-M-Y');    
-
-        }else{
-
-            return null;
-        }
-        
-    }
-
-    public function getDeliveryToAttribute($date)
+    public function getDeliveryDateAttribute($date)
     {
         if($date){
 
@@ -167,20 +127,7 @@ class Transaction extends Model
         
     }  
 
-    public function getOrderFromAttribute($date)
-    {
-        if($date){
-
-            return Carbon::parse($date)->format('d-M-Y');    
-
-        }else{
-
-            return null;
-        }
-        
-    } 
-
-    public function getOrderToAttribute($date)
+    public function getOrderDateAttribute($date)
     {
         if($date){
 

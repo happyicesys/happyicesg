@@ -61,7 +61,9 @@ class TransactionController extends Controller
 
         $transaction = new Transaction($input);
 
-        Auth::user()->transactions()->save($transaction);
+        $transaction->created_by = Auth::user()->name;
+
+        $transaction->save();
 
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
@@ -117,11 +119,25 @@ class TransactionController extends Controller
 
             $request->merge(array('status' => 'Pending'));
 
-        }elseif($request->input('pay')){
+        }elseif($request->input('del_paid')){
+
+            $request->merge(array('status' => 'Delivered'));
 
             $request->merge(array('pay_status' => 'Paid'));
 
             $request->merge(array('driver'=>Auth::user()->name));
+
+        }elseif($request->input('del_owe')){
+
+            $request->merge(array('status' => 'Delivered'));
+
+            $request->merge(array('pay_status' => 'Owe'));
+
+            $request->merge(array('driver'=>Auth::user()->name));
+
+        }elseif($request->input('paid')){
+
+            $request->merge(array('pay_status' => 'Paid'));
 
         }else{
 
@@ -129,12 +145,11 @@ class TransactionController extends Controller
 
         }
 
-
         $transaction = Transaction::findOrFail($id);
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
-        // dd($request->input('person_id'));
-        // dd($request->input('person_copyid'));
+
+        $request->merge(array('updated_by' => Auth::user()->name));
 
         $transaction->update($request->all());
 
@@ -332,5 +347,17 @@ class TransactionController extends Controller
         dd($revisionDeal->toJson());*/
 
         return view('transaction.log', compact('transaction', 'transHistory'));  
-    }       
+    } 
+
+    public function searchDateRange(Request $request)
+    {
+        $request->input('property');
+
+        $request->input('startDate');
+
+        $request->input('endDate'); 
+
+               
+
+    }      
 }

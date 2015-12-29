@@ -36,7 +36,13 @@
                         <td class="col-md-1 text-right">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
                         <td class="col-md-1 text-center">
                             @if($transaction->pay_status == 'Owe')
-                                <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                @if($transaction->status == 'Delivered')
+                                    @can('transaction_deleteitem')
+                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                    @endcan
+                                @else
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                @endif
                             @else
                                 <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                             @endif

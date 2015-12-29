@@ -12,7 +12,7 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        //user
+        //user section
         Permission::create([
             'name' => 'create_user',
             'label' => 'Create User',
@@ -37,7 +37,7 @@ class PermissionSeeder extends Seeder
             'remark' => '',
         ]);
 
-        //role
+        //Role section
         Permission::create([
             'name' => 'create_role',
             'label' => 'Create Role',
@@ -62,10 +62,24 @@ class PermissionSeeder extends Seeder
             'remark' => '',
         ]); 
 
+        // Permisssion section
         Permission::create([
             'name' => 'view_permission',
             'label' => 'View Permission',
             'remark' => '',
-        ]);                                                       
+        ]);
+
+        // Transaction item section
+        Permission::create([
+            'name' => 'transaction_edititem',
+            'label' => 'Edit Transaction Item',
+            'remark' => '',
+        ]); 
+
+        Permission::create([
+            'name' => 'transaction_deleteitem',
+            'label' => 'Delete Transaction Item',
+            'remark' => '',
+        ]);                                                                       
     } 
 }

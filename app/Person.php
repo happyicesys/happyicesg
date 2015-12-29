@@ -16,7 +16,7 @@ class Person extends Model
         'remark', 'area', 'del_postcode',
         'company', 'bill_address', 'del_address',
         'payterm', 'cost_rate', 'bill_postcode',
-        'active'
+        'active', 'site_name'
         ];
 
     /**
