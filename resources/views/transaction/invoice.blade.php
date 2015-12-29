@@ -85,50 +85,52 @@
                                     <strong>DO / INVOICE</strong>
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <div class="form-group" style="margin-bottom: 0px;">
-                                    <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-1">{{$transaction->id}}</span> --}}
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group" style="margin-bottom: 0px;">
+                                        <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-1">{{$transaction->id}}</span> --}}
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span> --}}
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span> --}}
+                                    </div>                                                    
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 85%;"><strong>Term:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span> --}}
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 85%;"><strong>Created by:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>                             --}}
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 85%;"><strong>Updated by:</strong></span>
+                                        {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>                             --}}
+                                    </div>
                                 </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span> --}}
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span> --}}
-                                </div>                                                    
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Term:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span> --}}
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Created by:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>                             --}}
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline" style="font-size: 85%;"><strong>Updated by:</strong></span>
-                                    {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>                             --}}
-                                </div>
-                            </div>
-                            <div class="col-md-7">
-                                <div class="form-group" style="margin-bottom: 0px;">
-                                    <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span>
-                                </div>                                                    
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0px">
-                                    <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>
+                                <div class="col-md-7">
+                                    <div class="form-group" style="margin-bottom: 0px;">
+                                        <span class="inline col-xs-offset-1">{{$transaction->id}}</span>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline col-xs-offset-2">{{$transaction->order_date}}</span>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline col-xs-offset-1">{{$transaction->delivery_date}}</span>
+                                    </div>                                                    
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>
+                                    </div>
                                 </div>
                             </div>                                                                 
                         </div>
