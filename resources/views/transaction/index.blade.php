@@ -47,7 +47,15 @@
                         <label for="del_from" class="search">Delivery On:</label>
                         <input type="text" ng-model="search.delivery_date">
                         <label for="search_status" class="search" style="padding-left: 10px">Created On:</label>
-                        <input type="text" ng-model="search.created_at">                  
+                        <input type="text" ng-model="search.created_at"> 
+                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified:</label>
+                        <input type="text" ng-model="search.updated_by">                                                                  
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="padding:0px 0px 10px 5px">
+                        <label for="search_driver" class="search" style="padding-left: 10px">Delivered By:</label>
+                        <input type="text" ng-model="search.driver">                         
                     </div>
                 </div>
                 <div class="row">
@@ -55,7 +63,7 @@
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>                
                     </div>
                 </div>                
-                <div id="exportable">
+                <div id="exportable" class="table-responsive">
                     <div class="table-responsive">
                         <table class="table table-list-search table-hover table-bordered">
                             <tr style="background-color: #DDFDF8">
@@ -98,17 +106,14 @@
                                     <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
                                 </th>                                                                             
-                                 <th class="col-md-1 text-center">
+                                <th class="col-md-1 text-center">
                                     <a href="#" ng-click="sortType = 'created_at'; sortReverse = !sortReverse">                         
                                     Created On
                                     <span ng-show="sortType == 'created_at' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'created_at' && sortReverse" class="fa fa-caret-up"></span>                          
                                 </th>
-                                 <th class="col-md-1 text-center">
-                                    Created By
-                                </th>
-                                 <th class="col-md-1 text-center">
-                                    Updated By
+                                <th class="col-md-1 text-center">
+                                    Last Modified
                                 </th> 
                                 <th class="col-md-1 text-center">
                                     Delivered By
@@ -136,7 +141,6 @@
                                     <td class="col-md-1 text-center">@{{ transaction.status }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.created_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver}}</td>
                                     <td class="col-md-1 text-center">

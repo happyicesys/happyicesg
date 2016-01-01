@@ -61,7 +61,7 @@ class TransactionController extends Controller
 
         $transaction = new Transaction($input);
 
-        $transaction->created_by = Auth::user()->name;
+        $transaction->updated_by = Auth::user()->name;
 
         $transaction->save();
 
@@ -125,6 +125,8 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Paid'));
 
+            $request->merge(['paid_by' => Auth::user()->name]);
+
             $request->merge(array('driver'=>Auth::user()->name));
 
         }elseif($request->input('del_owe')){
@@ -138,6 +140,8 @@ class TransactionController extends Controller
         }elseif($request->input('paid')){
 
             $request->merge(array('pay_status' => 'Paid'));
+
+            $request->merge(array('paid_by' => Auth::user()->name));            
 
         }else{
 
@@ -266,7 +270,7 @@ class TransactionController extends Controller
 
     private function syncTransaction(Request $request)
     {
-        // dd(Auth::user()->toJson());
+
         $transaction = Auth::user()->transactions()->create($request->all());
 
         $this->syncItems($transaction, $request);

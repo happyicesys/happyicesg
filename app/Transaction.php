@@ -42,16 +42,15 @@ class Transaction extends Model
         'status' => 'Status',
         'pay_status' => 'Payment',
         'person_code'  => 'Customer',
-        'created_by' => 'Created',
-        'updated_by' => 'Updated',
+        'updated_by' => 'Last Modified',
         'driver' => 'Driver',
     );    
 
     protected $fillable=[
         'total', 'delivery_date', 'status', 
-        'created_by', 'user_id', 'transremark',
+        'user_id', 'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
-        'order_date', 'driver', 'updated_by',
+        'order_date', 'driver', 'paid_by'
     ];
 
     protected $dates =[

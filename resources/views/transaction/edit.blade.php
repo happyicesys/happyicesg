@@ -8,22 +8,29 @@
 <div class="panel panel-primary" ng-app="app" ng-controller="transactionController">
 
     <div class="panel-heading">
-        <div class="col-md-6">
+        <div class="col-md-4">
         <h4>
             <strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}
             {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
+            @if($transaction->paid_by)
+            <div class="col-md-4">
+                <label style="padding-top: 10px" class="pull-right">Paid by : {{ $transaction->paid_by }}</label>
+            </div>
+            @else
+            <div class="col-md-4"></div>
+            @endif        
             @if($transaction->driver)
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label style="padding-top: 10px" class="pull-right">Delivered by : {{ $transaction->driver }}</label>
             </div>
             @else
-            <div class="col-md-6"></div>
+            <div class="col-md-4"></div>
             @endif
-            <div class="col-md-6">
-                <label style="padding-top: 10px" class="pull-right">Created by : {{ $transaction->created_by }}</label>
+            <div class="col-md-4">
+                <label style="padding-top: 10px" class="pull-right">Last Modified: {{ $transaction->updated_by }}</label>
             </div>
         </div>
     </div>
@@ -32,12 +39,14 @@
         
             {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
             {!! Form::close() !!}
-        <div class="col-md-12" style="padding: 0px 30px 10px 0px;">    
-            {!! Form::submit('Log History', ['class'=> 'btn btn-warning pull-right', 'form'=>'log']) !!}            
+        <div class="row">
+            <div class="col-md-12" style="padding: 0px 30px 10px 0px;">    
+                {!! Form::submit('Log History', ['class'=> 'btn btn-warning pull-right', 'form'=>'log']) !!}            
+            </div>
         </div>
 
         <div class="col-md-12">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id]]) !!}            
                     @include('transaction.form_cust')   
                 {!! Form::close() !!}    
@@ -46,16 +55,15 @@
                 {!! Form::close() !!}
             </div>              
 
-            <div>
-            <div class="col-md-6">    
+{{--             <div class="col-md-6">    
                 {!! Form::model($deal = new \App\Deal, ['id'=>'form_item', 'action'=>['DealController@store']]) !!}
                     @include('transaction.form_item')
                 {!! Form::close() !!}   
-            </div>
+            </div> --}}
 
                 @if($transaction->status == 'Pending' and $transaction->pay_status == 'Owe')
                 <div class="row">
-                    <div class="col-md-6" style="padding-top:25px;">
+                    <div class="col-md-12" style="padding-top:25px;">
                         <div class="pull-left">
                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm', 'form'=>'form_delete']) !!}
                         </div>
@@ -69,7 +77,7 @@
                 </div> 
                 @elseif($transaction->status == 'Confirmed' and $transaction->pay_status == 'Owe')
                 <div class="row">
-                    <div class="col-md-6" style="padding-top:25px;">
+                    <div class="col-md-12" style="padding-top:25px;">
                         <div class="pull-left">
                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
                         </div>
@@ -87,7 +95,7 @@
                     </div>
                 </div>
                 @elseif($transaction->status == 'Delivered' and $transaction->pay_status == 'Owe') 
-                <div class="col-md-6" style="padding-top:25px;">
+                <div class="col-md-12" style="padding-top:25px;">
                     <div class="row">
                         <div class="pull-left">
                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
@@ -105,7 +113,7 @@
                     </div>       
                 </div>
                 @else
-                <div class="col-md-6" style="padding-top:25px;">
+                <div class="col-md-12" style="padding-top:25px;">
                     <div class="row">
                         <div class="pull-left">
                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
@@ -123,7 +131,6 @@
                 </div>                                        
                 @endif
 
-            </div> 
         </div>      
 
 

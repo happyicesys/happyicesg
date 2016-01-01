@@ -30,7 +30,7 @@
                         {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                         'ng-model'=>'billModel',  
                         'readonly'=>'readonly',
-                        'rows'=>'3']) !!}                
+                        'rows'=>'2']) !!}                
                     </div>
 
 
@@ -38,19 +38,9 @@
                         {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control', 
                         'ng-model'=>'delModel', 
-                        'rows'=>'3']) !!}                  
+                        'rows'=>'2']) !!}                  
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-12 form-group">
-                        {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('payterm', null, ['class'=>'form-control', 
-                        'ng-model'=>'paytermModel',
-                        'readonly'=>'readonly',
-                        'rows'=>'1']) !!}                  
-                    </div>          
-                </div>        
 
                 <div class="row">
                     <div class="col-md-6 form-group">
@@ -71,7 +61,14 @@
                 </div>                                             
 
                 <div class="row">
-                    <div class="col-md-12 form-group">
+                    <div class="col-md-6 form-group">
+                        {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
+                        {!! Form::textarea('payterm', null, ['class'=>'form-control', 
+                        'ng-model'=>'paytermModel',
+                        'readonly'=>'readonly',
+                        'rows'=>'1']) !!}                  
+                    </div>                
+                    <div class="col-md-6 form-group">
                         {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
                         {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
                     </div>

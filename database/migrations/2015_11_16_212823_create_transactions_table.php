@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('person_code')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');           
-            $table->timestamp('delivery_date')->nullable();
+            $table->timestamp('delivery_date')->default(Carbon::now());
             $table->timestamp('order_date')->default(Carbon::now());
             $table->string('driver')->nullable();
             $table->string('status')->default('Pending');
@@ -28,9 +28,9 @@ class CreateTransactionsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            //record who created and updated
-            $table->string('created_by');  
-            $table->string('updated_by')->nullable;
+            //record who paid and updated  
+            $table->string('updated_by');
+            $table->string('paid_by');
         });
 
         $statement = "ALTER TABLE transactions AUTO_INCREMENT = 100001;";
