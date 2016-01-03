@@ -19,6 +19,33 @@ var app = angular.module('app', [   'ui.bootstrap',
 
         $scope.selection = {};
         $scope.Math = window.Math;
+           
+        $(document).ready(function () {
+
+           $(".qtyClass").keyup(multInputs);
+
+           function multInputs() {
+            "use strict";
+               var mult = 0;
+               // for each row:
+               $("tr.txtMult").each(function () {
+                   // get the values from this row:
+                   var $qty = $('.qtyClass', this).val();
+
+                   var $quote = $('.quoteClass', this).val();
+                   var $total = ((eval($qty) * 1) * ($quote * 1)).toFixed(2);
+                   // set total for the row
+                   // $('.amountClass', this).text($total);
+                    if(isNaN($total)) {
+                        var $total = 0;
+                    }                   
+                   $('.amountClass', this).val($total);
+                   mult += parseFloat($total);
+               });
+
+               $('.grandTotal').val(mult.toFixed(2));
+           }
+        });    
 
         $http.get('/person/data').success(function(people){
         $scope.people = people;
@@ -70,7 +97,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                             $item.append($("<option></option>").attr("value", value).text(key)); 
                         });*/
 
-                        $scope.onItemSelected = function (item_id){
+                     /*   $scope.onItemSelected = function (item_id){
 
                             $http({
                                 url: '/transaction/person/'+ person.id + '/item/' + item_id,
@@ -88,7 +115,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                                 }
                             });                    
 
-                        }            
+                        } */           
                     });            
             });             
 
@@ -117,6 +144,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                 method: "GET",
             
             }).success(function(items){
+                console.log(items);
                 $scope.items = items;             
                 $scope.qtyModel = [];
                 $scope.amountModel = [];

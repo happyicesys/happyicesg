@@ -54,18 +54,9 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-
-        $input = $request->all();
-
-        $transaction = new Transaction($input);
-
-        $transaction->updated_by = Auth::user()->name;
-
-        $transaction->save();
-
-        return Redirect::action('TransactionController@edit', $transaction->id);
+        return view('transaction.create');
     }
 
     /**
@@ -76,7 +67,13 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(array('updated_by' => Auth::user()->name));
 
+        $input = $request->all();
+
+        $transaction = Transaction::create($input);
+
+        return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
     /**
@@ -102,7 +99,11 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
 
-        return view('transaction.edit', compact('transaction'));
+        $person = Person::findOrFail($transaction->person_id);
+
+        $prices = Price::wherePersonId($transaction->person_id)->whereNotNull('quote_price')->get();
+
+        return view('transaction.edit', compact('transaction', 'person', 'prices'));
     }
 
     /**
@@ -114,6 +115,11 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, $id)
     {
+        // dynamic form arrays
+        $quantities = $request->qty;
+
+        $amounts = $request->amount;
+
 
         if($request->input('save')){
 
@@ -143,7 +149,7 @@ class TransactionController extends Controller
 
             $request->merge(array('paid_by' => Auth::user()->name));            
 
-        }else{
+        }elseif($request->input('confirm')){
 
             $request->merge(array('status' => 'Confirmed'));
 
@@ -156,6 +162,8 @@ class TransactionController extends Controller
         $request->merge(array('updated_by' => Auth::user()->name));
 
         $transaction->update($request->all());
+
+        $this->createDeal($transaction->id, $quantities, $amounts);
 
         if($request->input('save')){
 
@@ -208,12 +216,20 @@ class TransactionController extends Controller
 
     public function getItem($person_id)
     {
-        return Item::whereHas('prices', function($query) use ($person_id){
+/*        return Item::whereHas('prices', function($query) use ($person_id){
 
             $query->where('person_id', $person_id)->whereNotNull('quote_price');
 
-        })->get();
+        })->get();*/
         //select(DB::raw("CONCAT(product_id,' - ',name,' - ',remark) AS full, id"))->lists('full', 'id');
+        $item =  Item::with(['prices' => function($query) use ($person_id){
+
+            $query->where('person_id', $person_id)->whereNotNull('quote_price');
+
+        }])->get(); 
+
+        return $item;
+
 
     }
 
@@ -266,40 +282,6 @@ class TransactionController extends Controller
 
         return "Sucess updating transaction #" . $transaction->id;
 
-    }    
-
-    private function syncTransaction(Request $request)
-    {
-
-        $transaction = Auth::user()->transactions()->create($request->all());
-
-        $this->syncItems($transaction, $request);
-
-    }
-
-    private function syncItems($transaction, $request)
-    {
-        if ( ! $request->has('item_list'))
-        {
-            $transaction->items()->detach();
-
-            return;
-        }
-
-        $allItemsId = array();
-
-        foreach ($request->item_list as $itemId)
-        {
-            if (substr($itemId, 0, 4) == 'new:')
-            {
-                $newItem = Item::create(['name'=>substr($itemId, 4)]);
-                $allItemsId[] = $newItem->id;
-                continue;
-            }
-            $allItemsId[] = $itemId;
-        }
-
-        $transaction->items()->sync($allItemsId);
     } 
 
     public function generateInvoice($id)    
@@ -359,9 +341,66 @@ class TransactionController extends Controller
 
         $request->input('startDate');
 
-        $request->input('endDate'); 
+        $request->input('endDate');         
 
-               
+    }        
 
-    }      
+    private function syncTransaction(Request $request)
+    {
+
+        $transaction = Auth::user()->transactions()->create($request->all());
+
+        $this->syncItems($transaction, $request);
+
+    }
+
+    private function syncItems($transaction, $request)
+    {
+        if ( ! $request->has('item_list'))
+        {
+            $transaction->items()->detach();
+
+            return;
+        }
+
+        $allItemsId = array();
+
+        foreach ($request->item_list as $itemId)
+        {
+            if (substr($itemId, 0, 4) == 'new:')
+            {
+                $newItem = Item::create(['name'=>substr($itemId, 4)]);
+                $allItemsId[] = $newItem->id;
+                continue;
+            }
+            $allItemsId[] = $itemId;
+        }
+
+        $transaction->items()->sync($allItemsId);
+    }
+
+    private function createDeal($id, $quantities, $amounts)
+    {
+        foreach($quantities as $index => $qty){
+
+            if($qty != NULL or $qty != 0 ){
+
+                $deal = new Deal();
+
+                $deal->transaction_id = $id;
+
+                $deal->item_id = $index;
+
+                $deal->qty = $qty;
+
+                $deal->amount = $amounts[$index];
+
+                $deal->save();
+
+            }
+        }        
+
+    } 
+
+     
 }

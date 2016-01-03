@@ -25,6 +25,7 @@ class CreateTransactionsTable extends Migration
             $table->string('driver')->nullable();
             $table->string('status')->default('Pending');
             $table->string('pay_status')->default('Owe');
+            $table->text('del_address')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

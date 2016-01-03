@@ -1,69 +1,71 @@
-@inject('deals', 'App\Deal')
+ 
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">         
+            <div class="pull-left display_panel_title">
+                <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}}</strong></h3>
+            </div>
+        </div>      
+    </div>
 
-<div class="col-md-12">
-    <div class="panel panel-primary row">
-        <div class="panel-body">
-            <table class="table table-list-search table-hover table-bordered">
-                <tr style="background-color: #DDFDF8">
-                    <th class="col-md-1 text-center">
-                        Item Code
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-list-search table-hover table-bordered table-condensed">
+                <tr style="background-color: #DDFDF8">                   
+                    <th class="col-md-6 text-center">
+                        Item                           
                     </th>
-                    <th class="col-md-5 text-center">
-                        Description
-                    </th>          
                     <th class="col-md-2 text-center">
-                        Quantity
+                        Qty                      
                     </th>
-                    <th class="col-md-1 text-center">
-                        Unit Price
+                    <th class="col-md-2 text-center">
+                        Quote Price ($)
                     </th>
-                    <th class="col-md-1 text-center">
-                        Amount
-                    </th>  
-                    <th class="col-md-1 text-center">
-                        Action
-                    </th>                                                           
-                </tr> 
+                     <th class="col-md-2 text-center">
+                        Amount ($)
+                    </th>                                                                                                
+                </tr>
 
                 <tbody>
-                    <tr dir-paginate="deal in deals | itemsPerPage:itemsPerPage"  current-page="currentPage">
-                        <td class="col-md-1 text-center">@{{ deal.item.product_id }}</td>
-                        <td class="col-md-5">@{{ deal.item.name }} @{{ deal.item.remark }}</td>
 
-                        <td class="col-md-2 text-center" ng-if="deal.qty % 1 == 0">@{{ Math.round(deal.qty) }} @{{ deal.item.unit }}</td>
-                        <td class="col-md-2 text-center" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit }}</td>
-                        <td class="col-md-1 text-right">@{{ (deal.amount / deal.qty).toFixed(2)}}</td>
-                        <td class="col-md-1 text-right">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
-                        <td class="col-md-1 text-center">
-                            @if($transaction->pay_status == 'Owe')
-                                @if($transaction->status == 'Delivered')
-                                    @can('transaction_deleteitem')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                    @endcan
-                                @else
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                @endif
-                            @else
-                                <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-                            @endif
+                    @unless(count($prices)>0)
+                    <td class="text-center" colspan="7">No Records Found</td>
+                    @else
+                    @foreach($prices as $price)
+                    <tr class="txtMult">
+                        <td class="col-md-6">
+                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
-                    </tr>
-                    <tr ng-if="deals.length">
+                        <td class="col-md-2 text-right">
+                            <input type="text" name="qty[{{$price->item->id}}]" class="form-control qtyClass"/>
+                        </td>
+                        <td class="col-md-2">
+                            <strong>
+                            <input type="text" name="quote[{{$price->item->id}}]" 
+                            readonly="readonly" value="{{$price->quote_price}}"
+                            class="text-right form-control quoteClass" />
+                            </strong>
+                        </td>
+                        <td class="col-md-2">
+                            <input type="text" name="amount[{{$price->item->id}}]" class="text-right form-control amountClass" readonly="readonly" />
+                        </td>
+                    </tr>                
+                    @endforeach
+                    @endunless  
+                    <tr>
                         <td class="col-md-1 text-center"><strong>Total</strong></td>
-                        <td colspan="3" class="col-md-3 text-right">
-                            <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>                            
+                        <td colspan="2" class="col-md-3 text-right">
+                            <td class="text-right" id="grandTotal" >
+                                <strong>
+                                    <input type="text" name="total_create" class="form-control grandTotal" readonly="readonly" />
+                                </strong>
+                            </td>
                         </td>
-                    </tr>
-                    <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
-                        <td colspan="7" class="text-center">No Records Found!</td>
-                    </tr>                         
+                    </tr>                                      
 
-                </tbody>                
-            </table>            
-        </div>
-
-        <div class="panel-footer">
-            <label ng-if="deals" class="pull-right totalnum" for="totalnum">Total of @{{deals.length}} entries</label>             
+                </tbody>
+            </table>          
         </div>
     </div>
-</div>    
+</div>
+   

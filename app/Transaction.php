@@ -44,13 +44,16 @@ class Transaction extends Model
         'person_code'  => 'Customer',
         'updated_by' => 'Last Modified',
         'driver' => 'Driver',
+        'del_address' => 'Delivery Address',
+        'paid_by' => 'Payment Received By',
     );    
 
     protected $fillable=[
         'total', 'delivery_date', 'status', 
         'user_id', 'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
-        'order_date', 'driver', 'paid_by'
+        'order_date', 'driver', 'paid_by',
+        'del_address'
     ];
 
     protected $dates =[

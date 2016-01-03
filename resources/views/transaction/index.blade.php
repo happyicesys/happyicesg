@@ -143,9 +143,9 @@
                                     <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver}}</td>
-                                    <td class="col-md-1 text-center">
-                                            <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(transaction.id)">Delete</button>  
+                                    <td class="col-md-1 text-center">        
+                                            <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending'">Print</a>
+                                            <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning">Edit</a> 
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">

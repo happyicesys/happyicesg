@@ -1,3 +1,5 @@
+@inject('people', 'App\Person')
+
 @extends('template')
 @section('title')
 {{ $TRANS_TITLE }}
@@ -14,17 +16,37 @@
     <div class="panel-body">
         {!! Form::model($transaction = new \App\Transaction, ['action'=>'TransactionController@store']) !!}
 
-            @include('transaction.form_test')
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {!! Form::label('person_id', 'Customer', ['class'=>'control-label']) !!}
+                        {!! Form::select('person_id', 
+                            $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id'), 
+                            null, 
+                            [
+                            'id'=>'person_id', 
+                            'class'=>'select form-control', 
+                            ]) 
+                        !!}
+                    </div>      
+                </div> 
+            </div>           
 
-            <div class="col-md-12">
-                <div class="form-group pull-right" style="padding: 30px 190px 0px 0px;">
-                    {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                    <a href="/transaction" class="btn btn-default">Cancel</a>            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group pull-right" style="padding: 30px 0px 0px 0px;">
+                        {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
+                        <a href="/transaction" class="btn btn-default">Cancel</a>            
+                    </div>
                 </div>
             </div>
         {!! Form::close() !!}
     </div>
 </div>
 </div>
+
+<script>
+    $('.select').select2();
+</script>
 
 @stop

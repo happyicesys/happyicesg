@@ -32,7 +32,7 @@ resource('price', 'PriceController');
 
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
-post('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
+get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 get('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');

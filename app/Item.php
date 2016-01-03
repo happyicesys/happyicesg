@@ -18,7 +18,7 @@ class Item extends Model
 
     public function prices()
     {
-        return $this->hasMany('App\Price');
+        return $this->hasOne('App\Price');
     }    
 
     public function deals()

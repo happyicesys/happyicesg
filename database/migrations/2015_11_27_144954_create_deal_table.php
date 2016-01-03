@@ -19,10 +19,10 @@ class CreateDealTable extends Migration
             $table->timestamps();
 
             $table->integer('item_id')->unsigned()->nullable();
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
 
             $table->integer('transaction_id')->unsigned()->nullable();
-            $table->foreign('transaction_id')->references('id')->on('transactions');                         
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');                         
         });
     }
 
