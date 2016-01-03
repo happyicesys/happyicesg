@@ -57,7 +57,7 @@
                         <td colspan="2" class="col-md-3 text-right">
                             <td class="text-right" id="grandTotal" >
                                 <strong>
-                                    <input type="text" name="total_create" class="form-control grandTotal" readonly="readonly" />
+                                    <input type="text" name="total_create" class="text-right form-control grandTotal" readonly="readonly" />
                                 </strong>
                             </td>
                         </td>

@@ -105,11 +105,7 @@
                                         {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$person->payterm}}</span> --}}
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline" style="font-size: 85%;"><strong>Created by:</strong></span>
-                                        {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->created_by}}</span>                             --}}
-                                    </div>
-                                    <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline" style="font-size: 85%;"><strong>Updated by:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>Modified by:</strong></span>
                                         {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>                             --}}
                                     </div>
                                 </div>
@@ -125,9 +121,6 @@
                                     </div>                                                    
                                     <div class="form-group" style="margin-bottom: 0px">
                                         <span class="inline">{{$person->payterm}}</span>
-                                    </div>
-                                    <div class="form-group" style="margin-bottom: 0px">
-                                        <span class="inline">{{$transaction->created_by}}</span>
                                     </div>
                                     <div class="form-group" style="margin-bottom: 0px">
                                         <span class="inline">{{$transaction->updated_by}}</span>
