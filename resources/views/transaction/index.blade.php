@@ -165,6 +165,7 @@
                       <label class="pull-right totalnum" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label> 
                 </div>
         </div>
-    </div>  
+    </div>
+
     <script src="/js/transaction_index.js"></script>  
 @stop
