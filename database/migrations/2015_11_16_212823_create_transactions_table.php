@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Carbon\Carbon;
+// use Carbon\Carbon;
 
 class CreateTransactionsTable extends Migration
 {
@@ -20,8 +20,8 @@ class CreateTransactionsTable extends Migration
             $table->string('person_code')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');           
-            $table->timestamp('delivery_date')->default(Carbon::now());
-            $table->timestamp('order_date')->default(Carbon::now());
+            $table->timestamp('delivery_date')->default(date("Y-m-d H:i:s"));
+            $table->timestamp('order_date')->default(date("Y-m-d H:i:s"));
             $table->string('driver')->nullable();
             $table->string('status')->default('Pending');
             $table->string('pay_status')->default('Owe');

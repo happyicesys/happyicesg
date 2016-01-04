@@ -49,14 +49,14 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div><strong>Bill To:</strong></div>
-                            <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                            <div style="border: solid thin; height:135px; padding-bottom: 15px;">
                             <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span> 
                             <span class="col-xs-12">{{$person->company}}</span>
                             <span class="col-xs-12">{{$person->bill_address}}</span>
                             <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
                             </div>
                         </div>
-                        <div style="padding-top:30px">
+                        <div style="padding-top:50px">
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">{{$person->name}}</div>
@@ -70,7 +70,7 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding: 3px 0px 0px 10px">
                             <div><strong>Send To:</strong></div>
-                            <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                            <div style="border: solid thin; height:135px; padding-bottom: 15px;">
                                 @if($person->site_name)
                                 <span class="col-xs-12">{{$person->site_name}}</span>
                                 @endif
@@ -139,13 +139,13 @@
                         <th class="col-xs-1 text-center">
                             Item Code
                         </th>
-                        <th class="col-xs-6 text-center">
+                        <th class="col-xs-8 text-center">
                             Description
                         </th>
-                        <th class="col-xs-2 text-center">
+                        <th class="col-xs-1 text-center">
                             Quantity
                         </th>
-                        <th class="col-xs-2 text-center">
+                        <th class="col-xs-1 text-center">
                             Unit Price (S$)
                         </th>
                         <th class="col-xs-1 text-center">
@@ -161,13 +161,13 @@
                         <td class="col-xs-1 text-center">
                             {{ $deal->item->product_id }}
                         </td>
-                        <td class="col-xs-6">
+                        <td class="col-xs-8">
                             {{ $deal->item->name}} {{ $deal->item->remark }}
                         </td>
-                        <td class="col-xs-2 text-center">
+                        <td class="col-xs-1 text-center">
                             {{ $deal->qty }}  {{ $deal->item->unit }}
                         </td>                   
-                        <td class="col-xs-2 text-right">
+                        <td class="col-xs-1 text-right">
                             {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
                         </td>  
                         <td class="col-xs-1 text-right">

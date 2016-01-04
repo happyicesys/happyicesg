@@ -19,6 +19,7 @@
                           <option>10</option>
                           <option>20</option>
                           <option>30</option>
+                          <option>All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>

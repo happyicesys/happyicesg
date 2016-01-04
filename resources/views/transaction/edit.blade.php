@@ -94,7 +94,8 @@
                         <div class="pull-right">
 
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
-                            {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}  
+                            {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}  
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>
                                

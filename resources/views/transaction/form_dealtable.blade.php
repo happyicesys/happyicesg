@@ -10,7 +10,7 @@
         </div>
 
         <div class="panel-body">
-            <div class="table-responsible">
+            <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">

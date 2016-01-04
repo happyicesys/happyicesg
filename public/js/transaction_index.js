@@ -20,6 +20,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             $http.get('/transaction/data').success(function(transactions){
                 $scope.transactions = transactions;
 
+                console.log($scope.value);
+
                 $scope.optionStatus = [
                     {name: 'All', value: ''}, 
                     {name: 'Pending', value: 'Pending'},

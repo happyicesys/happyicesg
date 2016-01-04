@@ -124,34 +124,33 @@
                             </tr>
 
                             <tbody>
-                                <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
+                                <tr dir-paginate="(key,value) in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.id }} </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>                                
+                                    <td class="col-md-1 text-center">@{{ value.id }} </td>
+                                    <td class="col-md-1 text-center">@{{ value.person.cust_id }} </td>                                
                                     <td class="col-md-1 text-center">
-                                    <a href="/person/@{{ transaction.person.id }}">
-                                    @{{ transaction.person.company }}
+                                    <a href="/person/@{{ value.person.id }}">
+                                    @{{ value.person.company }}
                                     </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.del_postcode }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
+                                    <td class="col-md-1 text-center">@{{ value.person.del_postcode }}</td>
+                                    <td class="col-md-1 text-center">@{{ value.pay_status }}</td>
                                     <td class="col-md-1 text-center">
-                                        @{{ transaction.delivery_date }}
+                                        @{{ value.delivery_date }}
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.status }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.total }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.driver}}</td>
+                                    <td class="col-md-1 text-center">@{{ value.status }}</td>
+                                    <td class="col-md-1 text-center">@{{ value.total }}</td>
+                                    <td class="col-md-1 text-center">@{{ value.created_at }}</td>
+                                    <td class="col-md-1 text-center">@{{ value.updated_by}}</td>
+                                    <td class="col-md-1 text-center">@{{ value.driver }}</td>
                                     <td class="col-md-1 text-center">        
-                                            <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending'">Print</a>
-                                            <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning">Edit</a> 
+                                        <a href="/transaction/download/@{{ value.id }}" class="btn btn-primary btn-sm" ng-if="value.status != 'Pending'">Print</a>
+                                        <a href="/transaction/@{{ value.id }}/edit" class="btn btn-sm btn-warning">Edit</a> 
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
                                     <td colspan="14" class="text-center">No Records Found</td>
-                                </tr>                         
-
+                                </tr>                     
                             </tbody>
                         </table>
                     </div>

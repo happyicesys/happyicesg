@@ -12,10 +12,10 @@
         <div class="table-responsive">
             <table class="table table-list-search table-hover table-bordered table-condensed">
                 <tr style="background-color: #DDFDF8">                   
-                    <th class="col-md-6 text-center">
+                    <th class="col-md-7 text-center">
                         Item                           
                     </th>
-                    <th class="col-md-2 text-center">
+                    <th class="col-md-1 text-center">
                         Qty                      
                     </th>
                     <th class="col-md-2 text-center">
@@ -33,11 +33,11 @@
                     @else
                     @foreach($prices as $price)
                     <tr class="txtMult">
-                        <td class="col-md-6">
+                        <td class="col-md-7">
                             {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
-                        <td class="col-md-2 text-right">
-                            <input type="text" name="qty[{{$price->item->id}}]" class="form-control qtyClass"/>
+                        <td class="col-md-1 text-right">
+                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass"/>
                         </td>
                         <td class="col-md-2">
                             <strong>
