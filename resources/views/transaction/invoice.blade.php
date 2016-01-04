@@ -15,7 +15,7 @@
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 15px;
+            font-size: 13px;
         }
         footer{
             position: fixed;
@@ -145,7 +145,7 @@
                         <th class="col-xs-1 text-center">
                             Quantity
                         </th>
-                        <th class="col-xs-1 text-center" style="width: 80px">
+                        <th class="col-xs-1 text-center">
                             Unit Price (S$)
                         </th>
                         <th class="col-xs-1 text-center">
@@ -167,7 +167,7 @@
                         <td class="col-xs-1 text-center">
                             {{ $deal->qty }}  {{ $deal->item->unit }}
                         </td>                   
-                        <td class="col-xs-1 text-right" style="width: 80px">
+                        <td class="col-xs-1 text-right">
                             {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
                         </td>  
                         <td class="col-xs-1 text-right">
