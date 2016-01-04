@@ -126,7 +126,11 @@
                             <tbody>
                                 <tr dir-paginate="(key,value) in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
-                                    <td class="col-md-1 text-center">@{{ value.id }} </td>
+                                    <td class="col-md-1 text-center">
+                                        <a href="/transaction/@{{ value.id }}/edit">
+                                            @{{ value.id }} 
+                                        </a>
+                                    </td>
                                     <td class="col-md-1 text-center">@{{ value.person.cust_id }} </td>                                
                                     <td class="col-md-1 text-center">
                                     <a href="/person/@{{ value.person.id }}">
