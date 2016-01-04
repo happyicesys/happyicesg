@@ -145,7 +145,7 @@
                         <th class="col-xs-1 text-center">
                             Quantity
                         </th>
-                        <th class="col-xs-1 text-center">
+                        <th class="col-xs-1 text-center" style="width: 50px">
                             Unit Price (S$)
                         </th>
                         <th class="col-xs-1 text-center">
@@ -167,7 +167,7 @@
                         <td class="col-xs-1 text-center">
                             {{ $deal->qty }}  {{ $deal->item->unit }}
                         </td>                   
-                        <td class="col-xs-1 text-right">
+                        <td class="col-xs-1 text-right" style="width: 50px">
                             {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
                         </td>  
                         <td class="col-xs-1 text-right">
