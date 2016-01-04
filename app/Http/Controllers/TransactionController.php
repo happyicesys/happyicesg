@@ -101,7 +101,7 @@ class TransactionController extends Controller
 
         $person = Person::findOrFail($transaction->person_id);
 
-        $prices = Price::wherePersonId($transaction->person_id)->whereNotNull('quote_price')->get();
+        $prices = Price::wherePersonId($transaction->person_id)->whereNotNull('retail_price')->get();
 
         return view('transaction.edit', compact('transaction', 'person', 'prices'));
     }
@@ -119,7 +119,6 @@ class TransactionController extends Controller
         $quantities = $request->qty;
 
         $amounts = $request->amount;
-
 
         if($request->input('save')){
 
@@ -224,7 +223,7 @@ class TransactionController extends Controller
         //select(DB::raw("CONCAT(product_id,' - ',name,' - ',remark) AS full, id"))->lists('full', 'id');
         $item =  Item::with(['prices' => function($query) use ($person_id){
 
-            $query->where('person_id', $person_id)->whereNotNull('quote_price');
+            $query->where('person_id', $person_id)->whereNotNull('retail_price');
 
         }])->get(); 
 

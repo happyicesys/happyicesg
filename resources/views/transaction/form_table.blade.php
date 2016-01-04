@@ -19,6 +19,9 @@
                         Qty                      
                     </th>
                     <th class="col-md-2 text-center">
+                        Retail Price ($)
+                    </th>                    
+                    <th class="col-md-2 text-center">
                         Quote Price ($)
                     </th>
                      <th class="col-md-2 text-center">
@@ -32,29 +35,37 @@
                     <td class="text-center" colspan="7">No Records Found</td>
                     @else
                     @foreach($prices as $price)
-                    <tr class="txtMult">
+                    <tr class="txtMult form-group">
                         <td class="col-md-7">
                             {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
                         <td class="col-md-1 text-right">
-                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass"/>
+                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
                         </td>
-                        <td class="col-md-2">
+                        <td class="col-md-1">
+                            <strong>
+                            <input type="text" name="retail[{{$price->item->id}}]" 
+                             value="{{$price->retail_price}}"
+                            class="text-right retailClass form-control" readonly="readonly"/>
+                            </strong>
+                        </td>                        
+                        <td class="col-md-1">
                             <strong>
                             <input type="text" name="quote[{{$price->item->id}}]" 
-                            readonly="readonly" value="{{$price->quote_price}}"
-                            class="text-right form-control quoteClass" />
+                            value="{{$price->quote_price}}"
+                            class="text-right form-control quoteClass" readonly="readonly"/>
                             </strong>
                         </td>
                         <td class="col-md-2">
-                            <input type="text" name="amount[{{$price->item->id}}]" class="text-right form-control amountClass" readonly="readonly" />
+                            <input type="text" name="amount[{{$price->item->id}}]" 
+                            class="text-right form-control amountClass" readonly="readonly" style="width: 140px" />
                         </td>
                     </tr>                
                     @endforeach
                     @endunless  
                     <tr>
                         <td class="col-md-1 text-center"><strong>Total</strong></td>
-                        <td colspan="2" class="col-md-3 text-right">
+                        <td colspan="3" class="col-md-3 text-right">
                             <td class="text-right" id="grandTotal" >
                                 <strong>
                                     <input type="text" name="total_create" class="text-right form-control grandTotal" readonly="readonly" />

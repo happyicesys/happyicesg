@@ -30,10 +30,25 @@ var app = angular.module('app', [   'ui.bootstrap',
                // for each row:
                $("tr.txtMult").each(function () {
                    // get the values from this row:
-                   var $qty = $('.qtyClass', this).val();
+                   var $qty = eval($('.qtyClass', this).val()) * 1;
 
-                   var $quote = $('.quoteClass', this).val();
-                   var $total = ((eval($qty) * 1) * ($quote * 1)).toFixed(2);
+                   var $quote = ($('.quoteClass', this).val()) * 1;
+
+                   var $retail = ($('.retailClass', this).val()) * 1;
+
+                   var $price = 0;
+
+                   if($quote == null || $quote == '' || $quote == 0){
+
+                        $price = $retail;
+
+                   }else{
+
+                        $price = $quote;
+
+                   }
+
+                   var $total = ($qty * $price).toFixed(2);
                    // set total for the row
                    // $('.amountClass', this).text($total);
                     if(isNaN($total)) {
