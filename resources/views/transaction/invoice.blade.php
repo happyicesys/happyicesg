@@ -15,7 +15,7 @@
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 13px;
+            font-size: 15px;
         }
         footer{
             position: fixed;
@@ -134,7 +134,7 @@
             </div> 
 
             <div class="col-xs-12" style="padding-top: 80px">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-condensed">
                     <tr>
                         <th class="col-xs-1 text-center">
                             Item Code
