@@ -146,7 +146,7 @@
                             Quantity
                         </th>
                         <th class="col-xs-1 text-center">
-                            Unit Price (S$)
+                            Price/Unit (S$)
                         </th>
                         <th class="col-xs-1 text-center">
                             Amount (S$)
