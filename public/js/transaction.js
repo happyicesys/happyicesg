@@ -94,6 +94,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                 method: "GET",
             }).success(function(person){
                 $scope.personModel = person.id;
+                $scope.nameModel = person.name;
                 $scope.billModel = person.bill_address;
                 $scope.delModel = person.del_address + ' ' + person.del_postcode;
                 $scope.paytermModel = person.payterm;

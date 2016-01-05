@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->decimal('total', 10, 2);
             $table->text('transremark')->nullable();
             $table->string('person_code')->nullable();
+            $table->string('name');
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');           
             $table->timestamp('delivery_date')->default(date("Y-m-d H:i:s"));
@@ -34,7 +35,7 @@ class CreateTransactionsTable extends Migration
             $table->string('paid_by');
         });
 
-        $statement = "ALTER TABLE transactions AUTO_INCREMENT = 100001;";
+        $statement = "ALTER TABLE transactions AUTO_INCREMENT = 160001;";
         DB::unprepared($statement);         
     }
 

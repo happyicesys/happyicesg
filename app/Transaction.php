@@ -20,7 +20,7 @@ class Transaction extends Model
     }  
 
     protected $dontKeepRevisionOf = array(
-        'person_id', 'updated_by'
+        'person_id', 'updated_by', 'name'
     );        
 
     protected $revisionEnabled = true;
@@ -53,7 +53,7 @@ class Transaction extends Model
         'user_id', 'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
-        'del_address'
+        'del_address', 'name'
     ];
 
     protected $dates =[

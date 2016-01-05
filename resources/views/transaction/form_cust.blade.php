@@ -23,6 +23,7 @@
 
                 {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
                 {!! Form::text('person_code', '@{{personcodeModel}}', ['class'=>'hidden form-control']) !!}
+                {!! Form::text('name', '@{{nameModel}}', ['class'=>'hidden form-control']) !!}
 
                 <div class="row">
                     <div class="col-md-4 form-group">
