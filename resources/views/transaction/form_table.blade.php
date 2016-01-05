@@ -51,9 +51,15 @@
                         </td>                        
                         <td class="col-md-1">
                             <strong>
-                            <input type="text" name="quote[{{$price->item->id}}]" 
-                            value="{{$price->quote_price}}"
-                            class="text-right form-control quoteClass" readonly="readonly"/>
+                            @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 )
+                                <input type="text" name="quote[{{$price->item->id}}]" 
+                                value="{{$price->quote_price}}"
+                                class="text-right form-control quoteClass" readonly="readonly"/>
+                            @else
+                                <input type="text" name="quote[{{$price->item->id}}]" 
+                                value="{{$price->quote_price}}"
+                                class="text-right form-control quoteClass"/>
+                            @endif                            
                             </strong>
                         </td>
                         <td class="col-md-2">

@@ -23,6 +23,7 @@ var app = angular.module('app', [   'ui.bootstrap',
         $(document).ready(function () {
 
            $(".qtyClass").keyup(multInputs);
+           $(".quoteClass").keyup(multInputs);
 
            function multInputs() {
             "use strict";
