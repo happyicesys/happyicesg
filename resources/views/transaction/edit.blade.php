@@ -89,7 +89,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
+                            @can('transaction_deleteitem')
+                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            @endcan
                         </div>
                         <div class="pull-right">
 
@@ -106,7 +108,9 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
+                            @can('transaction_deleteitem')
+                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            @endcan
                         </div>
                         <div class="pull-right">
 
@@ -122,7 +126,9 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'disabled'=>'disabled']) !!}
+                            @can('transaction_deleteitem')
+                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            @endcan
                         </div>
                         <div class="pull-right">
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
