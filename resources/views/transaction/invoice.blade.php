@@ -11,11 +11,11 @@
             font-size: 12px;
         }
         table{
-            font-size: 14px;
+            font-size: 13px;
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 15px;
+            font-size: 14px;
         }
         footer{
             position: absolute;
@@ -136,7 +136,7 @@
             <div class="row">
                 <div class="col-xs-12" style="padding-top: 30px">
                     <table class="table table-bordered table-condensed">
-                        <tr style="background-color: #DDFDF8">
+                        <tr style="background-color: #fff">
                             <th class="col-xs-1 text-center">
                                 Item Code
                             </th>
