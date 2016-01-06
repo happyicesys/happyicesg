@@ -13,7 +13,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             //delete record
             $scope.confirmDelete = function(id){
-                var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
+                var isConfirmDelete = confirm('Are you sure you want to delete the entry');
                 if(isConfirmDelete){
                     $http({
                         method: 'DELETE',

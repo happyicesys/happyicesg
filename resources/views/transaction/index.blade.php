@@ -33,25 +33,32 @@
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="search_name" class="search">Search Inv:</label>
-                        <input type="text" ng-model="search.id">
+                        <input type="text" ng-model="search.id" style="width:140px;">
                         <label for="search_company" class="search" style="padding-left: 10px">ID:</label>
-                        <input type="text" ng-model="search.person.cust_id">
+                        <input type="text" ng-model="search.person.cust_id" style="width:140px;">
                         <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                        <input type="text" ng-model="search.status">
+                        <input type="text" ng-model="search.status" style="width:140px;">
                         <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
-                        <input type="text" ng-model="search.pay_status">                    
+                        <input type="text" ng-model="search.pay_status" style="width:140px;">                    
                     </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="del_from" class="search">Delivery On:</label>
-                        <input type="text" ng-model="search.delivery_date">
-                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified:</label>
-                        <input type="text" ng-model="search.updated_by"> 
-                        <label for="search_driver" class="search" style="padding-left: 10px">Delivered By:</label>
-                        <input type="text" ng-model="search.driver">
+                        <input type="text" ng-model="search.delivery_date" style="width:140px;">
+                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
+                        <input type="text" ng-model="search.updated_by" style="width:140px;"> 
+                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
+                        <input type="text" ng-model="search.updated_by" style="width:140px;">                         
                     </div>
                 </div>
+                <div class="row">
+                    <div style="padding: 0px 0px 10px 15px">
+                        <label for="search_driver" class="search">Delivered By:</label>
+                        <input type="text" ng-model="search.driver" style="width:140px;">                        
+                    </div>
+                </div>
+                
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>                
@@ -104,9 +111,11 @@
                                     Payment
                                 </th>                                                                       
                                 <th class="col-md-1 text-center">
-                                    Last Modified
+                                    Last Modified By
                                 </th> 
-                                                                                
+                                <th class="col-md-1 text-center">
+                                    Last Modified Time
+                                </th>                                                                                 
                                 <th class="col-md-1 text-center">
                                     Action
                                 </th>                                                                                                
@@ -146,7 +155,8 @@
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
                                         @{{ transaction.pay_status }}
                                     </td>                                                                        
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>            
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
                                     <td class="col-md-1 text-center">        
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending'">Print</a>
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning">Edit</a> 
