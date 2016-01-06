@@ -49,7 +49,7 @@
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
                         <input type="text" ng-model="search.updated_by" style="width:140px;"> 
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
-                        <input type="text" ng-model="search.updated_by" style="width:140px;">                         
+                        <input type="text" ng-model="search.updated_at" style="width:140px;">                         
                     </div>
                 </div>
                 <div class="row">
@@ -78,13 +78,22 @@
                                     <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    ID   
+                                    <a href="#" ng-click="sortType = 'person.cust_id'; sortReverse = !sortReverse">
+                                    ID
+                                    <span ng-show="sortType == 'person.cust_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'person.cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                                  
                                 <th class="col-md-1 text-center">
-                                    Company   
+                                    <a href="#" ng-click="sortType = 'person.company'; sortReverse = !sortReverse">
+                                    Company
+                                    <span ng-show="sortType == 'person.company' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'person.company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    Del Postcode   
+                                    <a href="#" ng-click="sortType = 'person.del_postcode'; sortReverse = !sortReverse">
+                                    Del Postcode
+                                    <span ng-show="sortType == 'person.del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'person.del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th> 
                                 <th class="col-md-1 text-center">
                                     <a href="#" ng-click="sortType = 'status'; sortReverse = !sortReverse">
@@ -93,13 +102,16 @@
                                     <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
                                 </th> 
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'delivery_from'; sortReverse = !sortReverse">
+                                    <a href="#" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                                     Delivery Date
-                                    <span ng-show="sortType == 'delivery_from' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'delivery_from' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    <a href="#" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
                                     Delivered By
+                                    <span ng-show="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="#" ng-click="sortType = 'total'; sortReverse = !sortReverse">
@@ -108,13 +120,22 @@
                                     <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
                                 </th>                                        
                                  <th class="col-md-1 text-center">
+                                    <a href="#" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
+                                    <span ng-show="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                       
                                 <th class="col-md-1 text-center">
+                                    <a href="#" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                                     Last Modified By
+                                    <span ng-show="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
                                 </th> 
                                 <th class="col-md-1 text-center">
+                                    <a href="#" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                                     Last Modified Time
+                                    <span ng-show="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                                 
                                 <th class="col-md-1 text-center">
                                     Action

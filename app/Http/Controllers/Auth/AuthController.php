@@ -29,7 +29,7 @@ class AuthController extends Controller
     protected $table = 'users';
 
 //    Assigning default route path
-    protected $redirectPath = '/';
+    protected $redirectPath = '/transaction';
     protected $redirectAfterLogout = '/auth/login';
 
     /**
