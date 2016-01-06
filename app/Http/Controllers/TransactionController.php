@@ -69,6 +69,10 @@ class TransactionController extends Controller
     {
         $request->merge(array('updated_by' => Auth::user()->name));
 
+        $request->merge(['delivery_date' => Carbon::now()]);
+
+        $request->merge(['order_date' => Carbon::now()]);
+
         $input = $request->all();
 
         $transaction = Transaction::create($input);
