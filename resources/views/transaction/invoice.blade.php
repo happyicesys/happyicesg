@@ -19,8 +19,8 @@
         }
         footer{
             position: absolute;
-            height: 220px;
-            bottom: 10px;
+            height: 210px;
+            bottom: 5px;
             width: 100%;
         }   
         html, body{
