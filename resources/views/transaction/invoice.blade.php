@@ -43,9 +43,9 @@
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$profile->contact}}</h5>
                 <h5 class="text-center">Co Reg No: {{$profile->roc_no}}</h5>
             </div>
-
-            <div class="row no-gutter">
-                <div class="col-xs-12" style="padding-top: 40px">
+            
+            <div class="col-xs-12" style="padding-top: 40px">
+                <div class="row no-gutter">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div style="font-size:14px"><strong>Bill To:</strong></div>
