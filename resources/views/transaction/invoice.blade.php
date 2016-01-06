@@ -136,7 +136,7 @@
             <div class="row">
                 <div class="col-xs-12" style="padding-top: 30px">
                     <table class="table table-bordered table-condensed">
-                        <tr style="background-color: #fff">
+                        <tr style="background-color: #e6e6e6">
                             <th class="col-xs-1 text-center">
                                 Item Code
                             </th>
