@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use DB;
 // use Carbon\Carbon;
 
 class CreateTransactionsTable extends Migration
