@@ -10,7 +10,11 @@
     <div class="panel-heading">
         <div class="col-md-4">
         <h4>
+            @if($transaction->status == 'Cancelled')
+            <del><strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}</del>
+            @else
             <strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}
+            @endif
             {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
@@ -66,7 +70,7 @@
                     @endunless              
                     {!! Form::close() !!}    
 
-                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
+                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel?")']) !!}                
                     {!! Form::close() !!}
                 </div> 
             </div>             
@@ -75,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-12" >
                         <div class="pull-left">
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                         </div>
                         <div class="pull-right">
 
@@ -90,7 +94,7 @@
                     <div class="col-md-12">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
@@ -109,7 +113,7 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
@@ -122,12 +126,20 @@
                         </div> 
                     </div>       
                 </div>
+                @elseif($transaction->status == 'Cancelled') 
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="pull-right">
+                            <a href="/transaction" class="btn btn-default">Cancel</a>   
+                        </div> 
+                    </div>       
+                </div>                
                 @else
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">

@@ -166,7 +166,10 @@
                                     </td>
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
                                         @{{ transaction.status }}
-                                    </td>                                    
+                                    </td>
+                                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
+                                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
+                                    </td>                                                                        
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
@@ -179,8 +182,9 @@
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
                                     <td class="col-md-1 text-center">        
-                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending'">Print</a>
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning">Edit</a> 
+                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a>                                         
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">

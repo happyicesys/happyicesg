@@ -190,9 +190,11 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
 
-        $transaction->delete();
+        $transaction->status = 'Cancelled';
 
-        return redirect('transaction');
+        $transaction->save();
+
+        return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
     /**

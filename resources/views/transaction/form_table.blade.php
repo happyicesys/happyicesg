@@ -3,7 +3,11 @@
     <div class="panel-heading">
         <div class="panel-title">         
             <div class="pull-left display_panel_title">
+                @unless($transaction->status == 'Cancelled')
                 <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}}</strong></h3>
+                @else
+                <h3 class="panel-title"><strong><del>Create List : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
+                @endunless
             </div>
         </div>      
     </div>
@@ -40,7 +44,11 @@
                             {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
                         <td class="col-md-1 text-right">
+                            @unless($transaction->status == 'Cancelled')
                             <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
+                            @else
+                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" disabled/>
+                            @endunless
                         </td>
                         <td class="col-md-1">
                             <strong>
@@ -51,7 +59,7 @@
                         </td>                        
                         <td class="col-md-1">
                             <strong>
-                            @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 )
+                            @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')
                                 <input type="text" name="quote[{{$price->item->id}}]" 
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>

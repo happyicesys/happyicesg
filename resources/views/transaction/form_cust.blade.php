@@ -34,21 +34,54 @@
                         'rows'=>'3']) !!}                
                     </div>
 
+                    @if($transaction->status == 'Cancelled')
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('del_address', null, ['class'=>'form-control', 
+                            'ng-model'=>'delModel', 
+                            'readonly'=>'readonly',
+                            'rows'=>'3']) !!}                  
+                        </div>
+    
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3', 'readonly'=>'readonly']) !!}
+                        </div>                         
+                    @else
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('del_address', null, ['class'=>'form-control', 
+                            'ng-model'=>'delModel', 
+                            'readonly'=>'readonly',
+                            'rows'=>'3']) !!}                  
+                        </div>
 
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+                        </div>                         
+                    @endif                                       
+                </div>
+
+                
+                <div class="row">
+                @if($transaction->status == 'Cancelled')
                     <div class="col-md-4 form-group">
-                        {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('del_address', null, ['class'=>'form-control', 
-                        'ng-model'=>'delModel', 
-                        'rows'=>'3']) !!}                  
+                        {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
+                    <div class="input-group date">
+                        {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'readonly'=>'readonly']) !!}
+                        <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                    </div>
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
-                    </div>                    
-                </div>
-
-                <div class="row">
+                        {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
+                    <div class="input-group date">
+                        {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'readonly'=>'readonly']) !!}
+                        <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                    </div>
+                    </div>
+                @else 
                     <div class="col-md-4 form-group">
                         {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
                     <div class="input-group date">
@@ -63,7 +96,8 @@
                         {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
                         <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                     </div>
-                    </div> 
+                    </div>
+                @endif                
 
                     <div class="col-md-4 form-group">
                         {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
