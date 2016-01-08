@@ -70,7 +70,7 @@
                     @endunless              
                     {!! Form::close() !!}    
 
-                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel?")']) !!}                
+                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}                
                     {!! Form::close() !!}
                 </div> 
             </div>             
@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-12" >
                         <div class="pull-left">
-                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                         </div>
                         <div class="pull-right">
 
@@ -94,7 +94,7 @@
                     <div class="col-md-12">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
@@ -113,7 +113,7 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
@@ -139,7 +139,7 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
