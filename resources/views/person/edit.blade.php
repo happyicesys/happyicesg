@@ -248,15 +248,12 @@
                             </a>
                             </td> --}}
                             <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
-                            <td ng-if="! transaction.delivery_to"class="col-md-1 text-center">
-                                @{{ transaction.delivery_from }}
-                            </td>
-                            <td ng-if="transaction.delivery_to"class="col-md-1 text-center">
-                                @{{ transaction.delivery_from }} / @{{ transaction.delivery_to }}
-                            </td>                              
+                            <td class="col-md-1 text-center">
+                                @{{ transaction.delivery_date }}
+                            </td>                         
                             <td class="col-md-1 text-center">@{{ transaction.status }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
-                            <td class="col-md-1 text-center">@{{ transaction.user.name }}</td>
+                            <td class="col-md-1 text-center">@{{ transaction.updated_by }}</td>
                             <td class="col-md-2 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(transaction.id)">Delete</button>  
