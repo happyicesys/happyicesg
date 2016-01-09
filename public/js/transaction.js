@@ -210,11 +210,12 @@ var app = angular.module('app', [   'ui.bootstrap',
 
         //delete deals
         $scope.confirmDelete = function(id){
+            console.log(id);
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
                 $http({
                     method: 'DELETE',
-                    url: '/deal/data/' + id + '/delete'
+                    url: '/deal/data/' + id ,
                 })
                 .success(function(data){
                     location.reload();
