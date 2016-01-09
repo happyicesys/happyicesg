@@ -68,7 +68,7 @@
                         </tr>
                         <tr ng-if="deals.length">
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
-                            <td colspan="3" class="col-md-3 text-right">
+                            <td colspan="4" class="col-md-3 text-right">
                                 <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>                            
                             </td>
                         </tr>

@@ -214,7 +214,7 @@ var app = angular.module('app', [   'ui.bootstrap',
             if(isConfirmDelete){
                 $http({
                     method: 'DELETE',
-                    url: '/deal/data/' + id
+                    url: '/deal/data/' + id + '/delete'
                 })
                 .success(function(data){
                     location.reload();

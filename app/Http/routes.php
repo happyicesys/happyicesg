@@ -43,8 +43,8 @@ get('/transaction/item/{person_id}', 'TransactionController@getItem');
 get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');
 resource('transaction', 'TransactionController');
 
+delete('/deal/data/{id}/delete', 'DealController@destroyAjax');
 get('/deal/data/{transaction_id}', 'DealController@getData');
-delete('/deal/data/{id}', 'DealController@destroyAjax');
 resource('deal', 'DealController');
 
 get('/user/data', 'UserController@getData');

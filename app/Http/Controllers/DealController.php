@@ -116,6 +116,6 @@ class DealController extends Controller
 
         $deal->delete();
 
-        return $deal->name . 'has been successfully deleted';
+        return $deal->id . 'has been successfully deleted';
     }    
 }
