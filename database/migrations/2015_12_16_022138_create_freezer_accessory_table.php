@@ -23,26 +23,7 @@ class CreateFreezerAccessoryTable extends Migration
             $table->string('name')->unique();
             $table->timestamps();
         });   
-
-        Schema::create('freezer_person', function (Blueprint $table){
-            $table->integer('freezer_id')->unsigned()->index();
-            $table->foreign('freezer_id')->references('id')->on('freezers');
-
-            $table->integer('person_id')->unsigned()->index();
-            $table->foreign('person_id')->references('id')->on('people');
-
-            $table->timestamps();
-        });  
-
-        Schema::create('accessory_person', function (Blueprint $table){
-            $table->integer('accessory_id')->unsigned()->index();
-            $table->foreign('accessory_id')->references('id')->on('accessories');
-
-            $table->integer('person_id')->unsigned()->index();
-            $table->foreign('person_id')->references('id')->on('people');
-
-            $table->timestamps();
-        });                       
+                      
     }
 
     /**
@@ -52,9 +33,9 @@ class CreateFreezerAccessoryTable extends Migration
      */
     public function down()
     {
-        Schema::drop('freezer_person');
-        Schema::drop('accessory_person');
+        // DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::drop('freezers');
         Schema::drop('accessories');
+        // DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

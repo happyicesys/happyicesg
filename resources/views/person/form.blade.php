@@ -1,4 +1,5 @@
 @inject('payterm', 'App\Payterm')
+@inject('profiles', 'App\Profile')
 
 <div class="col-md-6">
 
@@ -19,7 +20,7 @@
 
     <div class="form-group">
         {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'2']) !!}
     </div>       
 
     <div class="form-group">
@@ -74,7 +75,14 @@
     <div class="form-group">
         {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}    
         {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
-    </div>           
+    </div> 
+
+    <div class="form-group">
+        {!! Form::label('profile_id', 'Company Profile', ['class'=>'control-label']) !!}    
+        {!! Form::select('profile_id', 
+                        $profiles::select(DB::raw("CONCAT(name,' - ',roc_no) AS full, id"))->lists('full', 'id'), 
+                        null, ['id'=>'profile_id', 'class'=>'select form-control']) !!}
+    </div>               
 </div>
 
 <script>

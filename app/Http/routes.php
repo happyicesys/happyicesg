@@ -14,6 +14,12 @@ get('/position/data', 'PositionController@getData');
 delete('/position/data/{id}', 'PositionController@destroyAjax');
 resource('position', 'PositionController');
 
+post('person/addaccessory/{person_id}', 'PersonController@addAccessory');
+delete('person/addaccessory/{addaccessory_id}', 'PersonController@removeAccessory');
+post('person/addfreezer/{person_id}', 'PersonController@addFreezer');
+delete('person/addfreezer/{addfreezer_id}', 'PersonController@removeFreezer');
+get('/person/profile/{person_id}', 'PersonController@getProfile');
+get('/person/log/{person_id}', 'PersonController@generateLogs');
 get('person/transac/{person_id}', 'PersonController@showTransac');
 get('/person/data', 'PersonController@getData');
 delete('/person/data/{id}', 'PersonController@destroyAjax');
@@ -21,6 +27,7 @@ resource('person', 'PersonController');
 post('person/{id}/file', 'PersonController@addFile');
 delete('person/{id}/file', 'PersonController@removeFile');
 
+get('/profile/data', 'ProfileController@getData');
 resource('profile', 'ProfileController');
 // resource('sale', 'SaleController');
 

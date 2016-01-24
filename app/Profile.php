@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    protected $table = 'profile';
 
     protected $fillable =[
         'name', 'address', 'email',
         'contact', 'alt_contact', 'roc_no',
-        'header', 'logo', 'footer' 
+        'header', 'logo', 'footer' ,
+        'gst'
     ];
+
+    public function people()
+    {
+        return $this->hasMany('App\Person');
+    }
 }

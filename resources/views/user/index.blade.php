@@ -21,8 +21,6 @@
                 @can('view_permission')
                 <li><a href="#permission_list" role="tab" data-toggle="tab">Permission</a></li>
                 @endcan
-
-                <li><a href="#profile" role="tab" data-toggle="tab">Company Profile</a></li>
             </ul>
     </div>
 
@@ -252,101 +250,7 @@
                     </div>                    
                 </div>
             </div>
-            @endcan 
-
-            <div class="tab-pane" id="profile">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <div class="panel-title pull-left">
-                            <h3 class="panel-title display_num"><strong>Company Profile</strong></h3>
-                        </div>
-                        @if($profile->name != '')
-                        <div class="pull-right">
-                            <a href="/profile/{{$profile->id}}/edit" class="btn btn-primary">Edit Profile</a>  
-                        </div>
-                        @else
-                        <div class="pull-right">
-                            <a href="/profile/create" class="btn btn-success">+ Create Profile</a>  
-                        </div>
-                        @endif                        
-                    </div>
-
-                    <div class="panel-body">
-                    @if($profile->name != '')
-                        <div class="col-md-8 col-md-offset-2">
-                            <div class="form-group">
-                                {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
-                                {!! Form::text('name', $profile->name, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                            </div>
-
-                            <div class="form-group">
-                                {!! Form::label('roc_no', 'ROC No.', ['class'=>'control-label']) !!}
-                                {!! Form::text('roc_no', $profile->roc_no, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                            </div>                        
-
-                            <div class="form-group">
-                                {!! Form::label('address', 'Address', ['class'=>'control-label']) !!}
-                                {!! Form::textarea('address', $profile->address, ['class'=>'form-control', 'rows'=>'3','readonly'=>'readonly']) !!}
-                            </div> 
-
-                            <div class="form-group">
-                                {!! Form::label('contact', 'Contact', ['class'=>'control-label']) !!}
-                                {!! Form::text('contact', $profile->contact, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                            </div> 
-
-                            <div class="form-group">
-                                {!! Form::label('alt_contact', 'Alt. Contact', ['class'=>'control-label']) !!}
-                                {!! Form::text('alt_contact', $profile->alt_contact, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                            </div> 
-
-                            <div class="form-group">
-                                {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
-                                {!! Form::email('email', $profile->email, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                            </div>                                                                         
-
-                            @if($profile->logo != '')
-                                <div class="col-md-3">
-                                    {!! Form::label('logo', 'Logo', ['class'=>'control-label']) !!}
-                                </div>                               
-                                <div class="col-md-12">
-                                    {!! Html::image($profile->logo) !!}
-                                </div>                         
-                            @endif
-
-                            @if($profile->header != '')
-                                <div class="col-md-3">
-                                    {!! Form::label('header', 'Header', ['class'=>'control-label']) !!}
-                                </div>                               
-                                <div class="col-md-12">
-                                    {!! Html::image($profile->header) !!}
-                                </div>
-                            @endif
-
-                            @if($profile->footer != '')
-                                <div class="col-md-3">
-                                    {!! Form::label('footer', 'Footer', ['class'=>'control-label']) !!}
-                                </div>                               
-                                <div class="col-md-12">
-                                    {!! Html::image($profile->footer) !!}
-                                </div> 
-                            @endif                       
-
-                        </div>
-                    </div>
-                    @else
-                    <p>Company Profile Unset, Click Create Profile to Setup</p>
-                    @endif
-
-                    {{-- <div class="panel-footer">
-                        {!! $roles->render() !!}
-
-                        <label class="pull-right totalnum" for="totalnum">
-                            Total of {{$roles->total()}} entries
-                        </label>
-                    </div> --}}
-                </div>
-            </div>            
-
+            @endcan          
 
     </div>
 </div>          

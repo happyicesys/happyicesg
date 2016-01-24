@@ -300,14 +300,14 @@ class TransactionController extends Controller
 
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
 
-        $profile = Profile::firstOrFail();
+        // $profile = Profile::firstOrFail();
 
         $data = [
             'transaction'   =>  $transaction,
             'person'        =>  $person,
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
-            'profile'       =>  $profile,
+            // 'profile'       =>  $profile,
         ];
 
         $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHis').'.pdf';

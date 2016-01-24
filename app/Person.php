@@ -8,16 +8,61 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Person extends Model
 {
+
+    use \Venturecraft\Revisionable\RevisionableTrait;
     use SoftDeletes;
 
-        protected $fillable = [
-        'contact', 'alt_contact',
-        'email', 'name', 'cust_id',
-        'remark', 'area', 'del_postcode',
-        'company', 'bill_address', 'del_address',
-        'payterm', 'cost_rate', 'bill_postcode',
-        'active', 'site_name'
-        ];
+    public static function boot()
+    {
+        parent::boot();
+    }  
+
+    public function identifiableName()
+    {
+        return $this->title;
+    }  
+
+    protected $dontKeepRevisionOf = array(
+        'cust_id', 'profile_id'
+    );        
+
+    protected $revisionEnabled = true;
+
+    //Remove old revisions (works only when used with $historyLimit)
+    protected $revisionCleanup = true; 
+
+    //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
+    protected $historyLimit = 500; 
+
+    //storing new creation
+    protected $revisionCreationsEnabled = true;
+
+    //revision appear format name
+    protected $revisionFormattedFieldNames = array(
+        'contact' => 'Contact Number',
+        'alt_contact' => 'Alt Contact',
+        'email' => 'Email',
+        'name' => 'Att Name',
+        'remark' => 'Remark',
+        'del_postcode'  => 'Postcode',
+        'company' => 'Company',
+        'bill_address' => 'Billing Address',
+        'del_address' => 'Delivery Address',
+        'payterm' => 'Pay Term',
+        'costrate' => 'Cost Rate',
+        'active' => 'Active',
+        'site_name' => 'Site Name',
+    ); 
+
+
+    protected $fillable = [
+    'contact', 'alt_contact',
+    'email', 'name', 'cust_id',
+    'remark', 'del_postcode',
+    'company', 'bill_address', 'del_address',
+    'payterm', 'cost_rate',
+    'active', 'site_name', 'profile_id'
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -116,7 +161,12 @@ class Person extends Model
     public function price()
     {
         return $this->hasOne('App\Price');
-    }    
+    }  
+
+    public function profile()
+    {
+        return $this->belongsTo('App\Profile');
+    }        
 
     /**
      * search like name

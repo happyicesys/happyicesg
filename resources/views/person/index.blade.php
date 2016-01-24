@@ -16,10 +16,10 @@
                     <div class="pull-left display_panel_title">
                         <label for="display_num">Display</label>
                         <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
-                          <option>10</option>
-                          <option>20</option>
-                          <option>30</option>
-                          <option>All</option>
+                          <option ng-value="10">10</option>
+                          <option ng-value="20">20</option>
+                          <option ng-value="30">30</option>
+                          <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
@@ -48,31 +48,40 @@
                                 #
                             </th>                    
                             <th class="col-md-1 text-center">
-                                ID                           
+                                <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                ID 
+                                <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
-                                <a href="#" ng-click="sortType = 'company'; sortReverse = !sortReverse">
+                                <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                 Company
                                 <span ng-show="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </a>                            
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Att. To
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
+                                <a href="" ng-click="sortType = 'contact'; sortReverse = !sortReverse">
                                 Contact
+                                <span ng-show="sortType == 'contact' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'contact' && sortReverse" class="fa fa-caret-up"></span>
                             </th>                                                
-                             <th class="col-md-2 text-center">
+                             <th class="col-md-3 text-center">
                                 Delivery Add
                             </th>
                              <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'active'; sortReverse = !sortReverse">
                                 Active
+                                <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                             </th>                            
-                             <th class="col-md-2 text-center">
+                             <th class="col-md-1 text-center">
                                 Action
                             </th>                                                                                                
                         </tr>
@@ -89,11 +98,10 @@
                                     / @{{ person.alt_contact }}
                                     </span>
                                 </td>
-                                <td class="col-md-2">@{{ person.del_address }}</td>
+                                <td class="col-md-3">@{{ person.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ person.active }}</td>
-                                <td class="col-md-2 text-center">
+                                <td class="col-md-1 text-center">
                                     <a href="/person/@{{ person.id }}/edit" class="btn btn-sm btn-primary">Profile</a>
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(person.id)">Delete</button>
                                 </td>
                             </tr>
                             <tr ng-show="(people | filter:search).length == 0 || ! people.length">

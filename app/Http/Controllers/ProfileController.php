@@ -12,14 +12,34 @@ use App\Profile;
 
 class ProfileController extends Controller
 {
+    //auth-only login can see
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function getData()
+    {
+        $profile =  Profile::all();
+
+        return $profile;
+    }  
+
+    /**
+     * Return viewing page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
     public function index()
     {
-        
+        return view('profile.index');
     }
 
     /**
@@ -29,7 +49,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        return view('user.profile.create');
+        return view('profile.create');
     }
 
     /**
@@ -40,6 +60,11 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
+
+        $gst = $request->has('gst')? 1 : 0; 
+        
+        $request->merge(array('gst' => $gst));
+
         $input = $request->all();
 
         $profile = Profile::create($input);
@@ -48,7 +73,7 @@ class ProfileController extends Controller
 
         }
 
-        return redirect('user');
+        return redirect('profile');
     }
 
     /**
@@ -72,7 +97,8 @@ class ProfileController extends Controller
     {
         $profile = Profile::findOrFail($id);
 
-        return view('user.profile.edit', compact('profile'));
+        // return view('user.profile.edit', compact('profile'));
+        return view('profile.edit', compact('profile'));
     }
 
     /**
@@ -86,6 +112,10 @@ class ProfileController extends Controller
     {
         $profile = Profile::findOrFail($id);
 
+        $gst = $request->has('gst')? 1 : 0; 
+        
+        $request->merge(array('gst' => $gst));        
+
         $input = $request->all();
 
         if($request->hasFile('logo')){
@@ -94,7 +124,7 @@ class ProfileController extends Controller
 
         $profile->update($input);
 
-        return redirect('user');
+        return redirect('profile');
     }
 
     /**
@@ -112,7 +142,7 @@ class ProfileController extends Controller
         $profile->delete();
 
     }
-
+    
     //adding file
     //@param file var, request
     private function addFile($file, $request)

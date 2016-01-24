@@ -139,14 +139,7 @@ class ItemSeeder extends Seeder
             'name' => 'LOW FAT FROZEN YOGURT - STRAWBERRY',
             'desc' => '(30cups/ctn)',
             'unit' => 'CTN',
-        ]);
-
-        Item::create([
-            'product_id' => '024',
-            'name' => 'WCC CUP JELLY - MIXED FLAVOR',
-            'desc' => '(48 cups/ctn)',
-            'unit' => 'CTN',
-        ]);                 
+        ]);               
 
         Item::create([
             'product_id' => '026',

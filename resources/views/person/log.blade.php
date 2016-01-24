@@ -1,6 +1,6 @@
 @extends('template')
 @section('title')
-{{ $TRANS_TITLE }}
+{{ $PERSON_TITLE }}
 @stop
 @section('content')
 
@@ -10,11 +10,11 @@
     <div class="panel-heading">
         <div class="col-md-3">
         <h3 class="panel-title">
-            <strong>Log History for Inv {{$transaction->id}}</strong>
+            <strong>Log History for Customer {{$person->id}}</strong>
         </h3>
         </div>
         <div class="col-md-3 col-md-offset-6">
-        {!! Form::open(['method'=>'GET', 'action'=>['TransactionController@edit', $transaction->id]]) !!}
+        {!! Form::open(['method'=>'GET', 'action'=>['PersonController@edit', $person->id]]) !!}
         {!! Form::submit('Back', ['class'=>'btn btn-sm btn-default pull-right']) !!}
         {!! Form::close() !!}
         </div>        
@@ -26,7 +26,7 @@
             @if($history->key == 'created_at' && !$history->old_value)
                 <li class="list-group-item row">
                     <span class="col-md-9">
-                    <strong>{{ $history->userResponsible()->name }}</strong> created this customer at <strong>{{ $history->newValue() }}</strong>
+                    <strong>{{ $history->userResponsible()->name }}</strong> created this invoice at <strong>{{ $history->newValue() }}</strong>
                     </span>
                     <span class="col-md-3">  
                     {{$history->created_at->format('d-M-y (h:i a)')}}

@@ -1,6 +1,6 @@
 @extends('template')
 @section('title')
-Company Profile
+{{ $PROFILE_TITLE }}
 @stop
 @section('content')
 
@@ -8,13 +8,13 @@ Company Profile
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>New Profile</strong></h3>
+        <h3 class="panel-title"><strong>New {{ $PROFILE_TITLE }}</strong></h3>
     </div>
 
     <div class="panel-body">
         {!! Form::model($profile = new \App\Profile, ['action'=>'ProfileController@store']) !!}
 
-            @include('user.profile.form')
+            @include('profile.form')
 
             <div class="col-md-12">
                 <div class="form-group pull-right" style="padding: 30px 190px 0px 0px;">

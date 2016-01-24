@@ -14,14 +14,14 @@ Company Profile
     <div class="panel-body">
         {!! Form::model($profile,['method'=>'PATCH','action'=>['ProfileController@update', $profile->id]]) !!}            
 
-            @include('user.profile.form')
+            @include('profile.form')
 
             <div class="col-md-12">
                 <div class="pull-right form_button_right">
                     {!! Form::submit('Edit', ['class'=> 'btn btn-primary']) !!}
         {!! Form::close() !!}
 
-                    <a href="/user" class="btn btn-default">Cancel</a>            
+                    <a href="/profile" class="btn btn-default">Cancel</a>            
                 </div>
                 <div class="pull-left form_button_left">
                     @can('delete_user')

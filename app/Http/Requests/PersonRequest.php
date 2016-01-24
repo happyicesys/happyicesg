@@ -26,7 +26,7 @@ class PersonRequest extends Request
         $person = $this->route('person');
 
         return [
-            'cust_id' => 'unique:people,cust_id,'.$person,
+            'cust_id' => 'required|unique:people,cust_id,'.$person,
             'company' => 'unique:people,company,'.$person,
             'name'=>'min:3',
             'roc_no' => 'unique:people,roc_no,'.$person,

@@ -3,12 +3,14 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
     function personController($scope, $http){
 
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 30;         
+        $scope.itemsPerPage = 30;
+
 
         angular.element(document).ready(function () {
        
             $http.get('/person/data').success(function(people){
-            $scope.people = people;
+                $scope.people = people;
+                $scope.All = people.length;
             });
 
             //delete record

@@ -18,11 +18,14 @@
         @else
         [Inactive]
         @endif
-        </h3>
+            
+            <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
+        </h3>   
     </div>
 
     <div class="panel-body">
-        {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}            
+
+        {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
 
             @include('person.form')
 
@@ -33,19 +36,14 @@
 
                     <a href="/person" class="btn btn-default">Cancel</a>            
                 </div>
-                <div class="pull-left">
-                    <div class="col-md-4">
-                    {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@destroy', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
-                        {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
-                    {!! Form::close() !!}
+                <div class="pull-left row">
+                    <div class="col-md-5" style="margin-left: 3px">
+                    @if($person->active == 'Yes')
+                        {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}  
+                    @else
+                        {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}  
+                    @endif
                     </div>
-                <div class="col-md-5" style="margin-left: 3px">
-                @if($person->active == 'Yes')
-                    {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}  
-                @else
-                    {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}  
-                @endif
-                </div>
                 </div>                
             </div>
     </div>
@@ -107,11 +105,8 @@
                             -
                         @endif
                     </td>
-                    <td class="col-md-2 text-right">
-                        <a href="/price/{{ $price->id }}/edit" class="btn btn-sm btn-primary col-md-4 col-md-offset-2" style="margin-right:5px;">Edit</a>
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['PriceController@destroy', $price->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm col-md-5']) !!}
-                        {!! Form::close() !!}  
+                    <td class="col-md-2 text-center">
+                        <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
                     </td>
                 </tr>
                 @endforeach
@@ -255,8 +250,7 @@
                             <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
                             <td class="col-md-1 text-center">@{{ transaction.updated_by }}</td>
                             <td class="col-md-2 text-center">
-                                    <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(transaction.id)">Delete</button>  
+                                <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a> 
                             </td>
                         </tr>
                         <tr ng-show="(transactions | filter:search).length == 0 || ! transactions.length">
@@ -283,32 +277,17 @@
     </div>
 
     <div class="panel-body">
-    {!! Form::model($person,['id'=>'form_addon', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!} 
-        <div class="col-md-6">
-            {!! Form::label('freezer', 'Freezer', ['class'=>'control-label']) !!}
-            {!! Form::select('freezer_list[]', $freezers::lists('name', 'id'), null, [
-            'class'=>'selectCreate form-control',
-            'multiple',
-            'ng-model'=>'freezerModel', 
-            'ng-change'=>'onFreezerSelected(freezerModel)'
-        ]) !!}
-        </div>
+        <div class="row">
+            <div class="col-md-6">
+                @include('person.edit_freezer')
+            </div>
 
-        <div class="col-md-6">
-            {!! Form::label('accessories', 'Accessories', ['class'=>'control-label']) !!}
-            {!! Form::select('accessory_list[]', $accessories::lists('name', 'id'), null, [
-            'class'=>'selectCreate form-control', 
-            'multiple',
-            'ng-model'=>'accessoryModel', 
-            'ng-change'=>'onAccessorySelected(accessoryModel)'            
-        ]) !!}
+            <div class="col-md-6">
+                @include('person.edit_accessory')
+            </div>
         </div>
-    {!! Form::close() !!}
     </div>
 
-    <div class="panel-footer">
-    {!! Form::submit('Update', ['class'=> 'btn btn-success', 'form'=>'form_addon', 'style'=>'margin-left:15px']) !!}
-    </div>
 </div>
 {{-- divider --}}
 
@@ -346,6 +325,7 @@
                 <tr>
                     <td class="col-md-1 text-center">{{ $index++ }} </td>
                     <td class="col-md-7">
+                    {!! Html::image($file->path, 'person asset', array( 'width' => 200, 'height' => 200 )) !!}
                         <a href="{{$file->path}}">
                         {!! str_replace("/person_asset/file/", "", "$file->path"); !!}
                         </a>                            
@@ -391,6 +371,10 @@ $(document).ready(function() {
     });
 });
 
+$('.select').select2({
+    placeholder:'Select...'
+});
+/*
     $('.selectCreate').select2({
         tags:true,
 
@@ -402,7 +386,7 @@ $(document).ready(function() {
                 };
         }
 
-    }); 
+    }); */
 </script>
 <script src="/js/person_edit.js"></script>  
 

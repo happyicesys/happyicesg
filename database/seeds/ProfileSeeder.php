@@ -16,7 +16,16 @@ class ProfileSeeder extends Seeder
             'name' => 'HAPPY ICE LOGISTIC PTE LTD',
             'roc_no' => '201427642H',
             'address' => '#04-125, TradeHub 21, 18 Boon Lay Way, Singapore 609966',
-            'contact' => '+65 6795 0881'
+            'contact' => '+65 6795 0881',
+            'gst' => 0,
         ]); 
+
+        Profile::create([
+            'name' => 'HAPPY ICE PTE LTD',
+            'roc_no' => '201302530W',
+            'address' => '#04-125, TradeHub 21, 18 Boon Lay Way, Singapore 609966',
+            'contact' => '+65 6795 0881',
+            'gst' => 1,
+        ]);         
     }
 }

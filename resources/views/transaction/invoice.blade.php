@@ -38,10 +38,10 @@
     <body>
         <div class="container-fluid">
             <div class="col-xs-10 col-xs-offset-1" style="font-size:15px">
-                <h3 class="text-center"><strong>{{$profile->name}}</strong></h3>
-                <h5 class="text-center" style="margin-bottom: -5px">{{$profile->address}}</h5>
-                <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$profile->contact}}</h5>
-                <h5 class="text-center">Co Reg No: {{$profile->roc_no}}</h5>
+                <h3 class="text-center"><strong>{{$person->profile->name}}</strong></h3>
+                <h5 class="text-center" style="margin-bottom: -5px">{{$person->profile->address}}</h5>
+                <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$person->profile->contact}}</h5>
+                <h5 class="text-center">Co Reg No: {{$person->profile->roc_no}}</h5>
             </div>
             
             <div class="col-xs-12" style="padding-top: 40px">
@@ -135,8 +135,8 @@
 
             <div class="row">
                 <div class="col-xs-12" style="padding-top: 30px">
-                    <table class="table table-bordered table-condensed">
-                        <tr style="background-color: #e6e6e6">
+                    <table class="table table-bordered table-condensed" style="border:thin solid black;">
+                        <tr>
                             <th class="col-xs-1 text-center">
                                 Item Code
                             </th>
@@ -166,7 +166,7 @@
                                 {{ $deal->item->name}} {{ $deal->item->remark }}
                             </td>
                             <td class="col-xs-1 text-center">
-                                {{ $deal->qty }}  {{ $deal->item->unit }}
+                                {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
                             </td>                   
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
@@ -176,13 +176,37 @@
                             </td>                                                                    
                         </tr>
                         @endforeach
+
+                        @if($person->profile->gst)
                         <tr>
-                            <td colspan="4">
-                                <span class="col-xs-offset-2"><strong>Total</strong></span>
+                            <td></td>
+                            <td colspan="2" class="col-md-2 text-center">
+                                <strong>GST (7%)</strong>
                             </td>
-                            <td class="text-right">
-                                <strong>{{ $totalprice }}</strong>
+                            <td class="col-md-3 text-right">
+                                <td class="text-right">
+                                    {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
+                                </td>                            
                             </td>
+                        </tr>
+                        @endif
+
+                        <tr>
+                            @if($person->profile->gst)
+                                <td colspan="4">
+                                    <span class="col-xs-offset-2"><strong>Total</strong></span>
+                                </td>
+                                <td class="text-right">
+                                    <strong>{{ number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
+                                </td>
+                            @else
+                                <td colspan="4">
+                                    <span class="col-xs-offset-2"><strong>Total</strong></span>
+                                </td>
+                                <td class="text-right">
+                                    <strong>{{ $totalprice }}</strong>
+                                </td>
+                            @endif                            
                         </tr>
                         @endunless                          
                     </table>
@@ -193,7 +217,7 @@
 
                 <div class="col-xs-12">
                     <div class="col-xs-12">
-                        Payment by cheque should be crossed and made payable to "{{$profile->name}}"
+                        Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
                     </div>
                     <div class="col-xs-8" style="padding-top:15px">
                         <div class="form-group">
@@ -221,7 +245,7 @@
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
-                                    <strong>{{$profile->name}}</strong>
+                                    <strong>{{$person->profile->name}}</strong>
                                 </span>
                                 <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
                                     _______________________________

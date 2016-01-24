@@ -66,11 +66,29 @@
                                 @endif
                             </td>
                         </tr>
+                        @if($person->profile->gst)
+                        <tr>
+                            <td></td>
+                            <td colspan="3" class="col-md-2 text-center">
+                                <strong>GST (7%)</strong>
+                            </td>
+                            <td class="col-md-3 text-right">
+                                <td class="text-right" ng-model="totalModel">@{{(totalModel * 7/100).toFixed(2)}}</td>                            
+                            </td>
+                        </tr>
+                        @endif
                         <tr ng-if="deals.length">
+                            @if($person->profile->gst)
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="4" class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>                            
+                                <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100).toFixed(2)}}</strong></td>
                             </td>
+                            @else
+                            <td class="col-md-1 text-center"><strong>Total</strong></td>
+                            <td colspan="4" class="col-md-3 text-right">
+                                <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>
+                            </td>
+                            @endif                            
                         </tr>
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
                             <td colspan="7" class="text-center">No Records Found!</td>

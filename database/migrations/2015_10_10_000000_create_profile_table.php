@@ -12,7 +12,7 @@ class CreateProfileTable extends Migration
      */
     public function up()
     {
-        Schema::create('profile', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('roc_no')->nullable();
@@ -20,6 +20,7 @@ class CreateProfileTable extends Migration
             $table->string('contact');
             $table->string('alt_contact')->nullable();
             $table->string('email')->nullable();
+            $table->integer('gst');
             $table->string('header')->nullable();
             $table->string('logo')->nullable();
             $table->string('footer')->nullable();
@@ -34,6 +35,8 @@ class CreateProfileTable extends Migration
      */
     public function down()
     {
-        Schema::drop('profile');
+        // DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::drop('profiles');
+        // DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

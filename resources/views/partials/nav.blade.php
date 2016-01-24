@@ -66,6 +66,9 @@
                 {{-- <li>
                     <a href="/person"><i class="fa fa-fw fa-briefcase"></i> {{ $PERSON_TITLE }}</a>
                 </li> --}}
+                <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
+                    <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
+                </li>
                 <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
                     <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
                 </li>

@@ -15,6 +15,9 @@ use App\Price;
 use App\Transaction;
 use App\Freezer;
 use App\Accessory;
+use App\Profile;
+use App\AddFreezer;
+use App\AddAccessory;
 
 class PersonController extends Controller
 {
@@ -87,7 +90,11 @@ class PersonController extends Controller
 
         $prices = Price::wherePersonId($id)->oldest()->paginate(50);
 
-        return view('person.edit', compact('person', 'files', 'prices'));
+        $addfreezers = AddFreezer::wherePersonId($id)->oldest()->paginate(3);
+
+        $addaccessories = AddAccessory::wherePersonId($id)->oldest()->paginate(3);
+
+        return view('person.edit', compact('person', 'files', 'prices', 'addfreezers', 'addaccessories'));
     }
 
     /**
@@ -104,7 +111,11 @@ class PersonController extends Controller
 
         $prices = Price::wherePersonId($id)->orderBy('item_id')->paginate(50);
 
-        return view('person.edit', compact('person', 'files', 'prices'));
+        $addfreezers = AddFreezer::wherePersonId($id)->oldest()->paginate(3);
+
+        $addaccessories = AddAccessory::wherePersonId($id)->oldest()->paginate(3);
+
+        return view('person.edit', compact('person', 'files', 'prices', 'addfreezers', 'addaccessories'));
     }
 
     /**
@@ -136,9 +147,9 @@ class PersonController extends Controller
 
         $person->update($input);
 
-        $this->syncFreezer($person, $request);        
+        // $this->syncFreezer($person, $request);        
 
-        $this->syncAccessory($person, $request);
+        // $this->syncAccessory($person, $request);
 
         return Redirect::action('PersonController@edit', $person->id);
     }
@@ -216,6 +227,73 @@ class PersonController extends Controller
         return Transaction::with('user')->wherePersonId($person_id)->get();
     } 
 
+    public function generateLogs($id)
+    {
+        $person = Person::findOrFail($id);
+
+        $personHistory = $person->revisionHistory;
+
+        // $prices = Price::wherePersonId($id)->get();
+       
+       // foreach($prices as $price){
+
+        // $priceHistory = $prices->revisionHistory; 
+       
+       // }
+
+
+        return view('person.log', compact('person', 'personHistory'));  
+    } 
+
+    public function getProfile($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+
+        $profile = Profile::findOrFail($person->profile_id);
+
+        return $profile;
+    }  
+
+    public function addFreezer(Request $request)
+    {
+        $this->validate($request, [
+                'freezer_id',
+            ]);
+
+        $addfreezer = AddFreezer::create($request->all());
+
+        return Redirect::action('PersonController@edit', $addfreezer->person_id);
+    } 
+
+    public function removeFreezer($id)
+    {
+        $addfreezer = AddFreezer::findOrFail($id);
+
+        $addfreezer->delete();
+
+        return Redirect::action('PersonController@edit', $addfreezer->person_id); 
+    } 
+
+    public function addAccessory(Request $request)
+    {
+        $this->validate($request, [
+                'accessory_id',
+            ]);
+
+        $addaccessory = AddAccessory::create($request->all());
+
+        return Redirect::action('PersonController@edit', $addaccessory->person_id);
+    } 
+
+    public function removeAccessory($id)
+    {
+        $addaccessory = AddAccessory::findOrFail($id);
+
+        $addaccessory->delete();
+
+        return Redirect::action('PersonController@edit', $addaccessory->person_id); 
+    }          
+/*
     private function syncFreezer($person, $request)
     {
         if ( ! $request->has('freezer_list'))
@@ -262,6 +340,6 @@ class PersonController extends Controller
         }
 
         $person->accessories()->sync($allAccessoriesId);
-    }                        
+    }  */                      
   
 }

@@ -1,12 +1,12 @@
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination']);
 
-    function itemController($scope, $http){
+    function profileController($scope, $http){
 
     $scope.currentPage = 1;
     $scope.itemsPerPage = 30;        
-        $http.get('/item/data').success(function(items){
-            $scope.items = items;
-            $scope.All = items.length;
+        $http.get('/profile/data').success(function(profiles){
+            $scope.profiles = profiles;
+            $scope.All = profiles.length;
         });
 
         //delete record
@@ -15,7 +15,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             if(isConfirmDelete){
                 $http({
                     method: 'DELETE',
-                    url: '/item/data/' + id
+                    url: '/profile/data/' + id
                 })
                 .success(function(data){
                     console.log(data);
@@ -37,5 +37,5 @@ function repeatController($scope) {
     })
 }    
 
-app.controller('itemController', itemController);
+app.controller('profileController', profileController);
 app.controller('repeatController', repeatController);

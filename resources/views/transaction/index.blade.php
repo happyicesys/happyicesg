@@ -16,9 +16,10 @@
                     <div class="pull-left display_num">
                         <label for="display_num">Display</label>
                         <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
-                          <option>10</option>
-                          <option>20</option>
-                          <option>30</option>
+                          <option ng-value="10">10</option>
+                          <option ng-value="20">20</option>
+                          <option ng-value="30">30</option>
+                          <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
@@ -32,20 +33,20 @@
             <div class="panel-body">
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <label for="search_name" class="search">Search Inv:</label>
+                        <label for="search_inv" class="search">Search Inv:</label>
                         <input type="text" ng-model="search.id" style="width:140px;">
-                        <label for="search_company" class="search" style="padding-left: 10px">ID:</label>
+                        <label for="search_id" class="search" style="padding-left: 10px">ID:</label>
                         <input type="text" ng-model="search.person.cust_id" style="width:140px;">
+                        <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
+                        <input type="text" ng-model="search.person.company" style="width:140px;">
                         <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                        <input type="text" ng-model="search.status" style="width:140px;">
-                        <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
-                        <input type="text" ng-model="search.pay_status" style="width:140px;">                    
+                        <input type="text" ng-model="search.status" style="width:140px;">                        
                     </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <label for="del_from" class="search">Delivery On:</label>
-                        <input type="text" ng-model="search.delivery_date" style="width:140px;">
+                        <label for="search_payment" class="search">Payment:</label>
+                        <input type="text" ng-model="search.pay_status" style="width:140px;"> 
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
                         <input type="text" ng-model="search.updated_by" style="width:140px;"> 
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
@@ -54,8 +55,12 @@
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <label for="search_driver" class="search">Delivered By:</label>
-                        <input type="text" ng-model="search.driver" style="width:140px;">                        
+                        <label for="del_on" class="search">Delivery On:</label>
+                        <input type="text" ng-model="search.delivery_date" style="width:140px;">                           
+                        <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
+                        <input type="text" ng-model="search.driver" style="width:140px;">
+{{--                         <label for="del_from" class="search" style="padding-left: 10px">Delivery From:</label>
+                        <input type="text" id="delfrom" ng-model="deldate_from" ng-change="onDelFromChanged()"> --}}
                     </div>
                 </div>
                 
@@ -72,67 +77,67 @@
                                     #
                                 </th>                    
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                                     INV #
                                     <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'person.cust_id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'person.cust_id'; sortReverse = !sortReverse">
                                     ID
                                     <span ng-show="sortType == 'person.cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'person.cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                                  
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'person.company'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'person.company'; sortReverse = !sortReverse">
                                     Company
                                     <span ng-show="sortType == 'person.company' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'person.company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'person.del_postcode'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'person.del_postcode'; sortReverse = !sortReverse">
                                     Del Postcode
                                     <span ng-show="sortType == 'person.del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'person.del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th> 
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                     Status
                                     <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
                                 </th> 
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                                     Delivery Date
                                     <span ng-show="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
                                     Delivered By
                                     <span ng-show="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
                                     Total Amount
                                     <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
                                 </th>                                        
                                  <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
                                     <span ng-show="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                       
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                                     Last Modified By
                                     <span ng-show="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
                                 </th> 
                                 <th class="col-md-1 text-center">
-                                    <a href="#" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                                     Last Modified Time
                                     <span ng-show="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
@@ -141,7 +146,6 @@
                                     Action
                                 </th>                                                                                                
                             </tr>
-
                             <tbody>
                                 <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
@@ -202,5 +206,10 @@
         </div>
     </div>
 
-    <script src="/js/transaction_index.js"></script>  
+    <script src="/js/transaction_index.js"></script>
+    <script>
+        $('#delfrom').datetimepicker({
+            format: 'DD-MMMM-YYYY'
+        });
+    </script>  
 @stop

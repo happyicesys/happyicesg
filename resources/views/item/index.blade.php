@@ -16,9 +16,10 @@
                     <div class="pull-left display_panel_title">
                         <label for="display_num">Display</label>
                         <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
-                          <option>10</option>
-                          <option>20</option>
-                          <option>30</option>
+                          <option ng-value="10">10</option>
+                          <option ng-value="20">20</option>
+                          <option ng-value="30">30</option>
+                          <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
@@ -45,24 +46,31 @@
                                 #
                             </th>                    
                             <th class="col-md-1 text-center">
-                                <a href="#" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                                <a href="" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
                                 ID
                                 <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </a>                                                        
                             </th>
                             <th class="col-md-4 text-center">
-                                <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Product
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                 </a>                            
                             </th>
                             <th class="col-md-3 text-center">
+                                <a href="" ng-click="sortType = 'remark'; sortReverse = !sortReverse">
                                 Desc
+                                <span ng-show="sortType == 'remark' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'remark' && sortReverse" class="fa fa-caret-up"></span>
                             </th>                                                
                              <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'unit'; sortReverse = !sortReverse">
                                 Unit
+                                <span ng-show="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
+                                </a>                                 
                             </th>
                              <th class="col-md-2 text-center">
                                 Action

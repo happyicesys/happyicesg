@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
         //App name for all view
         view()->share('APP_NAME', 'HappyIce');
 
+        //Profile
+        view()->share('PROFILE_TITLE', 'Profile');
+        view()->share('PROFILE_PREFIX', 'Pro');
+
         //Person
         view()->share('PERSON_TITLE', 'Customer');
         view()->share('PERSON_PREFIX', 'C');

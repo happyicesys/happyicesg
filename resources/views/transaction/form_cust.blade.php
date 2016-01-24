@@ -52,7 +52,6 @@
                             {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
                             {!! Form::textarea('del_address', null, ['class'=>'form-control', 
                             'ng-model'=>'delModel', 
-                            'readonly'=>'readonly',
                             'rows'=>'3']) !!}                  
                         </div>
 

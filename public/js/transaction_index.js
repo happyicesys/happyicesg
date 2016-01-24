@@ -2,10 +2,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
     function transController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10; 
-        $('.date').datetimepicker({
-            format: 'DD-MMM-YYYY'
-        }); 
+        $scope.itemsPerPage = 10;  
 
         $scope.exportData = function () {
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
@@ -19,8 +16,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             $http.get('/transaction/data').success(function(transactions){
                 $scope.transactions = transactions;
-
-                console.log($scope.value);
+                $scope.All = transactions.length;
 
                 $scope.optionStatus = [
                     {name: 'All', value: ''}, 
@@ -28,7 +24,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     {name: 'Confirmed', value: 'Confirmed'}
                 ]; 
 
+                $scope.onDelFromChanged = function(){
 
+                    console.log($scope.deldate_from);
+                }
 /*                $scope.dateRangeFilter = function (property) {
 
                     return function (transaction) {
@@ -68,7 +67,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     }
                 } */                      
             });
-
+                
             //delete record
             $scope.confirmDelete = function(id){
                 var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
@@ -90,7 +89,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }
             } 
         });
-    } 
+    }
 
 
 function repeatController($scope) {

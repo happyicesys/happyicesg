@@ -78,17 +78,37 @@ var app = angular.module('app', [   'ui.bootstrap',
             }).success(function(deals){ 
                 $scope.deals = deals;
 
-                    var total = 0;
-                    for(var i = 0; i < $scope.deals.length; i++){
-                        var deal = $scope.deals[i];
-                        total += (deal.amount/100*100);
-                    }
-                    $scope.totalModel = total.toFixed(2);
+                var total = 0;
+                for(var i = 0; i < $scope.deals.length; i++){
+                    var deal = $scope.deals[i];
+                    total += (deal.amount/100*100);
+                }
 
-                    $http.put('total', $scope.totalModel)
-                                .success(function(){
-                    });                    
-            });
+                    $http({
+                        url: '/person/profile/' + transaction.person_id,
+                        method: "GET",
+                    }).success(function(profile){ 
+/*
+                        if(profile.gst){
+
+                            $scope.totalModel = (total * 107/100).toFixed(2);
+                            console.log('gst'+ $scope.totalModel);
+
+                        }else{*/
+
+                            $scope.totalModel = total.toFixed(2);
+                                
+                        // }
+                        
+                        $http.put('total', $scope.totalModel)
+                            .success(function(){
+                        });                                                
+
+                    });
+
+
+
+        });
 
             $http({
                 url: '/transaction/person/'+ transaction.person_id,
@@ -108,31 +128,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                         url: '/transaction/item/'+ person.id,
                         method: "GET",
                     }).success(function(items){
-                        $scope.items = items;
-                        /*$item.empty();
-                        $.each(item, function(value, key) {
-                            $item.append($("<option></option>").attr("value", value).text(key)); 
-                        });*/
-
-                     /*   $scope.onItemSelected = function (item_id){
-
-                            $http({
-                                url: '/transaction/person/'+ person.id + '/item/' + item_id,
-                                method: "GET",
-
-                            }).success(function(prices){
-                                $scope.prices = prices;
-                                $scope.qtyModel = 1;
-                                $scope.unitModel = prices.item.unit;
-                                $scope.amountModel = prices.quote_price;
-
-                                $scope.onQtyChange = function(){
-                                    console.log(eval($scope.qtyModel));
-                                    $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
-                                }
-                            });                    
-
-                        } */           
+                        $scope.items = items;          
                     });            
             });             
 
