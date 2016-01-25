@@ -30,7 +30,16 @@
             font-size: 14px;
             font-family: 'Times New Roman';
             background-color: transparent;            
-        }  
+        }
+        tr {
+            page-break-inside: avoid;
+        }
+        @media print{
+            .avoid {
+                page-break-inside: avoid !important;
+                margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+            } 
+        }                 
 
     </style>
     </head>
@@ -44,7 +53,7 @@
                 <h5 class="text-center">Co Reg No: {{$person->profile->roc_no}}</h5>
             </div>
             
-            <div class="col-xs-12" style="padding-top: 40px">
+            <div class="col-xs-12" style="padding-top: 5px">
                 <div class="row no-gutter">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
@@ -56,7 +65,7 @@
                             <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
                             </div>
                         </div>
-                        <div style="padding-top:30px">
+                        <div style="padding-top:20px">
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">{{$person->name}}</div>
@@ -134,7 +143,7 @@
             </div> 
 
             <div class="row">
-                <div class="col-xs-12" style="padding-top: 30px">
+                <div class="col-xs-12" style="padding-top: 10px">
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
                         <tr>
                             <th class="col-xs-1 text-center">
@@ -213,13 +222,14 @@
                 </div>
             </div>   
 
-        <footer class="footer">
+        {{-- <footer class="footer"> --}}
+        <div class="avoid">
 
                 <div class="col-xs-12">
                     <div class="col-xs-12">
                         Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
                     </div>
-                    <div class="col-xs-8" style="padding-top:15px">
+                    <div class="col-xs-8" style="padding-top:10px">
                         <div class="form-group">
                             @if($transaction->transremark)
                                 <label class="control-label">Comments:</label>
@@ -228,7 +238,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12" style="padding-top: 40px">
+                    <div class="col-xs-12" style="padding-top: 15px">
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
@@ -258,8 +268,8 @@
                     </div>
 
                 </div> 
-          
-        </footer>            
+        </div>
+        {{-- </footer>             --}}
         </div>
 
     </body>

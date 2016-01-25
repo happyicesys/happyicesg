@@ -180,78 +180,126 @@
             </div>
 
             <div class="panel-body">
-                <div style="padding-bottom: 10px">
-                    <label for="search_name" class="search">Search Invoice:</label>
-                    <input type="text" ng-model="search.id">
-                    {{-- <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
-                    <input type="text" ng-model="search.person.company"> --}}
-                    <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                    <input type="text" ng-model="search.status">
-                    <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
-                    <input type="text" ng-model="search.pay_status">                    
+                <div class="row">
+                    <div style="padding: 0px 0px 10px 15px">
+                        <label for="search_inv" class="search">Search Inv:</label>
+                        <input type="text" ng-model="search.id" style="width:140px;">
+                        <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
+                        <input type="text" ng-model="search.status" style="width:140px;"> 
+                        <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
+                        <input type="text" ng-model="search.pay_status" style="width:140px;">                                                
+                    </div>
                 </div>
+                <div class="row">
+                    <div style="padding: 0px 0px 10px 15px">
+                        <label for="search_updated_by" class="search">Last Modified By:</label>
+                        <input type="text" ng-model="search.updated_by" style="width:140px;"> 
+                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
+                        <input type="text" ng-model="search.updated_at" style="width:140px;">                         
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="padding: 0px 0px 10px 15px">
+                        <label for="del_on" class="search">Delivery On:</label>
+                        <input type="text" ng-model="search.delivery_date" style="width:140px;">                           
+                        <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
+                        <input type="text" ng-model="search.driver" style="width:140px;">
+                    </div>                   
+                </div> 
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
-                        <th class="col-md-1 text-center">
-                            #
-                        </th>                    
-                        <th class="col-md-1 text-center">
-                            <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
-                            Invoice No
-                            <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>                                                       
-                        </th>
-                        {{-- <th class="col-md-2 text-center">
-                            Company   
-                        </th> --}}
-                         <th class="col-md-1 text-center">
-                            Payment
-                        </th>                         
-                        <th class="col-md-2 text-center">
-                            <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                            Delivery Date
-                            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1 text-center">
-                            <a href="#" ng-click="sortType = 'status'; sortReverse = !sortReverse">
-                            Status
-                            <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
-                        </th>                                                
-                         <th class="col-md-2 text-center">
-                            <a href="#" ng-click="sortType = 'created_at'; sortReverse = !sortReverse">                         
-                            Created On
-                            <span ng-show="sortType == 'created_at' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'created_at' && sortReverse" class="fa fa-caret-up"></span>                          
-                        </th>
-                         <th class="col-md-1 text-center">
-                            Created By
-                        </th>                        
-                         <th class="col-md-2 text-center">
-                            Action
-                        </th>                                                                                                
+                                <th class="col-md-1 text-center">
+                                    #
+                                </th>                    
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                    INV #
+                                    <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                                    Status
+                                    <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
+                                </th> 
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
+                                    Delivery Date
+                                    <span ng-show="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
+                                    Delivered By
+                                    <span ng-show="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                                    Total Amount
+                                    <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
+                                </th>                                        
+                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
+                                    Payment
+                                    <span ng-show="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>                                                                       
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
+                                    Last Modified By
+                                    <span ng-show="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
+                                </th> 
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
+                                    Last Modified Time
+                                    <span ng-show="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>                                                                                 
+                                <th class="col-md-1 text-center">
+                                    Action
+                                </th>                                                                                                
                     </tr>
 
                     <tbody>
                         <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
-                            <td class="col-md-1 text-center">@{{ number }} </td>
-                            <td class="col-md-1 text-center">@{{ transaction.id }} </td>
-                            {{-- <td class="col-md-2 text-center">
-                            <a href="/person/@{{ transaction.person.id }}">
-                            @{{ transaction.person.company }}
-                            </a>
-                            </td> --}}
-                            <td class="col-md-1 text-center">@{{ transaction.pay_status }}</td>
-                            <td class="col-md-1 text-center">
-                                @{{ transaction.delivery_date }}
-                            </td>                         
-                            <td class="col-md-1 text-center">@{{ transaction.status }}</td>
-                            <td class="col-md-1 text-center">@{{ transaction.created_at }}</td>
-                            <td class="col-md-1 text-center">@{{ transaction.updated_by }}</td>
-                            <td class="col-md-2 text-center">
-                                <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-primary">Edit</a> 
-                            </td>
+                                    <td class="col-md-1 text-center">@{{ number }} </td>
+                                    <td class="col-md-1 text-center">
+                                        <a href="/transaction/@{{ transaction.id }}/edit">
+                                            @{{ transaction.id }} 
+                                        </a>
+                                    </td>
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
+                                        @{{ transaction.status }}
+                                    </td>
+                                    <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
+                                        @{{ transaction.status }}
+                                    </td>
+                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
+                                        @{{ transaction.status }}
+                                    </td>
+                                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
+                                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
+                                    </td>                                                                        
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.total }}</td>
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
+                                        @{{ transaction.pay_status }}
+                                    </td>
+                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
+                                        @{{ transaction.pay_status }}
+                                    </td>                                                                        
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
+                                    <td class="col-md-1 text-center">        
+                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a>                                         
+                                    </td>
                         </tr>
                         <tr ng-show="(transactions | filter:search).length == 0 || ! transactions.length">
                             <td colspan="9" class="text-center">No Records Found</td>

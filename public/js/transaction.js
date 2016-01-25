@@ -201,8 +201,8 @@ var app = angular.module('app', [   'ui.bootstrap',
         });                                     
     }          
 
-    $scope.currentPage = 1;
-    $scope.itemsPerPage = 10;  
+/*    $scope.currentPage = 1;
+    $scope.itemsPerPage = 10; */ 
 
         //delete deals
         $scope.confirmDelete = function(id){
@@ -224,12 +224,12 @@ var app = angular.module('app', [   'ui.bootstrap',
             }
         } 
     }  
-
+/*
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
-}    
+} */   
 
 app.controller('transactionController', transactionController);
 app.controller('repeatController', repeatController);

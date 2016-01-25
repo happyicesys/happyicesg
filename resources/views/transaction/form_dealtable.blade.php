@@ -41,7 +41,7 @@
                     </tr> 
 
                     <tbody>
-                        <tr dir-paginate="deal in deals | itemsPerPage:itemsPerPage"  current-page="currentPage">
+                        <tr ng-repeat="deal in deals">
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.item.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item.name }} @{{ deal.item.remark }}</td>

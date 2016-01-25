@@ -6,7 +6,7 @@
     var_dump($query);
 });*/
 
-Route::get('/', function () {
+Route::get('/admin', function () {
     return view('welcome');
 });
 
