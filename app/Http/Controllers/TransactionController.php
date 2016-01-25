@@ -34,7 +34,7 @@ class TransactionController extends Controller
 
     public function getData()
     {
-        $transactions =  Transaction::with(['person', 'user'])->get();
+        $transactions =  Transaction::with(['person', 'user', 'person.profile'])->get();
 
         return $transactions;
     }      

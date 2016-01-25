@@ -34,9 +34,12 @@ class AppServiceProvider extends ServiceProvider
 
         //Transaction
         view()->share('TRANS_TITLE', 'Transaction');
-        view()->share('TRANS_PREFIX', 'T');  
+        view()->share('TRANS_PREFIX', 'T');
 
-        //trans status                  
+        //Market
+        view()->share('REPORT_TITLE', 'Report');
+        view()->share('REPORT_PREFIX', 'R');          
+               
     }
 
     /**

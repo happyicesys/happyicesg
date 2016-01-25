@@ -61,6 +61,10 @@ resource('user', 'UserController');
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');
 
+get('/report', 'RptController@index');
+post('/report/person', 'RptController@generatePerson');
+post('/report/transaction', 'RptController@generateTransaction');
+
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');

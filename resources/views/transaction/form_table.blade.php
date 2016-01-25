@@ -59,7 +59,7 @@
                         </td>                        
                         <td class="col-md-1">
                             <strong>
-                            @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')
+                            @if($transaction->status == 'Cancelled')
                                 <input type="text" name="quote[{{$price->item->id}}]" 
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>
@@ -69,6 +69,7 @@
                                 class="text-right form-control quoteClass"/>
                             @endif                            
                             </strong>
+                            {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                         </td>
                         <td class="col-md-2">
                             <input type="text" name="amount[{{$price->item->id}}]" 

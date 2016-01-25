@@ -1,3 +1,5 @@
+@inject('profiles', 'App\Profile')
+
 @extends('template')
 @section('title')
 {{ $TRANS_TITLE }}
@@ -23,8 +25,18 @@
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
-
-                    <div class="pull-right">
+                    <div class="col-md-6 col-md-offset-2" style="padding-left:200px">
+                        <div class="col-md-3"  style="padding-top:10px">
+                            <label for="profile_id" class="search">Profile:</label>
+                        </div>
+                        <div class="col-md-9" style="padding-top:10px">
+                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id', 
+                                'class'=>'select', 
+                                'ng-model'=>'search.person.profile.name']) 
+                            !!}
+                        </div>
+                    </div>   
+                    <div class="pull-right">                    
                         <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>                        
                     </div>
                 </div>
@@ -59,10 +71,8 @@
                         <input type="text" ng-model="search.delivery_date" style="width:140px;">                           
                         <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
                         <input type="text" ng-model="search.driver" style="width:140px;">
-{{--                         <label for="del_from" class="search" style="padding-left: 10px">Delivery From:</label>
-                        <input type="text" id="delfrom" ng-model="deldate_from" ng-change="onDelFromChanged()"> --}}
-                    </div>
-                </div>
+                    </div>                   
+                </div>              
                 
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
@@ -211,5 +221,7 @@
         $('#delfrom').datetimepicker({
             format: 'DD-MMMM-YYYY'
         });
+
+        $('.select').select2({});
     </script>  
 @stop
