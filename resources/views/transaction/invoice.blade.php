@@ -43,10 +43,15 @@
             }
         }
 
-            .avoid {
-                page-break-inside: avoid;
-                margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
-            }        
+        .avoid {
+            page-break-inside: avoid;
+            margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+        }  
+
+        .borderlessL {
+            border-bottom: none;
+            border-left: none;
+        }      
 
         * {
           overflow: visible !important;
@@ -198,18 +203,10 @@
                             </td>
                             <td class="col-xs-2 text-right">
                                 {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
-                            </td>
-
-                            {{-- operation                    --}}
+                            </td>                   
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
-                            </td>
-
-                            <td class="col-xs-1 text-right">
-                                {{ ($deal->amount / $deal->qty), 2, '.', ',')}}
-                            </td>                             
-
-
+                            </td> 
                             @if($deal->amount != 0) 
                             <td class="col-xs-1 text-right">
                                 {{ $deal->amount }}
@@ -223,12 +220,20 @@
                         @endforeach
 
                         @if($person->profile->gst)
+{{--                         <tr>
+                            <td colspan="4" class="borderlessL">
+                                <span class="col-xs-offset-8" style="padding-left:0px;"><strong>SubTotal</strong></span>
+                            </td>
+                            <td class="text-right">
+                                <strong>{{ $totalprice }}</strong>
+                            </td>                                                    
+                        </tr> --}}
                         <tr>
-                            <td></td>
-                            <td colspan="2" class="col-md-2 text-center">
+                            <td colspan="2" class="col-xs-3 text-center">
                                 <span style="padding-left:220px;"><strong>GST (7%)</strong></span>
                             </td>
-                            <td class="col-md-3 text-right">
+                            <td></td>
+                            <td class="col-md-4 text-right">
                                 <td class="text-right">
                                     {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
                                 </td>                            
@@ -264,7 +269,7 @@
                     <div class="col-xs-12">
                         Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
                     </div>
-                    <div class="col-xs-8" style="padding-top:10px">
+                    <div class="col-xs-12" style="padding-top:10px">
                         <div class="form-group">
                             @if($transaction->transremark)
                                 <label class="control-label">Remarks:</label>
