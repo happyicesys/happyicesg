@@ -7,7 +7,7 @@
 @stop
 @section('content')
 
-<div class="create_edit">
+<div class="create_edit" style="margin-top:30px;">
 <div class="panel panel-primary">
 
     <div class="panel-heading">

@@ -3,7 +3,7 @@
     <head>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     {{-- <link rel="stylesheet" href="../bootstrap-css/bootstrap.min.css"/>  --}}
-    <style type="text/css">
+    <style type="text/css" media="print">
         .inline {
             display:inline;
         }
@@ -33,36 +33,14 @@
         }
         tr {
             page-break-inside: avoid;
-        }
-
-        @media{
-            .avoid {
-                page-break-inside: avoid;
-                page-break-before: always;
-                margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
-            }
-        }
-
-        .avoid {
-            page-break-inside: avoid;
-            margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
-        }  
-
-        .borderlessL {
-            border-bottom: none;
-            border-left: none;
         }      
-
-        * {
-          overflow: visible !important;
-        }         
+          
                  
-
     </style>
     </head>
 
     <body>
-        <div class="container-fluid">
+        <div class="container">
             <div class="col-xs-10 col-xs-offset-1" style="font-size:15px">
                 <h3 class="text-center"><strong>{{$person->profile->name}}</strong></h3>
                 <h5 class="text-center" style="margin-bottom: -5px">{{$person->profile->address}}</h5>
@@ -108,11 +86,11 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
-                                <div style="font-size: 150%;" class="text-center">
+                                <div style="font-size: 140%;" class="text-center">
                                     @if($person->profile->gst)
-                                    <strong>DO / TAX INVOICE</strong>
+                                    <strong>DO/ TAX INVOICE</strong>
                                     @else
-                                    <strong>DO / INVOICE</strong>
+                                    <strong>DO/ INVOICE</strong>
                                     @endif
                                 </div>
                             </div>
@@ -169,6 +147,7 @@
                 </div>
             </div> 
 
+            <div class="avoid">
             <div class="row">
                 <div class="col-xs-12" style="padding-top: 10px">
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
@@ -190,11 +169,17 @@
                             </th>
                         </tr>
                         
+                        <?php $counter = 0; ?>
                         @unless(count($deals)>0)
                         <td class="text-center" colspan="8">No Records Found</td>
                         @else
-                        @foreach($deals as $deal)
+                        @foreach($deals as $index => $deal)
+                        <?php $counter ++ ?>
+                        @if( $counter >= 16)
+                        <tr style="page-break-inside: always">
+                        @else
                         <tr>
+                        @endif
                             <td class="col-xs-1 text-center">
                                 {{ $deal->item->product_id }}
                             </td>
@@ -220,24 +205,21 @@
                         @endforeach
 
                         @if($person->profile->gst)
-{{--                         <tr>
-                            <td colspan="4" class="borderlessL">
-                                <span class="col-xs-offset-8" style="padding-left:0px;"><strong>SubTotal</strong></span>
+                        <tr class="noBorder">
+                            <td colspan="4">
+                                <span class="col-xs-offset-7" style="padding-left:33px;"><strong>SubTotal</strong></span>
                             </td>
                             <td class="text-right">
                                 <strong>{{ $totalprice }}</strong>
                             </td>                                                    
-                        </tr> --}}
+                        </tr>
                         <tr>
-                            <td colspan="2" class="col-xs-3 text-center">
-                                <span style="padding-left:220px;"><strong>GST (7%)</strong></span>
+                            <td colspan="4" class="col-xs-3 text-center">
+                                <span style="padding-left:210px;"><strong>GST (7%)</strong></span>
                             </td>
-                            <td></td>
-                            <td class="col-md-4 text-right">
-                                <td class="text-right">
-                                    {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
-                                </td>                            
-                            </td>
+                            <td class="text-right">
+                                {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
+                            </td>                            
                         </tr>
                         @endif
 
@@ -261,10 +243,10 @@
                         @endunless                          
                     </table>
                 </div>
-            </div>   
+            </div> 
+            </div>  
 
         {{-- <footer class="footer"> --}}
-        <div class="avoid">
                 <div class="col-xs-12">
                     <div class="col-xs-12">
                         Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
@@ -308,7 +290,6 @@
                     </div>
 
                 </div> 
-        </div>
         {{-- </footer>             --}}
         </div>
 

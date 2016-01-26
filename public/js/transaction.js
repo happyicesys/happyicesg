@@ -239,4 +239,4 @@ function repeatController($scope) {
 } */   
 
 app.controller('transactionController', transactionController);
-app.controller('repeatController', repeatController);
+// app.controller('repeatController', repeatController);

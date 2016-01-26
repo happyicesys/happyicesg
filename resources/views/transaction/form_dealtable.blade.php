@@ -47,10 +47,10 @@
                             <td class="col-md-5">@{{ deal.item.name }} @{{ deal.item.remark }}</td>
 
                             <td class="col-md-2 text-center" ng-if="deal.qty % 1 == 0">@{{ Math.round(deal.qty) }} @{{ deal.item.unit }}</td>
-                            <td class="col-md-2 text-center" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit }}</td>
-                            {{-- operation --}}
+                            <td class="col-md-2 text-center" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit}}</td>
+                            {{-- unit price --}}
                             <td class="col-md-1 text-right">@{{ (deal.amount / deal.qty).toFixed(2)}}</td>
-                            
+                            {{-- deal amount --}}
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
                             <td class="col-md-1 text-center">
