@@ -20,117 +20,124 @@ var app = angular.module('app', [   'ui.bootstrap',
         $scope.selection = {};
         $scope.Math = window.Math;
            
-        $(document).ready(function () {
+            $(document).ready(function () {
 
-           $(".qtyClass").keyup(multInputs);
-           $(".quoteClass").keyup(multInputs);
+               $(".qtyClass").keyup(multInputs);
+               $(".quoteClass").keyup(multInputs);
 
-           function multInputs() {
-            "use strict";
-               var mult = 0;
-               // for each row:
-               $("tr.txtMult").each(function () {
-                   // get the values from this row:
-                   var $qty = eval($('.qtyClass', this).val()) * 1;
+               function multInputs() {
+                "use strict";
+                   var mult = 0;
+                   // for each row:
+                   $("tr.txtMult").each(function () {
+                       // get the values from this row:
+                       var $qty = eval($('.qtyClass', this).val()) * 1;
 
-                   var $quote = ($('.quoteClass', this).val()) * 1;
+                       var $quote = ($('.quoteClass', this).val()) * 1;
 
-                   var $retail = ($('.retailClass', this).val()) * 1;
+                       var $retail = ($('.retailClass', this).val()) * 1;
 
-                   var $price = 0;
+                       var $price = 0;
 
-                   if($quote == null || $quote == '' || $quote == 0){
+                       if($quote == null || $quote == '' || $quote == 0){
 
-                        $price = $retail;
+                            $price = $retail;
 
-                   }else{
+                       }else{
 
-                        $price = $quote;
+                            $price = $quote;
 
-                   }
+                       }
 
-                   var $total = ($qty * $price).toFixed(2);
-                   // set total for the row
-                   // $('.amountClass', this).text($total);
-                    if(isNaN($total)) {
-                        var $total = 0;
-                    }                   
-                   $('.amountClass', this).val($total);
-                   mult += parseFloat($total);
-               });
+                       var $total = ($qty * $price).toFixed(2);
+                       // set total for the row
+                       // $('.amountClass', this).text($total);
+                        if(isNaN($total)) {
+                            var $total = 0;
+                        }                   
+                       $('.amountClass', this).val($total);
+                       mult += parseFloat($total);
+                   });
 
-               $('.grandTotal').val(mult.toFixed(2));
-           }
-        });    
+                   $('.grandTotal').val(mult.toFixed(2));
+               }
+            });    
 
-        $http.get('/person/data').success(function(people){
-        $scope.people = people;
-        });
-
-        $http({
-            url: '/transaction/' + $trans_id.val(),
-            method: "GET",
-        }).success(function(transaction){
+            $http.get('/person/data').success(function(people){
+            $scope.people = people;
+            });
 
             $http({
-                url: '/deal/data/' + transaction.id,
+                url: '/transaction/' + $trans_id.val(),
                 method: "GET",
-            }).success(function(deals){ 
-                $scope.deals = deals;
+            }).success(function(transaction){
 
-                var total = 0;
-                for(var i = 0; i < $scope.deals.length; i++){
-                    var deal = $scope.deals[i];
-                    total += (deal.amount/100*100);
-                }
+                $http({
+                    url: '/deal/data/' + transaction.id,
+                    method: "GET",
+                }).success(function(deals){ 
+                    $scope.deals = deals;
 
-                    $http({
-                        url: '/person/profile/' + transaction.person_id,
-                        method: "GET",
-                    }).success(function(profile){ 
-/*
-                        if(profile.gst){
+                    var total = 0;
+                    for(var i = 0; i < $scope.deals.length; i++){
+                        var deal = $scope.deals[i];
+                        total += (deal.amount/100*100);
+                    }
 
-                            $scope.totalModel = (total * 107/100).toFixed(2);
-                            console.log('gst'+ $scope.totalModel);
+                        $http({
+                            url: '/person/profile/' + transaction.person_id,
+                            method: "GET",
+                        }).success(function(profile){ 
+    /*
+                            if(profile.gst){
 
-                        }else{*/
+                                $scope.totalModel = (total * 107/100).toFixed(2);
+                                console.log('gst'+ $scope.totalModel);
 
-                            $scope.totalModel = total.toFixed(2);
-                                
-                        // }
+                            }else{*/
+
+                                $scope.totalModel = total.toFixed(2);
+                                    
+                            // }
+                            
+                            $http.put('total', $scope.totalModel)
+                                .success(function(){
+                            });                                                
+
+                        });
+
+                $http({
+                    url: '/transaction/person/'+ transaction.person_id,
+                    method: "GET",
+                }).success(function(person){
+                    $scope.personModel = person.id;
+                    $scope.nameModel = person.name;
+                    $scope.billModel = person.bill_address;
+                    $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                    $scope.paytermModel = person.payterm;
+                    $scope.personcodeModel = person.cust_id;
+                    if(transaction.transremark){
                         
-                        $http.put('total', $scope.totalModel)
-                            .success(function(){
-                        });                                                
+                        $scope.transremarkModel = transaction.transremark;
 
+                    }else{
+
+                        $scope.transremarkModel = person.remark;    
+                    }
+                    
+                    $('.date').datetimepicker({
+                        format: 'DD-MMMM-YYYY'
                     });
 
+                        $http({
+                            url: '/transaction/item/'+ person.id,
+                            method: "GET",
+                        }).success(function(items){
+                            $scope.items = items;          
+                        });            
+                }); 
 
-
-        });
-
-            $http({
-                url: '/transaction/person/'+ transaction.person_id,
-                method: "GET",
-            }).success(function(person){
-                $scope.personModel = person.id;
-                $scope.nameModel = person.name;
-                $scope.billModel = person.bill_address;
-                $scope.delModel = person.del_address + ' ' + person.del_postcode;
-                $scope.paytermModel = person.payterm;
-                $scope.personcodeModel = person.cust_id;
-                $('.date').datetimepicker({
-                    format: 'DD-MMMM-YYYY'
-                });
-
-                    $http({
-                        url: '/transaction/item/'+ person.id,
-                        method: "GET",
-                    }).success(function(items){
-                        $scope.items = items;          
-                    });            
-            });             
+            });            
 
         });
 

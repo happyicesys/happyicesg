@@ -44,7 +44,7 @@
                         </div>
     
                         <div class="col-md-4 form-group">
-                            {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
+                            {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
                             {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3', 'readonly'=>'readonly']) !!}
                         </div>                         
                     @else
@@ -56,8 +56,10 @@
                         </div>
 
                         <div class="col-md-4 form-group">
-                            {!! Form::label('transremark', 'Comment', ['class'=>'control-label']) !!}
-                            {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+                            {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('transremark', null, ['class'=>'form-control',
+                            'ng-model'=>'transremarkModel',
+                            'rows'=>'3']) !!}
                         </div>                         
                     @endif                                       
                 </div>

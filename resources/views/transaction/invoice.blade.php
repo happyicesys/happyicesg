@@ -198,10 +198,18 @@
                             </td>
                             <td class="col-xs-2 text-right">
                                 {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
-                            </td>                   
+                            </td>
+
+                            {{-- operation                    --}}
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
-                            </td> 
+                            </td>
+
+                            <td class="col-xs-1 text-right">
+                                {{ ($deal->amount / $deal->qty), 2, '.', ',')}}
+                            </td>                             
+
+
                             @if($deal->amount != 0) 
                             <td class="col-xs-1 text-right">
                                 {{ $deal->amount }}
@@ -217,8 +225,8 @@
                         @if($person->profile->gst)
                         <tr>
                             <td></td>
-                            <td colspan="2" class="col-md-2 text-right">
-                                <span style="padding-right:51px;"><strong>GST (7%)</strong></span>
+                            <td colspan="2" class="col-md-2 text-center">
+                                <span style="padding-left:220px;"><strong>GST (7%)</strong></span>
                             </td>
                             <td class="col-md-3 text-right">
                                 <td class="text-right">
@@ -231,14 +239,14 @@
                         <tr>
                             @if($person->profile->gst)
                                 <td colspan="4">
-                                    <span class="col-xs-offset-8" style="padding-left:45px;"><strong>Total</strong></span>
+                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
                                 </td>
                                 <td class="text-right">
                                     <strong>{{ number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
                                 </td>
                             @else
                                 <td colspan="4">
-                                    <span class="col-xs-offset-8" style="padding-left:45px;"><strong>Total</strong></span>
+                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
                                 </td>
                                 <td class="text-right">
                                     <strong>{{ $totalprice }}</strong>
@@ -259,7 +267,7 @@
                     <div class="col-xs-8" style="padding-top:10px">
                         <div class="form-group">
                             @if($transaction->transremark)
-                                <label class="control-label">Comments:</label>
+                                <label class="control-label">Remarks:</label>
                                 <pre>{{ $transaction->transremark }}</pre> 
                             @endif
                         </div>

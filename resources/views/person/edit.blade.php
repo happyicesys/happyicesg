@@ -206,6 +206,7 @@
                         <input type="text" ng-model="search.driver" style="width:140px;">
                     </div>                   
                 </div> 
+                <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                                 <th class="col-md-1 text-center">
@@ -306,7 +307,8 @@
                         </tr>                         
 
                     </tbody>
-                </table>            
+                </table> 
+                </div>           
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
