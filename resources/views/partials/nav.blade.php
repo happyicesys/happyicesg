@@ -22,6 +22,7 @@
             @endif
         </ul>
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+        @unless (Auth::guest())
         <div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarCollapse">
             <ul class="nav navbar-nav side-nav">
 
@@ -46,23 +47,6 @@
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>   --}}              
             </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-
-        {{-- <div id="navbarCollapse" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
-                    <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> Transaction</a>
-                </li>                
-                <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
-                    <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
-                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> Item</a>
-                </li>  
-                <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
-                    <a href="/user"><i class="fa fa-fw fa-user"></i> User</a>
-                </li>
-            </ul>
-        </div>  --}}        
+        </div> 
+        @endunless     
     </nav>
