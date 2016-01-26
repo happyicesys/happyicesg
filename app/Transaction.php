@@ -126,7 +126,7 @@ class Transaction extends Model
     {
         if($date){
 
-            return Carbon::parse($date)->format('d-M-Y');    
+            return Carbon::parse($date)->format('d-F-Y');    
 
         }else{
 

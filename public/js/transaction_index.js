@@ -10,7 +10,23 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             });
             var now = Date.now();
             saveAs(blob, "TransactionRpt"+ now + ".xls");
-        };                      
+        };
+
+        var monthNames = [
+          "January", "February", "March",
+          "April", "May", "June", "July",
+          "August", "September", "October",
+          "November", "December"
+        ];
+
+        var date = new Date();
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+
+        $scope.today = day + '-' + monthNames[monthIndex] + '-' + year;
+
+                                     
 
         angular.element(document).ready(function () {
 
@@ -77,11 +93,9 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         url: '/transaction/data/' + id
                     })
                     .success(function(data){
-                        console.log(data);
                         location.reload();
                     })
                     .error(function(data){
-                        console.log(data);
                         alert('Unable to delete');
                     })
                 }else{
@@ -91,12 +105,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         });
     }
 
-
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
 }    
+ 
 
 app.controller('transController', transController);
 app.controller('repeatController', repeatController);

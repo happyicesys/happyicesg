@@ -68,7 +68,7 @@
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="del_on" class="search">Delivery On:</label>
-                        <input type="text" ng-model="search.delivery_date" style="width:140px;">                           
+                        <input type="text" ng-model="search.delivery_date" ng-init="search.delivery_date=today" style="width:140px;">                           
                         <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
                         <input type="text" ng-model="search.driver" style="width:140px;">
                     </div>                   
