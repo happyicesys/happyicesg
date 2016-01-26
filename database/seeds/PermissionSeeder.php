@@ -80,6 +80,12 @@ class PermissionSeeder extends Seeder
             'name' => 'transaction_deleteitem',
             'label' => 'Delete Transaction Item',
             'remark' => '',
-        ]);                                                                       
+        ]);   
+
+        Permission::create([
+            'name' => 'transaction_view',
+            'label' => 'View Transaction',
+            'remark' => '',
+        ]);                                                                               
     } 
 }

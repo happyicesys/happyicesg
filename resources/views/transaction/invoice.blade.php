@@ -104,7 +104,11 @@
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
                                 <div style="font-size: 150%;" class="text-center">
+                                    @if($person->profile->gst)
+                                    <strong>DO / TAX INVOICE</strong>
+                                    @else
                                     <strong>DO / INVOICE</strong>
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">
@@ -167,10 +171,10 @@
                             <th class="col-xs-1 text-center">
                                 Item Code
                             </th>
-                            <th class="col-xs-8 text-center">
+                            <th class="col-xs-7 text-center">
                                 Description
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-2 text-center">
                                 Quantity
                             </th>
                             <th class="col-xs-1 text-center">
@@ -189,10 +193,10 @@
                             <td class="col-xs-1 text-center">
                                 {{ $deal->item->product_id }}
                             </td>
-                            <td class="col-xs-8">
+                            <td class="col-xs-7">
                                 {{ $deal->item->name}} {{ $deal->item->remark }}
                             </td>
-                            <td class="col-xs-1 text-center">
+                            <td class="col-xs-2 text-right">
                                 {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
                             </td>                   
                             <td class="col-xs-1 text-right">

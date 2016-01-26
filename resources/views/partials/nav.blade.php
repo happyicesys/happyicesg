@@ -24,54 +24,24 @@
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
         <div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarCollapse">
             <ul class="nav navbar-nav side-nav">
-                {{-- <li>
-                    <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-                </li> --}}
+
                 <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
                     <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
                 </li>                
-                <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
-                    <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
-                </li>
-                {{-- <li>
-                    <a href="/sale"><i class="fa fa-fw fa-tasks"></i> Sales Pipeline</a>
-                </li> --}}
-                <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
-                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
-                </li>                
-
-                {{-- <li>
-                    <a href="/scheduler"><i class="fa fa-fw fa-clock-o"></i> To Do's</a>
-                </li>
-                <li>
-                    <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> Report</a>
-                </li>
-                <li>
-                    <a href="/massemail"><i class="fa fa-fw fa-envelope-o"></i> Email</a>
-                </li>  --}}                                
-                {{-- <li>
-                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-                    <ul id="demo" class="collapse">
-                        <li>
-                            <a href="#">Dropdown Item</a>
-                        </li>
-                        <li>
-                            <a href="#">Dropdown Item</a>
-                        </li>
-                    </ul>
-                </li> --}}
-                {{-- <li>
-                    <a href="/setting"><i class="fa fa-fw fa-cog"></i> Resouces Definition</a>
-                </li> --}}                
-                {{-- <li>
-                    <a href="/person"><i class="fa fa-fw fa-briefcase"></i> {{ $PERSON_TITLE }}</a>
-                </li> --}}
-                <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
-                    <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
-                    <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
-                </li>
+                @cannot('transaction_view')
+                    <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
+                        <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
+                    </li>
+                    <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
+                        <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
+                    </li>                
+                    <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
+                        <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
+                    </li>
+                    <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
+                        <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
+                    </li>
+                @endcannot
 {{--                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>   --}}              
