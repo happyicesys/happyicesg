@@ -86,6 +86,12 @@ class PermissionSeeder extends Seeder
             'name' => 'transaction_view',
             'label' => 'View Transaction',
             'remark' => '',
-        ]);                                                                               
+        ]);    
+
+        Permission::create([
+            'name' => 'accountant_view',
+            'label' => 'Accountant View',
+            'remark' => '',
+        ]);                                                                                       
     } 
 }

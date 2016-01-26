@@ -9,7 +9,7 @@ Login
     {!! csrf_field() !!}
 
     <div class="form-group row">
-        <div class="col-md-2 col-md-offset-1">
+        <div class="col-md-2">
             <label for="login" class="control-label">Username or Email</label>
         </div>
 
@@ -19,7 +19,7 @@ Login
     </div>
 
     <div class="form-group row">
-        <div class="col-md-2 col-md-offset-1">
+        <div class="col-md-2">
             <label for="email" class="control-label">Password</label>
         </div>
 
@@ -29,7 +29,7 @@ Login
     </div>
 
     <div class="form-group row">
-        <div class="col-md-2 col-md-offset-3">
+        <div class="col-md-2 col-md-offset-2">
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="remember"> Remember Me
@@ -39,7 +39,7 @@ Login
     </div>
 
     <div class="form-group row">
-        <div class="col-md-2 col-md-offset-3">
+        <div class="col-md-2 col-md-offset-2">
             <button type="submit" class="btn btn-primary" style="margin-right: 15px;">
                 Login
             </button>

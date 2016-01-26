@@ -35,13 +35,15 @@
                     </li>
                     <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
                         <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
-                    </li>                
+                    </li>
+                @cannot('accountant_view')                
                     <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
                     <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
                     </li>
+                @endcannot
                 @endcannot
 {{--                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
