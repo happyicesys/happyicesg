@@ -105,6 +105,20 @@
                         'readonly'=>'readonly',
                         'rows'=>'1']) !!}                  
                     </div>                                          
+                </div>
+
+                <div class="row">
+                    @if($transaction->status == 'Cancelled')
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
+                            {!! Form::text('po_no', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}                  
+                        </div> 
+                    @else   
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
+                            {!! Form::text('po_no', null, ['class'=>'form-control']) !!}                  
+                        </div> 
+                    @endif
                 </div>                                             
 
         </div>

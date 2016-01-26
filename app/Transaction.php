@@ -46,6 +46,7 @@ class Transaction extends Model
         'driver' => 'Driver',
         'del_address' => 'Delivery Address',
         'paid_by' => 'Payment Received By',
+        'po_no' => 'PO #',
     );    
 
     protected $fillable=[
@@ -53,7 +54,7 @@ class Transaction extends Model
         'user_id', 'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
-        'del_address', 'name'
+        'del_address', 'name', 'po_no'
     ];
 
     protected $dates =[

@@ -129,6 +129,9 @@
                                         <span class="inline" style="font-size: 95%;"><strong>Modified by:</strong></span>
                                         {{-- <span class="inline col-xs-offset-3" style="padding-left: 8px;">{{$transaction->updated_by}}</span>                             --}}
                                     </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline" style="font-size: 95%;"><strong>PO#:</strong></span>
+                                    </div>                                    
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -146,6 +149,9 @@
                                     <div class="form-group" style="margin-bottom: 0px">
                                         <span class="inline">{{$transaction->updated_by}}</span>
                                     </div>
+                                    <div class="form-group" style="margin-bottom: 0px">
+                                        <span class="inline">{{$transaction->po_no}}</span>
+                                    </div>                                    
                                 </div>
                             </div>                                                                 
                         </div>
@@ -207,8 +213,8 @@
                         @if($person->profile->gst)
                         <tr>
                             <td></td>
-                            <td colspan="2" class="col-md-2 text-center">
-                                <strong>GST (7%)</strong>
+                            <td colspan="2" class="col-md-2 text-right">
+                                <span style="padding-right:51px;"><strong>GST (7%)</strong></span>
                             </td>
                             <td class="col-md-3 text-right">
                                 <td class="text-right">
@@ -221,14 +227,14 @@
                         <tr>
                             @if($person->profile->gst)
                                 <td colspan="4">
-                                    <span class="col-xs-offset-2"><strong>Total</strong></span>
+                                    <span class="col-xs-offset-8" style="padding-left:45px;"><strong>Total</strong></span>
                                 </td>
                                 <td class="text-right">
                                     <strong>{{ number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
                                 </td>
                             @else
                                 <td colspan="4">
-                                    <span class="col-xs-offset-2"><strong>Total</strong></span>
+                                    <span class="col-xs-offset-8" style="padding-left:45px;"><strong>Total</strong></span>
                                 </td>
                                 <td class="text-right">
                                     <strong>{{ $totalprice }}</strong>
