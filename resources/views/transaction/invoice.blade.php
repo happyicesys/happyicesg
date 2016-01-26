@@ -11,11 +11,11 @@
             font-size: 12px;
         }
         table{
-            font-size: 13px;
+            font-size: 12px;
             font-family: 'Times New Roman';
         }    
         th{
-            font-size: 14px;
+            font-size: 12px;
         }
         footer{
             position: absolute;
@@ -34,12 +34,24 @@
         tr {
             page-break-inside: avoid;
         }
-        @media print{
+
+        @media{
             .avoid {
-                page-break-inside: avoid !important;
+                page-break-inside: avoid;
+                page-break-before: always;
                 margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
-            } 
-        }                 
+            }
+        }
+
+            .avoid {
+                page-break-inside: avoid;
+                margin: 4px 0 4px 0;  /* to keep the page break from cutting too close to the text in the div */
+            }        
+
+        * {
+          overflow: visible !important;
+        }         
+                 
 
     </style>
     </head>
@@ -179,10 +191,16 @@
                             </td>                   
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
-                            </td>  
+                            </td> 
+                            @if($deal->amount != 0) 
                             <td class="col-xs-1 text-right">
                                 {{ $deal->amount }}
-                            </td>                                                                    
+                            </td>
+                            @else 
+                            <td class="col-xs-1 text-right">
+                                <strong>FOC</strong>
+                            </td>
+                            @endif                                                                                               
                         </tr>
                         @endforeach
 
@@ -224,7 +242,6 @@
 
         {{-- <footer class="footer"> --}}
         <div class="avoid">
-
                 <div class="col-xs-12">
                     <div class="col-xs-12">
                         Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
@@ -238,13 +255,13 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12" style="padding-top: 15px">
+                    <div class="col-xs-12" style="padding-top: 10px">
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
                                     <strong>Goods Received in Good Conditions</strong>
                                 </span>
-                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
+                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
                                     _______________________________
                                 </span>
                                 <span class="text-center col-xs-12" style="margin-top:0px">
@@ -257,7 +274,7 @@
                                 <span class="text-center col-xs-12">
                                     <strong>{{$person->profile->name}}</strong>
                                 </span>
-                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:60px">
+                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
                                     _______________________________
                                 </span>
                                 <span class="text-center col-xs-12" style="margin-top:0px">
