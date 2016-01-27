@@ -34,6 +34,38 @@ class PaytermSeeder extends Seeder
 
         Payterm::create([
             'name' => 'Day of Month after EOM',
-        ]);                                        
+        ]);
+
+        Payterm::create([
+            'name' => '3 months',
+        ]); 
+        
+        Payterm::create([
+            'name' => '15 Days after EOM',
+        ]); 
+
+        Payterm::create([
+            'name' => 'Pay on next delivery',
+        ]); 
+
+        Payterm::create([
+            'name' => '15th & 30th of month',
+        ]); 
+
+        Payterm::create([
+            'name' => '7 Days after EOM',
+        ]); 
+
+        Payterm::create([
+            'name' => '30 Days',
+        ]); 
+
+        Payterm::create([
+            'name' => '75 Days',
+        ]); 
+
+        Payterm::create([
+            'name' => '60 Days',
+        ]);                                                                                        
     }
 }

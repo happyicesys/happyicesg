@@ -14,6 +14,13 @@
             <ul class="nav nav-pills nav-justified" role="tablist">
 
                 <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
+
+{{-- 
+                <li><a href="#role_draft" role="tab" data-toggle="tab">Access Level</a></li>
+
+                @can('view_permission')
+                <li><a href="#permission_list" role="tab" data-toggle="tab">Permission</a></li>
+                @endcan --}}
             </ul>
     </div>
 
@@ -127,7 +134,123 @@
                         </div>
                     </div>
                 </div>  
-            </div>        
+            </div>
+
+
+
+{{--             <div class="tab-pane" id="role_draft">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title pull-left">
+                            <h3 class="panel-title display_num"><strong>Access Level</strong></h3>
+                        </div>
+                        <div class="pull-right">
+                            @can('create_role')
+                            <a href="/role/create" class="btn btn-success">+ New Access</a>                          
+                            @endcan
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item row">
+                                <span class="col-md-1"><strong>#</strong></span>
+                                <span class="col-md-3"><strong>Access Level</strong></span>
+                                <span class="col-md-6"><strong>Assigned Permission</strong></span>
+                                <span class="col-md-2"><strong>Action</strong></span>                                
+                            </li>
+
+                            <?php $index = $roles->firstItem(); ?>
+                            @unless(count($roles)>0)
+                                <li class="list-group-item row text-center">
+                                    <span colspan="7">No Records Found</span>
+                                </li>
+                            @else
+                                @foreach($roles as $role)
+                                <li class="list-group-item row">
+                                    <span class="col-md-1">{{ $index++ }}</span>
+                                    <span class="col-md-3">{{$role->label}}</span>
+                                    <span class="col-md-6">
+                                    @foreach($role->permissions as $index2 => $permission)
+                                        {{$permission->name}}
+                                        @if($index2 + 1 != count($role->permissions))
+                                        ,
+                                        @endif
+                                    @endforeach
+                                    </span>
+                                    <span class="col-md-2">
+
+                                    <a href="/role/{{ $role->id }}/edit" class="btn btn-sm btn-primary col-md-4" style="margin-right:5px;">Edit</a>
+
+                                    @can('delete_role')  
+                                    {!! Form::open(['method'=>'DELETE', 'action'=>['RoleController@destroy', $role->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
+                                        {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm col-md-5']) !!}
+                                    {!! Form::close() !!}                          
+                                    @endcan
+                                    </span>                             
+                                </li>
+                                @endforeach
+                            @endunless
+                        </ul>
+                    </div>
+
+                    <div class="panel-footer">
+                        {!! $roles->render() !!}
+
+                        <label class="pull-right totalnum" for="totalnum">
+                            Total of {{$roles->total()}} entries
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+            @can('view_permission')
+            <div class="tab-pane" id="permission_list">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title pull-left">
+                            <h3 class="panel-title display_num"><strong>Permission List</strong></h3>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item row">
+                                <span class="col-md-1"><strong>#</strong></span>
+                                <span class="col-md-3"><strong>Module</strong></span>
+                                <span class="col-md-8"><strong>Module Action</strong></span>
+                            </li>
+                            <li class="list-group-item row">
+                                <span class="col-md-1">1</span>
+                                <span class="col-md-3">User</span>
+                                <span class="col-md-8">                                 
+                                    create_user, view_user, edit_user, delete_user
+                                </span>
+                            </li>
+                            <li class="list-group-item row">
+                                <span class="col-md-1">2</span>
+                                <span class="col-md-3">Role</span>
+                                <span class="col-md-8">
+                                    create_role, view_role, edit_role, delete_role
+                                </span>
+                            </li>
+                            <li class="list-group-item row">
+                                <span class="col-md-1">3</span>
+                                <span class="col-md-3">Permission</span>
+                                <span class="col-md-8">
+                                    view_permission
+                                </span>
+                            </li>                                                             
+                        </ul>
+                    </div>
+
+                    <div class="panel-footer">
+                          <label class="pull-right totalnum" for="totalnum">Total of 3 entries</label>                                                          
+                    </div>                    
+                </div>
+            </div>
+            @endcan  --}}         
 
     </div>
 </div>          

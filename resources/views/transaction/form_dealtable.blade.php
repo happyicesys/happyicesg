@@ -70,7 +70,16 @@
                             </td>
                         </tr>
                         @if($person->profile->gst)
-                        <tr>
+                        <tr ng-if="deals.length">
+                            <td></td>
+                            <td colspan="3" class="col-md-2 text-center">
+                                <strong>Subtotal</strong>
+                            </td>
+                            <td class="col-md-3 text-right">
+                                <td class="text-right" ng-model="totalModel">@{{totalModel}}</td>                            
+                            </td>
+                        </tr>
+                        <tr ng-if="deals.length">
                             <td></td>
                             <td colspan="3" class="col-md-2 text-center">
                                 <strong>GST (7%)</strong>

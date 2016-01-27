@@ -20,7 +20,7 @@
 
     <div class="form-group">
         {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+        {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2']) !!}
     </div>       
 
     <div class="form-group">

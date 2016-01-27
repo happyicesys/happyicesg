@@ -139,12 +139,15 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            @can('accountant_view')
+                            @cannot('transaction_view')
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
                             @endcan
                             @endcan
                         </div>
                         <div class="pull-right">
+                            @cannot('transaction_view')
+                                {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            @endcan                        
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>   
                         </div> 
