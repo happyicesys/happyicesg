@@ -45,18 +45,19 @@ class Person extends Model
         'name' => 'Att Name',
         'remark' => 'Remark',
         'del_postcode'  => 'Postcode',
-        'company' => 'Company',
+        'company' => 'ID Name',
         'bill_address' => 'Billing Address',
         'del_address' => 'Delivery Address',
         'payterm' => 'Pay Term',
         'costrate' => 'Cost Rate',
         'active' => 'Active',
         'site_name' => 'Site Name',
+        'com_remark' => 'Company'
     ); 
 
 
     protected $fillable = [
-    'contact', 'alt_contact',
+    'contact', 'alt_contact', 'com_remark',
     'email', 'name', 'cust_id',
     'remark', 'del_postcode',
     'company', 'bill_address', 'del_address',

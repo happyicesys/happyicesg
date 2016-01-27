@@ -9,13 +9,13 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
-        {!! Form::text('com_remark', null, ['class'=>'form-control']) !!}
+        {!! Form::label('company', 'ID Name', ['class'=>'control-label']) !!}
+        {!! Form::text('company', null, ['class'=>'form-control']) !!}
     </div>
 
     <div class="form-group">
-        {!! Form::label('company', 'Company Remark', ['class'=>'control-label']) !!}
-        {!! Form::text('company', null, ['class'=>'form-control']) !!}
+        {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
+        {!! Form::text('com_remark', null, ['class'=>'form-control']) !!}
     </div> 
 
     <div class="form-group">

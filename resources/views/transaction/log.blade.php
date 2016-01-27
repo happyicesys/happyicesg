@@ -22,7 +22,7 @@
 
     <div class="col-md-10 col-md-offset-1" style="padding-top:10px">
         <ul class="list-group">
-        @foreach($personHistory as $history)
+        @foreach($transHistory as $history)
             @if($history->key == 'created_at' && !$history->old_value)
                 <li class="list-group-item row">
                     <span class="col-md-9">
