@@ -93,7 +93,8 @@
                             @if($person->profile->gst)
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="4" class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100).toFixed(2)}}</strong></td>
+                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100).toFixed(2)}}</strong></td> --}}
+                                <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 7/100 + totalModel*100/100).toFixed(2)}}</strong></td>
                             </td>
                             @else
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
