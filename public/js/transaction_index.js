@@ -12,21 +12,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             saveAs(blob, "TransactionRpt"+ now + ".xls");
         };
 
-        var monthNames = [
-          "January", "February", "March",
-          "April", "May", "June", "July",
-          "August", "September", "October",
-          "November", "December"
-        ];
-
-        var date = new Date();
-        var day = date.getDate();
-        var monthIndex = date.getMonth();
-        var year = date.getFullYear();
-
-        $scope.today = day + '-' + monthNames[monthIndex] + '-' + year;
-
-                                     
+        var now = moment();
+        $scope.today = now.format("DD MMM YY");
 
         angular.element(document).ready(function () {
 
