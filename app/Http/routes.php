@@ -6,6 +6,10 @@
     var_dump($query);
 });*/
 
+get('/', function () {
+    return view('errors.503');
+});
+
 Route::get('/admin', function () {
     return view('welcome');
 });
