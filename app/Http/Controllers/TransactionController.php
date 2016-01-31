@@ -186,15 +186,26 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $transaction = Transaction::findOrFail($id);
+        if($request->input('form_delete')){
 
-        $transaction->status = 'Cancelled';
+            $transaction = Transaction::findOrFail($id);
 
-        $transaction->save();
+            $transaction->status = 'Cancelled';
 
-        return Redirect::action('TransactionController@edit', $transaction->id);
+            $transaction->save();
+
+            return Redirect::action('TransactionController@edit', $transaction->id);
+
+        }else{
+
+            $transaction = Transaction::findOrFail($id);
+
+            $transaction->delete();
+
+            return redirect('transaction');
+        }
     }
 
     /**

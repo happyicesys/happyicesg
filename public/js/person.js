@@ -3,7 +3,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
     function personController($scope, $http){
 
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 30;
+        $scope.itemsPerPage = 50;
 
 
         angular.element(document).ready(function () {
@@ -30,7 +30,15 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }else{
                     return false;
                 }
-            }                           
+            } 
+
+            $scope.exportData = function () {
+                var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                    type: "application/vnd.ms-excel;charset=charset=utf-8"
+                });
+                var now = Date.now();
+                saveAs(blob, "CustomerRpt"+ now + ".xls");
+            };                                      
         });
     }  
 

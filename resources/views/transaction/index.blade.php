@@ -17,10 +17,10 @@
 
                     <div class="pull-left display_num">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='30'">
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'">
                           <option ng-value="10">10</option>
-                          <option ng-value="20">20</option>
                           <option ng-value="30">30</option>
+                          <option ng-value="70">70</option>
                           <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
@@ -67,9 +67,20 @@
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <label for="del_on" class="search">Delivery On:</label>
-                        <input type="text" ng-model="search.delivery_date" ng-init="search.delivery_date=today" style="width:140px;">                           
-                        <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
+                        <label for="del_on" class="search pull-left">Delivery On:</label>
+                        <div class="col-md-2" style="padding-top:3px;">
+                            <div class="dropdown" style="width:140px;">
+                                <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                <div class="input-group"><input type="text" style="width:140px;" data-ng-model="search.delivery_date" ng-init="search.delivery_date=today">
+                                </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day' }" ng-change="dateChange(search.delivery_date)"/>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <label for="search_driver" class="search" style="margin-left:-20px;">Delivered By:</label>
                         <input type="text" ng-model="search.driver" style="width:140px;">
                     </div>                   
                 </div>              
@@ -79,8 +90,7 @@
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>                
                     </div>
                 </div>                
-                <div id="exportable" class="table-responsive">
-                    <div class="table-responsive">
+                    <div class="table-responsive" id="exportable">
                         <table class="table table-list-search table-hover table-bordered">
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-1 text-center">
@@ -206,8 +216,7 @@
                                 </tr>                     
                             </tbody>
                         </table>
-                    </div>
-                </div>            
+                    </div>           
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>

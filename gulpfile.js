@@ -9,6 +9,7 @@ elixir(function(mix) {
             '../bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
             'dropzone.css',
             '../bower/ui-select/dist/select.min.css',
+            'angular-bootstrap-datetimepicker.css',
             'app.css'])
         .scripts([
             'jquery.min.js',
@@ -24,7 +25,8 @@ elixir(function(mix) {
             'fixedScroll.js',
             '../bower/ui-select/dist/select.min.js',
             'filesaver.js',
-            'moment.js'
+            'moment.js',
+            'angular-bootstrap-datetimepicker.js'
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

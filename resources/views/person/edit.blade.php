@@ -31,18 +31,22 @@
 
             <div class="col-md-12">
                 <div class="pull-right">
+                    @cannot('transaction_view')
                     {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
+                    @endcannot
         {!! Form::close() !!}
 
                     <a href="/person" class="btn btn-default">Cancel</a>            
                 </div>
                 <div class="pull-left row">
                     <div class="col-md-5" style="margin-left: 3px">
+                    @cannot('transaction_view')
                     @if($person->active == 'Yes')
                         {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}  
                     @else
                         {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}  
                     @endif
+                    @endcannot
                     </div>
                 </div>                
             </div>
@@ -106,7 +110,9 @@
                         @endif
                     </td>
                     <td class="col-md-2 text-center">
+                        @cannot('transaction_view')
                         <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
+                        @endcannot
                     </td>
                 </tr>
                 @endforeach
@@ -122,7 +128,7 @@
     </div>
 
     <div class="panel-footer">
-
+        @cannot('transaction_view')
         @if($person->cost_rate)
             <div class="col-md-9 col-md-offset-1">
                 Cost Rate : <strong>{{$person->cost_rate}} % </strong>
@@ -146,7 +152,7 @@
         @else
             <p>**Please Set the Cost Rate in Customer Profile**</p>
         @endif
-
+        @endcannot
     </div>
 </div>
 {{-- divider --}}

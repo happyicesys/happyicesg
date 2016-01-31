@@ -18,9 +18,14 @@
                 !!}  
             </div>
             @else --}}
-                {!! Form::text('person_id', $transaction->person->cust_id.' - '.$transaction->person->company, ['class'=>'form-control', 'id'=>'person_id', 'readonly'=>'readonly']) !!}
+                {{-- {!! Form::text('person_id', $transaction->person->cust_id.' - '.$transaction->person->company, ['class'=>'form-control', 'id'=>'person_id', 'readonly'=>'readonly', 'style'=>'margin-bottom:10px']) !!} --}}
+                <label style="margin-bottom: 15px; font-size: 18px;">
+                    <a href="/person/@{{ personModel }}">
+                        {{$transaction->person->cust_id}} - {{$transaction->person->company}}
+                    </a>
+                </label>
  {{--            @endif --}}
-
+                {!! Form::text('person_id', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
                 {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
                 {!! Form::text('person_code', '@{{personcodeModel}}', ['class'=>'hidden form-control']) !!}
                 {!! Form::text('name', '@{{nameModel}}', ['class'=>'hidden form-control']) !!}
@@ -121,6 +126,20 @@
                             {!! Form::text('po_no', null, ['class'=>'form-control']) !!}                  
                         </div> 
                     @endif
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('attn_name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                        {!! Form::text('attn_name', null, ['class'=>'form-control', 
+                        'ng-model'=>'attNameModel',
+                        'readonly'=>'readonly']) !!}                  
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('tel_no', 'Tel No. :', ['class'=>'control-label']) !!}
+                        {!! Form::text('tel_no', null, ['class'=>'form-control', 
+                        'ng-model'=>'contactModel',
+                        'readonly'=>'readonly']) !!}                  
+                    </div>                                        
                 </div>                                             
 
         </div>

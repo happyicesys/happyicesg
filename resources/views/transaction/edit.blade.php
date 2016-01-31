@@ -61,7 +61,7 @@
                         </div>           
                     </div>  
                    
-                   @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
+                    @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
                         <div class="row">
                             <div class="col-md-12" style="padding-top:15px;">
                                 @include('transaction.form_table')
@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-12" >
                         <div class="pull-left">
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         </div>
                         <div class="pull-right">
 
@@ -94,7 +94,7 @@
                     <div class="col-md-12">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
@@ -113,14 +113,14 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @endcan
                         </div>
                         <div class="pull-right">
 
                             {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                            {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} 
+                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} 
                             <a href="/transaction" class="btn btn-default">Cancel</a>   
 
                         </div> 
@@ -130,7 +130,10 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-right">
-                            <a href="/transaction" class="btn btn-default">Cancel</a>   
+                            <a href="/transaction" class="btn btn-default">Cancel</a>
+                            @cannot('transaction_view')
+                                {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
+                            @endcan                               
                         </div> 
                     </div>       
                 </div>                
@@ -140,7 +143,7 @@
                         <div class="pull-left">
                             @can('transaction_deleteitem')
                             @cannot('transaction_view')
-                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete']) !!}
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @endcan
                             @endcan
                         </div>

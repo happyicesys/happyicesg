@@ -1,12 +1,12 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize']);
+var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
 
     function transController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;  
+        $scope.itemsPerPage = 70;  
 
         $scope.exportData = function () {
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
             saveAs(blob, "TransactionRpt"+ now + ".xls");
@@ -27,48 +27,9 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     {name: 'Confirmed', value: 'Confirmed'}
                 ]; 
 
-                $scope.onDelFromChanged = function(){
-
-                    console.log($scope.deldate_from);
-                }
-/*                $scope.dateRangeFilter = function (property) {
-
-                    return function (transaction) {
-                        if (transaction[property] === null) return false;
-
-                        // console.log(transaction[property]);
-
-                        var deldate = new Date(transaction[property]);
-
-                        $scope.onDelFromChanged = function (startDate){
-
-                            var startdate = new Date(startDate);
-                            var enddate = new Date($scope.delTo);
-
-                            if(deldate >= startdate && deldate <= enddate){
-
-                                return true;
-                            }
-
-                            return false;
-                        }
-
-                        $scope.onDelToChanged = function (endDate){
-
-                            var enddate = new Date(endDate);
-                            var startdate = new Date($scope.delFrom);
-
-                            if(deldate >= startdate && deldate <= enddate){
-
-                                return true;
-                            }
-
-                            return false;                            
-
-                        }                        
-                        
-                    }
-                } */                      
+                $scope.dateChange = function(date){
+                    $scope.search.delivery_date = moment(date).format("DD MMM YY");
+                }                     
             });
                 
             //delete record

@@ -116,6 +116,8 @@ var app = angular.module('app', [   'ui.bootstrap',
                     $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     $scope.paytermModel = person.payterm;
                     $scope.personcodeModel = person.cust_id;
+                    $scope.contactModel = person.contact;
+                    $scope.attNameModel = person.name;
                     if(transaction.transremark){
                         
                         $scope.transremarkModel = transaction.transremark;
@@ -126,7 +128,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                     }
                     
                     $('.date').datetimepicker({
-                        format: 'DD-MMMM-YYYY'
+                        format: 'DD MMM YY'
                     });
 
                         $http({
@@ -155,7 +157,7 @@ var app = angular.module('app', [   'ui.bootstrap',
             $scope.paytermModel = person.payterm;
             $scope.personcodeModel = person.cust_id;
             $('.date').datetimepicker({
-            format: 'DD-MMMM-YYYY'
+            format: 'DD MMM YY'
             });
             $('.date').val('');
 

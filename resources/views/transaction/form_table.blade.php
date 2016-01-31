@@ -44,11 +44,11 @@
                             {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @unless($transaction->status == 'Cancelled')
+                            @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
                             <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
                             @else
-                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" disabled/>
-                            @endunless
+                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                            @endif
                         </td>
                         <td class="col-md-1">
                             <strong>
