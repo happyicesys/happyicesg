@@ -224,7 +224,7 @@ class PersonController extends Controller
 
     public function showTransac($person_id)
     {
-        return Transaction::with('user')->wherePersonId($person_id)->get();
+        return Transaction::with('user')->wherePersonId($person_id)->latest()->get();
     } 
 
     public function generateLogs($id)

@@ -89,33 +89,33 @@
                 @unless(count($prices)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
-                @foreach($prices as $price)
-                <tr>
-                    <td class="col-md-1 text-center">{{ $index++ }} </td>
-                    <td class="col-md-5">
-                        {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
-                    </td>
-                    <td class="col-md-2 text-right">
-                        @if($price->retail_price != 0)
-                            {{$price->retail_price}}
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td class="col-md-2 text-right">
-                        @if($price->quote_price != 0)
-                            <strong>{{$price->quote_price}}</strong>
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td class="col-md-2 text-center">
-                        @cannot('transaction_view')
-                        <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
-                        @endcannot
-                    </td>
-                </tr>
-                @endforeach
+                    @foreach($prices as $price)
+                    <tr>
+                        <td class="col-md-1 text-center">{{ $index++ }} </td>
+                        <td class="col-md-5">
+                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->retail_price != 0)
+                                {{$price->retail_price}}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->quote_price != 0)
+                                <strong>{{$price->quote_price}}</strong>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @cannot('transaction_view')
+                            <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
+                            @endcannot
+                        </td>
+                    </tr>
+                    @endforeach
                 @endunless                        
 
             </tbody>

@@ -34,7 +34,7 @@ class TransactionController extends Controller
 
     public function getData()
     {
-        $transactions =  Transaction::with(['person', 'user', 'person.profile'])->get();
+        $transactions =  Transaction::with(['person', 'user', 'person.profile'])->latest()->get();
 
         return $transactions;
     }      
@@ -166,7 +166,11 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        $this->createDeal($transaction->id, $quantities, $amounts);
+        if($quantities and $amounts){
+
+            $this->createDeal($transaction->id, $quantities, $amounts);
+
+        }
 
         if($request->input('save')){
 
@@ -359,6 +363,30 @@ class TransactionController extends Controller
 
         $request->input('endDate');         
 
+    }
+
+    public function changeStatus($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        $status = $transaction->status;
+
+        $pay_status = $transaction->pay_status;
+
+        if($status == 'Delivered' and $pay_status == 'Owe'){
+
+            $transaction->status = 'Verified Owe';
+
+            $transaction->save();
+
+        }else if(($status == 'Verified Owe' or $status == 'Delivered') and $pay_status == 'Paid'){
+
+            $transaction->status = 'Verified Paid';
+
+            $transaction->save();
+        }
+
+        return redirect('transaction');
     }        
 
     private function syncTransaction(Request $request)

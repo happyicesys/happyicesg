@@ -41,6 +41,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');

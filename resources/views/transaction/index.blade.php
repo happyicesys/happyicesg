@@ -182,6 +182,7 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.person.del_postcode }}</td>
 
+                                    {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
                                     </td>
@@ -191,24 +192,37 @@
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
                                         @{{ transaction.status }}
                                     </td>
+                                    <td class="col-md-1 text-center" style="color: black;" ng-if="transaction.status == 'Verified Owe' || transaction.status == 'Verified Paid'">
+                                        @{{ transaction.status }}
+                                    </td>                                    
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
-                                    </td>                                                                        
+                                    </td>
+                                    {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
+                                    {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                                         @{{ transaction.pay_status }}
                                     </td>
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
                                         @{{ transaction.pay_status }}
-                                    </td>                                                                        
+                                    </td>
+                                    {{-- pay status ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
-                                    <td class="col-md-1 text-center">        
+                                    <td class="col-md-1 text-center">
+                                        {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        {{-- button view shown when cancelled --}}
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>                                        
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a>
+                                        {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
+                                        {{-- Payment Verification --}}
+                                        @cannot('transaction_view')
+                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
+                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                                        @endcannot
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">

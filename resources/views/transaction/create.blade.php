@@ -6,7 +6,7 @@
 @stop
 @section('content')
 
-<div class="create_edit">
+<div class="create_edit" ng-app="app" ng-controller="transController">
 <div class="panel panel-primary">
 
     <div class="panel-heading">
@@ -45,6 +45,7 @@
 </div>
 </div>
 
+<script src="/js/transaction_create.js"></script>  
 <script>
     $('.select').select2();
 </script>
