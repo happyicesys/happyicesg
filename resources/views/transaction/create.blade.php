@@ -92,7 +92,10 @@
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
                                         @{{ transaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: black;" ng-if="transaction.status == 'Verified Owe' || transaction.status == 'Verified Paid'">
+                                    <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
+                                        @{{ transaction.status }}
+                                    </td> 
+                                    <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
                                         @{{ transaction.status }}
                                     </td>                                    
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
