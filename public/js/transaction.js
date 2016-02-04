@@ -143,75 +143,70 @@ var app = angular.module('app', [   'ui.bootstrap',
 
         });
 
-
-
-    $scope.onPersonSelected = function (person){
-
-        $http({
-            url: '/transaction/person/'+ person,
-            method: "GET",
-        
-        }).success(function(person){ 
-            $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
-            $scope.delModel = person.del_address + ' ' + person.del_postcode;
-            $scope.paytermModel = person.payterm;
-            $scope.personcodeModel = person.cust_id;
-            $('.date').datetimepicker({
-            format: 'DD MMM YY'
-            });
-            $('.date').val('');
+        $scope.onPersonSelected = function (person){
 
             $http({
-                url: '/transaction/item/'+ person.id,
+                url: '/transaction/person/'+ person,
                 method: "GET",
             
-            }).success(function(items){
-                console.log(items);
-                $scope.items = items;             
-                $scope.qtyModel = [];
-                $scope.amountModel = [];
-                $scope.unitModel = [];
+            }).success(function(person){ 
+                $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
+                $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                $scope.paytermModel = person.payterm;
+                $scope.personcodeModel = person.cust_id;
+                $('.date').datetimepicker({
+                format: 'DD MMM YY'
+                });
+                $('.date').val('');
 
-                $http.put('editperson', $scope.personModel)
-                            .success(function(){
-                            });
-
-                /*$http.put('editpersoncode', $scope.personModel)
-                            .success(function(){
-                            }); */
                 $http({
-                    url: '/transaction/' + $trans_id.val() + '/editpersoncode' ,
-                    method: "POST",
-                    data: {person_code: $scope.personcodeModel},
-                    }).success(function(response){
-                    });
-                                                                      
+                    url: '/transaction/item/'+ person.id,
+                    method: "GET",
+                
+                }).success(function(items){
+                    console.log(items);
+                    $scope.items = items;             
+                    $scope.qtyModel = [];
+                    $scope.amountModel = [];
+                    $scope.unitModel = [];
 
-                $scope.onItemSelected = function (item_id){
+                    $http.put('editperson', $scope.personModel)
+                                .success(function(){
+                                });
 
+                    /*$http.put('editpersoncode', $scope.personModel)
+                                .success(function(){
+                                }); */
                     $http({
-                        url: '/transaction/person/'+ person.id + '/item/' + item_id,
-                        method: "GET",
+                        url: '/transaction/' + $trans_id.val() + '/editpersoncode' ,
+                        method: "POST",
+                        data: {person_code: $scope.personcodeModel},
+                        }).success(function(response){
+                        });
+                                                                          
 
-                    }).success(function(prices){
-                        $scope.prices = prices;
-                        $scope.qtyModel = 1;
-                        $scope.unitModel = prices.item.unit;
-                        $scope.amountModel = prices.quote_price;
+                    $scope.onItemSelected = function (item_id){
 
-                        $scope.onQtyChange = function(){
-                            $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
-                        }
-                    });                    
+                        $http({
+                            url: '/transaction/person/'+ person.id + '/item/' + item_id,
+                            method: "GET",
 
-                }
+                        }).success(function(prices){
+                            $scope.prices = prices;
+                            $scope.qtyModel = 1;
+                            $scope.unitModel = prices.item.unit;
+                            $scope.amountModel = prices.quote_price;
 
-            });
-        });                                     
-    }          
+                            $scope.onQtyChange = function(){
+                                $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
+                            }
+                        });                    
 
-/*    $scope.currentPage = 1;
-    $scope.itemsPerPage = 10; */ 
+                    }
+
+                });
+            });                                     
+        }          
 
         //delete deals
         $scope.confirmDelete = function(id){
@@ -233,12 +228,6 @@ var app = angular.module('app', [   'ui.bootstrap',
             }
         } 
     }  
-/*
-function repeatController($scope) {
-    $scope.$watch('$index', function(index) {
-        $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
-    })
-} */   
 
 app.controller('transactionController', transactionController);
-// app.controller('repeatController', repeatController);
+

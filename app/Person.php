@@ -52,7 +52,7 @@ class Person extends Model
         'costrate' => 'Cost Rate',
         'active' => 'Active',
         'site_name' => 'Site Name',
-        'com_remark' => 'Company'
+        'com_remark' => 'Company',
     ); 
 
 

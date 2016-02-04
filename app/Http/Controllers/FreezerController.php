@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests\PaytermRequest;
+use App\Http\Requests\FreezerRequest;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Payterm;
+use App\Freezer;
 
-class PaytermController extends Controller
+class FreezerController extends Controller
 {
     //auth-only login can see
     public function __construct()
@@ -25,9 +25,9 @@ class PaytermController extends Controller
 
     public function getData()
     {
-        $payterms =  Payterm::all();
+        $freezers =  Freezer::all();
 
-        return $payterms;
+        return $freezers;
     } 
 
     /**
@@ -37,7 +37,7 @@ class PaytermController extends Controller
      */
     public function create()
     {
-        return view('user.payterm.create');
+        return view('user.freezer.create');
     }
 
     /**
@@ -46,11 +46,11 @@ class PaytermController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PaytermRequest $request)
+    public function store(FreezerRequest $request)
     {
         $input = $request->all();
 
-        $payterm = Payterm::create($input);
+        $freezer = Freezer::create($input);
 
         return redirect('user');
     }
@@ -63,9 +63,9 @@ class PaytermController extends Controller
      */
     public function show($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $freezer = Freezer::findOrFail($id);
 
-        return view('user.payterm.edit', compact('payterm'));
+        return view('user.freezer.edit', compact('freezer'));
     }
 
     /**
@@ -76,9 +76,9 @@ class PaytermController extends Controller
      */
     public function edit($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $freezer = Freezer::findOrFail($id);
 
-        return view('user.payterm.edit', compact('payterm'));
+        return view('user.freezer.edit', compact('freezer'));
     }
 
     /**
@@ -88,13 +88,13 @@ class PaytermController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PaytermRequest $request, $id)
+    public function update(FreezerRequest $request, $id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $freezer = Freezer::findOrFail($id);
 
         $input = $request->all();
 
-        $payterm->update($input);
+        $freezer->update($input);
 
         return redirect('user');
     }
@@ -107,9 +107,9 @@ class PaytermController extends Controller
      */
     public function destroy($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $freezer = Freezer::findOrFail($id);
 
-        $payterm->delete();
+        $freezer->delete();
 
         return redirect('user');
     }
@@ -122,10 +122,10 @@ class PaytermController extends Controller
      */
     public function destroyAjax($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $freezer = Freezer::findOrFail($id);
 
-        $payterm->delete();
+        $freezer->delete();
 
-        return $payterm->name . 'has been successfully deleted';
+        return $freezer->name . 'has been successfully deleted';
     }
 }

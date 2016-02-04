@@ -29,7 +29,11 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                 $scope.dateChange = function(date){
                     $scope.search.delivery_date = moment(date).format("DD MMM YY");
-                }                     
+                } 
+
+                $scope.dateChange2 = function(date){
+                    $scope.search.updated_at = moment(date).format("DD MMM YY");
+                }                                     
             });
                 
             //delete record

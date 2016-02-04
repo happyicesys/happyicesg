@@ -47,7 +47,11 @@
                             @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
                             <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
                             @else
-                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                @can('transaction_view')
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                @else
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px"/>
+                                @endcan
                             @endif
                         </td>
                         <td class="col-md-1">

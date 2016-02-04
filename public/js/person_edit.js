@@ -8,32 +8,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
                 $scope.transactions = transactions;       
-            });
-
-
-            $scope.onFreezerSelected = function (freezers){
-
-                console.log('freezers');
-               /* $http({
-                    url: '/transaction/person/'+ person.id + '/item/' + item_id,
-                    method: "GET",
-
-                }).success(function(prices){
-                    $scope.prices = prices;
-                    $scope.qtyModel = 1;
-                    $scope.unitModel = prices.item.unit;
-                    $scope.amountModel = prices.quote_price;
-
-                    $scope.onQtyChange = function(){
-                        console.log(eval($scope.qtyModel));
-                        $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
-                    }
-                }); */                   
-            }
-
-            $scope.onAccessorySelected = function (accessories){
-                console.log(accessories);
-            }             
+            });            
 
             //delete record
             $scope.confirmDelete = function(id){
@@ -44,17 +19,52 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         url: '/transaction/data/' + id
                     })
                     .success(function(data){
-                        console.log(data);
                         location.reload();
                     })
                     .error(function(data){
-                        console.log(data);
                         alert('Unable to delete');
                     })
                 }else{
                     return false;
                 }
             } 
+
+           function multInputs() {
+            "use strict";
+               var mult = 0;
+               // for each row:
+               $("tr.txtMult").each(function () {
+                   // get the values from this row:
+                   var $qty = eval($('.qtyClass', this).val()) * 1;
+
+                   var $quote = ($('.quoteClass', this).val()) * 1;
+
+                   var $retail = ($('.retailClass', this).val()) * 1;
+
+                   var $price = 0;
+
+                   if($quote == null || $quote == '' || $quote == 0){
+
+                        $price = $retail;
+
+                   }else{
+
+                        $price = $quote;
+
+                   }
+
+                   var $total = ($qty * $price).toFixed(2);
+                   // set total for the row
+                   // $('.amountClass', this).text($total);
+                    if(isNaN($total)) {
+                        var $total = 0;
+                    }                   
+                   $('.amountClass', this).val($total);
+                   mult += parseFloat($total);
+               });
+
+               $('.grandTotal').val(mult.toFixed(2));
+           }            
         });
     }  
 

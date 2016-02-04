@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests\PaytermRequest;
+use App\Http\Requests\AccessoryRequest;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Payterm;
+use App\Accessory;
 
-class PaytermController extends Controller
+class AccessoryController extends Controller
 {
     //auth-only login can see
     public function __construct()
@@ -25,9 +25,9 @@ class PaytermController extends Controller
 
     public function getData()
     {
-        $payterms =  Payterm::all();
+        $accessories =  Accessory::all();
 
-        return $payterms;
+        return $accessories;
     } 
 
     /**
@@ -37,7 +37,7 @@ class PaytermController extends Controller
      */
     public function create()
     {
-        return view('user.payterm.create');
+        return view('user.accessory.create');
     }
 
     /**
@@ -46,11 +46,11 @@ class PaytermController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PaytermRequest $request)
+    public function store(AccessoryRequest $request)
     {
         $input = $request->all();
 
-        $payterm = Payterm::create($input);
+        $accessory = Accessory::create($input);
 
         return redirect('user');
     }
@@ -63,9 +63,9 @@ class PaytermController extends Controller
      */
     public function show($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $accessory = Accessory::findOrFail($id);
 
-        return view('user.payterm.edit', compact('payterm'));
+        return view('user.accessory.edit', compact('accessory'));
     }
 
     /**
@@ -76,9 +76,9 @@ class PaytermController extends Controller
      */
     public function edit($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $accessory = Accessory::findOrFail($id);
 
-        return view('user.payterm.edit', compact('payterm'));
+        return view('user.accessory.edit', compact('accessory'));
     }
 
     /**
@@ -88,13 +88,13 @@ class PaytermController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PaytermRequest $request, $id)
+    public function update(AccessoryRequest $request, $id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $accessory = Accessory::findOrFail($id);
 
         $input = $request->all();
 
-        $payterm->update($input);
+        $accessory->update($input);
 
         return redirect('user');
     }
@@ -107,9 +107,9 @@ class PaytermController extends Controller
      */
     public function destroy($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $accessory = Accessory::findOrFail($id);
 
-        $payterm->delete();
+        $accessory->delete();
 
         return redirect('user');
     }
@@ -122,10 +122,10 @@ class PaytermController extends Controller
      */
     public function destroyAjax($id)
     {
-        $payterm = Payterm::findOrFail($id);
+        $accessory = Accessory::findOrFail($id);
 
-        $payterm->delete();
+        $accessory->delete();
 
-        return $payterm->name . 'has been successfully deleted';
+        return $accessory->name . 'has been successfully deleted';
     }
 }

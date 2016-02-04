@@ -41,6 +41,8 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+get('/transaction/person/latest/{person_id}', 'TransactionController@showPersonTransac');
+get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
@@ -69,6 +71,17 @@ get('/report', 'RptController@index');
 post('/report/person', 'RptController@generatePerson');
 post('/report/transaction', 'RptController@generateTransaction');
 
+get('/freezer/data', 'FreezerController@getData');
+delete('/freezer/data/{id}', 'FreezerController@destroyAjax');
+resource('freezer', 'FreezerController');
+
+get('/accessory/data', 'AccessoryController@getData');
+delete('/accessory/data/{id}', 'AccessoryController@destroyAjax');
+resource('accessory', 'AccessoryController');
+
+get('/payterm/data', 'PaytermController@getData');
+delete('/payterm/data/{id}', 'PaytermController@destroyAjax');
+resource('payterm', 'PaytermController');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');

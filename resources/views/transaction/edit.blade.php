@@ -67,6 +67,14 @@
                                 @include('transaction.form_table')
                             </div>           
                         </div> 
+                    @else
+                        @cannot('transaction_view')
+                        <div class="row">
+                            <div class="col-md-12" style="padding-top:15px;">
+                                @include('transaction.form_table')
+                            </div>           
+                        </div>
+                        @endcannot                     
                     @endunless              
                     {!! Form::close() !!}    
 
@@ -108,7 +116,7 @@
                         </div>        
                     </div>
                 </div>
-                @elseif($transaction->status == 'Delivered' and $transaction->pay_status == 'Owe') 
+                @elseif(($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe') and $transaction->pay_status == 'Owe') 
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
@@ -149,7 +157,7 @@
                         </div>
                         <div class="pull-right">
                             @cannot('transaction_view')
-                                {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                             @endcan                        
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>   

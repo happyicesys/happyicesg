@@ -41,7 +41,7 @@
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
                     <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
-                        <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }}</a>
+                        <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
                 @endcannot
                 @endcannot

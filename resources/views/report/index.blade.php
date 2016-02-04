@@ -55,21 +55,23 @@
                                                 {!! Form::label('tran_specific', 'Specific') !!}
                                            </div>
 
-                                           <div class="desc" id="tran_specific">
-                                           <div class="col-md-4">
-                                                {!! Form::label('transaction_datefrom', 'Dates between', ['class'=>'control-label']) !!}
-                                                {!! Form::text('transaction_datefrom', null, ['id'=>'transaction_datefrom', 'class'=>'date form-control']) !!}
-                                           </div>
+                                           <div class="row">
+                                               <div class="desc" id="tran_specific">
+                                                   <div class="col-md-4">
+                                                        {!! Form::label('transaction_datefrom', 'Dates between', ['class'=>'control-label']) !!}
+                                                        {!! Form::text('transaction_datefrom', null, ['id'=>'transaction_datefrom', 'class'=>'date form-control']) !!}
+                                                   </div>
 
-                                           <div class="col-md-1 text-center">
-                                           <br/>
-                                                {!! Form::label('and', 'To', ['class'=>'control-label', 'style'=>'margin-top: 10px;']) !!}
-                                           </div>
+                                                   <div class="col-md-1 text-center">
+                                                   <br/>
+                                                        {!! Form::label('and', 'To', ['class'=>'control-label', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
 
-                                           <div class="col-md-4">
-                                           <br/>
-                                                {!! Form::text('transaction_dateto', null, ['id'=>'transaction_dateto', 'class'=>'date form-control', 'style'=>'margin-top: 10px;']) !!}
-                                           </div>
+                                                   <div class="col-md-4">
+                                                   <br/>
+                                                        {!! Form::text('transaction_dateto', null, ['id'=>'transaction_dateto', 'class'=>'date form-control', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
+                                               </div>
                                            </div>
                                         </div>
                                         <hr>

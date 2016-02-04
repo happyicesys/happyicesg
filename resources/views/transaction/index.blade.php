@@ -17,7 +17,7 @@
 
                     <div class="pull-left display_num">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'">
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='10'">
                           <option ng-value="10">10</option>
                           <option ng-value="30">30</option>
                           <option ng-value="70">70</option>
@@ -37,7 +37,7 @@
                         </div>
                     </div>   
                     <div class="pull-right">                    
-                        <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>                        
+                        <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
                     </div>
                 </div>
             </div>
@@ -60,9 +60,9 @@
                         <label for="search_payment" class="search">Payment:</label>
                         <input type="text" ng-model="search.pay_status" style="width:140px;"> 
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
-                        <input type="text" ng-model="search.updated_by" style="width:140px;"> 
+                        <input type="text" ng-model="search.updated_by" style="width:140px;">
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
-                        <input type="text" ng-model="search.updated_at" style="width:140px;">                         
+                        <input type="text" ng-model="search.updated_at" style="width:140px;">                      
                     </div>
                 </div>
                 <div class="row">
@@ -75,7 +75,7 @@
                                 </div>
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day' }" ng-change="dateChange(search.delivery_date)"/>
+                                <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
                                 </ul>
                             </div>
                         </div>
@@ -87,7 +87,8 @@
                 
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>                
+                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                        <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                     </div>
                 </div>                
                     <div class="table-responsive" id="exportable">
@@ -182,6 +183,7 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.person.del_postcode }}</td>
 
+                                    {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
                                     </td>
@@ -191,24 +193,37 @@
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
                                         @{{ transaction.status }}
                                     </td>
+                                    <td class="col-md-1 text-center" style="color: black;" ng-if="transaction.status == 'Verified Owe' || transaction.status == 'Verified Paid'">
+                                        @{{ transaction.status }}
+                                    </td>                                    
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
-                                    </td>                                                                        
+                                    </td>
+                                    {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
+                                    {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                                         @{{ transaction.pay_status }}
                                     </td>
                                     <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
                                         @{{ transaction.pay_status }}
-                                    </td>                                                                        
+                                    </td>
+                                    {{-- pay status ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
-                                    <td class="col-md-1 text-center">        
+                                    <td class="col-md-1 text-center">
+                                        {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        {{-- button view shown when cancelled --}}
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>                                        
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a>
+                                        {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
+                                        {{-- Payment Verification --}}
+                                        @cannot('transaction_view')
+                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
+                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                                        @endcannot
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
@@ -220,7 +235,6 @@
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                      <label class="pull-right totalnum" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label> 
                 </div>
         </div>
     </div>
