@@ -52,111 +52,7 @@
             </div>
     </div>
 </div>
-
 {{-- divider --}}
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="panel-title">         
-            <div class="pull-left display_panel_title">
-                <h3 class="panel-title"><strong>Price Management : {{$person->company}}</strong></h3>
-            </div>
-        </div>      
-    </div>
-
-    <div class="panel-body">
-        <table class="table table-list-search table-hover table-bordered">
-            <tr style="background-color: #DDFDF8">
-                <th class="col-md-1 text-center">
-                    #
-                </th>                    
-                <th class="col-md-5 text-center">
-                    Item                           
-                </th>
-                <th class="col-md-2 text-center">
-                    Retail Price ($)                       
-                </th>
-                <th class="col-md-2 text-center">
-                    Quote Price ($)
-                </th>
-                 <th class="col-md-2 text-center">
-                    Action
-                </th>                                                                                                
-            </tr>
-
-            <tbody>
-
-                <?php $index = $prices->firstItem(); ?>
-                @unless(count($prices)>0)
-                <td class="text-center" colspan="7">No Records Found</td>
-                @else
-                    @foreach($prices as $price)
-                    <tr>
-                        <td class="col-md-1 text-center">{{ $index++ }} </td>
-                        <td class="col-md-5">
-                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
-                        </td>
-                        <td class="col-md-2 text-right">
-                            @if($price->retail_price != 0)
-                                {{$price->retail_price}}
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td class="col-md-2 text-right">
-                            @if($price->quote_price != 0)
-                                <strong>{{$price->quote_price}}</strong>
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @cannot('transaction_view')
-                            <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
-                            @endcannot
-                        </td>
-                    </tr>
-                    @endforeach
-                @endunless                        
-
-            </tbody>
-        </table>     
-        {!! $prices->render() !!}
-                <div class="pull-right" style="padding: 30px 10px 0px 0px;">
-                    <strong>Total of {{$prices->total()}} entries</strong>            
-                </div>        
-        
-    </div>
-
-    <div class="panel-footer">
-        @cannot('transaction_view')
-        @if($person->cost_rate)
-            <div class="col-md-9 col-md-offset-1">
-                Cost Rate : <strong>{{$person->cost_rate}} % </strong>
-            <em style="padding-left:10px">
-                (**Edit the Cost Rate in Customer Profile**) 
-            </em>
-            </div>
-
-        {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
-        {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
-
-            @include('person.price.form', ['disabled'=>''])
-
-            <div class="col-md-12">
-                <div class="form-group pull-right" style="padding-right: 80px">
-                    {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}           
-                </div>
-
-            </div>
-        {!! Form::close() !!}            
-        @else
-            <p>**Please Set the Cost Rate in Customer Profile**</p>
-        @endif
-        @endcannot
-    </div>
-</div>
-{{-- divider --}}
-
 <div class="panel panel-primary" ng-app="app" ng-controller="personEditController">
 
     <div class="panel-heading">
@@ -338,6 +234,111 @@
         </div>
     </div>     
 </div>
+
+{{-- divider --}}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">         
+            <div class="pull-left display_panel_title">
+                <h3 class="panel-title"><strong>Price Management : {{$person->company}}</strong></h3>
+            </div>
+        </div>      
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-list-search table-hover table-bordered">
+            <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    #
+                </th>                    
+                <th class="col-md-5 text-center">
+                    Item                           
+                </th>
+                <th class="col-md-2 text-center">
+                    Retail Price ($)                       
+                </th>
+                <th class="col-md-2 text-center">
+                    Quote Price ($)
+                </th>
+                 <th class="col-md-2 text-center">
+                    Action
+                </th>                                                                                                
+            </tr>
+
+            <tbody>
+
+                <?php $index = $prices->firstItem(); ?>
+                @unless(count($prices)>0)
+                <td class="text-center" colspan="7">No Records Found</td>
+                @else
+                    @foreach($prices as $price)
+                    <tr>
+                        <td class="col-md-1 text-center">{{ $index++ }} </td>
+                        <td class="col-md-5">
+                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->retail_price != 0)
+                                {{$price->retail_price}}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->quote_price != 0)
+                                <strong>{{$price->quote_price}}</strong>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @cannot('transaction_view')
+                            <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
+                            @endcannot
+                        </td>
+                    </tr>
+                    @endforeach
+                @endunless                        
+
+            </tbody>
+        </table>     
+        {!! $prices->render() !!}
+                <div class="pull-right" style="padding: 30px 10px 0px 0px;">
+                    <strong>Total of {{$prices->total()}} entries</strong>            
+                </div>        
+        
+    </div>
+
+    <div class="panel-footer">
+        @cannot('transaction_view')
+        @if($person->cost_rate)
+            <div class="col-md-9 col-md-offset-1">
+                Cost Rate : <strong>{{$person->cost_rate}} % </strong>
+            <em style="padding-left:10px">
+                (**Edit the Cost Rate in Customer Profile**) 
+            </em>
+            </div>
+
+        {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
+        {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
+
+            @include('person.price.form', ['disabled'=>''])
+
+            <div class="col-md-12">
+                <div class="form-group pull-right" style="padding-right: 80px">
+                    {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}           
+                </div>
+
+            </div>
+        {!! Form::close() !!}            
+        @else
+            <p>**Please Set the Cost Rate in Customer Profile**</p>
+        @endif
+        @endcannot
+    </div>
+</div>
+{{-- divider --}}
+
 
 {{-- divider --}}
 <div class="panel panel-primary">
