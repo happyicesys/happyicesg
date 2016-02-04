@@ -41,7 +41,10 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+<<<<<<< HEAD
 get('/transaction/person/latest/{person_id}', 'TransactionController@showPersonTransac');
+=======
+>>>>>>> 879209ac341b8e435cddf8a8575e737d482b3401
 get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');

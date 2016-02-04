@@ -387,12 +387,16 @@ class TransactionController extends Controller
         }
 
         return redirect('transaction');
+<<<<<<< HEAD
     }
 
     public function showPersonTransac($person_id)
     {
         return Transaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
     }             
+=======
+    }        
+>>>>>>> 879209ac341b8e435cddf8a8575e737d482b3401
 
     private function syncTransaction(Request $request)
     {
