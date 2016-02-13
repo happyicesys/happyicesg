@@ -144,7 +144,13 @@
                                     Total Amount
                                     <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
-                                </th>                                        
+                                </th>  
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
+                                    Total Qty
+                                    <span ng-show="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>                                                                        
                                  <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
@@ -206,6 +212,7 @@
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                                         @{{ transaction.pay_status }}
@@ -223,9 +230,11 @@
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>                                        
                                         {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                         {{-- Payment Verification --}}
+                                        @cannot('supervisor_view')
                                         @cannot('transaction_view')
                                         <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
                                         <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                                        @endcannot
                                         @endcannot
                                     </td>
                                 </tr>

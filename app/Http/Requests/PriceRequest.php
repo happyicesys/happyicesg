@@ -27,8 +27,9 @@ class PriceRequest extends Request
 
         return [
             'item_id' => 'unique:prices,item_id,null,id,person_id,'.$this->person_id,
-            'retail_price' => array('required_without_all:quote_price', 'regex:/^[0-9]+(\.[0-9]{1,2})?$/'),
-            'quote_price' => array( 'required_without_all:retail_price', 'regex:/^[0-9]+(\.[0-9]{1,2})?$/'),
+            'retail_price' => 'regex:/^[0-9]+(\.[0-9]{1,2})?$/',
+            'quote_price' => 'regex:/^[0-9]+(\.[0-9]{1,2})?$/',
+            //'quote_price' => array( 'required_without_all:retail_price', 'regex:/^[0-9]+(\.[0-9]{1,2})?$/'),
         ];
     }
 }

@@ -31,17 +31,17 @@ var app = angular.module('app', [   'ui.bootstrap',
                    // for each row:
                    $("tr.txtMult").each(function () {
                        // get the values from this row:
-                       var $qty = eval($('.qtyClass', this).val()) * 1;
+                       var $qty = eval($('.qtyClass', this).val());
 
-                       var $quote = ($('.quoteClass', this).val()) * 1;
+                       var $quote = (+$('.quoteClass', this).val());
 
-                       var $retail = ($('.retailClass', this).val()) * 1;
+                       var $retail = (+$('.retailClass', this).val());
 
                        var $price = 0;
 
                        if($quote == null || $quote == '' || $quote == 0){
 
-                            $price = $retail;
+                            $price = 0;
 
                        }else{
 
@@ -49,14 +49,14 @@ var app = angular.module('app', [   'ui.bootstrap',
 
                        }
 
-                       var $total = ($qty * $price).toFixed(2);
+                       var $total = (+$qty * +$price);
                        // set total for the row
                        // $('.amountClass', this).text($total);
                         if(isNaN($total)) {
                             var $total = 0;
                         }                   
-                       $('.amountClass', this).val($total);
-                       mult += parseFloat($total);
+                       $('.amountClass', this).val($total.toFixed(2));
+                       mult += (+$total);
                    });
 
                    $('.grandTotal').val(mult.toFixed(2));
@@ -79,30 +79,38 @@ var app = angular.module('app', [   'ui.bootstrap',
                     $scope.deals = deals;
 
                     var total = 0;
+                    var totalqty = 0;
                     for(var i = 0; i < $scope.deals.length; i++){
                         var deal = $scope.deals[i];
                         total += (deal.amount/100*100);
+                        totalqty += (deal.qty/100*100);
                     }
 
                         $http({
                             url: '/person/profile/' + transaction.person_id,
                             method: "GET",
                         }).success(function(profile){ 
-    /*
+    
+                                $scope.totalModel = total;
+                                $scope.totalqtyModel = totalqty;
+
                             if(profile.gst){
 
-                                $scope.totalModel = (total * 107/100).toFixed(2);
-                                console.log('gst'+ $scope.totalModel);
+                                $scope.totalModelStore = (total * 7/100) + total;
 
-                            }else{*/
+                            }else{
 
-                                $scope.totalModel = total.toFixed(2);
+                                $scope.totalModelStore = total;
                                     
-                            // }
+                            }
                             
-                            $http.put('total', $scope.totalModel)
+                            $http.put('total', $scope.totalModelStore)
                                 .success(function(){
-                            });                                                
+                            });  
+
+                            $http.put('totalqty', $scope.totalqtyModel)
+                                .success(function(){
+                            });                                                                            
 
                         });
 
@@ -113,11 +121,13 @@ var app = angular.module('app', [   'ui.bootstrap',
                     $scope.personModel = person.id;
                     $scope.nameModel = person.name;
                     $scope.billModel = person.bill_address;
-                    $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     $scope.paytermModel = person.payterm;
                     $scope.personcodeModel = person.cust_id;
                     $scope.contactModel = person.contact;
                     $scope.attNameModel = person.name;
+
+                    // choose which to display
+                    // transremark
                     if(transaction.transremark){
                         
                         $scope.transremarkModel = transaction.transremark;
@@ -125,6 +135,16 @@ var app = angular.module('app', [   'ui.bootstrap',
                     }else{
 
                         $scope.transremarkModel = person.remark;    
+                    }
+
+                    // delivery address
+                    if(transaction.del_address){
+
+                        $scope.delModel = transaction.del_address;
+
+                    }else{
+
+                        $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     }
                     
                     $('.date').datetimepicker({
@@ -143,6 +163,8 @@ var app = angular.module('app', [   'ui.bootstrap',
 
         });
 
+        // previous on select real time select cust function
+/*
         $scope.onPersonSelected = function (person){
 
             $http({
@@ -174,9 +196,6 @@ var app = angular.module('app', [   'ui.bootstrap',
                                 .success(function(){
                                 });
 
-                    /*$http.put('editpersoncode', $scope.personModel)
-                                .success(function(){
-                                }); */
                     $http({
                         url: '/transaction/' + $trans_id.val() + '/editpersoncode' ,
                         method: "POST",
@@ -206,7 +225,7 @@ var app = angular.module('app', [   'ui.bootstrap',
 
                 });
             });                                     
-        }          
+        }  */        
 
         //delete deals
         $scope.confirmDelete = function(id){

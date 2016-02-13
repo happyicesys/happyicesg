@@ -92,6 +92,12 @@ class PermissionSeeder extends Seeder
             'name' => 'accountant_view',
             'label' => 'Accountant View',
             'remark' => '',
-        ]);                                                                                       
+        ]); 
+
+        Permission::create([
+            'name' => 'supervisor_view',
+            'label' => 'Supervisor View',
+            'remark' => '',
+        ]);                                                                                               
     } 
 }

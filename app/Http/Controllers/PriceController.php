@@ -25,11 +25,75 @@ class PriceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    // 10-Feb now fully depends only on store
     public function store(PriceRequest $request)
     {
 
         $person_id = $request->input('person_id');
 
+        $retail_price = $request->retail;
+
+        $quote_price = $request->quote;
+
+        foreach($quote_price as $index => $quote){
+
+
+            if($quote != 0 and $quote != null){
+
+                $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+
+                if($price){
+
+                    $price->retail_price = $retail_price[$index];
+
+                    $price->quote_price = $quote_price[$index];
+
+                    $price->save();
+
+                }else{
+
+                    $price = new Price();
+
+                    $price->retail_price = $retail_price[$index];
+
+                    $price->quote_price = $quote_price[$index];
+
+                    $price->person_id = $person_id;
+
+                    $price->item_id = $index;
+
+                    $price->save();
+                }
+
+            }else{
+
+                $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+
+                if($retail_price[$index] == 0 or $retail_price[$index] == null){
+
+                    if($price){
+
+                        $price->delete();    
+                    }
+                    
+                }else{
+
+                    $price->retail_price = $retail_price[$index];
+
+                    $price->quote_price = $quote_price[$index];
+
+                    $price->person_id = $person_id;
+
+                    $price->item_id = $index;
+
+                    $price->save();
+                }
+
+
+            }
+        }         
+/*
         $retail_price = $request->input('retail_price');
 
         if(! $request->has('quote_price')){
@@ -41,6 +105,7 @@ class PriceController extends Controller
         $input = $request->all();
 
         $price = Price::create($input);
+        */
 
         return Redirect::action('PersonController@edit', $person_id);
     }

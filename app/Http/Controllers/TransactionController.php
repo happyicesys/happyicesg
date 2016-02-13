@@ -119,10 +119,13 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, $id)
     {
+
         // dynamic form arrays
         $quantities = $request->qty;
 
         $amounts = $request->amount;
+
+        $quotes = $request->quote; 
 
         if($request->input('save')){
 
@@ -168,7 +171,7 @@ class TransactionController extends Controller
 
         if($quantities and $amounts){
 
-            $this->createDeal($transaction->id, $quantities, $amounts);
+            $this->createDeal($transaction->id, $quantities, $amounts, $quotes);
 
         }
 
@@ -304,6 +307,21 @@ class TransactionController extends Controller
 
     } 
 
+    public function storeTotalQty($trans_id, Request $request)
+    {
+        $input = $request->all();
+
+        $transaction = Transaction::findOrFail($trans_id);
+
+        //take the first value of the array
+        $transaction->total_qty = reset($input);
+
+        $transaction->save();
+
+        return "Sucess updating transaction #" . $transaction->id;
+
+    }     
+
     public function generateInvoice($id)    
     {
 
@@ -430,7 +448,7 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     }
 
-    private function createDeal($id, $quantities, $amounts)
+    private function createDeal($id, $quantities, $amounts, $quotes)
     {
         foreach($quantities as $index => $qty){
 
@@ -445,6 +463,8 @@ class TransactionController extends Controller
                 $deal->qty = $qty;
 
                 $deal->amount = $amounts[$index];
+
+                $deal->unit_price = $quotes[$index];
 
                 $deal->save();
 

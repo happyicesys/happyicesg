@@ -69,11 +69,13 @@
                         </div> 
                     @else
                         @cannot('transaction_view')
+                        @cannot('supervisor_view')
                         <div class="row">
                             <div class="col-md-12" style="padding-top:15px;">
                                 @include('transaction.form_table')
                             </div>           
                         </div>
+                        @endcannot
                         @endcannot                     
                     @endunless              
                     {!! Form::close() !!}    
@@ -107,8 +109,8 @@
                         </div>
                         <div class="pull-right">
 
-                            {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
-                            {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
+                            {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                             {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}  
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>
@@ -121,12 +123,14 @@
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
+                            @cannot('supervisor_view')
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @endcannot
                             @endcan
                         </div>
                         <div class="pull-right">
 
-                            {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
+                            {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} 
                             <a href="/transaction" class="btn btn-default">Cancel</a>   
@@ -151,14 +155,18 @@
                         <div class="pull-left">
                             @can('transaction_deleteitem')
                             @cannot('transaction_view')
+                            @cannot('supervisor_view')
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @endcan
+                            @endcannot
+                            @endcannot
                             @endcan
                         </div>
                         <div class="pull-right">
+                            @cannot('supervisor_view')
                             @cannot('transaction_view')
                                 {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
-                            @endcan                        
+                            @endcannot
+                            @endcannot
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>   
                         </div> 
@@ -174,5 +182,10 @@
 @stop
 
 @section('footer')
-<script src="/js/transaction.js"></script>  
+<script src="/js/transaction.js"></script> 
+<script>
+    function clicked(e){
+        if(!confirm('Are you sure?'))e.preventDefault();
+    }
+</script> 
 @stop

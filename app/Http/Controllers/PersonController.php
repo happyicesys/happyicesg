@@ -33,6 +33,13 @@ class PersonController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function getPersonData($person_id)
+    {
+        $person =  Person::findOrFail($person_id);
+
+        return $person;
+    }  
+
     public function getData()
     {
         $person =  Person::all();
@@ -293,53 +300,23 @@ class PersonController extends Controller
 
         return Redirect::action('PersonController@edit', $addaccessory->person_id); 
     }          
-/*
-    private function syncFreezer($person, $request)
+
+    public function personPrice($person_id)
     {
-        if ( ! $request->has('freezer_list'))
-        {
-            $person->freezers()->detach();
-            return;
-        }
+        $prices = Price::wherePersonId($person_id)->get();
 
-        $allFreezersId = array();
-
-        foreach ($request->freezer_list as $freezerId)
-        {
-            if (substr($freezerId, 0, 4) == 'new:')
-            {
-                $newFreezer = Freezer::create(['name'=>substr($freezerId, 4)]);
-                $allFreezersId[] = $newFreezer->id;
-                continue;
-            }
-            $allFreezersId[] = $freezerId;
-        }
-
-        $person->freezers()->sync($allFreezersId);
+        return $prices;
     } 
 
-    private function syncAccessory($person, $request)
+    public function storeNote($person_id, Request $request)
     {
-        if ( ! $request->has('accessory_list'))
-        {
-            $person->accessories()->detach();
-            return;
-        }
+        $person = Person::findOrFail($person_id);
 
-        $allAccessoriesId = array();
+        $person->note = $request->note;
 
-        foreach ($request->accessory_list as $accessoryId)
-        {
-            if (substr($accessoryId, 0, 4) == 'new:')
-            {
-                $newAccessory = Accessory::create(['name'=>substr($accessoryId, 4)]);
-                $allAccessoriesId[] = $newAccessory->id;
-                continue;
-            }
-            $allAccessoriesId[] = $accessoryId;
-        }
+        $person->save();
 
-        $person->accessories()->sync($allAccessoriesId);
-    }  */                      
+        return Redirect::action('PersonController@edit', $person->id);
+    }                         
   
 }

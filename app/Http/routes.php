@@ -18,6 +18,9 @@ get('/position/data', 'PositionController@getData');
 delete('/position/data/{id}', 'PositionController@destroyAjax');
 resource('position', 'PositionController');
 
+post('/person/{person_id}/note', 'PersonController@storeNote');
+get('/person/specific/data/{person_id}', 'PersonController@getPersonData');
+get('/person/price/{person_id}', 'PersonController@personPrice');
 post('person/addaccessory/{person_id}', 'PersonController@addAccessory');
 delete('person/addaccessory/{addaccessory_id}', 'PersonController@removeAccessory');
 post('person/addfreezer/{person_id}', 'PersonController@addFreezer');
@@ -50,6 +53,7 @@ get('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
+put('/transaction/{trans_id}/totalqty', 'TransactionController@storeTotalQty');
 put('/transaction/{trans_id}/total', 'TransactionController@storeTotal');
 get('/transaction/person/{person_id}', 'TransactionController@getCust');
 get('/transaction/item/{person_id}', 'TransactionController@getItem');

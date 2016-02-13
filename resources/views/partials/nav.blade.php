@@ -8,23 +8,24 @@
             </button>
             <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
         </div>       
-
+{{-- 
         <ul class="nav navbar-nav navbar-right">
-            @if (Auth::guest())
-                <li><a href="/auth/login">Login</a></li>
-            @else
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/auth/logout">Logout</a></li>
-                    </ul>
-                </li>
-            @endif
-        </ul>
+
+        </ul> --}}
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
         @unless (Auth::guest())
         <div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarCollapse">
             <ul class="nav navbar-nav side-nav">
+                @if (Auth::guest())
+                    <li><a href="/auth/login">Login</a></li>
+                @else
+                    <li class="dropdown" style="border:solid white thin; margin-bottom:30px;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User:  {{ Auth::user()->name }} <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/auth/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                @endif  
 
                 <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
                     <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
@@ -44,7 +45,7 @@
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
                 @endcannot
-                @endcannot
+                @endcannot              
 {{--                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>   --}}              

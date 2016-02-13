@@ -243,6 +243,7 @@
         </div>
     </div>     
 </div>
+
 {{-- divider --}}
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -254,6 +255,102 @@
     </div>
 
     <div class="panel-body">
+        <table class="table table-list-search table-hover table-bordered">
+            <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    #
+                </th>                    
+                <th class="col-md-5 text-center">
+                    Item                           
+                </th>
+                <th class="col-md-2 text-center">
+                    Retail Price ($)                       
+                </th>
+                <th class="col-md-2 text-center">
+                    Quote Price ($)
+                </th>
+                 <th class="col-md-2 text-center">
+                    Action
+                </th>                                                                                                
+            </tr>
+
+            <tbody>
+
+                <?php $index = $prices->firstItem(); ?>
+                @unless(count($prices)>0)
+                <td class="text-center" colspan="7">No Records Found</td>
+                @else
+                    @foreach($prices as $price)
+                    <tr>
+                        <td class="col-md-1 text-center">{{ $index++ }} </td>
+                        <td class="col-md-5">
+                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->retail_price != 0)
+                                {{$price->retail_price}}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-right">
+                            @if($price->quote_price != 0)
+                                <strong>{{$price->quote_price}}</strong>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @cannot('transaction_view')
+                            <a href="/price/{{ $price->id }}/edit" class="btn btn-primary" style="margin-right:5px;">Edit</a> 
+                            @endcannot
+                        </td>
+                    </tr>
+                    @endforeach
+                @endunless                        
+
+            </tbody>
+        </table>     
+        {!! $prices->render() !!}
+                <div class="pull-right" style="padding: 30px 10px 0px 0px;">
+                    <strong>Total of {{$prices->total()}} entries</strong>            
+                </div>        
+        
+    </div>
+
+    <div class="panel-footer">
+        {{-- operation --}}
+{{-- 
+        @cannot('transaction_view')
+        @if($person->cost_rate)
+            <div class="col-md-9 col-md-offset-1">
+                Cost Rate : <strong>{{$person->cost_rate}} % </strong>
+            <em style="padding-left:10px">
+                (**Edit the Cost Rate in Customer Profile**) 
+            </em>
+            </div>
+
+        {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
+        {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
+
+            @include('person.price.form', ['disabled'=>''])
+
+            <div class="col-md-12">
+                <div class="form-group pull-right" style="padding-right: 80px">
+                    {!! Form::submit('Add Price', ['class'=> 'btn btn-success']) !!}           
+                </div>
+
+            </div>
+        {!! Form::close() !!}            
+        @else
+            <p>**Please Set the Cost Rate in Customer Profile**</p>
+        @endif
+        @endcannot
+         --}}
+        {{-- operation end --}}
+
+        {{-- new thing --}}
+
         {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
         {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
                 
@@ -272,6 +369,33 @@
                 </tr>
 
                 <tbody>
+{{-- 
+                    @unless(count($items)>0)
+                    <td class="text-center" colspan="7">No Records Found</td>
+                    @else
+                    @foreach($items::orderBy('product_id')->get() as $item)
+                    <tr class="txtMult form-group">
+                        <td class="col-md-8">
+                            {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
+                        </td>
+                        <td class="col-md-2">
+                            <strong>
+                            <input type="text" name="retail[{{$item->id}}]" 
+
+                            class="text-right retailClass form-control"/>
+                            </strong>
+                        </td>                        
+                        <td class="col-md-2">
+                            <strong>
+                                <input type="text" name="quote[{{$item->id}}]" 
+
+                                class="text-right form-control quoteClass"/>                          
+                            </strong>
+                        </td>
+                    </tr>                
+                    @endforeach
+                    @endunless                                       
+ --}}
                 <tr ng-repeat="item in items" class="form-group">
                     <td class="col-md-8">
                         @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
@@ -287,18 +411,16 @@
                         </strong>
                     </td>                    
                 </tr>
-                <tr ng-if="items.length == 0 || ! items.length">
-                    <td colspan="4" class="text-center">No Records Found!</td>
-                </tr>                  
                 </tbody>
-            </table>  
-            <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-            {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!} 
+            </table>          
         </div>        
-        {!! Form::close() !!}       
-        
+        {!! Form::close() !!}
+        {{-- end of new thing --}}
     </div>
 </div>
+{{-- divider --}}
+
+
 {{-- divider --}}
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -318,6 +440,7 @@
             </div>
         </div>
     </div>
+
 </div>
 {{-- divider --}}
 
@@ -383,26 +506,8 @@
         </label>
     </div>
 </div>
-{{-- divider --}}
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="panel-title">
-            <h3 class="panel-title"><strong>Notes : {{$person->company}}</strong></h3>
-        </div>
-    </div>
+</div>
 
-    <div class="panel-body">
-        <div class="form-group">
-            {!! Form::model($person, ['action'=>['PersonController@storeNote', $person->id]]) !!}
-                {!! Form::label('note', 'Notes', ['class'=>'control-label']) !!}
-                {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel']) !!}
-                {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
-            {!! Form::close() !!}  
-        </div>            
-    </div>
-</div>
-{{-- divider --}}
-</div>
 <script>
 $(document).ready(function() {
     Dropzone.autoDiscover = false;

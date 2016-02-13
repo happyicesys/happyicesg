@@ -49,7 +49,8 @@
                             <td class="col-md-2 text-center" ng-if="deal.qty % 1 == 0">@{{ Math.round(deal.qty) }} @{{ deal.item.unit }}</td>
                             <td class="col-md-2 text-center" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit}}</td>
                             {{-- unit price --}}
-                            <td class="col-md-1 text-right">@{{ (deal.amount / deal.qty).toFixed(2)}}</td>
+                            <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty).toFixed(2)}}</td>
+                            <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price }}</td>
                             {{-- deal amount --}}
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
@@ -80,7 +81,7 @@
                                 <strong>Subtotal</strong>
                             </td>
                             <td class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel">@{{totalModel}}</td>                            
+                                <td class="text-right" ng-model="totalModel">@{{totalModel.toFixed(2)}}</td>                            
                             </td>
                         </tr>
                         <tr ng-if="deals.length">
@@ -97,13 +98,13 @@
                             @if($person->profile->gst)
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="4" class="col-md-3 text-right">
-                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ ((totalModel * 7/100).toFixed(2) * 1 + totalModel * 1 )}}</strong></td> --}}
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100 ).toFixed(2)}}</strong></td>                                
+                                <td class="text-right" ng-model="totalModel"><strong>@{{ (+(totalModel * 7/100).toFixed(2) + totalModel).toFixed(2)}}</strong></td>
+                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100 ).toFixed(2)}}</strong></td>                                 --}}
                             </td>
                             @else
                             <td class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="4" class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel }}</strong></td>
+                                <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel.toFixed(2) }}</strong></td>
                             </td>
                             @endif                            
                         </tr>

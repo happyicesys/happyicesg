@@ -29,43 +29,73 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }
             } 
 
-           function multInputs() {
-            "use strict";
-               var mult = 0;
-               // for each row:
-               $("tr.txtMult").each(function () {
-                   // get the values from this row:
-                   var $qty = eval($('.qtyClass', this).val()) * 1;
 
-                   var $quote = ($('.quoteClass', this).val()) * 1;
+            
+            $scope.exportData = function () {
+                var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                    type: "application/vnd.ms-excel;charset=charset=utf-8"
+                });
+                var now = Date.now();
+                saveAs(blob, "TransactionRpt"+ now + ".xls");
+            };
 
-                   var $retail = ($('.retailClass', this).val()) * 1;
+            $http.get('/item/data').success(function(items){
+                $scope.items = items;
+            });  
 
-                   var $price = 0;
-
-                   if($quote == null || $quote == '' || $quote == 0){
-
-                        $price = $retail;
-
-                   }else{
-
-                        $price = $quote;
-
-                   }
-
-                   var $total = ($qty * $price).toFixed(2);
-                   // set total for the row
-                   // $('.amountClass', this).text($total);
-                    if(isNaN($total)) {
-                        var $total = 0;
-                    }                   
-                   $('.amountClass', this).val($total);
-                   mult += parseFloat($total);
-               });
-
-               $('.grandTotal').val(mult.toFixed(2));
-           }            
         });
+
+        $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
+            $scope.prices = prices; 
+            $scope.getRetailInit = function(item_id){
+                var retailNum = 0;
+                for(var i = 0; i < $scope.prices.length; i ++){
+                    var price = $scope.prices[i];
+                    if(item_id == price.item_id){
+                        retailNum = price.retail_price;
+                        return retailNum;     
+                    }
+                }
+            } 
+
+            $scope.getQuoteInit = function(item_id){
+                var quoteNum = 0;
+                for(var i = 0; i < $scope.prices.length; i ++){
+                    var price = $scope.prices[i];
+                    if(item_id == price.item_id){
+                        quoteNum = price.quote_price;
+                        return quoteNum;     
+                    }
+                }
+            }                 
+        });
+
+        $http.get('/person/specific/data/'+ $('#person_id').val()).success(function(person){
+            $scope.personData = person;
+            $scope.noteModel = person.note;
+
+            $scope.getRetailChange = function(retailModel){
+                $scope.afterChange = (retailModel * person.cost_rate/100).toFixed(2);
+            }
+/*
+            $scope.noteSave = function(note){
+                console.log(note);
+                $http({
+                    method: 'POST',
+                    url: '/person/' + person.id + '/note',
+                    data: $.param(note: 'note'),
+                }).success(function(){
+                    });
+               
+            }   */
+/*            $scope.noteSave = function(note){
+                $http.post({'/note', note})
+                        .success(function(){
+                        });
+            }*/
+
+        });            
+   
     }  
 
 function repeatController($scope) {

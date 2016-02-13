@@ -30,12 +30,13 @@ class Deal extends Model
     protected $revisionFormattedFieldNames = array(
         'item_id' => 'Item',
         'qty' => 'Quantity',
-        'amount' => 'Amount'
+        'amount' => 'Amount',
+        'unit_price' => 'Unit Price',
     );        
 
     protected $fillable = [
         'item_id', 'transaction_id', 'qty',
-        'amount'
+        'amount', 'unit_price'
     ];
 
     public function item()
