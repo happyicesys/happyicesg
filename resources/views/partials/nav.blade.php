@@ -8,10 +8,12 @@
             </button>
             <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
         </div>       
-{{-- 
-        <ul class="nav navbar-nav navbar-right">
 
-        </ul> --}}
+        <ul class="nav navbar-nav navbar-right">
+            @if (Auth::guest())
+                <li><a href="/auth/login">Login</a></li>
+            @endif
+        </ul>
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
         @unless (Auth::guest())
         <div class="collapse navbar-collapse navbar-ex1-collapse" id="navbarCollapse">
