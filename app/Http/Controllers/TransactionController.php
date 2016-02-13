@@ -344,7 +344,7 @@ class TransactionController extends Controller
         ];
 
         // $name = 'Inv('.$transaction->id.')_'.Carbon::now()->format('dmYHis').'.pdf';
-        $name = 'Inv('.Carbon::now()->format('dmyHis').')_'.$person->cust_id.'.pdf';
+        $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
 
         $pdf = PDF::loadView('transaction.invoice', $data);
 

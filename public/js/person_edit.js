@@ -7,7 +7,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         angular.element(document).ready(function () {
 
             $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
-                $scope.transactions = transactions;       
+                $scope.transactions = transactions; 
+                $scope.All = transactions.length;      
             });            
 
             //delete record

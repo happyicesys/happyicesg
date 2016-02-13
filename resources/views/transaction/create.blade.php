@@ -21,7 +21,7 @@
                     <div class="form-group">
                         {!! Form::label('person_id', 'Customer', ['class'=>'control-label']) !!}
                         {!! Form::select('person_id', 
-                            [''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->lists('full', 'id')->all(), 
+                            [''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->lists('full', 'id')->all(), 
                             null, 
                             [
                             'id'=>'person_id', 
