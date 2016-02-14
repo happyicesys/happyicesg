@@ -46,11 +46,11 @@
                     <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
-                @endcannot
                 @endcannot              
-{{--                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
+                <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
-                </li>   --}}              
+                </li>     
+                @endcannot           
             </ul>
         </div> 
         @endunless     

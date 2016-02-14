@@ -30,7 +30,7 @@
                                         <div class="form-group">
                                         {!! Form::label('cust_choice', 'Select Customer', ['class'=>'control-label']) !!}
                                         {!! Form::open(['id'=>'person_form', 'method'=>'POST','action'=>['RptController@generatePerson']]) !!}
-                                        {!! Form::select('cust_choice', [[''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id')->all()],
+                                        {!! Form::select('cust_choice', [''=>null, 'all'=>'ALL (Info Only)']+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id')->all(),
                                                 null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
                                         {!! Form::close() !!}
                                         </div>
@@ -89,7 +89,7 @@
                                            </div>
                                         </div>
                                         <br/>
-
+{{-- 
                                         <div class="row">
                                         <div class="form-group">
                                         {!! Form::radio('choice_transac', 'tran_month') !!}
@@ -105,7 +105,7 @@
                                        </div>                            
                                         </div>
                                         <br/>
-
+ --}}
                                         {!! Form::close() !!}
 
                                         <div class="col-md-12" style="padding-top: 20px">
@@ -125,7 +125,7 @@
     $('.select').select2({'placeholder':'Select...'});
 
     $('.date').datetimepicker({
-        format: 'DD-MMMM-YYYY'
+        format: 'DD MMM YY'
     });  
 
 $(document).ready(function() {

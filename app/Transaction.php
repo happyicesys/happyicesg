@@ -169,9 +169,9 @@ class Transaction extends Model
      */
     public function scopeSearchDateRange($query, $datefrom, $dateto)
     {
-        $datefrom = Carbon::createFromFormat('d-F-Y', $datefrom);
+        $datefrom = Carbon::createFromFormat('d M y', $datefrom);
 
-        $dateto = Carbon::createFromFormat('d-F-Y', $dateto);
+        $dateto = Carbon::createFromFormat('d M y', $dateto);
 
         return $query->whereBetween('created_at',array($datefrom, $dateto));
     }
