@@ -33,7 +33,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             
             $scope.exportData = function () {
-                var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
                     type: "application/vnd.ms-excel;charset=charset=utf-8"
                 });
                 var now = Date.now();
