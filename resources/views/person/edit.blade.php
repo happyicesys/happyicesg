@@ -351,7 +351,7 @@
                 @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
-                @foreach($files as $file)
+                @foreach($files as $index => $file)
                 <tr>
                     <td class="col-md-1 text-center">{{ $index++ }} </td>
                     <td class="col-md-7">
