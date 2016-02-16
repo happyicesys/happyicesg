@@ -93,7 +93,7 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($id);
 
-        $files = StoreFile::wherePersonId($id)->latest()->paginate(5);
+        $files = StoreFile::wherePersonId($id)->latest()->get();
 
         $prices = Price::wherePersonId($id)->oldest()->paginate(50);
 
@@ -114,7 +114,7 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($id);
 
-        $files = StoreFile::wherePersonId($id)->oldest()->paginate(5);
+        $files = StoreFile::wherePersonId($id)->oldest()->get();
 
         $prices = Price::wherePersonId($id)->orderBy('item_id')->paginate(50);
 

@@ -199,6 +199,8 @@ class TransactionController extends Controller
 
             $transaction = Transaction::findOrFail($id);
 
+            $transaction->cancel_trace = $transaction->status;
+
             $transaction->status = 'Cancelled';
 
             $transaction->save();
@@ -412,7 +414,26 @@ class TransactionController extends Controller
     public function showPersonTransac($person_id)
     {
         return Transaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
-    }             
+    } 
+
+    public function reverse($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        if($transaction->cancel_trace){
+
+            $transaction->status = $transaction->cancel_trace;    
+        
+        }else{
+            // this will affect inventories in later days
+            $transaction->status = 'Pending';
+        }
+        
+
+        $transaction->save();
+
+        return Redirect::action('TransactionController@edit', $transaction->id);
+    }            
 
     private function syncTransaction(Request $request)
     {

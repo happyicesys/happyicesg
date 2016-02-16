@@ -82,6 +82,8 @@
 
                     {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}                
                     {!! Form::close() !!}
+                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}                
+                    {!! Form::close() !!}                    
                 </div> 
             </div>             
 
@@ -145,6 +147,7 @@
                             <a href="/transaction" class="btn btn-default">Cancel</a>
                             @cannot('transaction_view')
                                 {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
+                                {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form-reverse']) !!}
                             @endcan                               
                         </div> 
                     </div>       

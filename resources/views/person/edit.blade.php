@@ -348,7 +348,6 @@
 
             <tbody>
 
-                <?php $index = $files->firstItem(); ?>
                 @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
@@ -373,14 +372,13 @@
 
             </tbody>
         </table>      
-        {!! $files->render() !!}
     </div>
 
     <div class="panel-footer">
         {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
         {!! Form::close() !!}
         <label class="pull-right totalnum" for="totalnum">
-            Total of {{$files->total()}} entries
+            Total of {{count($files)}} entries
         </label>
     </div>
 </div>
