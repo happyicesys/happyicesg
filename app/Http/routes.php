@@ -7,7 +7,7 @@
 });*/
 
 get('/', function () {
-    return view('errors.503');
+    return view('client.index');
 });
 
 Route::get('/admin', function () {

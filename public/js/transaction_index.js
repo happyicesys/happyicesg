@@ -56,6 +56,14 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             } 
         });
     }
+/*
+app.filter('cmdate', [
+    '$filter', function($filter) {
+        return function(input, format) {
+            return $filter('date')(moment(input), format);
+        };
+    }
+]); */   
 
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {

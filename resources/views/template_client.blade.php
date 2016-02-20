@@ -5,9 +5,10 @@
     </head>
     
     <body>
+        @include('partials.nav_client')
         <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="col-md-10 col-md-offset-2 main">
+            <div class="row">
+                <div class="col-md-12">
                 @include('errors.validate')
                 @include('flash::message')
                     @yield('content')

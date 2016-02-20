@@ -209,7 +209,7 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
