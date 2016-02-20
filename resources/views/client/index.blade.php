@@ -5,10 +5,10 @@
 Ice Cream
 @stop
 @section('content')
-    <div style="padding: 0px 10px 0px 10px">
-        {!! Html::image('img/happyice_b1.jpg', 'alt', array('width' => 1420)) !!}
+    <div style="padding: 0px 10px 0px 10px;" class="col-md-12">
+        {!! Html::image('img/happyice_b1.jpg', 'alt', array('width' => 1420, 'class'=>'img-responsive')) !!}
     </div>
-    <div class="row text-center" style="padding-bottom: 40px;">
+    <div class="row text-center col-md-12" style="padding-bottom: 40px;">
 {{--         <span class="row" style="font-size: 40px;">
             About Us
         </span> --}}
@@ -70,8 +70,8 @@ Ice Cream
 
     <div style="border: solid black thin;">
         {{-- <span style="font-size: 30px; padding: 10px 0px 15px 0px;" class="col-md-offset-5 col-md-7 ">Contact Us</span> --}}
-        <span class="col-md-offset-3 col-md-9" style="font-size: 28px; padding: 15px 0px 15px 0px;"><i class="fa fa-map-marker"></i> #04-125, TradeHub 21, 18, Boon Lay Way, S609966</span>
-        <span class="col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 15px 0px;"><i class="fa fa-phone-square"></i> +65-9777 3533 or +65-8500 9838</span>
-        <span class="col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 35px 0px;"><i class="fa fa-envelope"></i> daniel.ma@happyice.com.sg</span>
+        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 15px 0px 15px 0px;"><i class="fa fa-map-marker"></i> #04-125, TradeHub 21, 18, Boon Lay Way, S609966</span>
+        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 15px 0px;"><i class="fa fa-phone-square"></i> +65-9777 3533 or +65-8500 9838</span>
+        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 35px 0px;"><i class="fa fa-envelope"></i> daniel.ma@happyice.com.sg</span>
     </div>
 @stop
