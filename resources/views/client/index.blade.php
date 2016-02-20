@@ -5,13 +5,10 @@
 Ice Cream
 @stop
 @section('content')
-    <div style="padding: 0px 10px 0px 10px;" class="col-md-12">
+    <div style="padding: 0px 10px 50px 10px;" class="col-md-12">
         {!! Html::image('img/happyice_b1.jpg', 'alt', array('width' => 1420, 'class'=>'img-responsive')) !!}
     </div>
-    <div class="row text-center col-md-12" style="padding-bottom: 40px;">
-{{--         <span class="row" style="font-size: 40px;">
-            About Us
-        </span> --}}
+    <div class=" text-center" style="padding-bottom: 40px;">
         <span class="row" style="font-size: 36px;">
             Happy Ice, Healthier Life
         </span>
@@ -24,7 +21,10 @@ Ice Cream
     </div>
 
     <div class="text-center jumbotron" style="font-size: 36px; padding-top: 50px; margin: 0px 10px 0px 10px;">
-        <span>LATEST NEWS AND EVENTS</span> <a href="https://www.facebook.com/happyice.com.sg/timeline"> <i class="fa fa-facebook-official"></i> </a>
+        <span>LATEST NEWS AND EVENTS</span> 
+        <a href="https://www.facebook.com/happyice.com.sg/timeline"> 
+        <i class="fa fa-facebook-official"></i> 
+        </a>
 
         <div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 50px;">
             <ol class="carousel-indicators">
