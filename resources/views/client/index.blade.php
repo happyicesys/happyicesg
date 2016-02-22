@@ -5,7 +5,7 @@
 Ice Cream
 @stop
 @section('content')
-    <div style="padding: 0px 10px 50px 10px;" class="col-md-12 text-center">
+    <div style="padding: 0px 10px 50px 10px; width: 100%;" class="col-md-12 text-center">
         {!! Html::image('img/happyice_b1.jpg', 'alt', array('class'=>'img-responsive')) !!}
     </div>
     <div class=" text-center" style="padding-bottom: 40px;">
