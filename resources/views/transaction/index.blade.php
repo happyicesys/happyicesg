@@ -209,7 +209,7 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | cmdate:'dd MMM yy'}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
@@ -222,7 +222,7 @@
                                     </td>
                                     {{-- pay status ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_at | cmdate:'dd MMM yy (hh:mm a)'}}</td>            
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>

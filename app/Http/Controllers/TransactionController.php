@@ -104,6 +104,21 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
 
         $person = Person::findOrFail($transaction->person_id);
+/*
+        $prices = Price::with(['item' => function($query){
+
+            $query->orderBy('product_id', 'asc');
+
+        }])->wherePersonId($transaction->person_id)->get();
+*/
+        // $prices = Price::with('item' )->orderBy('product_id')->wherePersonId($transaction->person_id)->get();
+/*
+        $prices = DB::table('prices')
+                    ->leftJoin('items', 'prices.item_id', '=', 'items.id')
+                    ->select('*')
+                    ->wherePersonId($transaction->person_id)
+                    ->orderBy('items.product_id')
+                    ->get();*/
 
         $prices = Price::wherePersonId($transaction->person_id)->get();
 

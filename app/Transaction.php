@@ -118,12 +118,12 @@ class Transaction extends Model
     {
         return Carbon::parse($date)->format('d M y');
     }
-
+/*
     public function getUpdatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d M y h:i A');
     }    
-
+*/
     public function getDeliveryDateAttribute($date)
     {
         if($date){
