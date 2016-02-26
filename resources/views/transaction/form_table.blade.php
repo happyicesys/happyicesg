@@ -41,22 +41,22 @@
                     @foreach($prices as $price)
                     <tr class="txtMult form-group">
                         <td class="col-md-7">
-                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
+                            {{$price->product_id}} - {{$price->name}} - {{$price->remark}}
                         </td>
                         <td class="col-md-1 text-right">
                             @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                            <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
+                            <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
                             @else
                                 @can('transaction_view')
-                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
                                 @else
-                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px"/>
+                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px"/>
                                 @endcan
                             @endif
                         </td>
                         <td class="col-md-1">
                             <strong>
-                            <input type="text" name="retail[{{$price->item->id}}]" 
+                            <input type="text" name="retail[{{$price->item_id}}]" 
                              value="{{$price->retail_price}}"
                             class="text-right retailClass form-control" readonly="readonly"/>
                             </strong>
@@ -64,11 +64,11 @@
                         <td class="col-md-1">
                             <strong>
                             @if($transaction->status == 'Cancelled')
-                                <input type="text" name="quote[{{$price->item->id}}]" 
+                                <input type="text" name="quote[{{$price->item_id}}]" 
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>
                             @else
-                                <input type="text" name="quote[{{$price->item->id}}]" 
+                                <input type="text" name="quote[{{$price->item_id}}]" 
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass"/>
                             @endif                            
@@ -76,7 +76,7 @@
                             {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                         </td>
                         <td class="col-md-2">
-                            <input type="text" name="amount[{{$price->item->id}}]" 
+                            <input type="text" name="amount[{{$price->item_id}}]" 
                             class="text-right form-control amountClass" readonly="readonly" style="width: 140px" />
                         </td>
                     </tr>                

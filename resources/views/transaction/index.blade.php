@@ -32,7 +32,7 @@
                         <div class="col-md-9" style="padding-top:10px">
                             {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id', 
                                 'class'=>'select', 
-                                'ng-model'=>'search.person.profile.name']) 
+                                'ng-model'=>'search.name']) 
                             !!}
                         </div>
                     </div>   
@@ -62,7 +62,17 @@
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
                         <input type="text" ng-model="search.updated_by" style="width:140px;">
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
-                        <input type="text" ng-model="search.updated_at" style="width:140px;">                      
+                        <div class="col-md-2 pull-right" style="padding-top:3px; margin-right: 268px;">
+                            <div class="dropdown" style="width:140px;">
+                                <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                <div class="input-group"><input type="text" style="width:140px;" data-ng-model="search.updated_at">
+                                </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
+                                </ul>
+                            </div>
+                        </div>                      
                     </div>
                 </div>
                 <div class="row">
@@ -181,13 +191,13 @@
                                             @{{ transaction.id }} 
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>                                
+                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>                                
                                     <td class="col-md-1 text-center">
                                     <a href="/person/@{{ transaction.person.id }}">
-                                    @{{ transaction.person.company }}
+                                    @{{ transaction.company }}
                                     </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.del_postcode }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
 
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
@@ -209,7 +219,7 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | cmdate:'dd MMM yy'}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
@@ -222,7 +232,7 @@
                                     </td>
                                     {{-- pay status ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_at | cmdate:'dd MMM yy (hh:mm a)'}}</td>            
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>            
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>

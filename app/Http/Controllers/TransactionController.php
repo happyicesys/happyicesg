@@ -34,7 +34,12 @@ class TransactionController extends Controller
 
     public function getData()
     {
-        $transactions =  Transaction::with(['person', 'user', 'person.profile'])->latest()->get();
+        // using sql query instead of eloquent for super fast pre-load (api)
+        $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->select('transactions.*', 'profiles.name', 'people.cust_id', 'people.company', 'people.del_postcode')
+                        ->get();
 
         return $transactions;
     }      
@@ -67,6 +72,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->merge(array('updated_by' => Auth::user()->name));
 
         $request->merge(['delivery_date' => Carbon::now()]);
@@ -104,23 +110,14 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
 
         $person = Person::findOrFail($transaction->person_id);
-/*
-        $prices = Price::with(['item' => function($query){
 
-            $query->orderBy('product_id', 'asc');
-
-        }])->wherePersonId($transaction->person_id)->get();
-*/
-        // $prices = Price::with('item' )->orderBy('product_id')->wherePersonId($transaction->person_id)->get();
-/*
+        // retrieve manually to order product id asc
         $prices = DB::table('prices')
                     ->leftJoin('items', 'prices.item_id', '=', 'items.id')
-                    ->select('*')
-                    ->wherePersonId($transaction->person_id)
-                    ->orderBy('items.product_id')
-                    ->get();*/
-
-        $prices = Price::wherePersonId($transaction->person_id)->get();
+                    ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                    ->where('prices.person_id', '=', $transaction->person_id)
+                    ->orderBy('product_id')
+                    ->get();
 
         return view('transaction.edit', compact('transaction', 'person', 'prices'));
     }
@@ -189,6 +186,18 @@ class TransactionController extends Controller
             $this->createDeal($transaction->id, $quantities, $amounts, $quotes);
 
         }
+
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+
+        $deal_total = $deals->sum('amount');
+
+        $deal_totalqty = $deals->sum('qty');
+
+        $transaction->total = $deal_total;
+
+        $transaction->total_qty = $deal_totalqty;
+
+        $transaction->save();
 
         if($request->input('save')){
 

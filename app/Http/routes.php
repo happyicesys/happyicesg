@@ -75,6 +75,8 @@ resource('role', 'RoleController');
 get('/report', 'RptController@index');
 post('/report/person', 'RptController@generatePerson');
 post('/report/transaction', 'RptController@generateTransaction');
+post('/report/deal', 'RptController@generateByProduct');
+post('/report/driver', 'RptController@generateDriver');
 
 get('/freezer/data', 'FreezerController@getData');
 delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

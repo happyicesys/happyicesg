@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Deal;
+use App\Transaction;
 
 class DealController extends Controller
 {
@@ -115,6 +116,20 @@ class DealController extends Controller
         $deal = Deal::findOrFail($id);
 
         $deal->delete();
+
+        $transaction = Transaction::findOrFail($deal->transaction_id);
+
+        $deals = Deal::whereTransactionId($deal->transaction_id)->get();
+
+        $deal_total = $deals->sum('amount');
+
+        $deal_totalqty = $deals->sum('qty');
+
+        $transaction->total = $deal_total;
+
+        $transaction->total_qty = $deal_totalqty; 
+
+        $transaction->save();       
 
         return $deal->id . 'has been successfully deleted';
     }    

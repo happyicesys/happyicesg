@@ -36,9 +36,9 @@
             <tr>
             <td>{{$index + 1}}</td>
             <td>{{$transaction->id}}</td>
-            <td>{{$transaction->person->cust_id}}</td>
-            <td>{{$transaction->person->company}}</td>
-            <td>{{$transaction->person->del_postcode}}</td>
+            <td>{{$transaction->cust_id}}</td>
+            <td>{{$transaction->company}}</td>
+            <td>{{$transaction->del_postcode}}</td>
             <td>{{$transaction->status}}</td>
             <td>{{$transaction->delivery_date}}</td>
             <td>{{$transaction->driver}}</td>
@@ -47,7 +47,7 @@
             <td>{{$transaction->pay_status}}</td>
             <td>{{$transaction->updated_by}}</td>
             <td>{{$transaction->updated_at}}</td>
-            <td>{{$transaction->person->profile->name}}</td>
+            <td>{{$transaction->profile_name}}</td>
             </tr>
         @endforeach
     </tbody>

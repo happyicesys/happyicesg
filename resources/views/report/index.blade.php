@@ -1,4 +1,5 @@
 @inject('people', 'App\Person')
+@inject('drivers', 'App\User')
 
 @extends('template')
 @section('title')
@@ -15,6 +16,8 @@
                         <ul class="nav nav-pills nav-justified" role="tablist">
                             <li class="active"><a href="#person" role="tab" data-toggle="tab">Customer</a></li>
                             <li><a href="#transaction" role="tab" data-toggle="tab">Transaction</a></li>
+                            <li><a href="#byproduct" role="tab" data-toggle="tab">By Product</a></li>
+                            <li><a href="#driver" role="tab" data-toggle="tab">Driver</a></li>
                         </ul>
                 </div>
 
@@ -116,6 +119,95 @@
                             </div>
                         </div>  
                         {{-- end of second --}}
+                        {{-- start of third --}}
+                        <div class="tab-pane" id="byproduct">                        
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-8 col-md-offset-2">
+                                        {!! Form::open(['id'=>'byproduct_form', 'method'=>'POST','action'=>['RptController@generateByProduct']]) !!}                                    
+                                        <div class="form-group">
+                                           <div class="row">
+                                               <div class="desc">
+                                                   <div class="col-md-4">
+                                                        {!! Form::label('byproduct_datefrom', 'Dates between', ['class'=>'control-label']) !!}
+                                                        {!! Form::text('byproduct_datefrom', null, ['id'=>'byproduct_datefrom', 'class'=>'date form-control']) !!}
+                                                   </div>
+
+                                                   <div class="col-md-1 text-center">
+                                                   <br/>
+                                                        {!! Form::label('and', 'To', ['class'=>'control-label', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
+
+                                                   <div class="col-md-4">
+                                                   <br/>
+                                                        {!! Form::text('byproduct_dateto', null, ['id'=>'byproduct_dateto', 'class'=>'date form-control', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
+                                               </div>
+                                           </div>
+                                        {!! Form::close() !!}
+                                        </div>
+                                        
+                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'byproduct_form']) !!} 
+                                     </div>      
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end of third--}}
+                        {{-- start of fourth--}}
+                        <div class="tab-pane" id="driver">                        
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-8 col-md-offset-2">
+                                        {!! Form::open(['id'=>'driver_form', 'method'=>'POST','action'=>['RptController@generateDriver']]) !!}
+
+                                        <div class="form-group">
+                                            {!! Form::label('driver', 'Driver', ['class'=>'control-label']) !!}
+                                            @can('transaction_view')
+                                                {!! Form::select('driver', [''=>null]+$drivers::whereHas('roles', function($q){
+                                                        $q->whereName('driver');
+                                                })->lists('name', 'name')->all(),
+                                                Auth::user()->name, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
+                                            @else
+                                                {!! Form::select('driver', [''=>null]+$drivers::whereHas('roles', function($q){
+                                                        $q->whereName('driver');
+                                                })->lists('name', 'name')->all(),
+                                                null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}                                            
+                                            @endcan
+                                        </div>
+                       
+
+                                        <div class="form-group">                                        
+                                           <div class="row">
+                                               <div class="desc">
+                                                   <div class="col-md-4">
+                                                        {!! Form::label('driver_datefrom', 'Dates between', ['class'=>'control-label']) !!}
+                                                        {!! Form::text('driver_datefrom', null, ['id'=>'driver_datefrom', 'class'=>'datetoday form-control']) !!}
+                                                   </div>
+
+                                                   <div class="col-md-1 text-center">
+                                                   <br/>
+                                                        {!! Form::label('and', 'To', ['class'=>'control-label', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
+
+                                                   <div class="col-md-4">
+                                                   <br/>
+                                                        {!! Form::text('driver_dateto', null, ['id'=>'driver_dateto', 'class'=>'datetoday form-control', 'style'=>'margin-top: 10px;']) !!}
+                                                   </div>
+                                               </div>
+                                           </div>
+                                        {!! Form::close() !!}
+                                        </div>
+                                        
+                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'driver_form']) !!} 
+                                     </div>      
+                                </div>
+                            </div>
+                        </div>                        
+                        {{-- end of fourth --}}
                     </div>
                 </div>
             </div>
@@ -126,7 +218,12 @@
 
     $('.date').datetimepicker({
         format: 'DD MMM YY'
-    });  
+    });
+
+    $('.datetoday').datetimepicker({
+        format: 'DD MMM YY',
+        defaultDate: new Date()
+    });      
 
 $(document).ready(function() {
     $('#tran_all').hide();

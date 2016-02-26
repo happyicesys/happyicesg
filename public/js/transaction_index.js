@@ -13,7 +13,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         };
 
         var now = moment();
-        $scope.today = now.format("DD MMM YY");
+        $scope.today = now.format("YYYY-MM-DD");
 
         angular.element(document).ready(function () {
 
@@ -28,11 +28,11 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 ]; 
 
                 $scope.dateChange = function(date){
-                    $scope.search.delivery_date = moment(date).format("DD MMM YY");
+                    $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
                 } 
 
                 $scope.dateChange2 = function(date){
-                    $scope.search.updated_at = moment(date).format("DD MMM YY");
+                    $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
                 }                                     
             });
                 
@@ -57,7 +57,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         });
     }
 
-app.filter('cmdate', [
+app.filter('delDate', [
     '$filter', function($filter) {
         return function(input, format) {
             return $filter('date')(new Date(input), format);

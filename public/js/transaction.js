@@ -103,15 +103,20 @@ var app = angular.module('app', [   'ui.bootstrap',
                                 $scope.totalModelStore = total;
                                     
                             }
-                            
-                            $http.put('total', $scope.totalModelStore)
-                                .success(function(){
-                            });  
+/*                            
+                            if(! $scope.totalModelStore == transaction.total){
+
+                                $http.put('total', $scope.totalModelStore)
+                                    .success(function(){
+                                });                                 
+
+                            }
+ 
 
                             $http.put('totalqty', $scope.totalqtyModel)
                                 .success(function(){
                             });                                                                            
-
+*/
                         });
 
                 $http({

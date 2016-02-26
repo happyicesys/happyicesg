@@ -118,12 +118,12 @@ class Transaction extends Model
     {
         return Carbon::parse($date)->format('d M y');
     }
-/*
+
     public function getUpdatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d M y h:i A');
     }    
-*/
+
     public function getDeliveryDateAttribute($date)
     {
         if($date){
@@ -173,18 +173,18 @@ class Transaction extends Model
 
         $dateto = Carbon::createFromFormat('d M y', $dateto);
 
-        return $query->whereBetween('created_at',array($datefrom, $dateto));
+        return $query->whereBetween('delivery_date',array($datefrom, $dateto));
     }
 
     public function scopeSearchYearRange($query, $period)
     {
        if($period == 'this'){
 
-           return $query->whereBetween('created_at', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
+           return $query->whereBetween('delivery_date', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
 
        }else if($period == 'last'){
 
-           return $query->whereBetween('created_at', array(Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()));
+           return $query->whereBetween('delivery_date', array(Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()));
 
        }
     }
@@ -193,11 +193,11 @@ class Transaction extends Model
     {
         if($month != '0'){
 
-            return $query->whereBetween('created_at', array(Carbon::create(Carbon::now()->year, $month)->startOfMonth(), Carbon::create(Carbon::now()->year, $month)->endOfMonth()));
+            return $query->whereBetween('delivery_date', array(Carbon::create(Carbon::now()->year, $month)->startOfMonth(), Carbon::create(Carbon::now()->year, $month)->endOfMonth()));
 
         }else{
 
-            return $query->whereBetween('created_at', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
+            return $query->whereBetween('delivery_date', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
 
         }
     }    
