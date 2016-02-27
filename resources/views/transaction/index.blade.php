@@ -193,7 +193,7 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>                                
                                     <td class="col-md-1 text-center">
-                                    <a href="/person/@{{ transaction.person.id }}">
+                                    <a href="/person/@{{ transaction.person_id }}">
                                     @{{ transaction.company }}
                                     </a>
                                     </td>

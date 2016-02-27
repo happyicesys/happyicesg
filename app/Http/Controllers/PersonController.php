@@ -220,6 +220,7 @@ class PersonController extends Controller
 
         if (!File::delete($path.$filename))
         {
+            $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
         }
         else
