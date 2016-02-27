@@ -123,25 +123,25 @@ class Transaction extends Model
     {
         return Carbon::parse($date)->format('d M y h:i A');
     }  */  
-/*
+
     public function getDeliveryDateAttribute($date)
     {
         if($date){
 
-            return Carbon::parse($date)->format('d M y');    
+            return Carbon::parse($date)->format('Y-m-d');    
 
         }else{
 
             return null;
         }
         
-    } */ 
+    }  
 
     public function getOrderDateAttribute($date)
     {
         if($date){
 
-            return Carbon::parse($date)->format('d M y');    
+            return Carbon::parse($date)->format('Y-m-d');    
 
         }else{
 

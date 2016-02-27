@@ -153,7 +153,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                     }
                     
                     $('.date').datetimepicker({
-                        format: 'DD MMM YY'
+                        format: 'YYYY-MM-DD'
                     });
 
                         $http({

@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->order_date}}</span>
+                                        <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</span>
                                     </div>                                    
                                 </div>
                             </div> 
@@ -127,7 +127,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->delivery_date->format('d M y')}}</span>
+                                        <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y')}}</span>
                                     </div>                                    
                                 </div>
                             </div> 
