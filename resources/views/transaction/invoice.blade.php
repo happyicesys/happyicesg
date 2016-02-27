@@ -98,7 +98,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>DO/Inv No:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>DO/Inv No:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -110,7 +110,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>Order On:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -122,7 +122,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>Delivery On:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -134,7 +134,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>Term:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>Term:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -146,7 +146,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>Updated By:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>Updated By:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -158,7 +158,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 90%;"><strong>PO#:</strong></span>
+                                        <span class="inline" style="font-size: 85%;"><strong>PO#:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
