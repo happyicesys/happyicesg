@@ -87,7 +87,7 @@
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
-                                <div style="font-size: 140%;" class="text-center">
+                                <div style="font-size: 130%;" class="text-center">
                                     @if($person->profile->gst)
                                     <strong>DO/ TAX INVOICE</strong>
                                     @else
@@ -98,7 +98,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>DO/Inv No:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>DO/Inv No:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -110,7 +110,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>Order On:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>Order On:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -122,19 +122,19 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>Delivery On:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>Delivery On:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->delivery_date}}</span>
+                                        <span class="inline">{{$transaction->delivery_date->format('d M y')}}</span>
                                     </div>                                    
                                 </div>
                             </div> 
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>Term:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>Term:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -146,7 +146,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>Updated By:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>Updated By:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
@@ -158,7 +158,7 @@
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 95%;"><strong>PO#:</strong></span>
+                                        <span class="inline" style="font-size: 90%;"><strong>PO#:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-6">

@@ -99,6 +99,14 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
    
     }  
 
+app.filter('delDate', [
+    '$filter', function($filter) {
+        return function(input, format) {
+            return $filter('date')(new Date(input), format);
+        };
+    }
+]);  
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
