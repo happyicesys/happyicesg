@@ -353,7 +353,7 @@
                 @else
                 @foreach($files as $index => $file)
                 <tr>
-                    <td class="col-md-1 text-center">{{ $index++ }} </td>
+                    <td class="col-md-1 text-center">{{ $index+1 }} </td>
                     <td class="col-md-7">
                     {!! Html::image($file->path, 'person asset', array( 'width' => 200, 'height' => 200 )) !!}
                         <a href="{{$file->path}}">

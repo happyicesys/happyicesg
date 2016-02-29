@@ -422,11 +422,15 @@ class TransactionController extends Controller
 
             $transaction->status = 'Verified Owe';
 
+            $transaction->updated_by = Auth::user()->name;
+
             $transaction->save();
 
         }else if(($status == 'Verified Owe' or $status == 'Delivered') and $pay_status == 'Paid'){
 
             $transaction->status = 'Verified Paid';
+
+            $transaction->updated_by = Auth::user()->name;
 
             $transaction->save();
         }
@@ -446,11 +450,15 @@ class TransactionController extends Controller
 
         if($transaction->cancel_trace){
 
-            $transaction->status = $transaction->cancel_trace;    
+            $transaction->status = $transaction->cancel_trace;
+
+            $transaction->updated_by = Auth::user()->name;    
         
         }else{
             // this will affect inventories in later days
             $transaction->status = 'Pending';
+
+            $transaction->updated_by = Auth::user()->name;
         }
         
 
