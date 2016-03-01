@@ -258,16 +258,20 @@
 
                         <tr>
                             @if($person->profile->gst)
-                                <td colspan="4">
+                                <td colspan="3">
                                     <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
+                                    <span class="pull-right">{{$totalqty}}</span>
                                 </td>
+                                <td></td>
                                 <td class="text-right">
                                     <strong>{{ number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
                                 </td>
                             @else
-                                <td colspan="4">
+                                <td colspan="3">
                                     <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
+                                    <span class="pull-right">{{$totalqty}}</span>
                                 </td>
+                                <td></td>                              
                                 <td class="text-right">
                                     <strong>{{ $totalprice }}</strong>
                                 </td>

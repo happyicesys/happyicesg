@@ -360,6 +360,8 @@ class TransactionController extends Controller
 
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
 
+        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+
         // $profile = Profile::firstOrFail();
 
         $data = [
@@ -367,6 +369,7 @@ class TransactionController extends Controller
             'person'        =>  $person,
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
             // 'profile'       =>  $profile,
         ];
 
