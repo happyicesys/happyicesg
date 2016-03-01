@@ -48,9 +48,9 @@
                         <label for="search_inv" class="search">Search Inv:</label>
                         <input type="text" ng-model="search.id" style="width:140px;">
                         <label for="search_id" class="search" style="padding-left: 10px">ID:</label>
-                        <input type="text" ng-model="search.person.cust_id" style="width:140px;">
+                        <input type="text" ng-model="search.cust_id" style="width:140px;">
                         <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
-                        <input type="text" ng-model="search.person.company" style="width:140px;">
+                        <input type="text" ng-model="search.company" style="width:140px;">
                         <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
                         <input type="text" ng-model="search.status" style="width:140px;">                        
                     </div>
@@ -114,22 +114,22 @@
                                     <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'person.cust_id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                                     ID
-                                    <span ng-show="sortType == 'person.cust_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'person.cust_id' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>                                                                                  
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'person.company'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     Company
-                                    <span ng-show="sortType == 'person.company' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'person.company' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'person.del_postcode'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
                                     Del Postcode
-                                    <span ng-show="sortType == 'person.del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'person.del_postcode' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th> 
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
