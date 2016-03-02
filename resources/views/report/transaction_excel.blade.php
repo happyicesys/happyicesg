@@ -42,7 +42,13 @@
             <td>{{$transaction->status}}</td>
             <td>{{$transaction->delivery_date}}</td>
             <td>{{$transaction->driver}}</td>
-            <td>{{$transaction->total}}</td>
+            <td>
+            @if($transaction->person->profile->gst)    
+                {{ number_format(($transaction->total * 107/100), 2, '.', ',') }}
+            @else
+                {{$transaction->total}}  
+            @endif            
+            </td>
             <td>{{$transaction->total_qty}}</td>
             <td>{{$transaction->pay_status}}</td>
             <td>{{$transaction->updated_by}}</td>
