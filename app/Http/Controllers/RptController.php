@@ -256,9 +256,9 @@ class RptController extends Controller
 
         if($datefrom && $dateto){
 
-            $date1 = Carbon::createFromFormat('d M y', $datefrom);
+            $date1 = Carbon::createFromFormat('d M y', $datefrom)->format('Y-m-d');
 
-            $date2 = Carbon::createFromFormat('d M y', $dateto);
+            $date2 = Carbon::createFromFormat('d M y', $dateto)->format('Y-m-d');
 /*
             $transactions = Transaction::with('deals', 'person')->searchDateRange($datefrom, $dateto);
 
@@ -270,7 +270,8 @@ class RptController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('items', 'deals.item_id', '=', 'items.id')
                         ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount')
-                        ->whereBetween('transactions.delivery_date', array($date1, $date2))
+                        ->where('transactions.delivery_date', '>=', $date1)
+                        ->where('transactions.delivery_date', '<=', $date2)
                         ->get();
 
             if(isset($deals)){
@@ -329,12 +330,12 @@ class RptController extends Controller
         // declaring dates        
         if($datefrom){
 
-            $date1 = Carbon::createFromFormat('d M y', $request->input('driver_datefrom')); 
+            $date1 = Carbon::createFromFormat('d M y', $request->input('driver_datefrom'))->format('Y-m-d'); 
         }
 
         if($dateto){
 
-            $date2 = Carbon::createFromFormat('d M y', $request->input('driver_dateto')); 
+            $date2 = Carbon::createFromFormat('d M y', $request->input('driver_dateto'))->format('Y-m-d'); 
         }        
 
         
@@ -362,7 +363,8 @@ class RptController extends Controller
                                 ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                                 ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name as profile_name')
-                                ->whereBetween('transactions.delivery_date', array($date1, $date2))
+                                ->where('transactions.delivery_date', '>=', $date1)
+                                ->where('transactions.delivery_date', '<=', $date2)
                                 ->where('transactions.driver', $driver)
                                 ->get();
 
