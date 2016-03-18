@@ -10,14 +10,15 @@ elixir(function(mix) {
             'dropzone.css',
             '../bower/ui-select/dist/select.min.css',
             'angular-bootstrap-datetimepicker.css',
-            'app.css'])
+            'app.css',
+            ])
         .scripts([
             'jquery.min.js',
-            '../bower/moment/min/moment.min.js', 
+            '../bower/moment/min/moment.min.js',
             'bootstrap-js/bootstrap.min.js',
-            'angular.min.js', 
+            'angular.min.js',
             'angular-bootstrap.min.js',
-            '../bower/angular-sanitize/angular-sanitize.min.js', 
+            '../bower/angular-sanitize/angular-sanitize.min.js',
             'dirPagination.js',
             'select2.min.js',
             '../bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
@@ -26,7 +27,7 @@ elixir(function(mix) {
             '../bower/ui-select/dist/select.min.js',
             'filesaver.js',
             'moment.js',
-            'angular-bootstrap-datetimepicker.js'
+            'angular-bootstrap-datetimepicker.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

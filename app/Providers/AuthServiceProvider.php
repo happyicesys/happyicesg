@@ -43,7 +43,7 @@ class AuthServiceProvider extends ServiceProvider
     {
 
         return Permission::with('roles')->get();
-        
+
     }
 
 }

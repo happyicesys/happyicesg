@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\File;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Laracasts\Flash\Flash;
+use Carbon\Carbon;
 use App\Item;
+use App\ImageItem;
 
 class ItemController extends Controller
 {
@@ -28,7 +33,7 @@ class ItemController extends Controller
         $item =  Item::orderBy('product_id')->get();
 
         return $item;
-    }  
+    }
 
     /**
      * Return viewing page.
@@ -59,9 +64,26 @@ class ItemController extends Controller
      */
     public function store(ItemRequest $request)
     {
+        $publish = $request->has('publish')? 1 : 0;
+
+        $request->merge(array('publish' => $publish));
+
         $input = $request->all();
 
         $item = Item::create($input);
+
+        if($request->file('main_imgpath')){
+
+            $file = $request->file('main_imgpath');
+
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+
+            $file->move('item_asset/'.$item->id.'/', $name);
+
+            $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+
+            $item->save();
+        }
 
         return redirect('item');
     }
@@ -101,14 +123,32 @@ class ItemController extends Controller
      */
     public function update(ItemRequest $request, $id)
     {
-        
+        $publish = $request->has('publish')? 1 : 0;
+
+        $request->merge(array('publish' => $publish));
+
         $item = Item::findOrFail($id);
 
         $input = $request->all();
 
         $item->update($input);
 
-        return redirect('item');
+        if($request->file('main_imgpath')){
+
+            File::delete(public_path().$item->main_imgpath);
+
+            $file = $request->file('main_imgpath');
+
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+
+            $file->move('item_asset/'.$item->id.'/', $name);
+
+            $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+
+            $item->save();
+        }
+
+        return Redirect::action('ItemController@edit', $item->id);
     }
 
     /**
@@ -140,4 +180,81 @@ class ItemController extends Controller
 
         return $item->name . 'has been successfully deleted';
     }
+
+    // find out how many images
+    public function imageItem($item_id)
+    {
+        $imageitems = ImageItem::whereItemId($item_id)->get();
+
+        return $imageitems;
+    }
+
+    // adding new photos
+    public function addImage(Request $request, $id)
+    {
+        $item = Item::findOrFail($id);
+
+        $file = $request->file('file');
+
+        $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+
+        $file->move('item_asset/'.$item->id.'/', $name);
+
+        if($item->images()->create(['path' => "/item_asset/".$item->id."/{$name}"])){
+
+            $item->img_remain = $item->img_remain - 1;
+
+            $item->save();
+
+        }else{
+
+            Flash::error('Please Try Again');
+
+        }
+
+    }
+
+    // destroy image
+    public function destroyImageAjax($image_id)
+    {
+        $imageitem = ImageItem::findOrFail($image_id);
+
+        $file = $imageitem->path;
+
+        $path = public_path();
+
+        File::delete($path.$file);
+
+        $imageitem->delete();
+
+        $item = Item::findOrFail($imageitem->item_id);
+
+        $item->img_remain = $item->img_remain + 1;
+
+        $item->save();
+
+        return $imageitem->id . 'has been successfully deleted';
+    }
+
+    // mass editing the photo caption
+    public function editCaption(Request $request, $item_id)
+    {
+        $captions = $request->caption;
+
+        foreach($captions as $index => $caption){
+
+            if($caption != ''){
+
+                $imageitem = ImageItem::findOrFail($index);
+
+                $imageitem->caption = $caption;
+
+                $imageitem->save();
+
+            }
+        }
+
+        return Redirect::action('ItemController@edit', $item_id);
+    }
+
 }

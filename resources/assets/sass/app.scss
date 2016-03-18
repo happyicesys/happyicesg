@@ -30,12 +30,12 @@ th, label, .panel-title, .panel-footer, .modal-title, .search{
 }
 
 /* irrelevant styling */
-body p { 
-  max-width: 400px; 
-  margin: 20px auto; 
+body p {
+  max-width: 400px;
+  margin: 20px auto;
 }
-#tallModal .modal-body p { 
-    margin-bottom: 900px 
+#tallModal .modal-body p {
+    margin-bottom: 900px
 }
 
 .help-inline{
@@ -156,7 +156,7 @@ ul.alert-dropdown {
         position: fixed;
         top: 51px;
         left: 225px;
-        width: 225px;
+        width: 215px;
         margin-left: -225px;
         border: none;
         border-radius: 0;
@@ -168,7 +168,7 @@ ul.alert-dropdown {
     }
 
     .side-nav>li>a {
-        width: 225px;
+        width: 215px;
     }
 
     .side-nav li a:hover,
@@ -199,7 +199,7 @@ label{
 }
 
 .create_edit{
-    padding-top: 20px;   
+    padding-top: 20px;
 }
 
 .form_button_left{
@@ -218,3 +218,127 @@ label{
   width: 100% !important;
   padding: 0;
 }
+
+//client side design
+.thin-border{
+    border: thin solid black;
+}
+
+.thick-border{
+    border: thick solid black;
+}
+
+.thick-border-blue{
+    border: thick solid blue;
+}
+
+//font size responsive
+@media all and (max-width: 1200px) { /* screen size until 1200px */
+    body {
+        font-size: 1.5em; /* 1.5x default size */
+    }
+}
+@media all and (max-width: 1000px) { /* screen size until 1000px */
+    body {
+        font-size: 1.2em; /* 1.2x default size */
+        }
+    }
+@media all and (max-width: 500px) { /* screen size until 500px */
+    body {
+        font-size: 0.8em; /* 0.8x default size */
+        }
+    }
+
+.bgimage {
+    background-image: url(../../img/main1.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.bgimage-inside {
+    padding-top: 37.36%
+}
+
+.product-name {
+  height: 2.500em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  font-size: 115%;
+}
+.product-desc {
+  height: 3.125em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  margin: 0 0 2px 0;
+  color: #95a5a6;
+}
+.product-img-box {
+  height: 13.4em;
+  max-height: 13.4em;
+  overflow: hidden;
+}
+.product-img-box > img {
+  height: 12.7em;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.img-center {
+    display: block;
+    margin: 0 auto;
+}
+
+/*background image wrapper*/
+.wrapper {
+    width: 100%;
+    padding-top: 25px;
+}
+
+.img-back {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
+#text {
+    z-index:100;
+    position:absolute;
+    color:white;
+    font-size:100px;
+    font-weight:bold;
+    left:150px;
+    top:350px;
+}
+
+/*vending machine video playback*/
+.video-section .pattern-overlay {
+background-color: rgba(71, 71, 71, 0.59);
+padding: 110px 0 32px;
+min-height: 496px;
+/* Incase of overlay problems just increase the min-height*/
+}
+.video-section h1, .video-section h3{
+text-align:center;
+color:#fff;
+}
+.video-section h1{
+font-size:110px;
+font-family: 'Buenard', serif;
+font-weight:bold;
+text-transform: uppercase;
+margin: 40px auto 0px;
+text-shadow: 1px 1px 1px #000;
+-webkit-text-shadow: 1px 1px 1px #000;
+-moz-text-shadow: 1px 1px 1px #000;
+}
+.video-section h3{
+font-size: 25px;
+font-weight:lighter;
+margin: 0px auto 15px;
+}
+.video-section .buttonBar{display:none;}
+.player {font-size: 1px;}

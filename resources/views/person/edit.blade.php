@@ -12,16 +12,16 @@
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong> 
+        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
         -
-        @if($person->active == 'Yes') 
+        @if($person->active == 'Yes')
         [Active]
         @else
         [Inactive]
         @endif
-            
+
             <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
-        </h3>   
+        </h3>
     </div>
 
     <div class="panel-body">
@@ -37,19 +37,19 @@
                     @endcannot
         {!! Form::close() !!}
 
-                    <a href="/person" class="btn btn-default">Cancel</a>            
+                    <a href="/person" class="btn btn-default">Cancel</a>
                 </div>
                 <div class="pull-left row">
                     <div class="col-md-5" style="margin-left: 3px">
                     @cannot('transaction_view')
                     @if($person->active == 'Yes')
-                        {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}  
+                        {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
                     @else
-                        {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}  
+                        {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                     @endif
                     @endcannot
                     </div>
-                </div>                
+                </div>
             </div>
     </div>
 </div>
@@ -78,7 +78,7 @@
                     </div>
 
                     {{-- <div class="pull-right">
-                        <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>                        
+                        <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
                     </div> --}}
                 </div>
             </div>
@@ -89,39 +89,39 @@
                         <label for="search_inv" class="search">Search Inv:</label>
                         <input type="text" ng-model="search.id" style="width:140px;">
                         <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                        <input type="text" ng-model="search.status" style="width:140px;"> 
+                        <input type="text" ng-model="search.status" style="width:140px;">
                         <label for="search_payment" class="search" style="padding-left: 10px">Payment:</label>
-                        <input type="text" ng-model="search.pay_status" style="width:140px;">                                                
+                        <input type="text" ng-model="search.pay_status" style="width:140px;">
                     </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="search_updated_by" class="search">Last Modified By:</label>
-                        <input type="text" ng-model="search.updated_by" style="width:140px;"> 
+                        <input type="text" ng-model="search.updated_by" style="width:140px;">
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
-                        <input type="text" ng-model="search.updated_at" style="width:140px;">                         
+                        <input type="text" ng-model="search.updated_at" style="width:140px;">
                     </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="del_on" class="search">Delivery On:</label>
-                        <input type="text" ng-model="search.delivery_date" style="width:140px;">                           
+                        <input type="text" ng-model="search.delivery_date" style="width:140px;">
                         <label for="search_driver" class="search" style="padding-left: 10px;">Delivered By:</label>
                         <input type="text" ng-model="search.driver" style="width:140px;">
-                    </div>                   
+                    </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                         <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                     </div>
-                </div>                  
+                </div>
                 <div class="table-responsive" id="exportable">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">
                             #
-                        </th>                    
+                        </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                             INV #
@@ -132,8 +132,8 @@
                             <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                             Status
                             <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
-                        </th> 
+                            <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+                        </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                             Delivery Date
@@ -150,29 +150,29 @@
                             <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
                             Total Amount
                             <span ng-show="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
-                        </th>                                        
+                            <span ng-show="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                        </th>
                          <th class="col-md-1 text-center">
                             <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                             Payment
                             <span ng-show="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                             <span ng-show="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
-                        </th>                                                                       
+                        </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                             Last Modified By
                             <span ng-show="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
                             <span ng-show="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
-                        </th> 
+                        </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                             Last Modified Time
                             <span ng-show="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
                             <span ng-show="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
-                        </th>                                                                                 
+                        </th>
                         <th class="col-md-1 text-center">
                             Action
-                        </th>                                                                                                
+                        </th>
                     </tr>
 
                     <tbody>
@@ -181,9 +181,9 @@
                             <td class="col-md-1 text-center">@{{ number }} </td>
                             <td class="col-md-1 text-center">
                                 <a href="/transaction/@{{ transaction.id }}/edit">
-                                    @{{ transaction.id }} 
+                                    @{{ transaction.id }}
                                 </a>
-                            </td>                               
+                            </td>
                             {{-- status by color --}}
                             <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                 @{{ transaction.status }}
@@ -196,10 +196,10 @@
                             </td>
                             <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
                                 @{{ transaction.status }}
-                            </td> 
+                            </td>
                             <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
                                 @{{ transaction.status }}
-                            </td>                                    
+                            </td>
                             <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                 <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                             </td>
@@ -216,12 +216,12 @@
                             </td>
                             {{-- pay status ended --}}
                             <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                            <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>            
+                            <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>
                             <td class="col-md-1 text-center">
                                 {{-- print invoice         --}}
                                 <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
                                 {{-- button view shown when cancelled --}}
-                                <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>                                        
+                                <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
                                 {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                 {{-- Payment Verification --}}
                                 @cannot('transaction_view')
@@ -232,44 +232,44 @@
                         </tr>
                         <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
                             <td colspan="10" class="text-center">No Records Found</td>
-                        </tr>                                                 
+                        </tr>
 
                     </tbody>
-                </table> 
-                </div>           
+                </table>
+                </div>
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
                 </div>
         </div>
-    </div>     
+    </div>
 </div>
 {{-- divider --}}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <div class="panel-title">         
+        <div class="panel-title">
             <div class="pull-left display_panel_title">
                 <h3 class="panel-title"><strong>Price Management : {{$person->company}}</strong></h3>
             </div>
-        </div>      
+        </div>
     </div>
 
     <div class="panel-body">
         {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
         {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
-                
+
         <div class="table-responsive">
             <table class="table table-list-search table-hover table-bordered table-condensed">
-                <tr style="background-color: #DDFDF8">                   
+                <tr style="background-color: #DDFDF8">
                     <th class="col-md-8 text-center">
-                        Item                           
+                        Item
                     </th>
                     <th class="col-md-2 text-center">
                         Retail Price ($)
-                    </th>                    
+                    </th>
                     <th class="col-md-2 text-center">
                         Quote Price ($)
-                    </th>                                                                                             
+                    </th>
                 </tr>
 
                 <tbody>
@@ -286,18 +286,18 @@
                         <strong>
                             <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)"/>
                         </strong>
-                    </td>                    
+                    </td>
                 </tr>
                 <tr ng-if="items.length == 0 || ! items.length">
                     <td colspan="4" class="text-center">No Records Found!</td>
-                </tr>                  
+                </tr>
                 </tbody>
-            </table>  
+            </table>
             <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-            {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!} 
-        </div>        
-        {!! Form::close() !!}       
-        
+            {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+        </div>
+        {!! Form::close() !!}
+
     </div>
 </div>
 {{-- divider --}}
@@ -334,16 +334,16 @@
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     #
-                </th>                    
+                </th>
                 <th class="col-md-7 text-center">
-                    Path                           
+                    Path
                 </th>
                 <th class="col-md-2 text-center">
-                    Upload On                      
+                    Upload On
                 </th>
                 <th class="col-md-2 text-center">
                     Action
-                </th>                                                                                                
+                </th>
             </tr>
 
             <tbody>
@@ -351,27 +351,27 @@
                 @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
-                @foreach($files as $index => $file)
-                <tr>
-                    <td class="col-md-1 text-center">{{ $index+1 }} </td>
-                    <td class="col-md-7">
-                    {!! Html::image($file->path, 'person asset', array( 'width' => 200, 'height' => 200 )) !!}
-                        <a href="{{$file->path}}">
-                        {!! str_replace("/person_asset/file/", "", "$file->path"); !!}
-                        </a>                            
-                    </td>
-                    <td class="col-md-2 text-center">{{$file->created_at}}</td>
-                    <td class="col-md-2 text-center">
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm']) !!}
-                        {!! Form::close() !!} 
-                    </td>
-                </tr>
-                @endforeach
-                @endunless                        
+                    @foreach($files as $index => $file)
+                    <tr>
+                        <td class="col-md-1 text-center">{{ $index+1 }} </td>
+                        <td class="col-md-7">
+                        {!! Html::image($file->path, 'person asset', array( 'width' => 200, 'height' => 200 )) !!}
+                            <a href="{{$file->path}}">
+                            {!! str_replace("/person_asset/file/", "", "$file->path"); !!}
+                            </a>
+                        </td>
+                        <td class="col-md-2 text-center">{{$file->created_at}}</td>
+                        <td class="col-md-2 text-center">
+                            {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+                                {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm']) !!}
+                            {!! Form::close() !!}
+                        </td>
+                    </tr>
+                    @endforeach
+                @endunless
 
             </tbody>
-        </table>      
+        </table>
     </div>
 
     <div class="panel-footer">
@@ -396,8 +396,8 @@
                 {!! Form::label('note', 'Notes', ['class'=>'control-label']) !!}
                 {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel']) !!}
                 {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
-            {!! Form::close() !!}  
-        </div>            
+            {!! Form::close() !!}
+        </div>
     </div>
 </div>
 {{-- divider --}}
@@ -406,15 +406,16 @@
 $(document).ready(function() {
     Dropzone.autoDiscover = false;
     $('.dropzone').dropzone({
-        init: function() 
+        init: function()
         {
             this.on("complete", function()
             {
               if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
                 location.reload();
-              }                
+              }
             });
         }
+
     });
 });
 
@@ -426,7 +427,7 @@ $('.select').select2({
         tags:true,
 
         createTag: function(newItem){
-         
+
          return {
                     id: 'new:' + newItem.term,
                     text: newItem.term + ' [new]'
@@ -435,6 +436,6 @@ $('.select').select2({
 
     }); */
 </script>
-<script src="/js/person_edit.js"></script>  
+<script src="/js/person_edit.js"></script>
 
 @stop
