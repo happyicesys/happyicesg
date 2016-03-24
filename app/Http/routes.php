@@ -15,6 +15,8 @@ Route::get('/admin', function () {
 });
 
 get('/client/item', 'ClientController@clientProduct');
+get('/client/register', 'ClientController@getRegister');
+resource('client', 'ClientController');
 
 get('/position/data', 'PositionController@getData');
 delete('/position/data/{id}', 'PositionController@destroyAjax');

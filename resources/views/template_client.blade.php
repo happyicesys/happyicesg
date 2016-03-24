@@ -4,15 +4,11 @@
         @include('partials.header_client')
     </head>
 
-    <body>
+    <body id="page-top">
         @include('partials.nav_client')
-        <div class="container-fluid">
-            <div class="col-md-12">
             @include('errors.validate')
             @include('flash::message')
                 @yield('content')
-            </div>
-        </div>
         @yield('footer')
 
     </body>

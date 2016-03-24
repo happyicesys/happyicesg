@@ -15,24 +15,24 @@ class Person extends Model
     public static function boot()
     {
         parent::boot();
-    }  
+    }
 
     public function identifiableName()
     {
         return $this->title;
-    }  
+    }
 
     protected $dontKeepRevisionOf = array(
-        'cust_id', 'profile_id'
-    );        
+        'cust_id', 'profile_id', 'salutation'
+    );
 
     protected $revisionEnabled = true;
 
     //Remove old revisions (works only when used with $historyLimit)
-    protected $revisionCleanup = true; 
+    protected $revisionCleanup = true;
 
     //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500; 
+    protected $historyLimit = 500;
 
     //storing new creation
     protected $revisionCreationsEnabled = true;
@@ -53,7 +53,7 @@ class Person extends Model
         'active' => 'Active',
         'site_name' => 'Site Name',
         'com_remark' => 'Company',
-    ); 
+    );
 
 
     protected $fillable = [
@@ -63,7 +63,8 @@ class Person extends Model
     'company', 'bill_address', 'del_address',
     'payterm', 'cost_rate',
     'active', 'site_name', 'profile_id',
-    'note'
+    'note', 'salutation', 'dob',
+    'cust_type'
     ];
 
     /**
@@ -71,51 +72,59 @@ class Person extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];  
+    protected $dates = ['deleted_at'];
 
 
-/*    protected $casts = [
-        'active' => 'boolean',
-    ]; */     
+    public function setDobAttribute($date)
+    {
+
+        $this->attributes['dob'] = $date? Carbon::parse($date) : null;
+
+    }
 
     // set default nullable value upon detection
-    public function setEmailAttribute($value) 
+    public function setEmailAttribute($value)
     {
 
         $this->attributes['email'] = $value ?: null;
 
-    }       
+    }
 
     // set default nullable value upon detection
-    public function setRemarkAttribute($value) 
+    public function setRemarkAttribute($value)
     {
 
         $this->attributes['remark'] = $value ?: null;
-        
-    } 
+
+    }
 
     public function roles()
     {
         return $this->belongsToMany(Role::class);
-    } 
+    }
 
     public function freezers()
     {
         return $this->belongsToMany(Freezer::class);
-    } 
+    }
 
     public function accessories()
     {
         return $this->belongsToMany(Accessory::class);
-    }              
+    }
 
     //select field populate selected
     public function getRoleListAttribute()
     {
         return $this->roles->lists('id')->all();
-    } 
+    }
 
     public function getCreatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('d-F-Y');
+    }
+
+    public function getDobAttribute($date)
     {
         return Carbon::parse($date)->format('d-F-Y');
     }
@@ -128,7 +137,7 @@ class Person extends Model
     public function getAccessoryListAttribute()
     {
         return $this->accessories->lists('id')->all();
-    }                 
+    }
 
     public function transaction()
     {
@@ -163,12 +172,12 @@ class Person extends Model
     public function price()
     {
         return $this->hasOne('App\Price');
-    }  
+    }
 
     public function profile()
     {
         return $this->belongsTo('App\Profile');
-    }        
+    }
 
     /**
      * search like name
@@ -204,6 +213,6 @@ class Person extends Model
     public function scopeSearchArea($query, $area)
     {
         return $query->where('area','=', $area);
-    }         
-   
+    }
+
 }

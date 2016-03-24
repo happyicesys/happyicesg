@@ -29,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
         view()->share('USER_PREFIX', 'U');
 
         //Transaction
-        view()->share('ITEM_TITLE', 'Product');
-        view()->share('ITEM_PREFIX', 'P');         
+        view()->share('ITEM_TITLE', 'Inventory');
+        view()->share('ITEM_PREFIX', 'P');
 
         //Transaction
         view()->share('TRANS_TITLE', 'Transaction');
@@ -38,8 +38,8 @@ class AppServiceProvider extends ServiceProvider
 
         //Market
         view()->share('REPORT_TITLE', 'Report');
-        view()->share('REPORT_PREFIX', 'R');          
-               
+        view()->share('REPORT_PREFIX', 'R');
+
     }
 
     /**

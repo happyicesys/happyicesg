@@ -5,228 +5,196 @@
 Healthier Life
 @stop
 @section('content')
-
-<div >
-
-    <div class="wrapper">
-       <img src="img/main1.jpg" class="img-back img-responsive" alt="Responsive image">
-{{--         <div class="sol-sm-6">
-        <h1 id="text">Hello World!</h1>
-        </div> --}}
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/3-vanilla.jpg" class="img-back img-responsive" alt="Responsive image">
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span>
+                <hr>
+                <p style="color: black;">Oriental . Flavourful . Less Sweet</p>
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">Grab It Now</a>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/4-chocroll.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/5-vanillaroll.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/10-gmanlemon.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/11-redbeantaro.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/12-tarochunk.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/13-redbeanjelly.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/14-qqpudding.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/15-chocmango.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/16-chocpeanut.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/17-chocvanilla.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/19-matcha.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/20-pineappleguava.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-top:30px;">
-            <h1>And</h1>
-        </div>
-    </div>
-
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="wrapper">
-           <img src="img/vending_title.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-<!--Video Section-->
-<div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 thick-border" style="margin-top:30px; padding:0px 0px 0px 0px;">
-<section class="content-section video-section">
-  <div class="pattern-overlay">
-  <a id="bgndVideo" class="player" data-property="{videoURL:'https://youtu.be/MTMmVnkKls8',containment:'.video-section', quality:'large', autoPlay:true, mute:true, opacity:1}">bg</a>
-{{--     <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-        <h1>Full Width Video</h1>
-        <h3>Enjoy Adding Full Screen Videos to your Page Sections</h3>
-       </div>
-      </div>
-    </div> --}}
-  </div>
-</section>
-</div>
-<!--Video Section Ends Here-->
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/vending2.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="wrapper">
-           <img src="img/vending1.jpg" class="img-back img-responsive" alt="Responsive image">
-        </div>
-    </div>
-
-    <div class="row" style="margin-top: 50px;">
-        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 15px 0px 15px 0px;"><i class="fa fa-map-marker"></i> #04-125, TradeHub 21, 18, Boon Lay Way, S609966</span>
-        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 15px 0px;"><i class="fa fa-phone-square"></i> +65-9777 3533 or +65-8500 9838</span>
-        <span class="row col-md-offset-3 col-md-9" style="font-size: 28px; padding: 0px 0px 35px 0px;"><i class="fa fa-envelope"></i> daniel.ma@happyice.com.sg</span>
-    </div>
-
-{{--
-    <div class="col-md-12 bgimage" style="height: 1790px;">
-        <div class="bgimage-inside">
-        </div>
-    </div>
---}}
-{{--
-    <div class=" text-center" style="padding-bottom: 40px;">
-        <span class="row" style="font-size: 18px;">
-            Over 12 ice cream products from Happy Ice are categorized as Healthier Snack by Singapore Health Promotion Board.
-        </span>
-    </div>
-
-    <div ng-app="app" ng-controller="clientMainController">
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 0px 20px 0px 0px;">
-                <div dir-paginate="product in products | itemsPerPage:itemsPerPage"  current-page="currentPage" class="col-md-4 col-sm-4 col-xs-4" style="font-size:20px;">
-                    <img class="img-responsive img-center" ng-src="@{{product.main_imgpath}}" ng-alt="@{{product.main_imgcaption}}" style="max-height: 350px;">
-                    <p class="product-name text-center">@{{product.name}}</p>
+    <section class="bg-primary" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">We are now everywhere</h2>
+                    <hr class="light">
+                    <p class="text-faded">Originated from Taiwan, Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <a href="#" class="btn btn-default btn-xl">About Us</a>
                 </div>
-
             </div>
         </div>
+    </section>
 
-        <div class="row text-center" style="padding: 30px 0px 100px 0px; color:blue;">
-            <div class="col-md-12 col-sm-12 col-xs-12" style="font-size: 16px;">
-                <button ng-click="showAllProduct()" class="btn btn-primary thick-border" style="padding: 15px 50px 15px 50px; font-size:18px;" ng-model="productModel">@{{productText}}</button>
+    <section id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Why Choose Us</h2>
+                    <hr class="primary">
+                </div>
             </div>
         </div>
-    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-diamond wow bounceIn text-primary"></i>
+                        <h3>Lorem Ipsum</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-paper-plane wow bounceIn text-primary" data-wow-delay=".1s"></i>
+                        <h3>Lorem Ipsum</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-newspaper-o wow bounceIn text-primary" data-wow-delay=".2s"></i>
+                        <h3>Lorem Ipsum</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-heart wow bounceIn text-primary" data-wow-delay=".3s"></i>
+                        <h3>Lorem Ipsum</h3>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="row">
-        <div class="text-center jumbotron" style="font-size: 36px; padding-top: 50px; margin: 0px 0px 0px 0px;">
-            <span>Latest News and Events</span>
-            <a href="https://www.facebook.com/happyice.com.sg/timeline">
-            <i class="fa fa-facebook-official"></i>
-            </a>
+    <section class="no-padding" id="portfolio">
+        <div class="container-fluid">
+            <div class="row no-gutter">
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/1.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
 
-            <div id="myCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 50px;">
-                <ol class="carousel-indicators">
-                    @foreach($newsevents::all() as $index => $newevent)
-                        @if($index == 0)
-                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                        @else
-                            <li data-target="#myCarousel" data-slide-to="{{$index}}"></li>
-                        @endif
-                    @endforeach
-                </ol>
-
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner" role="listbox">
-                @foreach($newsevents::all() as $index => $newevent)
-                    @if($index == 0)
-                        <div class="item active">
-                            <a href="{{$newevent->src}}">
-                                <img class="img-responsive center-block" src="{{$newevent->src}}" alt="{{$newevent->alt}}" style="max-height: 350px;">
-                            </a>
+                                </div>
+                                <div class="project-name">
+                                    Vending Machine
+                                </div>
+                            </div>
                         </div>
-                    @else
-                        <div class="item">
-                            <a href="{{$newevent->src}}">
-                                <img class="img-responsive center-block" src="{{$newevent->src}}" alt="{{$newevent->alt}}" style="max-height: 350px;">
-                            </a>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/2.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                    Category
+                                </div>
+                                <div class="project-name">
+                                    Project Name
+                                </div>
+                            </div>
                         </div>
-                    @endif
-                @endforeach
-            </div>
-
-            <!-- Left and right controls -->
-            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/3.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                    Category
+                                </div>
+                                <div class="project-name">
+                                    Project Name
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/4.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                    Category
+                                </div>
+                                <div class="project-name">
+                                    Project Name
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/5.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                    Category
+                                </div>
+                                <div class="project-name">
+                                    Project Name
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="#" class="portfolio-box">
+                        <img src="img/portfolio/6.jpg" class="img-responsive" alt="">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                    Category
+                                </div>
+                                <div class="project-name">
+                                    Project Name
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div> --}}
+    </section>
 
-</div>
+    <aside class="bg-dark">
+        <div class="container text-center">
+            <div class="call-to-action">
+                <h2>We Deliver to Your Doorstep too</h2>
+                <a href="#" class="btn btn-default btn-xl wow tada">Order Now!</a>
+            </div>
+        </div>
+    </aside>
 
-<script src="/js/client_index.js"></script>
-<script src="http://pupunzi.com/mb.components/mb.YTPlayer/demo/inc/jquery.mb.YTPlayer.js"></script>
-<script>
-    $(".player").mb_YTPlayer();
-</script>
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Let's Get In Touch!</h2>
+                    <hr class="primary">
+                    <p>Interested in being a part of us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
+                </div>
+                <div class="col-lg-4 col-lg-offset-2 text-center">
+                    <i class="fa fa-phone fa-3x wow bounceIn"></i>
+                    <p>+65-9777 3533 or +65-8500 9838</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="mailto:daniel.ma@happyice.com.sg">daniel.ma@happyice.com.sg</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
 @stop

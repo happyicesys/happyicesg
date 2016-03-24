@@ -21,11 +21,11 @@ class CreateUsersTable extends Migration
             $table->string('contact');
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();          
+            $table->softDeletes();
         });
 
         $statement = "ALTER TABLE users AUTO_INCREMENT = 100001;";
-        DB::unprepared($statement);          
+        DB::unprepared($statement);
     }
 
     /**

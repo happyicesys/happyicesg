@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-// use Illuminate\Http\UserRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -31,7 +30,7 @@ class UserController extends Controller
         $user =  User::all();
 
         return $user;
-    }      
+    }
 
     /**
      * Return viewing page.
@@ -69,7 +68,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $this->validate($request, [
-            'password' => 'required|confirmed', 
+            'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ]);
 
@@ -132,7 +131,7 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
 
-        return redirect('user');        
+        return redirect('user');
     }
 
     /**
@@ -168,6 +167,6 @@ class UserController extends Controller
     private function syncRole(User $user, $selected_role)
     {
         $user->roles()->sync($selected_role);
-    }     
+    }
 
 }

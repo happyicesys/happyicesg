@@ -10,6 +10,7 @@ elixir(function(mix) {
             'dropzone.css',
             '../bower/ui-select/dist/select.min.css',
             'angular-bootstrap-datetimepicker.css',
+            'animate.min.css',
             'app.css',
             ])
         .scripts([
@@ -28,6 +29,11 @@ elixir(function(mix) {
             'filesaver.js',
             'moment.js',
             'angular-bootstrap-datetimepicker.js',
+            'cbpAnimatedHeader.js',
+            'classie.js',
+            'jquery.easing.min.js',
+            'jquery.fittext.js',
+            'wow.min.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

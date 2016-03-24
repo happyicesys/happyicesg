@@ -25,7 +25,8 @@
                     </div>
 
                     <div class="pull-right">
-                        <a href="/item/create" class="btn btn-success">+ New {{ $ITEM_TITLE }}</a>
+                        <a href="#" class="btn btn-success">+ New Product</a>
+                        <a href="#" class="btn btn-primary">Ecommerce Price List</a>
                     </div>
                 </div>
             </div>

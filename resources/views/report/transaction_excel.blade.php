@@ -26,6 +26,7 @@
     <th>Delivery Date</th>
     <th>Deliver By</th>
     <th>Total Amount</th>
+    <th>GST</th>
     <th>Total Qty</th>
     <th>Payment</th>
     <th>Last Modified By</th>
@@ -43,11 +44,20 @@
             <td>{{$transaction->delivery_date}}</td>
             <td>{{$transaction->driver}}</td>
             <td>
-            @if($transaction->person->profile->gst)    
+{{--
+            @if($transaction->person->profile->gst)
                 {{ number_format(($transaction->total * 107/100), 2, '.', ',') }}
             @else
-                {{$transaction->total}}  
-            @endif            
+                {{$transaction->total}}
+            @endif   --}}
+            {{$transaction->total}}
+            </td>
+            <td>
+                @if($transaction->person->profile->gst)
+                    {{ number_format(($transaction->total * 7/100), 2, '.', ',') }}
+                @else
+                    -
+                @endif
             </td>
             <td>{{$transaction->total_qty}}</td>
             <td>{{$transaction->pay_status}}</td>

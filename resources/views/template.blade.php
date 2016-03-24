@@ -6,7 +6,7 @@
 
     <body>
         @include('partials.nav')
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-top:50px;">
             <div class="row-fluid">
                 <div class="col-md-10 col-md-offset-2 main">
                 @include('errors.validate')
