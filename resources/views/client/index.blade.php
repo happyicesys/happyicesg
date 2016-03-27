@@ -1,5 +1,3 @@
-@inject('newsevents', 'App\NewsEvents')
-
 @extends('template_client')
 @section('title')
 Healthier Life
@@ -20,10 +18,10 @@ Healthier Life
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">We are now everywhere</h2>
+                    <h2 class="section-heading">About Us</h2>
                     <hr class="light">
-                    <p class="text-faded">Originated from Taiwan, Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <a href="#" class="btn btn-default btn-xl">About Us</a>
+                    <p class="text-faded">Our aim is to provide more variety & healthy desserts. Most of our products have obtained accreditation as Healthier Choice products issued by Singapore Health Promotion Board.</p>
+                    <a href="#" class="btn btn-default btn-xl">More</a>
                 </div>
             </div>
         </div>
@@ -40,21 +38,21 @@ Healthier Life
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 text-center">
+                <div class="col-lg-6 col-md-6 text-center">
                     <div class="service-box">
-                        <i class="fa fa-4x fa-diamond wow bounceIn text-primary"></i>
-                        <h3>Lorem Ipsum</h3>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <i class="fa fa-4x fa-smile-o wow bounceIn text-primary"></i>
+                        <h3>Happy Ice, Healthier Life</h3>
+                        <p class="text-muted">Stay happy when you eat healthy. Happy Ice is committed to promote healthy dietary. Most of our products all are recognized with lesser sugar, fat and calories compared to similar products in the market</p>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 text-center">
+                <div class="col-lg-6 col-md-6 text-center">
                     <div class="service-box">
                         <i class="fa fa-4x fa-paper-plane wow bounceIn text-primary" data-wow-delay=".1s"></i>
-                        <h3>Lorem Ipsum</h3>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <h3>Anyway, Anytime, Happy Ice</h3>
+                        <p class="text-muted">Grab the tasty healthier dessert anyway and anytime. We strike to build a comprehensive sales channel as close as possible to you. One would definitely attracted by our fun and eye-catchy vending machines; fast delivery speed through online purchase, and conveniently purchase from stores.</p>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 text-center">
+{{--                 <div class="col-lg-3 col-md-6 text-center">
                     <div class="service-box">
                         <i class="fa fa-4x fa-newspaper-o wow bounceIn text-primary" data-wow-delay=".2s"></i>
                         <h3>Lorem Ipsum</h3>
@@ -67,7 +65,7 @@ Healthier Life
                         <h3>Lorem Ipsum</h3>
                         <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </section>
