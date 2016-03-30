@@ -34,16 +34,16 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a class="page-scroll" style="color: black;" href="#about">About</a>
+                        <a class="page-scroll" style="color: black;" href="/client/about">About</a>
                     </li>
                     <li>
-                        <a class="page-scroll" style="color: black;" href="#product">Product</a>
+                        <a class="page-scroll" style="color: black;" href="/client/product">Product</a>
                     </li>
 {{--                     <li>
                         <a class="page-scroll" style="color: black;" href="#portfolio">Portfolio</a>
                     </li> --}}
                     <li>
-                        <a class="page-scroll" style="color: black;" href="#contact">Contact</a>
+                        <a class="page-scroll" style="color: black;" href="/client/contact">Contact</a>
                     </li>
                 </ul>
             </div>

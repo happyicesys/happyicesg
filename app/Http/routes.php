@@ -16,6 +16,10 @@ Route::get('/admin', function () {
 
 get('/client/item', 'ClientController@clientProduct');
 get('/client/register', 'ClientController@getRegister');
+get('/client/about', 'ClientController@getAboutUs');
+get('/client/product', 'ClientController@getProduct');
+get('/client/contact', 'ClientController@getContact');
+post('/client/contact', 'ClientController@sendContactEmail');
 resource('client', 'ClientController');
 
 get('/position/data', 'PositionController@getData');
