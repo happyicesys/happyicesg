@@ -5,8 +5,8 @@
 {{ $TRANS_TITLE }}
 @stop
 @section('content')
-    
-    <div class="row">        
+
+    <div class="row">
     <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="transController">
@@ -30,13 +30,13 @@
                             <label for="profile_id" class="search">Profile:</label>
                         </div>
                         <div class="col-md-9" style="padding-top:10px">
-                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id', 
-                                'class'=>'select', 
-                                'ng-model'=>'search.name']) 
+                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id',
+                                'class'=>'select',
+                                'ng-model'=>'search.name'])
                             !!}
                         </div>
-                    </div>   
-                    <div class="pull-right">                    
+                    </div>
+                    <div class="pull-right">
                         <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
                     </div>
                 </div>
@@ -52,13 +52,13 @@
                         <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
                         <input type="text" ng-model="search.company" style="width:140px;">
                         <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                        <input type="text" ng-model="search.status" style="width:140px;">                        
+                        <input type="text" ng-model="search.status" style="width:140px;">
                     </div>
                 </div>
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <label for="search_payment" class="search">Payment:</label>
-                        <input type="text" ng-model="search.pay_status" style="width:140px;"> 
+                        <input type="text" ng-model="search.pay_status" style="width:140px;">
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
                         <input type="text" ng-model="search.updated_by" style="width:140px;">
                         <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
@@ -72,7 +72,7 @@
                                 <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
                                 </ul>
                             </div>
-                        </div>                      
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -92,21 +92,21 @@
 
                         <label for="search_driver" class="search" style="margin-left:-20px;">Delivered By:</label>
                         <input type="text" ng-model="search.driver" style="width:140px;">
-                    </div>                   
-                </div>              
-                
+                    </div>
+                </div>
+
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                         <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                     </div>
-                </div>                
+                </div>
                     <div class="table-responsive" id="exportable">
                         <table class="table table-list-search table-hover table-bordered">
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-1 text-center">
                                     #
-                                </th>                    
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                                     INV #
@@ -118,7 +118,7 @@
                                     ID
                                     <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
-                                </th>                                                                                  
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     Company
@@ -130,13 +130,13 @@
                                     Del Postcode
                                     <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
-                                </th> 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                     Status
                                     <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>                            
-                                </th> 
+                                    <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                                     Delivery Date
@@ -153,45 +153,45 @@
                                     <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
                                     Total Amount
                                     <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>                            
-                                </th>  
+                                    <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
                                     Total Qty
                                     <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
-                                </th>                                                                        
+                                </th>
                                  <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
                                     <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
-                                </th>                                                                       
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                                     Last Modified By
                                     <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
-                                </th> 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                                     Last Modified Time
                                     <span ng-if="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
-                                </th>                                                                                 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     Action
-                                </th>                                                                                                
+                                </th>
                             </tr>
                             <tbody>
                                 <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">
-                                            @{{ transaction.id }} 
+                                            @{{ transaction.id }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>                                
+                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
                                     <td class="col-md-1 text-center">
                                     <a href="/person/@{{ transaction.person_id }}">
                                     @{{ transaction.company }}
@@ -211,10 +211,10 @@
                                     </td>
                                     <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
                                         @{{ transaction.status }}
-                                    </td> 
+                                    </td>
                                     <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
                                         @{{ transaction.status }}
-                                    </td>                                                                        
+                                    </td>
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
@@ -234,12 +234,12 @@
                                     </td>
                                     {{-- pay status ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>            
+                                    <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
                                         {{-- button view shown when cancelled --}}
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>                                        
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
                                         {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                         {{-- Payment Verification --}}
                                         @cannot('supervisor_view')
@@ -252,10 +252,10 @@
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
                                     <td colspan="14" class="text-center">No Records Found</td>
-                                </tr>                     
+                                </tr>
                             </tbody>
                         </table>
-                    </div>           
+                    </div>
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
@@ -270,5 +270,5 @@
         });
 
         $('.select').select2({});
-    </script>  
+    </script>
 @stop

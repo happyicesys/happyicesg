@@ -43,7 +43,7 @@ class TransactionController extends Controller
                         ->get();
 
         return $transactions;
-    }      
+    }
 
     /**
      * Display a listing of the resource.
@@ -138,7 +138,7 @@ class TransactionController extends Controller
 
         $amounts = $request->amount;
 
-        $quotes = $request->quote; 
+        $quotes = $request->quote;
 
         if($request->input('save')){
 
@@ -166,7 +166,7 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Paid'));
 
-            $request->merge(array('paid_by' => Auth::user()->name));            
+            $request->merge(array('paid_by' => Auth::user()->name));
 
         }elseif($request->input('confirm')){
 
@@ -209,7 +209,7 @@ class TransactionController extends Controller
             return Redirect::action('TransactionController@edit', $transaction->id);
 
         }
-        
+
     }
 
     /**
@@ -255,7 +255,7 @@ class TransactionController extends Controller
         $transaction->delete();
 
         return $transaction->id . 'has been successfully deleted';
-    }    
+    }
 
     public function getCust($person_id)
     {
@@ -276,7 +276,7 @@ class TransactionController extends Controller
 
             $query->where('person_id', $person_id);
 
-        }])->get(); 
+        }])->get();
 
         return $item;
 
@@ -317,7 +317,7 @@ class TransactionController extends Controller
 
         return "Sucess updating transaction #" . $transaction->id;
 
-    }    
+    }
 
     public function storeTotal($trans_id, Request $request)
     {
@@ -332,7 +332,7 @@ class TransactionController extends Controller
 
         return "Sucess updating transaction #" . $transaction->id;
 
-    } 
+    }
 
     public function storeTotalQty($trans_id, Request $request)
     {
@@ -347,9 +347,9 @@ class TransactionController extends Controller
 
         return "Sucess updating transaction #" . $transaction->id;
 
-    }     
+    }
 
-    public function generateInvoice($id)    
+    public function generateInvoice($id)
     {
 
         $transaction = Transaction::findOrFail($id);
@@ -379,18 +379,18 @@ class TransactionController extends Controller
         $pdf = PDF::loadView('transaction.invoice', $data);
 
         $pdf->setPaper('a4');
-        
+
         return $pdf->download($name);
 
-    }  
-    
+    }
+
     public function generateLogs($id)
     {
         $transaction = Transaction::findOrFail($id);
 
         // $transaction = $transaction->with('deals')
 
-       
+
         $transHistory = $transaction->revisionHistory;
 
         // dd($transHistory->toJson());
@@ -401,8 +401,8 @@ class TransactionController extends Controller
         $revisions = Revision::all();
         dd($revisionDeal->toJson());*/
 
-        return view('transaction.log', compact('transaction', 'transHistory'));  
-    } 
+        return view('transaction.log', compact('transaction', 'transHistory'));
+    }
 
     public function searchDateRange(Request $request)
     {
@@ -410,7 +410,7 @@ class TransactionController extends Controller
 
         $request->input('startDate');
 
-        $request->input('endDate');         
+        $request->input('endDate');
 
     }
 
@@ -446,7 +446,7 @@ class TransactionController extends Controller
     public function showPersonTransac($person_id)
     {
         return Transaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
-    } 
+    }
 
     public function reverse($id)
     {
@@ -456,20 +456,20 @@ class TransactionController extends Controller
 
             $transaction->status = $transaction->cancel_trace;
 
-            $transaction->updated_by = Auth::user()->name;    
-        
+            $transaction->updated_by = Auth::user()->name;
+
         }else{
             // this will affect inventories in later days
             $transaction->status = 'Pending';
 
             $transaction->updated_by = Auth::user()->name;
         }
-        
+
 
         $transaction->save();
 
         return Redirect::action('TransactionController@edit', $transaction->id);
-    }            
+    }
 
     private function syncTransaction(Request $request)
     {
@@ -526,9 +526,9 @@ class TransactionController extends Controller
                 $deal->save();
 
             }
-        }        
+        }
 
-    } 
+    }
 
-     
+
 }

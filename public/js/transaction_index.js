@@ -2,7 +2,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
     function transController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 70;  
+        $scope.itemsPerPage = 70;
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -22,20 +22,20 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 $scope.All = transactions.length;
 
                 $scope.optionStatus = [
-                    {name: 'All', value: ''}, 
+                    {name: 'All', value: ''},
                     {name: 'Pending', value: 'Pending'},
                     {name: 'Confirmed', value: 'Confirmed'}
-                ]; 
+                ];
 
                 $scope.dateChange = function(date){
                     $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
-                } 
+                }
 
                 $scope.dateChange2 = function(date){
                     $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
-                }                                     
+                }
             });
-                
+
             //delete record
             $scope.confirmDelete = function(id){
                 var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
@@ -53,7 +53,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }else{
                     return false;
                 }
-            } 
+            }
         });
     }
 
@@ -63,14 +63,14 @@ app.filter('delDate', [
             return $filter('date')(new Date(input), format);
         };
     }
-]);    
+]);
 
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
-}    
- 
+}
+
 
 app.controller('transController', transController);
 app.controller('repeatController', repeatController);
