@@ -6,8 +6,8 @@
 {{ $REPORT_TITLE }}
 @stop
 @section('content')
-    
-    <div class="row">        
+
+    <div class="row">
     <a class="title_hyper pull-left" href="/report"><h1>{{ $REPORT_TITLE }} <i class="fa fa-file-text-o"></i></h1></a>
     </div>
 
@@ -24,7 +24,7 @@
                 <div class="panel-body">
                     <div class="tab-content">
                         {{-- first content --}}
-                        <div class="tab-pane active" id="person">                        
+                        <div class="tab-pane active" id="person">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                 </div>
@@ -34,24 +34,24 @@
                                         {!! Form::label('cust_choice', 'Select Customer', ['class'=>'control-label']) !!}
                                         {!! Form::open(['id'=>'person_form', 'method'=>'POST','action'=>['RptController@generatePerson']]) !!}
                                         {!! Form::select('cust_choice', [''=>null, 'all'=>'ALL (Info Only)']+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id')->all(),
-                                                null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
+                                            null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
                                         {!! Form::close() !!}
                                         </div>
-                                        
-                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'person_form']) !!} 
-                                     </div>      
+
+                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'person_form']) !!}
+                                     </div>
                                 </div>
                             </div>
                         </div>
                         {{-- second content --}}
-                        <div class="tab-pane" id="transaction">                        
+                        <div class="tab-pane" id="transaction">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-md-8 col-md-offset-2">
                                         {!! Form::open(['id'=>'transaction_form', 'method'=>'POST','action'=>['RptController@generateTransaction']]) !!}
-                                        
+
                                         <div class="row">
                                            <div class="form-group">
                                                 {!! Form::radio('choice_transac', 'tran_specific', 'tran_specific') !!}
@@ -92,7 +92,7 @@
                                            </div>
                                         </div>
                                         <br/>
-{{-- 
+{{--
                                         <div class="row">
                                         <div class="form-group">
                                         {!! Form::radio('choice_transac', 'tran_month') !!}
@@ -105,7 +105,7 @@
                                                 <option value="{{$i}}">{{date("F", mktime(0, 0, 0, $i, 10))}} {{Carbon\Carbon::now()->subYear()->year}}</option>
                                             @endfor
                                             </select>
-                                       </div>                            
+                                       </div>
                                         </div>
                                         <br/>
  --}}
@@ -114,19 +114,19 @@
                                         <div class="col-md-12" style="padding-top: 20px">
                                         {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'transaction_form']) !!}
                                         </div>
-                                    </div>    
+                                    </div>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                         {{-- end of second --}}
                         {{-- start of third --}}
-                        <div class="tab-pane" id="byproduct">                        
+                        <div class="tab-pane" id="byproduct">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-md-8 col-md-offset-2">
-                                        {!! Form::open(['id'=>'byproduct_form', 'method'=>'POST','action'=>['RptController@generateByProduct']]) !!}                                    
+                                        {!! Form::open(['id'=>'byproduct_form', 'method'=>'POST','action'=>['RptController@generateByProduct']]) !!}
                                         <div class="form-group">
                                            <div class="row">
                                                <div class="desc">
@@ -148,15 +148,15 @@
                                            </div>
                                         {!! Form::close() !!}
                                         </div>
-                                        
-                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'byproduct_form']) !!} 
-                                     </div>      
+
+                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'byproduct_form']) !!}
+                                     </div>
                                 </div>
                             </div>
                         </div>
                         {{-- end of third--}}
                         {{-- start of fourth--}}
-                        <div class="tab-pane" id="driver">                        
+                        <div class="tab-pane" id="driver">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                 </div>
@@ -175,12 +175,12 @@
                                                 {!! Form::select('driver', [''=>null]+$drivers::whereHas('roles', function($q){
                                                         $q->whereName('driver');
                                                 })->lists('name', 'name')->all(),
-                                                null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}                                            
+                                                null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
                                             @endcan
                                         </div>
-                       
 
-                                        <div class="form-group">                                        
+
+                                        <div class="form-group">
                                            <div class="row">
                                                <div class="desc">
                                                    <div class="col-md-4">
@@ -201,12 +201,12 @@
                                            </div>
                                         {!! Form::close() !!}
                                         </div>
-                                        
-                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'driver_form']) !!} 
-                                     </div>      
+
+                                        {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'driver_form']) !!}
+                                     </div>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
                         {{-- end of fourth --}}
                     </div>
                 </div>
@@ -223,7 +223,7 @@
     $('.datetoday').datetimepicker({
         format: 'DD MMM YY',
         defaultDate: new Date()
-    });      
+    });
 
 $(document).ready(function() {
     $('#tran_all').hide();
@@ -233,7 +233,7 @@ $(document).ready(function() {
         $("div.desc").hide();
         $('#'+test).show();
     });
-});  
+});
 
     $(function() {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
@@ -246,6 +246,6 @@ $(document).ready(function() {
         if (lastTab) {
             $('[href="' + lastTab + '"]').tab('show');
         }
-    });     
+    });
 </script>
 @stop

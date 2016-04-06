@@ -18,6 +18,7 @@ use App\Accessory;
 use App\Profile;
 use App\AddFreezer;
 use App\AddAccessory;
+use DB;
 
 class PersonController extends Controller
 {
@@ -38,14 +39,14 @@ class PersonController extends Controller
         $person =  Person::findOrFail($person_id);
 
         return $person;
-    }  
+    }
 
     public function getData()
     {
         $person =  Person::all();
 
         return $person;
-    }  
+    }
 
     /**
      * Return viewing page.
@@ -147,14 +148,14 @@ class PersonController extends Controller
 
                 $request->merge(array('active' => 'Yes'));
             }
-            
-        }        
+
+        }
 
         $input = $request->all();
 
         $person->update($input);
 
-        // $this->syncFreezer($person, $request);        
+        // $this->syncFreezer($person, $request);
 
         // $this->syncAccessory($person, $request);
 
@@ -232,8 +233,18 @@ class PersonController extends Controller
 
     public function showTransac($person_id)
     {
-        return Transaction::with('user')->wherePersonId($person_id)->latest()->get();
-    } 
+
+        // using sql query instead of eloquent for super fast pre-load (api)
+        $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                        ->where('people.id', '=', $person_id)
+                        ->latest('created_at')
+                        ->get();
+
+        return $transactions;
+    }
 
     public function generateLogs($id)
     {
@@ -242,16 +253,16 @@ class PersonController extends Controller
         $personHistory = $person->revisionHistory;
 
         // $prices = Price::wherePersonId($id)->get();
-       
+
        // foreach($prices as $price){
 
-        // $priceHistory = $prices->revisionHistory; 
-       
+        // $priceHistory = $prices->revisionHistory;
+
        // }
 
 
-        return view('person.log', compact('person', 'personHistory'));  
-    } 
+        return view('person.log', compact('person', 'personHistory'));
+    }
 
     public function getProfile($person_id)
     {
@@ -260,7 +271,7 @@ class PersonController extends Controller
         $profile = Profile::findOrFail($person->profile_id);
 
         return $profile;
-    }  
+    }
 
     public function addFreezer(Request $request)
     {
@@ -271,7 +282,7 @@ class PersonController extends Controller
         $addfreezer = AddFreezer::create($request->all());
 
         return Redirect::action('PersonController@edit', $addfreezer->person_id);
-    } 
+    }
 
     public function removeFreezer($id)
     {
@@ -279,8 +290,8 @@ class PersonController extends Controller
 
         $addfreezer->delete();
 
-        return Redirect::action('PersonController@edit', $addfreezer->person_id); 
-    } 
+        return Redirect::action('PersonController@edit', $addfreezer->person_id);
+    }
 
     public function addAccessory(Request $request)
     {
@@ -291,7 +302,7 @@ class PersonController extends Controller
         $addaccessory = AddAccessory::create($request->all());
 
         return Redirect::action('PersonController@edit', $addaccessory->person_id);
-    } 
+    }
 
     public function removeAccessory($id)
     {
@@ -299,15 +310,15 @@ class PersonController extends Controller
 
         $addaccessory->delete();
 
-        return Redirect::action('PersonController@edit', $addaccessory->person_id); 
-    }          
+        return Redirect::action('PersonController@edit', $addaccessory->person_id);
+    }
 
     public function personPrice($person_id)
     {
         $prices = Price::wherePersonId($person_id)->get();
 
         return $prices;
-    } 
+    }
 
     public function storeNote($person_id, Request $request)
     {
@@ -318,6 +329,6 @@ class PersonController extends Controller
         $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
-    }                         
-  
+    }
+
 }
