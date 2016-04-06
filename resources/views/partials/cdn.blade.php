@@ -8,9 +8,7 @@
 
 
 <!-- CSS -->
-    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css"/>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
 
 <!-- JS -->
- 
- 
+
