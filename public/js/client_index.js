@@ -8,6 +8,7 @@ function clientMainController($scope, $http){
 
     $http.get('/client/item').success(function(products){
         $scope.products = products;
+        $scope.itemsPerPage = products.length;
 
         $scope.showAllProduct = function(){
             $scope.productModel = ! $scope.productModel;
