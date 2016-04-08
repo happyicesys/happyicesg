@@ -7,7 +7,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
-        </div>       
+        </div>
 
         <ul class="nav navbar-nav navbar-right">
             @if (Auth::guest())
@@ -27,31 +27,31 @@
                             <li><a href="/auth/logout">Logout</a></li>
                         </ul>
                     </li>
-                @endif  
+                @endif
 
                 <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
                     <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
-                </li>                
+                </li>
                 <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
                     <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                 </li>
-                @cannot('transaction_view')    
+                @cannot('transaction_view')
                     <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
                         <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
                     </li>
-                @cannot('accountant_view')                
+                @cannot('accountant_view')
                     <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
                     <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
-                @endcannot                  
+                @endcannot
                 @endcannot
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
-                </li>                            
+                </li>
             </ul>
-        </div> 
-        @endunless     
+        </div>
+        @endunless
     </nav>

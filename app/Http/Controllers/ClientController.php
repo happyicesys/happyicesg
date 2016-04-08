@@ -24,7 +24,7 @@ class ClientController extends Controller
     // publish products from the items
     public function clientProduct()
     {
-        $items = Item::wherePublish(1)->get();
+        $items = Item::wherePublish(1)->orderBy('product_id', 'asc')->get();
 
         return $items;
     }

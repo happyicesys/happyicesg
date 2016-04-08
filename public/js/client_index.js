@@ -13,13 +13,14 @@ function clientMainController($scope, $http){
             $scope.productModel = ! $scope.productModel;
             if($scope.productModel){
 
-                $scope.productText = 'Hide Products';
+                // $scope.productText = 'Hide Products';
                 $scope.itemsPerPage = products.length;
 
             }else{
 
-                $scope.productText = 'Show All Products';
-                $scope.itemsPerPage = 3;
+                $scope.itemsPerPage = products.length;
+                // $scope.productText = 'Show All Products';
+                // $scope.itemsPerPage = 3;
             }
 
         }

@@ -20,12 +20,12 @@ Healthier Life
 
             </div>
         </div>
-
+{{--
         <div class="row text-center" style="padding: 30px 0px 100px 0px; color:blue;">
             <div class="col-md-12 col-sm-12 col-xs-12" style="font-size: 16px;">
                 <button ng-if="products.length > 3" ng-click="showAllProduct()" class="btn btn-primary thick-border" style="padding: 15px 50px 15px 50px; font-size:18px;" ng-model="productModel">@{{productText}}</button>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 @stop
