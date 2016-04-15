@@ -14,8 +14,8 @@
                 <div class="panel-title">
                     <div class="pull-right">
                         <a href="/item/create" class="btn btn-success">+ New Product</a>
-                        <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
-                        <a href="#" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a>
+                        {{-- <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a> --}}
+                        {{-- <a href="#" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a> --}}
                     </div>
                 </div>
             </div>

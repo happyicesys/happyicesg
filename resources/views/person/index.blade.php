@@ -27,7 +27,7 @@
                     <div class="pull-right">
                         @cannot('transaction_view')
                         <a href="/person/create" class="btn btn-success">+ New {{ $PERSON_TITLE }}</a>
-                        <a href="/onlineprice/create" class="btn btn-primary">+ Ecommerce Price Setup</a>
+                        {{-- <a href="/onlineprice/create" class="btn btn-primary">+ Ecommerce Price Setup</a> --}}
                         @endcannot
                     </div>
                 </div>
