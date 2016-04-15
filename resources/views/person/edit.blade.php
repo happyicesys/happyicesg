@@ -280,7 +280,7 @@
                     </td>
                     <td class="col-md-2">
                         <strong>
-                            <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" ng-change="getRetailChange(retailModel)"/>
+                            <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" />
                         </strong>
                     </td>
                     <td class="col-md-2">

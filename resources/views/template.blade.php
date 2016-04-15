@@ -6,14 +6,10 @@
 
     <body>
         @include('partials.nav')
-        <div class="container-fluid" style="padding-top:50px;">
-            <div class="row-fluid">
-                <div class="col-md-10 col-md-offset-2 main">
+        <div class="container-fluid">
                 @include('errors.validate')
                 @include('flash::message')
                     @yield('content')
-                </div>
-            </div>
         </div>
         @yield('footer')
         <script>

@@ -14,7 +14,7 @@
         table{
             font-size: 12px;
             font-family: 'Times New Roman';
-        }    
+        }
         th{
             font-size: 12px;
         }
@@ -23,20 +23,20 @@
             height: 210px;
             bottom: 5px;
             width: 100%;
-        }   
+        }
         html, body{
             height: 100%;
-        } 
+        }
         pre{
             font-size: 14px;
             font-family: 'Times New Roman';
-            background-color: transparent;            
+            background-color: transparent;
         }
         tr {
             page-break-inside: avoid;
-        }      
-          
-                 
+        }
+
+
     </style>
     </head>
 
@@ -48,17 +48,17 @@
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$person->profile->contact}}</h5>
                 <h5 class="text-center">Co Reg No: {{$person->profile->roc_no}}</h5>
             </div>
-            
+
             <div class="col-xs-12" style="padding-top: 5px">
                 <div class="row no-gutter">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                             <div style="font-size:14px"><strong>Bill To:</strong></div>
                             <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                            <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span> 
+                            <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span>
                             <span class="col-xs-12">{{$person->company}}</span>
                             <span class="col-xs-12">{{$person->bill_address}}</span>
-                            <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> 
+                            <span class="col-xs-offset-1">{{$person->bill_postcode}}</span>
                             </div>
                         </div>
                         <div style="padding-top:20px">
@@ -67,7 +67,7 @@
                                 <div class="inline col-xs-offset-1">{{$person->name}}</div>
                             </div>
                             <div class="form-group">
-                                <div class="inline"><strong>Tel:</strong></div> 
+                                <div class="inline"><strong>Tel:</strong></div>
                                 <div class="inline" style="padding-left: 20px">{{$person->contact}}</div>
                             </div>
                         </div>
@@ -77,13 +77,15 @@
                             <div style="font-size:14px"><strong>Send To:</strong></div>
                             <div style="border: solid thin; height:120px; padding-bottom: 15px;">
                                 @if($person->site_name)
-                                <span class="col-xs-12">{{$person->site_name}}</span>
+                                    <span class="col-xs-12">{{$person->site_name}}</span>
                                 @endif
-                                <span class="col-xs-12">{{$person->del_address}}</span>
-                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span> 
+
+                                <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
+
+                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
@@ -104,7 +106,7 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$transaction->id}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -116,9 +118,9 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -128,9 +130,9 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y')}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -140,9 +142,9 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$person->payterm}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -152,9 +154,9 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$transaction->updated_by}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -164,15 +166,15 @@
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$transaction->po_no}}</span>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                            </div>                                                         
-                                                                 
+                            </div>
+
                         </div>
-                    </div>                                                   
+                    </div>
 
                 </div>
-            </div> 
+            </div>
 
             <div class="avoid">
             <div class="row">
@@ -195,7 +197,7 @@
                                 Amount (S$)
                             </th>
                         </tr>
-                        
+
                         <?php $counter = 0; ?>
                         @unless(count($deals)>0)
                         <td class="text-center" colspan="8">No Records Found</td>
@@ -216,7 +218,7 @@
                             <td class="col-xs-2 text-right">
                                 {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
                             </td>
-                            @if($deal->unit_price == 0 || $deal->unit_price == null)                   
+                            @if($deal->unit_price == 0 || $deal->unit_price == null)
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
                             </td>
@@ -224,16 +226,16 @@
                             <td class="col-xs-1 text-right">
                                 {{ $deal->unit_price }}
                             </td>
-                            @endif                             
-                            @if($deal->amount != 0) 
+                            @endif
+                            @if($deal->amount != 0)
                             <td class="col-xs-1 text-right">
                                 {{ $deal->amount }}
                             </td>
-                            @else 
+                            @else
                             <td class="col-xs-1 text-right">
                                 <strong>FOC</strong>
                             </td>
-                            @endif                                                                                               
+                            @endif
                         </tr>
                         @endforeach
 
@@ -244,7 +246,7 @@
                             </td>
                             <td class="text-right">
                                 <strong>{{ $totalprice }}</strong>
-                            </td>                                                    
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="4" class="col-xs-3 text-center">
@@ -252,7 +254,7 @@
                             </td>
                             <td class="text-right">
                                 {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
-                            </td>                            
+                            </td>
                         </tr>
                         @endif
 
@@ -271,17 +273,17 @@
                                     <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
                                     <span class="pull-right">{{$totalqty}}</span>
                                 </td>
-                                <td></td>                              
+                                <td></td>
                                 <td class="text-right">
                                     <strong>{{ $totalprice }}</strong>
                                 </td>
-                            @endif                            
+                            @endif
                         </tr>
-                        @endunless                          
+                        @endunless
                     </table>
                 </div>
-            </div> 
-            </div>  
+            </div>
+            </div>
 
         {{-- <footer class="footer"> --}}
                 <div class="col-xs-12">
@@ -292,7 +294,7 @@
                         <div class="form-group">
                             @if($transaction->transremark)
                                 <label class="control-label">Remarks:</label>
-                                <pre>{{ $transaction->transremark }}</pre> 
+                                <pre>{{ $transaction->transremark }}</pre>
                             @endif
                         </div>
                     </div>
@@ -322,13 +324,13 @@
                                 <span class="text-center col-xs-12" style="margin-top:0px">
                                     <strong>Payment Collected By</strong>
                                 </span>
-                            </div>                            
-                        </div> 
+                            </div>
+                        </div>
                     </div>
 
-                </div> 
+                </div>
         {{-- </footer>             --}}
         </div>
 
     </body>
-</html>    
+</html>

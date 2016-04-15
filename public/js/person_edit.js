@@ -2,14 +2,14 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
     function personEditController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;  
+        $scope.itemsPerPage = 10;
 
         angular.element(document).ready(function () {
 
             $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
-                $scope.transactions = transactions; 
-                $scope.All = transactions.length;      
-            });            
+                $scope.transactions = transactions;
+                $scope.All = transactions.length;
+            });
 
             //delete record
             $scope.confirmDelete = function(id){
@@ -28,10 +28,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }else{
                     return false;
                 }
-            } 
+            }
 
 
-            
+
             $scope.exportData = function () {
                 var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
                     type: "application/vnd.ms-excel;charset=charset=utf-8"
@@ -42,22 +42,22 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             $http.get('/item/data').success(function(items){
                 $scope.items = items;
-            });  
+            });
 
         });
 
         $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
-            $scope.prices = prices; 
+            $scope.prices = prices;
             $scope.getRetailInit = function(item_id){
                 var retailNum = 0;
                 for(var i = 0; i < $scope.prices.length; i ++){
                     var price = $scope.prices[i];
                     if(item_id == price.item_id){
                         retailNum = price.retail_price;
-                        return retailNum;     
+                        return retailNum;
                     }
                 }
-            } 
+            }
 
             $scope.getQuoteInit = function(item_id){
                 var quoteNum = 0;
@@ -65,10 +65,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     var price = $scope.prices[i];
                     if(item_id == price.item_id){
                         quoteNum = price.quote_price;
-                        return quoteNum;     
+                        return quoteNum;
                     }
                 }
-            }                 
+            }
         });
 
         $http.get('/person/specific/data/'+ $('#person_id').val()).success(function(person){
@@ -87,7 +87,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     data: $.param(note: 'note'),
                 }).success(function(){
                     });
-               
+
             }   */
 /*            $scope.noteSave = function(note){
                 $http.post({'/note', note})
@@ -95,9 +95,9 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         });
             }*/
 
-        });            
-   
-    }  
+        });
+
+    }
 
 app.filter('delDate', [
     '$filter', function($filter) {
@@ -105,13 +105,13 @@ app.filter('delDate', [
             return $filter('date')(new Date(input), format);
         };
     }
-]);  
+]);
 
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
-}    
+}
 
 app.controller('personEditController', personEditController);
 app.controller('repeatController', repeatController);

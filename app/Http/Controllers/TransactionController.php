@@ -172,6 +172,11 @@ class TransactionController extends Controller
 
             $request->merge(array('status' => 'Confirmed'));
 
+        }elseif($request->input('unpaid')){
+
+            $request->merge(array('pay_status' => 'Owe'));
+
+            $request->merge(array('paid_by' => null));
         }
 
         $transaction = Transaction::findOrFail($id);

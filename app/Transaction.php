@@ -12,24 +12,24 @@ class Transaction extends Model
     public static function boot()
     {
         parent::boot();
-    }  
+    }
 
     public function identifiableName()
     {
         return $this->title;
-    }  
+    }
 
     protected $dontKeepRevisionOf = array(
         'person_id', 'updated_by', 'name'
-    );        
+    );
 
     protected $revisionEnabled = true;
 
     //Remove old revisions (works only when used with $historyLimit)
-    protected $revisionCleanup = true; 
+    protected $revisionCleanup = true;
 
     //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500; 
+    protected $historyLimit = 500;
 
     //storing new creation
     protected $revisionCreationsEnabled = true;
@@ -48,14 +48,14 @@ class Transaction extends Model
         'paid_by' => 'Payment Received By',
         'po_no' => 'PO #',
         'total_qty' => 'Total Qty',
-    );    
+    );
 
     protected $fillable=[
-        'total', 'delivery_date', 'status', 
+        'total', 'delivery_date', 'status',
         'user_id', 'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
-        'del_address', 'name', 'po_no', 
+        'del_address', 'name', 'po_no',
         'total_qty'
     ];
 
@@ -87,7 +87,7 @@ class Transaction extends Model
             $this->attributes['order_date'] = null;
 
         }
-    }            
+    }
 
     public function setTransremarkAttribute($value)
     {
@@ -112,7 +112,7 @@ class Transaction extends Model
     public function deals()
     {
         return $this->hasMany('App\Deal');
-    }    
+    }
 
     public function getCreatedAtAttribute($date)
     {
@@ -122,45 +122,33 @@ class Transaction extends Model
     public function getUpdatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d M y h:i A');
-    }  */  
+    }  */
 
     public function getDeliveryDateAttribute($date)
     {
         if($date){
 
-            return Carbon::parse($date)->format('Y-m-d');    
+            return Carbon::parse($date)->format('Y-m-d');
 
         }else{
 
             return null;
         }
-        
-    }  
+
+    }
 
     public function getOrderDateAttribute($date)
     {
         if($date){
 
-            return Carbon::parse($date)->format('Y-m-d');    
+            return Carbon::parse($date)->format('Y-m-d');
 
         }else{
 
             return null;
         }
-        
-    }         
 
-    /*public function getDates()
-    {
-         substitute your list of fields you want to be auto-converted to timestamps here: 
-        return array('created_at', 'updated_at', 'deleted_at', 'delivery_date');
-    }*/ 
-
-    //select field populate selected
-    /*public function getPersonIdAttribute()
-    {
-        return $this->person->lists('id')->all();
-    } */      
+    }
 
     /**
      * search and retrieve month data
@@ -206,5 +194,5 @@ class Transaction extends Model
             return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
 
         }
-    }    
+    }
 }

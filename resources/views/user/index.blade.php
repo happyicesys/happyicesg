@@ -3,20 +3,20 @@
 {{ $USER_TITLE }}
 @stop
 @section('content')
-    
-    <div class="row">        
+
+    <div class="row">
     <a class="title_hyper pull-left" href="/user"><h1>{{ $USER_TITLE }} <i class="fa fa-user"></i></h1></a>
     </div>
 
 
 <div class="panel panel-warning" ng-app="app" ng-controller="userController">
     <div class="panel-heading">
-            <ul class="nav nav-pills nav-justified" role="tablist">
-                <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
-                <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
-                <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
-                <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
-            </ul>
+        <ul class="nav nav-pills nav-justified" role="tablist">
+            <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
+            <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
+            <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
+            <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+        </ul>
     </div>
 
     <div class="panel-body">
@@ -40,60 +40,68 @@
                             <div class="pull-right">
                                 @can('create_user')
                                 <a href="/user/create" class="btn btn-success">+ New {{ $USER_TITLE }}</a>
-                                @endcan                                                        
+                                @endcan
                             </div>
                         </div>
                     </div>
 
                     <div class="panel-body">
-                        <div style="padding-bottom: 10px">
-                            <label for="search_id" class="search">Search ID:</label>
-                            <input type="text" ng-model="search.id">
-                            <label for="search_name" class="search" style="padding-left: 10px">Name:</label>
-                            <input type="text" ng-model="search.name">                    
-                            <label for="search_contact" class="search" style="padding-left: 10px">Contact:</label>
-                            <input type="text" ng-model="search.contact">
-
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'ID']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('contact', 'Contact:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('contact', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.contact', 'placeholder'=>'Contact']) !!}
+                            </div>
                         </div>
+
+                        <div class="row"></div>
+
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1">
                                         #
-                                    </th>                    
+                                    </th>
                                     <th class="col-md-1">
                                         <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                                         ID
                                         <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>                            
+                                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-2">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
+                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-2">
-                                        <a href="#" ng-click="sortType = 'username'; sortReverse = !sortReverse"> 
+                                        <a href="#" ng-click="sortType = 'username'; sortReverse = !sortReverse">
                                         Username
                                         <span ng-show="sortType == 'username' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'username' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>                             
+                                        </a>
                                     </th>
                                     <th class="col-md-2">
                                         Contact
                                     </th>
                                     <th class="col-md-2">
                                         Email
-                                    </th>                       
+                                    </th>
                                      <th class="col-md-2">
                                         Action
-                                    </th>                                                                       
+                                    </th>
                                 </tr>
 
                                 <tbody>
-                                  
+
                                      <tr dir-paginate="user in users | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="user" current-page="currentPage" ng-controller="repeatController">
                                         <td class="col-md-1">@{{ number }} </td>
                                         <td class="col-md-1">{{ $USER_PREFIX }}@{{ user.id }}</td>
@@ -113,18 +121,18 @@
                                     </tr>
                                     <tr ng-show="(users | filter:search).length == 0 || ! users.length">
                                         <td colspan="6" class="text-center">No Records Found</td>
-                                    </tr>                         
+                                    </tr>
 
                                 </tbody>
                             </table>
-                        </div>            
+                        </div>
                     </div>
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="user" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(users | filter:search).length}} of @{{users.length}} entries</label> 
+                          <label class="pull-right totalnum" for="totalnum">Showing @{{(users | filter:search).length}} of @{{users.length}} entries</label>
                     </div>
-                </div> 
+                </div>
             </div>
             {{-- end of first element--}}
             {{-- second element --}}
@@ -150,26 +158,31 @@
                     </div>
 
                     <div class="panel-body">
-                        <div style="padding-bottom: 10px">
-                            <label for="search_name" class="search">Name:</label>
-                            <input type="text" ng-model="search.name">               
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                            </div>
                         </div>
+
+                        <div class="row"></div>
+
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1 text-center">
                                         #
-                                    </th>                    
+                                    </th>
                                     <th class="col-md-9">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
+                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
-                                    </th>                      
+                                    </th>
                                     <th class="col-md-2 text-center">
                                         Action
-                                    </th>                                                                       
+                                    </th>
                                 </tr>
 
                                 <tbody>
@@ -183,17 +196,17 @@
                                     </tr>
                                     <tr ng-show="(freezers | filter:search).length == 0 || ! freezers.length">
                                         <td colspan="6" class="text-center">No Records Found</td>
-                                    </tr>                         
+                                    </tr>
                                 </tbody>
                             </table>
-                        </div>            
+                        </div>
                     </div>
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="freezer" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(freezers | filter:search).length}} of @{{freezers.length}} entries</label> 
+                          <label class="pull-right totalnum" for="totalnum">Showing @{{(freezers | filter:search).length}} of @{{freezers.length}} entries</label>
                     </div>
-                </div> 
+                </div>
             </div>
             {{-- end of second element --}}
             {{-- start of third element --}}
@@ -219,26 +232,31 @@
                     </div>
 
                     <div class="panel-body">
-                        <div style="padding-bottom: 10px">
-                            <label for="search_name" class="search">Name:</label>
-                            <input type="text" ng-model="search.name">               
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                            </div>
                         </div>
+
+                        <div class="row"></div>
+
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1 text-center">
                                         #
-                                    </th>                    
+                                    </th>
                                     <th class="col-md-9">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
+                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
-                                    </th>                      
+                                    </th>
                                     <th class="col-md-2 text-center">
                                         Action
-                                    </th>                                                                       
+                                    </th>
                                 </tr>
 
                                 <tbody>
@@ -252,17 +270,17 @@
                                     </tr>
                                     <tr ng-show="(accessories | filter:search).length == 0 || ! accessories.length">
                                         <td colspan="6" class="text-center">No Records Found</td>
-                                    </tr>                         
+                                    </tr>
                                 </tbody>
                             </table>
-                        </div>            
+                        </div>
                     </div>
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="accessory" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(accessories | filter:search).length}} of @{{accessories.length}} entries</label> 
+                          <label class="pull-right totalnum" for="totalnum">Showing @{{(accessories | filter:search).length}} of @{{accessories.length}} entries</label>
                     </div>
-                </div> 
+                </div>
             </div>
             {{-- end of third element--}}
             {{-- start of fourth element --}}
@@ -288,18 +306,23 @@
                     </div>
 
                     <div class="panel-body">
-                        <div style="padding-bottom: 10px">
-                            <label for="search_name" class="search">Name:</label>
-                            <input type="text" ng-model="search.name">               
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                            </div>
                         </div>
+
+                        <div class="row"></div>
+
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1 text-center">
                                         #
-                                    </th>                    
+                                    </th>
                                     <th class="col-md-7">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse"> 
+                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
@@ -307,10 +330,10 @@
                                     </th>
                                     <th class="col-md-2">
                                         Desc
-                                    </th>                                     
+                                    </th>
                                     <th class="col-md-2 text-center">
                                         Action
-                                    </th>                                                                       
+                                    </th>
                                 </tr>
 
                                 <tbody>
@@ -325,21 +348,21 @@
                                     </tr>
                                     <tr ng-show="(payterms | filter:search).length == 0 || ! payterms.length">
                                         <td colspan="6" class="text-center">No Records Found</td>
-                                    </tr>                         
+                                    </tr>
                                 </tbody>
                             </table>
-                        </div>            
+                        </div>
                     </div>
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="payterm" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(payterms | filter:search).length}} of @{{payterms.length}} entries</label> 
+                          <label class="pull-right totalnum" for="totalnum">Showing @{{(payterms | filter:search).length}} of @{{payterms.length}} entries</label>
                     </div>
-                </div> 
+                </div>
             </div>
             {{-- end of fourth element--}}
     </div>
-</div>          
+</div>
 
-<script src="/js/user.js"></script>              
+<script src="/js/user.js"></script>
 @stop

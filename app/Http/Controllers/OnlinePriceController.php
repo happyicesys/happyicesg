@@ -26,7 +26,7 @@ class OnlinePriceController extends Controller
      */
     public function create()
     {
-        //
+        return view('onlineprice.create');
     }
 
     /**

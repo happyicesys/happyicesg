@@ -14,6 +14,11 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+resource('onlineprice', 'OnlinePriceController');
+
+get('/inventory/data', 'InventoryController@getData');
+resource('inventory', 'InventoryController');
+
 get('/client/item', 'ClientController@clientProduct');
 get('/client/register', 'ClientController@getRegister');
 get('/client/about', 'ClientController@getAboutUs');
@@ -44,6 +49,7 @@ delete('person/{id}/file', 'PersonController@removeFile');
 
 get('/profile/data', 'ProfileController@getData');
 resource('profile', 'ProfileController');
+
 post('/item/{item_id}/photo', 'ItemController@addImage');
 get('/item/image/{item_id}', 'ItemController@imageItem');
 delete('/item/image/{item_id}', 'ItemController@destroyImageAjax');

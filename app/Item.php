@@ -9,7 +9,8 @@ class Item extends Model
     protected $fillable=[
         'name', 'remark', 'unit',
         'product_id', 'main_imgpath', 'sub_imgpath',
-        'img_remain', 'main_imgcaption', 'publish'
+        'img_remain', 'main_imgcaption', 'publish',
+        'qty_now', 'qty_last'
     ];
 
     public function transactions()
@@ -30,6 +31,16 @@ class Item extends Model
     public function images()
     {
         return $this->hasMany('App\ImageItem');
+    }
+
+    public function invrecords()
+    {
+        return $this->hasMany('App\InvRecord');
+    }
+
+    public function onlineprice()
+    {
+        return $this->hasOne('App\OnlinePrice');
     }
 
 }

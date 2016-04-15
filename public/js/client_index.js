@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
+var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 
 function clientMainController($scope, $http){
     $scope.productModel = false;

@@ -52,7 +52,7 @@ p {
 }
 
 .bg-primary {
-    background-color: #f05f40;
+    background-color: #7344e7;
 }
 
 .bg-dark {
@@ -184,6 +184,7 @@ header {
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
+    margin-top: 40px;
 }
 
 header .header-content {
@@ -385,9 +386,9 @@ fieldset[disabled] .btn-default.active {
 }
 
 .btn-primary {
-    border-color: #f05f40;
+    border-color: #404cf0;
     color: #fff;
-    background-color: #f05f40;
+    background-color: #404cf0;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
@@ -401,7 +402,7 @@ fieldset[disabled] .btn-default.active {
 .open > .dropdown-toggle.btn-primary {
     border-color: #ed431f;
     color: #fff;
-    background-color: #ee4b28;
+    background-color: #f05be2;
 }
 
 .btn-primary:active,
@@ -433,7 +434,7 @@ fieldset[disabled] .btn-primary.active {
 }
 
 .btn-primary .badge {
-    color: #f05f40;
+    color: #404cf0;
     background-color: #fff;
 }
 

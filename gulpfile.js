@@ -29,11 +29,6 @@ elixir(function(mix) {
             'filesaver.js',
             'moment.js',
             'angular-bootstrap-datetimepicker.js',
-            'cbpAnimatedHeader.js',
-            'classie.js',
-            'jquery.easing.min.js',
-            'jquery.fittext.js',
-            'wow.min.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

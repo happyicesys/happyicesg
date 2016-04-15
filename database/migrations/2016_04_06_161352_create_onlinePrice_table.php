@@ -16,15 +16,17 @@ class CreateOnlinePriceTable extends Migration
 
             $table->increments('id');
             $table->decimal('retail_price', 10, 2);
+            $table->decimal('quote_price', 10, 2);
+            $table->integer('divident');
             $table->integer('divisor');
             $table->text('remark')->nullable();
+            $table->string('created_by');
+            $table->string('updated_by');
             $table->timestamps();
 
             $table->integer('item_id')->unsigned();
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
 
-            $table->integer('person_id')->unsigned();
-            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
         });
     }
 

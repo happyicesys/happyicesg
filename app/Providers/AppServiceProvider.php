@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
 
         //Transaction
         view()->share('ITEM_TITLE', 'Inventory');
-        view()->share('ITEM_PREFIX', 'P');
+        view()->share('ITEM_PREFIX', 'I');
 
         //Transaction
         view()->share('TRANS_TITLE', 'Transaction');

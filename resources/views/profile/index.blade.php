@@ -3,8 +3,8 @@
 {{ $PROFILE_TITLE }}
 @stop
 @section('content')
-    
-    <div class="row">        
+
+    <div class="row">
     <a class="title_hyper pull-left" href="/profile"><h1> {{ $PROFILE_TITLE }} <i class="fa fa-building"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="profileController">
@@ -25,44 +25,51 @@
                     </div>
 
                     <div class="pull-right">
-                        <a href="/profile/create" class="btn btn-success">+ New {{ $PROFILE_TITLE }}</a>                        
+                        <a href="/profile/create" class="btn btn-success">+ New {{ $PROFILE_TITLE }}</a>
                     </div>
                 </div>
             </div>
 
             <div class="panel-body">
-                <div style="padding-bottom: 10px">
-                    <label for="search_name" class="search">Search Name:</label>
-                    <input type="text" ng-model="search.name">
-                    <label for="search_company" class="search" style="padding-left: 10px">ROC No:</label>
-                    <input type="text" ng-model="search.roc_no">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('roc_no', 'ROC No:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('roc_no', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.roc_no', 'placeholder'=>'ROC No']) !!}
+                    </div>
                 </div>
+
+                <div class="row"></div>
+
                 <div class="table-responsive">
                     <table class="table table-list-search table-hover table-bordered">
                         <tr style="background-color: #DDFDF8">
                             <th class="col-md-1 text-center">
                                 #
-                            </th>                    
+                            </th>
                             <th class="col-md-4 text-center">
                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Name
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-                                </a>                                                        
+                                </a>
                             </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 ROC No
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-                                </a>                            
+                                </a>
                             </th>
                             <th class="col-md-3 text-center">
                                 Address
-                            </th>                                                
+                            </th>
                             <th class="col-md-2 text-center">
                                 Action
-                            </th>                                                                                                
+                            </th>
                         </tr>
 
                         <tbody>
@@ -78,18 +85,18 @@
                             </tr>
                             <tr ng-show="(profiles | filter:search).length == 0 || ! profiles.length">
                                 <td colspan="7" class="text-center">No Records Found!</td>
-                            </tr>                         
+                            </tr>
 
                         </tbody>
-                    </table>            
+                    </table>
                 </div>
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                      <label class="pull-right totalnum" for="totalnum">Showing @{{(profiles | filter:search).length}} of @{{profiles.length}} entries</label> 
+                      <label class="pull-right totalnum" for="totalnum">Showing @{{(profiles | filter:search).length}} of @{{profiles.length}} entries</label>
                 </div>
         </div>
-    </div>  
+    </div>
 
-    <script src="/js/profile.js"></script>  
+    <script src="/js/profile.js"></script>
 @stop

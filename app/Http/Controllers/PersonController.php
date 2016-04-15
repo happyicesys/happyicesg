@@ -43,7 +43,7 @@ class PersonController extends Controller
 
     public function getData()
     {
-        $person =  Person::all();
+        $person =  Person::orderBy('cust_id')->get();
 
         return $person;
     }

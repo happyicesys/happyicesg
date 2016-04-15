@@ -43,55 +43,60 @@
             </div>
 
             <div class="panel-body">
-                <div class="row">
-                    <div style="padding: 0px 0px 10px 15px">
-                        <label for="search_inv" class="search">Search Inv:</label>
-                        <input type="text" ng-model="search.id" style="width:140px;">
-                        <label for="search_id" class="search" style="padding-left: 10px">ID:</label>
-                        <input type="text" ng-model="search.cust_id" style="width:140px;">
-                        <label for="search_company" class="search" style="padding-left: 10px">Company:</label>
-                        <input type="text" ng-model="search.company" style="width:140px;">
-                        <label for="search_status" class="search" style="padding-left: 10px">Status:</label>
-                        <input type="text" ng-model="search.status" style="width:140px;">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('invoice', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'Inv Num']) !!}
                     </div>
-                </div>
-                <div class="row">
-                    <div style="padding: 0px 0px 10px 15px">
-                        <label for="search_payment" class="search">Payment:</label>
-                        <input type="text" ng-model="search.pay_status" style="width:140px;">
-                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified By:</label>
-                        <input type="text" ng-model="search.updated_by" style="width:140px;">
-                        <label for="search_updated_by" class="search" style="padding-left: 10px">Last Modified Date:</label>
-                        <div class="col-md-2 pull-right" style="padding-top:3px; margin-right: 268px;">
-                            <div class="dropdown" style="width:140px;">
-                                <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="#" href="#">
-                                <div class="input-group"><input type="text" style="width:140px;" data-ng-model="search.updated_at">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'Company']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'placeholder'=>'Status']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('updated_by', 'Last Modify By:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('updated_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_by', 'placeholder'=>'Last Modified By']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('created_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
+                                <div class="input-group">
+                                    {!! Form::text('created_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_at', 'placeholder'=>'Last Modify Date']) !!}
                                 </div>
-                                </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
-                                </ul>
-                            </div>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div style="padding: 0px 0px 10px 15px">
-                        <label for="del_on" class="search pull-left">Delivery On:</label>
-                        <div class="col-md-2" style="padding-top:3px;">
-                            <div class="dropdown" style="width:140px;">
-                                <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-                                <div class="input-group"><input type="text" style="width:140px;" data-ng-model="search.delivery_date" ng-init="search.delivery_date=today">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
+                                <div class="input-group">
+                                    {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.delivery_date', 'ng-init'=>"search.delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
                                 </div>
-                                </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
-                                </ul>
-                            </div>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
+                            </ul>
                         </div>
-
-                        <label for="search_driver" class="search" style="margin-left:-20px;">Delivered By:</label>
-                        <input type="text" ng-model="search.driver" style="width:140px;">
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.driver', 'placeholder'=>'Delivered By']) !!}
                     </div>
                 </div>
 

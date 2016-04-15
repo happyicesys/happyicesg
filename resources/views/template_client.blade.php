@@ -4,7 +4,7 @@
         @include('partials.header_client')
     </head>
 
-    <body id="page-top" style="padding-top: 50px;">
+    <body id="page-top">
         @include('partials.nav_client')
             @include('errors.validate')
             @include('flash::message')
