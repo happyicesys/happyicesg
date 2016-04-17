@@ -139,7 +139,7 @@
                                                 </td>
                                             </tr>
                                             <tr ng-show="(items | filter:search).length == 0 || ! items.length">
-                                                <td class="text-center" colspan="8">No Records Found!</td>
+                                                <td class="text-center" colspan="9">No Records Found!</td>
                                             </tr>
 
                                         </tbody>
