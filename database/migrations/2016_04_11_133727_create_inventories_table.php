@@ -25,7 +25,6 @@ class CreateInventoriesTable extends Migration
             $table->increments('id');
             $table->string('batch_num');
             $table->string('type');
-            $table->timestamp('rec_date');
             $table->decimal('qtytotal_current', 12, 4);
             $table->decimal('qtytotal_incoming', 12, 4);
             $table->decimal('qtytotal_after', 12, 4);
