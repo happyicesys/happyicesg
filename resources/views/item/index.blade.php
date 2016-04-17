@@ -15,7 +15,7 @@
                     <div class="pull-right">
                         <a href="/item/create" class="btn btn-success">+ New Product</a>
                         <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
-                        <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a>
+                        <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Limit Setting</a>
                     </div>
                 </div>
             </div>
