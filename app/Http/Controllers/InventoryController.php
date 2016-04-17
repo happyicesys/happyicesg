@@ -123,17 +123,6 @@ class InventoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -244,6 +233,31 @@ class InventoryController extends Controller
     // inventory setting pages
     public function invIndex()
     {
+        return view('inventory.setting.index');
+    }
+
+    public function invLowest(Request $request)
+    {
+        $lowestArr = $request->lowest;
+
+        foreach($lowestArr as $index => $lowest){
+
+            $item = Item::findOrFail($index);
+
+            if($lowest != NULL and is_numeric($lowest)){
+
+                $item->lowest_limit = $lowest;
+
+            }else{
+
+                $item->lowest_limit = 0.0000;
+            }
+
+            $item->save();
+        }
+
+        Flash::success('Entries saved');
+
         return view('inventory.setting.index');
     }
 

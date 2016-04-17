@@ -16,6 +16,7 @@ Route::get('/admin', function () {
 
 resource('onlineprice', 'OnlinePriceController');
 
+post('inventory/setting', 'InventoryController@invLowest');
 get('inventory/setting', 'InventoryController@invIndex');
 get('/inventory/item/{inventory_id}', 'InventoryController@itemInventory');
 delete('/inventory/data/{id}', 'InventoryController@destroyAjax');

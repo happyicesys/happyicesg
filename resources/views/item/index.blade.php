@@ -15,7 +15,7 @@
                     <div class="pull-right">
                         <a href="/item/create" class="btn btn-success">+ New Product</a>
                         <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
-                        {{-- <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a> --}}
+                        <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a>
                     </div>
                 </div>
             </div>
@@ -105,12 +105,18 @@
                                                 <span ng-show="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
+                                                <a href="" ng-click="sortType = 'lowest_limit'; sortReverse = !sortReverse">
+                                                Threshold Limit
+                                                <span ng-show="sortType == 'lowest_limit' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-show="sortType == 'lowest_limit' && sortReverse" class="fa fa-caret-up"></span>
+                                            </th>
+                                            <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'qty_now'; sortReverse = !sortReverse">
-                                                Qty
+                                                Available Qty
                                                 <span ng-show="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
                                                 <span ng-show="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
-                                             <th class="col-md-2 text-center">
+                                             <th class="col-md-1 text-center">
                                                 Action
                                             </th>
                                         </tr>
@@ -123,8 +129,9 @@
                                                 <td class="col-md-2">@{{ item.remark }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.unit }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
-                                                <td class="col-md-1 text-center">@{{ +item.qty_now + 0 }}</td>
-                                                <td class="col-md-2 text-center">
+                                                <td class="col-md-1 text-center">@{{ +item.lowest_limit + 0 }}</td>
+                                                <td class="col-md-1 text-center"><strong>@{{ +item.qty_now + 0 }}</strong></td>
+                                                <td class="col-md-1 text-center">
                                                     <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                                     @cannot('accountant_view')
                                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(item.id)">Delete</button>
@@ -141,7 +148,7 @@
 
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" pagination-id="item"> </dir-pagination-controls>
-                                    <label class="pull-right totalnum" for="totalnum">Showing @{{(items | filter:search).length}} of @{{items.length}} entries</label>
+                                    <label ng-if-"items" class="pull-right totalnum" for="totalnum">Showing @{{(items | filter:search).length}} of @{{items.length}} entries</label>
                                 </div>
                             </div>
                             {{-- end of first element--}}
@@ -284,7 +291,7 @@
 
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" pagination-id="inventory"> </dir-pagination-controls>
-                                    <label class="pull-right totalnum" for="totalnum">Showing @{{(inventories | filter:search).length}} of @{{inventories.length}} entries</label>
+                                    <label ng-if-"inventories" class="pull-right totalnum" for="totalnum">Showing @{{(inventories | filter:search).length}} of @{{inventories.length}} entries</label>
                                 </div>
                             </div>
                             {{-- end of second element --}}
