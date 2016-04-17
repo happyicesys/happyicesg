@@ -78,7 +78,7 @@
                                                 <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
-                                            <th class="col-md-3 text-center">
+                                            <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                                 Product
                                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -116,7 +116,7 @@
                                                 <span ng-show="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
                                                 <span ng-show="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
-                                             <th class="col-md-1 text-center">
+                                             <th class="col-md-2 text-center">
                                                 Action
                                             </th>
                                         </tr>
@@ -125,13 +125,13 @@
                                             <tr dir-paginate="item in items | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController" pagination-id="item">
                                                 <td class="col-md-1 text-center">@{{ number }} </td>
                                                 <td class="col-md-1 text-center">@{{ item.product_id }}</td>
-                                                <td class="col-md-3">@{{ item.name }}</td>
+                                                <td class="col-md-2">@{{ item.name }}</td>
                                                 <td class="col-md-2">@{{ item.remark }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.unit }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
                                                 <td class="col-md-1 text-center">@{{ +item.lowest_limit + 0 }}</td>
                                                 <td class="col-md-1 text-center"><strong>@{{ +item.qty_now + 0 }}</strong></td>
-                                                <td class="col-md-1 text-center">
+                                                <td class="col-md-2 text-center">
                                                     <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                                     @cannot('accountant_view')
                                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(item.id)">Delete</button>

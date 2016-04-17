@@ -1,4 +1,4 @@
-@inject('items', 'App\item')
+@inject('items', 'App\Item')
 
 @extends('template')
 @section('title')
