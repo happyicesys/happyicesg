@@ -17,7 +17,7 @@
         </div>
 
         <div class="panel-body">
-            {!! Form::model($item = new \App\Item, ['action'=>'InventoryController@invLowest']) !!}
+            {!! Form::model($items, ['action'=>'InventoryController@invLowest']) !!}
 
             <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" style="padding-top: 10px;">
                 <div class="table-responsive">
