@@ -7,6 +7,39 @@ var app = angular.module('app', ['ui.bootstrap',
 
         $scope.showBatch = true;
 
+        var inv_id = $('#inventory_id').val();
+/*
+        $http.get('/item/data').success(function(items){
+            $scope.items = items;
+
+            $http.get('/inventory/item/'+ inv_id).success(function(inventories){
+
+                $scope.inventories = inventories;
+                $scope.getRetailInit = function(item_id){
+                    var retailNum = 0;
+                    for(var i = 0; i < $scope.inventories.length; i ++){
+                        var inventory = $scope.inventories[i];
+                        if(item_id == inventory.item_id){
+                            retailNum = inventory.retail_price;
+                            return retailNum;
+                        }
+                    }
+                }
+
+                $scope.getQuoteInit = function(item_id){
+                    var quoteNum = 0;
+                    for(var i = 0; i < $scope.inventories.length; i ++){
+                        var inventory = $scope.inventories[i];
+                        if(item_id == inventory.item_id){
+                            quoteNum = inventory.quote_price;
+                            return quoteNum;
+                        }
+                    }
+                }
+            });
+        });*/
+
+
         $(document).ready(function () {
 
             $(".incomingClass").keyup(multInputs);
@@ -57,6 +90,26 @@ var app = angular.module('app', ['ui.bootstrap',
            }
         });
 
+        //delete item record
+        $scope.confirmDelete = function(){
+            var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + inv_id);
+            if(isConfirmDelete){
+                $http({
+                    method: 'DELETE',
+                    url: '/inventory/data/' + inv_id
+                })
+                .success(function(data){
+                    window.history.go(-1);
+                    location.reload();
+                })
+                .error(function(data){
+                    alert('Unable to delete');
+                })
+            }else{
+                return false;
+            }
+        }
+
         $scope.typeModelChanged = function(type){
 
             if(type == 'Adjustment'){
@@ -69,6 +122,8 @@ var app = angular.module('app', ['ui.bootstrap',
             }
 
         }
+
+
 
     }
 

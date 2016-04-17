@@ -18,13 +18,13 @@ class Deal extends Model
     protected $revisionEnabled = true;
 
     //Remove old revisions (works only when used with $historyLimit)
-    protected $revisionCleanup = true; 
+    protected $revisionCleanup = true;
 
     //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500; 
+    protected $historyLimit = 500;
 
     //storing new creation
-    protected $revisionCreationsEnabled = true;  
+    protected $revisionCreationsEnabled = true;
 
     //revision appear format name
     protected $revisionFormattedFieldNames = array(
@@ -32,11 +32,15 @@ class Deal extends Model
         'qty' => 'Quantity',
         'amount' => 'Amount',
         'unit_price' => 'Unit Price',
-    );        
+    );
+
+    protected $dontKeepRevisionOf = array(
+        'qty_status'
+    );
 
     protected $fillable = [
         'item_id', 'transaction_id', 'qty',
-        'amount', 'unit_price'
+        'amount', 'unit_price', 'qty_status'
     ];
 
     public function item()
@@ -52,19 +56,19 @@ class Deal extends Model
     public function setQtyAttribute($value)
     {
         if(strstr($value, '/')){
-        
+
             $this->attributes['qty'] = $this->fraction($value);
 
         }else{
 
             $this->attributes['qty'] = $value;
-        }        
-    }    
+        }
+    }
 
 /*    public function revision()
     {
         return $this->hasOne('App\Revision');
-    }*/ 
+    }*/
 
     private function fraction($frac)
     {
@@ -77,5 +81,5 @@ class Deal extends Model
 
         return "Division by zero error!";
 
-    }   
+    }
 }

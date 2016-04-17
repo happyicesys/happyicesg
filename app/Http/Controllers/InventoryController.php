@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -32,6 +33,13 @@ class InventoryController extends Controller
         $inventories =  Inventory::latest()->get();
 
         return $inventories;
+    }
+
+    public function itemInventory($inventory_id)
+    {
+        $inventory = InvRecord::where('inventory_id', $inventory_id)->get();
+
+        return $inventory;
     }
 
     /**
@@ -78,27 +86,35 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($input);
 
-        // store all the history total into inventory
-        $inventory->qtytotal_current = array_sum($currentQty);
-
-        $inventory->qtytotal_incoming = array_sum($incomingQty);
-
-        $inventory->qtytotal_after = array_sum($afterQty);
-
-        $inventory->save();
-
         if(array_filter($incomingQty)){
 
-            $this->createInvRecord($inventory->id, $currentQty, $incomingQty, $afterQty);
+            if($this->createInvRecord($inventory->id, $currentQty, $incomingQty, $afterQty)){
 
-            Flash::success('Entries added');
+                // store all the history total into inventory
+                // qtytotal_current used to record original entry
+                $inventory->qtytotal_current = array_sum($incomingQty);
 
-            return redirect('item');
+                $inventory->qtytotal_incoming = array_sum($incomingQty);
+
+                $inventory->qtytotal_after = array_sum($afterQty);
+
+                $inventory->save();
+
+                Flash::success('Entries added');
+
+                return redirect('item');
+
+            }else{
+
+                Flash::error('Item Current Qty must not become negative');
+
+                return Redirect::action('InventoryController@edit', $inventory->id);
+
+            }
 
         }else{
 
-            // Flash::error('Please fill up the form');
-            Session::flash('global', 'Please Fill Up The Form');
+            Flash::error('Please fill up the form');
 
             return view('inventory.create');
 
@@ -149,38 +165,86 @@ class InventoryController extends Controller
 
         $inventory = Inventory::findOrFail($id);
 
-        if(($inventory->qtytotal_current != $request->total_current) or ($inventory->qtytotal_incoming != $request->total_incoming) or ($inventory->qtytotal_after != $request->total_after)){
+        if(($inventory->qtytotal_incoming != $request->total_incoming)){
+
+            $incomingDiff = 0.0000;
 
             foreach($incomingArr as $index => $incoming){
 
+                // update the invrecords accordingly
                 $invrec = InvRecord::findOrFail($index);
 
-                $invrec->qtyrec_current = $currentArr[$index];
+                // update the item now and last inventory
+                $item = Item::findOrFail($invrec->item_id);
 
-                $invrec->qtyrec_incoming = $incoming;
+                if($incoming == $invrec->qtyrec_incoming){
 
-                $invrec->qtyrec_after = $afterArr[$index];
+                    $incomingDiff = 0;
+
+                }else{
+
+                    $incomingDiff = $incoming;
+
+                }
+
+                // prevent the stock qty is deduct to negative
+                if($item->qty_now + $incomingDiff < 0){
+
+                    Flash::error('The product '.$item->product_id.' has been deducted to less than zero');
+
+                    return Redirect::action('InventoryController@edit', $inventory->id);
+
+                }else{
+
+                    $invrec->qtyrec_incoming = $incoming;
+
+                    $invrec->qtyrec_after = $afterArr[$index];
+
+                    $invrec->save();
+
+                    $item->qty_now = $item->qty_now + $incomingDiff;
+
+                    $item->save();
+
+                    Flash::success('The changes has been saved');
+
+                }
             }
 
-        }else{
+            $inventory->qtytotal_incoming = array_sum($incomingArr);
 
+            $inventory->qtytotal_after = array_sum($afterArr);
+
+            $inventory->save();
 
         }
 
+        $request->merge(array('updated_by' => Auth::user()->name));
 
+        $inventory->update($request->all());
 
-        dd($input);
+        return Redirect::action('InventoryController@edit', $inventory->id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return json
      */
     public function destroy($id)
     {
-        //
+        $inventory = Inventory::findOrFail($id);
+
+        $inventory->delete();
+
+        return redirect('item');
+    }
+
+    // inventory setting pages
+    public function invIndex()
+    {
+        return view('inventory.setting.index');
     }
 
     private function createInvRecord($inv_id, $currentQty, $incomingQty, $afterQty)
@@ -191,26 +255,38 @@ class InventoryController extends Controller
 
                 $rec = new InvRecord();
 
+                $item = Item::findOrFail($index);
+
                 $rec->inventory_id = $inv_id;
 
                 $rec->item_id = $index;
 
-                $rec->qtyrec_current = $currentQty[$index];
+                // qtyrec_current used to record the original qty
+                $rec->qtyrec_current = $qty;
 
                 $rec->qtyrec_incoming = $qty;
 
                 $rec->qtyrec_after = $afterQty[$index];
 
-                $rec->save();
+                // check whether the summation smaller than zero or not
+                if($currentQty[$index] + $incomingQty[$index] < 0){
 
-                $item = Item::findOrFail($index);
+                    return false;
 
-                $item->qty_last = $currentQty[$index];
+                }else{
 
-                $item->qty_now = $currentQty[$index] + $incomingQty[$index];
+                    $rec->save();
 
-                $item->save();
+                    $item->qty_last = $currentQty[$index];
+
+                    $item->qty_now = $currentQty[$index] + $incomingQty[$index];
+
+                    $item->save();
+
+                }
             }
+
         }
+        return true;
     }
 }

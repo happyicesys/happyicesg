@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Inventory extends Model
 {
@@ -22,7 +23,7 @@ class Inventory extends Model
         'creator_id'
     );
 
-    protected $revisionEnabled = true;
+    protected $revisionEnabled = false;
 
     //Remove old revisions (works only when used with $historyLimit)
     protected $revisionCleanup = true;
@@ -42,6 +43,8 @@ class Inventory extends Model
         'qtytotal_current' => 'Current Total',
         'qtytotal_incoming'  => 'Incoming Total',
         'qtytotal_after' => 'After Total',
+        'rec_date' => 'Receiving Date',
+        'updated_by' => 'Updated By',
     );
 
     protected $table = 'inventories';
@@ -50,16 +53,25 @@ class Inventory extends Model
         'batch_num', 'remark', 'type',
         'creator_id', 'created_by', 'qtytotal_current',
         'qtytotal_incoming', 'qtytotal_after',
-        'updated_by'
+        'updated_by', 'rec_date'
     ];
+
+    protected $dates = [
+        'rec_date'
+    ];
+
+    public function setRecDateAttribute($date)
+    {
+        $this->attributes['rec_date'] = Carbon::parse($date);
+    }
 
     public function invrecords()
     {
         return $this->hasMany('App\InvRecord');
     }
-/*
-    public function getCreatedAtAttribute($date)
+
+    public function getRecDateAttribute($date)
     {
-        return Carbon::parse($date)->format('d M y');
-    }*/
+        return Carbon::parse($date)->format('Y-m-d');
+    }
 }

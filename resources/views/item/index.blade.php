@@ -14,8 +14,8 @@
                 <div class="panel-title">
                     <div class="pull-right">
                         <a href="/item/create" class="btn btn-success">+ New Product</a>
-                        {{-- <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a> --}}
-                        {{-- <a href="#" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a> --}}
+                        <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
+                        {{-- <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Setting</a> --}}
                     </div>
                 </div>
             </div>
@@ -162,6 +162,19 @@
                                         {!! Form::text('batch_num', null, ['class'=>'form-control input-sm', 'ng-model'=>'search2.batch_num', 'placeholder'=>'Batch Num']) !!}
                                     </div>
                                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                        {!! Form::label('rec_date', 'Received On:', ['class'=>'control-label search-title']) !!}
+                                        <div class="dropdown">
+                                            <a class="dropdown-toggle" id="dropdown4" role="button" data-toggle="dropdown" data-target="" href="">
+                                                <div class="input-group">
+                                                    {!! Form::text('rec_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'search2.rec_date', 'placeholder'=>'Received On']) !!}
+                                                </div>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                            <datetimepicker data-ng-model="search2.rec_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown4', minView: 'day'}" ng-change="dateChange3(search2.rec_date)"/>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                         {!! Form::label('created_at', 'Created On:', ['class'=>'control-label search-title']) !!}
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
@@ -170,7 +183,7 @@
                                                 </div>
                                             </a>
                                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                            <datetimepicker data-ng-model="search.created_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.created_at)"/>
+                                            <datetimepicker data-ng-model="search2.created_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search2.created_at)"/>
                                             </ul>
                                         </div>
                                     </div>
@@ -217,7 +230,7 @@
                                                 <span ng-show="sortType2 == 'batch_num' && !sortReverse2" class="fa fa-caret-down"></span>
                                                 <span ng-show="sortType2 == 'batch_num' && sortReverse2" class="fa fa-caret-up"></span>
                                             </th>
-                                             <th class="col-md-3 text-center">
+                                             <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType2 = 'remark'; sortReverse2 = !sortReverse2">
                                                 Remark
                                                 <span ng-show="sortType2 == 'remark' && !sortReverse2" class="fa fa-caret-down"></span>
@@ -225,6 +238,12 @@
                                                 </a>
                                             </th>
                                             <th class="col-md-1 text-center">
+                                                <a href="" ng-click="sortType2 = 'rec_date'; sortReverse2 = !sortReverse2">
+                                                Received On
+                                                <span ng-show="sortType2 == 'rec_date' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-show="sortType2 == 'rec_date' && sortReverse2" class="fa fa-caret-up"></span>
+                                            </th>
+                                            <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType2 = 'created_at'; sortReverse2 = !sortReverse2">
                                                 Created On
                                                 <span ng-show="sortType2 == 'created_at' && !sortReverse2" class="fa fa-caret-down"></span>
@@ -247,15 +266,16 @@
                                                 <td class="col-md-1 text-center">@{{ inventory.id }}</td>
                                                 <td class="col-md-1 text-center">@{{ inventory.type }}</td>
                                                 <td class="col-md-2 text-center">@{{ inventory.batch_num ? inventory.batch_num : '-' }}</td>
-                                                <td class="col-md-3 text-center">@{{ inventory.remark }}</td>
-                                                <td class="col-md-1 text-center">@{{ inventory.created_at }}</td>
+                                                <td class="col-md-2 text-center">@{{ inventory.remark }}</td>
+                                                <td class="col-md-2 text-center">@{{ inventory.rec_date }}</td>
+                                                <td class="col-md-2 text-center">@{{ inventory.created_at }}</td>
                                                 <td class="col-md-1 text-center">@{{ inventory.created_by }}</td>
                                                 <td class="col-md-1 text-center">
                                                     <a href="/inventory/@{{ inventory.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                                 </td>
                                             </tr>
-                                            <tr ng-show="(inventories | filter:search).length == 0 || ! inventories.length">
-                                                <td class="text-center" colspan="8">No Records Found!</td>
+                                            <tr ng-show="(inventories | filter:search2).length == 0 || ! inventories.length">
+                                                <td class="text-center" colspan="9">No Records Found!</td>
                                             </tr>
 
                                         </tbody>

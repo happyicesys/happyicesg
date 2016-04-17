@@ -34,9 +34,23 @@
                     !!}
                 </div>
 
-                <div class="form-group" ng-if="showBatch">
-                    {!! Form::label('batch_num', 'Batch Num', ['class'=>'control-label']) !!}
-                    {!! Form::text('batch_num', null, ['class'=>'form-control']) !!}
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-group" ng-if="showBatch">
+                            {!! Form::label('batch_num', 'Batch Num', ['class'=>'control-label']) !!}
+                            {!! Form::text('batch_num', null, ['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="form-group">
+                            {!! Form::label('rec_date', 'Receiving Date', ['class'=>'control-label']) !!}
+                            <div class="input-group date">
+                            {!! Form::text('rec_date', null, ['class'=>'form-control', 'id'=>'rec_date']) !!}
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -119,9 +133,14 @@
     </div>
 </div>
 
-<script src="/js/inv_create.js"></script>
+<script src="/js/inv.js"></script>
 <script>
     $('.select').select2();
+
+    $('.date').datetimepicker({
+       format: 'YYYY-MM-DD',
+       defaultDate: new Date(),
+    });
 </script>
 
 @stop

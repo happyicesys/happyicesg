@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-// use Illuminate\Http\Response;
+
 use Venturecraft\Revisionable\Revision;
 use Response;
 use App;
@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use App\Profile;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use Laracasts\Flash\Flash;
 
 class TransactionController extends Controller
 {
@@ -187,33 +188,59 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        if($quantities and $amounts){
+        if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
-            $this->createDeal($transaction->id, $quantities, $amounts, $quotes);
+            if($quantities and $amounts){
 
+                if($this->createDeal($transaction, $quantities, $amounts, $quotes)){
+
+                    $this->syncDealInv($transaction);
+
+                    Flash::success('Successfully Added');
+
+                }else{
+
+                    $this->syncDealInv($transaction);
+
+                    Flash::error('Stock Qty is not enough');
+
+                    return Redirect::action('TransactionController@edit', $transaction->id);
+
+                }
+
+            }else{
+
+                if($this->syncDealInv($transaction)){
+
+                    Flash::success('Successfully Added');
+
+                }else{
+
+                    Flash::error('Stock Qty is not enough');
+
+                    return Redirect::action('TransactionController@edit', $transaction->id);
+                }
+            }
+
+        }elseif($transaction->status === 'Pending'){
+
+            if($quantities and $amounts){
+
+                if($this->createDeal($transaction, $quantities, $amounts, $quotes)){
+
+                    Flash::success('Successfully Added');
+
+                }else{
+
+                    Flash::error('Stock Qty is not enough');
+
+                    return Redirect::action('TransactionController@edit', $transaction->id);
+
+                }
+            }
         }
 
-        $deals = Deal::whereTransactionId($transaction->id)->get();
-
-        $deal_total = $deals->sum('amount');
-
-        $deal_totalqty = $deals->sum('qty');
-
-        $transaction->total = $deal_total;
-
-        $transaction->total_qty = $deal_totalqty;
-
-        $transaction->save();
-
-        if($request->input('save')){
-
-            return redirect('transaction');
-
-        }else{
-
-            return Redirect::action('TransactionController@edit', $transaction->id);
-
-        }
+        return Redirect::action('TransactionController@edit', $transaction->id);
 
     }
 
@@ -234,6 +261,24 @@ class TransactionController extends Controller
             $transaction->status = 'Cancelled';
 
             $transaction->save();
+
+            // revert all the deals qty upon cancelled
+            $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', 'deducted')->get();
+
+            foreach($deals as $deal){
+
+                $item = Item::findOrfail($deal->item_id);
+
+                $item->qty_last = $item->qty_now;
+
+                $item->qty_now = $item->qty_now + $deal->qty;
+
+                $item->save();
+
+                $deal->qty_status = 'removed';
+
+                $deal->save();
+            }
 
             return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -510,7 +555,7 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     }
 
-    private function createDeal($id, $quantities, $amounts, $quotes)
+    private function createDeal($transaction, $quantities, $amounts, $quotes)
     {
         foreach($quantities as $index => $qty){
 
@@ -518,11 +563,31 @@ class TransactionController extends Controller
 
                 $deal = new Deal();
 
-                $deal->transaction_id = $id;
+                $deal->transaction_id = $transaction->id;
 
                 $deal->item_id = $index;
 
                 $deal->qty = $qty;
+
+                // deduct inventory
+                $item = Item::findOrFail($index);
+
+                if($item->lowest_limit){
+
+                    if($item->qty_now - $qty < $item->lowest_limit){
+
+                        return false;
+
+                    }
+
+                }else{
+
+                    if($item->qty_now - $qty < 0){
+
+                        return false;
+
+                    }
+                }
 
                 $deal->amount = $amounts[$index];
 
@@ -533,6 +598,67 @@ class TransactionController extends Controller
             }
         }
 
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+
+        $deal_total = $deals->sum('amount');
+
+        $deal_totalqty = $deals->sum('qty');
+
+        $transaction->total = $deal_total;
+
+        $transaction->total_qty = $deal_totalqty;
+
+        $transaction->save();
+
+        return true;
+
+    }
+
+    private function syncDealInv($transaction)
+    {
+
+        // Looping to update the inventory
+        if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
+
+            $deals = Deal::where('transaction_id', $transaction->id)->whereNull('qty_status')->get();
+
+            foreach($deals as $deal){
+
+                $item = Item::findOrFail($deal->item_id);
+
+                if($item->lowest_limit){
+
+                    if($item->qty_now - $deal->qty < $item->lowest_limit){
+
+                        return false;
+
+                    }
+
+                }else{
+
+                    if($item->qty_now - $deal->qty < 0){
+
+                        return false;
+
+                    }
+                }
+
+                $item->qty_now = $item->qty_now - $deal->qty;
+
+                $deal->qty_status = 'deducted';
+
+                $item->save();
+
+                $deal->save();
+            }
+
+            return true;
+
+        }else{
+
+            return true;
+
+        }
     }
 
 

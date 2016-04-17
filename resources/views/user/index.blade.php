@@ -109,18 +109,17 @@
                                         <td class="col-md-2">@{{ user.username }}</td>
                                         <td class="col-md-2">@{{ user.contact }}</td>
                                         <td class="col-md-2">@{{ user.email }}</td>
-                                        <td class="col-md-2">
+                                        <td class="col-md-2 text-center">
 
+                                            <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
 
-                                        <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-
-                                        @can('delete_user')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
-                                        @endcan
+                                            @can('delete_user')
+                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
+                                            @endcan
                                         </td>
                                     </tr>
                                     <tr ng-show="(users | filter:search).length == 0 || ! users.length">
-                                        <td colspan="6" class="text-center">No Records Found</td>
+                                        <td colspan="7" class="text-center">No Records Found</td>
                                     </tr>
 
                                 </tbody>

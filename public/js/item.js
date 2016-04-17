@@ -17,8 +17,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             $scope.All = inventories.length;
         });
 
+        $scope.dateChange3 = function(date){
+            $scope.search2.rec_date = moment(date).format("YYYY-MM-DD");
+        }
+
         $scope.dateChange2 = function(date){
-            $scope.search.created_at = moment(date).format("YYYY-MM-DD");
+            $scope.search2.created_at = moment(date).format("YYYY-MM-DD");
         }
 
         //delete item record
