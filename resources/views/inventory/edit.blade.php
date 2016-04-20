@@ -23,7 +23,7 @@
 
         <div class="panel-body">
             <div style="padding: 0px 15px 0px 15px;">
-                {!! Form::model($inventory,['method'=>'PATCH','action'=>['InventoryController@update', $inventory->id]]) !!}
+                {!! Form::model($inventory,['id'=>'form_update', 'method'=>'PATCH','action'=>['InventoryController@update', $inventory->id]]) !!}
                     {!! Form::hidden('inventory_id', $inventory->id, ['id'=>'inventory_id','class'=>' form-control']) !!}
 
                 <div class="form-group" style="padding-top: 20px;">
@@ -71,17 +71,17 @@
 
                     <table class="table table-list-search table-hover table-bordered table-condensed">
                         <tr style="background-color: #DDFDF8">
-                            <th class="col-md-4 text-center">
+                            <th class="col-md-6 text-center">
                                 Item
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 Current Qty
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 Original Added Qty
                             </th>
                             <th class="col-md-2 text-center">
-                                Adjust Incoming Qty
+                                Adjusted Incoming Qty
                             </th>
                             <th class="col-md-2 text-center">
                                 After Qty
@@ -89,95 +89,74 @@
                         </tr>
 
                         <tbody>
-
-                            @unless(count($invrecs)>0)
-                            <td class="text-center" colspan="7">No Records Found</td>
-                            @else
-                            @foreach($invrecs as $invrec)
-                            <tr class="txtMult form-group">
-                                <td class="col-md-4">
-                                    {{$invrec->item->product_id}} - {{$invrec->item->name}} - {{$invrec->item->remark}}
+                            <tr ng-repeat="item in items" class="form-group">
+                                <td class="col-md-6">
+                                    @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
                                 </td>
-                                <td class="col-md-2">
-                                    <input type="text" name="current[{{$invrec->id}}]" value="{{$invrec->item->qty_now}}" class="text-right currentClass form-control" readonly="readonly" />
-                                </td>
-                                <td class="col-md-2">
+                                <td class="col-md-1 text-right">
                                     <strong>
-                                        <input type="text" name="original[{{$invrec->id}}]"  value="{{$invrec->qtyrec_current}}" class="text-right form-control" readonly="readonly" />
+                                    @{{item.qty_now}}
+                                    </strong>
+                                </td>
+                                <td class="col-md-1 text-right">
+                                    <strong>
+                                        {!! Form::text('original[@{{item.id}}]', null, [
+                                                        'class'=>'text-right form-control',
+                                                        'ng-init'=>'originalModel=getOriginalInit(item.id) == null ? 0: getOriginalInit(item.id)',
+                                                        'ng-model'=>'originalModel',
+                                                        'readonly'=>'readonly'
+                                                        ]) !!}
                                     </strong>
                                 </td>
                                 <td class="col-md-2">
                                     <strong>
-                                        <input type="text" name="incoming[{{$invrec->id}}]"  value="{{$invrec->qtyrec_incoming}}" class="text-right incomingClass form-control"/>
+                                        {!! Form::text('incoming[@{{item.id}}]', null, [
+                                                        'class'=>'text-right form-control',
+                                                        'ng-init'=>'incomingModel=getIncomingInit(item.id) == null ? 0: getIncomingInit(item.id)',
+                                                        'ng-model'=>'incomingModel',
+                                                        ]) !!}
                                     </strong>
                                 </td>
                                 <td class="col-md-2">
-                                    <input type="text" name="after[{{$invrec->id}}]" class="text-right form-control afterClass" readonly="readonly"/>
+                                    <strong>
+                                        {!! Form::text('after[@{{item.id}}]', null, [
+                                                        'class'=>'text-right form-control',
+                                                        'ng-model'=>'afterModel',
+                                                        'ng-if'=>'compareModel(item.id, originalModel, incomingModel)',
+                                                        'ng-value'=>'((+item.qty_now) + (+incomingModel)).toFixed(4)',
+                                                        'readonly'=>'readonly'
+                                                        ]) !!}
+                                        {!! Form::text('after[@{{item.id}}]', null, [
+                                                        'class'=>'text-right form-control',
+                                                        'ng-model'=>'afterModel',
+                                                        'ng-if'=>'!compareModel(item.id, originalModel, incomingModel)',
+                                                        'ng-value'=>'0',
+                                                        'readonly'=>'readonly'
+                                                        ]) !!}
+                                    </strong>
                                 </td>
                             </tr>
-                            @endforeach
-                            @endunless
-                            <tr>
-                                <td class="col-md-1 text-center">
-                                    <strong>Grand Total</strong>
-                                </td>
-                                <td></td>
-                                <td class="text-right" id="currentTotal" >
-                                    <strong>
-                                        <input type="text" name="total_current" value="{{$inventory->qtytotal_current}}" class="text-right form-control currentTotal" readonly="readonly" />
-                                    </strong>
-                                </td>
-                                <td class="text-right" id="incomingTotal" >
-                                    <strong>
-                                        <input type="text" name="total_incoming" value="{{$inventory->qtytotal_incoming}}" class="text-right form-control incomingTotal" readonly="readonly" />
-                                    </strong>
-                                </td>
-{{--                                 <td class="text-right" id="afterTotal" >
-                                    <strong>
-                                        <input type="text" name="total_after" value="{{$inventory->qtytotal_after}}" class="text-right form-control afterTotal" readonly="readonly" />
-                                    </strong>
-                                </td> --}}
+                            <tr ng-if="items.length == 0 || ! items.length">
+                                <td colspan="5" class="text-center">No Records Found!</td>
                             </tr>
-{{--
-                        <tr ng-repeat="item in items" class="form-group">
-                            <td class="col-md-6">
-                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="current[@{{item.id}}]" class="text-right form-control" ng-init="currentModel = getCurrentInit(item.id)" ng-model="currentModel" />
-                                </strong>
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="incoming[@{{item.id}}]" class="text-right form-control" ng-init="incomingModel = getIncomingInit(item.id)" ng-model="incomingModel"/>
-                                </strong>
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="after[@{{item.id}}]" class="text-right form-control" ng-init="afterModel = getAfterInit(item.id)" ng-model="afterModel" ng-value="(+currentModel + incomingModel).toFixed(4)"/>
-                                </strong>
-                            </td>
-                        </tr>
-                        <tr ng-if="items.length == 0 || ! items.length">
-                            <td colspan="4" class="text-center">No Records Found!</td>
-                        </tr> --}}
-
                         </tbody>
                     </table>
 
                     <div class="pull-left" style="margin-top:17px;">
-                        {{-- <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete()">Delete</button> --}}
+                        {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                     </div>
                     <div class="pull-right" style="margin-top:17px;">
                         @cannot('transaction_view')
                         @cannot('account_view')
-                        {!! Form::submit('Edit', ['name'=>'done', 'class'=> 'btn btn-primary']) !!}
+                        {!! Form::submit('Edit', ['class'=> 'btn btn-primary', 'form'=>'form_update', 'name'=>'form_update']) !!}
                         @endcannot
                         @endcannot
                         <a href="/item" class="btn btn-default">Cancel</a>
                     </div>
 
+                {!! Form::close() !!}
+
+                {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['InventoryController@destroy', $inventory->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel the stock movement?")']) !!}
                 {!! Form::close() !!}
                 </div>
             </div>
@@ -185,7 +164,6 @@
     </div>
 </div>
 
-<script src="/js/inv.js"></script>
 <script>
     $('.select').select2();
     $('.date').datetimepicker({
@@ -193,5 +171,6 @@
        defaultDate: new Date(),
     });
 </script>
+<script src="/js/inv.js"></script>
 
 @stop

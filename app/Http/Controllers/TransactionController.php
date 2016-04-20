@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Mail;
 
 use Venturecraft\Revisionable\Revision;
 use Response;
@@ -23,6 +24,7 @@ use App\Profile;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use Laracasts\Flash\Flash;
+use App\EmailAlert;
 
 class TransactionController extends Controller
 {
@@ -572,6 +574,17 @@ class TransactionController extends Controller
                 // deduct inventory
                 $item = Item::findOrFail($index);
 
+                // email notification for stock running low
+                if($item->email_limit){
+
+                    if($item->qty_now - $qty < $item->email_limit){
+
+                        $this->sendEmailAlert($item);
+
+                    }
+                }
+
+                // restrict picking negative
                 if($item->lowest_limit){
 
                     if($item->qty_now - $qty < $item->lowest_limit){
@@ -626,6 +639,17 @@ class TransactionController extends Controller
 
                 $item = Item::findOrFail($deal->item_id);
 
+                // email notification for stock running low
+                if($item->email_limit){
+
+                    if($item->qty_now - $deal->qty < $item->email_limit){
+
+                        $this->sendEmailAlert($item);
+
+                    }
+                }
+
+                // restrict picking negative
                 if($item->lowest_limit){
 
                     if($item->qty_now - $deal->qty < $item->lowest_limit){
@@ -659,6 +683,42 @@ class TransactionController extends Controller
             return true;
 
         }
+    }
+
+    private function sendEmailAlert($item)
+    {
+
+        $today = Carbon::now()->format('dmYHis');
+
+        $emails = EmailAlert::where('status', 'active')->get();
+
+        $email_list = array();
+
+        foreach($emails as $email){
+
+            $email_list[] = $email->email;
+        }
+
+        $email = array_unique($email_list);
+
+        $sender = 'daniel@happyice.com.sg';
+
+        $data = [
+            'product_id' => $item->product_id,
+            'name' => $item->name,
+            'remark' => $item->remark,
+            'unit' => $item->unit,
+            'qty_now' => $item->qty_now,
+            'lowest_limit' => $item->lowest_limit,
+            'email_limit' => $item->email_limit,
+        ];
+
+        Mail::send('email.stock_alert', $data, function ($message) use ($item, $email, $today, $sender)
+        {
+            $message->from($sender);
+            $message->subject('Stock Insufficient Alert ['.$item->product_id.'-'.$item->name.'] - '.$today);
+            $message->setTo($email);
+        });
     }
 
 

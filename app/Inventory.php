@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\EmailAlert;
 
 class Inventory extends Model
 {
@@ -70,8 +71,14 @@ class Inventory extends Model
         return $this->hasMany('App\InvRecord');
     }
 
+    public function emailalerts()
+    {
+        return $this->hasMany('App\EmailAlert');
+    }
+
     public function getRecDateAttribute($date)
     {
         return Carbon::parse($date)->format('Y-m-d');
     }
+
 }

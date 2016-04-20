@@ -13,6 +13,7 @@ use Auth;
 use App\Item;
 use Laracasts\Flash\Flash;
 use Session;
+use App\EmailAlert;
 
 class InventoryController extends Controller
 {
@@ -37,7 +38,7 @@ class InventoryController extends Controller
 
     public function itemInventory($inventory_id)
     {
-        $inventory = InvRecord::where('inventory_id', $inventory_id)->get();
+        $inventory = InvRecord::where('inventory_id', $inventory_id)->with('item')->get();
 
         return $inventory;
     }
@@ -146,7 +147,8 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $currentArr = $request->current;
+
+        $originalArr = $request->original;
 
         $incomingArr = $request->incoming;
 
@@ -161,42 +163,81 @@ class InventoryController extends Controller
             foreach($incomingArr as $index => $incoming){
 
                 // update the invrecords accordingly
-                $invrec = InvRecord::findOrFail($index);
+                $invrec = InvRecord::where('inventory_id', $request->inventory_id)->where('item_id', $index)->first();
 
-                // update the item now and last inventory
-                $item = Item::findOrFail($invrec->item_id);
+                if($invrec){
 
-                if($incoming == $invrec->qtyrec_incoming){
+                    // update the item now and last inventory
+                    $item = Item::findOrFail($invrec->item_id);
 
-                    $incomingDiff = 0;
+                    if($incoming == $invrec->qtyrec_incoming){
+
+                        $incomingDiff = 0;
+
+                    }else{
+
+                        $incomingDiff = $incoming;
+
+                    }
+
+                    // prevent the stock qty is deduct to negative
+                    if($item->qty_now + $incomingDiff < 0){
+
+                        Flash::error('The product '.$item->product_id.' has been deducted to less than zero');
+
+                        return Redirect::action('InventoryController@edit', $inventory->id);
+
+                    }else{
+
+                        $invrec->qtyrec_incoming = $incoming;
+
+                        $invrec->qtyrec_after = $afterArr[$index];
+
+                        $invrec->save();
+
+                        $item->qty_now = $item->qty_now + $incomingDiff;
+
+                        $item->save();
+
+                        Flash::success('The changes has been saved');
+
+                    }
 
                 }else{
 
-                    $incomingDiff = $incoming;
+                    if($incoming != NULL or $incoming != 0){
 
-                }
+                        $item = Item::findOrFail($index);
 
-                // prevent the stock qty is deduct to negative
-                if($item->qty_now + $incomingDiff < 0){
+                        if($item->qty_now + $incoming < 0){
 
-                    Flash::error('The product '.$item->product_id.' has been deducted to less than zero');
+                            Flash::error('The product '.$item->product_id.' has been deducted to less than zero');
 
-                    return Redirect::action('InventoryController@edit', $inventory->id);
+                            return Redirect::action('InventoryController@edit', $inventory->id);
 
-                }else{
+                        }else{
 
-                    $invrec->qtyrec_incoming = $incoming;
+                            $invrec_new = new InvRecord;
 
-                    $invrec->qtyrec_after = $afterArr[$index];
+                            $invrec_new->qtyrec_incoming = $incoming;
 
-                    $invrec->save();
+                            $invrec_new->qtyrec_after = $afterArr[$index];
 
-                    $item->qty_now = $item->qty_now + $incomingDiff;
+                            $invrec_new->item_id = $item->id;
 
-                    $item->save();
+                            $invrec_new->inventory_id = $inventory->id;
 
-                    Flash::success('The changes has been saved');
+                            $invrec_new->save();
 
+                            $item->qty_now = $item->qty_now + $incoming;
+
+                            $item->save();
+
+                            Flash::success('The changes has been saved');
+
+                        }
+
+                    }
                 }
             }
 
@@ -224,6 +265,21 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         $inventory = Inventory::findOrFail($id);
+
+        $invrecs = InvRecord::where('inventory_id', $inventory->id)->get();
+
+        foreach($invrecs as $invrec){
+
+            $item = Item::findOrFail($invrec->item_id);
+
+            $item->qty_last = $item->qty_now;
+
+            $item->qty_now = $item->qty_now - $invrec->qtyrec_incoming;
+
+            $item->save();
+
+            $invrec->delete();
+        }
 
         $inventory->delete();
 
@@ -259,6 +315,39 @@ class InventoryController extends Controller
         Flash::success('Entries saved');
 
         return view('inventory.setting.index');
+    }
+
+    // email alert inventories
+    public function invEmail()
+    {
+        return view('inventory.setting.email_alert');
+    }
+
+    public function invEmailUpdate(Request $request)
+    {
+        $lowestArr = $request->lowest;
+
+        foreach($lowestArr as $index => $lowest){
+
+            $item = Item::findOrFail($index);
+
+            if($lowest != NULL and is_numeric($lowest)){
+
+                $item->email_limit = $lowest;
+
+            }else{
+
+                $item->email_limit = 0.0000;
+            }
+
+            $item->save();
+        }
+
+        $this->syncEmail($request);
+
+        Flash::success('Entries saved');
+
+        return view('inventory.setting.email_alert');
     }
 
     private function createInvRecord($inv_id, $currentQty, $incomingQty, $afterQty)
@@ -302,5 +391,44 @@ class InventoryController extends Controller
 
         }
         return true;
+    }
+
+
+    private function syncEmail($request)
+    {
+
+        $emails = EmailAlert::all();
+
+        foreach($emails as $email){
+
+            $email->status = 'inactive';
+
+            $email->save();
+
+        }
+
+        foreach ($request->email_notification as $itemId)
+        {
+            if (substr($itemId, 0, 4) == 'new:')
+            {
+                $email = EmailAlert::create(['email'=>substr($itemId, 4)]);
+
+                $email->status = 'active';
+
+                $email->save();
+
+                continue;
+
+            }else{
+
+                $email = EmailAlert::findOrFail($itemId);
+
+                $email->status = 'active';
+
+                $email->save();
+
+            }
+
+        }
     }
 }

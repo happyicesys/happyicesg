@@ -16,6 +16,8 @@ Route::get('/admin', function () {
 
 resource('onlineprice', 'OnlinePriceController');
 
+post('inventory/email', 'InventoryController@invEmailUpdate');
+get('inventory/email', 'InventoryController@invEmail');
 post('inventory/setting', 'InventoryController@invLowest');
 get('inventory/setting', 'InventoryController@invIndex');
 get('/inventory/item/{inventory_id}', 'InventoryController@itemInventory');

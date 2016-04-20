@@ -10,7 +10,8 @@ class Item extends Model
         'name', 'remark', 'unit',
         'product_id', 'main_imgpath', 'sub_imgpath',
         'img_remain', 'main_imgcaption', 'publish',
-        'qty_now', 'qty_last', 'lowest_limit'
+        'qty_now', 'qty_last', 'lowest_limit',
+        'email_limit'
     ];
 
     public function transactions()
