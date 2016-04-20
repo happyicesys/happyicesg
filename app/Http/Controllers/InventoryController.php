@@ -407,28 +407,31 @@ class InventoryController extends Controller
 
         }
 
-        foreach ($request->email_notification as $itemId)
-        {
-            if (substr($itemId, 0, 4) == 'new:')
+        if($request->email_notification){
+
+            foreach($request->email_notification as $itemId)
             {
-                $email = EmailAlert::create(['email'=>substr($itemId, 4)]);
+                if (substr($itemId, 0, 4) == 'new:')
+                {
+                    $email = EmailAlert::create(['email'=>substr($itemId, 4)]);
 
-                $email->status = 'active';
+                    $email->status = 'active';
 
-                $email->save();
+                    $email->save();
 
-                continue;
+                    continue;
 
-            }else{
+                }else{
 
-                $email = EmailAlert::findOrFail($itemId);
+                    $email = EmailAlert::findOrFail($itemId);
 
-                $email->status = 'active';
+                    $email->status = 'active';
 
-                $email->save();
+                    $email->save();
+
+                }
 
             }
-
         }
     }
 }
