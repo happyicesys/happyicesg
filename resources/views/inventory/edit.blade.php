@@ -71,13 +71,13 @@
 
                     <table class="table table-list-search table-hover table-bordered table-condensed">
                         <tr style="background-color: #DDFDF8">
-                            <th class="col-md-6 text-center">
+                            <th class="col-md-5 text-center">
                                 Item
                             </th>
                             <th class="col-md-1 text-center">
                                 Current Qty
                             </th>
-                            <th class="col-md-1 text-center">
+                            <th class="col-md-2 text-center">
                                 Original Added Qty
                             </th>
                             <th class="col-md-2 text-center">
@@ -90,7 +90,7 @@
 
                         <tbody>
                             <tr ng-repeat="item in items" class="form-group">
-                                <td class="col-md-6">
+                                <td class="col-md-5">
                                     @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
                                 </td>
                                 <td class="col-md-1 text-right">
@@ -98,7 +98,7 @@
                                     @{{item.qty_now}}
                                     </strong>
                                 </td>
-                                <td class="col-md-1 text-right">
+                                <td class="col-md-2 text-right">
                                     <strong>
                                         {!! Form::text('original[@{{item.id}}]', null, [
                                                         'class'=>'text-right form-control',
