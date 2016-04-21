@@ -701,7 +701,8 @@ class TransactionController extends Controller
 
         $email = array_unique($email_list);
 
-        $sender = 'daniel@happyice.com.sg';
+        // $sender = 'daniel.ma@happyice.com.sg';
+        $sender = 'system@happyice.com.sg';
 
         $data = [
             'product_id' => $item->product_id,
