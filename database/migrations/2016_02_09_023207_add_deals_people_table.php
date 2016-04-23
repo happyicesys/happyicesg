@@ -18,11 +18,11 @@ class AddDealsPeopleTable extends Migration
 
         Schema::table('deals', function ($table) {
             $table->decimal('unit_price', 10, 2)->nullable();
-        }); 
+        });
 
         Schema::table('transactions', function ($table) {
-            $table->decimal('total_qty', 6, 4)->nullable();
-        });                
+            $table->decimal('total_qty', 12, 4)->nullable();
+        });
     }
 
     public function down()
@@ -30,17 +30,17 @@ class AddDealsPeopleTable extends Migration
         Schema::table('people', function($table)
         {
             $table->dropColumn('note');
-        });  
+        });
 
         Schema::table('deals', function($table)
         {
             $table->dropColumn('unit_price');
-        });  
+        });
 
         Schema::table('transactions', function($table)
         {
             $table->dropColumn('total_qty');
-        });                        
+        });
     }
 
 }

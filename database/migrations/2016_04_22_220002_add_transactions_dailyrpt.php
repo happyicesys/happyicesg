@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddItemsEmailthreshold extends Migration
+class AddTransactionsDailyrpt extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,10 @@ class AddItemsEmailthreshold extends Migration
      */
     public function up()
     {
-        Schema::table('items', function ($table)
+        Schema::table('transactions', function ($table)
         {
-            $table->decimal('email_limit', 12, 4)->nullable();
+            $table->string('pay_method')->nullable();
+            $table->string('note')->nullable();
         });
     }
 
@@ -25,9 +26,10 @@ class AddItemsEmailthreshold extends Migration
      */
     public function down()
     {
-        Schema::table('items', function($table)
+        Schema::table('transactions', function($table)
         {
-            $table->dropColumn('email_limit');
+            $table->dropColumn('pay_method');
+            $table->dropColumn('note');
         });
     }
 }

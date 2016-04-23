@@ -10,6 +10,7 @@ class CreateEmailAlertTable extends Migration
      *
      * @return void
      */
+    // start - not patching here since 23-April
     public function up()
     {
         Schema::create('email_alert', function (Blueprint $table) {

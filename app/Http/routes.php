@@ -87,6 +87,7 @@ delete('/deal/data/{id}', 'DealController@destroyAjax');
 get('/deal/data/{transaction_id}', 'DealController@getData');
 resource('deal', 'DealController');
 
+get('/user/data/{user_id}', 'UserController@getUser');
 get('/user/data', 'UserController@getData');
 delete('/user/data/{id}', 'UserController@destroyAjax');
 resource('user', 'UserController');

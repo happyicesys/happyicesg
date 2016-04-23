@@ -56,7 +56,7 @@ class Transaction extends Model
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no',
-        'total_qty'
+        'total_qty', 'pay_method', 'note'
     ];
 
     protected $dates =[

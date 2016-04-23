@@ -32,6 +32,14 @@ class UserController extends Controller
         return $user;
     }
 
+    // get user id only api
+    public function getUser($user_id)
+    {
+        $user =  User::where('id', $user_id)->with('roles')->firstOrFail();
+
+        return $user;
+    }
+
     /**
      * Return viewing page.
      *

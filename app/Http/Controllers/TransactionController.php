@@ -190,7 +190,10 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
+        $this->createDeal($transaction, $quantities, $amounts, $quotes);
+
+        // if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
+/*        if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
             if($quantities and $amounts){
 
@@ -224,7 +227,15 @@ class TransactionController extends Controller
                 }
             }
 
-        }elseif($transaction->status === 'Pending'){
+        }elseif($transaction->status === 'Confirmed'){
+
+
+        }
+*/
+
+
+        // for cancel of old pending status
+/*        elseif($transaction->status === 'Pending'){
 
             if($quantities and $amounts){
 
@@ -240,7 +251,7 @@ class TransactionController extends Controller
 
                 }
             }
-        }
+        }*/
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -570,7 +581,7 @@ class TransactionController extends Controller
                 $deal->item_id = $index;
 
                 $deal->qty = $qty;
-
+/*
                 // deduct inventory
                 $item = Item::findOrFail($index);
 
@@ -600,7 +611,7 @@ class TransactionController extends Controller
                         return false;
 
                     }
-                }
+                }*/
 
                 $deal->amount = $amounts[$index];
 

@@ -96,7 +96,7 @@
                         <div class="pull-right">
 
                             {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                            {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                            {{-- {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} --}}
                             <a href="/transaction" class="btn btn-default">Cancel</a>
                         </div>
                     </div>

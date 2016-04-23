@@ -14,7 +14,7 @@ class CreateDealTable extends Migration
     {
         Schema::create('deals', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('qty', 6, 4);
+            $table->decimal('qty', 12, 4);
             $table->decimal('amount', 10, 2);
             $table->timestamps();
 
@@ -22,7 +22,7 @@ class CreateDealTable extends Migration
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
 
             $table->integer('transaction_id')->unsigned()->nullable();
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');                         
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
         });
     }
 

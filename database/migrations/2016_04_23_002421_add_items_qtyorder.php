@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddItemsEmailthreshold extends Migration
+class AddItemsQtyorder extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddItemsEmailthreshold extends Migration
     {
         Schema::table('items', function ($table)
         {
-            $table->decimal('email_limit', 12, 4)->nullable();
+            $table->decimal('qty_order', 12, 4)->nullable();
         });
     }
 
@@ -27,7 +27,7 @@ class AddItemsEmailthreshold extends Migration
     {
         Schema::table('items', function($table)
         {
-            $table->dropColumn('email_limit');
+            $table->dropColumn('qty_order');
         });
     }
 }

@@ -17,7 +17,7 @@ class AddItemdealQtyrecTable extends Migration
         });
 
         Schema::table('items', function ($table) {
-            $table->decimal('lowest_limit', 10, 4)->nullable();
+            $table->decimal('lowest_limit', 12, 4)->nullable();
         });
     }
 
