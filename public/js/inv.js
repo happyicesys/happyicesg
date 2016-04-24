@@ -3,10 +3,6 @@ var app = angular.module('app', ['ui.bootstrap',
 
 function invController($scope, $http){
 
-    $scope.typeModel = 'Incoming';
-
-    $scope.showBatch = true;
-
     $scope.originalModel = 0;
 
     var inv_id = $('#inventory_id').val();
@@ -129,19 +125,6 @@ function invController($scope, $http){
         }else{
             return false;
         }
-    }
-
-    $scope.typeModelChanged = function(type){
-
-        if(type == 'Adjustment'){
-
-            $scope.showBatch = false;
-
-        }else{
-
-            $scope.showBatch = true;
-        }
-
     }
 }
 

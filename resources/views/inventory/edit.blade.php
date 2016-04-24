@@ -34,8 +34,6 @@
                         [
                         'id'=>'type',
                         'class'=>'select form-control',
-                        'ng-model'=>'typeModel',
-                        'ng-change'=>'typeModelChanged(typeModel)',
                         'disabled'=>'disabled'
                         ])
                     !!}
