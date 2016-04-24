@@ -7,6 +7,14 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
     $scope.currentPage2 = 1;
     $scope.itemsPerPage2 = 50;
 
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "InventoryRpt"+ now + ".xls");
+        };
+
         $http.get('/item/data').success(function(items){
             $scope.items = items;
             $scope.All = items.length;

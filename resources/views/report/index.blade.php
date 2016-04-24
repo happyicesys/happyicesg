@@ -302,7 +302,66 @@
                                     </div>
 
                                     <div class="row">
-                                        <div style="padding: 0px 0px 10px 15px">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            {!! Form::label('daily_rpt1', 'For Today Delivery Date:', ['class'=>'control-label']) !!}
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Amount for 'Delivered'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
+                                                    {{$amt_del}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Qty for 'Delivered'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                                                    {{$qty_del}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Amount for 'Paid'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                                                    {{$del_paid}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @cannot('transaction_view')
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            {!! Form::label('daily_rpt2', 'For This Modified Date:', ['class'=>'control-label']) !!}
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Amount for 'Paid'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
+                                                    {{$amt_del}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Paid 'Cash'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                                                    {{$qty_del}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                                                    Total Paid 'Cheque/TT'
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                                                    {{$del_paid}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endcannot
+                                    </div>
+
+                                    <div class="row">
+                                        <div style="padding: 20px 0px 10px 15px">
                                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
@@ -501,15 +560,15 @@
         defaultDate: new Date()
     });
 
-$(document).ready(function() {
-    $('#tran_all').hide();
-    $('#tran_month').hide();
-    $("input[name$='choice_transac']").click(function() {
-        var test = $(this).val();
-        $("div.desc").hide();
-        $('#'+test).show();
+    $(document).ready(function() {
+        $('#tran_all').hide();
+        $('#tran_month').hide();
+        $("input[name$='choice_transac']").click(function() {
+            var test = $(this).val();
+            $("div.desc").hide();
+            $('#'+test).show();
+        });
     });
-});
 
     $(function() {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line

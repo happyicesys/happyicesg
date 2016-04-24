@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Person;
 use App\Transaction;
 use DB;
+use Auth;
 
 class RptController extends Controller
 {
@@ -30,7 +31,43 @@ class RptController extends Controller
      */
     public function index()
     {
-        return view('report.index');
+        // For this Delivered Date start
+        // variable init
+        $amt_del = 0;
+
+        $qty_del = 0;
+
+        $del_paid = '';
+
+        $del_today = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'));
+
+        // if user is driver start
+        if(Auth::user()->hasRole('driver')){
+
+           $del_today = $del_today->where('driver', Auth::user()->name);
+        }
+
+        $del_today = $del_today->get();
+
+        // total for Delivered
+        $amt_del = $this->calTransactionTotal($del_today);
+
+        // total of all qty given the condition
+        $qty_del = $del_today->sum('total_qty');
+
+        $del_paid = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'))->where('pay_status', 'Paid')->get();
+
+        $del_paid = $this->calTransactionTotal($del_paid);
+        // For this Delivered Date end
+
+        // For this Modified Date start
+
+
+
+        // For this Modified Date end
+
+
+        return view('report.index', compact('amt_del', 'qty_del', 'del_paid'));
     }
 
     public function generatePerson(Request $request)
@@ -105,14 +142,14 @@ class RptController extends Controller
 
                 }
 
-            }         
+            }
 
         }else{
 
             Flash::error('Please Select One From the List');
-        } 
+        }
 
-        return redirect('report');  
+        return redirect('report');
     }
 
     public function generateTransaction(Request $request)
@@ -150,7 +187,7 @@ class RptController extends Controller
                                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                                 ->leftJoin('items', 'deals.item_id', '=', 'items.id')
                                 ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount');
-                                
+
                     $deals->searchDateRange($datefrom, $dateto)->get();*/
 
                 }else{
@@ -162,7 +199,7 @@ class RptController extends Controller
                     }else if($dateto){
 
                         Flash::error('Please Fill in the Date From');
-                    
+
                     }else{
 
                         Flash::error('Please Fill in the Searching Dates');
@@ -208,7 +245,7 @@ class RptController extends Controller
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->leftJoin('items', 'deals.item_id', '=', 'items.id')
                             ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount');
-                            
+
                 $deals->searchDateRange($datefrom, $dateto)->get();*/
 
 
@@ -217,7 +254,7 @@ class RptController extends Controller
         }
 
         if(isset($transactions)){
-            
+
             if(count($transactions)>0){
 
                 Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($transactions, $date1, $date2) {
@@ -243,12 +280,12 @@ class RptController extends Controller
             }
         }
 
-        return redirect('report');         
+        return redirect('report');
     }
 
     public function generateByProduct(Request $request)
     {
-        $title = 'ByProduct';        
+        $title = 'ByProduct';
 
         $datefrom = $request->input('byproduct_datefrom');
 
@@ -275,7 +312,7 @@ class RptController extends Controller
                         ->get();
 
             if(isset($deals)){
-                
+
                 if(count($deals)>0){
 
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($deals, $datefrom, $dateto) {
@@ -310,7 +347,7 @@ class RptController extends Controller
             }else if($dateto){
 
                 Flash::error('Please Fill in the Date From');
-            
+
             }else{
 
                 Flash::error('Please Fill in the Searching Dates');
@@ -318,27 +355,27 @@ class RptController extends Controller
 
         }
         return redirect('report');
-    } 
+    }
 
     public function generateDriver(Request $request)
-    { 
+    {
 
         $datefrom = $request->input('driver_datefrom');
 
-        $dateto = $request->input('driver_dateto');        
+        $dateto = $request->input('driver_dateto');
 
-        // declaring dates        
+        // declaring dates
         if($datefrom){
 
-            $date1 = Carbon::createFromFormat('d M y', $request->input('driver_datefrom'))->format('Y-m-d'); 
+            $date1 = Carbon::createFromFormat('d M y', $request->input('driver_datefrom'))->format('Y-m-d');
         }
 
         if($dateto){
 
-            $date2 = Carbon::createFromFormat('d M y', $request->input('driver_dateto'))->format('Y-m-d'); 
-        }        
+            $date2 = Carbon::createFromFormat('d M y', $request->input('driver_dateto'))->format('Y-m-d');
+        }
 
-        
+
         if($request->input('driver')){
 
             $driver = $request->input('driver');
@@ -380,7 +417,7 @@ class RptController extends Controller
         }
 
             if(isset($transactions)){
-                
+
                 if(count($transactions)>0){
 
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($transactions, $datefrom, $dateto) {
@@ -404,8 +441,30 @@ class RptController extends Controller
                     Flash::error('There is no records for the selection report');
 
                 }
-            }        
+            }
 
-        return redirect('report');          
-    } 
+        return redirect('report');
+    }
+
+    // calculating gst and non for delivered total
+    private function calTransactionTotal($arr)
+    {
+        $total_amount = 0;
+
+        foreach($arr as $transaction){
+
+            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+
+            if($person_gst){
+
+                $total_amount += number_format(($transaction->total * 107/100), 2, '.', ',');
+
+            }else{
+
+                $total_amount += $transaction->total;
+            }
+        }
+
+        return $total_amount;
+    }
 }

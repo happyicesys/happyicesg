@@ -51,7 +51,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12 col-sm-12 col-xs-12 row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 row" style="padding-bottom: 10px;">
                                     <div class="pull-left display_panel_title">
                                         <label for="display_num">Display</label>
                                         <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
@@ -62,11 +62,15 @@
                                         </select>
                                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                                     </div>
+
+                                    <div class="pull-right">
+                                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                                    </div>
                                 </div>
 
                                 <div class="row"></div>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive" id="exportable">
                                     <table class="table table-list-search table-hover table-bordered">
                                         <tr style="background-color: #DDFDF8">
                                             <th class="col-md-1 text-center">
@@ -75,53 +79,53 @@
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
                                                 ID
-                                                <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                                 Product
-                                                <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType = 'remark'; sortReverse = !sortReverse">
                                                 Desc
-                                                <span ng-show="sortType == 'remark' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'remark' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'remark' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'remark' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                              <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'unit'; sortReverse = !sortReverse">
                                                 Unit
-                                                <span ng-show="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'publish'; sortReverse = !sortReverse">
                                                 Publish
-                                                <span ng-show="sortType == 'publish' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'publish' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'lowest_limit'; sortReverse = !sortReverse">
                                                 Threshold Limit
-                                                <span ng-show="sortType == 'lowest_limit' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'lowest_limit' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'lowest_limit' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'lowest_limit' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'qty_order'; sortReverse = !sortReverse">
                                                 Qty On Order
-                                                <span ng-show="sortType == 'qty_order' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'qty_order' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'qty_order' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'qty_order' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'qty_now'; sortReverse = !sortReverse">
                                                 Available Qty
-                                                <span ng-show="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                              <th class="col-md-1 text-center">
                                                 Action
@@ -148,7 +152,7 @@
                                                     @endcannot --}}
                                                 </td>
                                             </tr>
-                                            <tr ng-show="(items | filter:search).length == 0 || ! items.length">
+                                            <tr ng-if="(items | filter:search).length == 0 || ! items.length">
                                                 <td class="text-center" colspan="10">No Records Found!</td>
                                             </tr>
 
@@ -230,47 +234,47 @@
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType2 = 'id'; sortReverse2 = !sortReverse2">
                                                 ID
-                                                <span ng-show="sortType2 == 'id' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'id' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'id' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'id' && sortReverse2" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType2 = 'type'; sortReverse2 = !sortReverse2">
                                                 Action
-                                                <span ng-show="sortType2 == 'type' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'type' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'type' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'type' && sortReverse2" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType2 = 'batch_num'; sortReverse2 = !sortReverse2">
                                                 Batch Num
-                                                <span ng-show="sortType2 == 'batch_num' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'batch_num' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'batch_num' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'batch_num' && sortReverse2" class="fa fa-caret-up"></span>
                                             </th>
                                              <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType2 = 'remark'; sortReverse2 = !sortReverse2">
                                                 Remark
-                                                <span ng-show="sortType2 == 'remark' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'remark' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'remark' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'remark' && sortReverse2" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType2 = 'rec_date'; sortReverse2 = !sortReverse2">
                                                 Received On
-                                                <span ng-show="sortType2 == 'rec_date' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'rec_date' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'rec_date' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'rec_date' && sortReverse2" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-2 text-center">
                                                 <a href="" ng-click="sortType2 = 'created_at'; sortReverse2 = !sortReverse2">
                                                 Created On
-                                                <span ng-show="sortType2 == 'created_at' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'created_at' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'created_at' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'created_at' && sortReverse2" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType2 = 'created_by'; sortReverse2 = !sortReverse2">
                                                 Created By
-                                                <span ng-show="sortType2 == 'created_by' && !sortReverse2" class="fa fa-caret-down"></span>
-                                                <span ng-show="sortType2 == 'created_by' && sortReverse2" class="fa fa-caret-up"></span>
+                                                <span ng-if="sortType2 == 'created_by' && !sortReverse2" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType2 == 'created_by' && sortReverse2" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 Action
@@ -291,7 +295,7 @@
                                                     <a href="/inventory/@{{ inventory.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                                 </td>
                                             </tr>
-                                            <tr ng-show="(inventories | filter:search2).length == 0 || ! inventories.length">
+                                            <tr ng-if="(inventories | filter:search2).length == 0 || ! inventories.length">
                                                 <td class="text-center" colspan="9">No Records Found!</td>
                                             </tr>
 
