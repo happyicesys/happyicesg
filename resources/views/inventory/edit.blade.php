@@ -44,7 +44,7 @@
                 <div class="row">
                     @if($inventory->batch_num)
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group" ng-if="showBatch">
+                            <div class="form-group">
                                 {!! Form::label('batch_num', 'Batch Num', ['class'=>'control-label']) !!}
                                 {!! Form::text('batch_num', null, ['class'=>'form-control']) !!}
                             </div>
