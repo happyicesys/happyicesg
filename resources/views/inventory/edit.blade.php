@@ -123,7 +123,7 @@
                                                         'class'=>'text-right form-control',
                                                         'ng-model'=>'afterModel',
                                                         'ng-if'=>'compareModel(item.id, originalModel, incomingModel)',
-                                                        'ng-value'=>'((+item.qty_now) + (+incomingModel)).toFixed(4)',
+                                                        'ng-value'=>'((+item.qty_now) + (+incomingModel - +originalModel)).toFixed(4)',
                                                         'readonly'=>'readonly'
                                                         ]) !!}
                                         {!! Form::text('after[@{{item.id}}]', null, [

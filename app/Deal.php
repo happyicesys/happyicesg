@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Deal extends Model
 {
+    //qty status condition
+    /*
+        qty_status = 1 (Stock Order/ Confirmed)
+        qty_status = 2 (Actual Stock Deducted/ Delivered)
+        qty_status = 3 (Stock Removed/ Deleted || Cancelled)
+    */
 
     use \Venturecraft\Revisionable\RevisionableTrait;
 

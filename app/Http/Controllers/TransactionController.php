@@ -28,6 +28,12 @@ use App\EmailAlert;
 
 class TransactionController extends Controller
 {
+    //qty status condition
+    /*
+        qty_status = 1 (Stock Order/ Confirmed)
+        qty_status = 2 (Actual Stock Deducted/ Delivered)
+        qty_status = 3 (Stock Removed/ Deleted || Cancelled)
+    */
 
     //auth-only login can see
     public function __construct()
@@ -143,6 +149,11 @@ class TransactionController extends Controller
 
         $quotes = $request->quote;
 
+        $transaction = Transaction::findOrFail($id);
+
+        // find out deals created
+        $deals = Deal::where('transaction_id', $transaction->id)->get();
+
         if($request->input('save')){
 
             $request->merge(array('status' => 'Pending'));
@@ -157,6 +168,14 @@ class TransactionController extends Controller
 
             $request->merge(array('driver'=>Auth::user()->name));
 
+            if(count($deals) == 0){
+
+                Flash::error('Please entry the list');
+
+                return Redirect::action('TransactionController@edit', $transaction->id);
+
+            }
+
         }elseif($request->input('del_owe')){
 
             $request->merge(array('status' => 'Delivered'));
@@ -165,15 +184,42 @@ class TransactionController extends Controller
 
             $request->merge(array('driver'=>Auth::user()->name));
 
+            if(count($deals) == 0){
+
+                Flash::error('Please entry the list');
+
+                return Redirect::action('TransactionController@edit', $transaction->id);
+
+            }
+
         }elseif($request->input('paid')){
 
             $request->merge(array('pay_status' => 'Paid'));
 
             $request->merge(array('paid_by' => Auth::user()->name));
 
+            if(count($deals) == 0){
+
+                Flash::error('Please entry the list');
+
+                return Redirect::action('TransactionController@edit', $transaction->id);
+
+            }
+
         }elseif($request->input('confirm')){
 
-            $request->merge(array('status' => 'Confirmed'));
+            // confirmation must with the entries start
+            if(array_filter($quantities) != null and array_filter($amounts) != null) {
+
+               $request->merge(array('status' => 'Confirmed'));
+
+            }else{
+
+                Flash::error('The list cannot be empty upon confirmation');
+
+                return Redirect::action('TransactionController@edit', $transaction->id);
+            }
+            // confirmation must with the entries end
 
         }elseif($request->input('unpaid')){
 
@@ -182,7 +228,6 @@ class TransactionController extends Controller
             $request->merge(array('paid_by' => null));
         }
 
-        $transaction = Transaction::findOrFail($id);
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
 
@@ -190,68 +235,18 @@ class TransactionController extends Controller
 
         $transaction->update($request->all());
 
-        $this->createDeal($transaction, $quantities, $amounts, $quotes);
 
-        // if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
-/*        if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
+        //Qty insert to on order upon confirmed(1) transaction status start
+        if($transaction->status === 'Confirmed'){
 
-            if($quantities and $amounts){
+            $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
 
-                if($this->createDeal($transaction, $quantities, $amounts, $quotes)){
+        }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
-                    $this->syncDealInv($transaction);
-
-                    Flash::success('Successfully Added');
-
-                }else{
-
-                    $this->syncDealInv($transaction);
-
-                    Flash::error('Stock Qty is not enough');
-
-                    return Redirect::action('TransactionController@edit', $transaction->id);
-
-                }
-
-            }else{
-
-                if($this->syncDealInv($transaction)){
-
-                    Flash::success('Successfully Added');
-
-                }else{
-
-                    Flash::error('Stock Qty is not enough');
-
-                    return Redirect::action('TransactionController@edit', $transaction->id);
-                }
-            }
-
-        }elseif($transaction->status === 'Confirmed'){
-
+            $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
 
         }
-*/
-
-
-        // for cancel of old pending status
-/*        elseif($transaction->status === 'Pending'){
-
-            if($quantities and $amounts){
-
-                if($this->createDeal($transaction, $quantities, $amounts, $quotes)){
-
-                    Flash::success('Successfully Added');
-
-                }else{
-
-                    Flash::error('Stock Qty is not enough');
-
-                    return Redirect::action('TransactionController@edit', $transaction->id);
-
-                }
-            }
-        }*/
+        //Qty insert to on order upon confirmed(1) transaction status end
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -276,19 +271,28 @@ class TransactionController extends Controller
             $transaction->save();
 
             // revert all the deals qty upon cancelled
-            $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', 'deducted')->get();
+            $deals = Deal::where('transaction_id', $transaction->id)->whereIn('qty_status', ['1', '2'])->get();
 
             foreach($deals as $deal){
 
                 $item = Item::findOrfail($deal->item_id);
 
-                $item->qty_last = $item->qty_now;
+                if($deal->qty_status == 1){
 
-                $item->qty_now = $item->qty_now + $deal->qty;
+                    $item->qty_order -= $deal->qty;
+
+                    $deal->qty_status = 3;
+
+                }else if($deal->qty_status == 2){
+
+                    $item->qty_last = $item->qty_now;
+
+                    $item->qty_now += $deal->qty;
+
+                    $deal->qty_status = 3;
+                }
 
                 $item->save();
-
-                $deal->qty_status = 'removed';
 
                 $deal->save();
             }
@@ -515,9 +519,46 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
 
+        $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', '3')->get();
+
         if($transaction->cancel_trace){
 
+            if($transaction->cancel_trace === 'Confirmed'){
+
+                foreach($deals as $deal){
+
+                    $item = Item::findOrFail($deal->item_id);
+
+                    $item->qty_order += $deal->qty;
+
+                    $deal->qty_status = 1;
+
+                    $item->save();
+
+                    $deal->save();
+
+                }
+
+            }else if($transaction->cancel_trace === 'Delivered' or $transaction->cancel_trace === 'Verified Owe' or $transaction->cancel_trace === 'Verified Paid'){
+
+                foreach($deals as $deal){
+
+                    $item = Item::findOrFail($deal->item_id);
+
+                    $item->qty_now -= $deal->qty;
+
+                    $deal->qty_status = 2;
+
+                    $item->save();
+
+                    $deal->save();
+
+                }
+
+            }
             $transaction->status = $transaction->cancel_trace;
+
+            $transaction->cancel_trace = '';
 
             $transaction->updated_by = Auth::user()->name;
 
@@ -568,59 +609,118 @@ class TransactionController extends Controller
         $transaction->items()->sync($allItemsId);
     }
 
-    private function createDeal($transaction, $quantities, $amounts, $quotes)
+    private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
     {
-        foreach($quantities as $index => $qty){
+        if(array_filter($quantities) != null and array_filter($amounts) != null){
 
-            if($qty != NULL or $qty != 0 ){
+            $errors = array();
 
-                $deal = new Deal();
+            foreach($quantities as $index => $qty){
 
-                $deal->transaction_id = $transaction->id;
+                if($qty != NULL or $qty != 0 ){
 
-                $deal->item_id = $index;
+                    // inventory lookup before saving to deals start
+                    $item = Item::findOrFail($index);
 
-                $deal->qty = $qty;
-/*
-                // deduct inventory
-                $item = Item::findOrFail($index);
+                    // inventory email notification for stock running low start
+                    if($item->email_limit){
 
-                // email notification for stock running low
-                if($item->email_limit){
+                        if(($status == 1 and ($item->qty_now - $item->qty_order - $qty < $item->email_limit)) or ($status == 2 and ($item->qty_now - $qty < $item->email_limit))){
 
-                    if($item->qty_now - $qty < $item->email_limit){
+                            $this->sendEmailAlert($item);
 
-                        $this->sendEmailAlert($item);
-
+                        }
                     }
+                    // inventory email notification for stock running low end
+
+                    // restrict picking negative stock & deduct/add actual/order if success start
+                    if($status == 1){
+
+                        if($item->qty_now - $item->qty_order - $qty < ($item->lowest_limit ? $item->lowest_limit : 0)){
+
+                            array_push($errors, $item->product_id.' - '.$item->name);
+
+                        }else{
+
+                            $deal = new Deal();
+
+                            $deal->transaction_id = $transaction->id;
+
+                            $deal->item_id = $index;
+
+                            $deal->qty = $qty;
+
+                            $deal->amount = $amounts[$index];
+
+                            $deal->unit_price = $quotes[$index];
+
+                            $deal->qty_status = $status;
+
+                            $deal->save();
+
+                            $item->qty_order += $qty;
+
+                            $item->save();
+
+                        }
+
+                    }else if($status == 2){
+
+                        if($item->qty_now - $qty < ($item->lowest_limit ? $item->lowest_limit : 0)){
+
+                            array_push($errors, $item->product_id.' - '.$item->name);
+
+                        }else{
+
+                            $deal = new Deal();
+
+                            $deal->transaction_id = $transaction->id;
+
+                            $deal->item_id = $index;
+
+                            $deal->qty = $qty;
+
+                            $deal->amount = $amounts[$index];
+
+                            $deal->unit_price = $quotes[$index];
+
+                            $deal->qty_status = $status;
+
+                            $deal->save();
+
+                            $item->qty_now -= $qty;
+
+                            $item->save();
+
+                        }
+                    }
+                    // restrict picking negative stock & deduct/add actual/order if success end
                 }
-
-                // restrict picking negative
-                if($item->lowest_limit){
-
-                    if($item->qty_now - $qty < $item->lowest_limit){
-
-                        return false;
-
-                    }
-
-                }else{
-
-                    if($item->qty_now - $qty < 0){
-
-                        return false;
-
-                    }
-                }*/
-
-                $deal->amount = $amounts[$index];
-
-                $deal->unit_price = $quotes[$index];
-
-                $deal->save();
-
             }
         }
+
+        // if other than confirmed activated convert qty order to qty actual deduction start
+        if($status == 2){
+
+            $deal_actions = Deal::where('transaction_id', $transaction->id)->where('qty_status', '1')->get();
+
+            foreach($deal_actions as $deal){
+
+                $item = Item::findOrFail($deal->item_id);
+
+                $item->qty_order -= $deal->qty;
+
+                $item->qty_now -= $deal->qty;
+
+                $item->save();
+
+                $deal->qty_status = $status;
+
+                $deal->save();
+            }
+        }
+        // if other than confirmed activated convert qty order to qty actual deduction end
+
 
         $deals = Deal::whereTransactionId($transaction->id)->get();
 
@@ -634,66 +734,23 @@ class TransactionController extends Controller
 
         $transaction->save();
 
-        return true;
+        if(isset($errors)){
 
-    }
+            if(count($errors) > 0){
 
-    private function syncDealInv($transaction)
-    {
+                $errors_str = '';
 
-        // Looping to update the inventory
-        if($transaction->status === 'Confirmed' or $transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
+                $errors_str = implode(", ", $errors);
 
-            $deals = Deal::where('transaction_id', $transaction->id)->whereNull('qty_status')->get();
+                Flash::error('Stock Insufficient : '.$errors_str)->important();
 
-            foreach($deals as $deal){
-
-                $item = Item::findOrFail($deal->item_id);
-
-                // email notification for stock running low
-                if($item->email_limit){
-
-                    if($item->qty_now - $deal->qty < $item->email_limit){
-
-                        $this->sendEmailAlert($item);
-
-                    }
-                }
-
-                // restrict picking negative
-                if($item->lowest_limit){
-
-                    if($item->qty_now - $deal->qty < $item->lowest_limit){
-
-                        return false;
-
-                    }
-
-                }else{
-
-                    if($item->qty_now - $deal->qty < 0){
-
-                        return false;
-
-                    }
-                }
-
-                $item->qty_now = $item->qty_now - $deal->qty;
-
-                $deal->qty_status = 'deducted';
-
-                $item->save();
-
-                $deal->save();
             }
-
-            return true;
 
         }else{
 
-            return true;
-
+            Flash::success('Successfully Added');
         }
+
     }
 
     private function sendEmailAlert($item)

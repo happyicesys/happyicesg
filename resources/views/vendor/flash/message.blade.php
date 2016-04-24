@@ -7,6 +7,7 @@
 
             {{ Session::get('flash_notification.message') }}
         </div>
+        {{ Session::forget('flash_notification') }}
     @endif
 @endif
 

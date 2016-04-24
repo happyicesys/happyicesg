@@ -52,17 +52,20 @@ class DealController extends Controller
     {
         $deal = Deal::findOrFail($id);
 
-        // revert back the inventory once inv was added
-        if($deal->qty_status === 'deducted'){
+        $item = Item::findOrFail($deal->item_id);
 
-            $item = Item::findOrFail($deal->item_id);
+        // revert back the inventory once inv was added start
+        if($deal->qty_status == 1){
 
-            $item->qty_last = $item->qty_now;
+            $item->qty_order -= $deal->qty;
 
-            $item->qty_now = $item->qty_now + $deal->qty;
+        }else if($deal->qty_status == 2){
 
-            $item->save();
+            $item->qty_now += $deal->qty;
         }
+        // revert back the inventory once inv was added end
+
+        $item->save();
 
         $deal->delete();
 

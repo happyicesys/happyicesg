@@ -13,7 +13,7 @@
         </div>
         @yield('footer')
         <script>
-            $('div.alert').delay(3000).slideUp(300);
+            $('div.alert').not('.alert-important').delay(6000).slideUp(300);
         </script>
     </body>
 </html>

@@ -112,12 +112,18 @@
                                                 <span ng-show="sortType == 'lowest_limit' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
+                                                <a href="" ng-click="sortType = 'qty_order'; sortReverse = !sortReverse">
+                                                Qty On Order
+                                                <span ng-show="sortType == 'qty_order' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-show="sortType == 'qty_order' && sortReverse" class="fa fa-caret-up"></span>
+                                            </th>
+                                            <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'qty_now'; sortReverse = !sortReverse">
                                                 Available Qty
                                                 <span ng-show="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
                                                 <span ng-show="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
-                                             <th class="col-md-2 text-center">
+                                             <th class="col-md-1 text-center">
                                                 Action
                                             </th>
                                         </tr>
@@ -131,16 +137,19 @@
                                                 <td class="col-md-1 text-center">@{{ item.unit }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
                                                 <td class="col-md-1 text-center">@{{ +item.lowest_limit + 0 }}</td>
+                                                <td class="col-md-1 text-center"><strong>@{{ +item.qty_order + 0 }}</strong></td>
                                                 <td class="col-md-1 text-center"><strong>@{{ +item.qty_now + 0 }}</strong></td>
-                                                <td class="col-md-2 text-center">
+                                                <td class="col-md-1 text-center">
                                                     <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
+                                                    {{-- disable due to inv implemented --}}
+{{--
                                                     @cannot('accountant_view')
                                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(item.id)">Delete</button>
-                                                    @endcannot
+                                                    @endcannot --}}
                                                 </td>
                                             </tr>
                                             <tr ng-show="(items | filter:search).length == 0 || ! items.length">
-                                                <td class="text-center" colspan="9">No Records Found!</td>
+                                                <td class="text-center" colspan="10">No Records Found!</td>
                                             </tr>
 
                                         </tbody>

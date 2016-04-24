@@ -113,7 +113,7 @@
 
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                             {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                            {!! Form::submit('Update', ['name'=>'confirm', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                             <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/transaction" class="btn btn-default">Cancel</a>
 
@@ -147,7 +147,7 @@
                             <a href="/transaction" class="btn btn-default">Cancel</a>
                             @cannot('transaction_view')
                                 {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
-                                {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form-reverse']) !!}
+                                {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
                             @endcan
                         </div>
                     </div>
@@ -191,5 +191,6 @@
     function clicked(e){
         if(!confirm('Are you sure?'))e.preventDefault();
     }
+    // $('div.alert').show();
 </script>
 @stop

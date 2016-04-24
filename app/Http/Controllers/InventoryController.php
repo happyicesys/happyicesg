@@ -176,7 +176,7 @@ class InventoryController extends Controller
 
                     }else{
 
-                        $incomingDiff = $incoming;
+                        $incomingDiff = $incoming - $originalArr[$index];
 
                     }
 
