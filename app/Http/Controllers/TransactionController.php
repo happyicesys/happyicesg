@@ -760,9 +760,9 @@ class TransactionController extends Controller
 
                 $errors_str = '';
 
-                $errors_str = implode(", ", $errors);
+                $errors_str = implode(" <br>", $errors);
 
-                Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): '.$errors_str)->important();
+                Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): <br> '.$errors_str)->important();
 
             }
 
