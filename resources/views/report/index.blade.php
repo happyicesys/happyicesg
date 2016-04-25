@@ -12,7 +12,7 @@
     <a class="title_hyper pull-left" href="/report"><h1>{{ $REPORT_TITLE }} <i class="fa fa-file-text-o"></i></h1></a>
     </div>
 
-            <div class="panel panel-warning">
+            <div class="panel panel-warning" ng-app="app" ng-controller="rptController">
                 <div class="panel-heading">
                         <ul class="nav nav-pills nav-justified" role="tablist">
                             <li class="active"><a href="#person" role="tab" data-toggle="tab">Customer</a></li>
@@ -212,7 +212,7 @@
                         {{-- end of fourth --}}
 
                         {{-- start of fifth --}}
-                        <div class="tab-pane" id="dailyrpt" ng-app="app" ng-controller="transController">
+                        <div class="tab-pane" id="dailyrpt">
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -362,7 +362,7 @@
 
                                     <div class="row">
                                         <div style="padding: 20px 0px 10px 15px">
-                                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                                            {{-- <button class="btn btn-primary" ng-click="exportData()">Export Excel</button> --}}
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
@@ -457,7 +457,7 @@
                                                     @endcannot
                                                 </tr>
                                                 <tbody>
-                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
+                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
                                                             <a href="/transaction/@{{ transaction.id }}/edit">
@@ -518,14 +518,27 @@
                                                             {{-- Payment Verification --}}
                                                             @cannot('supervisor_view')
                                                             <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
-                                                            <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                                                            <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, payMethodModel, noteModel)">Verify Paid</a>
                                                             @endcannot
                                                         </td>
                                                         <td class="col-md-1 text-center">
-                                                            {!! Form::select('pay_method', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, ['class'=>'form-control input-sm', 'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'", 'placeholder'=>'Inv Num']) !!}
+                                                            {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
+                                                                                'class'=>'form-control input-sm',
+                                                                                'ng-model'=>'payMethodModel',
+                                                                                'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
+                                                                                'placeholder'=>'Inv Num'
+                                                                            ]) !!}
+                                                            <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
                                                         </td>
                                                         <td class="col-md-2 text-center">
-                                                            {!! Form::textarea('note', null, ['class'=>'form-control input-sm', 'rows'=>'2', 'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'", 'placeholder'=>'Note', 'style'=>'width:100px;']) !!}
+                                                            {!! Form::textarea('note[@{{transaction.id}}]', null, [
+                                                                            'class'=>'input-sm form-control',
+                                                                            'rows'=>'2',
+                                                                            'ng-model'=>'noteModel',
+                                                                            'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
+                                                                            'style'=>'width:100px;'
+                                                                            ]) !!}
+                                                            <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.note}}</span>
                                                         </td>
                                                         @endcannot
                                                     </tr>

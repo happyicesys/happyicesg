@@ -66,6 +66,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+post('/transaction/rpt/{trans_id}', 'TransactionController@rptDetail');
 post('/transaction/reverse/{trans_id}', 'TransactionController@reverse');
 get('/transaction/person/latest/{person_id}', 'TransactionController@showPersonTransac');
 get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');

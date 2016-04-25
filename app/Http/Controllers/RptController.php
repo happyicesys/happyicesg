@@ -39,7 +39,7 @@ class RptController extends Controller
 
         $del_paid = '';
 
-        $del_today = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'));
+        $del_today = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'))->where('status', 'Delivered');
 
         // if user is driver start
         if(Auth::user()->hasRole('driver')){

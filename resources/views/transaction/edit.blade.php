@@ -191,6 +191,6 @@
     function clicked(e){
         if(!confirm('Are you sure?'))e.preventDefault();
     }
-    // $('div.alert').show();
+    $('.select').select2();
 </script>
 @stop

@@ -47,7 +47,7 @@ class TransactionController extends Controller
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note')
                         ->latest('created_at')
                         ->get();
 
@@ -211,7 +211,7 @@ class TransactionController extends Controller
             // confirmation must with the entries start
             if(array_filter($quantities) != null and array_filter($amounts) != null) {
 
-               $request->merge(array('status' => 'Confirmed'));
+                $request->merge(array('status' => 'Confirmed'));
 
             }else{
 
@@ -506,7 +506,8 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
-        return redirect('transaction');
+        // return redirect('transaction');
+        return redirect()->back();
 
     }
 
@@ -574,6 +575,25 @@ class TransactionController extends Controller
 
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
+
+    // storing payment method and note in rpt
+    public function rptDetail(Request $request, $id)
+    {
+        $paymethod = $request->input('paymethod');
+
+        $note = $request->input('note');
+
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->pay_method = $paymethod;
+
+        $transaction->note = $note;
+
+        $transaction->save();
+
+        return "Sucess updating transaction #" . $transaction->id;
+    }
+
 
     private function syncTransaction(Request $request)
     {
@@ -773,6 +793,7 @@ class TransactionController extends Controller
         $sender = 'system@happyice.com.sg';
 
         $data = [
+
             'product_id' => $item->product_id,
             'name' => $item->name,
             'remark' => $item->remark,
@@ -780,6 +801,7 @@ class TransactionController extends Controller
             'qty_now' => $item->qty_now,
             'lowest_limit' => $item->lowest_limit,
             'email_limit' => $item->email_limit,
+
         ];
 
         Mail::send('email.stock_alert', $data, function ($message) use ($item, $email, $today, $sender)

@@ -1,8 +1,9 @@
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
 
-    function transController($scope, $http){
+    function rptController($scope, $http){
         $scope.currentPage = 1;
         $scope.itemsPerPage = 70;
+        $scope.payMethodModel = 'cash';
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -75,6 +76,19 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }
             }
         });
+
+            $scope.onVerifiedPaid = function($event, transaction_id, payMethodModel, noteModel){
+
+                $http({
+                    url: '/transaction/rpt/' + transaction_id ,
+                    method: "POST",
+                    data: {
+                            paymethod: payMethodModel,
+                            note: noteModel,
+                            },
+                    }).success(function(response){
+                });
+            }
     }
 
 app.filter('delDate', [
@@ -92,5 +106,5 @@ function repeatController($scope) {
 }
 
 
-app.controller('transController', transController);
+app.controller('rptController', rptController);
 app.controller('repeatController', repeatController);
