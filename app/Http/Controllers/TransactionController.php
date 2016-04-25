@@ -643,14 +643,14 @@ class TransactionController extends Controller
                     $item = Item::findOrFail($index);
 
                     // inventory email notification for stock running low start
-/*                    if($item->email_limit){
+                    if($item->email_limit){
 
                         if(($status == 1 and ($item->qty_now - $item->qty_order - $qty < $item->email_limit)) or ($status == 2 and ($item->qty_now - $qty < $item->email_limit))){
 
                             $this->sendEmailAlert($item);
 
                         }
-                    }*/
+                    }
                     // inventory email notification for stock running low end
 
                     // restrict picking negative stock & deduct/add actual/order if success start
