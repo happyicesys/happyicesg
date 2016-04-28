@@ -3,8 +3,6 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
     function transController($scope, $http){
         $scope.currentPage = 1;
         $scope.itemsPerPage = 70;
-        $scope.indexData = {};
-        $scope.dataCache = false;
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -19,69 +17,24 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         angular.element(document).ready(function () {
 
-            getIndex();
+            $http.get('/transaction/data').success(function(transactions){
+                $scope.transactions = transactions;
+                $scope.All = transactions.length;
 
-            function getIndex(){
+                $scope.optionStatus = [
+                    {name: 'All', value: ''},
+                    {name: 'Pending', value: 'Pending'},
+                    {name: 'Confirmed', value: 'Confirmed'}
+                ];
 
-                $http.post('/transaction/data', $scope.indexData).success(function(transactions){
-
-                    $scope.transactions = transactions;
-
-                    $scope.All = transactions.length;
-
-                });
-
-            }
-
-            $scope.dateChange = function(date){
-
-                if(date){
-
-                    $scope.delivery_from = moment(date).format("YYYY-MM-DD");
+                $scope.dateChange = function(date){
+                    $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
                 }
 
-                $scope.indexData = {
-
-                    delivery_from: $scope.delivery_from,
-
-                    delivery_to: $scope.delivery_to,
-
-                    dataCache: $scope.dataCache,
-
+                $scope.dateChange2 = function(date){
+                    $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
                 }
-
-                getIndex();
-
-                $scope.indexData['dataCache'] = true;
-            }
-
-            $scope.dateChange2 = function(date){
-
-                $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
-
-            }
-
-            $scope.dateChange3 = function(date){
-
-                if(date){
-
-                    $scope.delivery_to = moment(date).format("YYYY-MM-DD");
-                }
-
-                $scope.indexData = {
-
-                    delivery_from: $scope.delivery_from,
-
-                    delivery_to: $scope.delivery_to,
-
-                    dataCache: $scope.dataCache,
-
-                }
-
-                getIndex();
-
-                $scope.indexData['dataCache'] = true;
-            }
+            });
 
             //delete record
             $scope.confirmDelete = function(id){

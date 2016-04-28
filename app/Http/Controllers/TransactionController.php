@@ -42,55 +42,15 @@ class TransactionController extends Controller
     }
 
     // get transactions api data based on delivery date
-    public function getData(Request $request)
+    public function getData()
     {
-        $delivery_from = $request->delivery_from;
-
-        $delivery_to = $request->delivery_to;
-
-        $dataCache = $request->dataCache;
-
         // using sql query instead of eloquent for super fast pre-load (api)
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst');
-
-
-            if($delivery_from and $delivery_to){
-
-                if($delivery_from === $delivery_to){
-
-                    $transactions = $transactions->whereDate('delivery_date', '=', $delivery_from);
-
-                }else{
-
-                    $transactions = $transactions->whereDate('delivery_date', '>=', $delivery_from)->whereDate('delivery_date', '<=', $delivery_to);
-                }
-
-            }else if(($delivery_from and !$delivery_to) or (!$delivery_from and $delivery_to)){
-
-                if($delivery_from){
-
-                    $transactions = $transactions->whereDate('delivery_date', '>=', $delivery_from);
-
-                }else{
-
-                    $transactions = $transactions->whereDate('delivery_date', '<=', $delivery_to);
-                }
-
-            }else{
-
-                if(! $dataCache){
-
-                    $transactions = $transactions->whereDate('delivery_date', '=', Carbon::today()->toDateString());
-
-                }
-            }
-
-
-        $transactions = $transactions->latest('created_at')->get();
-
+                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note')
+                        ->latest('created_at')
+                        ->get();
         return $transactions;
     }
 

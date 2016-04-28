@@ -41,11 +41,6 @@ class AppServiceProvider extends ServiceProvider
         view()->share('REPORT_TITLE', 'Report');
         view()->share('REPORT_PREFIX', 'R');
 
-        if ( env( 'APP_ENV', 'local' ) !== 'local' )
-        {
-            \DB::connection()->disableQueryLog();
-        }
-
     }
 
     /**
