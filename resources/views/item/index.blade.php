@@ -90,13 +90,7 @@
                                                 <span ng-if="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                                 </a>
                                             </th>
-                                            <th class="col-md-2 text-center">
-                                                <a href="" ng-click="sortType = 'remark'; sortReverse = !sortReverse">
-                                                Desc
-                                                <span ng-if="sortType == 'remark' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-if="sortType == 'remark' && sortReverse" class="fa fa-caret-up"></span>
-                                            </th>
-                                             <th class="col-md-1 text-center">
+                                            <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'unit'; sortReverse = !sortReverse">
                                                 Unit
                                                 <span ng-if="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
@@ -104,10 +98,16 @@
                                                 </a>
                                             </th>
                                             <th class="col-md-1 text-center">
-                                                <a href="" ng-click="sortType = 'publish'; sortReverse = !sortReverse">
-                                                Publish
-                                                <span ng-if="sortType == 'publish' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-if="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
+                                                <a href="" ng-click="sortType = 'qty_now'; sortReverse = !sortReverse">
+                                                Available Qty
+                                                <span ng-if="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
+                                            </th>
+                                            <th class="col-md-1 text-center">
+                                                <a href="" ng-click="sortType = 'qty_order'; sortReverse = !sortReverse">
+                                                Booked Qty
+                                                <span ng-if="sortType == 'qty_order' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'qty_order' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
                                                 <a href="" ng-click="sortType = 'lowest_limit'; sortReverse = !sortReverse">
@@ -116,18 +116,12 @@
                                                 <span ng-if="sortType == 'lowest_limit' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
-                                                <a href="" ng-click="sortType = 'qty_order'; sortReverse = !sortReverse">
-                                                Qty On Order
-                                                <span ng-if="sortType == 'qty_order' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-if="sortType == 'qty_order' && sortReverse" class="fa fa-caret-up"></span>
+                                                <a href="" ng-click="sortType = 'publish'; sortReverse = !sortReverse">
+                                                E-comm
+                                                <span ng-if="sortType == 'publish' && !sortReverse" class="fa fa-caret-down"></span>
+                                                <span ng-if="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
                                             </th>
                                             <th class="col-md-1 text-center">
-                                                <a href="" ng-click="sortType = 'qty_now'; sortReverse = !sortReverse">
-                                                Available Qty
-                                                <span ng-if="sortType == 'qty_now' && !sortReverse" class="fa fa-caret-down"></span>
-                                                <span ng-if="sortType == 'qty_now' && sortReverse" class="fa fa-caret-up"></span>
-                                            </th>
-                                             <th class="col-md-1 text-center">
                                                 Action
                                             </th>
                                         </tr>
@@ -137,12 +131,11 @@
                                                 <td class="col-md-1 text-center">@{{ number }} </td>
                                                 <td class="col-md-1 text-center">@{{ item.product_id }}</td>
                                                 <td class="col-md-2">@{{ item.name }}</td>
-                                                <td class="col-md-2">@{{ item.remark }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.unit }}</td>
+                                                <td class="col-md-1 text-right"><strong>@{{ item.qty_now | currency: "": 4 }}</strong></td>
+                                                <td class="col-md-1 text-right"><strong>@{{ item.qty_order ? item.qty_order : 0 | currency: "": 4 }}</strong></td>
+                                                <td class="col-md-1 text-right">@{{ item.lowest_limit | currency: "": 4 }}</td>
                                                 <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
-                                                <td class="col-md-1 text-center">@{{ +item.lowest_limit + 0 }}</td>
-                                                <td class="col-md-1 text-center"><strong>@{{ +item.qty_order + 0 }}</strong></td>
-                                                <td class="col-md-1 text-center"><strong>@{{ +item.qty_now + 0 }}</strong></td>
                                                 <td class="col-md-1 text-center">
                                                     <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                                     {{-- disable due to inv implemented --}}

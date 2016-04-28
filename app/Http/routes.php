@@ -73,7 +73,7 @@ get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus'
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
-get('/transaction/data', 'TransactionController@getData');
+post('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
@@ -96,6 +96,7 @@ resource('user', 'UserController');
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');
 
+post('/report/dailyrpt', 'RptController@getDailyRptApi');
 get('/report', 'RptController@index');
 post('/report/person', 'RptController@generatePerson');
 post('/report/transaction', 'RptController@generateTransaction');

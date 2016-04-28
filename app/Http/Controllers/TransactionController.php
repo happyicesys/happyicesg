@@ -41,15 +41,55 @@ class TransactionController extends Controller
         $this->middleware('auth');
     }
 
-    public function getData()
+    // get transactions api data based on delivery date
+    public function getData(Request $request)
     {
+        $delivery_from = $request->delivery_from;
+
+        $delivery_to = $request->delivery_to;
+
+        $dataCache = $request->dataCache;
+
         // using sql query instead of eloquent for super fast pre-load (api)
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note')
-                        ->latest('created_at')
-                        ->get();
+                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst');
+
+
+            if($delivery_from and $delivery_to){
+
+                if($delivery_from === $delivery_to){
+
+                    $transactions = $transactions->whereDate('delivery_date', '=', $delivery_from);
+
+                }else{
+
+                    $transactions = $transactions->whereDate('delivery_date', '>=', $delivery_from)->whereDate('delivery_date', '<=', $delivery_to);
+                }
+
+            }else if(($delivery_from and !$delivery_to) or (!$delivery_from and $delivery_to)){
+
+                if($delivery_from){
+
+                    $transactions = $transactions->whereDate('delivery_date', '>=', $delivery_from);
+
+                }else{
+
+                    $transactions = $transactions->whereDate('delivery_date', '<=', $delivery_to);
+                }
+
+            }else{
+
+                if(! $dataCache){
+
+                    $transactions = $transactions->whereDate('delivery_date', '=', Carbon::today()->toDateString());
+
+                }
+            }
+
+
+        $transactions = $transactions->latest('created_at')->get();
 
         return $transactions;
     }
@@ -164,7 +204,9 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Paid'));
 
-            $request->merge(['paid_by' => Auth::user()->name]);
+            $request->merge(array('paid_by' => Auth::user()->name));
+
+            $request->merge(array('paid_at' => Carbon::now()));
 
             $request->merge(array('driver'=>Auth::user()->name));
 
@@ -198,6 +240,8 @@ class TransactionController extends Controller
 
             $request->merge(array('paid_by' => Auth::user()->name));
 
+            $request->merge(array('paid_at' => Carbon::now()));
+
             if(count($deals) == 0){
 
                 Flash::error('Please entry the list');
@@ -226,6 +270,8 @@ class TransactionController extends Controller
             $request->merge(array('pay_status' => 'Owe'));
 
             $request->merge(array('paid_by' => null));
+
+            $request->merge(array('paid_at' => null));
         }
 
 
@@ -350,6 +396,7 @@ class TransactionController extends Controller
 
     }
 
+    // return the price lists set in the person
     public function getPrice($person_id, $item_id)
     {
 
@@ -416,6 +463,7 @@ class TransactionController extends Controller
 
     }
 
+    // generate pdf invoice for transaction
     public function generateInvoice($id)
     {
 
@@ -481,6 +529,7 @@ class TransactionController extends Controller
 
     }
 
+    // status changing to verified owe/ paid
     public function changeStatus($id)
     {
         $transaction = Transaction::findOrFail($id);
@@ -506,7 +555,7 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
-        // return redirect('transaction');
+        // using redirect back since applied in different views
         return redirect()->back();
 
     }
@@ -516,6 +565,7 @@ class TransactionController extends Controller
         return Transaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
     }
 
+    // undo the cancelled transaction
     public function reverse($id)
     {
         $transaction = Transaction::findOrFail($id);
@@ -639,21 +689,34 @@ class TransactionController extends Controller
 
                 if($qty != NULL or $qty != 0 ){
 
-                    // inventory lookup before saving to deals start
+                    // inventory lookup before saving to deals
                     $item = Item::findOrFail($index);
 
-                    // inventory email notification for stock running low start
+                    // inventory email notification for stock running low
                     if($item->email_limit){
 
                         if(($status == 1 and ($item->qty_now - $item->qty_order - $qty < $item->email_limit)) or ($status == 2 and ($item->qty_now - $qty < $item->email_limit))){
 
-                            $this->sendEmailAlert($item);
+                            if(! $item->emailed){
 
+                                $this->sendEmailAlert($item);
+
+                                // restrict only send 1 mail if insufficient
+                                $item->emailed = true;
+
+                                $item->save();
+                            }
+
+                        }else{
+
+                            // reactivate email alert
+                            $item->emailed = false;
+
+                            $item->save();
                         }
                     }
-                    // inventory email notification for stock running low end
 
-                    // restrict picking negative stock & deduct/add actual/order if success start
+                    // restrict picking negative stock & deduct/add actual/order if success
                     if($status == 1){
 
                         if($item->qty_now - $item->qty_order - $qty < ($item->lowest_limit ? $item->lowest_limit : 0)){
@@ -714,12 +777,11 @@ class TransactionController extends Controller
 
                         }
                     }
-                    // restrict picking negative stock & deduct/add actual/order if success end
                 }
             }
         }
 
-        // if other than confirmed activated convert qty order to qty actual deduction start
+        // if other than confirmed activated convert qty order to qty actual deduction
         if($status == 2){
 
             $deal_actions = Deal::where('transaction_id', $transaction->id)->where('qty_status', '1')->get();
@@ -739,7 +801,6 @@ class TransactionController extends Controller
                 $deal->save();
             }
         }
-        // if other than confirmed activated convert qty order to qty actual deduction end
 
 
         $deals = Deal::whereTransactionId($transaction->id)->get();
@@ -773,6 +834,7 @@ class TransactionController extends Controller
 
     }
 
+    // email alert for stock insufficient
     private function sendEmailAlert($item)
     {
 

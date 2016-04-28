@@ -19,7 +19,7 @@
                             <li><a href="#transaction" role="tab" data-toggle="tab">Transaction</a></li>
                             <li><a href="#byproduct" role="tab" data-toggle="tab">By Product</a></li>
                             <li><a href="#driver" role="tab" data-toggle="tab">Driver</a></li>
-                            {{-- <li><a href="#dailyrpt" role="tab" data-toggle="tab">Daily Report</a></li> --}}
+                            <li><a href="#dailyrpt" role="tab" data-toggle="tab">Daily Report</a></li>
                         </ul>
                 </div>
 
@@ -228,7 +228,7 @@
                                             </select>
                                             <label for="display_num2" style="padding-right: 20px">per Page</label>
                                         </div>
-                                        <div class="col-md-6 pull-right">
+{{--                                         <div class="col-md-6 pull-right">
                                             <div class="col-md-3"  style="padding-top:10px">
                                                 <label for="profile_id" class="search">Profile:</label>
                                             </div>
@@ -238,7 +238,7 @@
                                                     'ng-model'=>'search.name'])
                                                 !!}
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
 
@@ -265,20 +265,25 @@
                                             {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
                                             {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
                                         </div>
+                                        {{-- driver can only view himself --}}
+                                        @unless(Auth::user()->hasRole('driver'))
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                                {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.paid_by', 'placeholder'=>'Pay Received By']) !!}
+                                            </div>
+                                        @endunless
+
+                                        {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('updated_by', 'Last Modify By:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('updated_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_by', 'placeholder'=>'Last Modified By']) !!}
-                                        </div>
-                                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('created_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
+                                            {!! Form::label('paid_at', 'Paid Date:', ['class'=>'control-label search-title']) !!}
                                             <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
-                                                        {!! Form::text('updated_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_at', 'ng-init'=>"search.updated_at=today", 'placeholder'=>'Last Modify Date']) !!}
+                                                        {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Last Modify Date']) !!}
                                                     </div>
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                                <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
+                                                <datetimepicker data-ng-model="paid_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(paid_at)"/>
                                                 </ul>
                                             </div>
                                         </div>
@@ -287,29 +292,32 @@
                                             <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
-                                                        {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.delivery_date', 'ng-init'=>"search.delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
+                                                        {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'delivery_date', 'ng-init'=>"delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
                                                     </div>
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                                <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
+                                                <datetimepicker data-ng-model="delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(delivery_date)"/>
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.driver', 'placeholder'=>'Delivered By']) !!}
-                                        </div>
+                                        {{-- driver can only view himself --}}
+                                        @unless(Auth::user()->hasRole('driver'))
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                                {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.driver', 'placeholder'=>'Delivered By']) !!}
+                                            </div>
+                                        @endunless
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            {!! Form::label('daily_rpt1', 'For Today Delivery Date:', ['class'=>'control-label']) !!}
+                                            {!! Form::label('daily_rpt1', 'For Today Delivery Date: ('. \Carbon\Carbon::today()->toDateString().')', ['class'=>'control-label']) !!}
                                             <div class="row">
                                                 <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                                                     Total Amount for 'Delivered'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
-                                                    {{$amt_del}}
+                                                    {{number_format($amt_del, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -317,7 +325,7 @@
                                                     Total Qty for 'Delivered'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{$qty_del}}
+                                                    {{number_format($qty_del, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -325,19 +333,19 @@
                                                     Total Amount for 'Paid'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{$del_paid}}
+                                                    {{number_format($paid_del, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                         </div>
                                         @cannot('transaction_view')
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            {!! Form::label('daily_rpt2', 'For This Modified Date:', ['class'=>'control-label']) !!}
+                                            {!! Form::label('daily_rpt2', 'For This Modified Date: ('. \Carbon\Carbon::today()->toDateString().')', ['class'=>'control-label']) !!}
                                             <div class="row">
                                                 <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                                                     Total Amount for 'Paid'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
-                                                    {{$amt_del}}
+                                                    {{number_format($amt_mod, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -345,7 +353,7 @@
                                                     Total Paid 'Cash'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{$qty_del}}
+                                                    {{number_format($cash_mod, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -353,7 +361,7 @@
                                                     Total Paid 'Cheque/TT'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{$del_paid}}
+                                                    {{number_format($cheque_mod, 2, '.', ',')}}
                                                 </div>
                                             </div>
                                         </div>
@@ -391,12 +399,6 @@
                                                         <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                                     </th>
                                                     <th class="col-md-1 text-center">
-                                                        <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
-                                                        Del Postcode
-                                                        <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
-                                                        <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
-                                                    </th>
-                                                    <th class="col-md-1 text-center">
                                                         <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                                         Status
                                                         <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
@@ -426,23 +428,23 @@
                                                         <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
                                                         <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
                                                     </th>
-                                                     <th class="col-md-1 text-center">
+                                                    <th class="col-md-1 text-center">
                                                         <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                                         Payment
                                                         <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                                                         <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                                                     </th>
                                                     <th class="col-md-1 text-center">
-                                                        <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
-                                                        Last Modified By
-                                                        <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
-                                                        <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
+                                                        <a href="" ng-click="sortType = 'paid_by'; sortReverse = !sortReverse">
+                                                        Pay Received By
+                                                        <span ng-if="sortType == 'paid_by' && !sortReverse" class="fa fa-caret-down"></span>
+                                                        <span ng-if="sortType == 'paid_by' && sortReverse" class="fa fa-caret-up"></span>
                                                     </th>
                                                     <th class="col-md-1 text-center">
-                                                        <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
-                                                        Last Modified Time
-                                                        <span ng-if="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
-                                                        <span ng-if="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
+                                                        <a href="" ng-click="sortType = 'paid_at'; sortReverse = !sortReverse">
+                                                        Pay Received Dt
+                                                        <span ng-if="sortType == 'paid_at' && !sortReverse" class="fa fa-caret-down"></span>
+                                                        <span ng-if="sortType == 'paid_at' && sortReverse" class="fa fa-caret-up"></span>
                                                     </th>
                                                     @cannot('transaction_view')
                                                     <th class="col-md-1 text-center">
@@ -470,7 +472,6 @@
                                                         @{{ transaction.company }}
                                                         </a>
                                                         </td>
-                                                        <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
 
                                                         {{-- status by color --}}
                                                         <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
@@ -505,9 +506,9 @@
                                                         <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
                                                             @{{ transaction.pay_status }}
                                                         </td>
+                                                        <td class="col-md-1 text-center"> @{{ transaction.paid_by ? transaction.paid_by : '-' }}</td>
+                                                        <td class="col-md-1 text-center"> @{{ transaction.paid_at ? transaction.paid_at : '-'}}</td>
                                                         {{-- pay status ended --}}
-                                                        <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                                        <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
                                                         @cannot('transaction_view')
                                                         <td class="col-md-1 text-center">
                                                             {{-- print invoice         --}}

@@ -1,9 +1,12 @@
+// rpt_index.js
+
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
 
     function rptController($scope, $http){
         $scope.currentPage = 1;
         $scope.itemsPerPage = 70;
         $scope.payMethodModel = 'cash';
+        $scope.indexData = {};
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -18,6 +21,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         angular.element(document).ready(function () {
 
+            getIndex();
+/*
             $http.get('/user/data/' + $('#user_id').val()).success(function(person){
 
                 var driver = false;
@@ -30,32 +35,54 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                     }
                 }
-
                 if(driver){
 
-                    $scope.search.updated_by = person.name;
+                    $scope.driver_paid = person.name;
+
                 }
-            });
+            });*/
 
+            function getIndex(){
 
-            $http.get('/transaction/data').success(function(transactions){
-                $scope.transactions = transactions;
-                $scope.All = transactions.length;
+                $http.post('/report/dailyrpt', $scope.indexData).success(function(transactions){
 
-                $scope.optionStatus = [
-                    {name: 'All', value: ''},
-                    {name: 'Pending', value: 'Pending'},
-                    {name: 'Confirmed', value: 'Confirmed'}
-                ];
+                    $scope.transactions = transactions;
 
-                $scope.dateChange = function(date){
-                    $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
+                    $scope.All = transactions.length;
+
+                });
+
+            }
+
+            $scope.dateChange = function(date){
+
+                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
+
+                $scope.indexData = {
+
+                    delivery_date: $scope.delivery_date,
+
+                    paid_at: $scope.paid_at,
+
                 }
 
-                $scope.dateChange2 = function(date){
-                    $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
+                getIndex();
+            }
+
+            $scope.dateChange2 = function(date){
+
+                $scope.paid_at = moment(date).format("YYYY-MM-DD");
+
+                $scope.indexData = {
+
+                    delivery_date: $scope.delivery_date,
+
+                    paid_at: $scope.paid_at,
+
                 }
-            });
+
+                getIndex();
+            }
 
             //delete record
             $scope.confirmDelete = function(id){

@@ -37,11 +37,17 @@ class RptController extends Controller
 
         $qty_del = 0;
 
-        $del_paid = '';
+        $paid_del = '';
 
-        $del_today = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'))->where('status', 'Delivered');
+        $amt_mod = 0;
 
-        // if user is driver start
+        $cash_mod = 0;
+
+        $cheque_mod = 0;
+
+        $del_today = Transaction::whereDate('delivery_date', '=', Carbon::today()->toDateString())->where('status', 'Delivered');
+
+        // if user is driver
         if(Auth::user()->hasRole('driver')){
 
            $del_today = $del_today->where('driver', Auth::user()->name);
@@ -55,19 +61,97 @@ class RptController extends Controller
         // total of all qty given the condition
         $qty_del = $del_today->sum('total_qty');
 
-        $del_paid = Transaction::where('delivery_date', '=', Carbon::now()->format('Y-m-d'))->where('pay_status', 'Paid')->get();
+        $paid_del = Transaction::whereDate('paid_at', '=', Carbon::today()->toDateString())->get();
 
-        $del_paid = $this->calTransactionTotal($del_paid);
-        // For this Delivered Date end
+        $paid_del = $this->calTransactionTotal($paid_del);
 
-        // For this Modified Date start
+        // total amount including gst or not
+        $amt_mod = $this->calTransactionTotal(Transaction::whereDate('updated_at', '=', Carbon::today()->toDateString())->get());
+
+        // total amount of the pay method in cash
+        $cash_mod = $this->calTransactionTotal(Transaction::where('pay_method', '=', 'cash')->get());
+
+        // total amount of the pay method in cheque or TT
+        $cheque_mod = $this->calTransactionTotal(Transaction::where('pay_method', '=', 'cheque')->get());
+
+        return view('report.index', compact('amt_del', 'qty_del', 'paid_del', 'amt_mod', 'cash_mod', 'cheque_mod'));
+    }
+
+    // retrieve daily rpt with/ without search
+    public function getDailyRptApi(Request $request)
+    {
+
+        $delivery_date = $request->delivery_date;
+
+        $paid_at = $request->paid_at;
+
+        $query1 = DB::table('transactions');
+
+            // check whether delivery_date presence
+            if($delivery_date){
+
+                $query1 = $query1->whereDate('transactions.delivery_date', '=', $delivery_date);
+
+            }else{
+
+                $query1 = $query1->whereDate('transactions.delivery_date', '=', Carbon::today()->toDateString());
+
+            }
+
+            // if user is driver
+            if(Auth::user()->hasRole('driver')){
+
+                $query1 = $query1->where('driver', Auth::user()->name);
+
+            }
+
+            $query1 = $query1
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+
+        $query2 = DB::table('transactions');
+
+            // check whether paid_at presence
+            if($paid_at){
+
+                $query2 = $query2->whereDate('transactions.paid_at', '=', $paid_at);
+
+            }else{
+
+                $query2 = $query2->whereDate('transactions.paid_at', '=', Carbon::today()->toDateString());
+            }
+
+            // if user is driver
+            if(Auth::user()->hasRole('driver')){
+
+                $query2 = $query2->where('paid_by', Auth::user()->name);
+
+            }
+
+            $query2 = $query2
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at')
+            ->union($query1)
+            ->orderBy('id', 'desc')
+            ->get();
+
+/*
+            // if user is driver start
+            if(Auth::user()->hasRole('driver')){
+
+                $transactions->where('paid_by', Auth::user()->name);
+
+            }
+*/
 
 
 
-        // For this Modified Date end
 
+        // $transactions = $transactions->latest('created_at')->get();
 
-        return view('report.index', compact('amt_del', 'qty_del', 'del_paid'));
+        return $query2;
     }
 
     public function generatePerson(Request $request)

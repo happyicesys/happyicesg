@@ -82,15 +82,40 @@
                         </div>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('delivery_from', 'Delivery Dt From:', ['class'=>'control-label search-title']) !!}
                         <div class="dropdown">
                             <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
                                 <div class="input-group">
-                                    {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.delivery_date', 'ng-init'=>"search.delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
+                                    {!! Form::text('delivery_from', null, [
+                                                                        'class'=>'form-control input-sm',
+                                                                        'ng-model'=>'delivery_from',
+                                                                        'ng-keyup'=>'dateChange(delivery_from)',
+                                                                        'ng-init'=>"delivery_from=today",
+                                                                        'placeholder'=>'Delivery Date From'
+                                                                        ]) !!}
                                 </div>
                             </a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
+                            <datetimepicker data-ng-model="delivery_from" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(delivery_from)" />
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_to', 'Delivery Dt To:', ['class'=>'control-label search-title']) !!}
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" id="dropdown4" role="button" data-toggle="dropdown" data-target="" href="">
+                                <div class="input-group">
+                                    {!! Form::text('delivery_to', null, [
+                                                                        'class'=>'form-control input-sm',
+                                                                        'ng-model'=>'delivery_to',
+                                                                        'ng-keyup'=>'dateChange3(delivery_to)',
+                                                                        'ng-init'=>"delivery_to=today",
+                                                                        'placeholder'=>'Delivery Date To'
+                                                                        ]) !!}
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker data-ng-model="delivery_to" data-datetimepicker-config="{ dropdownSelector: '#dropdown4', minView: 'day'}" ng-change="dateChange3(delivery_to)"/>
                             </ul>
                         </div>
                     </div>
@@ -102,7 +127,12 @@
 
                 <div class="row">
                     <div style="padding: 0px 0px 10px 15px">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                        <div class="col-md-2 col-sm-4 col-xs-6">
+                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('get_total', 'Total: @{{getTotal()}}', ['class'=>'control-label']) !!}
+                        </div>
                         <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                     </div>
                 </div>
@@ -227,8 +257,8 @@
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
 
-                                    <td class="col-md-1 text-center" ng-if="transaction.gst">@{{ (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2)}}</td>
-                                    <td class="col-md-1 text-center" ng-if="!transaction.gst">@{{ transaction.total }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.gst ? (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2) : transaction.total }}</td>
+
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">

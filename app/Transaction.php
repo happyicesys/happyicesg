@@ -46,6 +46,7 @@ class Transaction extends Model
         'driver' => 'Driver',
         'del_address' => 'Delivery Address',
         'paid_by' => 'Payment Received By',
+        'paid_at' => 'Payment Received At',
         'po_no' => 'PO #',
         'total_qty' => 'Total Qty',
     );
@@ -56,11 +57,12 @@ class Transaction extends Model
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no',
-        'total_qty', 'pay_method', 'note'
+        'total_qty', 'pay_method', 'note',
+        'paid_at'
     ];
 
     protected $dates =[
-        'created_at', 'delivery_date', 'order_date'
+        'created_at', 'delivery_date', 'order_date', 'paid_at'
     ];
 
     public function setDeliveryDateAttribute($date)
