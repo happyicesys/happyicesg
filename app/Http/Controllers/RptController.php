@@ -37,7 +37,7 @@ class RptController extends Controller
 
         $qty_del = 0;
 
-        $paid_del = '';
+        $paid_del = 0;
 
         $amt_mod = 0;
 
@@ -66,13 +66,13 @@ class RptController extends Controller
         $paid_del = $this->calTransactionTotal($paid_del);
 
         // total amount including gst or not
-        $amt_mod = $this->calTransactionTotal(Transaction::whereDate('updated_at', '=', Carbon::today()->toDateString())->get());
+        $amt_mod = $this->calTransactionTotal(Transaction::whereDate('updated_at', '=', Carbon::today()->toDateString())->whereDate('paid_at', '=', Carbon::today()->toDateString())->get());
 
         // total amount of the pay method in cash
-        $cash_mod = $this->calTransactionTotal(Transaction::where('pay_method', '=', 'cash')->get());
+        $cash_mod = $this->calTransactionTotal(Transaction::whereDate('updated_at', '=', Carbon::today()->toDateString())->where('pay_method', '=', 'cash')->get());
 
         // total amount of the pay method in cheque or TT
-        $cheque_mod = $this->calTransactionTotal(Transaction::where('pay_method', '=', 'cheque')->get());
+        $cheque_mod = $this->calTransactionTotal(Transaction::whereDate('updated_at', '=', Carbon::today()->toDateString())->where('pay_method', '=', 'cheque')->get());
 
         return view('report.index', compact('amt_del', 'qty_del', 'paid_del', 'amt_mod', 'cash_mod', 'cheque_mod'));
     }
