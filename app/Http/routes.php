@@ -73,7 +73,7 @@ get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus'
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
-post('/transaction/data', 'TransactionController@getData');
+get('/transaction/data', 'TransactionController@getData');
 delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');
 put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');
