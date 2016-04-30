@@ -13,7 +13,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "TransactionRpt"+ now + ".xls");
+            saveAs(blob, "DailyRpt"+ now + ".xls");
         };
 
         var now = moment();
@@ -49,6 +49,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                     $scope.transactions = transactions;
 
                     $scope.All = transactions.length;
+
+                });
+
+                $http.post('/report/dailyrec', $scope.indexData).success(function(rptdata){
+
+                    $scope.rptdata = rptdata;
 
                 });
 

@@ -96,6 +96,7 @@ resource('user', 'UserController');
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');
 
+post('/report/dailyrec', 'RptController@generateDailyRec');
 post('/report/dailyrpt', 'RptController@getDailyRptApi');
 get('/report', 'RptController@index');
 post('/report/person', 'RptController@generatePerson');

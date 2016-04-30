@@ -311,13 +311,13 @@
 
                                     <div class="row">
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            {!! Form::label('daily_rpt1', 'For Today Delivery Date: ('. \Carbon\Carbon::today()->toDateString().')', ['class'=>'control-label']) !!}
+                                            {!! Form::label('daily_rpt1', 'For Today Delivery Date: (@{{delivery_date}})', ['class'=>'control-label']) !!}
                                             <div class="row">
                                                 <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                                                     Total Amount for 'Delivered'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
-                                                    {{number_format($amt_del, 2, '.', ',')}}
+                                                    @{{rptdata.amt_del | currency: "": 2}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -325,7 +325,7 @@
                                                     Total Qty for 'Delivered'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{number_format($qty_del, 2, '.', ',')}}
+                                                    @{{rptdata.qty_del | currency: "": 4}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -333,19 +333,19 @@
                                                     Total Amount for 'Paid'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{number_format($paid_del, 2, '.', ',')}}
+                                                    @{{rptdata.paid_del | currency: "": 2}}
                                                 </div>
                                             </div>
                                         </div>
                                         @cannot('transaction_view')
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            {!! Form::label('daily_rpt2', 'For This Modified Date: ('. \Carbon\Carbon::today()->toDateString().')', ['class'=>'control-label']) !!}
+                                            {!! Form::label('daily_rpt2', 'For This Paid Date: (@{{paid_at}})', ['class'=>'control-label']) !!}
                                             <div class="row">
                                                 <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                                                     Total Amount for 'Paid'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
-                                                    {{number_format($amt_mod, 2, '.', ',')}}
+                                                    @{{rptdata.amt_mod | currency: "": 2}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -353,7 +353,7 @@
                                                     Total Paid 'Cash'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{number_format($cash_mod, 2, '.', ',')}}
+                                                    @{{rptdata.cash_mod | currency: "": 2}}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -361,7 +361,7 @@
                                                     Total Paid 'Cheque/TT'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    {{number_format($cheque_mod, 2, '.', ',')}}
+                                                    @{{rptdata.cheque_mod | currency: "": 2}}
                                                 </div>
                                             </div>
                                         </div>
@@ -370,7 +370,7 @@
 
                                     <div class="row">
                                         <div style="padding: 20px 0px 10px 15px">
-                                            {{-- <button class="btn btn-primary" ng-click="exportData()">Export Excel</button> --}}
+                                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
