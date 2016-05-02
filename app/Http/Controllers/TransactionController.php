@@ -285,8 +285,6 @@ class TransactionController extends Controller
 
                 if($deal->qty_status == 1){
 
-                    $item->qty_order -= $deal->qty;
-
                     $deal->qty_status = 3;
 
                 }else if($deal->qty_status == 2){
@@ -298,9 +296,11 @@ class TransactionController extends Controller
                     $deal->qty_status = 3;
                 }
 
-                $item->save();
-
                 $deal->save();
+
+                $item->qty_order = $this->syncDealOrder($item->id);
+
+                $item->save();
             }
 
             return Redirect::action('TransactionController@edit', $transaction->id);
@@ -540,13 +540,13 @@ class TransactionController extends Controller
 
                     $item = Item::findOrFail($deal->item_id);
 
-                    $item->qty_order += $deal->qty;
-
                     $deal->qty_status = 1;
 
-                    $item->save();
-
                     $deal->save();
+
+                    $item->qty_order = $this->syncDealOrder($item->id);
+
+                    $item->save();
 
                 }
 
@@ -701,7 +701,9 @@ class TransactionController extends Controller
 
                             $deal->save();
 
-                            $item->qty_order += $qty;
+                            // $item->qty_order += $qty;
+
+                            $item->qty_order = $this->syncDealOrder($item->id);
 
                             $item->save();
 
@@ -733,6 +735,10 @@ class TransactionController extends Controller
 
                             $item->qty_now -= $qty;
 
+                            $item->qty_order = $this->syncDealOrder($item->id);
+
+                            // $item->qty_now = $this->syncDealActual($item->id);
+
                             $item->save();
 
                         }
@@ -750,8 +756,9 @@ class TransactionController extends Controller
 
                 $item = Item::findOrFail($deal->item_id);
 
-                $item->qty_order -= $deal->qty;
+                $item->qty_order = $this->syncDealOrder($item->id);
 
+                // $item->qty_now = $this->syncDealActual($item->id);
                 $item->qty_now -= $deal->qty;
 
                 $item->save();
@@ -832,6 +839,20 @@ class TransactionController extends Controller
             $message->subject('Stock Insufficient Alert ['.$item->product_id.'-'.$item->name.'] - '.$today);
             $message->setTo($email);
         });
+    }
+
+    private function syncDealOrder($item_id)
+    {
+        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+
+        return $deals->sum('qty');
+    }
+
+    private function syncDealActual($item_id)
+    {
+        $deals = Deal::where('qty_status', '2')->where('item_id', $item_id);
+
+        return $deals->sum('qty');
     }
 
 

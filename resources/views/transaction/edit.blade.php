@@ -120,7 +120,7 @@
                         </div>
                     </div>
                 </div>
-                @elseif(($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe') and $transaction->pay_status == 'Owe')
+                @elseif(($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">

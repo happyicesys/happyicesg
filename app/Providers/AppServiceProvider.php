@@ -41,6 +41,10 @@ class AppServiceProvider extends ServiceProvider
         view()->share('REPORT_TITLE', 'Report');
         view()->share('REPORT_PREFIX', 'R');
 
+        //Market
+        view()->share('MARKETING_TITLE', 'Marketing');
+        view()->share('MARKETING_PREFIX', 'M');
+
     }
 
     /**

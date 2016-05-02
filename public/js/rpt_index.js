@@ -19,10 +19,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         var now = moment();
         $scope.today = now.format("YYYY-MM-DD");
 
+        // $scope.driver_name = 'hello';
+
         angular.element(document).ready(function () {
 
             getIndex();
-/*
+
             $http.get('/user/data/' + $('#user_id').val()).success(function(person){
 
                 var driver = false;
@@ -35,12 +37,13 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                     }
                 }
-                if(driver){
 
-                    $scope.driver_paid = person.name;
+                if(driver){
+                    // console.log(person.name);
+                    // $scope.driver_name = person.name;
 
                 }
-            });*/
+            });
 
             function getIndex(){
 

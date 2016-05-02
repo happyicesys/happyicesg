@@ -54,20 +54,21 @@ class DealController extends Controller
 
         $item = Item::findOrFail($deal->item_id);
 
-        // revert back the inventory once inv was added start
+        // revert back the inventory once inv was added
         if($deal->qty_status == 1){
 
-            $item->qty_order -= $deal->qty;
+            $deal->qty_status = 3;
 
         }else if($deal->qty_status == 2){
 
             $item->qty_now += $deal->qty;
         }
-        // revert back the inventory once inv was added end
-
-        $item->save();
 
         $deal->delete();
+
+        $item->qty_order = $this->syncDealOrder($item->id);
+
+        $item->save();
 
         $transaction = Transaction::findOrFail($deal->transaction_id);
 
@@ -84,5 +85,20 @@ class DealController extends Controller
         $transaction->save();
 
         return $deal->id . 'has been successfully deleted';
+    }
+
+
+    private function syncDealOrder($item_id)
+    {
+        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+
+        return $deals->sum('qty');
+    }
+
+    private function syncDealActual($item_id)
+    {
+        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+
+        return $deals->sum('qty');
     }
 }

@@ -266,8 +266,8 @@
                                             {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
                                         </div>
                                         {{-- driver can only view himself --}}
-                                        @unless(Auth::user()->hasRole('driver'))
-                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                        @unless(Auth::user()->hasRole('driver')){{--
+ --}}                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                                 {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                                                 {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.paid_by', 'placeholder'=>'Pay Received By']) !!}
                                             </div>
@@ -376,6 +376,38 @@
                                     </div>
                                         <div class="table-responsive" id="exportable">
                                             <table class="table table-list-search table-hover table-bordered">
+                                                <tr class="hidden">
+                                                    <th></th>
+                                                    <th>Delivery Date:</th>
+                                                    <th>@{{delivery_date}}</th>
+                                                    <th></th>
+                                                    <th>Paid Date:</th>
+                                                    <th>@{{paid_at}}</th>
+                                                </tr>
+                                                <tr class="hidden">
+                                                    <td></td>
+                                                    <td>Total Amount for 'Delivered'</td>
+                                                    <td>@{{rptdata.amt_del | currency: "": 2}}</td>
+                                                    <td></td>
+                                                    <td>Total Amount for 'Paid'</td>
+                                                    <td>@{{rptdata.amt_mod | currency: "": 2}}</td>
+                                                </tr>
+                                                <tr class="hidden">
+                                                    <td></td>
+                                                    <td>Total Qty for 'Delivered'</td>
+                                                    <td>@{{rptdata.qty_del | currency: "": 4}}</td>
+                                                    <td></td>
+                                                    <td>Total Paid 'Cash'</td>
+                                                    <td>@{{rptdata.cash_mod | currency: "": 2}}</td>
+                                                </tr>
+                                                <tr class="hidden">
+                                                    <td></td>
+                                                    <td>Total Amount for 'Paid'</td>
+                                                    <td>@{{rptdata.paid_del | currency: "": 2}}</td>
+                                                    <td></td>
+                                                    <td>Total Paid 'Cheque/TT'</td>
+                                                    <td>@{{rptdata.cheque_mod | currency: "": 2}}</td>
+                                                </tr>
                                                 <tr style="background-color: #DDFDF8">
                                                     <th class="col-md-1 text-center">
                                                         #

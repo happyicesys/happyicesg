@@ -142,7 +142,7 @@
                 </div>
             </div>
 
-            @if($transaction->status === 'Verified Paid' and $transaction->pay_method)
+            @if($transaction->status === 'Verified Paid')
                 <div class="row">
                     <div class="col-md-4 form-group">
                         {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
