@@ -666,9 +666,7 @@ class TransactionController extends Controller
 
                                 $item->save();
                             }
-
                         }else{
-
                             // reactivate email alert
                             $item->emailed = false;
 
@@ -805,7 +803,7 @@ class TransactionController extends Controller
     private function sendEmailAlert($item)
     {
 
-        $today = Carbon::now()->format('dmYHis');
+        $today = Carbon::now()->format('d-m-Y H:i');
 
         $emails = EmailAlert::where('status', 'active')->get();
 

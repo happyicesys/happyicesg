@@ -29,6 +29,11 @@ elixir(function(mix) {
             'filesaver.js',
             'moment.js',
             'angular-bootstrap-datetimepicker.js',
+            'tableExport/libs/FileSaver/FileSaver.min.js',
+            'tableExport/libs/jsPDF/jspdf.min.js',
+            'tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js',
+            'tableExport/libs/html2canvas/html2canvas.min.js',
+            'tableExport/tableExport.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

@@ -8,6 +8,8 @@
 @stop
 @section('content')
 
+    <meta charset="UTF-8">
+
     <div class="row">
     <a class="title_hyper pull-left" href="/report"><h1>{{ $REPORT_TITLE }} <i class="fa fa-file-text-o"></i></h1></a>
     </div>
@@ -55,12 +57,12 @@
                                         {!! Form::open(['id'=>'transaction_form', 'method'=>'POST','action'=>['RptController@generateTransaction']]) !!}
 
                                         <div class="row">
-                                           <div class="form-group">
+                                            <div class="form-group">
                                                 {!! Form::radio('choice_transac', 'tran_specific', 'tran_specific') !!}
                                                 {!! Form::label('tran_specific', 'Specific') !!}
-                                           </div>
+                                            </div>
 
-                                           <div class="row">
+                                            <div class="row">
                                                <div class="desc" id="tran_specific">
                                                    <div class="col-md-4">
                                                         {!! Form::label('transaction_datefrom', 'Dates between', ['class'=>'control-label']) !!}
@@ -77,21 +79,21 @@
                                                         {!! Form::text('transaction_dateto', null, ['id'=>'transaction_dateto', 'class'=>'date form-control', 'style'=>'margin-top: 10px;']) !!}
                                                    </div>
                                                </div>
-                                           </div>
+                                            </div>
                                         </div>
                                         <hr>
                                         <div class="row">
-                                           <div class="form-group">
+                                            <div class="form-group">
                                                 {!! Form::radio('choice_transac', 'tran_all') !!}
                                                 {!! Form::label('tran_all', 'By Year') !!}
-                                           </div>
+                                            </div>
 
-                                           <div class="desc col-md-12" id="tran_all">
-                                               <select id="transac_year" name="transac_year" class="select">
+                                            <div class="desc col-md-12" id="tran_all">
+                                                <select id="transac_year" name="transac_year" class="select">
                                                     <option value="{{Carbon\Carbon::now()->year}}">{{Carbon\Carbon::now()->year}}</option>
                                                     <option value="{{Carbon\Carbon::now()->subYear()->year}}">{{Carbon\Carbon::now()->subYear()->year}}</option>
-                                               </select>
-                                           </div>
+                                                </select>
+                                            </div>
                                         </div>
                                         <br/>
 {{--
@@ -129,30 +131,30 @@
                                 <div class="panel-body">
                                     <div class="col-md-8 col-md-offset-2">
                                         {!! Form::open(['id'=>'byproduct_form', 'method'=>'POST','action'=>['RptController@generateByProduct']]) !!}
-                                        <div class="form-group">
-                                           <div class="row">
-                                               <div class="desc">
-                                                   <div class="col-md-4">
-                                                        {!! Form::label('byproduct_datefrom', 'Dates between', ['class'=>'control-label']) !!}
-                                                        {!! Form::text('byproduct_datefrom', null, ['id'=>'byproduct_datefrom', 'class'=>'date form-control']) !!}
-                                                   </div>
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="desc">
+                                                    <div class="col-md-4">
+                                                    {!! Form::label('byproduct_datefrom', 'Dates between', ['class'=>'control-label']) !!}
+                                                    {!! Form::text('byproduct_datefrom', null, ['id'=>'byproduct_datefrom', 'class'=>'date form-control']) !!}
+                                                    </div>
 
-                                                   <div class="col-md-1 text-center">
-                                                   <br/>
+                                                    <div class="col-md-1 text-center">
+                                                        <br/>
                                                         {!! Form::label('and', 'To', ['class'=>'control-label', 'style'=>'margin-top: 10px;']) !!}
-                                                   </div>
+                                                    </div>
 
-                                                   <div class="col-md-4">
-                                                   <br/>
+                                                    <div class="col-md-4">
+                                                        <br/>
                                                         {!! Form::text('byproduct_dateto', null, ['id'=>'byproduct_dateto', 'class'=>'date form-control', 'style'=>'margin-top: 10px;']) !!}
-                                                   </div>
-                                               </div>
-                                           </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
                                         {!! Form::close() !!}
-                                        </div>
+                                            </div>
 
                                         {!! Form::submit('Generate', ['class'=> 'btn btn-primary', 'form'=>'byproduct_form']) !!}
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +185,7 @@
 
 
                                         <div class="form-group">
-                                           <div class="row">
+                                            <div class="row">
                                                <div class="desc">
                                                    <div class="col-md-4">
                                                         {!! Form::label('driver_datefrom', 'Dates between', ['class'=>'control-label']) !!}
@@ -200,7 +202,7 @@
                                                         {!! Form::text('driver_dateto', null, ['id'=>'driver_dateto', 'class'=>'datetoday form-control', 'style'=>'margin-top: 10px;']) !!}
                                                    </div>
                                                </div>
-                                           </div>
+                                            </div>
                                         {!! Form::close() !!}
                                         </div>
 
@@ -221,10 +223,10 @@
                                         <div class="pull-left display_num">
                                             <label for="display_num">Display</label>
                                             <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'">
-                                              <option ng-value="10">10</option>
-                                              <option ng-value="30">30</option>
-                                              <option ng-value="70">70</option>
-                                              <option ng-value="All">All</option>
+                                                <option ng-value="10">10</option>
+                                                <option ng-value="30">30</option>
+                                                <option ng-value="70">70</option>
+                                                <option ng-value="All">All</option>
                                             </select>
                                             <label for="display_num2" style="padding-right: 20px">per Page</label>
                                         </div>
@@ -266,10 +268,15 @@
                                             {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
                                         </div>
                                         {{-- driver can only view himself --}}
-                                        @unless(Auth::user()->hasRole('driver')){{--
- --}}                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                        @unless(Auth::user()->hasRole('driver'))
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                                 {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.paid_by', 'placeholder'=>'Pay Received By']) !!}
+                                                {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'placeholder'=>'Pay Received By']) !!}
+                                            </div>
+                                        @else
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                                {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
                                             </div>
                                         @endunless
 
@@ -304,7 +311,12 @@
                                         @unless(Auth::user()->hasRole('driver'))
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                                 {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.driver', 'placeholder'=>'Delivered By']) !!}
+                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'placeholder'=>'Delivered By']) !!}
+                                            </div>
+                                        @else
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                                {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Delivered By', 'disabled'=>'disabled']) !!}
                                             </div>
                                         @endunless
                                     </div>
@@ -333,7 +345,7 @@
                                                     Total Amount for 'Paid'
                                                 </div>
                                                 <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                                                    @{{rptdata.paid_del | currency: "": 2}}
+                                                    @{{rptdata.amt_mod | currency: "": 2}}
                                                 </div>
                                             </div>
                                         </div>
@@ -371,42 +383,105 @@
                                     <div class="row">
                                         <div style="padding: 20px 0px 10px 15px">
                                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                                            {{-- <button class="btn btn-warning" ng-click="exportPDF()">Export PDF</button> --}}
+                                            <button class="btn btn-warning" onclick="$('.export-table').tableExport({
+                                                                                        type:'pdf',
+                                                                                        format: 'a4',
+                                                                                        ignoreColumn: [13, 14, 15],
+                                                                                        jspdf: {
+                                                                                            orientation: 'l',
+                                                                                            autotable: {
+                                                                                                theme: 'grid',
+                                                                                                alternateRowStyles: 'none'
+                                                                                            },
+                                                                                        },
+                                                                                        escape:'false',
+                                                                                        pdfFontSize:10,
+                                                                                        fileName: 'DailyRpt'
+                                                                                    });" >Export PDF</button>
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
                                         <div class="table-responsive" id="exportable">
-                                            <table class="table table-list-search table-hover table-bordered">
-                                                <tr class="hidden">
+                                            <table class="table table-list-search table-hover table-bordered export-table" data-tableexport-display="always">
+                                                <tr class="hidden" data-tableexport-display="always">
                                                     <th></th>
-                                                    <th>Delivery Date:</th>
-                                                    <th>@{{delivery_date}}</th>
+                                                    <td>Invoice:</td>
+                                                    <td>@{{search.id}}</td>
                                                     <th></th>
-                                                    <th>Paid Date:</th>
-                                                    <th>@{{paid_at}}</th>
+                                                    <td>ID:</td>
+                                                    <td>@{{search.cust_id}}</td>
+                                                </tr>
+                                                <tr class="hidden" data-tableexport-display="always">
+                                                    <th></th>
+                                                    <td>Company:</td>
+                                                    <td>@{{search.company}}</td>
+                                                    <th></th>
+                                                    <td>Status:</td>
+                                                    <td>@{{search.status}}</td>
+                                                </tr>
+                                                <tr class="hidden" data-tableexport-display="always">
+                                                    <th></th>
+                                                    <td>Delivery Date:</td>
+                                                    <td>@{{delivery_date}}</td>
+                                                    <th></th>
+                                                    <td>Paid Date:</td>
+                                                    <td>@{{paid_at}}</td>
+                                                </tr>
+                                                @if(Auth::user()->hasRole('driver'))
+                                                    <tr class="hidden" data-tableexport-display="always">
+                                                        <th></th>
+                                                        <td>Pay Received By:</td>
+                                                        <td>{{Auth::user()->name}}</td>
+                                                        <th></th>
+                                                        <td>Delivered By:</td>
+                                                        <td>{{Auth::user()->name}}</td>
+                                                    </tr>
+                                                @else
+                                                    <tr class="hidden" data-tableexport-display="always">
+                                                        <th></th>
+                                                        <td>Pay Received By:</td>
+                                                        <td>@{{paid_by}}</td>
+                                                        <th></th>
+                                                        <td>Delivered By:</td>
+                                                        <td>@{{driver}}</td>
+                                                    </tr>
+                                                @endif
+                                                <tr class="hidden" data-tableexport-display="always">
+                                                    <th></th>
+                                                    <td>Status:</td>
+                                                    <td>@{{search.status}}</td>
+                                                </tr>
+
+                                                <tr class="hidden" data-tableexport-display="always">
+                                                    <td></td>
                                                 </tr>
                                                 <tr class="hidden">
                                                     <td></td>
-                                                    <td>Total Amount for 'Delivered'</td>
-                                                    <td>@{{rptdata.amt_del | currency: "": 2}}</td>
+                                                    <td data-tableexport-display="always">Total Amount for 'Delivered'</td>
+                                                    <td data-tableexport-display="always" class="text-right">@{{rptdata.amt_del | currency: "": 2}}</td>
                                                     <td></td>
-                                                    <td>Total Amount for 'Paid'</td>
-                                                    <td>@{{rptdata.amt_mod | currency: "": 2}}</td>
+                                                    <td ng-if="!getdriver()">Total Amount for 'Paid'</td>
+                                                    <td ng-if="!getdriver()" class="text-right">@{{rptdata.amt_mod | currency: "": 2}}</td>
                                                 </tr>
                                                 <tr class="hidden">
                                                     <td></td>
-                                                    <td>Total Qty for 'Delivered'</td>
-                                                    <td>@{{rptdata.qty_del | currency: "": 4}}</td>
+                                                    <td data-tableexport-display="always">Total Qty for 'Delivered'</td>
+                                                    <td data-tableexport-display="always" class="text-right">@{{rptdata.qty_del | currency: "": 4}}</td>
                                                     <td></td>
-                                                    <td>Total Paid 'Cash'</td>
-                                                    <td>@{{rptdata.cash_mod | currency: "": 2}}</td>
+                                                    <td ng-if="!getdriver()">Total Paid 'Cash'</td>
+                                                    <td ng-if="!getdriver()" class="text-right">@{{rptdata.cash_mod | currency: "": 2}}</td>
                                                 </tr>
                                                 <tr class="hidden">
                                                     <td></td>
-                                                    <td>Total Amount for 'Paid'</td>
-                                                    <td>@{{rptdata.paid_del | currency: "": 2}}</td>
+                                                    <td data-tableexport-display="always">Total Amount for 'Paid'</td>
+                                                    <td data-tableexport-display="always" class="text-right">@{{rptdata.amt_mod | currency: "": 2}}</td>
                                                     <td></td>
-                                                    <td>Total Paid 'Cheque/TT'</td>
-                                                    <td>@{{rptdata.cheque_mod | currency: "": 2}}</td>
+                                                    <td ng-if="!getdriver()">Total Paid 'Cheque/TT'</td>
+                                                    <td ng-if="!getdriver()" class="text-right">@{{rptdata.cheque_mod | currency: "": 2}}</td>
+                                                </tr>
+                                                <tr class="hidden" data-tableexport-display="always">
+                                                    <td></td>
                                                 </tr>
                                                 <tr style="background-color: #DDFDF8">
                                                     <th class="col-md-1 text-center">
@@ -491,6 +566,20 @@
                                                     @endcannot
                                                 </tr>
                                                 <tbody>
+                                                    <tr>
+                                                        <td class="hidden text-center" data-tableexport-display="always">#</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Inv</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">ID</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Company</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Status</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Delivery Date</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Delivery By</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Total Amount</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Total Qty</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Payment</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Pay Received By</td>
+                                                        <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
+                                                    </tr>
                                                     <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
@@ -499,7 +588,7 @@
                                                             </a>
                                                         </td>
                                                         <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-                                                        <td class="col-md-1 text-center">
+                                                        <td class="col-md-1 text-center" id="to-pdf">
                                                         <a href="/person/@{{ transaction.person_id }}">
                                                         @{{ transaction.company }}
                                                         </a>
@@ -561,7 +650,7 @@
                                                                                 'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
-                                                            <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
+                                                            {{-- <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span> --}}
                                                         </td>
                                                         <td class="col-md-2 text-center">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [
@@ -571,7 +660,7 @@
                                                                             'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                             'style'=>'width:100px;'
                                                                             ]) !!}
-                                                            <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.note}}</span>
+                                                            {{-- <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.note}}</span> --}}
                                                         </td>
                                                         @endcannot
                                                     </tr>
@@ -583,7 +672,7 @@
                                         </div>
                                 </div>
                                     <div class="panel-footer">
-                                          <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                                        <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
                                     </div>
                             </div>
                         </div>

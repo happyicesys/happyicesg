@@ -19,31 +19,32 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         var now = moment();
         $scope.today = now.format("YYYY-MM-DD");
 
-        // $scope.driver_name = 'hello';
-
         angular.element(document).ready(function () {
 
-            getIndex();
 
-            $http.get('/user/data/' + $('#user_id').val()).success(function(person){
 
-                var driver = false;
+                $http.get('/user/data/' + $('#user_id').val()).success(function(person){
 
-                for(var i = 0; i < person.roles.length; i++){
+                    var driver = false;
 
-                    if(person.roles[i].name === 'driver'){
+                    for(var i = 0; i < person.roles.length; i++){
 
-                        driver = true;
+                        if(person.roles[i].name === 'driver'){
+
+                            driver = true;
+
+                        }
+                    }
+
+                    $scope.getdriver = function(){
+                        console.log(driver ? 'none' : 'always');
+                        return driver;
 
                     }
-                }
+                });
 
-                if(driver){
-                    // console.log(person.name);
-                    // $scope.driver_name = person.name;
-
-                }
-            });
+            // first init
+            getIndex();
 
             function getIndex(){
 
@@ -63,9 +64,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
             }
 
-            $scope.dateChange = function(date){
-
-                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
+            function syncData(){
 
                 $scope.indexData = {
 
@@ -73,7 +72,64 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                     paid_at: $scope.paid_at,
 
+                    paid_by: $scope.paid_by,
+
+                    driver: $scope.driver,
+
                 }
+            }
+/*
+            function syncDataAll(){
+
+                $scope.indexData = {
+
+                    delivery_date: $scope.delivery_date,
+
+                    paid_at: $scope.paid_at,
+
+                    paid_by: $scope.paid_by,
+
+                    driver: $scope.driver,
+
+                    transaction_id: $scope.search.id,
+
+                    cust_id: $scope.search.cust_id,
+
+                    company: $scope.search.company,
+
+                    status: $scope.search.status,
+
+                    pay_status: $scope.search.pay_status,
+
+                }
+            }*/
+/*
+            $scope.exportPDF = function(){
+
+                // syncDataAll();
+
+                $http.post('/report/dailypdf', $scope.indexData).success(function(){
+
+                    $scope.indexData['transaction_id'] = '';
+
+                    $scope.indexData['cust_id'] = '';
+
+                    $scope.indexData['company'] = '';
+
+                    $scope.indexData['status'] = '';
+
+                    $scope.indexData['pay_status'] = '';
+
+                });
+            }*/
+
+            $scope.dateChange = function(date){
+
+                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
+
+                $scope.paid_at = moment(date).format("YYYY-MM-DD");
+
+                syncData();
 
                 getIndex();
             }
@@ -82,49 +138,60 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                 $scope.paid_at = moment(date).format("YYYY-MM-DD");
 
-                $scope.indexData = {
+                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
 
-                    delivery_date: $scope.delivery_date,
-
-                    paid_at: $scope.paid_at,
-
-                }
+                syncData();
 
                 getIndex();
             }
 
-            //delete record
-            $scope.confirmDelete = function(id){
-                var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
-                if(isConfirmDelete){
-                    $http({
-                        method: 'DELETE',
-                        url: '/transaction/data/' + id
-                    })
-                    .success(function(data){
-                        location.reload();
-                    })
-                    .error(function(data){
-                        alert('Unable to delete');
-                    })
-                }else{
-                    return false;
-                }
+
+            $scope.paidByChange = function(paid_by){
+
+                $scope.driver = paid_by;
+
+                syncData();
+
+                getIndex();
+            }
+
+
+            $scope.driverChange = function(driver){
+
+                $scope.paid_by = driver;
+
+                syncData();
+
+                getIndex();
             }
         });
 
-            $scope.onVerifiedPaid = function($event, transaction_id, payMethodModel, noteModel){
+        $scope.onVerifiedPaid = function($event, transaction_id, payMethodModel, noteModel){
 
-                $http({
-                    url: '/transaction/rpt/' + transaction_id ,
-                    method: "POST",
-                    data: {
-                            paymethod: payMethodModel,
-                            note: noteModel,
-                            },
-                    }).success(function(response){
-                });
+            $http({
+                url: '/transaction/rpt/' + transaction_id ,
+                method: "POST",
+                data: {
+                        paymethod: payMethodModel,
+                        note: noteModel,
+                        },
+                }).success(function(response){
+            });
+        }
+
+        $scope.exportAction = function(){
+
+            switch($scope.export_action){
+
+                case 'pdf': $scope.$broadcast('export-pdf', {});
+                          break;
+                case 'excel': $scope.$broadcast('export-excel', {});
+                          break;
+                case 'doc': $scope.$broadcast('export-doc', {});
+                          break;
+                default: console.log('no event caught');
             }
+        }
     }
 
 app.filter('delDate', [
@@ -140,6 +207,36 @@ function repeatController($scope) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
     })
 }
+
+(function(){
+//export html table to pdf, excel and doc format directive
+var exportTable = function(){
+
+    var link = function($scope, elm, attr){
+
+        $scope.$on('export-pdf', function(e, d){
+            elm.tableExport({type:'pdf', escape:false});
+        });
+
+        $scope.$on('export-excel', function(e, d){
+            elm.tableExport({type:'excel', escape:false});
+        });
+
+        $scope.$on('export-doc', function(e, d){
+            elm.tableExport({type: 'doc', escape:false});
+        });
+    }
+
+return {
+    restrict: 'C',
+    link: link
+   }
+}
+
+angular
+    .module('CustomDirectives', [])
+    .directive('exportTable', exportTable);
+})();
 
 
 app.controller('rptController', rptController);
