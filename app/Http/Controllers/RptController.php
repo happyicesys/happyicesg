@@ -517,7 +517,7 @@ class RptController extends Controller
 
             }else if($driver){
 
-                $query1 = $query1->where('driver', $driver);
+                $query1 = $query1->where('driver', 'like', $driver);
             }
 
             // if paid_by presence
@@ -552,7 +552,7 @@ class RptController extends Controller
 
             }else if($driver){
 
-                $query2 = $query2->where('driver', $driver);
+                $query2 = $query2->where('driver', 'like', $driver);
             }
 
             // if paid_by presence
@@ -623,7 +623,7 @@ class RptController extends Controller
 
         }else if($driver){
 
-            $query1 = $query1->where('driver', $driver);
+            $query1 = $query1->where('driver', 'like', $driver);
         }
 
         // if paid_by presence
@@ -663,7 +663,7 @@ class RptController extends Controller
 
         }else if($driver){
 
-            $query2 = $query2->where('driver', $driver);
+            $query2 = $query2->where('driver', 'like', $driver);
         }
 
         // if paid_by presence
@@ -680,9 +680,9 @@ class RptController extends Controller
 
         $amt_del = $this->calTransactionTotal($query1->where('status', '=', 'Delivered')->get());
 
-        $qty_del = $this->calQtyTotal($query1->where('status', '=', 'Delivered')->get());
+        $qty_del = $this->calQtyTotal($query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->get());
 
-        $paid_del = $this->calTransactionTotal($query1->where('status', '=', 'Delivered')->where('pay_status', '=', 'Paid')->get());
+        $paid_del = $this->calTransactionTotal($query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', '=', 'Paid')->get());
 
         $amt_mod = $this->calTransactionTotal($query2->get());
 
