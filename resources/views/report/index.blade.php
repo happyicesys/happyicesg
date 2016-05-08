@@ -269,12 +269,12 @@
                                         </div>
                                         {{-- driver can only view himself --}}
                                         @unless(Auth::user()->hasRole('driver'))
-                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
                                                 {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                                                 {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'placeholder'=>'Pay Received By']) !!}
                                             </div>
                                         @else
-                                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                            <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
                                                 {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                                                 {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
                                             </div>
@@ -282,11 +282,11 @@
 
                                         {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('paid_at', 'Paid Date:', ['class'=>'control-label search-title']) !!}
+                                            {!! Form::label('paid_at', 'Date:', ['class'=>'control-label search-title']) !!}
                                             <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
-                                                        {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Paid Date']) !!}
+                                                        {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Date']) !!}
                                                     </div>
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -294,7 +294,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                        <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
                                             {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
                                             <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
@@ -310,13 +310,13 @@
                                         {{-- driver can only view himself --}}
                                         @unless(Auth::user()->hasRole('driver'))
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                                {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'placeholder'=>'Delivered By']) !!}
+                                                {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'placeholder'=>'User']) !!}
                                             </div>
                                         @else
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                                {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Delivered By', 'disabled'=>'disabled']) !!}
+                                                {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
+                                                {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'disabled'=>'disabled']) !!}
                                             </div>
                                         @endunless
                                     </div>
