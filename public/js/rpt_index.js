@@ -33,11 +33,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                             driver = true;
 
+                            break;
                         }
                     }
 
                     $scope.getdriver = function(){
-                        console.log(driver ? 'none' : 'always');
+
                         return driver;
 
                     }

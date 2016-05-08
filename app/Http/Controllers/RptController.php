@@ -517,13 +517,13 @@ class RptController extends Controller
 
             }else if($driver){
 
-                $query1 = $query1->where('driver', 'like', $driver);
+                $query1 = $query1->where('driver', 'like', '%'.$driver.'%');
             }
 
             // if paid_by presence
             if($paid_by){
 
-                $query1 = $query1->where('paid_by', $paid_by);
+                $query1 = $query1->where('paid_by', 'like', '%'.$paid_by.'%');
             }
 
             $query1 = $this->extraField($request, $query1);
@@ -552,13 +552,13 @@ class RptController extends Controller
 
             }else if($driver){
 
-                $query2 = $query2->where('driver', 'like', $driver);
+                $query2 = $query2->where('driver', 'like', '%'.$driver.'%');
             }
 
             // if paid_by presence
             if($paid_by){
 
-                $query2 = $query2->where('paid_by', $paid_by);
+                $query2 = $query2->where('paid_by', 'like', '%'.$paid_by.'%');
             }
 
             $query2 = $this->extraField($request, $query2);
@@ -571,7 +571,9 @@ class RptController extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
 
+// dd($query2);
             return $query2;
+
     }
 
     private function apiRec($request)
@@ -623,13 +625,13 @@ class RptController extends Controller
 
         }else if($driver){
 
-            $query1 = $query1->where('driver', 'like', $driver);
+            $query1 = $query1->where('driver', 'like', '%'.$driver.'%');
         }
 
         // if paid_by presence
         if($paid_by){
 
-            $query1 = $query1->where('paid_by', $paid_by);
+            $query1 = $query1->where('paid_by', 'like', '%'.$paid_by.'%');
         }
 
         $query1 = $this->extraField($request, $query1);
@@ -663,13 +665,13 @@ class RptController extends Controller
 
         }else if($driver){
 
-            $query2 = $query2->where('driver', 'like', $driver);
+            $query2 = $query2->where('driver', 'like', '%'.$paid_by.'%');
         }
 
         // if paid_by presence
         if($paid_by){
 
-            $query2 = $query2->where('paid_by', $paid_by);
+            $query2 = $query2->where('paid_by', 'like', '%'.$paid_by.'%');
         }
 
         $query2 = $this->extraField($request, $query2);
@@ -678,7 +680,7 @@ class RptController extends Controller
             ->orderBy('id', 'desc');
 
 
-        $amt_del = $this->calTransactionTotal($query1->where('status', '=', 'Delivered')->get());
+        $amt_del = $this->calTransactionTotal($query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->get());
 
         $qty_del = $this->calQtyTotal($query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->get());
 
