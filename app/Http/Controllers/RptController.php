@@ -88,7 +88,7 @@ class RptController extends Controller
 
         $pdf->setPaper('a4');
 
-        $pdf->setOrientation('landscape');
+        // $pdf->setOrientation('landscape');
 
         return $pdf->download($filename);
     }

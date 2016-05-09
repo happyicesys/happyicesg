@@ -49,7 +49,7 @@
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>
-
+{{--
                 <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-arrows-h"></i> Door to Door <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -57,7 +57,7 @@
                             <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-users"></i> Customers</a></li>
                             <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-sitemap"></i> Members</a></li>
                         </ul>
-                </li>
+                </li> --}}
             </ul>
         </div>
         @endunless
