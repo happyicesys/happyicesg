@@ -668,23 +668,16 @@ class RptController extends Controller
 
             $query2 = $query2->whereDate('paid_at', '=', Carbon::today()->toDateString());
         }
-/*
-        // if user is driver
-        if(Auth::user()->hasRole('driver')){
-
-            $query2 = $query2->where('paid_by', Auth::user()->name);
-
-        }*/
 
         // if user is driver
         if(Auth::user()->hasRole('driver')){
 
             $query2 = $query2->where('paid_by', Auth::user()->name);
 
-        }else if($driver){
+        }/*else if($driver){
 
             $query2 = $query2->where('driver', 'like', '%'.$paid_by.'%');
-        }
+        }*/
 
         // if paid_by presence
         if($paid_by){
