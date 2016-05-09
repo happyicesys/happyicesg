@@ -157,7 +157,7 @@
             <div class="col-xs-10 col-xs-offset-1 row" style="padding-top: 15px;">
                 <div class="col-xs-6" style="border: thin black solid">
                     <div class="row">
-                        <div class="col-xs-8">
+                        <div class="col-xs-9">
                             <strong>Total Amount for 'Delivered':</strong>
                         </div>
                         <div class="col-xs-2 text-right">
@@ -166,7 +166,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-8">
+                        <div class="col-xs-9">
                             <strong>Total Qty for 'Delivered':</strong>
                         </div>
                         <div class="col-xs-2 text-right">
@@ -175,7 +175,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-8">
+                        <div class="col-xs-9">
                             <strong>Total Amount for 'Paid':</strong>
                         </div>
                         <div class="col-xs-2 text-right">
@@ -187,7 +187,7 @@
                 @unless(Auth::user()->hasRole('driver'))
                     <div class="col-xs-6" style="border: thin black solid;">
                         <div class="row">
-                            <div class="col-xs-8">
+                            <div class="col-xs-9">
                                 <strong>Total Amount for 'Paid':</strong>
                             </div>
                             <div class="col-xs-2 text-right">
@@ -196,7 +196,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-8">
+                            <div class="col-xs-9">
                                 <strong>Total Paid 'Cash':</strong>
                             </div>
                             <div class="col-xs-2 text-right">
@@ -205,7 +205,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-8">
+                            <div class="col-xs-9">
                                 <strong>Total Paid 'Cheque/ TT':</strong>
                             </div>
                             <div class="col-xs-2 text-right">
