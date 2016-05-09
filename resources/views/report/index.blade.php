@@ -246,14 +246,15 @@
 
                                 <div class="panel-body">
                                 {!! Form::hidden('user_id', Auth::user()->id, ['class'=>'form-group', 'id'=>'user_id']) !!}
+                                    {!! Form::open(['id'=>'daily_rpt', 'method'=>'POST','action'=>['RptController@getDailyPdf']]) !!}
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('invoice', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'Inv Num']) !!}
+                                            {!! Form::label('transaction_id', 'Invoice:', ['class'=>'control-label search-title']) !!}
+                                            {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'Inv Num']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                            {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
+                                            {!! Form::label('cust_id', 'ID:', ['class'=>'control-label search-title']) !!}
+                                            {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
@@ -316,9 +317,10 @@
                                         @else
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                                 {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'disabled'=>'disabled']) !!}
+                                                {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'readonly'=>'readonly']) !!}
                                             </div>
                                         @endunless
+                                        {!! Form::close() !!}
                                     </div>
 
                                     <div class="row">
@@ -384,7 +386,7 @@
                                         <div style="padding: 20px 0px 10px 15px">
                                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                                             {{-- <button class="btn btn-warning" ng-click="exportPDF()">Export PDF</button> --}}
-                                            <button class="btn btn-warning" onclick="$('.export-table').tableExport({
+{{--                                             <button class="btn btn-warning" onclick="$('.export-table').tableExport({
                                                                                         type:'pdf',
                                                                                         format: 'a4',
                                                                                         ignoreColumn: [13, 14, 15],
@@ -398,7 +400,8 @@
                                                                                         escape:'false',
                                                                                         pdfFontSize:10,
                                                                                         fileName: 'DailyRpt'
-                                                                                    });" >Export PDF</button>
+                                                                                    });" >Export PDF</button> --}}
+                                            {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>

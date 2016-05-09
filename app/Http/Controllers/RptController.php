@@ -49,18 +49,38 @@ class RptController extends Controller
         return $this->apiRec($request);
 
     }
-/*
+
     public function getDailyPdf(Request $request)
     {
+        // dd($request->all());
         $now = Carbon::now()->format('d-m-Y H:i');
 
         $data = [];
 
-        // $data = $this->apiRec($request);
+        $data = $this->apiRec($request);
 
         $data['transactions'] = $this->apiTable($request);
 
         $data['now'] = $now;
+
+        // insert the searched result
+        $data['transaction_id'] = $request->transaction_id;
+
+        $data['cust_id'] = $request->cust_id;
+
+        $data['company'] = $request->company;
+
+        $data['status'] = $request->status;
+
+        $data['pay_status'] = $request->pay_status;
+
+        $data['paid_by'] = $request->paid_by;
+
+        $data['paid_at'] = $request->paid_at;
+
+        $data['delivery_date'] = $request->delivery_date;
+
+        $data['driver'] = $request->driver;
 
         $filename = 'DailyRpt_'.$now.'.pdf';
 
@@ -68,10 +88,10 @@ class RptController extends Controller
 
         $pdf->setPaper('a4');
 
-        // $pdf->setOrientation('landscape');
+        $pdf->setOrientation('landscape');
 
         return $pdf->download($filename);
-    }*/
+    }
 
     public function generatePerson(Request $request)
     {
@@ -736,27 +756,33 @@ class RptController extends Controller
 
         if($transaction_id){
 
-            $query = $query->where('id', $transaction_id);
+            $query = $query->where('transactions.id', $transaction_id);
         }
-
+/*
         if($cust_id){
 
-            $query = $query->person()->where('cust_id', $cust_id);
+            $query = $query->with('person')->whereHas('person', function($query){
+
+                $query->where('cust_id', $cust_id);
+            });
         }
 
         if($company){
 
-            $query = $query->person()->where('company', $company);
-        }
+            $query = $query->with('person')->whereHas('person', function($query){
+
+                $query->where('company', $company);
+            });
+        }*/
 
         if($status){
 
-            $query = $query->where('status', $status);
+            $query = $query->where('transactions.status', $status);
         }
 
         if($pay_status){
 
-            $query = $query->where('pay_status', $pay_status);
+            $query = $query->where('transactions.pay_status', $pay_status);
         }
 
         return $query;
