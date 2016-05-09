@@ -191,6 +191,8 @@
     function clicked(e){
         if(!confirm('Are you sure?'))e.preventDefault();
     }
-    $('.select').select2();
+    $('.select').select2({
+        placeholder: 'Please Select'
+    });
 </script>
 @stop

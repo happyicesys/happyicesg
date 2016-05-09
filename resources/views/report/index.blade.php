@@ -650,7 +650,7 @@
                                                                                 'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
-                                                            {{-- <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span> --}}
+                                                            <span ng-if="transaction.status == 'Verified Paid' && transaction.pay_method">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
                                                         </td>
                                                         <td class="col-md-2 text-center">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [
@@ -660,7 +660,7 @@
                                                                             'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                             'style'=>'width:100px;'
                                                                             ]) !!}
-                                                            {{-- <span ng-if="transaction.status == 'Verified Paid'">@{{transaction.note}}</span> --}}
+                                                            <span ng-if="transaction.status == 'Verified Paid' && transaction.pay_method">@{{transaction.note}}</span>
                                                         </td>
                                                         @endcannot
                                                     </tr>

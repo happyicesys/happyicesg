@@ -147,7 +147,7 @@
                     <div class="col-md-4 form-group">
                         {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
                         {!! Form::select('pay_method',
-                            ['cash'=>'Cash', 'cheque'=>'Cheque/TT'],
+                            [''=>null, 'cash'=>'Cash', 'cheque'=>'Cheque/TT'],
                             null,
                             ['class'=>'select form-control'])
                         !!}

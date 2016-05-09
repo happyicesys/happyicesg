@@ -51,7 +51,11 @@
                 </li>
 {{--
                 <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
-                    <a href="/marketing"><i class="fa fa-fw fa-sitemap"></i> {{ $MARKETING_TITLE }}</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-arrows-h"></i> Door to Door <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/marketing"><i class="fa fa-fw fa-wpforms"></i> Open Invoice</a></li>
+                            <li><a href="/marketing"><i class="fa fa-fw fa-wpforms"></i> Open Invoice</a></li>
+                        </ul>
                 </li> --}}
             </ul>
         </div>
