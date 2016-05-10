@@ -14,6 +14,10 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+get('/market/deal', 'MarketController@indexInvoice');
+get('/market/customer', 'MarketController@indexCustomer');
+get('/market/member', 'MarketController@indexMember');
+get('/market/docs', 'MarketController@indexDocs');
 resource('market', 'MarketingController');
 
 resource('onlineprice', 'OnlinePriceController');

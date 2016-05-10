@@ -49,14 +49,28 @@
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>
-{{--
-                <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
+
+                {{-- @can('marketer_view') --}}
+{{--                 <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-arrows-h"></i> Door to Door <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-wpforms"></i> Open Invoice</a></li>
                             <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-users"></i> Customers</a></li>
                             <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-sitemap"></i> Members</a></li>
                         </ul>
+                </li> --}}
+                {{-- @endcan --}}
+{{--                 <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
+                    <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Invoice</a>
+                </li>
+                <li class="{{ strpos(Request::path(), 'customer') !== false ? 'active' : '' }}">
+                    <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
+                </li>
+                <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
+                    <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
+                </li>
+                <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
+                    <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>
                 </li> --}}
             </ul>
         </div>

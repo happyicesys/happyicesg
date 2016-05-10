@@ -14,9 +14,24 @@ class MarketingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexInvoice()
     {
-        return view('market.index');
+        return view('market.deal');
+    }
+
+    public function indexCustomer()
+    {
+        return view('market.customer');
+    }
+
+    public function indexMember()
+    {
+        return view('market.member');
+    }
+
+    public function indexDocs()
+    {
+        return view('market.docs');
     }
 
     /**

@@ -1,4 +1,5 @@
 @inject('people', 'App\Person')
+@inject('drivers', 'App\User')
 
     <div class="panel panel-primary">
         <div class="panel-body">
@@ -142,23 +143,40 @@
                 </div>
             </div>
 
-            @if($transaction->status === 'Verified Paid')
+
                 <div class="row">
+{{--                     @cannot('transaction_view')
+                    @cannot('supervisor_view')
                     <div class="col-md-4 form-group">
-                        {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
-                        {!! Form::select('pay_method',
-                            [''=>null, 'cash'=>'Cash', 'cheque'=>'Cheque/TT'],
+                        {!! Form::label('paid_by', 'Payment Received By :', ['class'=>'control-label']) !!}
+                        {!! Form::select('paid_by',
+                                [''=>null]+$drivers::whereHas('roles', function($q){
+                                    $q->whereName('driver');
+                                })->lists('name', 'name')->all(),
                             null,
                             ['class'=>'select form-control'])
                         !!}
                     </div>
+                    @endcannot
+                    @endcannot --}}
 
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('note', 'Note :', ['class'=>'control-label']) !!}
-                        {!! Form::text('note', null, ['class'=>'form-control']) !!}
-                    </div>
+                    @if($transaction->status === 'Verified Paid')
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
+                            {!! Form::select('pay_method',
+                                [''=>null, 'cash'=>'Cash', 'cheque'=>'Cheque/TT'],
+                                null,
+                                ['class'=>'select form-control'])
+                            !!}
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('note', 'Note :', ['class'=>'control-label']) !!}
+                            {!! Form::text('note', null, ['class'=>'form-control']) !!}
+                        </div>
+                    @endif
                 </div>
-            @endif
+
 
         </div>
     </div>
