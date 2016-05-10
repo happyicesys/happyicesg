@@ -168,7 +168,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         });
 
         $scope.onVerifiedPaid = function($event, transaction_id, payMethodModel, noteModel){
-
+            $event.preventDefault();
             $http({
                 url: '/transaction/rpt/' + transaction_id ,
                 method: "POST",
@@ -177,6 +177,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         note: noteModel,
                         },
                 }).success(function(response){
+
+                    $http.get('/transaction/status/'+ transaction_id).success(function(){
+                        location.reload();
+                    });
             });
         }
 

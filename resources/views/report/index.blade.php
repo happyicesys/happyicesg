@@ -641,10 +641,8 @@
                                                             {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a> --}}
                                                             {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                                             {{-- Payment Verification --}}
-                                                            @cannot('supervisor_view')
                                                             <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
                                                             <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, payMethodModel, noteModel)">Verify Paid</a>
-                                                            @endcannot
                                                         </td>
                                                         <td class="col-md-1 text-center">
                                                             {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
@@ -653,7 +651,7 @@
                                                                                 'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
-                                                            <span ng-if="transaction.status == 'Verified Paid' && transaction.pay_method">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
+                                                            <span ng-if="transaction.pay_method">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
                                                         </td>
                                                         <td class="col-md-2 text-center">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [
@@ -663,7 +661,7 @@
                                                                             'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                             'style'=>'width:100px;'
                                                                             ]) !!}
-                                                            <span ng-if="transaction.status == 'Verified Paid' && transaction.pay_method">@{{transaction.note}}</span>
+                                                            <span ng-if="transaction.pay_method">@{{transaction.note}}</span>
                                                         </td>
                                                         @endcannot
                                                     </tr>
