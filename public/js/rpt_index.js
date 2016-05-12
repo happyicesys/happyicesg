@@ -21,28 +21,26 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         angular.element(document).ready(function () {
 
+            $http.get('/user/data/' + $('#user_id').val()).success(function(person){
 
+                var driver = false;
 
-                $http.get('/user/data/' + $('#user_id').val()).success(function(person){
+                for(var i = 0; i < person.roles.length; i++){
 
-                    var driver = false;
+                    if(person.roles[i].name === 'driver'){
 
-                    for(var i = 0; i < person.roles.length; i++){
+                        driver = true;
 
-                        if(person.roles[i].name === 'driver'){
-
-                            driver = true;
-
-                            break;
-                        }
+                        break;
                     }
+                }
 
-                    $scope.getdriver = function(){
+                $scope.getdriver = function(){
 
-                        return driver;
+                    return driver;
 
-                    }
-                });
+                }
+            });
 
             // first init
             getIndex();

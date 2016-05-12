@@ -1,5 +1,5 @@
 @inject('people', 'App\Person')
-@inject('drivers', 'App\User')
+@inject('users', 'App\User')
 
     <div class="panel panel-primary">
         <div class="panel-body">
@@ -145,20 +145,27 @@
 
 
                 <div class="row">
-{{--                     @cannot('transaction_view')
-                    @cannot('supervisor_view')
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('paid_by', 'Payment Received By :', ['class'=>'control-label']) !!}
-                        {!! Form::select('paid_by',
-                                [''=>null]+$drivers::whereHas('roles', function($q){
-                                    $q->whereName('driver');
-                                })->lists('name', 'name')->all(),
-                            null,
-                            ['class'=>'select form-control'])
-                        !!}
-                    </div>
-                    @endcannot
-                    @endcannot --}}
+                    @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
+                        @cannot('transaction_view')
+                            <div class="col-md-4 form-group">
+                                {!! Form::label('driver', 'Delivered By :', ['class'=>'control-label']) !!}
+                                {!! Form::select('driver',
+                                        [''=>null]+$users::lists('name', 'name')->all(),
+                                        null,
+                                        ['class'=>'select form-control'])
+                                !!}
+                            </div>
+
+                            <div class="col-md-4 form-group">
+                                {!! Form::label('paid_by', 'Payment Received By :', ['class'=>'control-label']) !!}
+                                {!! Form::select('paid_by',
+                                        [''=>null]+$users::lists('name', 'name')->all(),
+                                        null,
+                                        ['class'=>'select form-control'])
+                                !!}
+                            </div>
+                        @endcannot
+                    @endif
 
                     @if($transaction->status === 'Verified Paid')
                         <div class="col-md-4 form-group">

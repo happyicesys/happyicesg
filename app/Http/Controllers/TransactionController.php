@@ -164,18 +164,23 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Paid'));
 
-            $request->merge(array('paid_by' => Auth::user()->name));
+            if(! $request->paid_by){
+
+                $request->merge(array('paid_by' => Auth::user()->name));
+            }
 
             $request->merge(array('paid_at' => Carbon::now()));
 
-            $request->merge(array('driver'=>Auth::user()->name));
+            if(! $request->driver){
+
+                $request->merge(array('driver'=>Auth::user()->name));
+            }
 
             if(count($deals) == 0){
 
                 Flash::error('Please entry the list');
 
                 return Redirect::action('TransactionController@edit', $transaction->id);
-
             }
 
         }elseif($request->input('del_owe')){
@@ -184,7 +189,12 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Owe'));
 
-            $request->merge(array('driver'=>Auth::user()->name));
+            if(! $request->driver){
+
+                $request->merge(array('driver'=>Auth::user()->name));
+            }
+
+            $request->merge(array('paid_by'=>null));
 
             if(count($deals) == 0){
 
@@ -198,7 +208,10 @@ class TransactionController extends Controller
 
             $request->merge(array('pay_status' => 'Paid'));
 
-            $request->merge(array('paid_by' => Auth::user()->name));
+            if(! $request->paid_by){
+
+                $request->merge(array('paid_by' => Auth::user()->name));
+            }
 
             $request->merge(array('paid_at' => Carbon::now()));
 
@@ -232,6 +245,20 @@ class TransactionController extends Controller
             $request->merge(array('paid_by' => null));
 
             $request->merge(array('paid_at' => null));
+
+        }elseif($request->input('update')){
+
+            if($transaction->status === 'Confirmed'){
+
+                $request->merge(array('driver' => null));
+
+                $request->merge(array('paid_by' => null));
+
+            }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
+
+                $request->merge(array('paid_by' => null));
+
+            }
         }
 
 

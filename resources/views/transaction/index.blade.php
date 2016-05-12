@@ -245,14 +245,14 @@
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
                                         {{-- button view shown when cancelled --}}
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-                                        {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
+
                                         {{-- Payment Verification --}}
-                                        @cannot('supervisor_view')
+{{--                                         @cannot('supervisor_view')
                                         @cannot('transaction_view')
                                         <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
                                         <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
                                         @endcannot
-                                        @endcannot
+                                        @endcannot --}}
                                     </td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
