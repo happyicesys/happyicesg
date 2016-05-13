@@ -33,10 +33,10 @@
                 <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
                     <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                 </li>
+                <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
+                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
+                </li>
                 @cannot('transaction_view')
-                    <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
-                        <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
-                    </li>
                 @cannot('accountant_view')
                     <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>

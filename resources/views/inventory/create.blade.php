@@ -53,7 +53,7 @@
 
                 <div class="form-group">
                     {!! Form::label('remark', 'Remark', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+                    {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'4']) !!}
                 </div>
 
                 <div class="table-responsive" style="padding-top: 30px;">

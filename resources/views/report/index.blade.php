@@ -17,18 +17,20 @@
             <div class="panel panel-warning" ng-app="app" ng-controller="rptController">
                 <div class="panel-heading">
                         <ul class="nav nav-pills nav-justified" role="tablist">
-                            <li class="active"><a href="#person" role="tab" data-toggle="tab">Customer</a></li>
+                            @cannot('transaction_view')
+                            <li><a href="#person" role="tab" data-toggle="tab">Customer</a></li>
                             <li><a href="#transaction" role="tab" data-toggle="tab">Transaction</a></li>
                             <li><a href="#byproduct" role="tab" data-toggle="tab">By Product</a></li>
                             <li><a href="#driver" role="tab" data-toggle="tab">Driver</a></li>
-                            <li><a href="#dailyrpt" role="tab" data-toggle="tab">Daily Report</a></li>
+                            @endcannot
+                            <li class="active"><a href="#dailyrpt" role="tab" data-toggle="tab">Daily Report</a></li>
                         </ul>
                 </div>
 
                 <div class="panel-body">
                     <div class="tab-content">
                         {{-- first content --}}
-                        <div class="tab-pane active" id="person">
+                        <div class="tab-pane" id="person">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                 </div>
@@ -214,7 +216,7 @@
                         {{-- end of fourth --}}
 
                         {{-- start of fifth --}}
-                        <div class="tab-pane" id="dailyrpt">
+                        <div class="tab-pane active" id="dailyrpt">
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -641,7 +643,7 @@
                                                             {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a> --}}
                                                             {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                                             {{-- Payment Verification --}}
-                                                            <a href="#" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
+                                                            <a href="/transaction/status/@{{transaction.id}}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
                                                             <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, payMethodModel, noteModel)">Verify Paid</a>
                                                         </td>
                                                         <td class="col-md-1 text-center">
