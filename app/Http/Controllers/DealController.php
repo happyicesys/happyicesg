@@ -51,7 +51,7 @@ class DealController extends Controller
     public function destroyAjax($id)
     {
         $deal = Deal::findOrFail($id);
-
+/*
         $item = Item::findOrFail($deal->item_id);
 
         // revert back the inventory once inv was added
@@ -68,7 +68,8 @@ class DealController extends Controller
 
         $item->qty_order = $this->syncDealOrder($item->id);
 
-        $item->save();
+        $item->save();*/
+        $this->dealDeleteSingle($deal);
 
         $transaction = Transaction::findOrFail($deal->transaction_id);
 
@@ -88,17 +89,33 @@ class DealController extends Controller
     }
 
 
-    private function syncDealOrder($item_id)
+    private function dealSyncOrder($item_id)
     {
         $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
 
-        return $deals->sum('qty');
+        $item = Item::findOrFail($item_id);
+
+        $item->qty_order = $deals->sum('qty');
+
+        $item->save();
+
     }
 
-    private function syncDealActual($item_id)
+    private function dealDeleteSingle($deal)
     {
-        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+        $item = Item::findOrFail($deal->item_id);
 
-        return $deals->sum('qty');
+        $deal->delete();
+
+        if($deal->qty_status == '1'){
+
+            $this->dealSyncOrder($item->id);
+
+        }else if($deal->qty_status == '2'){
+
+            $item->qty_now += $deal->qty;
+
+            $item->save();
+        }
     }
 }
