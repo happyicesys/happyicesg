@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Person;
+use Auth;
 
 class MarketingController extends Controller
 {
@@ -26,7 +28,23 @@ class MarketingController extends Controller
 
     public function indexMember()
     {
-        return view('market.member_index');
+        return view('market.member.index');
+    }
+
+    public function indexMemberApi()
+    {
+        $members = Person::where('user_id', Auth::user()->id)->first();
+
+        if($members){
+
+            return $members->getDescendantsAndSelf();
+
+        }else{
+
+            return '';
+        }
+
+
     }
 
     public function indexDocs()
@@ -39,7 +57,7 @@ class MarketingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createMember()
     {
         //
     }

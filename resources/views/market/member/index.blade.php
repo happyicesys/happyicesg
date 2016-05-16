@@ -5,11 +5,11 @@ Members
 @section('content')
 
     <div class="row">
-    <a class="title_hyper pull-left" href="/market/member"><h1>Members <i class="fa fa-sitemap"></i></h1></a>
+    <a class="title_hyper pull-left" href="/market/member/index"><h1>Members <i class="fa fa-sitemap"></i></h1></a>
     </div>
 
 
-<div class="panel panel-warning" ng-app="app" ng-controller="userController">
+<div class="panel panel-warning" ng-app="app" ng-controller="memberController">
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#member" role="tab" data-toggle="tab">Members</a></li>
@@ -67,10 +67,10 @@ Members
                                         #
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                                         ID
-                                        <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                                        <span ng-show="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
@@ -88,30 +88,34 @@ Members
                                     <th class="col-md-1 text-center">
                                         Active
                                     </th>
-                                     <th class="col-md-2">
+                                     <th class="col-md-2 text-center">
                                         Action
                                     </th>
                                 </tr>
 
                                 <tbody>
 
-                                    <tr dir-paginate="user in users | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="user" current-page="currentPage" ng-controller="repeatController">
+                                    <tr dir-paginate="member in members | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="member" current-page="currentPage" ng-controller="repeatController">
                                         <td class="col-md-1">@{{ number }} </td>
-                                        <td class="col-md-1">{{ $USER_PREFIX }}@{{ user.id }}</td>
-                                        <td class="col-md-2">@{{ user.name }}</td>
-                                        <td class="col-md-2">@{{ user.username }}</td>
-                                        <td class="col-md-2">@{{ user.contact }}</td>
-                                        <td class="col-md-2">@{{ user.email }}</td>
+                                        <td class="col-md-1">@{{ member.cust_id }}</td>
+                                        <td class="col-md-2">@{{ member.name }}</td>
+                                        <td class="col-md-2">
+                                            @{{ person.contact }}
+                                            <span ng-show="person.alt_contact.length > 0">
+                                            / @{{ person.alt_contact }}
+                                            </span>
+                                        </td>
+                                        <td class="col-md-2">@{{ member.active }}</td>
                                         <td class="col-md-2 text-center">
 
-                                            <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
 
                                             @can('delete_user')
-                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
+                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(member.id)">Delete</button>
                                             @endcan
                                         </td>
                                     </tr>
-                                    <tr ng-show="(users | filter:search).length == 0 || ! users.length">
+                                    <tr ng-show="(members | filter:search).length == 0 || ! members.length">
                                         <td colspan="7" class="text-center">No Records Found</td>
                                     </tr>
 
@@ -121,8 +125,8 @@ Members
                     </div>
 
                     <div class="panel-footer">
-                          <dir-pagination-controls pagination-id="user" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(users | filter:search).length}} of @{{users.length}} entries</label>
+                          <dir-pagination-controls pagination-id="member" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                          <label class="pull-right totalnum" ng-if="numbers" for="totalnum">Showing @{{(members | filter:search).length}} of @{{members.length}} entries</label>
                     </div>
                 </div>
             </div>
@@ -205,5 +209,5 @@ Members
     </div>
 </div>
 
-<script src="/js/user.js"></script>
+<script src="/js/member.js"></script>
 @stop

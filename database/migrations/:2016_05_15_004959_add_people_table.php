@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePeopleTable extends Migration {
+class AddPeopleTable extends Migration {
 
     /**
     * Run the migrations.
@@ -21,6 +21,7 @@ class CreatePeopleTable extends Migration {
             $table->integer('lft')->nullable()->index();
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
+            $table->integer('user_id')->nullable();
         });
     }
 
@@ -36,6 +37,7 @@ class CreatePeopleTable extends Migration {
             $table->dropColumn('lft');
             $table->dropColumn('rgt');
             $table->dropColumn('depth');
+            $table->dropColumn('user_id');
         });
     }
 

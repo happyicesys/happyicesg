@@ -500,6 +500,8 @@ class TransactionController extends Controller
 
             $transaction->status = 'Verified Paid';
 
+            $transaction->pay_method = 'cash';
+
             $transaction->updated_by = Auth::user()->name;
 
             $transaction->save();

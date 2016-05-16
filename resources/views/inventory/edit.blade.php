@@ -9,7 +9,7 @@
         <div class="panel-heading">
             <div class="panel-title">
                 <div class="display_panel_title">
-                    <h3 class="panel-title pull-left"><strong>Stock {{$inventory->type}}</strong></h3>
+                    <h3 class="panel-title pull-left"><strong>Stock {{$inventory->type}}: {{$inventory->id}}</strong></h3>
                     <div class="pull-right">
                         <span><strong>Created On: {{Carbon\Carbon::parse($inventory->created_at)->format('d-m-Y')}}</strong></span>
                         <span style="padding-left: 30px;"><strong>Created By: {{$inventory->created_by}}</strong></span>
@@ -96,11 +96,11 @@
                                     @{{item.qty_now}}
                                     </strong>
                                 </td>
-                                <td class="col-md-2 text-right">
+                                <td class="col-md-2">
                                     <strong>
                                         {!! Form::text('original[@{{item.id}}]', null, [
                                                         'class'=>'text-right form-control',
-                                                        'ng-init'=>'originalModel=getOriginalInit(item.id) == null ? 0: getOriginalInit(item.id)',
+                                                        'ng-init'=>'originalModel=getOriginalInit(item.id)',
                                                         'ng-model'=>'originalModel',
                                                         'readonly'=>'readonly'
                                                         ]) !!}

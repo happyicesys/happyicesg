@@ -16,7 +16,8 @@ Route::get('/admin', function () {
 
 get('/market/deal', 'MarketingController@indexInvoice');
 get('/market/customer', 'MarketingController@indexCustomer');
-get('/market/member', 'MarketingController@indexMember');
+get('/market/member/data', 'MarketingController@indexMemberApi');
+get('/market/member/index', 'MarketingController@indexMember');
 get('/market/docs', 'MarketingController@indexDocs');
 resource('market', 'MarketingController');
 
