@@ -16,7 +16,7 @@ function invController($scope, $http){
                 var inventory = $scope.inventories[i];
                 if(item_id == inventory.item.id){
                     num = inventory.qtyrec_current;
-                    return num ? num : 0;
+                    return num;
                 }
             }
         }

@@ -100,7 +100,7 @@
                                     <strong>
                                         {!! Form::text('original[@{{item.id}}]', null, [
                                                         'class'=>'text-right form-control',
-                                                        'ng-init'=>'originalModel=getOriginalInit(item.id)',
+                                                        'ng-init'=>'originalModel=getOriginalInit(item.id) == null ? 0: getOriginalInit(item.id)',
                                                         'ng-model'=>'originalModel',
                                                         'readonly'=>'readonly'
                                                         ]) !!}
