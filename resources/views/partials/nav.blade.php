@@ -67,7 +67,7 @@
                     <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
                 </li>
                 <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
-                    <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
+                    <a href="/market/profile_member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
                 </li>
                 <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
                     <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>

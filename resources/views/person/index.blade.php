@@ -16,10 +16,10 @@
                     <div class="pull-left display_panel_title">
                         <label for="display_num">Display</label>
                         <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
-                          <option ng-value="10">10</option>
-                          <option ng-value="30">30</option>
-                          <option ng-value="50">50</option>
-                          <option ng-value="All">All</option>
+                            <option ng-value="10">10</option>
+                            <option ng-value="30">30</option>
+                            <option ng-value="50">50</option>
+                            <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>

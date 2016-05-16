@@ -149,6 +149,7 @@ return [
         Illuminate\Html\HtmlServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
+        Baum\Providers\BaumServiceProvider::class,
 
     ],
 

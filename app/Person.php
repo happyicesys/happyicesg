@@ -5,8 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Baum;
 
-class Person extends Model
+class Person extends Baum\Node
 {
 
     use \Venturecraft\Revisionable\RevisionableTrait;

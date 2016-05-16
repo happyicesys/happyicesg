@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function getData()
     {
-        $user =  User::all();
+        $user =  User::whereIn('type', ['admin', 'staff'])->get();
 
         return $user;
     }
@@ -86,6 +86,8 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
 
+        $this->assignType($user);
+
         return redirect('user');
     }
 
@@ -139,6 +141,8 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
 
+        $this->assignType($user);
+
         return redirect('user');
     }
 
@@ -175,6 +179,20 @@ class UserController extends Controller
     private function syncRole(User $user, $selected_role)
     {
         $user->roles()->sync($selected_role);
+    }
+
+    private function assignType($user)
+    {
+        if($user->hasRole('admin')){
+
+            $user->type = 'admin';
+
+        }else{
+
+            $user->type = 'staff';
+        }
+
+        $user->save();
     }
 
 }

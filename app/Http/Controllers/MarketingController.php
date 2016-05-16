@@ -26,7 +26,7 @@ class MarketingController extends Controller
 
     public function indexMember()
     {
-        return view('market.member');
+        return view('market.member_index');
     }
 
     public function indexDocs()
