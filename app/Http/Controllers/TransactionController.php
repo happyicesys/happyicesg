@@ -697,12 +697,7 @@ class TransactionController extends Controller
             }
         }
 
-        // if other than confirmed activated convert qty order to qty actual deduction
-        if($status == 1){
-
-            $this->dealSyncOrder($item->id);
-
-        }else if($status == 2){
+        if($status == 2){
 
             $this->dealOrder2Actual($transaction->id);
         }

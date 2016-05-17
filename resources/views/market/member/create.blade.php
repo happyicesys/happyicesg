@@ -8,7 +8,7 @@ Members
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>New Member</strong></h3>
+        <h3 class="panel-title"><strong>New Member (D)</strong></h3>
     </div>
 
     <div class="panel-body">
