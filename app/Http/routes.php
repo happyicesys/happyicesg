@@ -14,6 +14,8 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+post('/market/member', 'MarketingController@storeMember');
+get('/market/member/create', 'MarketingController@createMember');
 get('/market/deal', 'MarketingController@indexInvoice');
 get('/market/customer', 'MarketingController@indexCustomer');
 get('/market/member/data', 'MarketingController@indexMemberApi');

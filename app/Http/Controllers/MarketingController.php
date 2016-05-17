@@ -43,7 +43,15 @@ class MarketingController extends Controller
 
             return '';
         }
+    }
 
+    public function createMember()
+    {
+        return view('market.member.create');
+    }
+
+    public function storeMember(Request $request)
+    {
 
     }
 
@@ -52,15 +60,6 @@ class MarketingController extends Controller
         return view('market.docs');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createMember()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.

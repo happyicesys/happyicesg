@@ -12,14 +12,14 @@ Members
     </div>
 
     <div class="panel-body">
-        {!! Form::model($member = new \App\Member, ['action'=>'MarketingController@createMember']) !!}
+        {!! Form::model($member = new \App\Person, ['action'=>'MarketingController@storeMember']) !!}
 
-            @include('person.form')
+            @include('market.member.form')
 
             <div class="col-md-12">
                 <div class="form-group pull-right">
                     {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                    <a href="/person" class="btn btn-default">Cancel</a>
+                    <a href="/market/member/index" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         {!! Form::close() !!}
