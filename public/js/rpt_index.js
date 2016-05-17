@@ -1,5 +1,4 @@
 // rpt_index.js
-
 var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
 
     function rptController($scope, $http){

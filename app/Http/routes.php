@@ -103,6 +103,7 @@ resource('user', 'UserController');
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');
 
+post('/report/dailyrpt/verify', 'RptController@getVerifyPaid');
 post('/report/dailypdf', 'RptController@getDailyPdf');
 post('/report/dailyrec', 'RptController@generateDailyRec');
 post('/report/dailyrpt', 'RptController@getDailyRptApi');

@@ -469,6 +469,11 @@ class RptController extends Controller
         return redirect('report');
     }
 
+    public function getVerifyPaid(Request $request)
+    {
+        dd($request->all());
+    }
+
     // calculating gst and non for delivered total
     private function calTransactionTotal($arr)
     {

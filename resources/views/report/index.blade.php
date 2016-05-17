@@ -404,12 +404,14 @@
                                                                                         fileName: 'DailyRpt'
                                                                                     });" >Export PDF</button> --}}
                                             {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
+                                            {{-- {!! Form::submit('Mass Verify Paid', ['name'=>'verify', 'class'=> 'btn btn-warning', 'form'=>'verify']) !!} --}}
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
+                                        {!! Form::open(['id'=>'verify', 'method'=>'POST','action'=>['RptController@getVerifyPaid']]) !!}
                                         <div class="table-responsive" id="exportable">
                                             <table class="table table-list-search table-hover table-bordered export-table" data-tableexport-display="always">
-                                                <tr class="hidden" data-tableexport-display="always">
+{{--                                                 <tr class="hidden" data-tableexport-display="always">
                                                     <th></th>
                                                     <td>Invoice:</td>
                                                     <td>@{{search.id}}</td>
@@ -487,7 +489,7 @@
                                                 </tr>
                                                 <tr class="hidden" data-tableexport-display="always">
                                                     <td></td>
-                                                </tr>
+                                                </tr> --}}
                                                 <tr style="background-color: #DDFDF8">
                                                     <th class="col-md-1 text-center">
                                                         #
@@ -571,7 +573,7 @@
                                                     @endcannot
                                                 </tr>
                                                 <tbody>
-                                                    <tr>
+{{--                                                     <tr>
                                                         <td class="hidden text-center" data-tableexport-display="always">#</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">Inv</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">ID</td>
@@ -584,7 +586,7 @@
                                                         <td class="hidden text-center" data-tableexport-display="always">Payment</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received By</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
@@ -673,6 +675,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            {!! Form::close() !!}
                                         </div>
                                 </div>
                                     <div class="panel-footer">

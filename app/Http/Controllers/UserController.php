@@ -27,7 +27,8 @@ class UserController extends Controller
 
     public function getData()
     {
-        $user =  User::whereIn('type', ['admin', 'staff'])->get();
+        // $user =  User::whereIn('type', ['admin', 'staff'])->get();
+        $user = User::all();
 
         return $user;
     }

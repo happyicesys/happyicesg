@@ -43,7 +43,11 @@ class PersonController extends Controller
 
     public function getData()
     {
-        $person =  Person::orderBy('cust_id')->get();
+        $person =  Person::where(function($query){
+
+            $query->where('cust_id', 'NOT LIKE', 'H%');
+
+        })->orderBy('cust_id')->get();
 
         return $person;
     }
