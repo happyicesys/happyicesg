@@ -50,7 +50,7 @@ class MarketingController extends Controller
 
         if($members){
 
-            return $members->getDescendantsAndSelf();
+            return $members->descendantsAndSelf()->reOrderBy('cust_type', 'desc')->get();
 
         }else{
 
@@ -60,23 +60,26 @@ class MarketingController extends Controller
 
     public function createMember($level)
     {
-        return view('market.member.create');
+        return view('market.member.create', compact('level'));
     }
 
     public function storeMember(MemberRequest $request)
     {
 
+        // dd($request->all());
         $user_id = $this->createUser($request);
 
         if(! $user_id){
 
-            return view('market.member.create');
+            return Redirect::action('MarketingController@createMember', $request->level);
 
         }
 
         $people = Person::where('cust_id', 'LIKE', 'D%');
 
-        if(count($people) > 0){
+        $first_person = Person::where('cust_id', 'D100001')->first();
+
+        if(count($people) > 0 and $first_person){
 
             $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
 
@@ -86,6 +89,8 @@ class MarketingController extends Controller
 
             $latest_cust = 'D100001';
         }
+
+        $request->merge(array('cust_type' => strtoupper($request->level)));
 
         $request->merge(array('user_id' => $user_id));
 
@@ -97,6 +102,20 @@ class MarketingController extends Controller
 
         $person = Person::create($input);
 
+        if($request->assign_parent){
+
+            $assign_to = Person::findOrFail($request->assign_parent);
+
+            $person->makeChildOf($assign_to);
+
+        }else{
+
+            $creator = Person::where('user_id', Auth::user()->id)->first();
+
+            $person->makeChildOf($creator);
+
+        }
+
         if($person){
 
             Flash::success('User Successfully Registered');
@@ -107,7 +126,7 @@ class MarketingController extends Controller
 
             Flash::error('Please Try Again');
 
-            return view('market.member.create');
+            return Redirect::action('MarketingController@createMember', $request->level);
         }
 /*
         }else{

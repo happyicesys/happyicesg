@@ -1,3 +1,5 @@
+@inject('person', 'App\Person')
+
 @extends('template')
 @section('title')
 Members
@@ -38,15 +40,22 @@ Members
                                 <label for="display_num" style="padding-right: 20px">per Page</label>
                             </div>
 
-                                {{-- <a href="/market/member/create" class="btn btn-success">+ New Member</a> --}}
-                                <div class="dropdown">
-                                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
-                                + New Member
-                                <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/market/member/create/am">Area Manager(AM)</a></li>
-                                    <li><a href="/market/member/create/ab">Ambassador(AB)</a></li>
-                                </ul>
+                                @unless(($person::where('user_id', Auth::user()->id)->first()) != null and $person::where('user_id', Auth::user()->id)->first()->cust_type == 'AB')
+                                    <div class="dropdown">
+                                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                                    + New Member
+                                    <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        @if(Auth::user()->hasRole('admin'))
+                                        <li><a href="/market/member/create/om">Operation Manager(OM)</a></li>
+                                        <li><a href="/market/member/create/oe">Operation Executive(OE)</a></li>
+                                        @endif
+                                        @if($person::where('user_id', Auth::user()->id)->first()->cust_type == 'OM' or $person::where('user_id', Auth::user()->id)->first()->cust_type == 'OE' or Auth::user()->hasRole('admin'))
+                                        <li><a href="/market/member/create/am">Area Manager(AM)</a></li>
+                                        @endif
+                                        <li><a href="/market/member/create/ab">Ambassador(AB)</a></li>
+                                    </ul>
+                                @endunless
                             </div>
                         </div>
                     </div>
@@ -81,6 +90,12 @@ Members
                                         <span ng-show="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'cust_type'; sortReverse = !sortReverse">
+                                        Level
+                                        <span ng-show="sortType == 'cust_type' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'cust_type' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
                                     <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
@@ -91,7 +106,7 @@ Members
                                     <th class="col-md-2 text-center">
                                         Contact
                                     </th>
-                                    <th class="col-md-3 text-center">
+                                    <th class="col-md-1 text-center">
                                         Delivery Add
                                     </th>
                                     <th class="col-md-1 text-center">
@@ -101,7 +116,7 @@ Members
                                         <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                     <th class="col-md-2 text-center">
+                                     <th class="col-md-1 text-center">
                                         Action
                                     </th>
                                 </tr>
@@ -111,6 +126,7 @@ Members
                                     <tr dir-paginate="member in members | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="member" current-page="currentPage" ng-controller="repeatController">
                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                         <td class="col-md-1 text-center">@{{ member.cust_id }}</td>
+                                        <td class="col-md-1 text-center">@{{ member.cust_type }}</td>
                                         <td class="col-md-2 text-center">@{{ member.name }}</td>
                                         <td class="col-md-2 text-center">
                                             @{{ member.contact }}
@@ -118,9 +134,9 @@ Members
                                             / @{{ member.alt_contact }}
                                             </span>
                                         </td>
-                                        <td class="col-md-3">@{{ member.del_address }}</td>
+                                        <td class="col-md-2">@{{ member.del_address }}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
-                                        <td class="col-md-2 text-center">
+                                        <td class="col-md-1 text-center">
 
                                             <a href="/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
 
@@ -130,7 +146,7 @@ Members
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
-                                        <td colspan="7" class="text-center">No Records Found</td>
+                                        <td colspan="8" class="text-center">No Records Found</td>
                                     </tr>
 
                                 </tbody>
@@ -152,7 +168,7 @@ Members
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="pull-right">
-                                {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'edit_profile']) !!}
+                                {!! Form::submit('Edit Profile', ['class'=> 'btn btn-success', 'form'=>'edit_profile']) !!}
                             </div>
                         </div>
                     </div>

@@ -14,6 +14,8 @@ Members
     <div class="panel-body">
         {!! Form::model($member = new \App\Person, ['action'=>'MarketingController@storeMember']) !!}
 
+            {!! Form::hidden('level', $level, ['class'=>'form-control']) !!}
+
             @include('market.member.form')
 
             <div class="col-md-12">

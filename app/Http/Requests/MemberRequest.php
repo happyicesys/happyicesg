@@ -34,4 +34,12 @@ class MemberRequest extends Request
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'company.required' => 'Username field is required',
+            'company.unique' => 'Username already been taken',
+        ];
+    }
 }

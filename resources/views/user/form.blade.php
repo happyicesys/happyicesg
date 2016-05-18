@@ -40,7 +40,8 @@
 @section('footer')
 <script>
     $('#role').select2({
-        tags:false
+        tags:false,
+        placeholder: 'Select...'
     });
 </script>
 @stop

@@ -299,7 +299,7 @@
                             </div>
 
                             <div class="pull-right">
-                                <a href="4/create" class="btn btn-success">+ New PayTerm</a>
+                                <a href="payterm/create" class="btn btn-success">+ New PayTerm</a>
                             </div>
                         </div>
                     </div>
