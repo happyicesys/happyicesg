@@ -52,6 +52,13 @@ class PersonController extends Controller
         return $person;
     }
 
+    public function getPersonUserId($user_id)
+    {
+        $person = Person::where('user_id', $user_id)->first();
+
+        return $person;
+    }
+
     /**
      * Return viewing page.
      *

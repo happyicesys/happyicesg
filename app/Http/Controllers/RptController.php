@@ -483,14 +483,7 @@ class RptController extends Controller
 
             $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
 
-            if($person_gst){
-
-                $total_amount += number_format(($transaction->total * 107/100), 2, '.', ',');
-
-            }else{
-
-                $total_amount += $transaction->total;
-            }
+            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
         }
 
         return $total_amount;
@@ -660,11 +653,11 @@ class RptController extends Controller
         // check whether delivery_date presence
         if($delivery_date){
 
-            $query1 = $query1->whereDate('delivery_date', '=', $delivery_date);
+            $query1 = $query1->where('delivery_date', '=', $delivery_date);
 
         }else{
 
-            $query1 = $query1->whereDate('delivery_date', '=', Carbon::today()->toDateString());
+            $query1 = $query1->where('delivery_date', '=', Carbon::today()->toDateString());
         }
 
         // if user is driver

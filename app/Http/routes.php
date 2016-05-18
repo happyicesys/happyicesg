@@ -14,13 +14,20 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+post('/market/customer/{customer_id}', 'MarketingController@updateCustomer');
+get('/market/customer/{customer_id}/edit', 'MarketingController@editCustomer');
+post('/market/customer', 'MarketingController@storeCustomer');
+get('/market/customer/create', 'MarketingController@createCustomer');
+get('/market/customer/data', 'MarketingController@indexCustomerApi');
+get('/market/customer', 'MarketingController@indexCustomer');
+get('/market/member/{member_id}/edit', 'MarketingController@editMember');
+post('/market/member/{member_id}', 'MarketingController@updateMember');
 post('/market/member', 'MarketingController@storeMember');
 post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 get('/market/member/create/{level}', 'MarketingController@createMember');
 get('/market/deal', 'MarketingController@indexInvoice');
-get('/market/customer', 'MarketingController@indexCustomer');
 get('/market/member/data', 'MarketingController@indexMemberApi');
-get('/market/member/index', 'MarketingController@indexMember');
+get('/market/member', 'MarketingController@indexMember');
 get('/market/docs', 'MarketingController@indexDocs');
 resource('market', 'MarketingController');
 
@@ -47,6 +54,7 @@ get('/position/data', 'PositionController@getData');
 delete('/position/data/{id}', 'PositionController@destroyAjax');
 resource('position', 'PositionController');
 
+get('/person/user/{user_id}', 'PersonController@getPersonUserId');
 post('/person/{person_id}/note', 'PersonController@storeNote');
 get('/person/specific/data/{person_id}', 'PersonController@getPersonData');
 get('/person/price/{person_id}', 'PersonController@personPrice');

@@ -1,6 +1,6 @@
 @extends('template')
 @section('title')
-Members
+Customers
 @stop
 @section('content')
 
@@ -8,20 +8,18 @@ Members
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>New Member (D)</strong></h3>
+        <h3 class="panel-title"><strong>New Customer (H)</strong></h3>
     </div>
 
     <div class="panel-body">
-        {!! Form::model($member = new \App\Person, ['action'=>'MarketingController@storeMember']) !!}
+        {!! Form::model($customer = new \App\Person, ['action'=>'MarketingController@storeCustomer']) !!}
 
-            {!! Form::hidden('level', $level, ['class'=>'form-control']) !!}
-
-            @include('market.member.form')
+            @include('market.customer.form')
 
             <div class="col-md-12">
                 <div class="form-group pull-right">
                     {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                    <a href="/market/member" class="btn btn-default">Cancel</a>
+                    <a href="/market/customer" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         {!! Form::close() !!}

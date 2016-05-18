@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests;
 use App\Http\Requests\MemberRequest;
+use App\Http\Requests\CustomerRequest;
 use App\Http\Controllers\Controller;
 use App\Person;
 use Auth;
@@ -27,11 +28,114 @@ class MarketingController extends Controller
         return view('market.deal');
     }
 
+    // DTD Customers (H)
     public function indexCustomer()
     {
-        return view('market.customer');
+        return view('market.customer.index');
     }
 
+    public function indexCustomerApi()
+    {
+        $person = Person::where('user_id', Auth::user()->id)->first();
+
+        if($person){
+
+            return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+
+        }else{
+
+            return '';
+        }
+    }
+
+    public function createCustomer()
+    {
+        return view('market.customer.create');
+    }
+
+    public function storeCustomer(CustomerRequest $request)
+    {
+        $people = Person::where('cust_id', 'LIKE', 'H%');
+
+        $first_person = Person::where('cust_id', 'H100001')->first();
+
+        if(count($people) > 0 and $first_person){
+
+            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+            $latest_cust = 'H'.$latest_cust;
+
+        }else{
+
+            $latest_cust = 'H100001';
+        }
+
+        $request->merge(array('cust_id' => $latest_cust));
+
+        $request->merge(array('profile_id' => 1));
+
+        $input = $request->all();
+
+        $person = Person::create($input);
+
+        if($request->assign_parent){
+
+            $assign_to = Person::findOrFail($request->assign_parent);
+
+            $person->makeChildOf($assign_to);
+
+        }else{
+
+            $creator = Person::where('user_id', Auth::user()->id)->first();
+
+            $person->makeChildOf($creator);
+
+        }
+
+        if($person){
+
+            Flash::success('Customer Successfully Created');
+
+            return view('market.customer.index');
+
+        }else{
+
+            Flash::error('Please Try Again');
+
+            return view('market.customer.create');
+        }
+    }
+
+    public function editCustomer($id)
+    {
+        $person = Person::findOrFail($id);
+
+        return view('market.customer.edit', compact('person'));
+    }
+
+    public function updateCustomer(Request $request, $id)
+    {
+        $input = $request->all();
+
+        $person = Person::findOrFail($id);
+
+        $person->update($input);
+
+        if($request->input('active')){
+
+            $person->active = 'Yes';
+
+        }else if($request->input('deactive')){
+
+            $person->active = 'No';
+        }
+
+        $person->save();
+
+        return view('market.customer.index');
+    }
+
+    // DTD Member (D)
     public function indexMember()
     {
         $self = Person::where('user_id', Auth::user()->id)->first();
@@ -50,7 +154,7 @@ class MarketingController extends Controller
 
         if($members){
 
-            return $members->descendantsAndSelf()->reOrderBy('cust_type', 'desc')->get();
+            return $members->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
 
         }else{
 
@@ -66,7 +170,6 @@ class MarketingController extends Controller
     public function storeMember(MemberRequest $request)
     {
 
-        // dd($request->all());
         $user_id = $this->createUser($request);
 
         if(! $user_id){
@@ -110,10 +213,17 @@ class MarketingController extends Controller
 
         }else{
 
-            $creator = Person::where('user_id', Auth::user()->id)->first();
+            if($latest_cust == 'D100001'){
 
-            $person->makeChildOf($creator);
+                $person->makeRoot();
 
+            }else{
+
+                $creator = Person::where('user_id', Auth::user()->id)->first();
+
+                $person->makeChildOf($creator);
+
+            }
         }
 
         if($person){
@@ -128,11 +238,6 @@ class MarketingController extends Controller
 
             return Redirect::action('MarketingController@createMember', $request->level);
         }
-/*
-        }else{
-
-            return view('market.member.create');
-        }*/
     }
 
     public function updateSelf(Request $request, $self_id)
@@ -176,38 +281,17 @@ class MarketingController extends Controller
         return view('market.docs');
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editMember($id)
     {
-        //
+        $person = Person::findOrFail($id);
+
+        return view('market.member.edit', compact('person'));
     }
 
     /**
@@ -217,9 +301,53 @@ class MarketingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateMember(Request $request, $id)
     {
-        //
+        $input = $request->all();
+
+        $person = Person::findOrFail($id);
+
+        $user = User::findOrFail($person->user_id);
+
+        $person->update($input);
+
+        if($request->input('active')){
+
+            $person->active = 'Yes';
+
+        }else if($request->input('deactive')){
+
+            $person->active = 'No';
+        }
+
+        if($request->input('reset')){
+
+            $reset_pass = str_random(6);
+
+            $user->password = $reset_pass;
+
+            if($this->sendEmailReset($request, $reset_pass)){
+
+                Flash::success('The Password has been Reset');
+
+            }else{
+
+                return Redirect::action('MarketingController@editMember', $id);
+            }
+        }
+
+        $user->username = $request->company;
+
+        $user->contact = $request->contact;
+
+        $user->email = $request->email;
+
+        $user->save();
+
+        $person->save();
+
+        return Redirect::action('MarketingController@indexMember');
+
     }
 
     /**
@@ -283,5 +411,41 @@ class MarketingController extends Controller
             $message->subject('Thanks for Your Registration (Door To Door Project)');
             $message->setTo($email);
         });
+    }
+
+    // user get the credentials via email
+    private function sendEmailReset($request, $password)
+    {
+
+        $email = $request->email;
+
+        if(! $email){
+
+            Flash::error('Please fill up the email');
+
+            return false;
+
+        }else{
+
+            // $sender = 'daniel.ma@happyice.com.sg';
+            $sender = 'system@happyice.com.sg';
+
+            $data = [
+
+                'username' => $request->company,
+                'password' => $password,
+                'url' => 'http://www.happyice.com.sg/admin',
+
+            ];
+
+            Mail::send('email.marketing_registration', $data, function ($message) use ($email, $sender)
+            {
+                $message->from($sender);
+                $message->subject('Email Reset (Door To Door Project)');
+                $message->setTo($email);
+            });
+
+            return true;
+        }
     }
 }

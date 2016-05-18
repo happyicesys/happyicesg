@@ -7,7 +7,7 @@ Members
 @section('content')
 
     <div class="row">
-    <a class="title_hyper pull-left" href="/market/member/index"><h1>Members <i class="fa fa-sitemap"></i></h1></a>
+    <a class="title_hyper pull-left" href="/market/member"><h1>Members <i class="fa fa-sitemap"></i></h1></a>
     </div>
 
 
@@ -29,7 +29,7 @@ Members
                     <div class="panel-heading">
                         <div class="panel-title">
 
-                            <div class="pull-right display_num">
+                            <div class="pull-right">
                                 <label for="display_num">Display</label>
                                 <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
                                     <option ng-value="10">10</option>
@@ -40,22 +40,19 @@ Members
                                 <label for="display_num" style="padding-right: 20px">per Page</label>
                             </div>
 
-                                @unless(($person::where('user_id', Auth::user()->id)->first()) != null and $person::where('user_id', Auth::user()->id)->first()->cust_type == 'AB')
-                                    <div class="dropdown">
-                                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
-                                    + New Member
-                                    <span class="caret"></span></button>
-                                    <ul class="dropdown-menu">
-                                        @if(Auth::user()->hasRole('admin'))
-                                        <li><a href="/market/member/create/om">Operation Manager(OM)</a></li>
-                                        <li><a href="/market/member/create/oe">Operation Executive(OE)</a></li>
-                                        @endif
-                                        @if($person::where('user_id', Auth::user()->id)->first()->cust_type == 'OM' or $person::where('user_id', Auth::user()->id)->first()->cust_type == 'OE' or Auth::user()->hasRole('admin'))
-                                        <li><a href="/market/member/create/am">Area Manager(AM)</a></li>
-                                        @endif
-                                        <li><a href="/market/member/create/ab">Ambassador(AB)</a></li>
-                                    </ul>
-                                @endunless
+                            {!! Form::hidden('user_id', Auth::user()->id, ['class'=>'form-control', 'id'=>'user_id']) !!}
+                                <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                                + New Member
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="/market/member/create/om">Operation Manager (OM)</a></li>
+                                    <li><a href="/market/member/create/oe">Operation Executive (OE)</a></li>
+                                    @endif
+                                    <li ng-if="person.cust_type != 'AM' && person.cust_type != 'AB'"><a href="/market/member/create/am">Area Manager (AM)</a></li>
+                                    <li><a ng-if="person.cust_type != 'AB'" href="/market/member/create/ab">Ambassador (AB)</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -137,12 +134,7 @@ Members
                                         <td class="col-md-2">@{{ member.del_address }}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
                                         <td class="col-md-1 text-center">
-
-                                            <a href="/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-
-                                            @can('delete_user')
-                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(member.id)">Delete</button>
-                                            @endcan
+                                            <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
@@ -155,8 +147,8 @@ Members
                     </div>
 
                     <div class="panel-footer">
-                          <dir-pagination-controls pagination-id="member" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" ng-if="members" for="totalnum">Showing @{{(members | filter:search).length}} of @{{members.length}} entries</label>
+                        <dir-pagination-controls pagination-id="member" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                        <label class="pull-right totalnum" ng-if="members" for="totalnum">Showing @{{(members | filter:search).length}} of @{{members.length}} entries</label>
                     </div>
                 </div>
             </div>
@@ -174,7 +166,6 @@ Members
                     </div>
 
                     <div class="panel-body">
-
                         <div class="col-md-10 col-md-offset-1 col-xs-12">
 
                             {!! Form::model($self, ['id'=>'edit_profile','action'=>['MarketingController@updateSelf', $self->id]]) !!}
@@ -207,5 +198,13 @@ Members
     </div>
 </div>
 
+<style>
+
+.dropdown{
+    position: absolute;
+    z-index : 999;
+}
+
+</style>
 <script src="/js/member.js"></script>
 @stop

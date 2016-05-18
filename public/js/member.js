@@ -4,33 +4,20 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.currentPage = 1;
         $scope.itemsPerPage = 50;
-
+        var user_id = $('#user_id').val();
 
         angular.element(document).ready(function () {
+
+            $http.get('/person/user/' + user_id). success(function(person){
+
+                $scope.person = person;
+
+            });
 
             $http.get('/market/member/data').success(function(members){
                 $scope.members = members;
                 $scope.All = members.length;
             });
-
-            //delete record
-            $scope.confirmDelete = function(id){
-                var isConfirmDelete = confirm('Are you sure you want to delete the entry');
-                if(isConfirmDelete){
-                    $http({
-                        method: 'DELETE',
-                        url: '/member/data/' + id
-                    })
-                    .success(function(data){
-                        location.reload();
-                    })
-                    .error(function(data){
-                        alert('Unable to delete');
-                    })
-                }else{
-                    return false;
-                }
-            }
 
             $scope.exportData = function () {
                 var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
