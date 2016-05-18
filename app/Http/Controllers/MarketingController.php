@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests;
+use App\Http\Requests\MemberRequest;
 use App\Http\Controllers\Controller;
 use App\Person;
 use Auth;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
+use App\User;
 
 class MarketingController extends Controller
 {
@@ -32,7 +34,14 @@ class MarketingController extends Controller
 
     public function indexMember()
     {
-        return view('market.member.index');
+        $self = Person::where('user_id', Auth::user()->id)->first();
+
+        if(! $self){
+
+            $self = null;
+        }
+
+        return view('market.member.index', compact('self'));
     }
 
     public function indexMemberApi()
@@ -49,52 +58,98 @@ class MarketingController extends Controller
         }
     }
 
-    public function createMember()
+    public function createMember($level)
     {
         return view('market.member.create');
     }
 
-    public function storeMember(Request $request)
+    public function storeMember(MemberRequest $request)
     {
-        if($this->createUser($request)){
 
-            $people = Person::where('cust_id', 'LIKE', 'D%')->get();
+        $user_id = $this->createUser($request);
 
-            if(count($people) > 0){
+        if(! $user_id){
 
-                $latest_cust = $people->max('cust_id') + 1;
+            return view('market.member.create');
 
-            }else{
+        }
 
-                $latest_cust = 'D100001';
-            }
+        $people = Person::where('cust_id', 'LIKE', 'D%');
 
+        if(count($people) > 0){
 
-            $request->merge(array('cust_id' => $latest_cust));
+            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
 
-            $request->merge(array('profile_id' => 1));
-
-            $input = $request->all();
-
-            $person = Person::create($input);
-
-            if($person){
-
-                Flash::success('User Successfully Registered');
-
-                return view('market.member.index');
-
-            }else{
-
-                Flash::error('Please Try Again');
-
-                return view('market.member.create');
-            }
+            $latest_cust = 'D'.$latest_cust;
 
         }else{
 
+            $latest_cust = 'D100001';
+        }
+
+        $request->merge(array('user_id' => $user_id));
+
+        $request->merge(array('cust_id' => $latest_cust));
+
+        $request->merge(array('profile_id' => 1));
+
+        $input = $request->all();
+
+        $person = Person::create($input);
+
+        if($person){
+
+            Flash::success('User Successfully Registered');
+
+            return Redirect::action('MarketingController@indexMember');
+
+        }else{
+
+            Flash::error('Please Try Again');
+
             return view('market.member.create');
         }
+/*
+        }else{
+
+            return view('market.member.create');
+        }*/
+    }
+
+    public function updateSelf(Request $request, $self_id)
+    {
+        $input = $request->all();
+
+        $person = Person::findOrFail($self_id);
+
+        $user = User::findOrFail($person->user_id);
+
+        if($request->password){
+
+            if($request->password === $request->password_confirmation){
+
+                $user->password = $request->password;
+
+                Flash::success('The Password has Changed');
+
+            }else{
+
+                Flash::error('The Password Confirmation is Invalid');
+
+                return Redirect::action('MarketingController@indexMember');
+            }
+        }
+
+        $person->update($input);
+
+        $user->email = $request->email;
+
+        $user->contact = $request->contact;
+
+        $user->save();
+
+        return Redirect::action('MarketingController@indexMember');
+
     }
 
     public function indexDocs()
@@ -172,21 +227,23 @@ class MarketingController extends Controller
 
             $this->sendEmailUponRegistration($request, $ran_password);
 
-            return true;
+            $user = User::create($request->all());
+
+            // $user->assignRole('marketer');
+
+            return $user->id;
 
         }else{
 
             Flash::error('Please fill up the email');
 
-            return false;
+            return null;
         }
     }
 
     // user get the credentials via email
     private function sendEmailUponRegistration($request, $password)
     {
-
-        $today = Carbon::now()->format('d-m-Y H:i');
 
         $email = $request->email;
 
@@ -201,10 +258,10 @@ class MarketingController extends Controller
 
         ];
 
-        Mail::send('email.marketing_registration', $data, function ($message) use ($email, $today, $sender)
+        Mail::send('email.marketing_registration', $data, function ($message) use ($email, $sender)
         {
             $message->from($sender);
-            $message->subject('Thanks for Your Registration (Door To Door Project) - '.$today);
+            $message->subject('Thanks for Your Registration (Door To Door Project)');
             $message->setTo($email);
         });
     }

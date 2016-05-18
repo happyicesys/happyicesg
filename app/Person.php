@@ -24,7 +24,7 @@ class Person extends Baum\Node
     }
 
     protected $dontKeepRevisionOf = array(
-        'cust_id', 'profile_id', 'salutation'
+        'cust_id', 'profile_id', 'salutation', 'user_id'
     );
 
     protected $revisionEnabled = true;
@@ -54,6 +54,7 @@ class Person extends Baum\Node
         'active' => 'Active',
         'site_name' => 'Site Name',
         'com_remark' => 'Company',
+        'cust_type' => 'Role Level'
     );
 
 
@@ -65,7 +66,7 @@ class Person extends Baum\Node
     'payterm', 'cost_rate',
     'active', 'site_name', 'profile_id',
     'note', 'salutation', 'dob',
-    'cust_type'
+    'cust_type', 'user_id'
     ];
 
     /**

@@ -24,7 +24,7 @@
     <div class="form-group">
         {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
         {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
-    </div>                                                    
+    </div>
 
     <div class="form-group">
         {!! Form::label('contact', 'Phone', ['class'=>'control-label']) !!}
@@ -32,15 +32,15 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('role', 'Position', ['class'=>'control-label']) !!}    
+        {!! Form::label('role', 'Position', ['class'=>'control-label']) !!}
         {!! Form::select('role_list[]', $roles::lists('label', 'id'), null, ['id'=>'role', 'class'=>'select form-control']) !!}
-    </div>     
+    </div>
 </div>
 
 @section('footer')
 <script>
     $('#role').select2({
         tags:false
-    });    
+    });
 </script>
 @stop

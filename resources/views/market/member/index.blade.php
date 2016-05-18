@@ -13,7 +13,9 @@ Members
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#member" role="tab" data-toggle="tab">Members</a></li>
+            @if(isset($self))
             <li><a href="#profile" role="tab" data-toggle="tab">Profile</a></li>
+            @endif
         </ul>
     </div>
 
@@ -25,7 +27,7 @@ Members
                     <div class="panel-heading">
                         <div class="panel-title">
 
-                            <div class="pull-left display_num">
+                            <div class="pull-right display_num">
                                 <label for="display_num">Display</label>
                                 <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
                                     <option ng-value="10">10</option>
@@ -36,8 +38,15 @@ Members
                                 <label for="display_num" style="padding-right: 20px">per Page</label>
                             </div>
 
-                            <div class="pull-right">
-                                <a href="/market/member/create" class="btn btn-success">+ New Member</a>
+                                {{-- <a href="/market/member/create" class="btn btn-success">+ New Member</a> --}}
+                                <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                                + New Member
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/market/member/create/am">Area Manager(AM)</a></li>
+                                    <li><a href="/market/member/create/ab">Ambassador(AB)</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -46,7 +55,7 @@ Members
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'ID']) !!}
+                                {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'ID']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
@@ -74,7 +83,7 @@ Members
                                     </th>
                                     <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                        Att To
+                                        Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
@@ -86,7 +95,11 @@ Members
                                         Delivery Add
                                     </th>
                                     <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'active'; sortReverse = !sortReverse">
                                         Active
+                                        <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
                                     </th>
                                      <th class="col-md-2 text-center">
                                         Action
@@ -96,16 +109,17 @@ Members
                                 <tbody>
 
                                     <tr dir-paginate="member in members | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="member" current-page="currentPage" ng-controller="repeatController">
-                                        <td class="col-md-1">@{{ number }} </td>
-                                        <td class="col-md-1">@{{ member.cust_id }}</td>
-                                        <td class="col-md-2">@{{ member.name }}</td>
-                                        <td class="col-md-2">
-                                            @{{ person.contact }}
-                                            <span ng-show="person.alt_contact.length > 0">
-                                            / @{{ person.alt_contact }}
+                                        <td class="col-md-1 text-center">@{{ number }} </td>
+                                        <td class="col-md-1 text-center">@{{ member.cust_id }}</td>
+                                        <td class="col-md-2 text-center">@{{ member.name }}</td>
+                                        <td class="col-md-2 text-center">
+                                            @{{ member.contact }}
+                                            <span ng-show="member.alt_contact.length > 0">
+                                            / @{{ member.alt_contact }}
                                             </span>
                                         </td>
-                                        <td class="col-md-2">@{{ member.active }}</td>
+                                        <td class="col-md-3">@{{ member.del_address }}</td>
+                                        <td class="col-md-1 text-center">@{{ member.active }}</td>
                                         <td class="col-md-2 text-center">
 
                                             <a href="/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
@@ -126,84 +140,52 @@ Members
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="member" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" ng-if="numbers" for="totalnum">Showing @{{(members | filter:search).length}} of @{{members.length}} entries</label>
+                          <label class="pull-right totalnum" ng-if="members" for="totalnum">Showing @{{(members | filter:search).length}} of @{{members.length}} entries</label>
                     </div>
                 </div>
             </div>
             {{-- end of first element--}}
             {{-- second element --}}
-            <div class="tab-pane" id="freezer">
+            @if(isset($self))
+            <div class="tab-pane" id="profile">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
-
-                            <div class="pull-left display_num">
-                                <label for="display_num">Display</label>
-                                <select ng-model="itemsPerPage2" ng-init="itemsPerPage2='10'">
-                                  <option>10</option>
-                                  <option>20</option>
-                                  <option>30</option>
-                                </select>
-                                <label for="display_num2" style="padding-right: 20px">per Page</label>
-                            </div>
-
                             <div class="pull-right">
-                                <a href="/freezer/create" class="btn btn-success">+ New Freezer</a>
+                                {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'edit_profile']) !!}
                             </div>
                         </div>
                     </div>
 
                     <div class="panel-body">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
-                            </div>
+
+                        <div class="col-md-10 col-md-offset-1 col-xs-12">
+
+                            {!! Form::model($self, ['id'=>'edit_profile','action'=>['MarketingController@updateSelf', $self->id]]) !!}
+
+                                <div class="row">
+                                    @include('market.member.form')
+                                </div>
+
+                                <hr size='2'>
+
+                                <div class="form-group">
+                                    {!! Form::label('password', 'Password', ['class'=>'control-label']) !!}
+                                    {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>'Leave Blank to Use the Same Password']) !!}
+                                </div>
+
+                                <div class="form-group">
+                                    {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
+                                    {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>'Leave Blank to Use the Same Password']) !!}
+                                </div>
+
+                            {!! Form::close() !!}
+
                         </div>
-
-                        <div class="row"></div>
-
-                        <div class="table-responsive">
-                            <table class="table table-list-search table-hover table-bordered">
-                                <tr style="background-color: #DDFDF8">
-                                    <th class="col-md-1 text-center">
-                                        #
-                                    </th>
-                                    <th class="col-md-9">
-                                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                        Name
-                                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-2 text-center">
-                                        Action
-                                    </th>
-                                </tr>
-
-                                <tbody>
-                                     <tr dir-paginate="freezer in freezers | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage2" pagination-id="freezer" current-page="currentPage2" ng-controller="repeatController2">
-                                        <td class="col-md-1 text-center">@{{ number }} </td>
-                                        <td class="col-md-9">@{{ freezer.name }}</td>
-                                        <td class="col-md-2 text-center">
-                                            <a href="/freezer/@{{ freezer.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete2(freezer.id)">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="(freezers | filter:search).length == 0 || ! freezers.length">
-                                        <td colspan="6" class="text-center">No Records Found</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="panel-footer">
-                          <dir-pagination-controls pagination-id="freezer" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(freezers | filter:search).length}} of @{{freezers.length}} entries</label>
                     </div>
                 </div>
             </div>
+            @endif
             {{-- end of second element --}}
         </div>
     </div>

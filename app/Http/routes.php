@@ -15,7 +15,8 @@ Route::get('/admin', function () {
 });
 
 post('/market/member', 'MarketingController@storeMember');
-get('/market/member/create', 'MarketingController@createMember');
+post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
+get('/market/member/create/{level}', 'MarketingController@createMember');
 get('/market/deal', 'MarketingController@indexInvoice');
 get('/market/customer', 'MarketingController@indexCustomer');
 get('/market/member/data', 'MarketingController@indexMemberApi');

@@ -60,7 +60,7 @@
                         </ul>
                 </li> --}}
                 {{-- @endcan --}}
-                <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
+{{--                 <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
                     <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Invoice</a>
                 </li>
                 <li class="{{ strpos(Request::path(), 'customer') !== false ? 'active' : '' }}">
@@ -71,7 +71,7 @@
                 </li>
                 <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
                     <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>
-                </li>
+                </li> --}}
             </ul>
         </div>
         @endunless

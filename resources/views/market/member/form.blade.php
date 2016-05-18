@@ -6,6 +6,17 @@
         {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
         {!! Form::text('cust_id', null, ['class'=>'form-control']) !!}
     </div> --}}
+    @if(isset($self))
+    <div class="form-group">
+        {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+        {!! Form::text('name', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
+        {!! Form::text('company', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+    </div>
+    @else
     <div class="form-group">
         {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
         {!! Form::text('name', null, ['class'=>'form-control']) !!}
@@ -15,6 +26,7 @@
         {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
         {!! Form::text('company', null, ['class'=>'form-control']) !!}
     </div>
+    @endif
 
     <div class="form-group">
         {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
