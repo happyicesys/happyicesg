@@ -48,6 +48,13 @@
         {!! Form::email('email', null, ['class'=>'form-control']) !!}
     </div>
 
+    @if(Auth::user()->hasRole('admin'))
+    <div class="form-group">
+        {!! Form::label('cost_rate', 'Cost Rate (%)', ['class'=>'control-label']) !!}
+        {!! Form::text('cost_rate', null, ['class'=>'form-control', 'placeholder'=>'Leave Blank for 100% as Default']) !!}
+    </div>
+    @endif
+
 </div>
 
 <div class="col-md-6">

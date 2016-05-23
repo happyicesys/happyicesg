@@ -29,7 +29,6 @@ post('/market/member', 'MarketingController@storeMember');
 post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 get('/market/member/create/{level}', 'MarketingController@createMember');
 
-
 post('/market/deal/index', 'MarketingController@indexDealApi');
 post('/market/deal/{dtdtransaction_id}', 'MarketingController@update');
 get('/market/dealData/{dtdtransaction_id}', 'MarketingController@getDealData');
@@ -40,6 +39,7 @@ get('/market/deal/create', 'MarketingController@createDeal');
 get('/market/deal/{dtdtransaction_id}', 'MarketingController@showDeal');
 get('/market/deal', 'MarketingController@indexDeal');
 get('/market/deal/download/{trans_id}', 'MarketingController@generateInvoice');
+delete('/market/deal/data/{id}', 'MarketingController@destroyAjax');
 // resource('/market/deal', 'MarketingController');
 
 

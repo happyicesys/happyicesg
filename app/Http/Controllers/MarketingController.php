@@ -164,6 +164,10 @@ class MarketingController extends Controller
 
             $person->makeChildOf($assign_to);
 
+            $person->parent_name = $assign_to->name;
+
+            $person->save();
+
         }else{
 
             if($latest_cust == 'D100001'){
@@ -175,6 +179,10 @@ class MarketingController extends Controller
                 $creator = Person::where('user_id', Auth::user()->id)->first();
 
                 $person->makeChildOf($creator);
+
+                $person->parent_name = $creator->name;
+
+                $person->save();
 
             }
         }
@@ -341,11 +349,19 @@ class MarketingController extends Controller
 
             $person->makeChildOf($assign_to);
 
+            $person->parent_name = $assign_to->name;
+
+            $person->save();
+
         }else{
 
             $creator = Person::where('user_id', Auth::user()->id)->first();
 
             $person->makeChildOf($creator);
+
+            $person->parent_name = $creator->name;
+
+            $person->save();
 
         }
 
@@ -501,7 +517,7 @@ class MarketingController extends Controller
 
         $request->merge(array('created_by' => Auth::user()->name));
 
-        $request->merge(['delivery_date' => Carbon::today()]);
+        $request->merge(['delivery_date' => Carbon::today()->addDay()]);
 
         $request->merge(['order_date' => Carbon::today()]);
 
@@ -559,6 +575,7 @@ class MarketingController extends Controller
 
     public function update(Request $request, $dtdtrans_id)
     {
+
         $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
 
         $assign_cust = Person::findOrFail($dtdtransaction->person_id)->cust_id;
@@ -627,6 +644,9 @@ class MarketingController extends Controller
 
             }
 
+        }elseif($request->save_draft){
+
+            $request->merge(array('status' => 'Draft'));
         }
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
@@ -649,18 +669,30 @@ class MarketingController extends Controller
 
             }
 
-            $request->merge(array('status' => 'Submitted'));
+            if(Carbon::today() >= Carbon::parse($request->delivery_date)){
+
+                Flash::error('Delivery Date must be at least Tommorrow\'s Date');
+
+                return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+
+            }
+
+            $request->merge(array('status' => 'Confirmed'));
 
             if($assign_cust[0] == 'D'){
 
                 $request->merge(array('updated_by' => Auth::user()->name));
 
-                $request->merge(['delivery_date' => Carbon::today()]);
+                $dtdtransaction->update($request->all());
 
-                $request->merge(['order_date' => Carbon::today()]);
-
-                $this->convert2Order($dtdtransaction->id);
+                $this->syncOrder($dtdtransaction->id);
             }
+        }
+
+        if($assign_cust[0] == 'D' and $dtdtransaction->status == 'Confirmed'){
+
+            $this->syncOrder($dtdtransaction->id);
+
         }
 
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
@@ -698,6 +730,15 @@ class MarketingController extends Controller
         $pdf->setPaper('a4');
 
         return $pdf->download($name);
+    }
+
+    public function destroyAjax($id)
+    {
+        $dtddeal = DtdDeal::findOrFail($id);
+
+        $dtddeal->delete();
+
+        return $dtddeal->id . 'has been successfully deleted';
     }
 
     private function createUser($request)
@@ -884,6 +925,10 @@ class MarketingController extends Controller
                         $dtddeal->qty_status = 1;
 
                         $dtddeal->save();
+
+                        $dtddeal->deal_id = 'D'.$dtddeal->id;
+
+                        $dtddeal->save();
                     }
 
                 }else{
@@ -901,6 +946,10 @@ class MarketingController extends Controller
                     $dtddeal->unit_price = $quotes[$index];
 
                     $dtddeal->qty_status = 1;
+
+                    $dtddeal->save();
+
+                    $dtddeal->deal_id = 'D'.$dtddeal->id;
 
                     $dtddeal->save();
 
@@ -938,11 +987,18 @@ class MarketingController extends Controller
         }
     }
 
-    private function convert2Order($dtdtransaction_id)
+    private function syncOrder($dtdtransaction_id)
     {
         $dtdtransaction = DtdTransaction::findOrFail($dtdtransaction_id);
 
-        $transaction = new Transaction();
+        if($dtdtransaction->transaction_id == null || $dtdtransaction->transaction_id == ''){
+
+            $transaction = new Transaction();
+
+        }else{
+
+            $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+        }
 
         $transaction->total = $dtdtransaction->total;
 
@@ -976,30 +1032,64 @@ class MarketingController extends Controller
 
         $dtdtransaction->save();
 
+        // find and sync deals
+        $deals = Deal::where('transaction_id', $transaction->id)->get();
+
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
 
-        foreach($dtddeals as $dtddeal){
+        if(count($deals) != count($dtddeals)){
 
-            $deal = new Deal();
+            $deal_arr = array();
 
-            $deal->item_id = $dtddeal->item_id;
+            $dtddeal_arr = array();
 
-            $deal->transaction_id = $transaction->id;
+            foreach($deals as $deal){
 
-            $deal->qty = $dtddeal->qty;
+                array_push($deal_arr, $deal->id);
+            }
 
-            $deal->amount = $dtddeal->amount;
+            $dtdresults = DtdDeal::where('transaction_id', $dtdtransaction->id)->whereNotIn('deal_id', $deal_arr)->get();
 
-            $deal->unit_price = $dtddeal->unit_price;
+            foreach($dtdresults as $dtddeal){
 
-            $deal->qty_status = 1;
+                $deal = new Deal();
 
-            $deal->save();
+                $deal->item_id = $dtddeal->item_id;
 
-            $this->dealSyncOrder($deal->item_id);
+                $deal->transaction_id = $transaction->id;
+
+                $deal->qty = $dtddeal->qty;
+
+                $deal->amount = $dtddeal->amount;
+
+                $deal->unit_price = $dtddeal->unit_price;
+
+                $deal->qty_status = 1;
+
+                $deal->save();
+
+                $dtddeal->deal_id = $deal->id;
+
+                $dtddeal->save();
+
+                $this->dealSyncOrder($deal->item_id);
+            }
+
+            $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
+
+            foreach($dtddeals as $dtddeal){
+
+                array_push($dtddeal_arr, $dtddeal->deal_id);
+            }
+
+            $dealresults = Deal::where('transaction_id', $dtdtransaction->transaction_id)->whereNotIn('id', $dtddeal_arr)->get();
+
+            foreach($dealresults as $dealresult){
+
+                $dealresult->delete();
+            }
         }
     }
-
 
     private function calOrderEmailLimit($qty, $item)
     {

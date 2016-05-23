@@ -47,6 +47,7 @@ class CreateDtdtransactionsDtddealsTable extends Migration
             $table->decimal('amount', 10, 2);
             $table->decimal('unit_price', 10, 2)->nullable();
             $table->string('qty_status')->nullable();
+            $table->string('deal_id')->nullable();
             $table->timestamps();
 
             $table->integer('item_id')->unsigned()->nullable();

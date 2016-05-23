@@ -60,7 +60,7 @@
                                         @can('transaction_deleteitem')
                                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
                                         @endcan
-                                    @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Submitted')
+                                    @elseif($transaction->status == 'Cancelled' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                                     @else
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>

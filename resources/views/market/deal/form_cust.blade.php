@@ -23,7 +23,7 @@
                     'rows'=>'3']) !!}
                 </div>
 
-                @if($transaction->status == 'Cancelled')
+                @if($transaction->status == 'Cancelled' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
                     <div class="col-md-4 form-group">
                         {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control',
@@ -55,7 +55,7 @@
 
 
             <div class="row">
-            @if($transaction->status == 'Cancelled')
+            @if($transaction->status == 'Cancelled' or($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
                 <div class="col-md-4 form-group">
                     {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
@@ -82,7 +82,7 @@
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
-                <div class="input-group date">
+                <div class="input-group deldate">
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
@@ -99,7 +99,7 @@
             </div>
 
             <div class="row">
-                @if($transaction->status == 'Cancelled')
+                @if($transaction->status == 'Cancelled' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
                     <div class="col-md-4 form-group">
                         {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
                         {!! Form::text('po_no', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}

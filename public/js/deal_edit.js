@@ -135,8 +135,15 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
                     }
 
                     $('.date').datetimepicker({
-                        format: 'YYYY-MM-DD'
+                        format: 'YYYY-MM-DD',
                     });
+
+
+                        $('.deldate').datetimepicker({
+                            format: 'YYYY-MM-DD',
+                        });
+
+
 
                         $http({
                             url: '/transaction/item/'+ person.id,
@@ -152,12 +159,11 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
 
         //delete deals
         $scope.confirmDelete = function(id){
-            console.log(id);
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
                 $http({
                     method: 'DELETE',
-                    url: '/deal/data/' + id ,
+                    url: '/market/deal/data/' + id ,
                 })
                 .success(function(data){
                     location.reload();

@@ -81,29 +81,40 @@ Deals
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         </div>
                         <div class="pull-right">
-
+                            @unless($transaction->person->cust_id[0] == 'D')
                             {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
+                            @else
+                            {!! Form::submit('Save as Draft', ['name'=>'save_draft', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            @endunless
+                            <a href="/market/deal" class="btn btn-default">Cancel</a>
                         </div>
                     </div>
                 </div>
-                @elseif($transaction->status == 'Confirmed' and $transaction->pay_status == 'Owe')
+                @elseif(($transaction->status == 'Confirmed' and $transaction->pay_status == 'Owe') or ($transaction->status == 'Draft' and $transaction->pay_status == 'Owe'))
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
-                            @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @endcan
+                            @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @else
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete', 'disabled'=>'disabled']) !!}
+                            @endunless
                         </div>
                         <div class="pull-right">
                             @unless($transaction->person->cust_id[0] == 'D')
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                             {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                             @else
-                            {!! Form::submit('Submit Order', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                                @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed')
+                                {!! Form::submit('Confirm', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                                @endunless
                             @endunless
-                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
 
+                                @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())
+                                    {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                                @else
+                                    {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust', 'disabled'=>'disabled']) !!}
+                                @endunless
 
                             <a href="/market/deal/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/market/deal" class="btn btn-default">Cancel</a>

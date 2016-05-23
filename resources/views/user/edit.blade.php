@@ -33,7 +33,7 @@
                 @cannot('supervisor_view')
                 <div class="dropup form_button_left">
                     <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
-                    Convert to DtD
+                    Add to DTD
                     <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         @if(Auth::user()->hasRole('admin'))

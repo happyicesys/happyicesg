@@ -71,6 +71,10 @@ Members
                                 {!! Form::label('contact', 'Contact:', ['class'=>'control-label search-title']) !!}
                                 {!! Form::text('contact', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.contact', 'placeholder'=>'Contact']) !!}
                             </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('parent_name', 'Parent:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.parent_name', 'placeholder'=>'Parent']) !!}
+                            </div>
                         </div>
 
                         <div class="row"></div>
@@ -107,6 +111,9 @@ Members
                                         Delivery Add
                                     </th>
                                     <th class="col-md-1 text-center">
+                                        Parent
+                                    </th>
+                                    <th class="col-md-1 text-center">
                                         <a href="#" ng-click="sortType = 'active'; sortReverse = !sortReverse">
                                         Active
                                         <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
@@ -132,13 +139,14 @@ Members
                                             </span>
                                         </td>
                                         <td class="col-md-2">@{{ member.del_address }}</td>
+                                        <td class="col-md-1 text-center">@{{ member.parent_name ? member.parent_name : '-'}}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
                                         <td class="col-md-1 text-center">
                                             <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
-                                        <td colspan="8" class="text-center">No Records Found</td>
+                                        <td colspan="9" class="text-center">No Records Found</td>
                                     </tr>
 
                                 </tbody>

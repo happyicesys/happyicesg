@@ -29,7 +29,7 @@ Members
                 </div>
                 <div class="form-group pull-right">
                     {!! Form::submit('Edit', ['class'=> 'btn btn-success', 'form'=>'update_person']) !!}
-                    <a href="/market/member/index" class="btn btn-default">Cancel</a>
+                    <a href="/market/member" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         {!! Form::close() !!}

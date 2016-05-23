@@ -26,6 +26,8 @@ use PDF;
 use Laracasts\Flash\Flash;
 use App\EmailAlert;
 use App\DtdPrice;
+use App\DtdTransaction;
+use App\DtdDeal;
 
 class TransactionController extends Controller
 {
@@ -286,6 +288,14 @@ class TransactionController extends Controller
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
+
+        }
+
+        $assign_cust = $transaction->person->cust_id;
+
+        if($assign_cust[0] == 'D'){
+
+            $this->syncOrder($transaction->id);
 
         }
 
@@ -931,6 +941,96 @@ class TransactionController extends Controller
         }else{
 
             return false;
+        }
+    }
+
+    private function syncOrder($transaction_id)
+    {
+        $dtdtransaction = DtdTransaction::where('transaction_id', $transaction_id)->first();
+
+        $dtdtransaction->total = $dtdtransaction->total;
+
+        $dtdtransaction->delivery_date = $dtdtransaction->delivery_date;
+
+        $dtdtransaction->status = 'Confirmed';
+
+        $dtdtransaction->transremark = $dtdtransaction->transremark;
+
+        $dtdtransaction->updated_by = $dtdtransaction->updated_by;
+
+        $dtdtransaction->pay_status = 'Owe';
+
+        $dtdtransaction->person_code = $dtdtransaction->person_code;
+
+        $dtdtransaction->person_id = $dtdtransaction->person_id;
+
+        $dtdtransaction->order_date = $dtdtransaction->order_date;
+
+        $dtdtransaction->del_address = $dtdtransaction->del_address;
+
+        $dtdtransaction->name = $dtdtransaction->name;
+
+        $dtdtransaction->po_no = $dtdtransaction->po_no;
+
+        $dtdtransaction->total_qty = $dtdtransaction->total_qty;
+
+        $dtdtransaction->save();
+
+        // find and sync deals
+        $deals = Deal::where('transaction_id', $transaction_id)->get();
+
+        $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
+
+        if(count($deals) != count($dtddeals)){
+
+            $deal_arr = array();
+
+            $dtddeal_arr = array();
+
+            $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
+
+            foreach($dtddeals as $dtddeal){
+
+                array_push($dtddeal_arr, $dtddeal->deal_id);
+            }
+
+            $dealresults = Deal::where('transaction_id', $dtdtransaction->transaction_id)->whereNotIn('id', $dtddeal_arr)->get();
+
+            foreach($dealresults as $dealresult){
+
+                $dtddeal = new DtdDeal();
+
+                $dtddeal->item_id = $dealresult->item_id;
+
+                $dtddeal->transaction_id = $transaction_id;
+
+                $dtddeal->qty = $dealresult->qty;
+
+                $dtddeal->amount = $dealresult->amount;
+
+                $dtddeal->unit_price = $dealresult->unit_price;
+
+                $dtddeal->qty_status = $dealresult->qty_status;
+
+                $dtddeal->deal_id = $dealresult->id;
+
+                $dtddeal->save();
+
+            }
+
+            $deals = Deal::where('transaction_id', $transaction_id)->get();
+
+            foreach($deals as $deal){
+
+                array_push($deal_arr, $deal->id);
+            }
+
+            $dtdresults = DtdDeal::where('transaction_id', $dtdtransaction->id)->whereNotIn('deal_id', $deal_arr)->get();
+
+            foreach($dtdresults as $dtdresult){
+
+                $dtdresult->delete();
+            }
         }
     }
 

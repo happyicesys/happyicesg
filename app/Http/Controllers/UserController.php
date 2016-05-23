@@ -10,6 +10,7 @@ use App\Role;
 use App\Profile;
 use Auth;
 use App\Person;
+use Laracasts\Flash\Flash;
 
 class UserController extends Controller
 {
@@ -122,68 +123,67 @@ class UserController extends Controller
 
     public function convertInitD($user_id, $level)
     {
-        $user = User::findOrFail($user_id);
+        $find_exist = Person::where('user_id', $user_id)->first();
 
-        $people = Person::where('cust_id', 'LIKE', 'D%');
+        if(! $find_exist){
 
-        $first_person = Person::where('cust_id', 'D100001')->first();
+            $user = User::findOrFail($user_id);
 
-        if(count($people) > 0 and $first_person){
+            $people = Person::where('cust_id', 'LIKE', 'D%');
 
-            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+            $first_person = Person::where('cust_id', 'D100001')->first();
 
-            $latest_cust = 'D'.$latest_cust;
+            if(count($people) > 0 and $first_person){
+
+                $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+                $latest_cust = 'D'.$latest_cust;
+
+            }else{
+
+                $latest_cust = 'D100001';
+            }
+
+            $person = new Person();
+
+            $person->cust_id = $latest_cust;
+
+            $person->cust_type = strtoupper($level);
+
+            $person->user_id = $user->id;
+
+            $person->profile_id = 1;
+
+            $person->name = $user->name;
+
+            $person->company = $user->name;
+
+            $person->contact = $user->contact;
+
+            $person->email = $user->email;
+
+            $person->save();
+
+            if($latest_cust == 'D100001'){
+
+                $person->makeRoot();
+
+            }else{
+
+                $creator = Person::where('user_id', Auth::user()->id)->first();
+
+                $person->makeChildOf($creator);
+
+                $person->parent_name = $creator->name;
+
+                $person->save();
+            }
+
+            Flash::success('Added Successfully');
 
         }else{
 
-            $latest_cust = 'D100001';
-        }
-        $user = User::findOrFail($user_id);
-
-        $people = Person::where('cust_id', 'LIKE', 'D%');
-
-        $first_person = Person::where('cust_id', 'D100001')->first();
-
-        if(count($people) > 0 and $first_person){
-
-            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
-
-            $latest_cust = 'D'.$latest_cust;
-
-        }else{
-
-            $latest_cust = 'D100001';
-        }
-
-        $person = new Person();
-
-        $person->cust_id = $latest_cust;
-
-        $person->cust_type = strtoupper($level);
-
-        $person->user_id = $user->id;
-
-        $person->profile_id = 1;
-
-        $person->name = $user->name;
-
-        $person->company = $user->name;
-
-        $person->contact = $user->contact;
-
-        $person->email = $user->email;
-
-        $person->save();
-
-        if($latest_cust == 'D100001'){
-
-            $person->makeRoot();
-
-        }else{
-
-            $creator = Person::where('user_id', Auth::user()->id)->first();
-
-            $person->makeChildOf($creator);
+            Flash::error('The user was already DTD member');
 
         }
 

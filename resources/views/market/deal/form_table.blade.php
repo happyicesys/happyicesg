@@ -41,7 +41,7 @@
                             {{$price->product_id}} - {{$price->name}} - {{$price->remark}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
+                            @if($transaction->status == 'Pending' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() < \Carbon\Carbon::parse($transaction->delivery_date)->subDay()) or $transaction->status == 'Draft')
                             <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
                             @else
                                 <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
@@ -50,7 +50,7 @@
                         <td class="col-md-2">
                             <strong>
                                 <input type="text" name="quote[{{$price->item_id}}]"
-                                value="{{$price->quote_price}}"
+                                value="{{$person->cost_rate ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>
                             </strong>
                         </td>
