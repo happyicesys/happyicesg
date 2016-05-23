@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OnlinePrice extends Model
+class DtdPrice extends Model
 {
-    protected $table = 'onlinePrices';
+    protected $table = 'dtdprices';
 
     protected $fillable = [
-        'retail_price', 'quote_price', 'divident', 'divisor',
-        'remark', 'created_by', 'updated_by',
+        'retail_price', 'quote_price', 'remark',
+        'created_by', 'updated_by', 'item_id'
     ];
 
     public function item()

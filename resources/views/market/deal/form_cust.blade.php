@@ -4,28 +4,11 @@
     <div class="panel panel-primary">
         <div class="panel-body">
 
-{{--             @if($transaction->status == 'Pending')
-            <div class="form-group">
-                {!! Form::label('person_id', 'Customer', ['class'=>'control-label']) !!}
-                {!! Form::select('person_id',
-                    $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id'),
-                    null,
-                    [
-                    'id'=>'person_id',
-                    'class'=>'person form-control',
-                    'ng-model'=>'personModel',
-                    'ng-change'=>'onPersonSelected(personModel)'
-                    ])
-                !!}
-            </div>
-            @else --}}
-                {{-- {!! Form::text('person_id', $transaction->person->cust_id.' - '.$transaction->person->company, ['class'=>'form-control', 'id'=>'person_id', 'readonly'=>'readonly', 'style'=>'margin-bottom:10px']) !!} --}}
             <label style="margin-bottom: 15px; font-size: 18px;">
                 <a href="/person/@{{ personModel }}">
                     {{$transaction->person->cust_id}} - {{$transaction->person->company}}
                 </a>
             </label>
-{{--            @endif --}}
             {!! Form::text('person_id', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
             {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
             {!! Form::text('person_code', '@{{personcodeModel}}', ['class'=>'hidden form-control']) !!}
@@ -144,28 +127,6 @@
             </div>
 
             <div class="row">
-                @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
-                    @cannot('transaction_view')
-                        <div class="col-md-4 form-group">
-                            {!! Form::label('driver', 'Delivered By :', ['class'=>'control-label']) !!}
-                            {!! Form::select('driver',
-                                    [''=>null]+$users::lists('name', 'name')->all(),
-                                    null,
-                                    ['class'=>'select form-control'])
-                            !!}
-                        </div>
-
-                        <div class="col-md-4 form-group">
-                            {!! Form::label('paid_by', 'Payment Received By :', ['class'=>'control-label']) !!}
-                            {!! Form::select('paid_by',
-                                    [''=>null]+$users::lists('name', 'name')->all(),
-                                    null,
-                                    ['class'=>'select form-control'])
-                            !!}
-                        </div>
-                    @endcannot
-                @endif
-
                 @if($transaction->status === 'Verified Paid')
                     <div class="col-md-4 form-group">
                         {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}

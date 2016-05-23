@@ -4,9 +4,9 @@ var app = angular.module('app', ['ui.bootstrap',
                                 'ngSanitize',
                                 'ui.bootstrap.datetimepicker']);
 
-    function transController($scope, $http){
+    function dealsController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;
+        $scope.itemsPerPage = 5;
 
         $('.person').select2({
             placeholder:'Select...'
@@ -16,7 +16,7 @@ var app = angular.module('app', ['ui.bootstrap',
 
             $scope.onPersonSelected = function (person){
 
-                $http.get('/transaction/person/latest/' + person).success(function(transactions){
+                $http.get('/market/deal/latest/' + person).success(function(transactions){
                     $scope.transactions = transactions;
                 });
             }
@@ -31,5 +31,5 @@ function repeatController($scope) {
 }
 
 
-app.controller('transController', transController);
+app.controller('dealsController', dealsController);
 app.controller('repeatController', repeatController);

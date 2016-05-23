@@ -12,127 +12,80 @@ use App\Http\Requests\CustomerRequest;
 use App\Http\Controllers\Controller;
 use App\Person;
 use Auth;
+use DB;
+use PDF;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
 use App\User;
+use App\DtdPrice;
+use App\DtdTransaction;
+use App\DtdDeal;
+use App\Item;
+use App\Deal;
+use App\Transaction;
 
 class MarketingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indexInvoice()
+
+    //auth-only login can see
+    public function __construct()
     {
-        return view('market.deal');
+        $this->middleware('auth');
     }
 
-    // DTD Customers (H)
-    public function indexCustomer()
+    // DTD Setup
+    public function indexSetup()
     {
-        return view('market.customer.index');
+        return view('market.setup.index');
     }
 
-    public function indexCustomerApi()
+    public function indexSetupPriceApi()
     {
-        $person = Person::where('user_id', Auth::user()->id)->first();
+        $prices = DtdPrice::all();
 
-        if($person){
+        // dd($prices->toArray());
 
-            return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
-
-        }else{
-
-            return '';
-        }
+        return $prices->toJson();
     }
 
-    public function createCustomer()
-    {
-        return view('market.customer.create');
-    }
-
-    public function storeCustomer(CustomerRequest $request)
-    {
-        $people = Person::where('cust_id', 'LIKE', 'H%');
-
-        $first_person = Person::where('cust_id', 'H100001')->first();
-
-        if(count($people) > 0 and $first_person){
-
-            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
-
-            $latest_cust = 'H'.$latest_cust;
-
-        }else{
-
-            $latest_cust = 'H100001';
-        }
-
-        $request->merge(array('cust_id' => $latest_cust));
-
-        $request->merge(array('profile_id' => 1));
-
-        $input = $request->all();
-
-        $person = Person::create($input);
-
-        if($request->assign_parent){
-
-            $assign_to = Person::findOrFail($request->assign_parent);
-
-            $person->makeChildOf($assign_to);
-
-        }else{
-
-            $creator = Person::where('user_id', Auth::user()->id)->first();
-
-            $person->makeChildOf($creator);
-
-        }
-
-        if($person){
-
-            Flash::success('Customer Successfully Created');
-
-            return view('market.customer.index');
-
-        }else{
-
-            Flash::error('Please Try Again');
-
-            return view('market.customer.create');
-        }
-    }
-
-    public function editCustomer($id)
-    {
-        $person = Person::findOrFail($id);
-
-        return view('market.customer.edit', compact('person'));
-    }
-
-    public function updateCustomer(Request $request, $id)
+    public function storeSetupPrice(Request $request)
     {
         $input = $request->all();
 
-        $person = Person::findOrFail($id);
+        $retails = $request->retail;
 
-        $person->update($input);
+        $quotes = $request->quote;
 
-        if($request->input('active')){
+        foreach($retails as $index => $retail){
 
-            $person->active = 'Yes';
+            if(($retail != null and $retail != '' and is_numeric($retail)) or ($quotes[$index] != null and $quotes[$index] != '' and is_numeric($quotes[$index]))){
 
-        }else if($request->input('deactive')){
+                $price = DtdPrice::where('item_id', $index)->first();
 
-            $person->active = 'No';
+                if(!$price){
+
+                    $price = new DtdPrice;
+
+                    $price->item_id = $index;
+                }
+
+                $price->retail_price = $retail;
+
+                $price->quote_price = $quotes[$index];
+
+                $price->updated_by = Auth::user()->name;
+
+                $price->save();
+
+                if($price->retail_price == 0 and $price->quote_price == 0){
+
+                    $price->delete();
+                }
+
+            }
         }
 
-        $person->save();
-
-        return view('market.customer.index');
+        return view('market.setup.index');
     }
 
     // DTD Member (D)
@@ -276,17 +229,6 @@ class MarketingController extends Controller
 
     }
 
-    public function indexDocs()
-    {
-        return view('market.docs');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function editMember($id)
     {
         $person = Person::findOrFail($id);
@@ -294,13 +236,6 @@ class MarketingController extends Controller
         return view('market.member.edit', compact('person'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function updateMember(Request $request, $id)
     {
         $input = $request->all();
@@ -347,18 +282,422 @@ class MarketingController extends Controller
         $person->save();
 
         return Redirect::action('MarketingController@indexMember');
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+
+    // DTD Customers (H)
+    public function indexCustomer()
     {
-        //
+        return view('market.customer.index');
+    }
+
+    public function indexCustomerApi()
+    {
+        $person = Person::where('user_id', Auth::user()->id)->first();
+
+        if($person){
+
+            return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+
+        }else{
+
+            return '';
+        }
+    }
+
+    public function createCustomer()
+    {
+        return view('market.customer.create');
+    }
+
+    public function storeCustomer(CustomerRequest $request)
+    {
+        $people = Person::where('cust_id', 'LIKE', 'H%');
+
+        $first_person = Person::where('cust_id', 'H100001')->first();
+
+        if(count($people) > 0 and $first_person){
+
+            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+            $latest_cust = 'H'.$latest_cust;
+
+        }else{
+
+            $latest_cust = 'H100001';
+        }
+
+        $request->merge(array('cust_id' => $latest_cust));
+
+        $request->merge(array('profile_id' => 1));
+
+        $input = $request->all();
+
+        $person = Person::create($input);
+
+        if($request->assign_parent){
+
+            $assign_to = Person::findOrFail($request->assign_parent);
+
+            $person->makeChildOf($assign_to);
+
+        }else{
+
+            $creator = Person::where('user_id', Auth::user()->id)->first();
+
+            $person->makeChildOf($creator);
+
+        }
+
+        if($person){
+
+            Flash::success('Customer Successfully Created');
+
+            return view('market.customer.index');
+
+        }else{
+
+            Flash::error('Please Try Again');
+
+            return view('market.customer.create');
+        }
+    }
+
+    public function editCustomer($id)
+    {
+        $person = Person::findOrFail($id);
+
+        return view('market.customer.edit', compact('person'));
+    }
+
+    public function updateCustomer(Request $request, $id)
+    {
+        $input = $request->all();
+
+        $person = Person::findOrFail($id);
+
+        $person->update($input);
+
+        if($request->input('active')){
+
+            $person->active = 'Yes';
+
+        }else if($request->input('deactive')){
+
+            $person->active = 'No';
+        }
+
+        $person->save();
+
+        return view('market.customer.index');
+    }
+
+    // DTD Open Invoice
+    public function indexDeal()
+    {
+        return view('market.deal.index');
+    }
+
+    public function indexDealApi(Request $request)
+    {
+        $transaction_id = $request->transaction_id;
+
+        $cust_id = $request->cust_id;
+
+        $company = $request->company;
+
+        $status = $request->status;
+
+        $del_from = $request->del_from;
+
+        $del_to = $request->del_to;
+
+        $query = DB::table('dtdtransactions')
+                        ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+
+        if($transaction_id){
+
+            $query = $query->where('id', 'LIKE', '%'.$transaction_id.'%');
+        }
+
+        if($cust_id){
+
+            $query = $query->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+
+        if($company){
+
+            $query = $query->where('people.company', 'LIKE', '%'.$company.'%');
+        }
+
+        if($status){
+
+            $query = $query->where('status', 'LIKE', '%'.$status.'%');
+        }
+
+        if($del_from and $del_to){
+
+            $query = $query->where('delivery_date', '>=', $del_from)->where('delivery_date', '<=', $del_to);
+
+        }else{
+
+            $query = $query->where('delivery_date', '>=', Carbon::today()->startOfWeek()->toDateString())
+
+                            ->where('delivery_date', '<=', Carbon::today()->endOfWeek()->toDateString());
+        }
+
+        // auth only admin can see all or else own creation
+        if(! Auth::user()->hasRole('admin')){
+
+            $personid_arr = array();
+
+            $people = Person::where('user_id', Auth::user()->id)->first()->getDescendantsAndSelf();
+
+            foreach($people as $person){
+
+                array_push($personid_arr, $person->id);
+
+            }
+
+            $query = $query->whereIn('people.id', $personid_arr);
+        }
+
+        $query = $query->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst', 'dtdtransactions.pay_method', 'dtdtransactions.note')
+                ->latest('dtdtransactions.id')->get();
+
+        $caltotal = $this->calTransactionTotal($query);
+
+        $data = [
+
+            'transactions' => $query,
+
+            'totalAmount' => $caltotal
+        ];
+
+        return $data;
+    }
+
+    public function createDeal()
+    {
+        $people = Person::where('user_id', Auth::user()->id)->first();
+
+        $adminview = Person::where('cust_id', 'LIKE', 'D%');
+
+        $people = $people ? $people->descendantsAndSelf() : $adminview;
+
+        return view('market.deal.create', compact('people'));
+    }
+
+    public function showDtdTransaction($person_id)
+    {
+        return DtdTransaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
+    }
+
+    public function storeDeal(Request $request)
+    {
+
+        $request->merge(array('updated_by' => Auth::user()->name));
+
+        $request->merge(array('created_by' => Auth::user()->name));
+
+        $request->merge(['delivery_date' => Carbon::today()]);
+
+        $request->merge(['order_date' => Carbon::today()]);
+
+        $input = $request->all();
+
+        $dtdtransaction = DtdTransaction::create($input);
+/*
+        if($person_id[0] == 'D'){
+
+            $transaction = Transaction::create($input);
+
+        }*/
+
+        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+    }
+
+    public function editDeal($id)
+    {
+        $transaction = DtdTransaction::find($id);
+
+        if(! $transaction){
+
+            $transaction = '';
+
+            $person = '';
+
+        }else{
+
+            $person = Person::findOrFail($transaction->person_id);
+        }
+
+        // retrieve manually to order product id asc
+        $prices = DB::table('dtdprices')
+                    ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
+                    ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                    ->orderBy('product_id')
+                    ->get();
+
+        return view('market.deal.edit', compact('transaction', 'person', 'prices'));
+    }
+
+    public function showDeal($id)
+    {
+        $transaction = DtdTransaction::findOrFail($id);
+
+        return $transaction;
+    }
+
+    public function getDealData($transaction_id)
+    {
+        $deals = DtdDeal::with('item')->where('transaction_id', $transaction_id)->get();
+
+        return $deals;
+    }
+
+    public function update(Request $request, $dtdtrans_id)
+    {
+        $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
+
+        $assign_cust = Person::findOrFail($dtdtransaction->person_id)->cust_id;
+
+        if($request->confirm){
+
+            $request->merge(array('status' => 'Confirmed'));
+
+        }else if($request->del_paid){
+
+            if(! $request->paid_by){
+
+                $request->merge(array('paid_by' => Auth::user()->name));
+            }
+
+            $request->merge(array('paid_at' => Carbon::now()));
+
+            if(! $request->driver){
+
+                $request->merge(array('driver'=>Auth::user()->name));
+            }
+
+        }else if($request->del_owe){
+
+            $request->merge(array('status' => 'Delivered'));
+
+            $request->merge(array('pay_status' => 'Owe'));
+
+            if(! $request->driver){
+
+                $request->merge(array('driver'=>Auth::user()->name));
+            }
+
+            $request->merge(array('paid_by'=>null));
+
+        }else if($request->paid){
+
+            $request->merge(array('pay_status' => 'Paid'));
+
+            if(! $request->paid_by){
+
+                $request->merge(array('paid_by' => Auth::user()->name));
+            }
+
+            $request->merge(array('paid_at' => Carbon::now()));
+
+        }elseif($request->unpaid){
+
+            $request->merge(array('pay_status' => 'Owe'));
+
+            $request->merge(array('paid_by' => null));
+
+            $request->merge(array('paid_at' => null));
+
+        }elseif($request->update){
+
+            if($dtdtransaction->status === 'Confirmed'){
+
+                $request->merge(array('driver' => null));
+
+                $request->merge(array('paid_by' => null));
+
+            }else if(($dtdtransaction->status === 'Delivered' or $dtdtransaction->status === 'Verified Owe') and $dtdtransaction->pay_status === 'Owe'){
+
+                $request->merge(array('paid_by' => null));
+
+            }
+
+        }
+
+        $request->merge(array('person_id' => $request->input('person_copyid')));
+
+        $request->merge(array('updated_by' => Auth::user()->name));
+
+        $dtdtransaction->update($request->all());
+
+        $this->syncDtdDeal($request, $dtdtrans_id);
+
+        $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
+
+        if($request->submit_deal){
+
+            if(count($dtddeals) == 0){
+
+                Flash::error('Please entry the list');
+
+                return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+
+            }
+
+            $request->merge(array('status' => 'Submitted'));
+
+            if($assign_cust[0] == 'D'){
+
+                $request->merge(array('updated_by' => Auth::user()->name));
+
+                $request->merge(['delivery_date' => Carbon::today()]);
+
+                $request->merge(['order_date' => Carbon::today()]);
+
+                $this->convert2Order($dtdtransaction->id);
+            }
+        }
+
+        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+    }
+
+    // generate pdf invoice for transaction
+    public function generateInvoice($id)
+    {
+
+        $transaction = DtdTransaction::findOrFail($id);
+
+        $person = Person::findOrFail($transaction->person_id);
+
+        $deals = DtdDeal::whereTransactionId($transaction->id)->get();
+
+        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+
+        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+
+        // $profile = Profile::firstOrFail();
+
+        $data = [
+            'transaction'   =>  $transaction,
+            'person'        =>  $person,
+            'deals'         =>  $deals,
+            'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
+            // 'profile'       =>  $profile,
+        ];
+
+        $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
+
+        $pdf = PDF::loadView('transaction.invoice', $data);
+
+        $pdf->setPaper('a4');
+
+        return $pdf->download($name);
     }
 
     private function createUser($request)
@@ -447,5 +786,296 @@ class MarketingController extends Controller
 
             return true;
         }
+    }
+
+    // calculating gst and non for delivered total
+    private function calTransactionTotal($arr)
+    {
+        $total_amount = 0;
+
+        foreach($arr as $transaction){
+
+            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+
+            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+        }
+
+        return $total_amount;
+    }
+
+    // calculating qty total
+    private function calQtyTotal($arr)
+    {
+        $total_qty = 0;
+
+        foreach($arr as $transaction){
+
+            $total_qty += $transaction->total_qty;
+
+        }
+
+        return $total_qty;
+    }
+
+    private function syncDtdDeal($request, $dtdtrans_id)
+    {
+        $qtys = $request->qty;
+
+        $quotes = $request->quote;
+
+        $amounts = $request->amount;
+
+        $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
+
+        $init_d = $dtdtransaction->person->cust_id[0] == 'D' ? true : false;
+
+        $errors = array();
+
+        foreach($qtys as $index => $qty){
+
+            if($qty != NULL or $qty != 0){
+
+                $item = Item::findOrFail($index);
+
+                // inventory email notification for stock running low
+                if($init_d and $item->email_limit){
+
+                    if($this->calOrderEmailLimit($qty, $item)){
+
+                        if(! $item->emailed){
+
+                            $this->sendEmailAlert($item);
+
+                            // restrict only send 1 mail if insufficient
+                            $item->emailed = true;
+
+                            $item->save();
+                        }
+
+                    }else{
+                        // reactivate email alert
+                        $item->emailed = false;
+
+                        $item->save();
+                    }
+                }
+
+
+                if($init_d){
+
+                    if($this->calOrderLimit($qty, $item)){
+
+                        array_push($errors, $item->product_id.' - '.$item->name);
+
+                    }else{
+
+                        $dtddeal = new DtdDeal();
+
+                        $dtddeal->transaction_id = $dtdtrans_id;
+
+                        $dtddeal->item_id = $index;
+
+                        $dtddeal->qty = $qty;
+
+                        $dtddeal->amount = $amounts[$index];
+
+                        $dtddeal->unit_price = $quotes[$index];
+
+                        $dtddeal->qty_status = 1;
+
+                        $dtddeal->save();
+                    }
+
+                }else{
+
+                    $dtddeal = new DtdDeal();
+
+                    $dtddeal->transaction_id = $dtdtrans_id;
+
+                    $dtddeal->item_id = $index;
+
+                    $dtddeal->qty = $qty;
+
+                    $dtddeal->amount = $amounts[$index];
+
+                    $dtddeal->unit_price = $quotes[$index];
+
+                    $dtddeal->qty_status = 1;
+
+                    $dtddeal->save();
+
+                }
+            }
+        }
+
+        $dtddeals = DtdDeal::whereTransactionId($dtdtrans_id)->get();
+
+        $deal_total = $dtddeals->sum('amount');
+
+        $deal_totalqty = $dtddeals->sum('qty');
+
+        $dtdtransaction->total = $deal_total;
+
+        $dtdtransaction->total_qty = $deal_totalqty;
+
+        $dtdtransaction->save();
+
+        if(isset($errors)){
+
+            if(count($errors) > 0){
+
+                $errors_str = '';
+
+                $errors_str = implode(" <br>", $errors);
+
+                Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): <br> '.$errors_str)->important();
+
+            }
+
+        }else{
+
+            Flash::success('Successfully Added');
+        }
+    }
+
+    private function convert2Order($dtdtransaction_id)
+    {
+        $dtdtransaction = DtdTransaction::findOrFail($dtdtransaction_id);
+
+        $transaction = new Transaction();
+
+        $transaction->total = $dtdtransaction->total;
+
+        $transaction->delivery_date = $dtdtransaction->delivery_date;
+
+        $transaction->status = 'Confirmed';
+
+        $transaction->transremark = $dtdtransaction->transremark;
+
+        $transaction->updated_by = $dtdtransaction->updated_by;
+
+        $transaction->pay_status = 'Owe';
+
+        $transaction->person_code = $dtdtransaction->person_code;
+
+        $transaction->person_id = $dtdtransaction->person_id;
+
+        $transaction->order_date = $dtdtransaction->order_date;
+
+        $transaction->del_address = $dtdtransaction->del_address;
+
+        $transaction->name = $dtdtransaction->name;
+
+        $transaction->po_no = $dtdtransaction->po_no;
+
+        $transaction->total_qty = $dtdtransaction->total_qty;
+
+        $transaction->save();
+
+        $dtdtransaction->transaction_id = $transaction->id;
+
+        $dtdtransaction->save();
+
+        $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
+
+        foreach($dtddeals as $dtddeal){
+
+            $deal = new Deal();
+
+            $deal->item_id = $dtddeal->item_id;
+
+            $deal->transaction_id = $transaction->id;
+
+            $deal->qty = $dtddeal->qty;
+
+            $deal->amount = $dtddeal->amount;
+
+            $deal->unit_price = $dtddeal->unit_price;
+
+            $deal->qty_status = 1;
+
+            $deal->save();
+
+            $this->dealSyncOrder($deal->item_id);
+        }
+    }
+
+
+    private function calOrderEmailLimit($qty, $item)
+    {
+        if($item->qty_now - $item->qty_order - $qty < $item->email_limit){
+
+            return true;
+
+        }else{
+
+            return false;
+        }
+    }
+
+
+    private function calOrderLimit($qty, $item)
+    {
+        if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0){
+
+            return true;
+
+        }else{
+
+            return false;
+        }
+    }
+
+
+    // email alert for stock insufficient
+    private function sendEmailAlert($item)
+    {
+
+        $today = Carbon::now()->format('d-m-Y H:i');
+
+        $emails = EmailAlert::where('status', 'active')->get();
+
+        $email_list = array();
+
+        foreach($emails as $email){
+
+            $email_list[] = $email->email;
+        }
+
+        $email = array_unique($email_list);
+
+        // $sender = 'daniel.ma@happyice.com.sg';
+        $sender = 'system@happyice.com.sg';
+
+        $data = [
+
+            'product_id' => $item->product_id,
+            'name' => $item->name,
+            'remark' => $item->remark,
+            'unit' => $item->unit,
+            'qty_now' => $item->qty_now,
+            'lowest_limit' => $item->lowest_limit,
+            'email_limit' => $item->email_limit,
+
+        ];
+
+        Mail::send('email.stock_alert', $data, function ($message) use ($item, $email, $today, $sender)
+        {
+            $message->from($sender);
+            $message->subject('Stock Insufficient Alert ['.$item->product_id.'-'.$item->name.'] - '.$today);
+            $message->setTo($email);
+        });
+    }
+
+    private function dealSyncOrder($item_id)
+    {
+        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+
+        $item = Item::findOrFail($item_id);
+
+        $item->qty_order = $deals->sum('qty');
+
+        $item->save();
+
     }
 }

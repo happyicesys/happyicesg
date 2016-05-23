@@ -113,7 +113,7 @@ Customers
                         <tbody>
                             <tr dir-paginate="customer in customers | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                 <td class="col-md-1 text-center">@{{ number }} </td>
-                                <td class="col-md-1">@{{ customer.cust_id }}</td>
+                                <td class="col-md-1 text-center">@{{ customer.cust_id }}</td>
                                 <td class="col-md-2">
                                     <a href="/market/customer/@{{ customer.id }}/edit">
                                     @{{ customer.company }}

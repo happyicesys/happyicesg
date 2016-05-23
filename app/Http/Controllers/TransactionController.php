@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use Laracasts\Flash\Flash;
 use App\EmailAlert;
+use App\DtdPrice;
 
 class TransactionController extends Controller
 {
@@ -85,9 +86,9 @@ class TransactionController extends Controller
 
         $request->merge(array('updated_by' => Auth::user()->name));
 
-        $request->merge(['delivery_date' => Carbon::now()]);
+        $request->merge(['delivery_date' => Carbon::today()]);
 
-        $request->merge(['order_date' => Carbon::now()]);
+        $request->merge(['order_date' => Carbon::today()]);
 
         $input = $request->all();
 
@@ -122,12 +123,23 @@ class TransactionController extends Controller
         $person = Person::findOrFail($transaction->person_id);
 
         // retrieve manually to order product id asc
-        $prices = DB::table('prices')
-                    ->leftJoin('items', 'prices.item_id', '=', 'items.id')
-                    ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
-                    ->where('prices.person_id', '=', $transaction->person_id)
-                    ->orderBy('product_id')
-                    ->get();
+        if($transaction->person_code[0] == 'D'){
+
+            $prices = DB::table('dtdprices')
+                        ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
+                        ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                        ->orderBy('product_id')
+                        ->get();
+
+        }else{
+
+            $prices = DB::table('prices')
+                        ->leftJoin('items', 'prices.item_id', '=', 'items.id')
+                        ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                        ->where('prices.person_id', '=', $transaction->person_id)
+                        ->orderBy('product_id')
+                        ->get();
+        }
 
         return view('transaction.edit', compact('transaction', 'person', 'prices'));
     }
@@ -201,7 +213,6 @@ class TransactionController extends Controller
                 Flash::error('Please entry the list');
 
                 return Redirect::action('TransactionController@edit', $transaction->id);
-
             }
 
         }elseif($request->input('paid')){
@@ -261,15 +272,13 @@ class TransactionController extends Controller
             }
         }
 
-
         $request->merge(array('person_id' => $request->input('person_copyid')));
 
         $request->merge(array('updated_by' => Auth::user()->name));
 
         $transaction->update($request->all());
 
-
-        //Qty insert to on order upon confirmed(1) transaction status start
+        //Qty insert to on order upon confirmed(1) transaction status
         if($transaction->status === 'Confirmed'){
 
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
@@ -279,7 +288,6 @@ class TransactionController extends Controller
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
 
         }
-        //Qty insert to on order upon confirmed(1) transaction status end
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -457,7 +465,6 @@ class TransactionController extends Controller
         $pdf->setPaper('a4');
 
         return $pdf->download($name);
-
     }
 
     public function generateLogs($id)

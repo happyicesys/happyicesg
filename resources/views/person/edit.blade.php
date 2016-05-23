@@ -1,6 +1,7 @@
 @inject('freezers', 'App\Freezer')
 @inject('accessories', 'App\Accessory')
 @inject('items', 'App\Item')
+@inject('dtdprice', 'App\DtdPrice')
 
 @extends('template')
 @section('title')
@@ -274,6 +275,30 @@
                 </tr>
 
                 <tbody>
+                @if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB')
+
+                    @unless(count($items)>0)
+                        <td class="text-center" colspan="7">No Records Found</td>
+                    @else
+                        @foreach($items::orderBy('product_id')->get() as $item)
+                        <tr class="form-group">
+                            <td class="col-md-8">
+                                {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="retail[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->retail_price : '0'}}" class="text-right form-control" readonly/>
+                                </strong>
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="quote[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->quote_price : '0'}}" class="text-right form-control" readonly/>
+                                </strong>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endunless
+                @else
                 <tr ng-repeat="item in items" class="form-group">
                     <td class="col-md-8">
                         @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
@@ -292,6 +317,7 @@
                 <tr ng-if="items.length == 0 || ! items.length">
                     <td colspan="4" class="text-center">No Records Found!</td>
                 </tr>
+                @endif
                 </tbody>
             </table>
             <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>

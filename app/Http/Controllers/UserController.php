@@ -9,6 +9,7 @@ use App\User;
 use App\Role;
 use App\Profile;
 use Auth;
+use App\Person;
 
 class UserController extends Controller
 {
@@ -18,12 +19,6 @@ class UserController extends Controller
     {
         $this->middleware('auth');
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
     public function getData()
     {
@@ -41,11 +36,6 @@ class UserController extends Controller
         return $user;
     }
 
-    /**
-     * Return viewing page.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
 
@@ -58,22 +48,11 @@ class UserController extends Controller
         return view('user.index', compact('roles', 'users', 'profile'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('user.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(UserRequest $request)
     {
         $this->validate($request, [
@@ -92,23 +71,6 @@ class UserController extends Controller
         return redirect('user');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -116,13 +78,6 @@ class UserController extends Controller
         return view('user.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(UserRequest $request, $id)
     {
 
@@ -147,12 +102,6 @@ class UserController extends Controller
         return redirect('user');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -162,12 +111,6 @@ class UserController extends Controller
         return redirect('user');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroyAjax($id)
     {
         $user = User::findOrFail($id);
@@ -175,6 +118,77 @@ class UserController extends Controller
         $user->delete();
 
         return $user->name . 'has been successfully deleted';
+    }
+
+    public function convertInitD($user_id, $level)
+    {
+        $user = User::findOrFail($user_id);
+
+        $people = Person::where('cust_id', 'LIKE', 'D%');
+
+        $first_person = Person::where('cust_id', 'D100001')->first();
+
+        if(count($people) > 0 and $first_person){
+
+            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+            $latest_cust = 'D'.$latest_cust;
+
+        }else{
+
+            $latest_cust = 'D100001';
+        }
+        $user = User::findOrFail($user_id);
+
+        $people = Person::where('cust_id', 'LIKE', 'D%');
+
+        $first_person = Person::where('cust_id', 'D100001')->first();
+
+        if(count($people) > 0 and $first_person){
+
+            $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+            $latest_cust = 'D'.$latest_cust;
+
+        }else{
+
+            $latest_cust = 'D100001';
+        }
+
+        $person = new Person();
+
+        $person->cust_id = $latest_cust;
+
+        $person->cust_type = strtoupper($level);
+
+        $person->user_id = $user->id;
+
+        $person->profile_id = 1;
+
+        $person->name = $user->name;
+
+        $person->company = $user->name;
+
+        $person->contact = $user->contact;
+
+        $person->email = $user->email;
+
+        $person->save();
+
+        if($latest_cust == 'D100001'){
+
+            $person->makeRoot();
+
+        }else{
+
+            $creator = Person::where('user_id', Auth::user()->id)->first();
+
+            $person->makeChildOf($creator);
+
+        }
+
+        return redirect('user');
+
     }
 
     private function syncRole(User $user, $selected_role)

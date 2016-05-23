@@ -54,7 +54,7 @@ class Person extends Baum\Node
         'active' => 'Active',
         'site_name' => 'Site Name',
         'com_remark' => 'Company',
-        'cust_type' => 'Role Level'
+        'cust_type' => 'Role Level',
     );
 
 
@@ -139,6 +139,11 @@ class Person extends Baum\Node
     public function getAccessoryListAttribute()
     {
         return $this->accessories->lists('id')->all();
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->attribute['cust_id'].'-'.$this->attribute['name'];
     }
 
     public function transaction()

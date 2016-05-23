@@ -14,6 +14,9 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+get('/market/setup/price', 'MarketingController@indexSetupPriceApi');
+post('/market/setup/price', 'MarketingController@storeSetupPrice');
+get('/market/setup', 'MarketingController@indexSetup');
 post('/market/customer/{customer_id}', 'MarketingController@updateCustomer');
 get('/market/customer/{customer_id}/edit', 'MarketingController@editCustomer');
 post('/market/customer', 'MarketingController@storeCustomer');
@@ -25,7 +28,21 @@ post('/market/member/{member_id}', 'MarketingController@updateMember');
 post('/market/member', 'MarketingController@storeMember');
 post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 get('/market/member/create/{level}', 'MarketingController@createMember');
-get('/market/deal', 'MarketingController@indexInvoice');
+
+
+post('/market/deal/index', 'MarketingController@indexDealApi');
+post('/market/deal/{dtdtransaction_id}', 'MarketingController@update');
+get('/market/dealData/{dtdtransaction_id}', 'MarketingController@getDealData');
+get('/market/deal/{dtdtransaction_id}/edit', 'MarketingController@editDeal');
+get('/market/deal/latest/{person_id}', 'MarketingController@showDtdTransaction');
+post('market/deal', 'MarketingController@storeDeal');
+get('/market/deal/create', 'MarketingController@createDeal');
+get('/market/deal/{dtdtransaction_id}', 'MarketingController@showDeal');
+get('/market/deal', 'MarketingController@indexDeal');
+get('/market/deal/download/{trans_id}', 'MarketingController@generateInvoice');
+// resource('/market/deal', 'MarketingController');
+
+
 get('/market/member/data', 'MarketingController@indexMemberApi');
 get('/market/member', 'MarketingController@indexMember');
 get('/market/docs', 'MarketingController@indexDocs');
@@ -110,6 +127,7 @@ get('/user/data/{user_id}', 'UserController@getUser');
 get('/user/data', 'UserController@getData');
 delete('/user/data/{id}', 'UserController@destroyAjax');
 resource('user', 'UserController');
+get('/user/member/{user_id}/{level}', 'UserController@convertInitD');
 
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');

@@ -44,4 +44,9 @@ class Item extends Model
         return $this->hasOne('App\OnlinePrice');
     }
 
+    public function dtdprice()
+    {
+        return $this->hasOne('App\DtdPrice');
+    }
+
 }

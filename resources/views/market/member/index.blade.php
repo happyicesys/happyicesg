@@ -53,7 +53,7 @@ Members
                                     <li ng-if="person.cust_type != 'AM' && person.cust_type != 'AB'"><a href="/market/member/create/am">Area Manager (AM)</a></li>
                                     <li><a ng-if="person.cust_type != 'AB'" href="/market/member/create/ab">Ambassador (AB)</a></li>
                                 </ul>
-                            </div>
+                                </div>
                         </div>
                     </div>
 

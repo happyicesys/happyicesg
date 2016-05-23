@@ -5,67 +5,22 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Transaction extends Model
+class DtdTransaction extends Model
 {
-    use \Venturecraft\Revisionable\RevisionableTrait;
-
-    public static function boot()
-    {
-        parent::boot();
-    }
-
-    public function identifiableName()
-    {
-        return $this->title;
-    }
-
-    protected $dontKeepRevisionOf = array(
-        'person_id', 'name', 'cancel_trace'
-    );
-
-    protected $revisionEnabled = true;
-
-    //Remove old revisions (works only when used with $historyLimit)
-    protected $revisionCleanup = true;
-
-    //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500;
-
-    //storing new creation
-    protected $revisionCreationsEnabled = true;
-
-    //revision appear format name
-    protected $revisionFormattedFieldNames = array(
-        'delivery_date' => 'Delivery Date',
-        'order_date' => 'Order Date',
-        'transremark' => 'Comment',
-        'status' => 'Status',
-        'pay_status' => 'Payment',
-        'person_code'  => 'Customer',
-        'updated_by' => 'Last Modified',
-        'driver' => 'Delivered By',
-        'del_address' => 'Delivery Address',
-        'paid_by' => 'Payment Received By',
-        'paid_at' => 'Payment Received At',
-        'po_no' => 'PO #',
-        'total_qty' => 'Total Qty',
-        'paid_by' => 'Payment Received By',
-        'pay_method' => 'Payment Method',
-        'note' => 'Note'
-    );
+    protected $table = 'dtdtransactions';
 
     protected $fillable=[
-        'total', 'delivery_date', 'status',
-        'user_id', 'transremark', 'updated_by',
-        'pay_status', 'person_code', 'person_id',
-        'order_date', 'driver', 'paid_by',
-        'del_address', 'name', 'po_no',
-        'total_qty', 'pay_method', 'note',
-        'paid_at', 'cancel_trace'
+        'total','total_qty', 'transremark',
+        'person_code', 'name', 'person_id',
+        'delivery_date', 'order_date', 'driver',
+        'status', 'pay_status', 'del_address',
+        'po_no', 'cancel_trace','user_id',
+        'pay_method', 'note', 'paid_at',
+        'updated_by', 'paid_by', 'transaction_id'
     ];
 
     protected $dates =[
-        'created_at', 'delivery_date', 'order_date', 'paid_at'
+        'delivery_date', 'order_date', 'paid_at'
     ];
 
     public function setDeliveryDateAttribute($date)
@@ -109,14 +64,9 @@ class Transaction extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function sale()
+    public function dtddeals()
     {
-        return $this->hasOne('App\Sale');
-    }
-
-    public function deals()
-    {
-        return $this->hasMany('App\Deal');
+        return $this->hasMany('App\DtdDeal');
     }
 
     public function getCreatedAtAttribute($date)
