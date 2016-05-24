@@ -252,6 +252,25 @@ class MarketingController extends Controller
 
         $user = User::findOrFail($person->user_id);
 
+        if($request->parent_id){
+
+            $newperson = Person::findOrFail($request->parent_id);
+
+            if($person->parent_id != $newperson->id){
+
+                $children = $person->getImmediateDescendants();
+
+                foreach ($children as $child){
+
+                    $child->makeChildOf($newperson);
+
+                    $child->parent_name = $newperson->name;
+
+                    $child->save();
+                }
+            }
+        }
+
         $person->update($input);
 
         if($request->input('active')){

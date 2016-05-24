@@ -1,4 +1,5 @@
 @inject('payterm', 'App\Payterm')
+@inject('members', 'App\Person')
 
 <div class="col-md-6">
 {{--
@@ -87,6 +88,12 @@
     <div class="form-group">
         {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}
         {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
+    </div>
+
+
+    <div class="form-group">
+        {!! Form::label('parent_id', 'Assign Parent', ['class'=>'control-label']) !!}
+        {!! Form::select('parent_id', $members::where('cust_id', 'LIKE', 'D%')->lists('name', 'id'), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
     </div>
 
 </div>

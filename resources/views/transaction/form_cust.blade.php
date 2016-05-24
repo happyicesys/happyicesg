@@ -163,6 +163,14 @@
                                     ['class'=>'select form-control'])
                             !!}
                         </div>
+
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('paid_at', 'Payment Received On :', ['class'=>'control-label']) !!}
+                        <div class="input-group date">
+                            {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at']) !!}
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                        </div>
+                        </div>
                     @endcannot
                 @endif
 

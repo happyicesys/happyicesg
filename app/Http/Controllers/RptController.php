@@ -523,7 +523,7 @@ class RptController extends Controller
             // check whether date presence
             if($delivery_date and $paid_at){
 
-                $query1 = $query1->whereDate('delivery_date', '=', $delivery_date)->whereDate('paid_at', '=', $paid_at);
+                $query1 = $query1->whereDate('delivery_date', '=', $delivery_date)->orWhere('paid_at', '=', $paid_at);
 
             }else{
 
