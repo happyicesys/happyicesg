@@ -172,9 +172,17 @@ class UserController extends Controller
 
                 $creator = Person::where('user_id', Auth::user()->id)->first();
 
-                $person->makeChildOf($creator);
+                if($creator){
 
-                $person->parent_name = $creator->name;
+                    $person->makeChildOf($creator);
+
+                    $person->parent_name = $creator->name;
+
+                }else{
+
+                    $person->makeRoot();
+
+                }
 
                 $person->save();
             }

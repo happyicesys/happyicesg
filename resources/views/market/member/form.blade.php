@@ -89,15 +89,35 @@
         {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}
         {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
     </div>
-
-
-    <div class="form-group">
-        {!! Form::label('parent_id', 'Assign Parent', ['class'=>'control-label']) !!}
-        {!! Form::select('parent_id', $members::where('cust_id', 'LIKE', 'D%')->lists('name', 'id'), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
-    </div>
-
 </div>
 
+    <div class="row"></div>
+
+    <hr>
+
+    <div class="col-md-12">
+        {{-- @if(isset($person) and Auth::user()->hasRole('admin')) --}}
+        @if(isset($person))
+        <div class="form-group">
+            {!! Form::label('parent_id', 'Assign Parent', ['class'=>'control-label']) !!}
+            {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('cust_type', 'Role Level', ['class'=>'control-label']) !!}
+            {!! Form::select('cust_type', [
+                                    ''=>null,
+                                    'OM' => 'OM',
+                                    'OE' => 'OE',
+                                    'AM' => 'AM',
+                                    'AB' => 'AB',
+            ], null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
+        </div>
+        @endif
+    </div>
+
 <script>
-    $('.select').select2();
+    $('.select').select2({
+        placeholder: 'Please Select...'
+    });
 </script>

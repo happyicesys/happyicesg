@@ -103,11 +103,19 @@ class MarketingController extends Controller
 
     public function indexMemberApi()
     {
-        $members = Person::where('user_id', Auth::user()->id)->first();
+        $member = Person::where('user_id', Auth::user()->id)->first();
 
-        if($members){
+        $admin = Auth::user()->hasRole('admin');
 
-            return $members->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
+        $all_members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_type', 'desc')->get();
+
+        if($member){
+
+            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
+
+        }else if($admin or ($member and $admin)){
+
+            return $all_members;
 
         }else{
 
@@ -178,9 +186,17 @@ class MarketingController extends Controller
 
                 $creator = Person::where('user_id', Auth::user()->id)->first();
 
-                $person->makeChildOf($creator);
+                if($creator){
 
-                $person->parent_name = $creator->name;
+                    $person->makeChildOf($creator);
+
+                    $person->parent_name = $creator->name;
+
+                }else{
+
+                    $person->makeRoot();
+
+                }
 
                 $person->save();
 
@@ -188,6 +204,43 @@ class MarketingController extends Controller
         }
 
         if($person){
+
+            $ancestors = $person->getAncestors();
+
+            $today = Carbon::today()->toDateString();
+
+            $mail_list = array();
+
+            foreach($ancestors as $ancestor){
+
+                if($ancestor->email){
+
+                    array_push($mail_list, $ancestor->email);
+
+                }
+            }
+
+            $mail_list = implode(",", $mail_list);
+
+            if($mail_list){
+
+                $email = $mail_list;
+
+                $sender = 'system@happyice.com.sg';
+
+                $data = [
+
+                    'person' => $person,
+                    'today' => $today,
+                ];
+
+                Mail::send('email.new_member', $data, function ($message) use ($email, $sender)
+                {
+                    $message->from($sender);
+                    $message->subject('New Member Creation (Door To Door Project)');
+                    $message->setTo($email);
+                });
+            }
 
             Flash::success('User Successfully Registered');
 
@@ -258,16 +311,11 @@ class MarketingController extends Controller
 
             if($person->parent_id != $newperson->id){
 
-                $children = $person->getImmediateDescendants();
+                $person->makeChildOf($newperson);
 
-                foreach ($children as $child){
+                $person->parent_name = $newperson->name;
 
-                    $child->makeChildOf($newperson);
-
-                    $child->parent_name = $newperson->name;
-
-                    $child->save();
-                }
+                $person->save();
             }
         }
 
@@ -376,9 +424,17 @@ class MarketingController extends Controller
 
             $creator = Person::where('user_id', Auth::user()->id)->first();
 
-            $person->makeChildOf($creator);
+            if($creator){
 
-            $person->parent_name = $creator->name;
+                $person->makeChildOf($creator);
+
+                $person->parent_name = $creator->name;
+
+            }else{
+
+                $person->makeRoot();
+
+            }
 
             $person->save();
 
@@ -760,6 +816,81 @@ class MarketingController extends Controller
         return $dtddeal->id . 'has been successfully deleted';
     }
 
+    public function sendEmailInv($id)
+    {
+
+        $transaction = DtdTransaction::findOrFail($id);
+
+        $person = Person::findOrFail($transaction->person_id);
+
+        $deals = DtdDeal::whereTransactionId($transaction->id)->get();
+
+        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+
+        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+
+        if(! $person->email){
+
+            Flash::error('Please set the email before sending');
+
+            return Redirect::action('MarketingController@editDeal', $transaction->id);
+        }
+
+        $email = $person->email;
+
+        $now = Carbon::now()->format('dmyhis');
+
+        // $profile = Profile::firstOrFail();
+
+        $data = [
+            'transaction'   =>  $transaction,
+            'person'        =>  $person,
+            'deals'         =>  $deals,
+            'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
+            // 'profile'       =>  $profile,
+        ];
+
+        $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
+
+        $pdf = PDF::loadView('transaction.invoice', $data);
+
+        $pdf->setPaper('a4');
+
+        $sent = $pdf->save(storage_path('/invoice/'.$name));
+
+        $store_path = storage_path('/invoice/'.$name);
+
+        $sender = 'system@happyice.com.sg';
+
+        $datamail = [
+
+            'person' => $person,
+            'url' => 'http://www.happyice.com.sg',
+
+        ];
+
+        Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path)
+        {
+            $message->from($sender);
+            $message->subject('[Invoice] Happy Ice - Thanks for Your Support');
+            $message->setTo($email);
+            $message->attach($store_path);
+        });
+
+        if($sent){
+
+            Flash::success('Successfully Sent');
+
+        }else{
+
+            Flash::error('Please Try Again');
+        }
+
+        return Redirect::action('MarketingController@editDeal', $transaction->id);
+
+    }
+
     private function createUser($request)
     {
         $request->merge(array('username' => $request->company));
@@ -787,13 +918,17 @@ class MarketingController extends Controller
         }
     }
 
+    private function loadInvoice($id){
+
+
+    }
+
     // user get the credentials via email
     private function sendEmailUponRegistration($request, $password)
     {
 
         $email = $request->email;
 
-        // $sender = 'daniel.ma@happyice.com.sg';
         $sender = 'system@happyice.com.sg';
 
         $data = [

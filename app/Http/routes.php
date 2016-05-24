@@ -39,6 +39,7 @@ get('/market/deal/create', 'MarketingController@createDeal');
 get('/market/deal/{dtdtransaction_id}', 'MarketingController@showDeal');
 get('/market/deal', 'MarketingController@indexDeal');
 get('/market/deal/download/{trans_id}', 'MarketingController@generateInvoice');
+get('/market/deal/emailInv/{dtd_transaction_id}', 'MarketingController@sendEmailInv');
 delete('/market/deal/data/{id}', 'MarketingController@destroyAjax');
 // resource('/market/deal', 'MarketingController');
 

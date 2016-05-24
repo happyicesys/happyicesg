@@ -103,7 +103,7 @@ class RptController extends Controller
 
                 $title = 'Customers(ALL)';
 
-                $people = Person::all();
+                $people = Person::where('cust_id', 'NOT LIKE', 'H%')->get();
 
                 if(count($people)>0){
 

@@ -116,6 +116,7 @@ Deals
                                     {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust', 'disabled'=>'disabled']) !!}
                                 @endunless
 
+                            <a href="/market/deal/emailInv/{{$transaction->id}}" class="btn btn-warning">Send Inv Email</a>
                             <a href="/market/deal/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
 
@@ -135,6 +136,7 @@ Deals
                         <div class="pull-right">
 
                             {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                            <a href="/market/deal/emailInv/{{$transaction->id}}" class="btn btn-warning">Send Inv Email</a>
                             <a href="/market/deal/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
@@ -173,6 +175,7 @@ Deals
                                 {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                             @endcannot
                             @endcannot
+                            <a href="/market/deal/emailInv/{{$transaction->id}}" class="btn btn-warning">Send Inv Email</a>
                             <a href="/market/deal/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
                         </div>
