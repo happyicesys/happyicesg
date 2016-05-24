@@ -515,6 +515,38 @@ class RptController extends Controller
 
         $driver = $request->driver;
 
+        $query = DB::table('transactions');
+
+            $query = $query->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
+
+            // check whether date presence
+            if($delivery_date and $paid_at){
+
+                $query = $query->whereDate('delivery_date', '=', $delivery_date);
+
+            }else{
+
+                $query = $query->whereDate('delivery_date', '=', Carbon::today()->toDateString());
+
+            }
+
+            // if user is driver
+            if(Auth::user()->hasRole('driver')){
+
+                $query = $query->where('driver', Auth::user()->name)->where('paid_by', Auth::user()->name);
+
+            }else if($driver and $paid_by){
+
+                $query = $query->where('driver', 'like', '%'.$driver.'%')->where('paid_by', 'like', '%'.$paid_by.'%');
+            }
+
+            $query = $this->extraField($request, $query);
+
+            $query = $query
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+
         // Retrieve Delivered and Paid
         $query1 = DB::table('transactions');
 
@@ -523,7 +555,7 @@ class RptController extends Controller
             // check whether date presence
             if($delivery_date and $paid_at){
 
-                $query1 = $query1->whereDate('delivery_date', '=', $delivery_date)->orWhere('paid_at', '=', $paid_at);
+                $query1 = $query1->whereDate('delivery_date', '=', $delivery_date)->whereDate('paid_at', '=', $paid_at);
 
             }else{
 
@@ -613,7 +645,7 @@ class RptController extends Controller
                 ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
             $query3 = $query3
-                ->union($query1)->union($query2)
+                ->union($query)->union($query1)->union($query2)
                 ->orderBy('id', 'desc')
                 ->get();
 
