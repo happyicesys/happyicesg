@@ -1,3 +1,5 @@
+@inject('items', 'App\Item')
+
 @extends('template')
 @section('title')
 {{ $ITEM_TITLE }}
@@ -104,6 +106,7 @@
                                                         'ng-model'=>'originalModel',
                                                         'readonly'=>'readonly'
                                                         ]) !!}
+
                                     </strong>
                                 </td>
                                 <td class="col-md-2">

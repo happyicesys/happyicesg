@@ -133,7 +133,7 @@ class RptController extends Controller
                 }
             }else{
 
-                $person = Person::findOrFail($option)->first();
+                $person = Person::findOrFail($option);
 
                 if($person){
 
