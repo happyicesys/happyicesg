@@ -471,7 +471,46 @@ class RptController extends Controller
 
     public function getVerifyPaid(Request $request)
     {
-        dd($request->all());
+
+        $checkboxes = $request->checkbox;
+
+        $pay_methods = $request->pay_method;
+
+        $notes = $request->note;
+
+        if($checkboxes){
+
+            foreach($checkboxes as $index => $checkbox){
+
+                $transaction = Transaction::findOrFail($index);
+
+                if($transaction->status === 'Delivered'){
+
+                    if($transaction->pay_status === 'Owe'){
+
+                        $transaction->status = 'Verified Owe';
+
+                        $transaction->updated_by = Auth::user()->name;
+
+                        $transaction->save();
+
+                    }else if($transaction->pay_status === 'Paid'){
+
+                        $transaction->status = 'Verified Paid';
+
+                        $transaction->pay_method = $pay_methods[$index];
+
+                        $transaction->note = $notes[$index];
+
+                        $transaction->updated_by = Auth::user()->name;
+
+                        $transaction->save();
+                    }
+                }
+            }
+        }
+
+        return redirect('report');
     }
 
     // calculating gst and non for delivered total
@@ -515,6 +554,8 @@ class RptController extends Controller
 
         $driver = $request->driver;
 
+        $role = $request->role;
+
         $query = DB::table('transactions');
 
             $query = $query->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
@@ -529,6 +570,11 @@ class RptController extends Controller
                 $query = $query->whereDate('delivery_date', '=', Carbon::today()->toDateString());
 
             }
+/*
+            if($role and ($role != 'All')){
+
+                $query = where('driver', Auth::user()->hasRole())
+            }*/
 
             // if user is driver
             if(Auth::user()->hasRole('driver')){
@@ -740,7 +786,6 @@ class RptController extends Controller
         $query2 = $query2
             ->orderBy('id', 'desc');
 
-
         $amt_del = $this->calTransactionTotal($query1->get());
 
         $qty_del = $this->calQtyTotal($query1->get());
@@ -749,9 +794,9 @@ class RptController extends Controller
 
         $amt_mod = $this->calTransactionTotal($query2->get());
 
-        $cash_mod =$this->calTransactionTotal($query2->where('pay_method', '=', 'cash')->get());
+        $cash_mod = $this->payMethodCon($query2->get(), 'cash');
 
-        $cheque_mod =$this->calTransactionTotal($query2->where('pay_method', '=', 'cheque')->get());
+        $cheque_mod = $this->payMethodCon($query2->get(), 'cheque');
 
         $data = [
 
@@ -770,6 +815,33 @@ class RptController extends Controller
         ];
 
         return $data;
+    }
+
+    private function payMethodCon($transactions, $con)
+    {
+        $total = 0;
+
+        foreach($transactions as $transaction){
+
+            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+
+            if($con === 'cash'){
+
+                if($transaction->pay_method == 'cash'){
+
+                    $total += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                }
+
+            }else if($con === 'cheque'){
+
+                if($transaction->pay_method == 'cheque'){
+
+                    $total += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                }
+            }
+        }
+
+        return $total;
     }
 
     private function extraField($request, $query)

@@ -1,6 +1,7 @@
 @inject('people', 'App\Person')
 @inject('drivers', 'App\User')
 @inject('profiles', 'App\Profile')
+@inject('roles', 'App\Role')
 
 @extends('template')
 @section('title')
@@ -233,13 +234,15 @@
                                             <label for="display_num2" style="padding-right: 20px">per Page</label>
                                         </div>
 {{--                                         <div class="col-md-6 pull-right">
-                                            <div class="col-md-3"  style="padding-top:10px">
-                                                <label for="profile_id" class="search">Profile:</label>
+                                            <div class="col-md-2"  style="padding-top:10px">
+                                                <label for="role_id" class="search">Role:</label>
                                             </div>
                                             <div class="col-md-9" style="padding-top:10px">
-                                                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id',
+                                                {!! Form::select('role_id', [''=>'All']+$roles::lists('label', 'name')->all(), null, ['id'=>'profile_id',
                                                     'class'=>'select',
-                                                    'ng-model'=>'search.name'])
+                                                    'ng-model'=>'role',
+                                                    'ng-change'=>'onRoleChanged(role)'
+                                                    ])
                                                 !!}
                                             </div>
                                         </div> --}}
@@ -404,7 +407,7 @@
                                                                                         fileName: 'DailyRpt'
                                                                                     });" >Export PDF</button> --}}
                                             {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
-                                            {{-- {!! Form::submit('Mass Verify Paid', ['name'=>'verify', 'class'=> 'btn btn-warning', 'form'=>'verify']) !!} --}}
+                                            {{-- {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!} --}}
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
@@ -491,6 +494,7 @@
                                                     <td></td>
                                                 </tr>
                                                 <tr style="background-color: #DDFDF8">
+                                                    {{-- <th class="col-md-1 text-center"></th> --}}
                                                     <th class="col-md-1 text-center">
                                                         #
                                                     </th>
@@ -588,6 +592,7 @@
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
                                                     </tr> --}}
                                                     <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
+                                                        {{-- <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td> --}}
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
                                                             <a href="/transaction/@{{ transaction.id }}/edit">
@@ -649,14 +654,16 @@
                                                             {{-- <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, payMethodModel, noteModel)">Verify Paid</a> --}}
                                                             <a href="/transaction/status/@{{transaction.id}}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
                                                         </td>
-                                                        <td class="col-md-1 text-center">
+                                                        <td class="col-md-1 text-center" ng-if="!transaction.pay_method">
                                                             {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
                                                                                 'class'=>'form-control input-sm',
                                                                                 'ng-model'=>'payMethodModel',
                                                                                 'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
-                                                            <span ng-if="transaction.pay_method">@{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}</span>
+                                                        </td>
+                                                        <td class="col-md-1 text-center" ng-if="transaction.pay_method">
+                                                            @{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}
                                                         </td>
                                                         <td class="col-md-2 text-center">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [

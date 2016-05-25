@@ -74,6 +74,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                     driver: $scope.driver,
 
+                    role: $scope.role,
+
                 }
             }
 /*
@@ -157,6 +159,15 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             $scope.driverChange = function(driver){
 
                 $scope.paid_by = driver;
+
+                syncData();
+
+                getIndex();
+            }
+
+            $scope.onRoleChanged = function(role){
+
+                $scope.role = role;
 
                 syncData();
 
