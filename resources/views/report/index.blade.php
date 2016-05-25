@@ -658,7 +658,7 @@
                                                             {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
                                                                                 'class'=>'form-control input-sm',
                                                                                 'ng-model'=>'payMethodModel',
-                                                                                'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
+                                                                                'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
                                                         </td>
