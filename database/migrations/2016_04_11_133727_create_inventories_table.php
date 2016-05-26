@@ -29,6 +29,7 @@ class CreateInventoriesTable extends Migration
             $table->decimal('qtytotal_incoming', 12, 4);
             $table->decimal('qtytotal_after', 12, 4);
             $table->text('remark')->nullable();
+            $table->timestamp('rec_date');
             $table->timestamps();
 
             $table->integer('creator_id')->unsigned();

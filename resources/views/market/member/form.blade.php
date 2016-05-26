@@ -12,20 +12,11 @@
         {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
         {!! Form::text('name', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
     </div>
-
-    <div class="form-group">
-        {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
-        {!! Form::text('company', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-    </div>
     @else
     <div class="form-group">
         {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::text('name', null, ['class'=>'form-control']) !!}
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
-        {!! Form::text('company', null, ['class'=>'form-control']) !!}
     </div>
     @endif
 
@@ -36,6 +27,7 @@
 
     <div class="form-group">
         {!! Form::label('contact', 'Contact', ['class'=>'control-label']) !!}
+        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::text('contact', null, ['class'=>'form-control']) !!}
     </div>
 
@@ -46,6 +38,7 @@
 
     <div class="form-group">
         {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
+        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::email('email', null, ['class'=>'form-control']) !!}
     </div>
 
@@ -60,10 +53,18 @@
 
 <div class="col-md-6">
 
-    <div class="form-group">
-        {!! Form::label('site_name', 'Site Name', ['class'=>'control-label']) !!}
-        {!! Form::text('site_name', null, ['class'=>'form-control']) !!}
-    </div>
+    @if(isset($self))
+        <div class="form-group">
+            {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
+            {!! Form::text('company', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+        </div>
+    @else
+        <div class="form-group">
+            {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
+            {!! Form::text('company', null, ['class'=>'form-control']) !!}
+        </div>
+    @endif
 
     <div class="form-group">
         {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
@@ -72,11 +73,13 @@
 
     <div class="form-group">
         {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
+        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'2']) !!}
     </div>
 
     <div class="form-group">
         {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
     </div>
 

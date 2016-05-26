@@ -242,7 +242,7 @@ class MarketingController extends Controller
                 });
             }
 
-            Flash::success('User Successfully Registered');
+            Flash::success('User Successfully Registered, Please Check the Registered Email for Login Password');
 
             return Redirect::action('MarketingController@indexMember');
 

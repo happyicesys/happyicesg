@@ -20,7 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('person_code')->nullable();
             $table->string('name');
             $table->integer('person_id')->unsigned()->nullable();
-            $table->foreign('person_id')->references('id')->on('people');           
+            $table->foreign('person_id')->references('id')->on('people');
             $table->timestamp('delivery_date')->nullable();
             $table->timestamp('order_date')->nullable();
             $table->string('driver')->nullable();
@@ -28,16 +28,21 @@ class CreateTransactionsTable extends Migration
             $table->string('pay_status')->default('Owe');
             $table->text('del_address')->nullable();
             $table->string('po_no')->nullable();
+            $table->decimal('total_qty', 12, 4)->nullable();
+            $table->string('cancel_trace')->nullable();
+            $table->datetime('paid_at')->nullable();
+            $table->string('pay_method')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            //record who paid and updated  
+            //record who paid and updated
             $table->string('updated_by');
             $table->string('paid_by');
         });
 
         $statement = "ALTER TABLE transactions AUTO_INCREMENT = 160001;";
-        DB::unprepared($statement);         
+        DB::unprepared($statement);
     }
 
     /**

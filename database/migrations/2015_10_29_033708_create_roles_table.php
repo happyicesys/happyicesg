@@ -17,7 +17,7 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->string('label');
             $table->string('remark')->nullable();
-            $table->timestamps();           
+            $table->timestamps();
         });
 
         Schema::create('permissions', function (Blueprint $table) {
@@ -25,7 +25,7 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->string('label');
             $table->string('remark')->nullable();
-            $table->timestamps();           
+            $table->timestamps();
         });
 
         Schema::create('permission_role', function (Blueprint $table) {
@@ -35,7 +35,7 @@ class CreateRolesTable extends Migration
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
 
-            $table->primary(['permission_id', 'role_id']);         
+            $table->primary(['permission_id', 'role_id']);
         });
 
         Schema::create('role_user', function (Blueprint $table) {
@@ -45,19 +45,8 @@ class CreateRolesTable extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->primary(['role_id', 'user_id']);         
+            $table->primary(['role_id', 'user_id']);
         });
-
-        Schema::create('person_role', function (Blueprint $table) {
-            $table->integer('person_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-
-            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-
-            $table->primary(['person_id', 'role_id']);         
-        });        
-
 
     }
 
@@ -68,9 +57,8 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('person_role');
         Schema::drop('permission_role');
-        Schema::drop('role_user');        
+        Schema::drop('role_user');
         Schema::drop('roles');
         Schema::drop('permissions');
     }

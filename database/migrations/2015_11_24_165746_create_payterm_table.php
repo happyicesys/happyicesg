@@ -16,9 +16,9 @@ class CreatePaytermTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('desc')->nullable();
-            $table->timestamps();          
+            $table->timestamps();
         });
-    
+
     }
 
     /**

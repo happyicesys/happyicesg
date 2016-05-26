@@ -16,6 +16,8 @@ class CreateDealTable extends Migration
             $table->increments('id');
             $table->decimal('qty', 12, 4);
             $table->decimal('amount', 10, 2);
+            $table->decimal('unit_price', 10, 2)->nullable();
+            $table->string('qty_status')->nullable();
             $table->timestamps();
 
             $table->integer('item_id')->unsigned()->nullable();
