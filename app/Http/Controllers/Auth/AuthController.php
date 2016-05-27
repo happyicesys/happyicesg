@@ -29,7 +29,7 @@ class AuthController extends Controller
     protected $table = 'users';
 
 //    Assigning default route path
-    protected $redirectPath = '/transaction';
+    // protected $redirectPath = '/transaction';
     protected $redirectAfterLogout = '/auth/login';
 
     /**
@@ -40,6 +40,17 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
+    }
+
+    public function redirectPath()
+    {
+        // Logic that determines where to send the user
+        if (\Auth::user()->type == 'marketer') {
+
+            return '/market/deal';
+        }
+
+        return '/transaction';
     }
 
     /**
@@ -76,7 +87,7 @@ class AuthController extends Controller
     public function getRegister()
     {
         return view('user.create');
-    }    
+    }
 
     //Redirect path after register new user
     public function postRegister()
@@ -85,11 +96,11 @@ class AuthController extends Controller
     }
 
     //Enable login both with email and username
-    public function postLogin(Request $request) 
+    public function postLogin(Request $request)
     {
         $field = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         $request->merge([$field => $request->input('login')]);
         $this->username = $field;
         return self::laravelPostLogin($request);
-    } 
+    }
 }

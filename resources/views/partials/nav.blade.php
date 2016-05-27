@@ -27,6 +27,7 @@
             @unless (Auth::guest())
             <ul class="nav navbar-nav side-nav">
 
+            @unless(Auth::user()->type == 'marketer')
                 <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
                     <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
                 </li>
@@ -49,6 +50,7 @@
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>
+            @endunless
 
                 {{-- @can('marketer_view') --}}
 {{--                 <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
@@ -60,18 +62,24 @@
                         </ul>
                 </li> --}}
                 {{-- @endcan --}}
-                <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
-                    <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
-                    <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'customer') !== false ? 'active' : '' }}">
-                    <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
-                    <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Deals</a>
-                </li>
+                @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer')
+                @cannot('transaction_view')
+                    @unless(Auth::user()->type == 'marketer')
+                    <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
+                        <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
+                    </li>
+                    @endunless
+                    <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
+                        <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
+                    </li>
+                    <li class="{{ strpos(Request::path(), 'customer') !== false ? 'active' : '' }}">
+                        <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
+                    </li>
+                    <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
+                        <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Deals</a>
+                    </li>
+                @endcannot
+                @endif
 {{--                 <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
                     <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>
                 </li> --}}

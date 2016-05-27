@@ -23,6 +23,7 @@ use App\DtdDeal;
 use App\Item;
 use App\Deal;
 use App\Transaction;
+use App\Role;
 
 class MarketingController extends Controller
 {
@@ -906,7 +907,13 @@ class MarketingController extends Controller
 
             $user = User::create($request->all());
 
-            // $user->assignRole('marketer');
+            $role = Role::where('name', 'marketer')->first();
+
+            $user->type = 'marketer';
+
+            $user->save();
+            // assign marketer role
+            $user->roles()->attach($role->id);
 
             return $user->id;
 

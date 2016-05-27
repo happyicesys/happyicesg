@@ -1,25 +1,25 @@
-var app = angular.module('app', [   'ui.bootstrap', 
+var app = angular.module('app', [   'ui.bootstrap',
                                     'angularUtils.directives.dirPagination',
-                                    'ui.select', 
+                                    'ui.select',
                                     'ngSanitize'
                                 ]);
 
         var $person = $('.person');
         var $item = $('.item');
         var $amount = $('#amount');
-        var $trans_id = $('#transaction_id'); 
+        var $trans_id = $('#transaction_id');
         var $person_select = $('.person_select');
 
         $person.select2();
         $item.select2({
             placeholder: "Select Item...",
-        });        
+        });
 
     function transactionController($scope, $http){
 
         $scope.selection = {};
         $scope.Math = window.Math;
-           
+
             $(document).ready(function () {
 
                $(".qtyClass").keyup(multInputs);
@@ -54,14 +54,14 @@ var app = angular.module('app', [   'ui.bootstrap',
                        // $('.amountClass', this).text($total);
                         if(isNaN($total)) {
                             var $total = 0;
-                        }                   
+                        }
                        $('.amountClass', this).val($total.toFixed(2));
                        mult += (+$total);
                    });
 
                    $('.grandTotal').val(mult.toFixed(2));
                }
-            });    
+            });
 
             $http.get('/person/data').success(function(people){
             $scope.people = people;
@@ -75,7 +75,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                 $http({
                     url: '/deal/data/' + transaction.id,
                     method: "GET",
-                }).success(function(deals){ 
+                }).success(function(deals){
                     $scope.deals = deals;
 
                     var total = 0;
@@ -89,8 +89,8 @@ var app = angular.module('app', [   'ui.bootstrap',
                         $http({
                             url: '/person/profile/' + transaction.person_id,
                             method: "GET",
-                        }).success(function(profile){ 
-    
+                        }).success(function(profile){
+
                                 $scope.totalModel = total;
                                 $scope.totalqtyModel = totalqty;
 
@@ -101,21 +101,21 @@ var app = angular.module('app', [   'ui.bootstrap',
                             }else{
 
                                 $scope.totalModelStore = total;
-                                    
+
                             }
-/*                            
+/*
                             if(! $scope.totalModelStore == transaction.total){
 
                                 $http.put('total', $scope.totalModelStore)
                                     .success(function(){
-                                });                                 
+                                });
 
                             }
- 
+
 
                             $http.put('totalqty', $scope.totalqtyModel)
                                 .success(function(){
-                            });                                                                            
+                            });
 */
                         });
 
@@ -134,12 +134,12 @@ var app = angular.module('app', [   'ui.bootstrap',
                     // choose which to display
                     // transremark
                     if(transaction.transremark){
-                        
+
                         $scope.transremarkModel = transaction.transremark;
 
                     }else{
 
-                        $scope.transremarkModel = person.remark;    
+                        $scope.transremarkModel = person.remark;
                     }
 
                     // delivery address
@@ -151,20 +151,25 @@ var app = angular.module('app', [   'ui.bootstrap',
 
                         $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     }
-                    
+
                     $('.date').datetimepicker({
                         format: 'YYYY-MM-DD'
+                    });
+
+                    $('.paid_date').datetimepicker({
+                        format: 'YYYY-MM-DD    LT',
+                        sideBySide: true
                     });
 
                         $http({
                             url: '/transaction/item/'+ person.id,
                             method: "GET",
                         }).success(function(items){
-                            $scope.items = items;          
-                        });            
-                }); 
+                            $scope.items = items;
+                        });
+                });
 
-            });            
+            });
 
         });
 
@@ -175,8 +180,8 @@ var app = angular.module('app', [   'ui.bootstrap',
             $http({
                 url: '/transaction/person/'+ person,
                 method: "GET",
-            
-            }).success(function(person){ 
+
+            }).success(function(person){
                 $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
                 $scope.delModel = person.del_address + ' ' + person.del_postcode;
                 $scope.paytermModel = person.payterm;
@@ -189,10 +194,10 @@ var app = angular.module('app', [   'ui.bootstrap',
                 $http({
                     url: '/transaction/item/'+ person.id,
                     method: "GET",
-                
+
                 }).success(function(items){
                     console.log(items);
-                    $scope.items = items;             
+                    $scope.items = items;
                     $scope.qtyModel = [];
                     $scope.amountModel = [];
                     $scope.unitModel = [];
@@ -207,7 +212,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                         data: {person_code: $scope.personcodeModel},
                         }).success(function(response){
                         });
-                                                                          
+
 
                     $scope.onItemSelected = function (item_id){
 
@@ -224,13 +229,13 @@ var app = angular.module('app', [   'ui.bootstrap',
                             $scope.onQtyChange = function(){
                                 $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
                             }
-                        });                    
+                        });
 
                     }
 
                 });
-            });                                     
-        }  */        
+            });
+        }  */
 
         //delete deals
         $scope.confirmDelete = function(id){
@@ -250,8 +255,8 @@ var app = angular.module('app', [   'ui.bootstrap',
             }else{
                 return false;
             }
-        } 
-    }  
+        }
+    }
 
 app.controller('transactionController', transactionController);
 

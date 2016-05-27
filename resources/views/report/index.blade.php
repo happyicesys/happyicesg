@@ -407,7 +407,7 @@
                                                                                         fileName: 'DailyRpt'
                                                                                     });" >Export PDF</button> --}}
                                             {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
-                                            {{-- {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!} --}}
+                                            {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!}
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>
@@ -494,7 +494,7 @@
                                                     <td></td>
                                                 </tr>
                                                 <tr style="background-color: #DDFDF8">
-                                                    {{-- <th class="col-md-1 text-center"></th> --}}
+                                                    <th class="col-md-1 text-center"></th>
                                                     <th class="col-md-1 text-center">
                                                         #
                                                     </th>
@@ -592,7 +592,7 @@
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
                                                     </tr> --}}
                                                     <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
-                                                        {{-- <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td> --}}
+                                                        <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td>
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
                                                             <a href="/transaction/@{{ transaction.id }}/edit">
@@ -665,7 +665,7 @@
                                                         <td class="col-md-1 text-center" ng-if="transaction.pay_method">
                                                             @{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}
                                                         </td>
-                                                        <td class="col-md-2 text-center">
+                                                        <td class="col-md-2 text-center" ng-if="!transaction.pay_method">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [
                                                                             'class'=>'input-sm form-control',
                                                                             'rows'=>'2',
@@ -674,6 +674,9 @@
                                                                             'style'=>'width:100px;'
                                                                             ]) !!}
                                                             <span ng-if="transaction.pay_method">@{{transaction.note}}</span>
+                                                        </td>
+                                                        <td class="col-md-1 text-center" ng-if="transaction.pay_method">
+                                                            <span>@{{transaction.note}}</span>
                                                         </td>
                                                         @endcannot
                                                     </tr>

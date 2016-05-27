@@ -166,7 +166,7 @@
 
                         <div class="col-md-4 form-group">
                             {!! Form::label('paid_at', 'Payment Received On :', ['class'=>'control-label']) !!}
-                        <div class="input-group date">
+                        <div class="input-group paid_date">
                             {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at']) !!}
                             <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                         </div>
@@ -174,7 +174,7 @@
                     @endcannot
                 @endif
 
-                @if($transaction->status === 'Verified Paid')
+                @if($transaction->status === 'Verified Paid' or $transaction->pay_status === 'Paid')
                     <div class="col-md-4 form-group">
                         {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
                         {!! Form::select('pay_method',

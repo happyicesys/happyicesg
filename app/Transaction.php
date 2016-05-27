@@ -94,6 +94,19 @@ class Transaction extends Model
         }
     }
 
+    public function setPaidAtAttribute($date)
+    {
+        if($date){
+
+            $this->attributes['paid_at'] = Carbon::createFromFormat('Y-m-d h:i A', $date);
+
+        }else{
+
+            $this->attributes['paid_at'] = null;
+        }
+
+    }
+
     public function setTransremarkAttribute($value)
     {
         $this->attributes['transremark'] = $value ?: null;

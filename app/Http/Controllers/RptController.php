@@ -498,9 +498,21 @@ class RptController extends Controller
 
                         $transaction->status = 'Verified Paid';
 
-                        $transaction->pay_method = $pay_methods[$index];
+                        if(isset($pay_methods)){
 
-                        $transaction->note = $notes[$index];
+                            if(array_key_exists($index, $pay_methods)){
+
+                                $transaction->pay_method = $pay_methods[$index];
+                            }
+                        }
+
+                        if(isset($pay_methods)){
+
+                            if(array_key_exists($index, $notes)){
+
+                                $transaction->note = $notes[$index];
+                            }
+                        }
 
                         $transaction->updated_by = Auth::user()->name;
 

@@ -183,7 +183,7 @@ class TransactionController extends Controller
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
 
-            $request->merge(array('paid_at' => Carbon::now()));
+            $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
             if(! $request->driver){
 
@@ -226,7 +226,7 @@ class TransactionController extends Controller
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
 
-            $request->merge(array('paid_at' => Carbon::now()));
+            $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
             if(count($deals) == 0){
 
