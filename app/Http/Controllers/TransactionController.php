@@ -267,9 +267,13 @@ class TransactionController extends Controller
 
                 $request->merge(array('paid_by' => null));
 
+                $request->merge(array('paid_at' => null));
+
             }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
 
                 $request->merge(array('paid_by' => null));
+
+                $request->merge(array('paid_at' => null));
 
             }
         }
