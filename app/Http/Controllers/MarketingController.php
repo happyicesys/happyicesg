@@ -502,6 +502,11 @@ class MarketingController extends Controller
 
     public function indexDealApi(Request $request)
     {
+
+        Carbon::setWeekStartsAt(Carbon::MONDAY);
+
+        Carbon::setWeekEndsAt(Carbon::SUNDAY);
+
         $transaction_id = $request->transaction_id;
 
         $cust_id = $request->cust_id;
