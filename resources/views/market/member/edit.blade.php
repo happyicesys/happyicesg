@@ -25,7 +25,9 @@ Members
                         {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'update_person']) !!}
                     @endif
 
-                    {!! Form::submit('Reset Password', ['name'=>'reset', 'class'=> 'btn btn-primary', 'form'=>'update_person', 'onclick'=>'clicked(event)']) !!}
+                    @if(Auth::user()->hasRole('admin'))
+                        {!! Form::submit('Reset Password', ['name'=>'reset', 'class'=> 'btn btn-primary', 'form'=>'update_person', 'onclick'=>'clicked(event)']) !!}
+                    @endif
                 </div>
                 <div class="form-group pull-right">
                     {!! Form::submit('Edit', ['class'=> 'btn btn-success', 'form'=>'update_person']) !!}

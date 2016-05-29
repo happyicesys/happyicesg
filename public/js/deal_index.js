@@ -15,7 +15,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         };
 
         // get today's date
-        var now = moment();
+        var now = moment().isoWeekday(1);
         // find out start day of the week (Monday)
         $scope.weekstart = now.startOf('week').add(1, 'day').format("YYYY-MM-DD");
         // find out end day of the week (Sunday)

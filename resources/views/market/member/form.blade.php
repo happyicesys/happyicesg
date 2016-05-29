@@ -96,11 +96,11 @@
 
     <div class="row"></div>
 
-    <hr>
-
     <div class="col-md-12">
-        {{-- @if(isset($person) and Auth::user()->hasRole('admin')) --}}
-        @if(isset($person))
+
+        @if(isset($person) and Auth::user()->hasRole('admin'))
+        <hr>
+        {{-- @if(isset($person)) --}}
         <div class="form-group">
             {!! Form::label('parent_id', 'Assign Parent', ['class'=>'control-label']) !!}
             {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}

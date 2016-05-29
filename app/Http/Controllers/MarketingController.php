@@ -257,9 +257,20 @@ class MarketingController extends Controller
 
     public function updateSelf(Request $request, $self_id)
     {
-        $input = $request->all();
-
         $person = Person::findOrFail($self_id);
+
+        if($request->parent_id){
+
+            $new_parent = Person::findOrFail($request->parent_id);
+
+            $person->makeChildOf($newperson);
+
+            $person->parent_name = $new_parent->name;
+
+            $person->save();
+        }
+
+        $input = $request->except(['parent_id']);
 
         $user = User::findOrFail($person->user_id);
 
@@ -278,7 +289,6 @@ class MarketingController extends Controller
                 return Redirect::action('MarketingController@indexMember');
             }
         }
-
         $person->update($input);
 
         $user->email = $request->email;
@@ -555,7 +565,7 @@ class MarketingController extends Controller
             $query = $query->whereIn('people.id', $personid_arr);
         }
 
-        $query = $query->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst', 'dtdtransactions.pay_method', 'dtdtransactions.note')
+        $query = $query->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst', 'dtdtransactions.pay_method', 'dtdtransactions.note', 'dtdtransactions.transaction_id')
                 ->latest('dtdtransactions.id')->get();
 
         $caltotal = $this->calTransactionTotal($query);
@@ -822,19 +832,35 @@ class MarketingController extends Controller
 
         $transaction = DtdTransaction::findOrFail($id);
 
+        if($transaction->transaction_id){
+
+            $transaction = Transaction::findOrFail($transaction->transaction_id);
+
+            $deals = Deal::whereTransactionId($transaction->id)->get();
+
+            $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+
+            $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+
+        }else{
+
+            $transaction = DtdTransaction::findOrFail($id);
+
+            $deals = DtdDeal::whereTransactionId($transaction->id)->get();
+
+            $totalprice = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('amount');
+
+            $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
+
+        }
+
         $person = Person::findOrFail($transaction->person_id);
-
-        $deals = DtdDeal::whereTransactionId($transaction->id)->get();
-
-        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-
-        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
 
         if(! $person->email){
 
             Flash::error('Please set the email before sending');
 
-            return Redirect::action('MarketingController@editDeal', $transaction->id);
+            return Redirect::action('MarketingController@editDeal', $id);
         }
 
         $email = $person->email;
@@ -888,7 +914,7 @@ class MarketingController extends Controller
             Flash::error('Please Try Again');
         }
 
-        return Redirect::action('MarketingController@editDeal', $transaction->id);
+        return Redirect::action('MarketingController@editDeal', $id);
 
     }
 
@@ -1033,41 +1059,66 @@ class MarketingController extends Controller
 
         $errors = array();
 
-        foreach($qtys as $index => $qty){
+        if($qtys){
 
-            if($qty != NULL or $qty != 0){
+            foreach($qtys as $index => $qty){
 
-                $item = Item::findOrFail($index);
+                if($qty != NULL or $qty != 0){
 
-                // inventory email notification for stock running low
-                if($init_d and $item->email_limit){
+                    $item = Item::findOrFail($index);
 
-                    if($this->calOrderEmailLimit($qty, $item)){
+                    // inventory email notification for stock running low
+                    if($init_d and $item->email_limit){
 
-                        if(! $item->emailed){
+                        if($this->calOrderEmailLimit($qty, $item)){
 
-                            $this->sendEmailAlert($item);
+                            if(! $item->emailed){
 
-                            // restrict only send 1 mail if insufficient
-                            $item->emailed = true;
+                                $this->sendEmailAlert($item);
+
+                                // restrict only send 1 mail if insufficient
+                                $item->emailed = true;
+
+                                $item->save();
+                            }
+
+                        }else{
+                            // reactivate email alert
+                            $item->emailed = false;
 
                             $item->save();
                         }
-
-                    }else{
-                        // reactivate email alert
-                        $item->emailed = false;
-
-                        $item->save();
                     }
-                }
 
 
-                if($init_d){
+                    if($init_d){
 
-                    if($this->calOrderLimit($qty, $item)){
+                        if($this->calOrderLimit($qty, $item)){
 
-                        array_push($errors, $item->product_id.' - '.$item->name);
+                            array_push($errors, $item->product_id.' - '.$item->name);
+
+                        }else{
+
+                            $dtddeal = new DtdDeal();
+
+                            $dtddeal->transaction_id = $dtdtrans_id;
+
+                            $dtddeal->item_id = $index;
+
+                            $dtddeal->qty = $qty;
+
+                            $dtddeal->amount = $amounts[$index];
+
+                            $dtddeal->unit_price = $quotes[$index];
+
+                            $dtddeal->qty_status = 1;
+
+                            $dtddeal->save();
+
+                            $dtddeal->deal_id = 'D'.$dtddeal->id;
+
+                            $dtddeal->save();
+                        }
 
                     }else{
 
@@ -1090,30 +1141,8 @@ class MarketingController extends Controller
                         $dtddeal->deal_id = 'D'.$dtddeal->id;
 
                         $dtddeal->save();
+
                     }
-
-                }else{
-
-                    $dtddeal = new DtdDeal();
-
-                    $dtddeal->transaction_id = $dtdtrans_id;
-
-                    $dtddeal->item_id = $index;
-
-                    $dtddeal->qty = $qty;
-
-                    $dtddeal->amount = $amounts[$index];
-
-                    $dtddeal->unit_price = $quotes[$index];
-
-                    $dtddeal->qty_status = 1;
-
-                    $dtddeal->save();
-
-                    $dtddeal->deal_id = 'D'.$dtddeal->id;
-
-                    $dtddeal->save();
-
                 }
             }
         }

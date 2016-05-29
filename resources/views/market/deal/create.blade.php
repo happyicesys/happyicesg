@@ -87,6 +87,9 @@ Deals
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
                                     </td>
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Draft'">
+                                        @{{ transaction.status }}
+                                    </td>
                                     <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
                                         @{{ transaction.status }}
                                     </td>

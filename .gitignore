@@ -2,6 +2,7 @@
 /node_modules
 /public/person_asset
 /public/item_asset
+/storage/invoice
 Homestead.yaml
 Homestead.json
 .env

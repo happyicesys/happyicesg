@@ -171,7 +171,7 @@ Deals
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/market/deal/@{{ transaction.id }}/edit">
-                                            @{{ transaction.id }}
+                                            @{{ transaction.transaction_id ? transaction.transaction_id : 'Drf '+transaction.id }}
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
@@ -186,6 +186,9 @@ Deals
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
                                     </td>
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Draft'">
+                                        @{{ transaction.status }}
+                                    </td>
                                     <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
                                         @{{ transaction.status }}
                                     </td>
@@ -196,9 +199,6 @@ Deals
                                         @{{ transaction.status }}
                                     </td>
                                     <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
-                                        @{{ transaction.status }}
-                                    </td>
-                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Submitted'">
                                         @{{ transaction.status }}
                                     </td>
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">

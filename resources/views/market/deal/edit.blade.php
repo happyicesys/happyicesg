@@ -11,12 +11,12 @@ Deals
         <div class="col-md-4">
         <h4>
             @if($transaction->status == 'Cancelled')
-            <del><strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}})
+            <del><strong>Invoice : {{$transaction->transaction_id ? $transaction->transaction_id : $transaction->id}}</strong> ({{$transaction->status}})
                 @unless($transaction->person->cust_id[0] == 'D')
                     - {{$transaction->pay_status}}</del>
                 @endunless
             @else
-            <strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}})
+            <strong>Invoice : {{$transaction->transaction_id ? $transaction->transaction_id : $transaction->id}}</strong> ({{$transaction->status}})
                 @unless($transaction->person->cust_id[0] == 'D')
                     - {{$transaction->pay_status}}
                 @endunless
