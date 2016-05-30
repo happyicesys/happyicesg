@@ -96,6 +96,21 @@ class UserController extends Controller
 
         $user->update($input);
 
+        $person = Person::where('user_id', $user->id)->first();
+
+        if($person){
+
+            $person->company = $user->username;
+
+            $person->name = $user->name;
+
+            $person->email = $user->email;
+
+            $person->contact = $user->contact;
+
+            $person->save();
+        }
+
         $this->syncRole($user, $request->input('role_list'));
 
         $this->assignType($user);
