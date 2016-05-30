@@ -98,7 +98,8 @@ class Transaction extends Model
     {
         if($date){
 
-            $this->attributes['paid_at'] = Carbon::createFromFormat('Y-m-d h:i A', $date);
+            // $this->attributes['paid_at'] = Carbon::createFromFormat('Y-m-d h:i A', $date);
+            $this->attributes['paid_at'] = Carbon::parse($date);
 
         }else{
 

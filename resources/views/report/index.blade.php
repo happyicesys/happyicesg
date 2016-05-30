@@ -640,7 +640,8 @@
                                                             @{{ transaction.pay_status }}
                                                         </td>
                                                         <td class="col-md-1 text-center"> @{{ transaction.paid_by ? transaction.paid_by : '-' }}</td>
-                                                        <td class="col-md-1 text-center"> @{{ transaction.paid_at ? transaction.paid_at : '-'}}</td>
+                                                        <td class="col-md-1 text-center" ng-if="transaction.paid_at"> @{{ transaction.paid_at | delDate: "yyyy-MM-dd" }}</td>
+                                                        <td class="col-md-1 text-center" ng-if="!transaction.paid_at">-</td>
                                                         {{-- pay status ended --}}
                                                         @cannot('transaction_view')
                                                         <td class="col-md-1 text-center">

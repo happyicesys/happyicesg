@@ -155,11 +155,11 @@ var app = angular.module('app', [   'ui.bootstrap',
                     $('.date').datetimepicker({
                         format: 'YYYY-MM-DD'
                     });
-
+/*
                     $('.paid_date').datetimepicker({
                         format: 'YYYY-MM-DD    LT',
                         sideBySide: true
-                    });
+                    });*/
 
                         $http({
                             url: '/transaction/item/'+ person.id,
