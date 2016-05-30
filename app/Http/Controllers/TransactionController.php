@@ -897,7 +897,7 @@ class TransactionController extends Controller
     private function calOrderLimit($qty, $item)
     {
 
-        if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0){
+        if(($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
 
             return true;
 
@@ -911,7 +911,7 @@ class TransactionController extends Controller
     private function calActualLimit($qty, $item)
     {
 
-        if($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0){
+        if(($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
 
             return true;
 
@@ -925,7 +925,7 @@ class TransactionController extends Controller
     private function calOrderEmailLimit($qty, $item)
     {
 
-        if($item->qty_now - $item->qty_order - $qty < $item->email_limit){
+        if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($qty > 0)){
 
             return true;
 
@@ -938,7 +938,7 @@ class TransactionController extends Controller
     private function calActualEmailLimit($qty, $item)
     {
 
-        if($item->qty_now - $qty < $item->email_limit){
+        if(($item->qty_now - $qty < $item->email_limit) and ($qty > 0)){
 
             return true;
 
