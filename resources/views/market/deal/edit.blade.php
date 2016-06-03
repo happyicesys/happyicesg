@@ -67,9 +67,9 @@ Deals
                     @endunless
                     {!! Form::close() !!}
 
-                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
+                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['MarketingController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
                     {!! Form::close() !!}
-                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
+                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['MarketingController@reverse', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
                     {!! Form::close() !!}
                 </div>
             </div>
@@ -150,8 +150,12 @@ Deals
                         <div class="pull-right">
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
                             @cannot('transaction_view')
-                                {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
-                                {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
+                                {{-- {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!} --}}
+{{--                                 @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())
+                                    {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
+                                @else
+                                    {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse', 'disabled'=>'disabled']) !!}
+                                @endunless --}}
                             @endcan
                         </div>
                     </div>

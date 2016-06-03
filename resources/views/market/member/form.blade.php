@@ -101,11 +101,19 @@
         @if(isset($person) and Auth::user()->hasRole('admin'))
         <hr>
         {{-- @if(isset($person)) --}}
-        <div class="form-group">
-            {!! Form::label('parent_id', 'Assign Parent', ['class'=>'control-label']) !!}
-            {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
-        </div>
+            <div class="form-group">
+                {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
+                {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
+            </div>
+        @elseif(isset($person))
+        <hr>
+            <div class="form-group">
+                {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
+                {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
+            </div>
+        @endif
 
+        @if(Auth::user()->hasRole('admin'))
         <div class="form-group">
             {!! Form::label('cust_type', 'Role Level', ['class'=>'control-label']) !!}
             {!! Form::select('cust_type', [
@@ -116,7 +124,19 @@
                                     'AB' => 'AB',
             ], null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
         </div>
+        @else
+        <div class="form-group">
+            {!! Form::label('cust_type', 'Role Level', ['class'=>'control-label']) !!}
+            {!! Form::select('cust_type', [
+                                    ''=>null,
+                                    'OM' => 'OM',
+                                    'OE' => 'OE',
+                                    'AM' => 'AM',
+                                    'AB' => 'AB',
+            ], null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
+        </div>
         @endif
+
     </div>
 
 <script>

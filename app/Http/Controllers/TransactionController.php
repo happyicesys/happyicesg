@@ -325,6 +325,17 @@ class TransactionController extends Controller
 
             $transaction->save();
 
+            if($transaction->dtdtransaction_id){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                $dtdtransaction->cancel_trace = $dtdtransaction->status;
+
+                $dtdtransaction->status = 'Cancelled';
+
+                $dtdtransaction->save();
+            }
+
             $this->dealDeleteMultiple($transaction->id);
 
             return Redirect::action('TransactionController@edit', $transaction->id);
@@ -555,6 +566,14 @@ class TransactionController extends Controller
 
             $transaction->updated_by = Auth::user()->name;
 
+            if($transaction->dtdtransaction_id){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                $dtdtransaction->status = 'Confirmed';
+
+                $dtdtransaction->save();
+            }
         }
 
         $transaction->save();

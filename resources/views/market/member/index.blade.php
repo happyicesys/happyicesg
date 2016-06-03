@@ -72,8 +72,8 @@ Members
                                 {!! Form::text('contact', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.contact', 'placeholder'=>'Contact']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('parent_name', 'Parent:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.parent_name', 'placeholder'=>'Parent']) !!}
+                                {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.parent_name', 'placeholder'=>'Manager']) !!}
                             </div>
                         </div>
 
@@ -93,7 +93,7 @@ Members
                                     </th>
                                     <th class="col-md-1 text-center">
                                         <a href="#" ng-click="sortType = 'cust_type'; sortReverse = !sortReverse">
-                                        Level
+                                        Role
                                         <span ng-show="sortType == 'cust_type' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'cust_type' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
@@ -111,7 +111,7 @@ Members
                                         Delivery Add
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        Parent
+                                        Manager
                                     </th>
                                     <th class="col-md-1 text-center">
                                         <a href="#" ng-click="sortType = 'active'; sortReverse = !sortReverse">

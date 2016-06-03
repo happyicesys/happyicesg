@@ -40,9 +40,9 @@ get('/market/deal/{dtdtransaction_id}', 'MarketingController@showDeal');
 get('/market/deal', 'MarketingController@indexDeal');
 get('/market/deal/download/{trans_id}', 'MarketingController@generateInvoice');
 get('/market/deal/emailInv/{dtd_transaction_id}', 'MarketingController@sendEmailInv');
+post('/market/deal/reverse/{dtd_transaction_id}', 'MarketingController@reverse');
+delete('market/deal/cancel/{id}', 'MarketingController@destroy');
 delete('/market/deal/data/{id}', 'MarketingController@destroyAjax');
-// resource('/market/deal', 'MarketingController');
-
 
 get('/market/member/data', 'MarketingController@indexMemberApi');
 get('/market/member', 'MarketingController@indexMember');

@@ -20,7 +20,8 @@ class Transaction extends Model
     }
 
     protected $dontKeepRevisionOf = array(
-        'person_id', 'name', 'cancel_trace'
+        'person_id', 'name', 'cancel_trace',
+        'dtdtransaction_id'
     );
 
     protected $revisionEnabled = true;
@@ -61,7 +62,7 @@ class Transaction extends Model
         'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no',
         'total_qty', 'pay_method', 'note',
-        'paid_at', 'cancel_trace'
+        'paid_at', 'cancel_trace', 'dtdtransaction_id'
     ];
 
     protected $dates =[
@@ -98,7 +99,6 @@ class Transaction extends Model
     {
         if($date){
 
-            // $this->attributes['paid_at'] = Carbon::createFromFormat('Y-m-d h:i A', $date);
             $this->attributes['paid_at'] = Carbon::parse($date);
 
         }else{

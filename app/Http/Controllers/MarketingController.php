@@ -920,9 +920,142 @@ class MarketingController extends Controller
         }
 
         return Redirect::action('MarketingController@editDeal', $id);
-
     }
 
+    // convert transaction to cancelled
+    public function destroy($id, Request $request)
+    {
+        if($request->input('form_delete')){
+
+            $dtdtransaction = DtdTransaction::findOrFail($id);
+
+            if($dtdtransaction->status == 'Confirmed'){
+
+                $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+
+                $transaction->cancel_trace = $transaction->status;
+
+                $transaction->status = 'Cancelled';
+
+                $transaction->save();
+
+                $this->dealDeleteMultiple($transaction->id);
+            }
+
+            $dtdtransaction->cancel_trace = $dtdtransaction->status;
+
+            $dtdtransaction->status = 'Cancelled';
+
+            $dtdtransaction->save();
+        }
+
+        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+    }
+
+    public function reverse($id)
+    {
+        $dtdtransaction = DtdTransaction::findOrFail($id);
+
+        if($dtdtransaction->transaction_id){
+
+            $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+
+            $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', '3')->get();
+
+            if($transaction->cancel_trace){
+
+                $this->dealUndoDelete($transaction->id);
+
+                $transaction->status = $transaction->cancel_trace;
+
+                $transaction->cancel_trace = '';
+
+                $transaction->updated_by = Auth::user()->name;
+            }
+
+            $transaction->save();
+        }
+
+        $dtdtransaction->status = $dtdtransaction->cancel_trace;
+
+        $dtdtransaction->cancel_trace = '';
+
+        $dtdtransaction->updated_by = Auth::user()->name;
+
+        $dtdtransaction->save();
+
+        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+    }
+
+    // method for deleting deals upon transaction deletion
+    private function dealDeleteMultiple($transaction_id)
+    {
+        $deals = Deal::where('transaction_id', $transaction_id)->get();
+
+        foreach($deals as $deal){
+
+            $item = Item::findOrFail($deal->item_id);
+
+            if($deal->qty_status == '1'){
+
+                $deal->qty_status = 3;
+
+                $deal->save();
+
+            }else if($deal->qty_status == '2'){
+
+                $item->qty_now += $deal->qty;
+
+                $deal->qty_status = 3;
+
+                $deal->save();
+            }
+
+            $item->save();
+
+            $this->dealSyncOrder($item->id);
+
+        }
+    }
+
+    // method for reverting deals upon undo delete
+    private function dealUndoDelete($transaction_id)
+    {
+        $deals = Deal::where('transaction_id', $transaction_id)->where('qty_status', '3')->get();
+
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        if($transaction->cancel_trace === 'Confirmed'){
+
+            foreach($deals as $deal){
+
+                $item = Item::findOrFail($deal->item_id);
+
+                $deal->qty_status = 1;
+
+                $deal->save();
+
+                $this->dealSyncOrder($item->id);
+            }
+
+        }else if($transaction->cancel_trace === 'Delivered' or $transaction->cancel_trace === 'Verified Owe' or $transaction->cancel_trace === 'Verified Paid'){
+
+            foreach($deals as $deal){
+
+                $item = Item::findOrFail($deal->item_id);
+
+                $deal->qty_status = 2;
+
+                $deal->save();
+
+                $item->qty_now -= $deal->qty;
+
+                $item->save();
+            }
+        }
+    }
+
+    // create person with initial D
     private function createUser($request)
     {
         $request->merge(array('username' => $request->company));
@@ -956,11 +1089,6 @@ class MarketingController extends Controller
         }
     }
 
-    private function loadInvoice($id){
-
-
-    }
-
     // user get the credentials via email
     private function sendEmailUponRegistration($request, $password)
     {
@@ -985,7 +1113,7 @@ class MarketingController extends Controller
         });
     }
 
-    // user get the credentials via email
+    // password reset functionality (dtd)
     private function sendEmailReset($request, $password)
     {
 
@@ -1094,7 +1222,6 @@ class MarketingController extends Controller
                             $item->save();
                         }
                     }
-
 
                     if($init_d){
 
@@ -1220,6 +1347,8 @@ class MarketingController extends Controller
         $transaction->po_no = $dtdtransaction->po_no;
 
         $transaction->total_qty = $dtdtransaction->total_qty;
+
+        $transaction->dtdtransaction_id = $dtdtransaction->id;
 
         $transaction->save();
 
