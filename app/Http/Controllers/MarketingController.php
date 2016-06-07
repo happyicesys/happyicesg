@@ -310,13 +310,13 @@ class MarketingController extends Controller
 
     public function updateMember(Request $request, $id)
     {
-        $input = $request->all();
+        $input = $request->except('parent_id');
 
         $person = Person::findOrFail($id);
 
         $user = User::findOrFail($person->user_id);
 
-        if($request->parent_id){
+        if($request->parent_id != null or $request->parent_id != ''){
 
             $newperson = Person::findOrFail($request->parent_id);
 
@@ -379,15 +379,22 @@ class MarketingController extends Controller
 
     public function indexCustomerApi()
     {
-        $person = Person::where('user_id', Auth::user()->id)->first();
+        if(Auth::user()->hasRole('admin')){
 
-        if($person){
-
-            return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+            return Person::where('cust_id', 'LIKE', 'H%')->orderBy('cust_id')->get();
 
         }else{
 
-            return '';
+            $person = Person::where('user_id', Auth::user()->id)->first();
+
+            if($person){
+
+                return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+
+            }else{
+
+                return '';
+            }
         }
     }
 
@@ -1156,9 +1163,13 @@ class MarketingController extends Controller
 
         foreach($arr as $transaction){
 
-            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+            if($transaction->status !== 'Cancelled'){
 
-            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+
+                $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+
+            }
         }
 
         return $total_amount;
