@@ -344,6 +344,15 @@ class TransactionController extends Controller
 
             $transaction = Transaction::findOrFail($id);
 
+            if($transaciton->dtdtransaction_id){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                $dtdtransaction->status = 'Deleted';
+
+                $dtdtransaction->save();
+            }
+
             $transaction->delete();
 
             return redirect('transaction');

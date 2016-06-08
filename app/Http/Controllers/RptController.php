@@ -484,7 +484,7 @@ class RptController extends Controller
 
                 $transaction = Transaction::findOrFail($index);
 
-                if($transaction->status === 'Delivered'){
+                if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe'){
 
                     if($transaction->pay_status === 'Owe'){
 
@@ -575,17 +575,12 @@ class RptController extends Controller
             // check whether date presence
             if($delivery_date and $paid_at){
 
+                // dd('here1');
                 $query = $query->whereDate('delivery_date', '=', $delivery_date);
 
-            }else{
-
-                $query = $query->whereDate('delivery_date', '=', Carbon::today()->toDateString());
-
             }
-/*
-            if($role and ($role != 'All')){
-
-                $query = where('driver', Auth::user()->hasRole())
+/*            else{
+                $query = $query->whereDate('delivery_date', '=', Carbon::today()->toDateString());
             }*/
 
             // if user is driver
@@ -605,8 +600,8 @@ class RptController extends Controller
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
-        // Retrieve Delivered and Paid
-        $query1 = DB::table('transactions');
+            // Retrieve Delivered and Paid
+            $query1 = DB::table('transactions');
 
             $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
 
@@ -615,11 +610,11 @@ class RptController extends Controller
 
                 $query1 = $query1->whereDate('delivery_date', '=', $delivery_date)->whereDate('paid_at', '=', $paid_at);
 
-            }else{
+            }/*else{
 
                 $query1 = $query1->whereDate('delivery_date', '=', Carbon::today()->toDateString())->whereDate('paid_at', '=', Carbon::today()->toDateString());
 
-            }
+            }*/
 
             // if user is driver
             if(Auth::user()->hasRole('driver')){
@@ -648,10 +643,10 @@ class RptController extends Controller
 
                 $query2 = $query2->whereDate('delivery_date', '=', $delivery_date);
 
-            }else{
+            }/*else{
 
                 $query2 = $query2->whereDate('delivery_date', '=', Carbon::today()->toDateString());
-            }
+            }*/
 
             // if user is driver
             if(Auth::user()->hasRole('driver')){
@@ -680,10 +675,10 @@ class RptController extends Controller
 
                 $query3 = $query3->whereDate('paid_at', '=', $paid_at);
 
-            }else{
+            }/*else{
 
                 $query3 = $query3->whereDate('paid_at', '=', Carbon::today()->toDateString());
-            }
+            }*/
 
             // if user is driver
             if(Auth::user()->hasRole('driver')){
@@ -745,10 +740,10 @@ class RptController extends Controller
 
             $query1 = $query1->where('delivery_date', '=', $delivery_date);
 
-        }else{
+        }/*else{
 
             $query1 = $query1->where('delivery_date', '=', Carbon::today()->toDateString());
-        }
+        }*/
 
         // if user is driver
         if(Auth::user()->hasRole('driver')){
@@ -762,8 +757,7 @@ class RptController extends Controller
 
         $query1 = $this->extraField($request, $query1);
 
-        $query1 = $query1
-            ->orderBy('id', 'desc');
+        $query1 = $query1->orderBy('id', 'desc');
 
         $query2 = DB::table('transactions');
 
@@ -772,10 +766,10 @@ class RptController extends Controller
 
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
 
-        }else{
+        }/*else{
 
             $query2 = $query2->whereDate('paid_at', '=', Carbon::today()->toDateString());
-        }
+        }*/
 
         // if user is driver
         if(Auth::user()->hasRole('driver')){
@@ -795,8 +789,7 @@ class RptController extends Controller
 
         $query2 = $this->extraField($request, $query2);
 
-        $query2 = $query2
-            ->orderBy('id', 'desc');
+        $query2 = $query2->orderBy('id', 'desc');
 
         $amt_del = $this->calTransactionTotal($query1->get());
 

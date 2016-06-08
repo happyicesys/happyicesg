@@ -5,7 +5,13 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         $scope.currentPage = 1;
         $scope.itemsPerPage = 70;
         $scope.payMethodModel = 'cash';
-        $scope.indexData = {};
+        $scope.indexData = {
+
+            delivery_date: moment().format("YYYY-MM-DD"),
+
+            paid_at: moment().format("YYYY-MM-DD"),
+
+        };
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -143,6 +149,21 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 syncData();
 
                 getIndex();
+            }
+
+            $scope.detectDate = function(date){
+
+                if(date == ""){
+
+                    $scope.paid_at = '';
+
+                    $scope.delivery_date = '';
+
+                    syncData();
+
+                    getIndex();
+
+                }
             }
 
 

@@ -292,7 +292,7 @@
                                             <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
-                                                        {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Date']) !!}
+                                                        {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Date', 'ng-keyup'=>'detectDate(paid_at)']) !!}
                                                     </div>
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -309,7 +309,7 @@
                                                     </div>
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                                <datetimepicker data-ng-model="delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(delivery_date)"/>
+                                                <datetimepicker data-ng-model="delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" />
                                                 </ul>
                                             </div>
                                         </div>

@@ -124,11 +124,13 @@ class MarketingController extends Controller
         }
     }
 
+    // return new member page
     public function createMember($level)
     {
         return view('market.member.create', compact('level'));
     }
 
+    // create new members for dtd
     public function storeMember(MemberRequest $request)
     {
 
@@ -255,6 +257,7 @@ class MarketingController extends Controller
         }
     }
 
+    // self profile edit
     public function updateSelf(Request $request, $self_id)
     {
         $person = Person::findOrFail($self_id);
@@ -298,7 +301,6 @@ class MarketingController extends Controller
         $user->save();
 
         return Redirect::action('MarketingController@indexMember');
-
     }
 
     public function editMember($id)
@@ -403,6 +405,11 @@ class MarketingController extends Controller
         return view('market.customer.create');
     }
 
+    public function createBatchCustomer()
+    {
+        return view('market.customer.batchcreate');
+    }
+
     public function storeCustomer(CustomerRequest $request)
     {
         $people = Person::where('cust_id', 'LIKE', 'H%');
@@ -451,7 +458,6 @@ class MarketingController extends Controller
             }else{
 
                 $person->makeRoot();
-
             }
 
             $person->save();
@@ -470,6 +476,88 @@ class MarketingController extends Controller
 
             return view('market.customer.create');
         }
+    }
+
+    public function storeBatchCustomer(Request $request)
+    {
+        $postals = $request->postalArr;
+
+        $blocks = $request->blockArr;
+
+        $floors = $request->floorArr;
+
+        $units = $request->unitArr;
+
+        $names = $request->nameArr;
+
+        $contacts = $request->contactArr;
+
+        $remarks = $request->remarkArr;
+
+        foreach($names as $index => $name){
+
+            if($name or $postals[$index] or $blocks[$index] or $floors[$index] or $units[$index] or $contacts[$index]){
+
+                $people = Person::where('cust_id', 'LIKE', 'H%');
+
+                $first_person = Person::where('cust_id', 'H100001')->first();
+
+                if(count($people) > 0 and $first_person){
+
+                    $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
+
+                    $latest_cust = 'H'.$latest_cust;
+
+                }else{
+
+                    $latest_cust = 'H100001';
+                }
+
+                $person = new Person();
+
+                $person->cust_id = $latest_cust;
+
+                $person->profile_id = 1;
+
+                $person->payterm = 'C.O.D';
+
+                $person->del_postcode = $postals[$index];
+
+                $person->block = $blocks[$index];
+
+                $person->floor = $floors[$index];
+
+                $person->unit = $units[$index];
+
+                $person->name = $names[$index];
+
+                $person->contact = $contacts[$index];
+
+                $person->remark = $remarks[$index];
+
+                $person->save();
+
+                $creator = Person::where('user_id', Auth::user()->id)->first();
+
+                if($creator){
+
+                    $person->makeChildOf($creator);
+
+                    $person->parent_name = $creator->name;
+
+                    $person->save();
+
+                }else{
+
+                    $person->makeRoot();
+                }
+            }
+        }
+
+        Flash::success('Customer Successfully Created');
+
+        return view('market.customer.index');
+
     }
 
     public function editCustomer($id)
@@ -657,6 +745,7 @@ class MarketingController extends Controller
         return view('market.deal.edit', compact('transaction', 'person', 'prices'));
     }
 
+    // show independent deal
     public function showDeal($id)
     {
         $transaction = DtdTransaction::findOrFail($id);
@@ -664,6 +753,7 @@ class MarketingController extends Controller
         return $transaction;
     }
 
+    // populate deals data in deals
     public function getDealData($transaction_id)
     {
         $deals = DtdDeal::with('item')->where('transaction_id', $transaction_id)->get();
@@ -671,9 +761,9 @@ class MarketingController extends Controller
         return $deals;
     }
 
+    // update door to door transactions
     public function update(Request $request, $dtdtrans_id)
     {
-
         $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
 
         $assign_cust = Person::findOrFail($dtdtransaction->person_id)->cust_id;
@@ -830,6 +920,7 @@ class MarketingController extends Controller
         return $pdf->download($name);
     }
 
+    // delete D/H created deals
     public function destroyAjax($id)
     {
         $dtddeal = DtdDeal::findOrFail($id);
@@ -839,6 +930,7 @@ class MarketingController extends Controller
         return $dtddeal->id . 'has been successfully deleted';
     }
 
+    // send invoice to D/ H email upon button clicked
     public function sendEmailInv($id)
     {
 
@@ -909,10 +1001,10 @@ class MarketingController extends Controller
 
         ];
 
-        Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path)
+        Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $transaction)
         {
             $message->from($sender);
-            $message->subject('[Invoice] Happy Ice - Thanks for Your Support');
+            $message->subject('[Invoice - '.$transaction->id.'] Happy Ice - Thanks for Your Support');
             $message->setTo($email);
             $message->attach($store_path);
         });
@@ -1455,7 +1547,6 @@ class MarketingController extends Controller
     // email alert for stock insufficient
     private function sendEmailAlert($item)
     {
-
         $today = Carbon::now()->format('d-m-Y H:i');
 
         $emails = EmailAlert::where('status', 'active')->get();

@@ -26,6 +26,7 @@ Customers
 
                     <div class="pull-right">
                         <a href="/market/customer/create" class="btn btn-success">+ New Customer</a>
+                        {{-- <a href="/market/customer/batchcreate" class="btn btn-primary">+ Batch Create Customer</a> --}}
                     </div>
                 </div>
             </div>
@@ -37,16 +38,24 @@ Customers
                         {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'ID']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'Company']) !!}
-                    </div>
-                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('contact', 'Contact:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('contact', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.contact', 'placeholder'=>'Contact']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('block', 'Block:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('block', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.block', 'placeholder'=>'Block']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('floor', 'Floor:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('floor', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.floor', 'placeholder'=>'Floor']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('unit', 'Unit:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('unit', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.unit', 'placeholder'=>'Unit']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('active', 'Active:', ['class'=>'control-label search-title']) !!}
@@ -71,27 +80,38 @@ Customers
                                 <span ng-show="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
-                                <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
-                                Company
-                                <span ng-show="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
-                                <span ng-show="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
-                                </a>
-                            </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                Att. To
+                                Name
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'contact'; sortReverse = !sortReverse">
                                 Contact
                                 <span ng-show="sortType == 'contact' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'contact' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'block'; sortReverse = !sortReverse">
+                                Block
+                                <span ng-show="sortType == 'block' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'floor'; sortReverse = !sortReverse">
+                                Floor
+                                <span ng-show="sortType == 'floor' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'floor' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'unit'; sortReverse = !sortReverse">
+                                Unit
+                                <span ng-show="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
                             <th class="col-md-2 text-center">
-                                Delivery Add
+                                Delivery Address
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
@@ -105,33 +125,28 @@ Customers
                                 <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-{{--                             <th class="col-md-1 text-center">
-                                Action
-                            </th> --}}
                         </tr>
 
                         <tbody>
                             <tr dir-paginate="customer in customers | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                 <td class="col-md-1 text-center">@{{ number }} </td>
-                                <td class="col-md-1 text-center">@{{ customer.cust_id }}</td>
-                                <td class="col-md-2">
+                                <td class="col-md-1 text-center">
                                     <a href="/market/customer/@{{ customer.id }}/edit">
-                                    @{{ customer.company }}
+                                    @{{ customer.cust_id }}</td>
                                     </a>
-                                </td>
                                 <td class="col-md-1">@{{ customer.name }}</td>
-                                <td class="col-md-2">
+                                <td class="col-md-1">
                                     @{{ customer.contact }}
                                     <span ng-show="customer.alt_contact.length > 0">
                                     / @{{ customer.alt_contact }}
                                     </span>
                                 </td>
+                                <td class="col-md-1">@{{ customer.block }}</td>
+                                <td class="col-md-1">@{{ customer.floor }}</td>
+                                <td class="col-md-1">@{{ customer.unit }}</td>
                                 <td class="col-md-2">@{{ customer.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.del_postcode }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
-{{--                                 <td class="col-md-1 text-center">
-                                    <a href="/market/customer/@{{ customer.id }}/edit" class="btn btn-sm btn-primary">Profile</a>
-                                </td> --}}
                             </tr>
                             <tr ng-if="(customers | filter:search).length == 0 || ! customers.length">
                                 <td colspan="9" class="text-center">No Records Found</td>

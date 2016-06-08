@@ -204,7 +204,9 @@ Deals
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
-
+                                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Deleted'">
+                                        @{{ transaction.status }}
+                                    </td>
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
 
                                     <td class="col-md-1 text-center" ng-if="transaction.gst">@{{ (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2)}}</td>

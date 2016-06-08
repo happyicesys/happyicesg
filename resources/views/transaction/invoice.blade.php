@@ -52,19 +52,37 @@
             <div class="col-xs-12" style="padding-top: 5px">
                 <div class="row no-gutter">
                     <div class="col-xs-4">
-                        <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
-                            <div style="font-size:14px"><strong>Bill To:</strong></div>
-                            <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                            <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span>
-                            <span class="col-xs-12">{{$person->company}}</span>
-                            <span class="col-xs-12">{{$person->bill_address}}</span>
-                            <span class="col-xs-offset-1">{{$person->bill_postcode}}</span>
+                        @if($person->cust_id[0] == 'H')
+                            <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
+                                <div style="font-size:14px"><strong>Send To:</strong></div>
+                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                <span class="col-xs-12"> B{{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span>
+                                <span class="col-xs-12">{{$person->del_address}}</span>
+                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
+                                <div style="font-size:14px"><strong>Bill To:</strong></div>
+                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span>
+                                <span class="col-xs-12">{{$person->company}}</span>
+                                <span class="col-xs-12">{{$person->bill_address}}</span>
+                                <span class="col-xs-offset-1">{{$person->bill_postcode}}</span>
+                                </div>
+                            </div>
+                        @endif
+
                         <div style="padding-top:20px">
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
-                                <div class="inline col-xs-offset-1">{{$person->name}}</div>
+                                <div class="inline col-xs-offset-1">
+                                    @if($person->cust_id[0] == 'H')
+                                        {{$person->cust_id}} - {{$person->name}}
+                                    @else
+                                        {{$person->name}}
+                                    @endif
+                                </div>
                             </div>
                             <div class="form-group">
                                 <div class="inline"><strong>Tel:</strong></div>
@@ -73,18 +91,20 @@
                         </div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="form-group" style="padding: 3px 0px 0px 10px">
-                            <div style="font-size:14px"><strong>Send To:</strong></div>
-                            <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                @if($person->site_name)
-                                    <span class="col-xs-12">{{$person->site_name}}</span>
-                                @endif
+                        @unless($person->cust_id[0] == 'H')
+                            <div class="form-group" style="padding: 3px 0px 0px 10px">
+                                <div style="font-size:14px"><strong>Send To:</strong></div>
+                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                    @if($person->site_name)
+                                        <span class="col-xs-12">{{$person->site_name}}</span>
+                                    @endif
 
-                                <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
+                                    <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
 
-                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
+                                    <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
+                                </div>
                             </div>
-                        </div>
+                        @endunless
                     </div>
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">

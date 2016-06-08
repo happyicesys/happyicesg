@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <div class="panel-title">
             <div class="pull-left display_panel_title">
-                @unless($transaction->status == 'Cancelled')
+                @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
                 <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}}</strong></h3>
                 @else
                 <h3 class="panel-title"><strong><del>Create List : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
