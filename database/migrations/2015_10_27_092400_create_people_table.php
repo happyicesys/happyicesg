@@ -27,7 +27,7 @@ class CreatePeopleTable extends Migration
             $table->string('email')->nullable();
             $table->string('payterm');
             $table->text('remark')->nullable();
-            $table->decimal('cost_rate', 5, 3)->nullable();
+            $table->decimal('cost_rate', 5, 2)->nullable();
             $table->string('active')->default('Yes');
             $table->string('site_name');
 
