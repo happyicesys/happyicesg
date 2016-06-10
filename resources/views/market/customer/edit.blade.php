@@ -8,7 +8,8 @@ Customers
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>Edit Customer: {{$person->cust_id}} - {{$person->name}}</strong></h3>
+        <h3 class="panel-title pull-left"><strong>Edit Customer: {{$person->cust_id}} - {{$person->name}} [Manager: {{$person->parent_name}}]</strong></h3>
+        <a href="/market/customer/notify/{{$person->id}}" class="btn btn-sm btn-warning pull-right">Notify Manager</a>
     </div>
 
     <div class="panel-body">

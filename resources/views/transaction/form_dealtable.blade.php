@@ -4,7 +4,7 @@
         <div class="panel-heading">
             <div class="panel-title">
                 <div class="pull-left display_panel_title">
-                    @unless($transaction->status == 'Cancelled')
+                    @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
                     <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}}</strong></h3>
                     @else
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
@@ -58,9 +58,11 @@
                                 @if($transaction->pay_status == 'Owe')
                                     @if($transaction->status == 'Delivered')
                                         @can('transaction_deleteitem')
+                                            @unless($transaction->person->cust_id[0] == 'D')
                                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                            @endunless
                                         @endcan
-                                    @elseif($transaction->status == 'Cancelled' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
+                                    @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted' or ($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay()))
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                                     @else
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>

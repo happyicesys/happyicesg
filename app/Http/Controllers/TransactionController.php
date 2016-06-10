@@ -176,6 +176,16 @@ class TransactionController extends Controller
 
             $request->merge(array('status' => 'Delivered'));
 
+            // detect if deals from d2d update status
+            if($transaction->dtdtransaction_id){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                $dtdtransaction->status = 'Delivered';
+
+                $dtdtransaction->save();
+            }
+
             $request->merge(array('pay_status' => 'Paid'));
 
             if(! $request->paid_by){
@@ -200,6 +210,16 @@ class TransactionController extends Controller
         }elseif($request->input('del_owe')){
 
             $request->merge(array('status' => 'Delivered'));
+
+            // detect if deals from d2d update status
+            if($transaction->dtdtransaction_id){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                $dtdtransaction->status = 'Delivered';
+
+                $dtdtransaction->save();
+            }
 
             $request->merge(array('pay_status' => 'Owe'));
 
@@ -344,7 +364,7 @@ class TransactionController extends Controller
 
             $transaction = Transaction::findOrFail($id);
 
-            if($transaciton->dtdtransaction_id){
+            if($transaction->dtdtransaction_id){
 
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
 

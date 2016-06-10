@@ -1,3 +1,5 @@
+@inject('people', 'App\Person')
+
   <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
@@ -62,8 +64,7 @@
                         </ul>
                 </li> --}}
                 {{-- @endcan --}}
-                @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer')
-                @cannot('transaction_view')
+                @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer' or $people::where('user_id', Auth::user()->id)->first())
                     @unless(Auth::user()->type == 'marketer')
                     <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
                         <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
@@ -78,7 +79,6 @@
                     <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
                         <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Deals</a>
                     </li>
-                @endcannot
                 @endif
 {{--                 <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
                     <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>

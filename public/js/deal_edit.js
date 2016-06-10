@@ -131,7 +131,15 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
 
                     }else{
 
-                        $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                        if(person.cust_id[0] == 'H'){
+
+                            $scope.delModel = 'B'+ person.block + ', #'+ person.floor + '-' + person.unit + ', ' + person.del_address + ' ' + person.del_postcode;
+
+                        }else{
+
+                            $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                        }
+
                     }
 
                     $('.date').datetimepicker({

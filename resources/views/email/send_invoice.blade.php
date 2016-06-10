@@ -2,7 +2,7 @@
 <html>
     <body>
         <p>Hello {{$person->name}}, </p>
-        <p>Thanks for your purchase, kindly check the attachment for your invoice, have a nice day ahead.</p>
-        <p>For any information, please visit us at {{ $url }}.</p>
+        <p>Thanks you for confirm purchase, order by {{$person->parent_name}}, and to be delivered on {{$transaction->delivery_date}}.</p>
+        <p>{!! nl2br(e($email_draft)) !!}</p>
     </body>
 </html>

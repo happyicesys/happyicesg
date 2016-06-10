@@ -189,6 +189,11 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Profile');
     }
 
+    public function notifymanagers()
+    {
+        return $this->hasMany('App\NotifyManager');
+    }
+
     /**
      * search like name
      * @param $name in string

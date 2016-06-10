@@ -26,7 +26,10 @@ Customers
 
                     <div class="pull-right">
                         <a href="/market/customer/create" class="btn btn-success">+ New Customer</a>
-                        {{-- <a href="/market/customer/batchcreate" class="btn btn-primary">+ Batch Create Customer</a> --}}
+                        <a href="/market/customer/batchcreate" class="btn btn-primary">+ Batch Create Customer</a>
+                        @if(Auth::user()->hasRole('admin'))
+                            <a href="/market/customer/emaildraft" class="btn btn-warning">Customer Email Draft</a>
+                        @endif
                     </div>
                 </div>
             </div>

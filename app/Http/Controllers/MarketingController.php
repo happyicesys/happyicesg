@@ -24,6 +24,8 @@ use App\Item;
 use App\Deal;
 use App\Transaction;
 use App\Role;
+use App\GeneralSetting;
+use App\NotifyManager;
 
 class MarketingController extends Controller
 {
@@ -896,9 +898,9 @@ class MarketingController extends Controller
 
         $deals = DtdDeal::whereTransactionId($transaction->id)->get();
 
-        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+        $totalprice = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('amount');
 
-        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+        $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
 
         // $profile = Profile::firstOrFail();
 
@@ -933,6 +935,7 @@ class MarketingController extends Controller
     // send invoice to D/ H email upon button clicked
     public function sendEmailInv($id)
     {
+        $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
 
         $transaction = DtdTransaction::findOrFail($id);
 
@@ -979,7 +982,7 @@ class MarketingController extends Controller
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
-            // 'profile'       =>  $profile,
+            'email_draft'   =>  $email_draft,
         ];
 
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
@@ -997,6 +1000,8 @@ class MarketingController extends Controller
         $datamail = [
 
             'person' => $person,
+            'transaction' => $transaction,
+            'email_draft' => $email_draft,
             'url' => 'http://www.happyice.com.sg',
 
         ];
@@ -1086,6 +1091,90 @@ class MarketingController extends Controller
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
 
+    // direct customer email draft view
+    public function emailDraft()
+    {
+        $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
+
+        return view('market.customer.emaildraft', compact('email_draft'));
+    }
+
+    // update email draft for customer
+    public function updateEmailDraft(Request $request){
+
+        $email_draft = GeneralSetting::firstOrFail();
+
+        $email_draft->DTDCUST_EMAIL_CONTENT = $request->content;
+
+        $email_draft->save();
+
+        return view('market.customer.index');
+    }
+
+    // populate manager notifications list
+    public function notifyManagerIndex($person_id)
+    {
+        $notifications = NotifyManager::where('person_id', $person_id)->get();
+
+        $person = Person::findOrFail($person_id);
+
+        return view('market.customer.notify', compact('notifications', 'person'));
+    }
+
+    // store notify manager data
+    public function storeNotification(Request $request, $person_id)
+    {
+        $person = Person::findOrFail($person_id);
+
+        $manager = Person::where('id', $person->parent_id)->first();
+
+        $person_send = Auth::user();
+
+        if(! $manager->email){
+
+            Flash::error('No email detected for this customer\'s manager');
+
+            return Redirect::action('MarketingController@notifyManagerIndex', $person->id);
+        }
+
+        $request->merge(array('person_id', $request->person_id));
+
+        $notification = NotifyManager::create($request->all());
+
+        $email = $manager->email;
+
+        $sender = 'system@happyice.com.sg';
+
+        $data = [
+
+            'notification' => $notification,
+            'person' => $person,
+
+        ];
+
+        Mail::send('email.notify_manager', $data, function ($message) use ($email, $sender, $person_send, $person)
+        {
+            $message->from($sender);
+            $message->subject('[HappyIce] - Notification from '.$person_send->name.' for Customer '.$person->cust_id.' - '.$person->name);
+            $message->setTo($email);
+        });
+
+
+        Flash::success('Successfully Sent');
+
+        return Redirect::action('MarketingController@notifyManagerIndex', $person->id);
+    }
+
+    // destroy notify manager data
+    public function destroyNotification($id)
+    {
+        $notification = NotifyManager::findOrFail($id);
+
+        $notification->delete();
+
+        return Redirect::action('MarketingController@notifyManagerIndex', $notification->person_id);
+    }
+
     // method for deleting deals upon transaction deletion
     private function dealDeleteMultiple($transaction_id)
     {
@@ -1113,7 +1202,6 @@ class MarketingController extends Controller
             $item->save();
 
             $this->dealSyncOrder($item->id);
-
         }
     }
 
