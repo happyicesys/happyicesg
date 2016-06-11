@@ -50,7 +50,7 @@
                         <td class="col-md-2">
                             <strong>
                                 <input type="text" name="quote[{{$price->item_id}}]"
-                                value="{{$person->cost_rate ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
+                                value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>
                             </strong>
                         </td>

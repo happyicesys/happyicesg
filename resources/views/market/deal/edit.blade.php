@@ -40,6 +40,7 @@ Deals
             <div class="row">
                 <div class="col-md-12">
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['MarketingController@update', $transaction->id]]) !!}
+
                         @include('market.deal.form_cust')
 
                     <div class="row">
@@ -123,7 +124,7 @@ Deals
                         </div>
                     </div>
                 </div>
-                @elseif((($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Delivered') or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
+                @elseif(((($transaction->person->cust_id[0] == 'D' or $transaction->person->cust_id[0] == 'H') and $transaction->status == 'Delivered') or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">

@@ -176,16 +176,6 @@ class TransactionController extends Controller
 
             $request->merge(array('status' => 'Delivered'));
 
-            // detect if deals from d2d update status
-            if($transaction->dtdtransaction_id){
-
-                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
-                $dtdtransaction->status = 'Delivered';
-
-                $dtdtransaction->save();
-            }
-
             $request->merge(array('pay_status' => 'Paid'));
 
             if(! $request->paid_by){
@@ -210,16 +200,6 @@ class TransactionController extends Controller
         }elseif($request->input('del_owe')){
 
             $request->merge(array('status' => 'Delivered'));
-
-            // detect if deals from d2d update status
-            if($transaction->dtdtransaction_id){
-
-                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
-                $dtdtransaction->status = 'Delivered';
-
-                $dtdtransaction->save();
-            }
 
             $request->merge(array('pay_status' => 'Owe'));
 
@@ -321,6 +301,17 @@ class TransactionController extends Controller
 
             $this->syncOrder($transaction->id);
 
+        }
+
+        // update dtdtransaciton status to delivered
+        if($request->input('del_owe') or $request->input('del_paid')){
+
+            $this->dtdDelUpdate($transaction);
+        }
+
+        if($request->input('paid') or $request->input('del_paid')){
+
+            $this->dtdPaidUpdate($transaction);
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
@@ -1083,6 +1074,30 @@ class TransactionController extends Controller
 
                 $dtdresult->delete();
             }
+        }
+    }
+
+    private function dtdDelUpdate($transaction)
+    {
+        $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
+
+        if($dtdtransaction){
+
+            $dtdtransaction->status = 'Delivered';
+
+            $dtdtransaction->save();
+        }
+    }
+
+    private function dtdPaidUpdate($transaction)
+    {
+        $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
+
+        if($dtdtransaction){
+
+            $dtdtransaction->pay_status = 'Paid';
+
+            $dtdtransaction->save();
         }
     }
 

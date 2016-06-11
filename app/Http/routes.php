@@ -67,6 +67,7 @@ delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 get('/inventory/data', 'InventoryController@getData');
 resource('inventory', 'InventoryController');
 
+get('/d2d', 'ClientController@d2dIndex');
 get('/client/item', 'ClientController@clientProduct');
 get('/client/register', 'ClientController@getRegister');
 get('/client/about', 'ClientController@getAboutUs');

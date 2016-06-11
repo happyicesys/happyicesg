@@ -1,4 +1,5 @@
 @inject('payterm', 'App\Payterm')
+@inject('people', 'App\Person')
 
 <div class="col-md-6">
 
@@ -56,7 +57,7 @@
 
     <div class="form-group">
         {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
-        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'1']) !!}
     </div>
 
     <div class="form-group">
@@ -66,8 +67,15 @@
 
     <div class="form-group">
         {!! Form::label('remark', 'Remark', ['class'=>'control-label']) !!}
-        {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
     </div>
+
+    @if(Auth::user()->hasRole('admin'))
+    <div class="form-group">
+        {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
+        {!! Form::select('parent_id', [''=>null] + $people::select(DB::raw("CONCAT(name,' - ',cust_id,' (',cust_type,')') AS full, id"))->where('cust_id', 'LIKE', 'D%')->orderBy('cust_type', 'desc')->lists('full', 'id')->all(), null, ['class'=>'select form-control']) !!}
+    </div>
+    @endif
 
 </div>
 

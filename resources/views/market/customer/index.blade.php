@@ -64,6 +64,10 @@ Customers
                         {!! Form::label('active', 'Active:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('active', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.active', 'placeholder'=>'Active']) !!}
                     </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.manager', 'placeholder'=>'Manager']) !!}
+                    </div>
                 </div>
 
                 <div class="row">
@@ -113,7 +117,7 @@ Customers
                                 <span ng-show="sortType == 'unit' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 Delivery Address
                             </th>
                             <th class="col-md-1 text-center">
@@ -121,6 +125,12 @@ Customers
                                 Postcode
                                 <span ng-show="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'parent_name'; sortReverse = !sortReverse">
+                                Manager
+                                <span ng-show="sortType == 'parent_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'parent_name' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'active'; sortReverse = !sortReverse">
@@ -147,8 +157,9 @@ Customers
                                 <td class="col-md-1">@{{ customer.block }}</td>
                                 <td class="col-md-1">@{{ customer.floor }}</td>
                                 <td class="col-md-1">@{{ customer.unit }}</td>
-                                <td class="col-md-2">@{{ customer.del_address }}</td>
+                                <td class="col-md-1">@{{ customer.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.del_postcode }}</td>
+                                <td class="col-md-1 text-center">@{{ customer.parent_name }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
                             </tr>
                             <tr ng-if="(customers | filter:search).length == 0 || ! customers.length">

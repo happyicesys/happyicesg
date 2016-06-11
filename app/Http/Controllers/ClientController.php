@@ -112,17 +112,14 @@ class ClientController extends Controller
             'bodymessage' => $request->message,
         );
 
-        $mail =  Mail::send('client.email_contact', $data, function ($message) use ($sendfrom, $sendto, $today)
-
-                {
+        $mail =  Mail::send('client.email_contact', $data, function ($message) use ($sendfrom, $sendto, $today){
 
                     $message->from($sendfrom);
 
                     $message->subject('Contact Form Submission ['.$today.']');
 
                     $message->setTo($sendto);
-
-                });
+        });
 
         if($mail){
 
@@ -135,7 +132,11 @@ class ClientController extends Controller
         }
 
         return view('client.index');
+    }
 
+    public function d2dIndex()
+    {
+        return view('client.d2d');
     }
 
 }

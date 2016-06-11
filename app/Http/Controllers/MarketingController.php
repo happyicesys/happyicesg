@@ -26,6 +26,7 @@ use App\Transaction;
 use App\Role;
 use App\GeneralSetting;
 use App\NotifyManager;
+use App\EmailAlert;
 
 class MarketingController extends Controller
 {
@@ -112,7 +113,7 @@ class MarketingController extends Controller
 
         $all_members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_type', 'desc')->get();
 
-        if($member){
+        if($member and !$admin){
 
             return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
 
@@ -571,11 +572,24 @@ class MarketingController extends Controller
 
     public function updateCustomer(Request $request, $id)
     {
-        $input = $request->all();
-
         $person = Person::findOrFail($id);
 
-        $person->update($input);
+        if($request->parent_id){
+
+            if($request->parent_id != $person->parent_id){
+
+                $newperson = Person::findOrFail($request->parent_id);
+
+                $person->makeChildOf($newperson);
+
+                $person->parent_name = $newperson->name;
+
+                $person->save();
+            }
+        }
+
+
+        $person->update($request->all());
 
         if($request->input('active')){
 

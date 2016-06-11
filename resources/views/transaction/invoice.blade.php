@@ -308,7 +308,9 @@
         {{-- <footer class="footer"> --}}
                 <div class="col-xs-12">
                     <div class="col-xs-12">
-                        Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
+                        @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D')
+                            Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
+                        @endunless
                     </div>
                     <div class="col-xs-12" style="padding-top:10px">
                         <div class="form-group">
