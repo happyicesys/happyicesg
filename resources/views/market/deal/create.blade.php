@@ -49,7 +49,7 @@ Deals
                                     ID
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    Company
+                                    Company/ Name
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Del Postcode
@@ -76,12 +76,12 @@ Deals
                                 <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
-                                        <a href="/transaction/@{{ transaction.id }}/edit">
-                                            @{{ transaction.id }}
+                                        <a href="/market/deal/@{{ transaction.id }}/edit">
+                                            @{{ transaction.transaction_id ? transaction.transaction_id : 'Drf '+transaction.id }}
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.company }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.person.company ? transaction.person.company : transaction.person.name }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.person.del_postcode }} </td>
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
@@ -93,7 +93,7 @@ Deals
                                     <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
                                         @{{ transaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered' || transaction.status == 'Submitted'">
+                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
                                         @{{ transaction.status }}
                                     </td>
                                     <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
@@ -103,7 +103,10 @@ Deals
                                         @{{ transaction.status }}
                                     </td>
                                     <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
-                                        <span style="color: white; background-color: red;"> @{{ transaction.status }} </span>
+                                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
+                                    </td>
+                                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Deleted'">
+                                        @{{ transaction.status }}
                                     </td>
                                     {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>

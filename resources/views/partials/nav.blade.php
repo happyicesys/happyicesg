@@ -65,11 +65,11 @@
                 </li> --}}
                 {{-- @endcan --}}
                 @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer' or $people::where('user_id', Auth::user()->id)->first())
-                    @unless(Auth::user()->type == 'marketer')
+                    @if(Auth::user()->hasRole('admin') or $people::where('user_id', Auth::user()->id)->first()->cust_type === 'OM')
                     <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
                         <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
                     </li>
-                    @endunless
+                    @endif
                     <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
                         <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
                     </li>

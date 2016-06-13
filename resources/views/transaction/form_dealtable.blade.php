@@ -5,9 +5,9 @@
             <div class="panel-title">
                 <div class="pull-left display_panel_title">
                     @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
-                    <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}}</strong></h3>
+                    <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</strong></h3>
                     @else
-                    <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
+                    <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                     @endunless
                 </div>
             </div>

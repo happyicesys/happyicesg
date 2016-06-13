@@ -1,3 +1,5 @@
+@inject('person', 'App\Person')
+
 @extends('template')
 @section('title')
 {{ $USER_TITLE }}
@@ -28,21 +30,22 @@
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
                     {!! Form::close() !!}
                     @endcan
+
                     @cannot('transaction_view')
                     @cannot('supervisor_view')
+                    @if(Auth::user()->hasRole('admin') and !$person::where('user_id', $user->id)->first())
                     <div class="dropdown">
                         <button class="btn btn-success dropdown-toggle pull-right" type="button" data-toggle="dropdown">
                         Add to DTD
                         <span class="caret"></span></button>
                         <ul class="dropdown-menu">
-                            @if(Auth::user()->hasRole('admin'))
                             <li><a href="/user/member/{{$user->id}}/om">Operation Manager (OM)</a></li>
                             <li><a href="/user/member/{{$user->id}}/oe">Operation Executive (OE)</a></li>
                             <li><a href="/user/member/{{$user->id}}/am">Area Manager (AM)</a></li>
                             <li><a href="/user/member/{{$user->id}}/ab">Ambassador (AB)</a></li>
-                            @endif
                         </ul>
                     </div>
+                    @endif
                     @endcannot
                     @endcannot
                 </div>

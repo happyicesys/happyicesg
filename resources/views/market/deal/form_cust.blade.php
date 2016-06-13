@@ -6,7 +6,7 @@
 
             <label style="margin-bottom: 15px; font-size: 18px;">
                 <a href="/person/@{{ personModel }}">
-                    {{$transaction->person->cust_id}} - {{$transaction->person->company}}
+                    {{$transaction->person->cust_id}} - {{$transaction->person->company}} ({{$transaction->person->name}})
                 </a>
             </label>
             {!! Form::text('person_id', '@{{personModel}}', ['class'=>'hidden form-control']) !!}

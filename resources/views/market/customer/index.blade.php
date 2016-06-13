@@ -163,7 +163,7 @@ Customers
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
                             </tr>
                             <tr ng-if="(customers | filter:search).length == 0 || ! customers.length">
-                                <td colspan="10" class="text-center">No Records Found</td>
+                                <td colspan="11" class="text-center">No Records Found</td>
                             </tr>
 
                         </tbody>

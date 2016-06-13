@@ -1045,7 +1045,7 @@ class TransactionController extends Controller
 
                 $dtddeal->item_id = $dealresult->item_id;
 
-                $dtddeal->transaction_id = $transaction_id;
+                $dtddeal->transaction_id = $dtdtransaction->id;
 
                 $dtddeal->qty = $dealresult->qty;
 

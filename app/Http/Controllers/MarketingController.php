@@ -107,17 +107,46 @@ class MarketingController extends Controller
 
     public function indexMemberApi()
     {
-        $member = Person::where('user_id', Auth::user()->id)->first();
+        $adminbool = false;
 
-        $admin = Auth::user()->hasRole('admin');
+        $member_adminbool = false;
+
+        $memberbool = false;
+
+        $member = Person::where('user_id', Auth::user()->id)->first();
 
         $all_members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_type', 'desc')->get();
 
-        if($member and !$admin){
+        // find out is whether OM or normal d2d member
+        if($member){
+
+            if($member->cust_type === 'OM'){
+
+                $member_adminbool = true;
+
+            }else{
+
+                $member_adminbool = false;
+
+                $memberbool = true;
+            }
+        }
+
+        if(Auth::user()->hasRole('admin')){
+
+            $adminbool = true;
+
+            $member_adminbool = false;
+
+            $memberbool = false;
+        }
+
+        if($memberbool){
+            // dd($member);
 
             return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
 
-        }else if($admin or ($member and $admin)){
+        }else if($adminbool or $member_adminbool){
 
             return $all_members;
 
@@ -384,22 +413,53 @@ class MarketingController extends Controller
 
     public function indexCustomerApi()
     {
-        if(Auth::user()->hasRole('admin')){
 
-            return Person::where('cust_id', 'LIKE', 'H%')->orderBy('cust_id')->get();
+        $adminbool = false;
 
-        }else{
+        $member_adminbool = false;
 
-            $person = Person::where('user_id', Auth::user()->id)->first();
+        $memberbool = false;
 
-            if($person){
+        $member = Person::where('user_id', Auth::user()->id)->first();
 
-                return $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->orderBy('cust_id')->get();
+
+        // find out is whether OM or normal d2d member
+        if($member){
+
+            if($member->cust_type === 'OM'){
+
+                $member_adminbool = true;
 
             }else{
 
-                return '';
+                $member_adminbool = false;
+
+                $memberbool = true;
             }
+        }
+
+        if(Auth::user()->hasRole('admin')){
+
+            $adminbool = true;
+
+            $member_adminbool = false;
+
+            $memberbool = false;
+        }
+
+        // show results based on condition
+        if($memberbool){
+
+            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+
+        }else if($adminbool or $member_adminbool){
+
+            return $all_customers;
+
+        }else{
+
+            return '';
         }
     }
 
@@ -618,6 +678,8 @@ class MarketingController extends Controller
 
         Carbon::setWeekEndsAt(Carbon::SUNDAY);
 
+        $adminaccess_bool = false;
+
         $transaction_id = $request->transaction_id;
 
         $cust_id = $request->cust_id;
@@ -665,8 +727,33 @@ class MarketingController extends Controller
                             ->where('delivery_date', '<=', Carbon::today()->endOfWeek()->toDateString());
         }
 
+        $self = Person::where('user_id', Auth::user()->id)->first();
+
+        if($self){
+
+            if($self->cust_type === 'OM'){
+
+                $adminaccess_bool = true;
+
+            }else{
+
+                $adminaccess_bool = false;
+            }
+
+        }else{
+
+            if(Auth::user()->hasRole('admin')){
+
+                $adminaccess_bool = true;
+
+            }else{
+
+                $adminaccess_bool = false;
+            }
+        }
+
         // auth only admin can see all or else own creation
-        if(! Auth::user()->hasRole('admin')){
+        if(! $adminaccess_bool){
 
             $personid_arr = array();
 
@@ -953,6 +1040,8 @@ class MarketingController extends Controller
 
         $transaction = DtdTransaction::findOrFail($id);
 
+        $self = Auth::user()->name;
+
         if($transaction->transaction_id){
 
             $transaction = Transaction::findOrFail($transaction->transaction_id);
@@ -996,7 +1085,6 @@ class MarketingController extends Controller
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
-            'email_draft'   =>  $email_draft,
         ];
 
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
@@ -1016,6 +1104,7 @@ class MarketingController extends Controller
             'person' => $person,
             'transaction' => $transaction,
             'email_draft' => $email_draft,
+            'self' => $self,
             'url' => 'http://www.happyice.com.sg',
 
         ];

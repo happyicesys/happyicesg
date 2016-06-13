@@ -4,9 +4,9 @@
         <div class="panel-title">
             <div class="pull-left display_panel_title">
                 @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
-                <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}}</strong></h3>
+                <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</strong></h3>
                 @else
-                <h3 class="panel-title"><strong><del>Create List : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
+                <h3 class="panel-title"><strong><del>Create List : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                 @endunless
             </div>
         </div>
@@ -48,11 +48,19 @@
                             @endif
                         </td>
                         <td class="col-md-2">
-                            <strong>
-                                <input type="text" name="quote[{{$price->item_id}}]"
-                                value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
-                                class="text-right form-control quoteClass" readonly="readonly"/>
-                            </strong>
+                            @if($transaction->person->cust_id[0] === 'D')
+                                <strong>
+                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
+                                    class="text-right form-control quoteClass" readonly="readonly"/>
+                                </strong>
+                            @else
+                                <strong>
+                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->retail_price : $price->retail_price}}"
+                                    class="text-right form-control quoteClass" readonly="readonly"/>
+                                </strong>
+                            @endif
                         </td>
                         <td class="col-md-2">
                             <input type="text" name="amount[{{$price->item_id}}]"
