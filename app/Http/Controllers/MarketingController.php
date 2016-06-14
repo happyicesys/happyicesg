@@ -672,6 +672,16 @@ class MarketingController extends Controller
         return Redirect::action('MarketingController@editCustomer', $id);
     }
 
+    // remove member permanantly
+    public function destroyCustomer($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+
+        $person->delete();
+
+        return Redirect::action('MarketingController@indexCustomer');
+    }
+
     // DTD Open Invoice
     public function indexDeal()
     {

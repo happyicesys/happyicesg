@@ -30,6 +30,7 @@ get('/market/customer/data', 'MarketingController@indexCustomerApi');
 get('/market/customer/emaildraft', 'MarketingController@emailDraft');
 post('/market/customer/update/emaildraft', 'MarketingController@updateEmailDraft');
 get('/market/customer', 'MarketingController@indexCustomer');
+delete('/market/customer/{member_id}', 'MarketingController@destroyCustomer');
 get('/market/member/{member_id}/edit', 'MarketingController@editMember');
 post('/market/member/{member_id}', 'MarketingController@updateMember');
 post('/market/member', 'MarketingController@storeMember');

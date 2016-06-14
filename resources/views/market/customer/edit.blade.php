@@ -38,7 +38,7 @@ Customers
         {!! Form::close() !!}
 
 
-        {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['MarketingController@destroyMember', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+        {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['MarketingController@destroyCustomer', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
         {!! Form::close() !!}
     </div>
 </div>
