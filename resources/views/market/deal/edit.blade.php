@@ -153,6 +153,10 @@ Deals
                 @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
                 <div class="col-md-12">
                     <div class="row">
+                        @if(Auth::user()->hasRole('admin'))
+                            {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
+                        @endif
+
                         <div class="pull-right">
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
                             @cannot('transaction_view')

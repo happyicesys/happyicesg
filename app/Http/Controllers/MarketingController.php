@@ -1149,9 +1149,9 @@ class MarketingController extends Controller
     // convert transaction to cancelled
     public function destroy($id, Request $request)
     {
-        if($request->input('form_delete')){
+        $dtdtransaction = DtdTransaction::findOrFail($id);
 
-            $dtdtransaction = DtdTransaction::findOrFail($id);
+        if($request->input('form_delete')){
 
             if($dtdtransaction->status == 'Confirmed'){
 
@@ -1171,9 +1171,18 @@ class MarketingController extends Controller
             $dtdtransaction->status = 'Cancelled';
 
             $dtdtransaction->save();
+
+            return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+
+        }else{
+
+            $dtdtransaction->delete();
+
+            return view('market.deal.index');
         }
 
-        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+
+
     }
 
     public function reverse($id)
