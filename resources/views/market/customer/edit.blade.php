@@ -23,6 +23,9 @@ Customers
                     @if($person->active == 'Yes')
                         {!! Form::submit('Deactivate', ['name'=>'deactive', 'class'=> 'btn btn-warning', 'form'=>'update_cust']) !!}
                     @else
+                        @if(Auth::user()->hasRole('admin'))
+                            {!! Form::submit('Delete Member', ['class'=> 'btn btn-danger', 'form'=>'delete_person']) !!}
+                        @endif
                         {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'update_cust']) !!}
                     @endif
 
@@ -32,6 +35,10 @@ Customers
                     <a href="/market/customer" class="btn btn-default">Cancel</a>
                 </div>
             </div>
+        {!! Form::close() !!}
+
+
+        {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['MarketingController@destroyMember', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
         {!! Form::close() !!}
     </div>
 </div>

@@ -85,7 +85,6 @@ class MarketingController extends Controller
 
                     $price->delete();
                 }
-
             }
         }
 
@@ -174,7 +173,7 @@ class MarketingController extends Controller
 
         }
 
-        $people = Person::where('cust_id', 'LIKE', 'D%');
+        $people = Person::withTrashed()->where('cust_id', 'LIKE', 'D%');
 
         $first_person = Person::where('cust_id', 'D100001')->first();
 
@@ -227,14 +226,12 @@ class MarketingController extends Controller
 
                     $person->parent_name = $creator->name;
 
+                    $person->save();
+
                 }else{
 
                     $person->makeRoot();
-
                 }
-
-                $person->save();
-
             }
         }
 
@@ -255,7 +252,7 @@ class MarketingController extends Controller
                 }
             }
 
-            $mail_list = implode(",", $mail_list);
+            // $mail_list = implode(",", $mail_list);
 
             if($mail_list){
 
@@ -287,6 +284,16 @@ class MarketingController extends Controller
 
             return Redirect::action('MarketingController@createMember', $request->level);
         }
+    }
+
+    // remove member permanantly
+    public function destroyMember($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+
+        $person->delete();
+
+        return Redirect::action('MarketingController@indexMember');
     }
 
     // self profile edit
@@ -401,7 +408,7 @@ class MarketingController extends Controller
 
         $person->save();
 
-        return Redirect::action('MarketingController@indexMember');
+        return Redirect::action('MarketingController@editMember', $id);
     }
 
 
@@ -475,7 +482,7 @@ class MarketingController extends Controller
 
     public function storeCustomer(CustomerRequest $request)
     {
-        $people = Person::where('cust_id', 'LIKE', 'H%');
+        $people = Person::withTrashed()->where('cust_id', 'LIKE', 'H%');
 
         $first_person = Person::where('cust_id', 'H100001')->first();
 
@@ -662,7 +669,7 @@ class MarketingController extends Controller
 
         $person->save();
 
-        return view('market.customer.index');
+        return Redirect::action('MarketingController@editCustomer', $id);
     }
 
     // DTD Open Invoice

@@ -144,7 +144,7 @@ class UserController extends Controller
 
             $user = User::findOrFail($user_id);
 
-            $people = Person::where('cust_id', 'LIKE', 'D%');
+            $people = Person::withTrashed()->where('cust_id', 'LIKE', 'D%');
 
             $first_person = Person::where('cust_id', 'D100001')->first();
 

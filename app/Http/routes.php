@@ -35,6 +35,7 @@ post('/market/member/{member_id}', 'MarketingController@updateMember');
 post('/market/member', 'MarketingController@storeMember');
 post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 get('/market/member/create/{level}', 'MarketingController@createMember');
+delete('/market/member/{member_id}', 'MarketingController@destroyMember');
 
 post('/market/deal/index', 'MarketingController@indexDealApi');
 post('/market/deal/{dtdtransaction_id}', 'MarketingController@update');
