@@ -790,6 +790,7 @@ class MarketingController extends Controller
 
         $caltotal = $this->calTransactionTotal($query);
 
+
         $data = [
 
             'transactions' => $query,
@@ -1474,9 +1475,7 @@ class MarketingController extends Controller
 
             if($transaction->status !== 'Cancelled'){
 
-                $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
-
-                $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                $total_amount += $transaction->gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
 
             }
         }

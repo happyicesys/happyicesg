@@ -21,8 +21,11 @@
     <!-- Plugin CSS -->
     <link rel="stylesheet" href="/css/animate.min.css" type="text/css">
 
-    <!-- Custom CSS -->
+    <!-- Select2 -->
     <link rel="stylesheet" href="/css/creative.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/select2.min.css" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -47,6 +50,9 @@
     <script src="/js/jquery.easing.min.js"></script>
     <script src="/js/jquery.fittext.js"></script>
     <script src="/js/wow.min.js"></script>
+
+    <!-- select2 -->
+    <script src="/js/select2.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="/js/creative.js"></script>

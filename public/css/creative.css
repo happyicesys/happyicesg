@@ -475,3 +475,8 @@ img::-moz-selection {
 body {
     webkit-tap-highlight-color: #222;
 }
+
+.select2-container {
+  width: 100% !important;
+  padding: 0;
+}
