@@ -3,9 +3,9 @@ var app = angular.module('app', []);
     $('.select').select2();
 
     function d2dorderController($scope, $http){
-
+console.log('sohai');
         $scope.onItemChanged = function(itemModel){
-            console.log('damn');
+
             console.log(itemModel);
         }
 

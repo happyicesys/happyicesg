@@ -1,3 +1,5 @@
+@inject('item', 'App\Item')
+
 @extends('template_client')
 @section('title')
 Healthier Life
@@ -70,94 +72,89 @@ Healthier Life
         </div>
     </section>
 
-    <section class="no-padding" id="portfolio">
+    <section class="no-padding col-lg-12 col-md-12" id="portfolio">
         <div class="container-fluid">
             <div class="row no-gutter">
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/1.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('005')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('005')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
 
                                 </div>
                                 <div class="project-name">
-                                    Vending Machine
+                                    {{$item::whereProductId('005')->first()->name}}
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/2.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('004')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('004')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    Category
                                 </div>
-                                <div class="project-name">
-                                    Project Name
+                                <div class="project-nam026e">
+                                    {{$item::whereProductId('004')->first()->name}}
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/3.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('026')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('026')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    Category
                                 </div>
                                 <div class="project-name">
-                                    Project Name
+                                    {{$item::whereProductId('026')->first()->name}}
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/4.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('013')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('013')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    Category
                                 </div>
                                 <div class="project-name">
-                                    Project Name
+                                    {{$item::whereProductId('013')->first()->name}}
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/5.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('015')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('015')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    Category
                                 </div>
                                 <div class="project-name">
-                                    Project Name
+                                    {{$item::whereProductId('015')->first()->name}}
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-lg-4 col-sm-6">
-                    <a href="#" class="portfolio-box">
-                        <img src="img/portfolio/6.jpg" class="img-responsive" alt="">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="{{$item::whereProductId('010')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('010')->first()->main_imgcaption}}">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    Category
                                 </div>
                                 <div class="project-name">
-                                    Project Name
+                                    {{$item::whereProductId('010')->first()->name}}
                                 </div>
                             </div>
                         </div>

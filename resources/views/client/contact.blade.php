@@ -39,6 +39,11 @@ Healthier Life
                 </div>
 
                 <div class="form-group">
+                    {!! Form::label('contact', 'Contact Number', ['class'=>'control-label']) !!}
+                    {!! Form::text('contact', null, ['class'=>'form-control']) !!}
+                </div>
+
+                <div class="form-group">
                     <span style="color:red">*</span>
                     {!! Form::label('subject', 'Subject', ['class'=>'control-label']) !!}
                     {!! Form::text('subject', null, ['class'=>'form-control']) !!}

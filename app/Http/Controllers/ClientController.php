@@ -107,6 +107,8 @@ class ClientController extends Controller
 
             'email' => $request->email,
 
+            'contact' => $request->contact,
+
             'subject' => $request->subject,
 
             'bodymessage' => $request->message,

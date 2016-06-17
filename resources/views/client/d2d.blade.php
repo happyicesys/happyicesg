@@ -3,7 +3,7 @@
 Door To Door
 @stop
 @section('content')
-    <div ng-app="app" ng-controller="d2dorderController">
+<div ng-app="app" ng-controller="d2dorderController">
 
     <section id="portfolio" style="padding:60px 20px 10px 0px;">
         <div class="container-fluid">
@@ -45,6 +45,27 @@ Door To Door
                                                     1
                                                 </td>
                                                 <td class="col-md-6 text-center">
+{{--                                                 {!! Form::select('itemArr[]',
+                                                    [
+                                                        '1'=>'Red Bean Jelly (box/5pcs) - $7.90',
+                                                        '2'=>'Chocolate Pie with Mango (box/5pcs) - $7.90',
+                                                        '3'=>'QQ Pudding (box/5pcs) - $7.90',
+                                                        '4'=>'Green Mango & Lime (box/5pcs) - $7.90',
+                                                        '5'=>'Chocolate Roll (flavor/5pcs) - $8.50',
+                                                        '6'=>'Vanilla Roll (flavor/5pcs) - $8.50',
+                                                        '7'=>'Matcha Roll (flavor/5pcs) - $8.50',
+                                                        '8'=>'Strawberry (set/6pcs) - $7.90',
+                                                        '9'=>'Mint Chocolate (set/6pcs) - $9.50'
+                                                    ]
+                                                    ,
+                                                    null,
+                                                    [
+                                                    'id'=>'person_id',
+                                                    'class'=>'select form-control',
+                                                    'ng-model'=>'itemModel',
+                                                    'ng-change'=>'onItemChanged(itemModel)'
+                                                    ])
+                                                !!} --}}
                                                     <select name="itemArr[]" class="select" ng-model="itemModel" ng-change="onItemChanged(itemModel)">
                                                         <option value="1">Red Bean Jelly (box/5pcs) - $7.90</option>
                                                         <option value="2">Chocolate Pie with Mango (box/5pcs) - $7.90</option>
@@ -90,7 +111,8 @@ Door To Door
             </div>
         </div>
     </section>
-    </div>
+
+</div>
 
 <script src="/js/d2dorder.js"></script>
 <script>

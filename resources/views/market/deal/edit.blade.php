@@ -105,11 +105,11 @@ Deals
 {{--                             @unless($transaction->person->cust_id[0] == 'D' )
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                             {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                            @else
+                            @else --}}
                                 @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed')
                                 {!! Form::submit('Confirm', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                                 @endunless
-                            @endunless --}}
+                            {{-- @endunless --}}
 
                                 @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay() and !Auth::user()->hasRole('admin'))
                                     {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
