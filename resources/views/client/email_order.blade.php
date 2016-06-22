@@ -10,7 +10,7 @@
         <p><span style="font-weight:bold">Floor:</span>&nbsp;{{ $floor }}</p>
         <p><span style="font-weight:bold">Unit:</span>&nbsp;{{ $unit }}</p>
         <p></p>
-        <p>Item Ordered</p>
+        <p>Item Ordered:</p>
         @foreach($amountArr as $index => $amount)
             @if($amount != null or $amount != 0 or $amount != '')
             <p>{{$lookupArr[$itemArr[$index]]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>

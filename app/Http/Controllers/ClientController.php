@@ -212,7 +212,7 @@ class ClientController extends Controller
 
         }
 
-        return redirect('client');
+        return view('client.index');
     }
 
 }
