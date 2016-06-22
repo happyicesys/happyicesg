@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 
 use App\Http\Requests\ContactFormRequest;
 use App\Http\Requests\ClientRegisterRequest;
@@ -212,7 +213,7 @@ class ClientController extends Controller
 
         }
 
-        return view('client.index');
+        return Redirect::action('ClientController@d2dIndex');
     }
 
 }
