@@ -145,15 +145,15 @@ class ClientController extends Controller
     public function emailOrder(Request $request)
     {
         $lookupArr = [
-            'Red Bean Jelly (box/5pcs)',
-            'Chocolate Pie with Mango (box/5pcs)',
-            'QQ Pudding (box/5pcs)',
-            'Green Mango & Lime (box/5pcs)',
-            'Chocolate Roll (flavor/5pcs)',
-            'Vanilla Roll (flavor/5pcs)',
-            'Matcha Roll (flavor/5pcs)',
-            'Strawberry (set/6pcs)',
-            'Mint Chocolate (set/6pcs)'
+            '1' => 'Red Bean Jelly (box/5pcs)',
+            '2' => 'Chocolate Pie with Mango (box/5pcs)',
+            '3' => 'QQ Pudding (box/5pcs)',
+            '4' => 'Green Mango & Lime (box/5pcs)',
+            '5' => 'Chocolate Roll (flavor/5pcs)',
+            '6' => 'Vanilla Roll (flavor/5pcs)',
+            '7' => 'Matcha Roll (flavor/5pcs)',
+            '8' => 'Strawberry (set/6pcs)',
+            '9' => 'Mint Chocolate (set/6pcs)'
         ];
 
         // email array send from
