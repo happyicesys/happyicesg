@@ -14,9 +14,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-{{--                 <li>
+                <li>
                     <a class="page-scroll" style="color: white;" href="/d2d">Door To Door</a>
-                </li> --}}
+                </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/about">About</a>
                 </li>

@@ -70,6 +70,7 @@ get('/inventory/data', 'InventoryController@getData');
 resource('inventory', 'InventoryController');
 
 get('/d2d', 'ClientController@d2dIndex');
+post('/d2d/email', 'ClientController@emailOrder');
 get('/client/item', 'ClientController@clientProduct');
 get('/client/register', 'ClientController@getRegister');
 get('/client/about', 'ClientController@getAboutUs');

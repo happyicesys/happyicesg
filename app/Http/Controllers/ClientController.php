@@ -18,6 +18,7 @@ use App\Person;
 use App\User;
 use App\Profile;
 use App\Role;
+use App\DtdPrice;
 
 class ClientController extends Controller
 {
@@ -138,6 +139,66 @@ class ClientController extends Controller
 
     public function d2dIndex()
     {
+        return view('client.d2d');
+    }
+
+    public function emailOrder(Request $request)
+    {
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+
+        // email array send to
+        // $sendto = ['daniel.ma@happyice.com.sg'];
+        $sendto = ['leehongjie91@gmail.com'];
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+
+        $data = array(
+
+            'name' => $request->name,
+
+            'contact' => $request->contact,
+
+            'email' => $request->email,
+
+            'postcode' => $request->postcode,
+
+            'block' => $request->block,
+
+            'floor' => $request->floor,
+
+            'unit' => $request->unit,
+
+            'total' => $request->total,
+
+            'itemArr' => $request->itemArr,
+
+            'qtyArr' => $request->qtyArr,
+
+            'amountArr' => $request->amountArr,
+        );
+
+        $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){
+
+                    $message->from($sendfrom);
+
+                    $message->subject('D2D Online Order Form ['.$today.']');
+
+                    $message->setTo($sendto);
+        });
+
+        if($mail){
+
+            Flash::success('The order has been submitted');
+
+        }else{
+
+            Flash::error('Please Try Again');
+
+        }
+
         return view('client.d2d');
     }
 
