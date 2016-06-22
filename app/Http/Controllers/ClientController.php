@@ -161,8 +161,8 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
 
         // email array send to
-        // $sendto = ['daniel.ma@happyice.com.sg'];
-        $sendto = ['leehongjie91@gmail.com'];
+        $sendto = ['daniel.ma@happyice.com.sg'];
+        // $sendto = ['leehongjie91@gmail.com'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
