@@ -13,7 +13,7 @@
         <p>Item Ordered</p>
         @foreach($amountArr as $index => $amount)
             @if($amount != null or $amount != 0 or $amount != '')
-            <p>{{$itemArr[$index]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>
+            <p>{{$lookupArr[$itemArr[$index]]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>
             @endif
         @endforeach
         <p></p>

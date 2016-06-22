@@ -144,6 +144,17 @@ class ClientController extends Controller
 
     public function emailOrder(Request $request)
     {
+        $lookupArr = [
+            'Red Bean Jelly (box/5pcs)',
+            'Chocolate Pie with Mango (box/5pcs)',
+            'QQ Pudding (box/5pcs)',
+            'Green Mango & Lime (box/5pcs)',
+            'Chocolate Roll (flavor/5pcs)',
+            'Vanilla Roll (flavor/5pcs)',
+            'Matcha Roll (flavor/5pcs)',
+            'Strawberry (set/6pcs)',
+            'Mint Chocolate (set/6pcs)'
+        ];
 
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
@@ -178,6 +189,8 @@ class ClientController extends Controller
             'qtyArr' => $request->qtyArr,
 
             'amountArr' => $request->amountArr,
+
+            'lookupArr' => $lookupArr,
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){
@@ -199,7 +212,7 @@ class ClientController extends Controller
 
         }
 
-        return view('client.d2d');
+        return redirect('client');
     }
 
 }
