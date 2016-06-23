@@ -168,7 +168,7 @@ Members
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="pull-right">
-                                {!! Form::submit('Edit Profile', ['class'=> 'btn btn-success', 'form'=>'edit_profile']) !!}
+                                {!! Form::submit('Save', ['class'=> 'btn btn-success', 'form'=>'edit_profile']) !!}
                             </div>
                         </div>
                     </div>
