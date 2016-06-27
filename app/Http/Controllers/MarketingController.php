@@ -170,7 +170,15 @@ class MarketingController extends Controller
         if(! $user_id){
 
             return Redirect::action('MarketingController@createMember', $request->level);
+        }
 
+        $checkDupEmail = Person::where('cust_id', 'LIKE', 'D%')->where('email', $request->email)->first();
+
+        if($checkDupEmail){
+
+            Flash::error('The email has already been taken');
+
+            return Redirect::action('MarketingController@createMember', $request->level);
         }
 
         $people = Person::withTrashed()->where('cust_id', 'LIKE', 'D%');
@@ -505,9 +513,9 @@ class MarketingController extends Controller
 
         $person = Person::create($input);
 
-        if($request->assign_parent){
+        if($request->parent_id){
 
-            $assign_to = Person::findOrFail($request->assign_parent);
+            $assign_to = Person::findOrFail($request->parent_id);
 
             $person->makeChildOf($assign_to);
 
@@ -715,7 +723,7 @@ class MarketingController extends Controller
 
         if($transaction_id){
 
-            $query = $query->where('id', 'LIKE', '%'.$transaction_id.'%');
+            $query = $query->where('dtdtransactions.id', 'LIKE', '%'.$transaction_id.'%')->orWhere('dtdtransactions.transaction_id', 'LIKE', '%'.$transaction_id.'%');
         }
 
         if($cust_id){

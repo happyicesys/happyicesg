@@ -292,7 +292,6 @@ class TransactionController extends Controller
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
-
         }
 
         $assign_cust = $transaction->person->cust_id;
@@ -300,7 +299,6 @@ class TransactionController extends Controller
         if($assign_cust[0] == 'D'){
 
             $this->syncOrder($transaction->id);
-
         }
 
         // update dtdtransaciton status to delivered
@@ -995,13 +993,13 @@ class TransactionController extends Controller
 
         $dtdtransaction->delivery_date = $dtdtransaction->delivery_date;
 
-        $dtdtransaction->status = 'Confirmed';
+        $dtdtransaction->status = $dtdtransaction->status;
 
         $dtdtransaction->transremark = $dtdtransaction->transremark;
 
         $dtdtransaction->updated_by = $dtdtransaction->updated_by;
 
-        $dtdtransaction->pay_status = 'Owe';
+        $dtdtransaction->pay_status = $dtdtransaction->pay_status;
 
         $dtdtransaction->person_code = $dtdtransaction->person_code;
 

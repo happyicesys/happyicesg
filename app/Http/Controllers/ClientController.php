@@ -146,22 +146,40 @@ class ClientController extends Controller
     public function emailOrder(Request $request)
     {
         $lookupArr = [
-            '1' => 'Red Bean Jelly (box/5pcs)',
-            '2' => 'Chocolate Pie with Mango (box/5pcs)',
-            '3' => 'QQ Pudding (box/5pcs)',
-            '4' => 'Green Mango & Lime (box/5pcs)',
-            '5' => 'Chocolate Roll (flavor/5pcs)',
-            '6' => 'Vanilla Roll (flavor/5pcs)',
-            '7' => 'Matcha Roll (flavor/5pcs)',
-            '8' => 'Strawberry (set/6pcs)',
-            '9' => 'Mint Chocolate (set/6pcs)'
+            '1' => 'Red Bean Jelly (5pcs/box)',
+            '2' => 'Chocolate Pie with Mango (5pcs/box)',
+            '3' => 'QQ Pudding (5pcs/box)',
+            '4' => 'Green Mango & Lime (5pcs/box)',
+            '5' => 'Chocolate Roll (5pcs/flavor)',
+            '6' => 'Vanilla Roll (5pcs/flavor)',
+            '7' => 'Matcha Roll (5pcs/flavor)',
+            '8' => 'Strawberry (6pcs/set)',
+            '9' => 'Mint Chocolate (6pcs/set)'
         ];
 
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
 
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg'];
+        $adminemails = User::whereHas('roles', function($q){
+
+            $q->where('name', 'admin');
+
+        })->get();
+
+        if($adminemails){
+
+            foreach($adminemails as $adminemail){
+
+                $sendto[] = $adminemail->email;
+            }
+
+            $sendto = array_unique($sendto);
+
+        }else{
+
+            $sendto = ['daniel.ma@happyice.com.sg'];
+        }
         // $sendto = ['leehongjie91@gmail.com'];
 
         // capture email sending date

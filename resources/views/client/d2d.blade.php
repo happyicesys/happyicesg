@@ -51,15 +51,15 @@ Door To Door
                                                 </td>
                                                 <td class="col-md-6 text-center">
                                                     <select name="itemArr[1]" class="select itemClass">
-                                                        <option value="1">Red Bean Jelly (box/5pcs) - $7.90</option>
-                                                        <option value="2">Chocolate Pie with Mango (box/5pcs) - $7.90</option>
-                                                        <option value="3">QQ Pudding (box/5pcs) - $7.90</option>
-                                                        <option value="4">Green Mango & Lime (box/5pcs) - $7.90</option>
-                                                        <option value="5">Chocolate Roll (flavor/5pcs) - $8.50</option>
-                                                        <option value="6">Vanilla Roll (flavor/5pcs) - $8.50</option>
-                                                        <option value="7">Matcha Roll (flavor/5pcs) - $8.50</option>
-                                                        <option value="8">Strawberry (set/6pcs) - $7.90</option>
-                                                        <option value="9">Mint Chocolate (set/6pcs) - $9.50</option>
+                                                        <option value="1">Red Bean Jelly (5pcs/box) - $7.90</option>
+                                                        <option value="2">Chocolate Pie with Mango (5pcs/box) - $7.90</option>
+                                                        <option value="3">QQ Pudding (5pcs/box) - $7.90</option>
+                                                        <option value="4">Green Mango & Lime (5pcs/box) - $7.90</option>
+                                                        <option value="5">Chocolate Roll (5pcs/flavor) - $8.50</option>
+                                                        <option value="6">Vanilla Roll (5pcs/flavor) - $8.50</option>
+                                                        <option value="7">Matcha Roll (5pcs/flavor) - $8.50</option>
+                                                        <option value="8">Strawberry (6pcs/set) - $7.90</option>
+                                                        <option value="9">Mint Chocolate (6pcs/set) - $9.50</option>
                                                     </select>
                                                 </td>
                                                 <td class="col-md-1 text-center">
@@ -191,7 +191,7 @@ Door To Door
 
         var tablerow = $('#tabledata tbody tr').length;
 
-        $(division).append('<tr class="txtMult"><td class="col-md-1 text-center rowCount">'+tablerow+'</td><td class="col-md-6 text-center"><select name="itemArr['+tablerow+']" class="select itemClass"><option value="1">Red Bean Jelly (box/5pcs) - $7.90</option><option value="2">Chocolate Pie with Mango (box/5pcs) - $7.90</option><option value="3">QQ Pudding (box/5pcs) - $7.90</option><option value="4">Green Mango & Lime (box/5pcs) - $7.90</option><option value="5">Chocolate Roll (flavor/5pcs) - $8.50</option><option value="6">Vanilla Roll (flavor/5pcs) - $8.50</option><option value="7">Matcha Roll (flavor/5pcs) - $8.50</option><option value="8">Strawberry (set/6pcs) - $7.90</option><option value="9">Mint Chocolate (set/6pcs) - $9.50</option></select></td><td class="col-md-1 text-center"><select name="qtyArr['+tablerow+']" class="select qtyClass"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></td><td class="col-md-1 text-center"><input type="text" name="amountArr['+tablerow+']" class="input-sm form-control amountClass text-right" readonly="readonly" /></td><td class="col-md-1 text-center" style="color:red;"><span class="removeClass">&#10006;</span></td></tr><tr><td></td><td class="text-center"><strong>Total</strong></td><td></td><td><input type="text" name="total" class="input-sm form-control grandTotal text-right" readonly="readonly" /></td></tr>');
+        $(division).append('<tr class="txtMult"><td class="col-md-1 text-center rowCount">'+tablerow+'</td><td class="col-md-6 text-center"><select name="itemArr['+tablerow+']" class="select itemClass"><option value="1">Red Bean Jelly (5pcs/box) - $7.90</option><option value="2">Chocolate Pie with Mango (5pcs/box) - $7.90</option><option value="3">QQ Pudding (5pcs/box) - $7.90</option><option value="4">Green Mango & Lime (5pcs/box) - $7.90</option><option value="5">Chocolate Roll (5pcs/flavor) - $8.50</option><option value="6">Vanilla Roll (5pcs/flavor) - $8.50</option><option value="7">Matcha Roll (5pcs/flavor) - $8.50</option><option value="8">Strawberry (6pcs/set) - $7.90</option><option value="9">Mint Chocolate (6pcs/set) - $9.50</option></select></td><td class="col-md-1 text-center"><select name="qtyArr['+tablerow+']" class="select qtyClass"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></td><td class="col-md-1 text-center"><input type="text" name="amountArr['+tablerow+']" class="input-sm form-control amountClass text-right" readonly="readonly" /></td><td class="col-md-1 text-center" style="color:red;"><span class="removeClass">&#10006;</span></td></tr><tr><td></td><td class="text-center"><strong>Total</strong></td><td></td><td><input type="text" name="total" class="input-sm form-control grandTotal text-right" readonly="readonly" /></td></tr>');
 
         $('.select').select2();
     }
