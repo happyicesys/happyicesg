@@ -171,7 +171,10 @@ class ClientController extends Controller
 
             foreach($adminemails as $adminemail){
 
-                $sendto[] = $adminemail->email;
+                if($adminemail->email){
+
+                    $sendto[] = $adminemail->email;
+                }
             }
 
             $sendto = array_unique($sendto);
