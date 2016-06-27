@@ -355,11 +355,14 @@ class TransactionController extends Controller
 
             if($transaction->dtdtransaction_id){
 
-                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+                $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
 
-                $dtdtransaction->status = 'Deleted';
+                if($dtdtransaction){
 
-                $dtdtransaction->save();
+                    $dtdtransaction->status = 'Deleted';
+
+                    $dtdtransaction->save();
+                }
             }
 
             $transaction->delete();
