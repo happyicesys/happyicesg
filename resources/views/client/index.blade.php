@@ -6,7 +6,7 @@ Healthier Life
 @stop
 @section('content')
     <header>
-        <div class="header-content">
+        <div class="header-content" style="padding-top: 0px;">
             <div class="header-content-inner">
                 <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span>
                 <hr>

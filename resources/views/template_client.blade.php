@@ -6,7 +6,7 @@
 
     <body id="page-top">
         @include('partials.nav_client')
-            <div class="container-fluid" style="padding: 40px 0px 0px 0px;">
+            <div style="margin: 40px 0px 0px 0px;">
                 @include('errors.validate')
                 @include('flash::message')
             </div>
