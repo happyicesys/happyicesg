@@ -9,11 +9,12 @@
         <p><span style="font-weight:bold">Block:</span>&nbsp;{{ $block }}</p>
         <p><span style="font-weight:bold">Floor:</span>&nbsp;{{ $floor }}</p>
         <p><span style="font-weight:bold">Unit:</span>&nbsp;{{ $unit }}</p>
+        <p><span style="font-weight:bold">Timeslot:</span>&nbsp;{{ $timeslot }}</p>
         <p></p>
         <p>Item Ordered:</p>
         @foreach($amountArr as $index => $amount)
-            @if($amount != null or $amount != 0 or $amount != '')
-            <p>{{$lookupArr[$itemArr[$index]]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>
+            @if($amount != null and $amount != 0.00 and $amount != '')
+                <p>{{$lookupArr[$index]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>
             @endif
         @endforeach
         <p></p>

@@ -1,3 +1,4 @@
+@inject('people', 'App\Person')
 
 <div class="col-md-12">
     <div class="panel panel-success row">
@@ -62,7 +63,7 @@
                                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
                                             @endunless
                                         @endcan
-                                    @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted' or (($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())) and !Auth::user()->hasRole('admin'))
+                                    @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted' or (($transaction->person->cust_id[0] == 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())))
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                                     @else
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>

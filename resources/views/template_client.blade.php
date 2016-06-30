@@ -6,14 +6,13 @@
 
     <body id="page-top">
         @include('partials.nav_client')
-            @include('errors.validate')
-            @include('flash::message')
+            <div class="container-fluid" style="padding: 40px 0px 0px 0px;">
+                @include('errors.validate')
+                @include('flash::message')
+            </div>
                 @yield('content')
             @include('partials.footer_client')
         @yield('footer')
-        <script>
-            $('div.alert').delay(3000).slideUp(300);
-        </script>
     </body>
 </html>
 

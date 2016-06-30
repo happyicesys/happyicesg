@@ -140,21 +140,82 @@ class ClientController extends Controller
 
     public function d2dIndex()
     {
-        return view('client.d2d');
+        $lookupArr = [
+            '1' => 'Red Bean Jelly (5pcs/ box)',
+            '2' => 'Chocolate Pie with Mango (5pcs/ box)',
+            '3' => 'QQ Pudding (5pcs/ box)',
+            '4' => 'Green Mango & Lime (5pcs/ box)',
+            '5' => 'Chocolate Roll (5pcs/ flavor)',
+            '6' => 'Vanilla Roll (5pcs/ flavor)',
+            '7' => 'Matcha Roll (5pcs/ flavor)',
+            '8' => 'Strawberry (6pcs/ set)',
+            '9' => 'Mint Chocolate (6pcs/ set)'
+        ];
+
+        $priceArr = [
+            '1' => 7.90,
+            '2' => 7.90,
+            '3' => 7.90,
+            '4' => 7.90,
+            '5' => 8.50,
+            '6' => 8.50,
+            '7' => 8.50,
+            '8' => 7.90,
+            '9' => 9.50
+        ];
+
+        $timeArr = [
+            '1'  => 'Anytime',
+            '2' => '8am - 12pm',
+            '3' => '1pm - 5pm',
+            '4' => '6pm - 9pm',
+        ];
+
+        return view('client.d2d', compact('lookupArr', 'priceArr', 'timeArr'));
     }
 
     public function emailOrder(Request $request)
     {
+        $this->validate($request, [
+
+            'name' => 'required',
+            'contact' => 'required',
+            'email' => 'required',
+            'postcode' => 'required',
+            'block' => 'required',
+            'floor' => 'required',
+            'unit' => 'required',
+
+        ]);
+/*
+        if($request->email){
+
+            $existing = Person::where('email', $request->email)->first();
+
+            if(! $existing){
+
+                // do the logic to store the customer based on postal code and auto assign AB
+
+            }
+        }*/
+
         $lookupArr = [
-            '1' => 'Red Bean Jelly (5pcs/box)',
-            '2' => 'Chocolate Pie with Mango (5pcs/box)',
-            '3' => 'QQ Pudding (5pcs/box)',
-            '4' => 'Green Mango & Lime (5pcs/box)',
-            '5' => 'Chocolate Roll (5pcs/flavor)',
-            '6' => 'Vanilla Roll (5pcs/flavor)',
-            '7' => 'Matcha Roll (5pcs/flavor)',
-            '8' => 'Strawberry (6pcs/set)',
-            '9' => 'Mint Chocolate (6pcs/set)'
+            '1' => 'Red Bean Jelly (5pcs/ box)',
+            '2' => 'Chocolate Pie with Mango (5pcs/ box)',
+            '3' => 'QQ Pudding (5pcs/ box)',
+            '4' => 'Green Mango & Lime (5pcs/ box)',
+            '5' => 'Chocolate Roll (5pcs/ flavor)',
+            '6' => 'Vanilla Roll (5pcs/ flavor)',
+            '7' => 'Matcha Roll (5pcs/ flavor)',
+            '8' => 'Strawberry (6pcs/ set)',
+            '9' => 'Mint Chocolate (6pcs/ set)'
+        ];
+
+        $timeArr = [
+            '1'  => 'Anytime',
+            '2' => '8am - 12pm',
+            '3' => '1pm - 5pm',
+            '4' => '6pm - 9pm',
         ];
 
         // email array send from
@@ -213,6 +274,8 @@ class ClientController extends Controller
             'amountArr' => $request->amountArr,
 
             'lookupArr' => $lookupArr,
+
+            'timeslot' => $timeArr[$request->del_time],
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){

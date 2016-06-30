@@ -5,7 +5,7 @@ Door To Door
 @section('content')
 <div ng-app="app" ng-controller="d2dorderController">
 
-    <section id="portfolio" style="padding:60px 20px 10px 0px;">
+    <section id="portfolio" style="padding:25px 20px 10px 0px;">
         <div class="container-fluid">
             <div class="row no-gutter">
                 <div class="col-md-6 col-xs-12">
@@ -25,7 +25,6 @@ Door To Door
 
                             <div id="itemInterface">
                                 <div class="col-md-12 col-xs-12">
-                                    <input type="button" class="btn btn-warning" onclick="addItem();" value="+ More">
                                     <div class="table-responsive">
                                     <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;" id="tabledata">
                                         <tr style="background-color: #f7f9f7">
@@ -41,12 +40,38 @@ Door To Door
                                             <th class="col-md-2 text-center">
                                                 Price
                                             </th>
-                                            <th class="col-md-1 text-center">
-                                            </th>
                                         </tr>
+                                            @foreach($lookupArr as $index => $lookup)
                                             <tr class="txtMult">
-                                                <td class="col-md-1 text-center rowCount">
-                                                    {{-- <input type="text" class="form-control input-sm text-center rowNum" value="1" disabled/> --}}
+
+                                                    <td class="col-md-1 text-center rowCount">
+                                                        {{$index}}
+                                                    </td>
+                                                    <td class="col-md-6 text-center">
+                                                        {{$lookup}}
+                                                    </td>
+                                                    <td class="col-md-2 text-center">
+                                                        <select name="qtyArr[{{$index}}]" class="select qtyClass">
+                                                            <option value="0">0</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                            <option value="5">5</option>
+                                                            <option value="6">6</option>
+                                                            <option value="7">7</option>
+                                                            <option value="8">8</option>
+                                                            <option value="9">9</option>
+                                                        </select>
+                                                    </td>
+                                                <td class="col-md-2 text-center">
+                                                    <input type="text" name="amountArr[{{$index}}]" class="input-sm form-control amountClass text-right" readonly="readonly" />
+                                                </td>
+                                                <td class="hidden">
+                                                    <input type="text" class=" input-sm form-control priceClass text-right" value="{{$priceArr[$index]}}" />
+                                                </td>
+
+{{--                                                 <td class="col-md-1 text-center rowCount">
                                                     1
                                                 </td>
                                                 <td class="col-md-6 text-center">
@@ -80,8 +105,9 @@ Door To Door
                                                 </td>
                                                 <td class="col-md-1 text-center" style="color:red;">
                                                     <span class="removeClass">&#10006;</span>
-                                                </td>
+                                                </td> --}}
                                             </tr>
+                                            @endforeach
                                             <tr>
                                                 <td></td>
                                                 <td class="text-center"><strong>Total</strong></td>
@@ -102,7 +128,7 @@ Door To Door
                             </div>
 
                             <div id="detailInterface">
-                                <div class="col-md-12 col-xs-12">
+                                <div class="col-md-4 col-xs-12">
                                     <div class="form-group">
                                         {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -110,7 +136,7 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 col-xs-12">
+                                <div class="col-md-4 col-xs-12">
                                     <div class="form-group">
                                         {!! Form::label('contact', 'Contact Number', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -118,9 +144,10 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 col-xs-12">
+                                <div class="col-md-4 col-xs-12">
                                     <div class="form-group">
                                         {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
+                                        {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
                                         {!! Form::email('email', null, ['class'=>'form-control']) !!}
                                     </div>
                                 </div>
@@ -155,6 +182,16 @@ Door To Door
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
                                         {!! Form::text('unit', null, ['class'=>'form-control']) !!}
                                     </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    {!! Form::label('del_time', 'Preferred Delivery Timeslot :', ['class'=>'control-label']) !!}
+                                    <small>{!! Form::label('del', '** Final Timing will be Confirmed via SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
+                                    {!! Form::select('del_time',
+                                        $timeArr,
+                                        null,
+                                        ['class'=>'select form-control'])
+                                    !!}
                                 </div>
 
                                 <div class="col-md-12 col-xs-12" style="padding-top:20px;">

@@ -1,3 +1,5 @@
+@inject('people', 'App\Person')
+
 @extends('template')
 @section('title')
 Deals
@@ -10,14 +12,14 @@ Deals
     <div class="panel-heading">
         <div class="col-md-4">
         <h4>
-            @if($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
+            @if($transaction->status === 'Cancelled' or $transaction->status === 'Deleted')
             <del><strong>Invoice : {{$transaction->transaction_id ? $transaction->transaction_id : $transaction->id}}</strong> ({{$transaction->status}})
                 @unless($transaction->person->cust_id[0] == 'D' or $transaction->person->cust_id[0] == 'H')
                     - {{$transaction->pay_status}}</del>
                 @endunless
             @else
             <strong>Invoice : {{$transaction->transaction_id ? $transaction->transaction_id : $transaction->id}}</strong> ({{$transaction->status}})
-                @unless($transaction->person->cust_id[0] == 'D' or $transaction->person->cust_id[0] == 'H')
+                @unless($transaction->person->cust_id[0] ==='D' or $transaction->person->cust_id[0] === 'H')
                     - {{$transaction->pay_status}}
                 @endunless
             @endif
@@ -95,7 +97,7 @@ Deals
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
-                            @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay() and !Auth::user()->hasRole('admin'))
+                            @unless($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @else
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete', 'disabled'=>'disabled']) !!}
@@ -106,12 +108,12 @@ Deals
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                             {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                             @else --}}
-                                @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed')
+                                @unless($transaction->person->cust_id[0] === 'D' and $transaction->status === 'Confirmed')
                                 {!! Form::submit('Confirm', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                                 @endunless
                             {{-- @endunless --}}
 
-                                @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay() and !Auth::user()->hasRole('admin'))
+                                @unless($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())
                                     {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                                 @else
                                     {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust', 'disabled'=>'disabled']) !!}
@@ -124,25 +126,25 @@ Deals
                         </div>
                     </div>
                 </div>
-                @elseif(((($transaction->person->cust_id[0] == 'D' or $transaction->person->cust_id[0] == 'H') and $transaction->status == 'Delivered') or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
+                @elseif(((($transaction->person->cust_id[0] === 'D' or $transaction->person->cust_id[0] === 'H') and $transaction->status == 'Delivered') or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
                             @can('transaction_deleteitem')
                             @cannot('supervisor_view')
-                            @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Delivered')
+                            @unless($transaction->person->cust_id[0] === 'D' and $transaction->status === 'Delivered')
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @endunless
                             @endcannot
                             @endcan
                         </div>
                         <div class="pull-right">
-                            @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Delivered')
+                            @unless($transaction->person->cust_id[0] === 'D' and $transaction->status === 'Delivered')
                             {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                             @endunless
                             <a href="/market/deal/emailInv/{{$transaction->id}}" class="btn btn-warning">Send Inv Email</a>
                             <a href="/market/deal/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                            @unless($transaction->person->cust_id[0] == 'D' and $transaction->status == 'Delivered')
+                            @unless($transaction->person->cust_id[0] === 'D' and $transaction->status == 'Delivered')
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                             @endunless
                             <a href="/market/deal" class="btn btn-default">Cancel</a>
