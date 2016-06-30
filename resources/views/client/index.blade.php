@@ -73,18 +73,20 @@ Healthier Life
     </section>
 
     <section class="no-padding col-lg-12 col-md-12" id="portfolio">
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-bottom: 85px;">
             <div class="row no-gutter">
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('005')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('005')->first()->main_imgcaption}}">
+                        {{-- <img src="{{$item::whereProductId('005')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('005')->first()->main_imgcaption}}"> --}}
+                        <img src="../img/portfolio/a1.jpg" class="img-responsive" alt="chocolate pie with mango">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
 
                                 </div>
                                 <div class="project-name">
-                                    {{$item::whereProductId('005')->first()->name}}
+                                    {{-- {{$item::whereProductId('005')->first()->name}} --}}
+                                    Chocolate Pie with Mango
                                 </div>
                             </div>
                         </div>
@@ -92,27 +94,14 @@ Healthier Life
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('004')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('004')->first()->main_imgcaption}}">
-                        <div class="portfolio-box-caption">
-                            <div class="portfolio-box-caption-content">
-                                <div class="project-category text-faded">
-                                </div>
-                                <div class="project-nam026e">
-                                    {{$item::whereProductId('004')->first()->name}}
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-sm-6">
-                    <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('026')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('026')->first()->main_imgcaption}}">
+                        {{-- <img src="{{$item::whereProductId('004')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('004')->first()->main_imgcaption}}"> --}}
+                        <img src="../img/portfolio/a2.png" class="img-responsive" alt="Strawberry Frozen Yogurt">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    {{$item::whereProductId('026')->first()->name}}
+                                    Strawberry Frozen Yogurt
                                 </div>
                             </div>
                         </div>
@@ -120,13 +109,14 @@ Healthier Life
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('013')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('013')->first()->main_imgcaption}}">
+                        {{-- <img src="{{$item::whereProductId('026')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('026')->first()->main_imgcaption}}"> --}}
+                        <img src="../img/portfolio/a3.jpg" class="img-responsive" alt="Vanilla Roll">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    {{$item::whereProductId('013')->first()->name}}
+                                    Vanilla Roll
                                 </div>
                             </div>
                         </div>
@@ -134,13 +124,13 @@ Healthier Life
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('015')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('015')->first()->main_imgcaption}}">
+                        <img src="../img/portfolio/a4.jpg" class="img-responsive" alt="Chocolate Roll">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    {{$item::whereProductId('015')->first()->name}}
+                                    Chocolate Roll
                                 </div>
                             </div>
                         </div>
@@ -148,13 +138,27 @@ Healthier Life
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="{{$item::whereProductId('010')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('010')->first()->main_imgcaption}}">
+                        <img src="../img/portfolio/a5.jpg" class="img-responsive" alt="OShare Mint Chocolate">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    {{$item::whereProductId('010')->first()->name}}
+                                    OShare Mint Chocolate
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <a href="/client/product" class="portfolio-box">
+                        <img src="../img/portfolio/a6.jpg" class="img-responsive" alt="Red Bean Jelly">
+                        <div class="portfolio-box-caption">
+                            <div class="portfolio-box-caption-content">
+                                <div class="project-category text-faded">
+                                </div>
+                                <div class="project-name">
+                                    Red Bean Jelly
                                 </div>
                             </div>
                         </div>
@@ -164,8 +168,8 @@ Healthier Life
         </div>
     </section>
 
-    <aside >
-        <div class="container text-center">
+    <aside>
+        <div class="container text-center" style="padding-top: 30px;">
             <div class="call-to-action">
                 <h2>We Deliver to Your Doorstep too</h2>
                 <a href="#" class="btn btn-primary btn-xl wow tada">Order Now!</a>

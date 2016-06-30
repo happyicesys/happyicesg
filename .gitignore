@@ -3,7 +3,6 @@
 /public/person_asset
 /public/item_asset
 /storage/invoice
-/public/img
 Homestead.yaml
 Homestead.json
 .env
