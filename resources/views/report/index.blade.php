@@ -494,7 +494,9 @@
                                                     <td></td>
                                                 </tr>
                                                 <tr style="background-color: #DDFDF8">
-                                                    <th class="col-md-1 text-center"></th>
+                                                    <th class="col-md-1 text-center">
+                                                        <input type="checkbox" id="checkAll" />
+                                                    </th>
                                                     <th class="col-md-1 text-center">
                                                         #
                                                     </th>
@@ -734,6 +736,11 @@
         if (lastTab) {
             $('[href="' + lastTab + '"]').tab('show');
         }
+    });
+
+    $('#checkAll').change(function(){
+        var all = this;
+        $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
     });
 </script>
 @stop
