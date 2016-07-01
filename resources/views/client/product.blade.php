@@ -13,8 +13,8 @@ Healthier Life
     <div ng-app="app" ng-controller="clientMainController">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div dir-paginate="product in products | itemsPerPage:itemsPerPage"  current-page="currentPage" class="col-md-4 col-sm-4 col-xs-4" style="font-size:20px;">
-                    <img class="img-responsive" ng-src="@{{product.main_imgpath}}" ng-alt="@{{product.main_imgcaption}}" style="max-height: 350px;">
+                <div dir-paginate="product in products | itemsPerPage:itemsPerPage"  current-page="currentPage" class="col-md-4 col-sm-6 col-xs-12" style="font-size:20px;">
+                    <img class="img-responsive text-center" ng-src="@{{product.main_imgpath}}" ng-alt="@{{product.main_imgcaption}}" style="max-height: 350px;">
                     <p class="product-name text-center">@{{product.name}}</p>
                 </div>
 
