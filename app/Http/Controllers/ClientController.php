@@ -164,14 +164,19 @@ class ClientController extends Controller
             '9' => 9.50
         ];
 
-        $timeArr = [
-            '1'  => 'Anytime',
-            '2' => '8am - 12pm',
-            '3' => '1pm - 5pm',
-            '4' => '6pm - 9pm',
+        $dayArr = [
+            '1' => 'Same Day',
+            '2' => 'Within 1 Day',
+            '3' => 'Within 2 Days',
         ];
 
-        return view('client.d2d', compact('lookupArr', 'priceArr', 'timeArr'));
+        $timeArr = [
+            '1' => '8am - 12pm',
+            '2' => '12pm - 5pm',
+            '3' => '5pm - 9pm',
+        ];
+
+        return view('client.d2d', compact('lookupArr', 'priceArr', 'dayArr', 'timeArr'));
     }
 
     public function emailOrder(Request $request)
@@ -211,11 +216,16 @@ class ClientController extends Controller
             '9' => 'Mint Chocolate (6pcs/ set)'
         ];
 
+        $dayArr = [
+            '1' => 'Same Day',
+            '2' => 'Within 1 Day',
+            '3' => 'Within 2 Days',
+        ];
+
         $timeArr = [
-            '1'  => 'Anytime',
-            '2' => '8am - 12pm',
-            '3' => '1pm - 5pm',
-            '4' => '6pm - 9pm',
+            '1' => '8am - 12pm',
+            '2' => '12pm - 5pm',
+            '3' => '5pm - 9pm',
         ];
 
         // email array send from
@@ -276,6 +286,8 @@ class ClientController extends Controller
             'lookupArr' => $lookupArr,
 
             'timeslot' => $timeArr[$request->del_time],
+
+            'dayslot' => $dayArr[$request->del_date],
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){

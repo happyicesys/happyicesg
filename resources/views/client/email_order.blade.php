@@ -9,9 +9,10 @@
         <p><span style="font-weight:bold">Block:</span>&nbsp;{{ $block }}</p>
         <p><span style="font-weight:bold">Floor:</span>&nbsp;{{ $floor }}</p>
         <p><span style="font-weight:bold">Unit:</span>&nbsp;{{ $unit }}</p>
+        <p><span style="font-weight:bold">Delivery:</span>&nbsp;{{ $dayslot }}</p>
         <p><span style="font-weight:bold">Timeslot:</span>&nbsp;{{ $timeslot }}</p>
         <p></p>
-        <p>Item Ordered:</p>
+        <p><span style="font-weight:bold">Item Ordered:</span></p>
         @foreach($amountArr as $index => $amount)
             @if($amount != null and $amount != 0.00 and $amount != '')
                 <p>{{$lookupArr[$index]}} - {{$qtyArr[$index]}} - ${{$amount}}</p>

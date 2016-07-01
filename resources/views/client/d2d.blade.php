@@ -185,13 +185,22 @@ Door To Door
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    {!! Form::label('del_time', 'Preferred Delivery Timeslot :', ['class'=>'control-label']) !!}
-                                    <small>{!! Form::label('del', '** Final Timing will be Confirmed via SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
+                                    {!! Form::label('del_date', 'Preferred Delivery Day:', ['class'=>'control-label']) !!}
+                                    {!! Form::select('del_date',
+                                        $dayArr,
+                                        null,
+                                        ['class'=>'select form-control'])
+                                    !!}
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    {!! Form::label('del_time', 'Preferred Delivery Timeslot:', ['class'=>'control-label']) !!}
                                     {!! Form::select('del_time',
                                         $timeArr,
                                         null,
                                         ['class'=>'select form-control'])
                                     !!}
+                                    <small>{!! Form::label('del', '** Final Timing will be Confirmed via Phone/ SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
                                 </div>
 
                                 <div class="col-md-12 col-xs-12" style="padding-top:20px;">
