@@ -25,7 +25,7 @@ hr.light {
 }
 
 a {
-    color: #f05f40;
+    color: white;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
@@ -52,12 +52,12 @@ p {
 }
 
 .bg-primary {
-    background-color: #7344e7;
+    background-color: #9f6bb5;
 }
 
 .bg-dark {
     color: #fff;
-    background-color: #222;
+    background-color: #9f6bb5;
 }
 
 .text-faded {
@@ -174,17 +174,18 @@ aside {
 
 header {
     position: relative;
-    width: 100%;
+    width: auto;
     min-height: auto;
     text-align: center;
     color: #fff;
-    background-image: url(../img/header.jpg);
+    background-image: url(../img/main_slide.jpg);
     background-position: center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
     margin-top: 40px;
+    padding: 120px 20px 10px 20px;
 }
 
 header .header-content {
@@ -275,7 +276,7 @@ header .header-content .header-content-inner p {
     text-align: center;
     color: #fff;
     opacity: 0;
-    background: rgba(240,95,64,.9);
+    background: rgba(254,126,204,.9);
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;

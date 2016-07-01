@@ -8,10 +8,10 @@ Healthier Life
     <header>
         <div class="header-content" style="padding-top: 0px;">
             <div class="header-content-inner">
-                <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span>
-                <hr>
-                <p style="color: black;">Oriental . Flavourful . Less Sweet</p>
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Grab It Now</a>
+                {{-- <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span> --}}
+                {{-- <hr> --}}
+                {{-- <p style="color: black;">Oriental . Flavourful . Less Sweet</p> --}}
+                <a href="/client/product" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
             </div>
         </div>
     </header>
@@ -172,7 +172,7 @@ Healthier Life
         <div class="container text-center" style="padding-top: 30px;">
             <div class="call-to-action">
                 <h2>We Deliver to Your Doorstep too</h2>
-                <a href="#" class="btn btn-primary btn-xl wow tada">Order Now!</a>
+                <a href="/d2d" class="btn btn-primary btn-xl wow tada">Order Now!</a>
             </div>
         </div>
     </aside>

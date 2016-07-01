@@ -8,7 +8,10 @@ Healthier Life
     <div class="col-md-6 col-sm-6 col-xs-12 text-center">
         <span style="font-size: 18px; margin-bottom: 10px;">
             <strong>Happy Ice Logistics Pte Ltd</strong>
-            <p>Blk 2021, #01-198, Bukit Batok St 23, 659526</p>
+            <p>
+            Blk 2021, #01-198, Bukit Batok St 23, 659526 <br>
+            TEL: 6563 1692 / 9777 3533
+            </p>
         </span>
 {{--         <iframe width="600" height="450" frameborder="1" style="border:0"
         src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJTelMFXUQ2jERAjn-O6_JeCI&key=AIzaSyC3twP5qBnguWnEQIVAawJWPyqQvOfBi0Q" allowfullscreen>
@@ -55,7 +58,7 @@ Healthier Life
                     {!! Form::textarea('message', null, ['class'=>'form-control', 'rows'=>'3']) !!}
                 </div>
 
-                {!! Form::submit('Submit', ['class'=> 'btn btn-success']) !!}
+                {!! Form::submit('Submit', ['class'=> 'btn btn-lg btn-success']) !!}
 
                 {!! Form::close() !!}
             </div>
