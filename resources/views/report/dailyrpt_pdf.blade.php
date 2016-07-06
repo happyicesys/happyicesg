@@ -160,7 +160,7 @@
                         <div class="col-xs-9">
                             <strong>Total Amount for 'Delivered':</strong>
                         </div>
-                        <div class="col-xs-2 text-right">
+                        <div class="col-xs-3 text-right">
                             {{ number_format($amt_del, 2, '.', ',') }}
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                         <div class="col-xs-9">
                             <strong>Total Qty for 'Delivered':</strong>
                         </div>
-                        <div class="col-xs-2 text-right">
+                        <div class="col-xs-3 text-right">
                             {{ number_format($qty_del, 4, '.', ',') }}
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                         <div class="col-xs-9">
                             <strong>Total Amount for 'Paid':</strong>
                         </div>
-                        <div class="col-xs-2 text-right">
+                        <div class="col-xs-3 text-right">
                             {{ number_format($amt_mod, 2, '.', ',') }}
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                             <div class="col-xs-9">
                                 <strong>Total Amount for 'Paid':</strong>
                             </div>
-                            <div class="col-xs-2 text-right">
+                            <div class="col-xs-3 text-right">
                                 {{ number_format($amt_mod, 2, '.', ',') }}
                             </div>
                         </div>
@@ -199,7 +199,7 @@
                             <div class="col-xs-9">
                                 <strong>Total Paid 'Cash':</strong>
                             </div>
-                            <div class="col-xs-2 text-right">
+                            <div class="col-xs-3 text-right">
                                 {{ number_format($cash_mod, 2, '.', ',') }}
                             </div>
                         </div>
@@ -208,7 +208,7 @@
                             <div class="col-xs-9">
                                 <strong>Total Paid 'Cheque/ TT':</strong>
                             </div>
-                            <div class="col-xs-2 text-right">
+                            <div class="col-xs-3 text-right">
                                 {{ number_format($cheque_mod, 2, '.', ',') }}
                             </div>
                         </div>

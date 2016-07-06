@@ -16,7 +16,8 @@ class DtdTransaction extends Model
         'status', 'pay_status', 'del_address',
         'po_no', 'cancel_trace','user_id',
         'pay_method', 'note', 'paid_at',
-        'updated_by', 'paid_by', 'transaction_id'
+        'updated_by', 'paid_by', 'transaction_id',
+        'contact', 'del_postcode'
     ];
 
     protected $dates =[

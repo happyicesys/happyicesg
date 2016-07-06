@@ -687,7 +687,7 @@ class RptController extends Controller
 
             }else if($driver and $paid_by){
 
-                $query3 = $query3->where('paid_by', 'like', '%'.$paid_by.'%');
+                $query3 = $query3->where('driver', 'like', '%'.$driver.'%');
             }
 
             $query3 = $this->extraField($request, $query3);
@@ -697,13 +697,45 @@ class RptController extends Controller
                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                 ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
-            $query3 = $query3
-                ->union($query)->union($query1)->union($query2)
+        // Retrieve Delivered by others and Paid By this person
+        $query4 = DB::table('transactions');
+
+            $query4 = $query4->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
+
+            // check whether date presence
+            if($delivery_date and $paid_at){
+
+                $query4 = $query4->whereDate('paid_at', '=', $paid_at);
+
+            }/*else{
+
+                $query3 = $query3->whereDate('paid_at', '=', Carbon::today()->toDateString());
+            }*/
+
+            // if user is driver
+            if(Auth::user()->hasRole('driver')){
+
+                $query4 = $query4->where('paid_by', Auth::user()->name);
+
+            }else if($driver and $paid_by){
+
+                $query4 = $query4->where('paid_by', 'like', '%'.$paid_by.'%');
+            }
+
+            $query4 = $this->extraField($request, $query4);
+
+            $query4 = $query4
+                ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+
+            $query4 = $query4
+                ->union($query)->union($query1)->union($query2)->union($query3)
                 ->orderBy('id', 'desc')
                 ->get();
 
 // dd($query2);
-            return $query3;
+            return $query4;
 
     }
 

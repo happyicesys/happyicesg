@@ -52,7 +52,9 @@ class Transaction extends Model
         'total_qty' => 'Total Qty',
         'paid_by' => 'Payment Received By',
         'pay_method' => 'Payment Method',
-        'note' => 'Note'
+        'note' => 'Note',
+        'contact' => 'Contact',
+        'del_postCode' => 'PostCode',
     );
 
     protected $fillable=[
@@ -62,7 +64,8 @@ class Transaction extends Model
         'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no',
         'total_qty', 'pay_method', 'note',
-        'paid_at', 'cancel_trace', 'dtdtransaction_id'
+        'paid_at', 'cancel_trace', 'dtdtransaction_id',
+        'contact', 'del_postcode'
     ];
 
     protected $dates =[

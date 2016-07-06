@@ -73,7 +73,7 @@
 
             <div class="row">
             @if($transaction->status == 'Cancelled')
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'readonly'=>'readonly']) !!}
@@ -81,7 +81,7 @@
                 </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'readonly'=>'readonly']) !!}
@@ -89,7 +89,7 @@
                 </div>
                 </div>
             @else
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date']) !!}
@@ -97,7 +97,7 @@
                 </div>
                 </div>
 
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
@@ -106,12 +106,18 @@
                 </div>
             @endif
 
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
                     {!! Form::textarea('payterm', null, ['class'=>'form-control',
                     'ng-model'=>'paytermModel',
                     'readonly'=>'readonly',
                     'rows'=>'1']) !!}
+                </div>
+
+                <div class="col-md-3 col-xs-6 form-group">
+                    {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
+                    {!! Form::text('del_postcode', null, ['class'=>'form-control',
+                    'ng-model'=>'postcodeModel', 'readonly'=>'readonly']) !!}
                 </div>
             </div>
 
@@ -129,17 +135,15 @@
                 @endif
 
                 <div class="col-md-4 form-group">
-                    {!! Form::label('attn_name', 'Attn. Name :', ['class'=>'control-label']) !!}
-                    {!! Form::text('attn_name', null, ['class'=>'form-control',
-                    'ng-model'=>'attNameModel',
-                    'readonly'=>'readonly']) !!}
+                    {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                    {!! Form::text('name', null, ['class'=>'form-control',
+                    'ng-model'=>'attNameModel']) !!}
                 </div>
 
                 <div class="col-md-4 form-group">
-                    {!! Form::label('tel_no', 'Tel No. :', ['class'=>'control-label']) !!}
-                    {!! Form::text('tel_no', null, ['class'=>'form-control',
-                    'ng-model'=>'contactModel',
-                    'readonly'=>'readonly']) !!}
+                    {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
+                    {!! Form::text('contact', null, ['class'=>'form-control',
+                    'ng-model'=>'contactModel']) !!}
                 </div>
             </div>
 

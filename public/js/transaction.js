@@ -128,8 +128,6 @@ var app = angular.module('app', [   'ui.bootstrap',
                     $scope.billModel = person.bill_address;
                     $scope.paytermModel = person.payterm;
                     $scope.personcodeModel = person.cust_id;
-                    $scope.contactModel = person.contact;
-                    $scope.attNameModel = person.name;
 
                     // choose which to display
                     // transremark
@@ -150,6 +148,36 @@ var app = angular.module('app', [   'ui.bootstrap',
                     }else{
 
                         $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                    }
+
+                    // display default delivery postcode
+                    if(transaction.del_postcode){
+
+                        $scope.postcodeModel = transaction.del_postcode;
+
+                    }else{
+
+                        $scope.postcodeModel = person.del_postcode;
+                    }
+
+                    // display default delivery name
+                    if(transaction.name){
+
+                        $scope.attNameModel = transaction.name;
+
+                    }else{
+
+                        $scope.attNameModel = person.name;
+                    }
+
+                    // display default delivery contact
+                    if(transaction.contact){
+
+                        $scope.contactModel = transaction.contact;
+
+                    }else{
+
+                        $scope.contactModel = person.contact;
                     }
 
                     $('.date').datetimepicker({
