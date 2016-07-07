@@ -78,15 +78,15 @@
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
                                     @if($person->cust_id[0] == 'H')
-                                        {{$person->cust_id}} - {{$person->name}}
+                                        {{$person->cust_id}} - {{$transaction->name ? $transaction->name : $person->name}}
                                     @else
-                                        {{$person->name}}
+                                        {{$transaction->name ? $transaction->name : $person->name}}
                                     @endif
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="inline"><strong>Tel:</strong></div>
-                                <div class="inline" style="padding-left: 20px">{{$person->contact}}</div>
+                                <div class="inline" style="padding-left: 20px">{{$transaction->contact ? $transaction->contact : $person->contact}}</div>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
 
                                     <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
 
-                                    <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
+                                    <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
                                 </div>
                             </div>
                         @endunless

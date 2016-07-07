@@ -407,7 +407,9 @@
                                                                                         fileName: 'DailyRpt'
                                                                                     });" >Export PDF</button> --}}
                                             {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
+                                            @cannot('transaction_view')
                                             {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!}
+                                            @endcannot
                                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                                         </div>
                                     </div>

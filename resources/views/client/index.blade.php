@@ -11,7 +11,7 @@ Healthier Life
                 {{-- <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span> --}}
                 {{-- <hr> --}}
                 {{-- <p style="color: black;">Oriental . Flavourful . Less Sweet</p> --}}
-                <a href="/client/product" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                <a href="/client/product" class="btn btn-primary btn-xl page-scroll" style="margin-top: 250px;">Find Out More</a>
             </div>
         </div>
     </header>

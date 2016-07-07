@@ -104,7 +104,7 @@
                 <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
                     {!! Form::text('del_postcode', null, ['class'=>'form-control',
-                    'ng-model'=>'postcodeModel', 'readonly'=>'readonly']) !!}
+                    'ng-model'=>'postcodeModel']) !!}
                 </div>
             </div>
 

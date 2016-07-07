@@ -27,6 +27,9 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/select2.min.css" type="text/css">
 
+    <!-- videojs cdn -->
+    <link href="//vjs.zencdn.net/5.4.6/video-js.min.css" rel="stylesheet">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -56,6 +59,9 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/js/creative.js"></script>
+
+    <!-- videojs cdn -->
+    <script src="//vjs.zencdn.net/5.4.6/video.min.js"></script>
 
 <style type="text/css">
     body {

@@ -125,13 +125,14 @@ class TransactionController extends Controller
         $person = Person::findOrFail($transaction->person_id);
 
         // retrieve manually to order product id asc
-        if($transaction->person_code[0] == 'D'){
+        if($transaction->person_code[0] === 'D'){
 
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->orderBy('product_id')
                         ->get();
+                        dd($prices);
 
         }else{
 

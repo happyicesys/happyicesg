@@ -17,9 +17,9 @@
                 <li>
                     <a class="page-scroll" style="color: white;" href="/d2d">Door To Door</a>
                 </li>
-{{--                 <li>
-                    <a class="page-scroll" style="color: white;" href="/client/vending">The Vending Machine</a>
-                </li> --}}
+                <li>
+                    <a class="page-scroll" style="color: white;" href="/vending">The Vending Machine</a>
+                </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/about">About</a>
                 </li>

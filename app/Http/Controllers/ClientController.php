@@ -55,6 +55,12 @@ class ClientController extends Controller
         return view('client.contact');
     }
 
+    // return vending page
+    public function vendingIndex()
+    {
+        return view('client.vending');
+    }
+
     public function store(ClientRegisterRequest $request)
     {
         // find out the latest ecommerce id for incrementation ExxxxxL

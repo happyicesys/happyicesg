@@ -166,6 +166,9 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
 
                     }else{
 
+                        $scope.contactModel = person.contact;
+                    }
+
 
                     $('.date').datetimepicker({
                         format: 'YYYY-MM-DD',
