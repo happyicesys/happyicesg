@@ -132,7 +132,6 @@ class TransactionController extends Controller
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->orderBy('product_id')
                         ->get();
-                        dd($prices);
 
         }else{
 
