@@ -1,5 +1,3 @@
-@inject('newsevents', 'App\NewsEvents')
-
 @extends('template_client')
 @section('title')
 Healthier Life
@@ -14,18 +12,8 @@ Healthier Life
                 <p class="text-muted">Happy Ice designed its own vending machine - Ice Cream Fun-Vending machine that injects elements of fun into an otherwise boring vending process. We turn a traditional claw crane machine into a fully functional ice cream vending machine. The machine allows customers to buy the ice cream and play games at the same time. There are currently 20 over of this fun vending machines across the island.</p>
             </div>
         </div>
-{{--
-        <section class="content-section video-section">
-            <div class="row">
-            <div class="col-md-12 col-xs-12 col-lg-12">
-            <div id="p1" class="player" data-property="{videoURL:'https://youtu.be/PbpaggVYLws',containment:'.video-section', quality:'large', autoPlay:true, mute:true, opacity:1}"></div>
-            </div>
-            </div>
-        </section> --}}
-        <video id="vending" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="900" height="500" data-setup='{"example_option":true}'>
-            <source src="https://youtu.be/PbpaggVYLws" type="video/webm">
-            Your browser does not support the video tag.
-        </video>
+
+        <iframe width="900" height="500" src="https://www.youtube.com/embed/PbpaggVYLws" frameborder="0" allowfullscreen></iframe>
 
         <div class="row">
             <div class="col-lg-12 col-md-12" style="font-size: 16px;">
@@ -40,11 +28,4 @@ Healthier Life
     </div>
 
 </section>
-@stop
-
-@section('footer')
-    <script src="http://pupunzi.com/mb.components/mb.YTPlayer/demo/inc/jquery.mb.YTPlayer.js"></script>
-    <script>
-        $(".player").mb_YTPlayer();
-    </script>
 @stop

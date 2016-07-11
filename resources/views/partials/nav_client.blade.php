@@ -15,16 +15,19 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li>
+                    <a class="page-scroll" style="color: white;" href="/client/product">Products</a>
+                </li>
+                <li>
                     <a class="page-scroll" style="color: white;" href="/d2d">Door To Door</a>
                 </li>
                 <li>
-                    <a class="page-scroll" style="color: white;" href="/vending">The Vending Machine</a>
+                    <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>
+                </li>
+                <li>
+                    <a class="page-scroll" style="color: white;" href="/vending">Vending Machine</a>
                 </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/about">About</a>
-                </li>
-                <li>
-                    <a class="page-scroll" style="color: white;" href="/client/product">Product</a>
                 </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/contact">Contact</a>

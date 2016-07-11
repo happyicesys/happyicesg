@@ -61,6 +61,12 @@ class ClientController extends Controller
         return view('client.vending');
     }
 
+    // return recruitment page
+    public function recruitmentIndex()
+    {
+        return view('client.recruitment');
+    }
+
     public function store(ClientRegisterRequest $request)
     {
         // find out the latest ecommerce id for incrementation ExxxxxL
