@@ -65,8 +65,8 @@ Customers
                         {!! Form::text('active', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.active', 'placeholder'=>'Active']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.manager', 'placeholder'=>'Manager']) !!}
+                        {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.parent_name', 'placeholder'=>'Manager']) !!}
                     </div>
                 </div>
 
