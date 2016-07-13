@@ -46,7 +46,7 @@ Healthier Life
 
         <div class="row">
             <div class="col-lg-12 col-md-12">
-                <h3>Call 8782 9628 today to speak to our Happy Ice Ambassador team leader to fill up the vacancy</h3>
+                <h3>Call 9716 0627 today to speak to our Happy Ice Ambassador team leader to fill up the vacancy</h3>
             </div>
         </div>
     </div>
