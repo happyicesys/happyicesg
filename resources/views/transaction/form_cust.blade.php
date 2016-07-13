@@ -40,7 +40,7 @@
                     'rows'=>'3']) !!}
                 </div>
 
-                @if($transaction->status == 'Cancelled')
+                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                     <div class="col-md-4 form-group">
                         {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control',
@@ -72,7 +72,7 @@
 
 
             <div class="row">
-            @if($transaction->status == 'Cancelled')
+            @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                 <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
                 <div class="input-group date">
@@ -114,37 +114,56 @@
                     'rows'=>'1']) !!}
                 </div>
 
-                <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
-                    {!! Form::text('del_postcode', null, ['class'=>'form-control',
-                    'ng-model'=>'postcodeModel']) !!}
-                </div>
+                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                    <div class="col-md-3 col-xs-6 form-group">
+                        {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
+                        {!! Form::text('del_postcode', null, ['class'=>'form-control',
+                        'ng-model'=>'postcodeModel',
+                        'readonly'=>'readonly']) !!}
+                    </div>
+                @else
+                    <div class="col-md-3 col-xs-6 form-group">
+                        {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
+                        {!! Form::text('del_postcode', null, ['class'=>'form-control',
+                        'ng-model'=>'postcodeModel']) !!}
+                    </div>
+                @endif
             </div>
 
             <div class="row">
-                @if($transaction->status == 'Cancelled')
+                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                     <div class="col-md-4 form-group">
                         {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
                         {!! Form::text('po_no', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                        {!! Form::text('name', null, ['class'=>'form-control', 'ng-model'=>'attNameModel', 'readonly'=>'readonly']) !!}
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
+                        {!! Form::text('contact', null, ['class'=>'form-control', 'ng-model'=>'contactModel', 'readonly'=>'readonly']) !!}
                     </div>
                 @else
                     <div class="col-md-4 form-group">
                         {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
                         {!! Form::text('po_no', null, ['class'=>'form-control']) !!}
                     </div>
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                        {!! Form::text('name', null, ['class'=>'form-control',
+                        'ng-model'=>'attNameModel']) !!}
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
+                        {!! Form::text('contact', null, ['class'=>'form-control',
+                        'ng-model'=>'contactModel']) !!}
+                    </div>
                 @endif
-
-                <div class="col-md-4 form-group">
-                    {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
-                    {!! Form::text('name', null, ['class'=>'form-control',
-                    'ng-model'=>'attNameModel']) !!}
-                </div>
-
-                <div class="col-md-4 form-group">
-                    {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
-                    {!! Form::text('contact', null, ['class'=>'form-control',
-                    'ng-model'=>'contactModel']) !!}
-                </div>
             </div>
 
             <div class="row">

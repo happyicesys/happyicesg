@@ -115,6 +115,7 @@ resource('item', 'ItemController');
 
 resource('price', 'PriceController');
 
+get('/transaction/emailInv/{trans_id}', 'TransactionController@sendEmailInv');
 post('/transaction/rpt/{trans_id}', 'TransactionController@rptDetail');
 post('/transaction/reverse/{trans_id}', 'TransactionController@reverse');
 get('/transaction/person/latest/{person_id}', 'TransactionController@showPersonTransac');

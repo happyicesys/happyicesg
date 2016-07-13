@@ -28,6 +28,7 @@ use App\EmailAlert;
 use App\DtdPrice;
 use App\DtdTransaction;
 use App\DtdDeal;
+use App\GeneralSetting;
 
 class TransactionController extends Controller
 {
@@ -620,6 +621,85 @@ class TransactionController extends Controller
         return "Sucess updating transaction #" . $transaction->id;
     }
 
+    // send invoice to D/ H email upon button clicked
+    public function sendEmailInv($id)
+    {
+        $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
+
+        $transaction = Transaction::findOrFail($id);
+
+        $self = Auth::user()->name;
+
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+
+        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+
+        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+
+        $person = Person::findOrFail($transaction->person_id);
+
+        if(! $person->email){
+
+            Flash::error('Please set the email before sending');
+
+            return Redirect::action('TransactionController@edit', $id);
+        }
+
+        $email = $person->email;
+
+        $now = Carbon::now()->format('dmyhis');
+
+        // $profile = Profile::firstOrFail();
+
+        $data = [
+            'transaction'   =>  $transaction,
+            'person'        =>  $person,
+            'deals'         =>  $deals,
+            'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
+        ];
+
+        $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
+
+        $pdf = PDF::loadView('transaction.invoice', $data);
+
+        $pdf->setPaper('a4');
+
+        $sent = $pdf->save(storage_path('/invoice/'.$name));
+
+        $store_path = storage_path('/invoice/'.$name);
+
+        $sender = 'system@happyice.com.sg';
+
+        $datamail = [
+
+            'person' => $person,
+            'transaction' => $transaction,
+            'email_draft' => $email_draft,
+            'self' => $self,
+            'url' => 'http://www.happyice.com.sg',
+
+        ];
+
+        Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $transaction)
+        {
+            $message->from($sender);
+            $message->subject('[Invoice - '.$transaction->id.'] Happy Ice - Thanks for Your Support');
+            $message->setTo($email);
+            $message->attach($store_path);
+        });
+
+        if($sent){
+
+            Flash::success('Successfully Sent');
+
+        }else{
+
+            Flash::error('Please Try Again');
+        }
+
+        return Redirect::action('TransactionController@edit', $id);
+    }
 
     private function syncTransaction(Request $request)
     {
@@ -658,100 +738,103 @@ class TransactionController extends Controller
     // sync deals with email alert, deals and inventory deduction
     private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
     {
-        if(array_filter($quantities) != null and array_filter($amounts) != null){
+        if($quantities and $amounts){
 
-            // create array of errors to fetch errors from loop if any
-            $errors = array();
+            if(array_filter($quantities) != null and array_filter($amounts) != null){
 
-            foreach($quantities as $index => $qty){
+                // create array of errors to fetch errors from loop if any
+                $errors = array();
 
-                if($qty != NULL or $qty != 0 ){
+                foreach($quantities as $index => $qty){
 
-                    // inventory lookup before saving to deals
-                    $item = Item::findOrFail($index);
+                    if($qty != NULL or $qty != 0 ){
 
-                    // inventory email notification for stock running low
-                    if($item->email_limit){
+                        // inventory lookup before saving to deals
+                        $item = Item::findOrFail($index);
 
-                        if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
+                        // inventory email notification for stock running low
+                        if($item->email_limit){
 
-                            if(! $item->emailed){
+                            if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
 
-                                $this->sendEmailAlert($item);
+                                if(! $item->emailed){
 
-                                // restrict only send 1 mail if insufficient
-                                $item->emailed = true;
+                                    $this->sendEmailAlert($item);
+
+                                    // restrict only send 1 mail if insufficient
+                                    $item->emailed = true;
+
+                                    $item->save();
+                                }
+
+                            }else{
+                                // reactivate email alert
+                                $item->emailed = false;
 
                                 $item->save();
                             }
-
-                        }else{
-                            // reactivate email alert
-                            $item->emailed = false;
-
-                            $item->save();
-                        }
-                    }
-
-                    // restrict picking negative stock & deduct/add actual/order if success
-                    if($status == 1){
-
-                        if($this->calOrderLimit($qty, $item)){
-
-                            array_push($errors, $item->product_id.' - '.$item->name);
-
-                        }else{
-
-                            $deal = new Deal();
-
-                            $deal->transaction_id = $transaction->id;
-
-                            $deal->item_id = $index;
-
-                            $deal->qty = $qty;
-
-                            $deal->amount = $amounts[$index];
-
-                            $deal->unit_price = $quotes[$index];
-
-                            $deal->qty_status = $status;
-
-                            $deal->save();
-
-                            $this->dealSyncOrder($index);
-
                         }
 
-                    }else if($status == 2){
+                        // restrict picking negative stock & deduct/add actual/order if success
+                        if($status == 1){
 
-                        if($this->calActualLimit($qty, $item)){
+                            if($this->calOrderLimit($qty, $item)){
 
-                            array_push($errors, $item->product_id.' - '.$item->name);
+                                array_push($errors, $item->product_id.' - '.$item->name);
 
-                        }else{
+                            }else{
 
-                            $deal = new Deal();
+                                $deal = new Deal();
 
-                            $deal->transaction_id = $transaction->id;
+                                $deal->transaction_id = $transaction->id;
 
-                            $deal->item_id = $index;
+                                $deal->item_id = $index;
 
-                            $deal->qty = $qty;
+                                $deal->qty = $qty;
 
-                            $deal->amount = $amounts[$index];
+                                $deal->amount = $amounts[$index];
 
-                            $deal->unit_price = $quotes[$index];
+                                $deal->unit_price = $quotes[$index];
 
-                            $deal->qty_status = $status;
+                                $deal->qty_status = $status;
 
-                            $deal->save();
+                                $deal->save();
 
-                            $item->qty_now -= $qty;
+                                $this->dealSyncOrder($index);
 
-                            $item->save();
+                            }
 
-                            $this->dealSyncOrder($index);
+                        }else if($status == 2){
 
+                            if($this->calActualLimit($qty, $item)){
+
+                                array_push($errors, $item->product_id.' - '.$item->name);
+
+                            }else{
+
+                                $deal = new Deal();
+
+                                $deal->transaction_id = $transaction->id;
+
+                                $deal->item_id = $index;
+
+                                $deal->qty = $qty;
+
+                                $deal->amount = $amounts[$index];
+
+                                $deal->unit_price = $quotes[$index];
+
+                                $deal->qty_status = $status;
+
+                                $deal->save();
+
+                                $item->qty_now -= $qty;
+
+                                $item->save();
+
+                                $this->dealSyncOrder($index);
+
+                            }
                         }
                     }
                 }
