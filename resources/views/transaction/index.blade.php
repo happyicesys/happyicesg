@@ -189,7 +189,7 @@
                                 </th>
                             </tr>
                             <tbody>
-                                <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
+                                <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage track by $index" current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">

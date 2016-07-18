@@ -554,7 +554,7 @@ class TransactionController extends Controller
 
             $transaction->status = 'Verified Paid';
 
-            $transaction->pay_method = 'cash';
+            // $transaction->pay_method = 'cash';
 
             $transaction->updated_by = Auth::user()->name;
 
@@ -563,7 +563,6 @@ class TransactionController extends Controller
 
         // using redirect back since applied in different views
         return redirect()->back();
-
     }
 
     public function showPersonTransac($person_id)

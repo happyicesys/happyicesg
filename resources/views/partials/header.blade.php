@@ -4,9 +4,11 @@
 
     <title>{{ $APP_NAME }} | @yield('title')</title>
 
+{{-- including CDN assets --}}
+@include('partials.cdn')
+
 {{-- CSS & Javascript versioning gulpfile --}}
 <link rel="stylesheet" href="{{ elixir('css/all.css') }}">
 <script src="{{ elixir('js/all.js') }}"></script>
 
-{{-- including CDN assets --}}
-@include('partials.cdn')
+

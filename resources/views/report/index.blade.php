@@ -595,7 +595,7 @@
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received By</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
                                                     </tr> --}}
-                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
+                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage track by $index" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td>
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
@@ -656,14 +656,16 @@
                                                             {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
                                                             {{-- Payment Verification --}}
                                                             <a href="/transaction/status/@{{transaction.id}}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
-                                                            {{-- <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, payMethodModel, noteModel)">Verify Paid</a> --}}
-                                                            <a href="/transaction/status/@{{transaction.id}}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                                                            <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, transaction.payMethodModel, transaction.noteModel)">Verify Paid</a>
+                                                            {{-- <a href="/transaction/singlestatus/@{{transaction.id}}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a> --}}
+                                                            {{-- {!! Form::submit('Verify Paid', ['name'=>'verify_single', 'class'=> 'btn btn-sm btn-success verify_single', 'form'=>'verify', 'ng-if'=>'(transaction.status == "Verified Owe" || transaction.status == "Delivered") && transaction.pay_status == "Paid"']) !!} --}}
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="!transaction.pay_method">
                                                             {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
                                                                                 'class'=>'form-control input-sm',
-                                                                                'ng-model'=>'payMethodModel',
+                                                                                'ng-model'=>'transaction.payMethodModel',
                                                                                 'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
+                                                                                'ng-init'=>'transaction.payMethodModel="cash"',
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
                                                         </td>
@@ -674,7 +676,7 @@
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [
                                                                             'class'=>'input-sm form-control',
                                                                             'rows'=>'2',
-                                                                            'ng-model'=>'noteModel',
+                                                                            'ng-model'=>'transaction.noteModel',
                                                                             'ng-show'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                             'style'=>'width:100px;'
                                                                             ]) !!}
@@ -744,5 +746,6 @@
         var all = this;
         $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
     });
+
 </script>
 @stop

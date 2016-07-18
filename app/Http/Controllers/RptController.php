@@ -469,9 +469,8 @@ class RptController extends Controller
         return redirect('report');
     }
 
-    public function getVerifyPaid(Request $request)
+    public function getVerifyPaid(Request $request, $id = null)
     {
-
         $checkboxes = $request->checkbox;
 
         $pay_methods = $request->pay_method;
@@ -520,6 +519,10 @@ class RptController extends Controller
                     }
                 }
             }
+        }
+
+        if($request->input('verify_single')){
+            dd($checkboxes);
         }
 
         return redirect('report');

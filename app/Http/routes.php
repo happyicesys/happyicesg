@@ -120,6 +120,7 @@ post('/transaction/rpt/{trans_id}', 'TransactionController@rptDetail');
 post('/transaction/reverse/{trans_id}', 'TransactionController@reverse');
 get('/transaction/person/latest/{person_id}', 'TransactionController@showPersonTransac');
 get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');
+post('/transaction/singlestatus/{transaction_id}', 'TransactionController@changeSingleStatus');
 post('/transaction/daterange', 'TransactionController@searchDateRange');
 post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
@@ -147,7 +148,7 @@ get('/user/member/{user_id}/{level}', 'UserController@convertInitD');
 get('/role/data', 'RoleController@getData');
 resource('role', 'RoleController');
 
-post('/report/dailyrpt/verify', 'RptController@getVerifyPaid');
+post('/report/dailyrpt/verify/{id?}', 'RptController@getVerifyPaid');
 post('/report/dailypdf', 'RptController@getDailyPdf');
 post('/report/dailyrec', 'RptController@generateDailyRec');
 post('/report/dailyrpt', 'RptController@getDailyRptApi');
