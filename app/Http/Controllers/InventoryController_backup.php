@@ -66,15 +66,10 @@ class InventoryController extends Controller
 
         $request->merge(array('created_by' => Auth::user()->name));
 
-
-
         // retrive stock in array
         $currentQty = $request->current;
 
         $incomingQty = $request->incoming;
-        // dd($request->all());
-        // dd($currentQty);
-        // dd(array_filter($incomingQty));
 
         $afterQty = $request->after;
 
@@ -152,15 +147,15 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-/*
+
         $originalArr = $request->original;
 
         $incomingArr = $request->incoming;
 
-        $afterArr = $request->after;*/
+        $afterArr = $request->after;
 
         $inventory = Inventory::findOrFail($id);
-/*
+
         if(($inventory->qtytotal_incoming != $request->total_incoming)){
 
             $incomingDiff = 0.0000;
@@ -252,7 +247,7 @@ class InventoryController extends Controller
 
             $inventory->save();
 
-        }*/
+        }
 
         $request->merge(array('updated_by' => Auth::user()->name));
 
@@ -355,10 +350,9 @@ class InventoryController extends Controller
         return view('inventory.setting.email_alert');
     }
 
-    // individual line record for each of the inventory incoming/ decution
-    private function createInvRecord(int $inv_id, array $currentQty, array $incomingQty, array $afterQty)
+    private function createInvRecord($inv_id, $currentQty, $incomingQty, $afterQty)
     {
-        foreach(array_filter($incomingQty) as $index => $qty){
+        foreach($incomingQty as $index => $qty){
 
             if($qty != NULL or $qty != 0 ){
 
@@ -371,7 +365,7 @@ class InventoryController extends Controller
                 $rec->item_id = $index;
 
                 // qtyrec_current used to record the original qty
-                $rec->qtyrec_current = $currentQty[$index];
+                $rec->qtyrec_current = $qty;
 
                 $rec->qtyrec_incoming = $qty;
 

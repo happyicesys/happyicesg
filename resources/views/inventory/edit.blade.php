@@ -1,4 +1,5 @@
 @inject('items', 'App\Item')
+@inject('invs', 'App\InvRecord')
 
 @extends('template')
 @section('title')
@@ -78,10 +79,10 @@
                                 Current Qty
                             </th>
                             <th class="col-md-2 text-center">
-                                Original Added Qty
+                                Before Qty
                             </th>
                             <th class="col-md-2 text-center">
-                                Adjusted Incoming Qty
+                                Incoming/Deducted Qty
                             </th>
                             <th class="col-md-2 text-center">
                                 After Qty
@@ -89,7 +90,32 @@
                         </tr>
 
                         <tbody>
-                            <tr ng-repeat="item in items" class="form-group">
+                            @unless(count($items)>0)
+                                <td class="text-center" colspan="12">No Records Found</td>
+                            @else
+
+                                @foreach($items::orderBy('product_id')->get() as $item)
+                                <tr class="form-group">
+                                    <td class="col-md-5">
+                                        {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
+                                    </td>
+                                    <td class="col-md-1">
+                                        <strong>{{$item->qty_now}}</strong>
+                                    </td>
+                                    <td class="col-md-2">
+                                        <input type="text" name="current[{{$item->id}}]" value="{{$invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first() ? $invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first()->qtyrec_current : '-'}}" class="text-right form-control" readonly="readonly"/>
+                                    </td>
+                                    <td class="col-md-2">
+                                        <input type="text" name="incoming[{{$item->id}}]" value="{{$invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first() ? $invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first()->qtyrec_incoming : '-'}}" class="text-right form-control"readonly="readonly"/>
+                                    </td>
+                                    <td class="col-md-2">
+                                        <input type="text" name="incoming[{{$item->id}}]" value="{{$invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first() ? $invs::whereItemId($item->id)->whereInventoryId($inventory->id)->first()->qtyrec_after : '-'}}" class="text-right form-control"readonly="readonly"/>
+                                    </td>
+                                </tr>
+                                @endforeach
+
+                            @endunless
+{{--                             <tr ng-repeat="item in items" class="form-group">
                                 <td class="col-md-5">
                                     @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
                                 </td>
@@ -139,13 +165,13 @@
                             </tr>
                             <tr ng-if="items.length == 0 || ! items.length">
                                 <td colspan="5" class="text-center">No Records Found!</td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
-
+{{--
                     <div class="pull-left" style="margin-top:17px;">
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                    </div>
+                    </div> --}}
                     <div class="pull-right" style="margin-top:17px;">
                         @cannot('transaction_view')
                         @cannot('account_view')
