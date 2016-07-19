@@ -17,7 +17,7 @@ elixir(function(mix) {
             'jquery.min.js',
             '../bower/moment/min/moment.min.js',
             'bootstrap-js/bootstrap.min.js',
-            // 'angular.min.js',
+            'angular.min.js',
             'angular-bootstrap.min.js',
             '../bower/angular-sanitize/angular-sanitize.min.js',
             'dirPagination.js',

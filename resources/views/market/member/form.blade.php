@@ -9,12 +9,12 @@
     </div> --}}
     @if(isset($self))
     <div class="form-group">
-        {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+        {!! Form::label('name', 'ID Name', ['class'=>'control-label']) !!}
         {!! Form::text('name', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
     </div>
     @else
     <div class="form-group">
-        {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+        {!! Form::label('name', 'ID Name', ['class'=>'control-label']) !!}
         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
         {!! Form::text('name', null, ['class'=>'form-control']) !!}
     </div>

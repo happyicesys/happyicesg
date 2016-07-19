@@ -30,6 +30,5 @@ function repeatController($scope) {
     })
 }
 
-
 app.controller('transController', transController);
 app.controller('repeatController', repeatController);

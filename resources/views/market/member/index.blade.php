@@ -64,8 +64,8 @@ Members
                                 {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'ID']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
+                                {!! Form::label('name', 'ID Name:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'ID Name']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('contact', 'Contact:', ['class'=>'control-label search-title']) !!}
@@ -99,7 +99,7 @@ Members
                                     </th>
                                     <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                        Name
+                                        ID Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>

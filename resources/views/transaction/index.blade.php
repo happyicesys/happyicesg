@@ -53,8 +53,8 @@
                         {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'Company']) !!}
+                        {!! Form::label('company', 'ID Name:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'ID Name']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
@@ -126,7 +126,7 @@
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
-                                    Company
+                                    ID Name
                                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
