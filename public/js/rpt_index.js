@@ -10,6 +10,9 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             paid_at: moment().format("YYYY-MM-DD"),
 
         };
+        $scope.transaction = {
+            payMethodModel: 'cash',
+        }
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {

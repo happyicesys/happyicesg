@@ -595,7 +595,7 @@
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received By</td>
                                                         <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
                                                     </tr> --}}
-                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage track by $index" current-page="currentPage" ng-controller="repeatController">
+                                                    <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td>
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                                         <td class="col-md-1 text-center">
@@ -665,9 +665,14 @@
                                                                                 'class'=>'form-control input-sm',
                                                                                 'ng-model'=>'transaction.payMethodModel',
                                                                                 'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
-                                                                                'ng-init'=>'transaction.payMethodModel="cash"',
+                                                                                'ng-init'=>"transaction.payMethodModel='cash'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
+
+{{--                                                             <select name="pay_method[@{{transaction.id}}]" class="form-control input-sm" ng-model="transaction.payMethodModel" ng-if="(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'" ng-init="transaction.payMethodModel='cash'">
+                                                                <option value="cash">Cash</option>
+                                                                <option value="cheque">Cheque/TT</option>
+                                                            </select> --}}
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="transaction.pay_method">
                                                             @{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}
