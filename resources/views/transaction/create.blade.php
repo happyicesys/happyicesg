@@ -117,7 +117,7 @@
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>
                                 </tr>
                                 <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
-                                    <td colspan="10" class="text-center">No Records Found</td>
+                                    <td colspan="12" class="text-center">No Records Found</td>
                                 </tr>
 
                             </tbody>
