@@ -16,8 +16,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
+        ValidationException::class,
     ];
 
     /**
@@ -48,7 +50,7 @@ class Handler extends ExceptionHandler
 
         if($e instanceof TokenMismatchException){
             return redirect('/auth/login');
-        }                
+        }
 
         return parent::render($request, $e);
     }

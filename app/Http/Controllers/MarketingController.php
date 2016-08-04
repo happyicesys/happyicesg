@@ -871,7 +871,10 @@ class MarketingController extends Controller
                     ->orderBy('product_id')
                     ->get();
 
-        return view('market.deal.edit', compact('transaction', 'person', 'prices'));
+        // edit form disable fields logic
+        $noneditable = $this->checkFormEditable($transaction);
+
+        return view('market.deal.edit', compact('transaction', 'person', 'prices', 'noneditable'));
     }
 
     // show independent deal
@@ -986,9 +989,9 @@ class MarketingController extends Controller
 
             }
 
-            if(Carbon::today() >= Carbon::parse($request->delivery_date)){
+            if(Carbon::today() < Carbon::parse($request->delivery_date)){
 
-                Flash::error('Delivery Date must be at least Tommorrow\'s Date');
+                Flash::error('Delivery Date must be at least Today\'s Date');
 
                 return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
 
@@ -1311,6 +1314,16 @@ class MarketingController extends Controller
         $notification->delete();
 
         return Redirect::action('MarketingController@notifyManagerIndex', $notification->person_id);
+    }
+
+    // generate logs file for individual deals
+    public function generateLogs($id)
+    {
+        $transaction = DtdTransaction::findOrFail($id);
+
+        $transHistory = $transaction->revisionHistory;
+
+        return view('market.deal.log', compact('transaction', 'transHistory'));
     }
 
     // method for deleting deals upon transaction deletion
@@ -1816,6 +1829,67 @@ class MarketingController extends Controller
         $item->qty_order = $deals->sum('qty');
 
         $item->save();
+
+    }
+
+    // pass through to check the form valid for edit or not (single collection)
+    private function checkFormEditable($transaction)
+    {
+        $noneditable = true;
+
+        // find person is belongs to dtd member
+        if($transaction->person->cust_id[0] === 'D'){
+
+            $noneditable = true;
+
+        }else{
+
+            return false;
+
+        }
+
+        // determine the current user is dtd embassador or not
+        if(Person::whereUserId(Auth::user()->id)->first()){
+
+            if(Person::whereUserId(Auth::user()->id)->first()->cust_type === 'AB'){
+
+                $noneditable = true;
+
+            }else{
+
+                return false;
+
+            }
+
+        }else{
+
+            return false;
+
+        }
+
+        // determine the current transaction status is confirmed
+        if($transaction->status === 'Confirmed'){
+
+            $noneditable = true;
+
+        }else{
+
+            return false;
+
+        }
+
+        // determine the delivery date is more than today
+        if(Carbon::today() >= Carbon::parse($transaction->delivery_date)->subDay()){
+
+            $noneditable = true;
+
+        }else{
+
+            return false;
+
+        }
+
+        return $noneditable;
 
     }
 }

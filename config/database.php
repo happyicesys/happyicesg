@@ -27,6 +27,7 @@ return [
     */
 
     'default' => env('DB_CONNECTION', 'mysql'),
+    // 'default' => 'mysql',
 
     /*
     |--------------------------------------------------------------------------
@@ -64,6 +65,19 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
+/*
+        'mysql' => [
+            'driver'    => 'mysql',
+            'port'      => '3306',
+            'host'      => '127.0.0.1',
+            'database'  => 'newmark4',
+            'username'  => 'root',
+            'password'  => '',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],*/
 
         'pgsql' => [
             'driver'   => 'pgsql',

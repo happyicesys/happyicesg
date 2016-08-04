@@ -54,7 +54,7 @@ class Transaction extends Model
         'pay_method' => 'Payment Method',
         'note' => 'Note',
         'contact' => 'Contact',
-        'del_postCode' => 'PostCode',
+        'del_postcode' => 'PostCode',
     );
 
     protected $fillable=[
