@@ -12,16 +12,16 @@
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     #
-                </th>                    
+                </th>
                 <th class="col-md-7 text-center">
-                    Model                           
+                    Model
                 </th>
                 <th class="col-md-2 text-center">
-                    Qty                      
+                    Qty
                 </th>
                 <th class="col-md-2 text-center">
                     Action
-                </th>                                                                                                
+                </th>
             </tr>
 
             <tbody>
@@ -33,41 +33,41 @@
                     @foreach($addfreezers as $addfreezer)
                     <tr>
                         <td class="col-md-1 text-center">
-                            {{ $index++ }} 
+                            {{ $index++ }}
                         </td>
                         <td class="col-md-7">
-                            {{ $addfreezer->freezer->name }}                          
+                            {{ $addfreezer->freezer->name }}
                         </td>
                         <td class="col-md-2 text-center">
                             {{ $addfreezer->freezerqty }}
                         </td>
                         <td class="col-md-2 text-center">
-                            {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@removeFreezer', $addfreezer->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
+                            {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@removeFreezer', $addfreezer->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
                                 {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm']) !!}
-                            {!! Form::close() !!} 
+                            {!! Form::close() !!}
                         </td>
                     </tr>
                     @endforeach
-                @endunless                        
+                @endunless
 
             </tbody>
-        </table>      
+        </table>
         {!! $addfreezers->render() !!}
     </div>
 
     <div class="col-md-12" style="border: solid black thin">
-        {!! Form::model($addfreezer = new \App\AddFreezer, ['id'=>'form_freezer', 'action'=>['PersonController@addFreezer']]) !!}
+        {!! Form::model($addfreezer = new \App\AddFreezer, ['id'=>'form_freezer', 'action'=>['PersonController@addFreezer', $person->id]]) !!}
         {!! Form::text('person_id', $person->id, ['id'=>'person_id', 'class'=>'hidden form-control']) !!}
         <div class="row">
             <div class="col-md-7">
-                <div class="form-group"> 
+                <div class="form-group">
                     {!! Form::label('freezer_id', 'Freezer', ['class'=>'control-label']) !!}
                     {!! Form::select('freezer_id', [''=>null]+$freezers::lists('name', 'id')->all(), null, ['class'=>'select form-control']) !!}
-                </div> 
+                </div>
             </div>
 
             <div class="col-md-3">
-                <div class="form-group"> 
+                <div class="form-group">
                     {!! Form::label('freezerqty', 'Qty', ['class'=>'control-label']) !!}
                     {!! Form::text('freezerqty', null, ['class'=>'form-control']) !!}
                 </div>
@@ -77,7 +77,7 @@
             {!! Form::submit('Add', ['name'=>'add', 'class'=> 'btn btn-success', 'form'=>'form_freezer', 'style'=>'margin-top:31px']) !!}
             </div>
         </div>
-        {!! Form::close() !!}  
-    </div> 
+        {!! Form::close() !!}
+    </div>
 </div>
 
