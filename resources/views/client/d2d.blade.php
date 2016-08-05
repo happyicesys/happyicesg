@@ -152,7 +152,14 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-6 col-xs-6">
+                                    <div class="form-group">
+                                        {!! Form::label('street', 'Street Name', ['class'=>'control-label']) !!}
+                                        {!! Form::text('street', null, ['class'=>'form-control']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-xs-6">
                                     <div class="form-group">
                                         {!! Form::label('postcode', 'PostCode', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -160,7 +167,7 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-4 col-xs-6">
                                     <div class="form-group">
                                         {!! Form::label('block', 'Block', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -168,7 +175,7 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-4 col-xs-6">
                                     <div class="form-group">
                                         {!! Form::label('floor', 'Floor', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -176,7 +183,7 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-4 col-xs-6">
                                     <div class="form-group">
                                         {!! Form::label('unit', 'Unit', ['class'=>'control-label']) !!}
                                         {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -184,7 +191,7 @@ Door To Door
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-6 col-xs-12 form-group">
                                     {!! Form::label('del_date', 'Preferred Delivery Day:', ['class'=>'control-label']) !!}
                                     {!! Form::select('del_date',
                                         $dayArr,
@@ -193,7 +200,7 @@ Door To Door
                                     !!}
                                 </div>
 
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-6 col-xs-12 form-group">
                                     {!! Form::label('del_time', 'Preferred Delivery Timeslot:', ['class'=>'control-label']) !!}
                                     {!! Form::select('del_time',
                                         $timeArr,
@@ -201,6 +208,11 @@ Door To Door
                                         ['class'=>'select form-control'])
                                     !!}
                                     <small>{!! Form::label('del', '** Final Timing will be Confirmed via Phone/ SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
+                                </div>
+
+                                <div class="col-md-12 col-xs-12 form-group">
+                                    {!! Form::label('remark', 'Remark (Optional)', ['class'=>'control-label']) !!}
+                                    {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
                                 </div>
 
                                 <div class="col-md-12 col-xs-12" style="padding-top:20px;">

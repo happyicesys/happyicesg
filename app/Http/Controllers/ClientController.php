@@ -265,6 +265,7 @@ class ClientController extends Controller
         }else{
 
             $sendto = ['daniel.ma@happyice.com.sg'];
+
         }
         // $sendto = ['leehongjie91@gmail.com'];
 
@@ -279,6 +280,8 @@ class ClientController extends Controller
 
             'email' => $request->email,
 
+            'street' => $request->street,
+
             'postcode' => $request->postcode,
 
             'block' => $request->block,
@@ -286,6 +289,8 @@ class ClientController extends Controller
             'floor' => $request->floor,
 
             'unit' => $request->unit,
+
+            'remark' => $request->remark,
 
             'total' => $request->total,
 
@@ -300,6 +305,7 @@ class ClientController extends Controller
             'timeslot' => $timeArr[$request->del_time],
 
             'dayslot' => $dayArr[$request->del_date],
+
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){

@@ -989,7 +989,7 @@ class MarketingController extends Controller
 
             }
 
-            if(Carbon::today() < Carbon::parse($request->delivery_date)){
+            if(Carbon::today() > Carbon::parse($request->delivery_date)){
 
                 Flash::error('Delivery Date must be at least Today\'s Date');
 
