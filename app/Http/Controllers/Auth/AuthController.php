@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Laracasts\Flash\Flash;
+use Carbon\Carbon;
+
 
 class AuthController extends Controller
 {
@@ -103,4 +107,80 @@ class AuthController extends Controller
         $this->username = $field;
         return self::laravelPostLogin($request);
     }
+
+    // get password reset view
+    public function getPasswordReset()
+    {
+        return view('password.reset');
+    }
+
+    // reset password functionality
+    public function resetPassword(Request $request)
+    {
+        $this->validate($request, [
+
+            'username' => 'required',
+
+            'email' => 'required',
+
+        ],[
+
+            'username.required' => 'Please fill in the Username',
+
+            'email.required' => 'Please fill in the Email',
+
+        ]);
+
+        $user = User::whereUsername($request->username)->whereEmail($request->email)->first();
+
+        if($user){
+
+            $new_password = str_random(6);
+
+            $user->password = $new_password;
+
+            $user->save();
+
+            $this->sendPasswordResetEmail($user, $new_password);
+
+        }else{
+
+            Flash::error('The Username or Email are not matched');
+
+        }
+
+        return view('password.reset');
+    }
+
+    // send password reset email
+    private function sendPasswordResetEmail($user, $new_password)
+    {
+
+        $today = Carbon::now()->format('d-m-Y H:i');
+
+        $send_to = $user->email;
+
+        $sender = 'system@happyice.com.sg';
+
+        $data = [
+
+            'user_id' => $user->id,
+
+            'id_name' => $user->name,
+
+            'new_password' => $new_password,
+
+        ];
+
+        Mail::send('email.reset_password', $data, function ($message) use ($user, $send_to, $today, $sender)
+        {
+            $message->from($sender);
+
+            $message->subject('Email Password Reset for '.$user->id.' - '.$user->name.' ('.$today.')');
+
+            $message->setTo($send_to);
+        });
+
+    }
+
 }

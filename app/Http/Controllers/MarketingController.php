@@ -112,9 +112,9 @@ class MarketingController extends Controller
 
         $memberbool = false;
 
-        $member = Person::where('user_id', Auth::user()->id)->first();
+        $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
 
-        $all_members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_type', 'desc')->get();
+        $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('cust_type', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -435,9 +435,9 @@ class MarketingController extends Controller
 
         $memberbool = false;
 
-        $member = Person::where('user_id', Auth::user()->id)->first();
+        $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
 
-        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->orderBy('cust_id')->get();
+        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('cust_id')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -660,9 +660,9 @@ class MarketingController extends Controller
                 $person->parent_name = $newperson->name;
 
                 $person->save();
+
             }
         }
-
 
         $person->update($request->all());
 
@@ -717,39 +717,63 @@ class MarketingController extends Controller
 
         $del_to = $request->del_to;
 
-        $query = DB::table('dtdtransactions')
-                        ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+        $parent_name = $request->parent_name;
+
+        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile']);
 
         if($transaction_id){
 
-            $query = $query->where('dtdtransactions.id', 'LIKE', '%'.$transaction_id.'%')->orWhere('dtdtransactions.transaction_id', 'LIKE', '%'.$transaction_id.'%');
+            $query = $query->where('transaction_id', 'LIKE', '%'.$transaction_id.'%');
+
         }
 
         if($cust_id){
 
-            $query = $query->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $query = $query->whereHas('person', function($query) use ($cust_id){
+
+                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+
+            });
+
         }
 
         if($company){
 
-            $query = $query->where('people.company', 'LIKE', '%'.$company.'%');
+            $query = $query->whereHas('person', function($query) use ($company){
+
+                $query->where('company', 'LIKE', '%'.$company.'%');
+
+            });
+
         }
 
         if($status){
 
             $query = $query->where('status', 'LIKE', '%'.$status.'%');
+
         }
 
         if($del_from and $del_to){
 
             $query = $query->where('delivery_date', '>=', $del_from)->where('delivery_date', '<=', $del_to);
 
+
         }else{
 
             $query = $query->where('delivery_date', '>=', Carbon::today()->startOfWeek()->toDateString())
 
                             ->where('delivery_date', '<=', Carbon::today()->endOfWeek()->toDateString());
+
+        }
+
+        if($parent_name){
+
+            $query = $query->whereHas('person.manager', function($query) use ($parent_name){
+
+                $query->where('name', 'LIKE', '%'.$parent_name.'%');
+
+            });
+
         }
 
         $self = Person::where('user_id', Auth::user()->id)->first();
@@ -790,11 +814,15 @@ class MarketingController extends Controller
 
             }
 
-            $query = $query->whereIn('people.id', $personid_arr);
+            $query = $query->whereHas('person', function($query) use ($personid_arr){
+
+                $query->whereIn('id', $personid_arr);
+
+            });
+
         }
 
-        $query = $query->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst', 'dtdtransactions.pay_method', 'dtdtransactions.note', 'dtdtransactions.transaction_id')
-                ->latest('dtdtransactions.id')->get();
+        $query = $query->orderBy('id', 'desc')->get();
 
         $caltotal = $this->calTransactionTotal($query);
 
@@ -827,22 +855,43 @@ class MarketingController extends Controller
 
     public function storeDeal(Request $request)
     {
+        $this->validate($request, [
+
+            'person_id' => 'required',
+
+        ],[
+
+            'person_id.required' => 'Please choose an option',
+
+        ]);
+
 
         $request->merge(array('updated_by' => Auth::user()->name));
 
         $request->merge(array('created_by' => Auth::user()->name));
 
-        $request->merge(['delivery_date' => Carbon::today()->addDay()]);
+        $request->merge(array('delivery_date' => Carbon::today()->addDay()));
 
-        $request->merge(['order_date' => Carbon::today()]);
+        $request->merge(array('order_date' => Carbon::today()));
 
         $input = $request->all();
 
+        // find out customer or D code self chosen
+        $person = Person::find($request->person_id);
+
         $dtdtransaction = DtdTransaction::create($input);
 /*
-        if($person_id[0] == 'D'){
+        if($person->cust_id[0] === 'D'){
 
             $transaction = Transaction::create($input);
+
+            $transaction->dtdtransaction_id = $dtdtransaction->id;
+
+            $transaction->save();
+
+            $dtdtransaction->transaction_id = $transaction->id;
+
+            $dtdtransaction->save();
 
         }*/
 
@@ -898,7 +947,24 @@ class MarketingController extends Controller
     {
         $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
 
-        $assign_cust = Person::findOrFail($dtdtransaction->person_id)->cust_id;
+        // date validation check
+        $this->validate($request, [
+
+            'order_date' => 'required|date|after:yesterday',
+
+            'delivery_date' => 'required|date|after:yesterday',
+
+        ],[
+
+            'order_date.required' => 'Please fill in the Order Date',
+
+            'order_date.after' => 'Order Date must at least today',
+
+            'delivery_date.required' => 'Please fill in the Delivery Date',
+
+            'delivery_date.after' => 'Delivery Date must at least today',
+
+        ]);
 
         if($request->confirm){
 
@@ -989,29 +1055,21 @@ class MarketingController extends Controller
 
             }
 
-            if(Carbon::today() > Carbon::parse($request->delivery_date)){
-
-                Flash::error('Delivery Date must be at least Today\'s Date');
-
-                return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
-
-            }
-
             $request->merge(array('status' => 'Confirmed'));
 
-            if($assign_cust[0] == 'D'){
+            if($dtdtransaction->person->cust_id[0] === 'D'){
 
                 $request->merge(array('updated_by' => Auth::user()->name));
 
                 $dtdtransaction->update($request->all());
 
-                $this->syncOrder($dtdtransaction->id);
+                $this->syncTransaction($dtdtransaction->id, $request);
             }
         }
 
-        if($assign_cust[0] == 'D' and $dtdtransaction->status == 'Confirmed'){
+        if($dtdtransaction->person->cust_id[0] === 'D' and $dtdtransaction->status === 'Confirmed'){
 
-            $this->syncOrder($dtdtransaction->id);
+            $this->syncTransaction($dtdtransaction->id, $request);
 
         }
 
@@ -1165,7 +1223,7 @@ class MarketingController extends Controller
 
         if($request->input('form_delete')){
 
-            if($dtdtransaction->status == 'Confirmed'){
+            if($dtdtransaction->status === 'Confirmed'){
 
                 $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
 
@@ -1186,12 +1244,18 @@ class MarketingController extends Controller
 
             return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
 
-        }else{
+        }else if($request->input('form_wipe')){
 
             $dtdtransaction->delete();
 
+            $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+
+            $transaction->delete();
+
             return view('market.deal.index');
         }
+
+
 
 
 
@@ -1649,42 +1713,28 @@ class MarketingController extends Controller
         }
     }
 
-    private function syncOrder($dtdtransaction_id)
+    // create new Transaction or find back and update
+    private function syncTransaction($dtdtransaction_id, $request)
     {
         $dtdtransaction = DtdTransaction::findOrFail($dtdtransaction_id);
 
+        $person = Person::findOrFail($dtdtransaction->person_id);
+
+        $request->merge(array('person_code' => $person->cust_id));
+
         if($dtdtransaction->transaction_id == null || $dtdtransaction->transaction_id == ''){
 
-            $transaction = new Transaction();
+            $transaction = Transaction::create($request->all());
 
         }else{
 
             $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+
+            $transaction->update($request->all());
+
         }
 
         $transaction->total = $dtdtransaction->total;
-
-        $transaction->delivery_date = $dtdtransaction->delivery_date;
-
-        $transaction->status = 'Confirmed';
-
-        $transaction->transremark = $dtdtransaction->transremark;
-
-        $transaction->updated_by = $dtdtransaction->updated_by;
-
-        $transaction->pay_status = 'Owe';
-
-        $transaction->person_code = $dtdtransaction->person_code;
-
-        $transaction->person_id = $dtdtransaction->person_id;
-
-        $transaction->order_date = $dtdtransaction->order_date;
-
-        $transaction->del_address = $dtdtransaction->del_address;
-
-        $transaction->name = $dtdtransaction->name;
-
-        $transaction->po_no = $dtdtransaction->po_no;
 
         $transaction->total_qty = $dtdtransaction->total_qty;
 
@@ -1751,6 +1801,8 @@ class MarketingController extends Controller
             foreach($dealresults as $dealresult){
 
                 $dealresult->delete();
+
+                $this->dealSyncOrder($dealresult->item_id);
             }
         }
     }
@@ -1835,8 +1887,8 @@ class MarketingController extends Controller
     // pass through to check the form valid for edit or not (single collection)
     private function checkFormEditable($transaction)
     {
-        $noneditable = true;
-
+        $noneditable = false;
+/*
         // find person is belongs to dtd member
         if($transaction->person->cust_id[0] === 'D'){
 
@@ -1887,7 +1939,7 @@ class MarketingController extends Controller
 
             return false;
 
-        }
+        }*/
 
         return $noneditable;
 

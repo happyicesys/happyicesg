@@ -10,7 +10,7 @@
     @if(isset($self))
     <div class="form-group">
         {!! Form::label('name', 'ID Name', ['class'=>'control-label']) !!}
-        {!! Form::text('name', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+        <a href="/person/{{$self->id}}/edit">{!! Form::text('name', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}</a>
     </div>
     @else
     <div class="form-group">
@@ -92,7 +92,38 @@
         {!! Form::label('payterm', 'Terms', ['class'=>'control-label']) !!}
         {!! Form::select('payterm', $payterm::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control']) !!}
     </div>
+
 </div>
+
+    <div class="row">
+
+        <div class="col-md-12 col-xs-12">
+
+            <div class="col-md-6 col-xs-12">
+
+                <div class="form-group">
+
+                    {!! Form::label('time_range', 'Available Time Range', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('time_range', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+
+                <div class="form-group">
+
+                    {!! Form::label('block_coverage', 'Block Coverage', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('block_coverage', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <div class="row"></div>
 

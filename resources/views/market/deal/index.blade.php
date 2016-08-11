@@ -54,6 +54,10 @@ Deals
                         {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'pay_status', 'placeholder'=>'Payment']) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'parent_name', 'placeholder'=>'Manager']) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('del_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
                         <div class="dropdown">
                             <a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="" href="">
@@ -133,6 +137,12 @@ Deals
                                     <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                                    Manager
+                                    <span ng-if="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-if="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                     Status
                                     <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
@@ -174,13 +184,14 @@ Deals
                                             @{{ transaction.transaction_id ? transaction.transaction_id : 'Drf '+transaction.id }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>
                                     <td class="col-md-1 text-center">
-                                    <a href="/person/@{{ transaction.person_id }}">
-                                    @{{ transaction.company }}
+                                    <a href="/person/@{{ transaction.person.id }}">
+                                    @{{ transaction.person.name }}
                                     </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.del_postcode ? transaction.del_postcode : transaction.person.del_postcode }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.person.manager.name }}</td>
 
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">

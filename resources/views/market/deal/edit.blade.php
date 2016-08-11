@@ -147,7 +147,7 @@ Deals
 
                             @else
 
-                                {!! Form::submit('Save as Draft', ['name'=>'save_draft', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                {!! Form::submit('Confirm', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
 
                             @endunless
 
@@ -181,11 +181,10 @@ Deals
                         </div>
 
                         <div class="pull-right">
-
+{{--
                                 @unless($transaction->person->cust_id[0] === 'D' and $transaction->status === 'Confirmed')
-
                                     {!! Form::submit('Confirm', ['name'=>'submit_deal', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                                @endunless
+                                @endunless --}}
 
                                 {{-- original setting 4-Aug-2016 --}}
                                 {{-- @unless($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())  --}}

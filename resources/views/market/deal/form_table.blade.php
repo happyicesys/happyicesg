@@ -42,8 +42,10 @@
                             {{$price->product_id}} - {{$price->name}} - {{$price->remark}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @if($transaction->status === 'Pending' or ($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type !== 'AB' : true and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() > \Carbon\Carbon::parse($transaction->delivery_date)->subDay()) or $transaction->status === 'Draft' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H')
-                            <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
+                            {{-- original with delviery date less than 24 hours disable form --}}
+                            {{-- @if($transaction->status === 'Pending' or ($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type !== 'AB' : true and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() > \Carbon\Carbon::parse($transaction->delivery_date)->subDay()) or $transaction->status === 'Draft' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H') --}}
+                            @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H')
+                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
                             @else
                                 <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
                             @endif

@@ -71,6 +71,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 del_from: $scope.del_from,
 
                 del_to: $scope.del_to,
+
+                parent_name: $scope.parent_name,
             }
         }
     }

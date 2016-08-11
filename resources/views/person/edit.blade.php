@@ -1,7 +1,12 @@
 @inject('freezers', 'App\Freezer')
+
 @inject('accessories', 'App\Accessory')
+
 @inject('items', 'App\Item')
+
 @inject('dtdprice', 'App\DtdPrice')
+
+@inject('people', 'App\Person')
 
 @extends('template')
 @section('title')
@@ -29,7 +34,15 @@
 
         {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
 
-            @include('person.form')
+            @if($person->cust_id[0] === 'D')
+
+                @include('market.member.form')
+
+            @else
+
+                @include('person.form')
+
+            @endif
 
             <div class="col-md-12">
                 <div class="pull-right">
@@ -247,86 +260,91 @@
     </div>
 </div>
 {{-- divider --}}
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="panel-title">
-            <div class="pull-left display_panel_title">
-                <h3 class="panel-title"><strong>Price Management : {{$person->company}}</strong></h3>
+@unless(Auth::user()->type === 'marketer')
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <div class="pull-left display_panel_title">
+                    <h3 class="panel-title"><strong>Price Management : {{$person->company}}</strong></h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="panel-body">
-        {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
-        {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
+        <div class="panel-body">
+            {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
+            {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
 
-        <div class="table-responsive">
-            <table class="table table-list-search table-hover table-bordered table-condensed">
-                <tr style="background-color: #DDFDF8">
-                    <th class="col-md-8 text-center">
-                        Item
-                    </th>
-                    <th class="col-md-2 text-center">
-                        Retail Price ($)
-                    </th>
-                    <th class="col-md-2 text-center">
-                        Quote Price ($)
-                    </th>
-                </tr>
+            <div class="table-responsive">
+                <table class="table table-list-search table-hover table-bordered table-condensed">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-8 text-center">
+                            Item
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Retail Price ($)
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Quote Price ($)
+                        </th>
+                    </tr>
 
-                <tbody>
-                @if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB')
+                    <tbody>
+                    @if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB')
 
-                    @unless(count($items)>0)
-                        <td class="text-center" colspan="7">No Records Found</td>
+                        @unless(count($items)>0)
+                            <td class="text-center" colspan="7">No Records Found</td>
+                        @else
+                            @foreach($items::orderBy('product_id')->get() as $item)
+                            <tr class="form-group">
+                                <td class="col-md-8">
+                                    {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
+                                </td>
+                                <td class="col-md-2">
+                                    <strong>
+                                        <input type="text" name="retail[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->retail_price : '0'}}" class="text-right form-control" readonly/>
+                                    </strong>
+                                </td>
+                                <td class="col-md-2">
+                                    <strong>
+                                        <input type="text" name="quote[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->quote_price : '0'}}" class="text-right form-control" readonly/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endunless
                     @else
-                        @foreach($items::orderBy('product_id')->get() as $item)
-                        <tr class="form-group">
-                            <td class="col-md-8">
-                                {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="retail[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->retail_price : '0'}}" class="text-right form-control" readonly/>
-                                </strong>
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="quote[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->quote_price : '0'}}" class="text-right form-control" readonly/>
-                                </strong>
-                            </td>
-                        </tr>
-                        @endforeach
-                    @endunless
-                @else
-                <tr ng-repeat="item in items" class="form-group">
-                    <td class="col-md-8">
-                        @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                    </td>
-                    <td class="col-md-2">
-                        <strong>
-                            <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" />
-                        </strong>
-                    </td>
-                    <td class="col-md-2">
-                        <strong>
-                            <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)"/>
-                        </strong>
-                    </td>
-                </tr>
-                <tr ng-if="items.length == 0 || ! items.length">
-                    <td colspan="4" class="text-center">No Records Found!</td>
-                </tr>
-                @endif
-                </tbody>
-            </table>
-            <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-            {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
-        </div>
-        {!! Form::close() !!}
+                    <tr ng-repeat="item in items" class="form-group">
+                        <td class="col-md-8">
+                            @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
+                        </td>
+                        <td class="col-md-2">
+                            <strong>
+                                <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" />
+                            </strong>
+                        </td>
+                        <td class="col-md-2">
+                            <strong>
+                                <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)"/>
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr ng-if="items.length == 0 || ! items.length">
+                        <td colspan="4" class="text-center">No Records Found!</td>
+                    </tr>
+                    @endif
+                    </tbody>
+                </table>
+                <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
+                {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+            </div>
+            {!! Form::close() !!}
 
+        </div>
     </div>
-</div>
+
+@endunless
+
 {{-- divider --}}
 <div class="panel panel-primary">
     <div class="panel-heading">

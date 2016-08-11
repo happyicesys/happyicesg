@@ -8,7 +8,7 @@ Members
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>Edit Member: {{$person->cust_id}} - {{$person->name}}</strong></h3>
+        <h3 class="panel-title"><strong>Edit Member: {{$person->cust_id}} - <a href="/person/{{$person->id}}/edit" style="color: white;">{{$person->name}}</a></strong></h3>
     </div>
 
     <div class="panel-body">

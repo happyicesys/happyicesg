@@ -159,7 +159,7 @@ Customers
                                 <td class="col-md-1">@{{ customer.unit }}</td>
                                 <td class="col-md-1">@{{ customer.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.del_postcode }}</td>
-                                <td class="col-md-1 text-center">@{{ customer.parent_name }}</td>
+                                <td class="col-md-1 text-center">@{{ customer.manager.name }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
                             </tr>
                             <tr ng-if="(customers | filter:search).length == 0 || ! customers.length">

@@ -37,6 +37,7 @@ class DtdTransaction extends Model
 
     //revision appear format name
     protected $revisionFormattedFieldNames = array(
+
         'id' => 'Running Inv#',
         'delivery_date' => 'Delivery Date',
         'order_date' => 'Order Date',
@@ -57,6 +58,7 @@ class DtdTransaction extends Model
         'contact' => 'Contact',
         'del_postcode' => 'PostCode',
         'transaction_id' => 'Confirmed Inv#'
+
     );
 
     protected $table = 'dtdtransactions';

@@ -139,10 +139,11 @@ Members
                                             </span>
                                         </td>
                                         <td class="col-md-2">@{{ member.del_address }}</td>
-                                        <td class="col-md-1 text-center">@{{ member.parent_name ? member.parent_name : '-'}}</td>
+                                        <td class="col-md-1 text-center">@{{ member.manager ? member.manager.name : '-'}}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
                                         <td class="col-md-1 text-center">
-                                            <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
+                                            {{-- <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a> --}}
+                                            <a href="/person/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
@@ -179,7 +180,9 @@ Members
                             {!! Form::model($self, ['id'=>'edit_profile','action'=>['MarketingController@updateSelf', $self->id]]) !!}
 
                                 <div class="row">
+
                                     @include('market.member.form')
+
                                 </div>
 
                                 <hr size='2'>

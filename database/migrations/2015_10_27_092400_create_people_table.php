@@ -35,7 +35,13 @@ class CreatePeopleTable extends Migration
             $table->string('salutation');
             $table->datetime('dob')->nullable();
             $table->string('cust_type')->nullable();
-            $table->integer('parent_id')->nullable()->index();
+            $table->text('time_range')->nullable();
+            $table->text('block_coverage')->nullable();
+
+            // for d2d usage
+            $table->integer('parent_id')->unsigned()->nullable();
+            $table->foreign('parent_id')->references('id')->on('people');
+
             $table->string('parent_name')->nullable()->index();
             $table->integer('lft')->nullable()->index();
             $table->integer('rgt')->nullable()->index();
@@ -47,6 +53,7 @@ class CreatePeopleTable extends Migration
             // recording which profile person belongs
             $table->integer('profile_id')->unsigned();
             $table->foreign('profile_id')->references('id')->on('profiles');
+
         });
     }
 

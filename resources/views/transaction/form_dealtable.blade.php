@@ -56,14 +56,38 @@
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100).toFixed(2) }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
                             <td class="col-md-1 text-center">
-                                @if($transaction->pay_status == 'Owe')
-                                    @if($transaction->status == 'Delivered')
+
+
+                            @unless(Auth::user()->hasRole('admin') or Auth::user()->hasRole('account') or Auth::user()->hasRole('supervisor'))
+
+                                @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed')
+
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+
+                                @else
+
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
+
+                                @endif
+
+                            @else
+
+                                <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+
+                            @endunless
+{{--
+                                @if($transaction->pay_status === 'Owe')
+                                    @if($transaction->status === 'Delivered')
                                         @can('transaction_deleteitem')
-                                            @unless($transaction->person->cust_id[0] == 'D')
+                                            @unless($transaction->person->cust_id[0] === 'D')
                                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
                                             @endunless
                                         @endcan
+
+                                    original show delete button logic based on one day before delivery date
                                     @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted' or (($transaction->person->cust_id[0] == 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())))
+
+                                    @elseif($transaction->status === 'Cancelled' or $transaction->status === 'Deleted')
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                                     @else
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
@@ -74,7 +98,7 @@
                                     @else
                                         <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
                                     @endcannot
-                                @endif
+                                @endif --}}
                             </td>
                         </tr>
                         @if($person->profile->gst)

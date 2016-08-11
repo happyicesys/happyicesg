@@ -24,7 +24,7 @@ class CreateDtdtransactionsDtddealsTable extends Migration
             $table->timestamp('delivery_date')->nullable();
             $table->timestamp('order_date')->nullable();
             $table->string('driver')->nullable();
-            $table->string('status')->default('Pending');
+            $table->string('status')->default('Confirmed');
             $table->string('pay_status')->default('Owe');
             $table->text('del_address')->nullable();
             $table->string('po_no')->nullable();

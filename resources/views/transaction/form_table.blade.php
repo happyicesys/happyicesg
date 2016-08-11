@@ -1,7 +1,7 @@
- 
+
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <div class="panel-title">         
+        <div class="panel-title">
             <div class="pull-left display_panel_title">
                 @unless($transaction->status == 'Cancelled')
                 <h3 class="panel-title"><strong>Create List : {{$person->cust_id}} - {{$person->company}}</strong></h3>
@@ -9,28 +9,28 @@
                 <h3 class="panel-title"><strong><del>Create List : {{$person->cust_id}} - {{$person->company}}</del></strong></h3>
                 @endunless
             </div>
-        </div>      
+        </div>
     </div>
 
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-list-search table-hover table-bordered table-condensed">
-                <tr style="background-color: #DDFDF8">                   
+                <tr style="background-color: #DDFDF8">
                     <th class="col-md-7 text-center">
-                        Item                           
+                        Item
                     </th>
                     <th class="col-md-1 text-center">
-                        Qty                      
+                        Qty
                     </th>
                     <th class="col-md-2 text-center">
                         Retail Price ($)
-                    </th>                    
+                    </th>
                     <th class="col-md-2 text-center">
                         Quote Price ($)
                     </th>
                      <th class="col-md-2 text-center">
                         Amount ($)
-                    </th>                                                                                                
+                    </th>
                 </tr>
 
                 <tbody>
@@ -45,7 +45,7 @@
                         </td>
                         <td class="col-md-1 text-right">
                             @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                            <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
+                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
                             @else
                                 @can('transaction_view')
                                 <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
@@ -56,32 +56,32 @@
                         </td>
                         <td class="col-md-1">
                             <strong>
-                            <input type="text" name="retail[{{$price->item_id}}]" 
+                            <input type="text" name="retail[{{$price->item_id}}]"
                              value="{{$price->retail_price}}"
                             class="text-right retailClass form-control" readonly="readonly"/>
                             </strong>
-                        </td>                        
+                        </td>
                         <td class="col-md-1">
                             <strong>
                             @if($transaction->status == 'Cancelled')
-                                <input type="text" name="quote[{{$price->item_id}}]" 
+                                <input type="text" name="quote[{{$price->item_id}}]"
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass" readonly="readonly"/>
                             @else
-                                <input type="text" name="quote[{{$price->item_id}}]" 
+                                <input type="text" name="quote[{{$price->item_id}}]"
                                 value="{{$price->quote_price}}"
                                 class="text-right form-control quoteClass"/>
-                            @endif                            
+                            @endif
                             </strong>
                             {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                         </td>
                         <td class="col-md-2">
-                            <input type="text" name="amount[{{$price->item_id}}]" 
+                            <input type="text" name="amount[{{$price->item_id}}]"
                             class="text-right form-control amountClass" readonly="readonly" style="width: 140px" />
                         </td>
-                    </tr>                
+                    </tr>
                     @endforeach
-                    @endunless  
+                    @endunless
                     <tr>
                         <td class="col-md-1 text-center"><strong>Total</strong></td>
                         <td colspan="3" class="col-md-3 text-right">
@@ -91,11 +91,10 @@
                                 </strong>
                             </td>
                         </td>
-                    </tr>                                      
+                    </tr>
 
                 </tbody>
-            </table>          
+            </table>
         </div>
     </div>
 </div>
-   

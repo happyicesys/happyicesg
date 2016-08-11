@@ -87,6 +87,16 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
 
+        $this->validate($request, [
+
+            'person_id' => 'required',
+
+        ],[
+
+            'person_id.required' => 'Please choose an option',
+
+        ]);
+
         $request->merge(array('updated_by' => Auth::user()->name));
 
         $request->merge(['delivery_date' => Carbon::today()]);
@@ -96,6 +106,21 @@ class TransactionController extends Controller
         $input = $request->all();
 
         $transaction = Transaction::create($input);
+
+        // create dtd transaction once detect person code is D
+        if($transaction->person->cust_id[0] === 'D'){
+
+            $dtdtransaction = DtdTransaction::create($input);
+
+            $dtdtransaction->transaction_id = $transaction->id;
+
+            $dtdtransaction->save();
+
+            $transaction->dtdtransaction_id = $dtdtransaction->id;
+
+            $transaction->save();
+
+        }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
@@ -126,13 +151,15 @@ class TransactionController extends Controller
         $person = Person::findOrFail($transaction->person_id);
 
         // retrieve manually to order product id asc
-        if($transaction->person_code[0] === 'D'){
+        if($transaction->person->cust_id[0] === 'D'){
 
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->orderBy('product_id')
                         ->get();
+
+
 
         }else{
 
@@ -293,25 +320,37 @@ class TransactionController extends Controller
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
 
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
+
         }
 
-        $assign_cust = $transaction->person->cust_id;
-
-        if($assign_cust[0] == 'D'){
+        if($transaction->person->cust_id[0] === 'D'){
 
             $this->syncOrder($transaction->id);
-        }
 
-        // update dtdtransaciton status to delivered
+            // sync transaction status once not belongs to those status
+            if($transaction->status !== 'Pending' or $transaction->status !== 'Verify Owe' or $transaction->status !== 'Verify Paid'){
+
+                $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+                // sync to be replace <-> original
+                $this->transactionXChange($dtdtransaction, $transaction);
+
+            }
+
+        }
+/*
+        // update dtdtransaction status to delivered
         if($request->input('del_owe') or $request->input('del_paid')){
 
             $this->dtdDelUpdate($transaction);
+
         }
 
         if($request->input('paid') or $request->input('del_paid')){
 
             $this->dtdPaidUpdate($transaction);
-        }
+
+        }*/
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -350,20 +389,16 @@ class TransactionController extends Controller
 
             return Redirect::action('TransactionController@edit', $transaction->id);
 
-        }else{
+        }else if($request->input('form_wipe')){
 
             $transaction = Transaction::findOrFail($id);
 
             if($transaction->dtdtransaction_id){
 
-                $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
+                $dtdtransaction = DtdTransaction::find($transaction->dtdtransaction_id);
 
-                if($dtdtransaction){
+                $dtdtransaction->delete();
 
-                    $dtdtransaction->status = 'Deleted';
-
-                    $dtdtransaction->save();
-                }
             }
 
             $transaction->delete();
@@ -858,6 +893,19 @@ class TransactionController extends Controller
 
         $transaction->save();
 
+        // sync dtdtransaction totals if valid
+        if($transaction->dtdtransaction_id){
+
+            $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
+
+            $dtdtransaction->total = $deal_total;
+
+            $dtdtransaction->total_qty = $deal_totalqty;
+
+            $dtdtransaction->save();
+
+        }
+
         if(isset($errors)){
 
             if(count($errors) > 0){
@@ -1072,35 +1120,12 @@ class TransactionController extends Controller
 
     private function syncOrder($transaction_id)
     {
+        $transaction = Transaction::find($transaction_id);
+
         $dtdtransaction = DtdTransaction::where('transaction_id', $transaction_id)->first();
 
-        $dtdtransaction->total = $dtdtransaction->total;
-
-        $dtdtransaction->delivery_date = $dtdtransaction->delivery_date;
-
-        $dtdtransaction->status = $dtdtransaction->status;
-
-        $dtdtransaction->transremark = $dtdtransaction->transremark;
-
-        $dtdtransaction->updated_by = $dtdtransaction->updated_by;
-
-        $dtdtransaction->pay_status = $dtdtransaction->pay_status;
-
-        $dtdtransaction->person_code = $dtdtransaction->person_code;
-
-        $dtdtransaction->person_id = $dtdtransaction->person_id;
-
-        $dtdtransaction->order_date = $dtdtransaction->order_date;
-
-        $dtdtransaction->del_address = $dtdtransaction->del_address;
-
-        $dtdtransaction->name = $dtdtransaction->name;
-
-        $dtdtransaction->po_no = $dtdtransaction->po_no;
-
-        $dtdtransaction->total_qty = $dtdtransaction->total_qty;
-
-        $dtdtransaction->save();
+        // sync to be replaced <-> original
+        $this->transactionXChange($dtdtransaction, $transaction);
 
         // find and sync deals
         $deals = Deal::where('transaction_id', $transaction_id)->get();
@@ -1184,5 +1209,39 @@ class TransactionController extends Controller
         }
     }
 
+    // exchange transaction attributes
+    private function transactionXChange($transactionSync, $transactionOri)
+    {
+        $transactionSync->total = $transactionOri->total;
+
+        $transactionSync->total_qty = $transactionOri->total_qty;
+
+        $transactionSync->delivery_date = $transactionOri->delivery_date;
+
+        $transactionSync->del_postcode = $transactionOri->del_postcode;
+
+        $transactionSync->status = $transactionOri->status;
+
+        $transactionSync->transremark = $transactionOri->transremark;
+
+        $transactionSync->updated_by = $transactionOri->updated_by;
+
+        $transactionSync->pay_status = $transactionOri->pay_status;
+
+        $transactionSync->person_code = $transactionOri->person_code;
+
+        $transactionSync->person_id = $transactionOri->person_id;
+
+        $transactionSync->order_date = $transactionOri->order_date;
+
+        $transactionSync->del_address = $transactionOri->del_address;
+
+        $transactionSync->name = $transactionOri->name;
+
+        $transactionSync->po_no = $transactionOri->po_no;
+
+        $transactionSync->save();
+
+    }
 
 }

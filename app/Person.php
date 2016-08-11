@@ -57,6 +57,8 @@ class Person extends Baum\Node
         'site_name' => 'Site Name',
         'com_remark' => 'Company',
         'cust_type' => 'Role Level',
+        'time_range' => 'Available Time Range',
+        'block_coverage' => 'Block Coverage',
     );
 
 
@@ -69,7 +71,8 @@ class Person extends Baum\Node
     'active', 'site_name', 'profile_id',
     'note', 'salutation', 'dob',
     'cust_type', 'user_id', 'parent_name',
-    'parent_id', 'block', 'floor', 'unit'
+    'parent_id', 'block', 'floor',
+    'unit', 'time_range', 'block_coverage'
     ];
 
     /**
@@ -192,6 +195,11 @@ class Person extends Baum\Node
     public function notifymanagers()
     {
         return $this->hasMany('App\NotifyManager');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo('App\Person', 'parent_id');
     }
 
     /**
