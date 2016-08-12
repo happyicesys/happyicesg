@@ -571,7 +571,9 @@ class RptController extends Controller
 
         $role = $request->role;
 
-        $query = DB::table('transactions');
+        $query = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
             $query = $query->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
 
@@ -593,12 +595,11 @@ class RptController extends Controller
 
             $query = $this->extraField($request, $query);
 
-            $query = $query
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
-        $query1 = DB::table('transactions');
+        $query1 = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
             $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Owe');
 
@@ -620,12 +621,11 @@ class RptController extends Controller
 
             $query1 = $this->extraField($request, $query1);
 
-            $query1 = $query1
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
-        $query2 = DB::table('transactions');
+        $query2 = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
             $query2 = $query2->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
 
@@ -646,10 +646,7 @@ class RptController extends Controller
 
             $query2 = $this->extraField($request, $query2);
 
-            $query2 = $query2
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
 
             $query2 = $query2
                 ->union($query)->union($query1)
@@ -684,7 +681,9 @@ class RptController extends Controller
 
         $driver = $request->driver;
 
-        $query1 = DB::table('transactions');
+        $query1 = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
         $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
 
@@ -710,9 +709,11 @@ class RptController extends Controller
 
         $query1 = $this->extraField($request, $query1);
 
-        $query1 = $query1->orderBy('id', 'desc');
+        $query1 = $query1->orderBy('transactions.id', 'desc');
 
-        $query2 = DB::table('transactions');
+        $query2 = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
         // check whether paid_at presence
         if($paid_at){
@@ -742,7 +743,7 @@ class RptController extends Controller
 
         $query2 = $this->extraField($request, $query2);
 
-        $query2 = $query2->orderBy('id', 'desc');
+        $query2 = $query2->orderBy('transactions.id', 'desc');
 
         $amt_del = $this->calTransactionTotal($query1->get());
 
@@ -816,35 +817,41 @@ class RptController extends Controller
 
         if($transaction_id){
 
-            $query = $query->where('transactions.id', 'LIKE', $transaction_id);
+            $query = $query->where('transactions.id', 'LIKE', '%'.$transaction_id.'%');
         }
 
         if($cust_id){
 
+            $query = $query->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+/*
             $query = $query->whereHas('person', function($query){
 
                 $query->where('cust_id', 'LIKE', $cust_id);
 
-            });
+            });*/
         }
 
         if($company){
 
+            $query = $query->where('people.company', 'LIKE', '%'.$company.'%');
+/*
             $query = $query->whereHas('person', function($query){
 
                 $query->where('company', 'LIKE', $company);
 
-            });
+            });*/
         }
 
         if($status){
 
-            $query = $query->where('transactions.status', 'LIKE', $status);
+            $query = $query->where('transactions.status', 'LIKE', '%'.$status.'%');
+
         }
 
         if($pay_status){
 
-            $query = $query->where('transactions.pay_status', 'LIKE', $pay_status);
+            $query = $query->where('transactions.pay_status', 'LIKE', '%'.$pay_status.'%');
+
         }
 
         return $query;

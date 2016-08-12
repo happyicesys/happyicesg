@@ -59,6 +59,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                     $scope.All = transactions.length;
 
+                    console.log(transactions);
+
                 });
 
                 $http.post('/report/dailyrec', $scope.indexData).success(function(rptdata){

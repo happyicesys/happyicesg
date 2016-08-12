@@ -270,7 +270,7 @@
 
                         <?php $counter = 0; ?>
                         @unless(count($transactions)>0)
-                            <td class="text-center" colspan="8">No Records Found</td>
+                            <td class="text-center" colspan="14">No Records Found</td>
                         @else
 
                             @foreach($transactions as $index => $transaction)
