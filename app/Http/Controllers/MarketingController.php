@@ -893,7 +893,7 @@ class MarketingController extends Controller
         $person = Person::find($request->person_id);
 
         $dtdtransaction = DtdTransaction::create($input);
-
+/*
         if($person->cust_id[0] === 'D'){
 
             $transaction = Transaction::create($input);
@@ -906,7 +906,7 @@ class MarketingController extends Controller
 
             $dtdtransaction->save();
 
-        }
+        }*/
 
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
