@@ -38,6 +38,8 @@ Route::post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 Route::get('/market/member/create/{level}', 'MarketingController@createMember');
 Route::delete('/market/member/{member_id}', 'MarketingController@destroyMember');
 
+Route::get('/market/commision/create', 'MarketingController@createCommision');
+
 Route::post('/market/log/deal/{dtdtransaction_id}', 'MarketingController@generateLogs');
 Route::post('/market/deal/index', 'MarketingController@indexDealApi');
 Route::post('/market/deal/{dtdtransaction_id}', 'MarketingController@update');

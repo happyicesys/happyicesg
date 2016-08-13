@@ -831,6 +831,8 @@ class MarketingController extends Controller
 
         }
 
+        // $query = $query->where('total', '>', '0')->orderBy('id', 'desc')->get();
+
         $query = $query->orderBy('id', 'desc')->get();
 
         $caltotal = $this->calTransactionTotal($query);
@@ -859,7 +861,7 @@ class MarketingController extends Controller
 
     public function showDtdTransaction($person_id)
     {
-        return DtdTransaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
+        return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '>', '0')->latest()->take(5)->get();
     }
 
     public function storeDeal(Request $request)
@@ -883,13 +885,15 @@ class MarketingController extends Controller
 
         $request->merge(array('order_date' => Carbon::today()));
 
+        $request->merge(array('status' => 'Pending'));
+
         $input = $request->all();
 
         // find out customer or D code self chosen
         $person = Person::find($request->person_id);
 
         $dtdtransaction = DtdTransaction::create($input);
-/*
+
         if($person->cust_id[0] === 'D'){
 
             $transaction = Transaction::create($input);
@@ -902,7 +906,7 @@ class MarketingController extends Controller
 
             $dtdtransaction->save();
 
-        }*/
+        }
 
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
@@ -1397,6 +1401,24 @@ class MarketingController extends Controller
         $transHistory = $transaction->revisionHistory;
 
         return view('market.deal.log', compact('transaction', 'transHistory'));
+    }
+
+    // return commision creation page
+    public function createCommision()
+    {
+        $people = Person::where('user_id', Auth::user()->id)->first();
+
+        $adminview = Person::where('cust_id', 'LIKE', 'D%');
+
+        $people = $people ? $people->descendants() : $adminview;
+
+        return view('market.commision.create', compact('people'));
+    }
+
+    // return commision latest 5 commision for the person selected api
+    public function showDtdLatestCommision($person_id)
+    {
+        return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '<', '0')->latest()->take(5)->get();
     }
 
     // method for deleting deals upon transaction deletion
