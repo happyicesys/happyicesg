@@ -15,6 +15,9 @@
 @section('content')
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController">
+
+@unless($person->cust_id[0] === 'D')
+
 <div class="panel panel-primary">
 
     <div class="panel-heading">
@@ -34,15 +37,9 @@
 
         {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
 
-            @if($person->cust_id[0] === 'D')
-
-                @include('market.member.form')
-
-            @else
 
                 @include('person.form')
 
-            @endif
 
             <div class="col-md-12">
                 <div class="pull-right">
@@ -67,11 +64,24 @@
             </div>
     </div>
 </div>
+
+@endunless
+
 {{-- divider --}}
 <div class="panel panel-primary">
 
     <div class="panel-heading">
-        <h3 class="panel-title"><strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong></h3>
+        <h3 class="panel-title">
+
+            <strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong>
+
+            @if($person->cust_id[0] === 'D')
+
+                <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
+
+            @endif
+
+        </h3>
     </div>
 
     <div class="panel-body">

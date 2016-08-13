@@ -114,7 +114,7 @@ class MarketingController extends Controller
 
         $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
 
-        $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('cust_type', 'desc')->get();
+        $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -143,7 +143,7 @@ class MarketingController extends Controller
         if($memberbool){
             // dd($member);
 
-            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->get();
+            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get();
 
         }else if($adminbool or $member_adminbool){
 
@@ -446,7 +446,7 @@ class MarketingController extends Controller
 
         $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
 
-        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('cust_id')->get();
+        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -475,7 +475,7 @@ class MarketingController extends Controller
         // show results based on condition
         if($memberbool){
 
-            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('cust_id')->get();
+            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('id', 'desc')->get();
 
         }else if($adminbool or $member_adminbool){
 
