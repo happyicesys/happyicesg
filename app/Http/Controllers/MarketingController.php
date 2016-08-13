@@ -301,6 +301,14 @@ class MarketingController extends Controller
 
         $person->delete();
 
+        if($person->user_id){
+
+            $user = User::findOrFail($person->user_id);
+
+            $user->delete();
+
+        }
+
         return Redirect::action('MarketingController@indexMember');
     }
 
@@ -359,6 +367,7 @@ class MarketingController extends Controller
 
     public function updateMember(Request $request, $id)
     {
+
         $input = $request->except('parent_id');
 
         $person = Person::findOrFail($id);

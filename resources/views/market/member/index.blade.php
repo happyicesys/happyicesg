@@ -143,7 +143,7 @@ Members
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
                                         <td class="col-md-1 text-center">
                                             {{-- <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a> --}}
-                                            <a href="/person/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
