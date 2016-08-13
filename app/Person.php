@@ -129,7 +129,7 @@ class Person extends Baum\Node
 
     public function getCreatedAtAttribute($date)
     {
-        return Carbon::parse($date)->format('d-F-Y');
+        return Carbon::parse($date)->format('Y-m-d');
     }
 
     public function getDobAttribute($date)

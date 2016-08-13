@@ -71,10 +71,12 @@ Customers
                 </div>
 
                 <div class="row">
-                    <div style="padding: 0px 0px 10px 15px">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                    <div style="padding: 0px 15px 10px 15px">
+                        <button class="btn btn-primary pull-left" ng-click="exportData()">Export Excel</button>
+                        <label ng-if="customers" class="pull-right totalnum" for="totalnum">Showing @{{(customers | filter:search).length}} of @{{customers.length}} entries</label>
                     </div>
                 </div>
+
                 <div class="table-responsive" id="exportable">
                     <table class="table table-list-search table-hover table-bordered">
                         <tr style="background-color: #DDFDF8">
@@ -118,7 +120,10 @@ Customers
                                 <span ng-show="sortType == 'unit' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                Delivery Address
+                                <a href="" ng-click="sortType = 'created_at'; sortReverse = !sortReverse">
+                                Created On
+                                <span ng-show="sortType == 'created_at' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'created_at' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
@@ -157,7 +162,7 @@ Customers
                                 <td class="col-md-1">@{{ customer.block }}</td>
                                 <td class="col-md-1">@{{ customer.floor }}</td>
                                 <td class="col-md-1">@{{ customer.unit }}</td>
-                                <td class="col-md-1">@{{ customer.del_address }}</td>
+                                <td class="col-md-1">@{{ customer.created_at }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.del_postcode }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.manager.name }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
@@ -172,7 +177,6 @@ Customers
             </div>
                 <div class="panel-footer">
                       <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                      <label ng-if="customers" class="pull-right totalnum" for="totalnum">Showing @{{(customers | filter:search).length}} of @{{customers.length}} entries</label>
                 </div>
         </div>
     </div>
