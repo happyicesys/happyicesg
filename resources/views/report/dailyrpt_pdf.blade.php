@@ -52,11 +52,11 @@
 
     <body style="border:0; margin: 0;" onload="subst()">
         <div class="container">
-            <div class="col-xs-10 col-xs-offset-1" style="font-size:15px">
+            <div class="col-xs-12" style="font-size:15px">
                 <h4 class="text-center"><strong>Daily Report</strong></h4>
             </div>
 
-            <div class="col-xs-10 col-xs-offset-1" style="border: solid thin black;">
+            <div class="col-xs-12" style="border: solid thin black;">
                 <div class="col-xs-4">
                     <div class="row">
                         <div class="col-xs-4">
@@ -154,31 +154,33 @@
             </div>
 
 
-            <div class="col-xs-10 col-xs-offset-1 row" style="padding-top: 15px;">
+            <div class="col-xs-12" style="padding-top: 15px;">
+                <div class="row">
+
                 <div class="col-xs-6" style="border: thin black solid">
                     <div class="row">
-                        <div class="col-xs-9">
+                        <div class="col-xs-8">
                             <strong>Total Amount for 'Delivered':</strong>
                         </div>
-                        <div class="col-xs-3 text-right">
+                        <div class="col-xs-4 text-right">
                             {{ number_format($amt_del, 2, '.', ',') }}
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-9">
+                        <div class="col-xs-8">
                             <strong>Total Qty for 'Delivered':</strong>
                         </div>
-                        <div class="col-xs-3 text-right">
+                        <div class="col-xs-4 text-right">
                             {{ number_format($qty_del, 4, '.', ',') }}
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-9">
+                        <div class="col-xs-8">
                             <strong>Total Amount for 'Paid':</strong>
                         </div>
-                        <div class="col-xs-3 text-right">
+                        <div class="col-xs-4 text-right">
                             {{ number_format($amt_mod, 2, '.', ',') }}
                         </div>
                     </div>
@@ -187,33 +189,35 @@
                 @unless(Auth::user()->hasRole('driver'))
                     <div class="col-xs-6" style="border: thin black solid;">
                         <div class="row">
-                            <div class="col-xs-9">
+                            <div class="col-xs-8">
                                 <strong>Total Amount for 'Paid':</strong>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-xs-4 text-right">
                                 {{ number_format($amt_mod, 2, '.', ',') }}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-9">
+                            <div class="col-xs-8">
                                 <strong>Total Paid 'Cash':</strong>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-xs-4 text-right">
                                 {{ number_format($cash_mod, 2, '.', ',') }}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-9">
+                            <div class="col-xs-8">
                                 <strong>Total Paid 'Cheque/ TT':</strong>
                             </div>
-                            <div class="col-xs-3 text-right">
+                            <div class="col-xs-4 text-right">
                                 {{ number_format($cheque_mod, 2, '.', ',') }}
                             </div>
                         </div>
                     </div>
                 @endunless
+
+                </div>
             </div>
 
             <label for="count" class="col-xs-12 row" style="padding-top: 10px;">Total of {{ count($transactions) }} entries</label>
