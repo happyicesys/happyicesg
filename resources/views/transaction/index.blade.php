@@ -197,11 +197,13 @@
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+
                                     <td class="col-md-1 text-center">
-                                    <a href="/person/@{{ transaction.person_id }}">
-                                    @{{ transaction.company }}
-                                    </a>
+                                        <a href="/person/@{{ transaction.person_id }}">
+                                            @{{ transaction.cust_id[0] == 'D' ? transaction.person_name : transaction.company }}
+                                        </a>
                                     </td>
+
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
 
                                     {{-- status by color --}}

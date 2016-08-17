@@ -17,7 +17,7 @@ class PriceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }    
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -74,9 +74,9 @@ class PriceController extends Controller
 
                     if($price){
 
-                        $price->delete();    
+                        $price->delete();
                     }
-                    
+
                 }else{
 
                     $price->retail_price = $retail_price[$index];
@@ -90,18 +90,17 @@ class PriceController extends Controller
                     $price->save();
                 }
 
-
             }
-        }         
+        }
 /*
         $retail_price = $request->input('retail_price');
 
         if(! $request->has('quote_price')){
-                
-            $request->merge(array('quote_price' => $this->calquote($person_id, $retail_price)));                
+
+            $request->merge(array('quote_price' => $this->calquote($person_id, $retail_price)));
 
         }
-        
+
         $input = $request->all();
 
         $price = Price::create($input);
@@ -150,16 +149,16 @@ class PriceController extends Controller
         $retail_price = $request->input('retail_price');
 
         if(! $request->has('quote_price')){
-                
-            $request->merge(array('quote_price' => $this->calquote($price->person_id, $retail_price)));                
 
-        }   
+            $request->merge(array('quote_price' => $this->calquote($price->person_id, $retail_price)));
+
+        }
 
         $input = $request->all();
 
         $price->update($input);
 
-        return Redirect::action('PersonController@edit', $price->person_id);             
+        return Redirect::action('PersonController@edit', $price->person_id);
     }
 
     /**

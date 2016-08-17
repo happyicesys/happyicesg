@@ -284,45 +284,58 @@ Deals
                                 <div class="pull-left display_num">
                                     <label for="display_num">Display</label>
                                     <select ng-model="itemsPerPage2" ng-init="itemsPerPage2='70'">
-                                      <option ng-value="10">10</option>
-                                      <option ng-value="30">30</option>
-                                      <option ng-value="70">70</option>
-                                      <option ng-value="All">All</option>
+                                        <option ng-value="10">10</option>
+                                        <option ng-value="30">30</option>
+                                        <option ng-value="70">70</option>
+                                        <option ng-value="All">All</option>
                                     </select>
                                     <label for="display_num2" style="padding-right: 20px">per Page</label>
                                 </div>
+
                                 <div class="pull-right">
+
                                     <a href="/market/commision/create" class="btn btn-success">+ New Commision</a>
+
                                 </div>
+
                             </div>
+
                         </div>
 
                         <div class="panel-body">
+
                             <div class="col-md-12 col-sm-12 col-xs-12">
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('invoice', null, ['class'=>'form-control input-sm', 'ng-model'=>'id', 'placeholder'=>'Inv Num']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'cust_id', 'placeholder'=>'Cust ID']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('company', 'ID Name:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'company', 'placeholder'=>'ID Name']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'status', 'placeholder'=>'Status']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'pay_status', 'placeholder'=>'Payment']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'parent_name', 'placeholder'=>'Manager']) !!}
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('del_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
                                     <div class="dropdown">
@@ -336,6 +349,7 @@ Deals
                                         </ul>
                                     </div>
                                 </div>
+
                                 <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                     {!! Form::label('del_to', 'Delivery To:', ['class'=>'control-label search-title']) !!}
                                     <div class="dropdown">
@@ -352,17 +366,25 @@ Deals
                             </div>
 
                             <div class="row">
+
                                 <div class="col-md-6 col-md-offset-3 col-sm-6 col-xs-12">
+
                                     {!! Form::label('date_total', 'For Delivery Date from (@{{del_from}}) to (@{{del_to}})', ['class'=>'control-label']) !!}
+
                                     <div class="row">
+
                                         <div class="col-md-3 col-sm-3 col-xs-3" style="margin-left: 15px;">
                                             Total Amount
                                         </div>
+
                                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
                                             @{{totalAmount | currency: "": 2}}
                                         </div>
+
                                     </div>
+
                                 </div>
+
                             </div>
 
                             <div class="row">
