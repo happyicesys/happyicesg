@@ -55,7 +55,7 @@
                                                             'ng-model'=>'search.id',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Inv Num',
-                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                            'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
 
@@ -67,7 +67,7 @@
                                                         'ng-model'=>'search.cust_id',
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Cust ID',
-                                                        'ng-model-options'=>'{ debounce: 600 }'
+                                                        'ng-model-options'=>'{ debounce: 500 }'
                                                     ]) !!}
                     </div>
 
@@ -79,7 +79,7 @@
                                                             'ng-model'=>'search.company',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'ID Name',
-                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                            'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
 
@@ -91,7 +91,7 @@
                                                             'ng-model'=>'search.status',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Status',
-                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                            'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
 
@@ -103,7 +103,7 @@
                                                                 'ng-model'=>'search.pay_status',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Payment',
-                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                                'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                     </div>
 
@@ -115,7 +115,7 @@
                                                                 'ng-model'=>'search.updated_by',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Last Modified By',
-                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                                'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
@@ -129,7 +129,7 @@
                                                                             'ng-model'=>'search.updated_at',
                                                                             'placeholder'=>'Last Modify Date',
                                                                             'ng-keyup'=>'searchDB()',
-                                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                                            'ng-model-options'=>'{ debounce: 500 }'
                                                                         ]) !!}
                                 </div>
                             </a>
@@ -150,7 +150,7 @@
                                                                                 'ng-init'=>"search.delivery_date=today",
                                                                                 'placeholder'=>'Delivery Date',
                                                                                 'ng-keyup'=>'searchDB()',
-                                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                                                'ng-model-options'=>'{ debounce: 500 }'
                                                                             ]) !!}
                                 </div>
                             </a>
