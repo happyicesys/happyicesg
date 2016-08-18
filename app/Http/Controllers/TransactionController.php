@@ -46,16 +46,65 @@ class TransactionController extends Controller
     }
 
     // get transactions api data based on delivery date
-    public function getData()
+    public function getData(Request $request)
     {
-        // using sql query instead of eloquent for super fast pre-load (api)
-        $transactions = DB::table('transactions')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'people.name as person_name', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note')
-                        ->latest('created_at')
-                        ->get();
-        return $transactions;
+        // showing total amount init
+        $total_amount = 0;
+
+        $input = $request->all();
+
+        // initiate the page num when null given
+        if($request->pageNum){
+
+            $pageNum = $request->pageNum;
+
+        }else{
+
+            $pageNum = 70;
+
+        }
+
+        // reading whether search input is filled
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
+
+            $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
+
+            $transactions = $this->searchFilter($transactions, $request);
+
+        }else{
+
+            if($request->sortName){
+
+                $transactions = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+
+            }else{
+
+                $transactions = Transaction::with(['person', 'person.profile'])->latest();
+
+            }
+
+            if($request->init == 'true'){
+
+                $transactions = $transactions->searchDeliveryDate(Carbon::today());
+
+            }
+
+        }
+
+        $total_amount = $this->calTransactionTotal($transactions->get());
+
+        $transactions = $transactions->paginate($pageNum);
+
+        $data = [
+
+            'total_amount' => $total_amount,
+
+            'transactions' => $transactions,
+
+        ];
+
+        return $data;
+
     }
 
     /**
@@ -158,8 +207,6 @@ class TransactionController extends Controller
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->orderBy('product_id')
                         ->get();
-
-
 
         }else{
 
@@ -1242,6 +1289,92 @@ class TransactionController extends Controller
 
         $transactionSync->save();
 
+    }
+
+    // pass value into filter search (collection, collection request) [query]
+    private function searchFilter($transactions, Request $request)
+    {
+        if($request->id){
+
+            $transactions = $transactions->searchId($request->id);
+
+        }
+
+        if($request->cust_id){
+
+            $transactions = $transactions->searchCustId($request->cust_id);
+
+        }
+
+        if($request->company){
+
+            $transactions = $transactions->searchCompany($request->company);
+
+        }
+
+        if($request->status){
+
+            $transactions = $transactions->searchStatus($request->status);
+
+        }
+
+        if($request->pay_status){
+
+            $transactions = $transactions->searchPayStatus($request->pay_status);
+
+        }
+
+        if($request->updated_by){
+
+            $transactions = $transactions->searchUpdatedBy($request->updated_by);
+
+        }
+
+        if($request->updated_at){
+
+            $transactions = $transactions->searchUpdatedAt($request->updated_at);
+
+        }
+
+        if($request->delivery_date){
+
+            $transactions = $transactions->searchDeliveryDate($request->delivery_date);
+
+        }
+
+        if($request->driver){
+
+            $transactions = $transactions->searchDriver($request->driver);
+
+        }
+
+        if($request->profile){
+
+            $transactions = $transactions->searchProfile($request->profile);
+
+        }
+
+        if($request->sortName){
+
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        return $transactions;
+    }
+
+    // calculating gst and non for delivered total
+    private function calTransactionTotal($arr)
+    {
+        $total_amount = 0;
+
+        foreach($arr as $transaction){
+
+            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+
+            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+        }
+
+        return $total_amount;
     }
 
 }

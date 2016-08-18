@@ -127,7 +127,7 @@ Route::post('/transaction/singlestatus/{transaction_id}', 'TransactionController
 Route::post('/transaction/daterange', 'TransactionController@searchDateRange');
 Route::post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 Route::get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
-Route::get('/transaction/data', 'TransactionController@getData');
+Route::post('/transaction/data', 'TransactionController@getData');
 Route::delete('/transaction/data/{id}', 'TransactionController@destroyAjax');
 Route::post('/transaction/{trans_id}/editpersoncode', 'TransactionController@storeCustcode');
 Route::put('/transaction/{trans_id}/editperson', 'TransactionController@storeCust');

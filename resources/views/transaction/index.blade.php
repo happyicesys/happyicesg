@@ -17,11 +17,11 @@
 
                     <div class="pull-left display_num">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'">
-                          <option ng-value="10">10</option>
-                          <option ng-value="30">30</option>
-                          <option ng-value="70">70</option>
-                          <option ng-value="All">All</option>
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'" ng-change="pageNumChanged()">
+                            <option ng-value="10">10</option>
+                            <option ng-value="30">30</option>
+                            <option ng-value="70">70</option>
+                            <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
@@ -32,7 +32,9 @@
                         <div class="col-md-9" style="padding-top:10px">
                             {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id',
                                 'class'=>'select',
-                                'ng-model'=>'search.name'])
+                                'ng-model'=>'search.name',
+                                'ng-change' => 'searchDB()'
+                                ])
                             !!}
                         </div>
                     </div>
@@ -44,36 +46,91 @@
 
             <div class="panel-body">
                 <div class="col-md-12 col-sm-12 col-xs-12">
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('invoice', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'Inv Num']) !!}
+                        {!! Form::text('invoice', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.id',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Inv Num',
+                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                        ]) !!}
                     </div>
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
+                        {!! Form::text('id', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.cust_id',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'Cust ID',
+                                                        'ng-model-options'=>'{ debounce: 600 }'
+                                                    ]) !!}
                     </div>
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('company', 'ID Name:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'ID Name']) !!}
+                        {!! Form::text('company', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.company',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'ID Name',
+                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                        ]) !!}
                     </div>
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'placeholder'=>'Status']) !!}
+                        {!! Form::text('status', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.status',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Status',
+                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                        ]) !!}
                     </div>
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
+                        {!! Form::text('pay_status', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.pay_status',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Payment',
+                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                            ]) !!}
                     </div>
+
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('updated_by', 'Last Modify By:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('updated_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_by', 'placeholder'=>'Last Modified By']) !!}
+                        {!! Form::text('updated_by', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.updated_by',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Last Modified By',
+                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                            ]) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('created_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('updated_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
                         <div class="dropdown">
                             <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
                                 <div class="input-group">
-                                    {!! Form::text('created_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.updated_at', 'placeholder'=>'Last Modify Date']) !!}
+                                    {!! Form::text('updated_at', null,
+                                                                        [
+                                                                            'class'=>'form-control input-sm',
+                                                                            'ng-model'=>'search.updated_at',
+                                                                            'placeholder'=>'Last Modify Date',
+                                                                            'ng-keyup'=>'searchDB()',
+                                                                            'ng-model-options'=>'{ debounce: 600 }'
+                                                                        ]) !!}
                                 </div>
                             </a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -86,7 +143,15 @@
                         <div class="dropdown">
                             <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
                                 <div class="input-group">
-                                    {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.delivery_date', 'ng-init'=>"search.delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
+                                    {!! Form::text('delivery_date', null,
+                                                                            [
+                                                                                'class'=>'form-control input-sm',
+                                                                                'ng-model'=>'search.delivery_date',
+                                                                                'ng-init'=>"search.delivery_date=today",
+                                                                                'placeholder'=>'Delivery Date',
+                                                                                'ng-keyup'=>'searchDB()',
+                                                                                'ng-model-options'=>'{ debounce: 600 }'
+                                                                            ]) !!}
                                 </div>
                             </a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -96,18 +161,60 @@
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.driver', 'placeholder'=>'Delivered By']) !!}
+                        {!! Form::text('driver', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.driver',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Delivered By',
+                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                        ]) !!}
                     </div>
                 </div>
 
-                <div class="row">
-                    <div style="padding: 0px 0px 10px 15px">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
-                        <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
-                    </div>
+                <div class="row" style="padding: 20px 0px 15px 15px;">
+
+
+                        <div class="col-md-4 col-xs-4">
+
+                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+
+                        </div>
+
+                        <div class="col-md-3 col-xs-3">
+
+                            <div class="col-md-5 col-xs-5">
+                                Total Amount :
+                            </div>
+
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-5 col-xs-5">
+
+                            <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries <span ng-if="totalCount">(@{{indexFrom}} - @{{indexTo}})</span></label>
+
+                        </div>
+
+
                 </div>
                     <div class="table-responsive" id="exportable">
                         <table class="table table-list-search table-hover table-bordered">
+
+                            {{-- hidden table for excel export --}}
+                            <tr class="hidden">
+                                <td></td>
+                                <td data-tableexport-display="always">Total Amount</td>
+                                <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
+                            </tr>
+                            <tr class="hidden" data-tableexport-display="always">
+                                <td></td>
+                            </tr>
+
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-1 text-center">
                                     #
@@ -189,18 +296,18 @@
                                 </th>
                             </tr>
                             <tbody>
-                                <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage track by $index" current-page="currentPage" ng-controller="repeatController">
+                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" total-items="totalCount" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">
                                             @{{ transaction.id }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>
 
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
-                                            @{{ transaction.cust_id[0] == 'D' ? transaction.person_name : transaction.company }}
+                                            @{{ transaction.person.cust_id[0] == 'D' ? transaction.person.name : transaction.person.company }}
                                         </a>
                                     </td>
 
@@ -257,15 +364,19 @@
                                         @endcannot --}}
                                     </td>
                                 </tr>
-                                <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
+
+                                <tr ng-if="!alldata || alldata.length == 0">
+
                                     <td colspan="14" class="text-center">No Records Found</td>
+
                                 </tr>
+
                             </tbody>
                         </table>
                     </div>
             </div>
                 <div class="panel-footer">
-                      <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                      <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                 </div>
         </div>
     </div>

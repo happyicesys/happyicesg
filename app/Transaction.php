@@ -172,11 +172,90 @@ class Transaction extends Model
 
     }
 
-    /**
-     * search and retrieve month data
-     * @param $month in integer
-     * @return mixed
-     */
+    // searching scopes
+    // (query, integer) [query]
+    public function scopeSearchId($query, $id)
+    {
+         return $query->where('id', 'LIKE', '%'.$id.'%');
+    }
+
+    // (query, integer) [query]
+    public function scopeSearchCustId($query, $cust_id)
+    {
+        return $query->whereHas('person', function($query) use ($cust_id){
+
+            $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+
+        });
+
+    }
+
+    // (query, integer) [query]
+    public function scopeSearchCompany($query, $company)
+    {
+        return $query->whereHas('person', function($query) use ($company){
+
+            $query->where('company', 'LIKE', '%'.$company.'%')
+
+                ->orWhere(function ($q) use ($company){
+
+                    $q->where('name', 'LIKE', '%'.$company.'%')->where('cust_id', 'LIKE', 'D%');
+
+            });
+
+        });
+
+    }
+
+    // (query, string) [query]
+    public function scopeSearchStatus($query, $status)
+    {
+         return $query->where('status', 'LIKE', '%'.$status.'%');
+    }
+
+    // (query, string) [query]
+    public function scopeSearchPayStatus($query, $pay_status)
+    {
+         return $query->where('pay_status', 'LIKE', '%'.$pay_status.'%');
+    }
+
+    // (query, string) [query]
+    public function scopeSearchUpdatedBy($query, $updated_by)
+    {
+         return $query->where('updated_by', 'LIKE', '%'.$updated_by.'%');
+    }
+
+    public function scopeSearchUpdatedAt($query, $date)
+    {
+        $date = Carbon::parse($date);
+
+        return $query->whereDate('updated_at', '=', date($date));
+    }
+
+    public function scopeSearchDeliveryDate($query, $date)
+    {
+        $date = Carbon::parse($date);
+
+        return $query->whereDate('delivery_date', '=', date($date));
+    }
+
+    // (query, string) [query]
+    public function scopeSearchDriver($query, $driver)
+    {
+         return $query->where('driver', 'LIKE', '%'.$driver.'%');
+    }
+
+    // (query, integer) [query]
+    public function scopeSearchProfile($query, $profile)
+    {
+        return $query->whereHas('person.profile', function($query) use ($profile){
+
+            $query->where('name', $profile);
+
+        });
+
+    }
+
     public function scopeSearchDateRange($query, $datefrom, $dateto)
     {
         $datefrom = Carbon::createFromFormat('d M y', $datefrom)->format('Y-m-d');
