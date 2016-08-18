@@ -1268,10 +1268,6 @@ class MarketingController extends Controller
             return view('market.deal.index');
         }
 
-
-
-
-
     }
 
     public function reverse($id)

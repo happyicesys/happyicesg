@@ -30,7 +30,7 @@
                             <label for="profile_id" class="search">Profile:</label>
                         </div>
                         <div class="col-md-9" style="padding-top:10px">
-                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'name')->all(), null, ['id'=>'profile_id',
+                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
                                 'class'=>'select',
                                 'ng-model'=>'search.name',
                                 'ng-change' => 'searchDB()'
@@ -121,18 +121,16 @@
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('updated_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
                         <div class="dropdown">
-                            <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
-                                <div class="input-group">
-                                    {!! Form::text('updated_at', null,
-                                                                        [
-                                                                            'class'=>'form-control input-sm',
-                                                                            'ng-model'=>'search.updated_at',
-                                                                            'placeholder'=>'Last Modify Date',
-                                                                            'ng-keyup'=>'searchDB()',
-                                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                                        ]) !!}
-                                </div>
-                            </a>
+                            <div class="input-group dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="">
+                                {!! Form::text('updated_at', null,
+                                                                    [
+                                                                        'class'=>'form-control input-sm',
+                                                                        'ng-model'=>'search.updated_at',
+                                                                        'placeholder'=>'Last Modify Date',
+                                                                        'ng-keyup'=>'dateChange2(search.updated_at)',
+                                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                                    ]) !!}
+                            </div>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
                             </ul>
@@ -141,19 +139,18 @@
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
                         <div class="dropdown">
-                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
-                                <div class="input-group">
-                                    {!! Form::text('delivery_date', null,
-                                                                            [
-                                                                                'class'=>'form-control input-sm',
-                                                                                'ng-model'=>'search.delivery_date',
-                                                                                'ng-init'=>"search.delivery_date=today",
-                                                                                'placeholder'=>'Delivery Date',
-                                                                                'ng-keyup'=>'searchDB()',
-                                                                                'ng-model-options'=>'{ debounce: 500 }'
-                                                                            ]) !!}
-                                </div>
-                            </a>
+                            <div class="input-group dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="">
+                                {!! Form::text('delivery_date', null,
+                                                                        [
+                                                                            'id'=>'delivery_date',
+                                                                            'class'=>'form-control input-sm',
+                                                                            'ng-model'=>'search.delivery_date',
+                                                                            'ng-init'=>"search.delivery_date=today",
+                                                                            'placeholder'=>'Delivery Date',
+                                                                            'ng-keyup'=>'dateChange(search.delivery_date)',
+                                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                                        ]) !!}
+                            </div>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
                             </ul>
@@ -163,6 +160,7 @@
                         {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('driver', null,
                                                         [
+                                                            'id'=>'updated_at',
                                                             'class'=>'form-control input-sm',
                                                             'ng-model'=>'search.driver',
                                                             'ng-change'=>'searchDB()',

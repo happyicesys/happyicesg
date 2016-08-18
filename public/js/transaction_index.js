@@ -29,6 +29,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.today = moment().format("YYYY-MM-DD");
 
+        $scope.delivery_date = '';
+
+        $scope.updated_at = '';
+
         // init page load
         getPage(1, true);
 
@@ -203,7 +207,21 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.dateChange = function(date){
 
-            $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
+
+            if($('#delivery_date').val() == '' || $('#delivery_date').val() == null){
+
+                // $('#delivery_date').datetimepicker({clear: true});
+                $('#delivery_date').val('');
+
+                $scope.search.delivery_date = '';
+
+                // console.log($scope.search.delivery_date);
+
+            }else{
+
+                $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
+
+            }
 
             $scope.searchDB();
 
@@ -212,6 +230,12 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         $scope.dateChange2 = function(date){
 
             $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
+
+            if($('#updated_at').val()){
+
+                $('#updated_at').val('');
+
+            }
 
             $scope.searchDB();
 

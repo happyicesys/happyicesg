@@ -248,9 +248,10 @@ class Transaction extends Model
     // (query, integer) [query]
     public function scopeSearchProfile($query, $profile)
     {
+
         return $query->whereHas('person.profile', function($query) use ($profile){
 
-            $query->where('name', $profile);
+            return $query->where('id', $profile);
 
         });
 
