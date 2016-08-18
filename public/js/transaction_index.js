@@ -229,11 +229,15 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.dateChange2 = function(date){
 
-            $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
-
             if($('#updated_at').val()){
 
                 $('#updated_at').val('');
+
+                $scope.search.updated_at = '';
+
+            }else{
+
+                $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
 
             }
 
