@@ -105,10 +105,15 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
-                            @can('transaction_deleteitem')
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @endcan
+
+                            @if(Auth::user()->hasRole('admin'))
+
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+
+                            @endif
+
                         </div>
+
                         <div class="pull-right">
 
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}

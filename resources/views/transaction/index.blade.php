@@ -172,13 +172,13 @@
 
                 <div class="row" style="padding: 20px 0px 15px 15px;">
 
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4 col-xs-12">
 
                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
 
                         </div>
 
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-12">
 
                             <div class="col-md-5 col-xs-5">
                                 Total:
@@ -191,9 +191,9 @@
 
                         </div>
 
-                        <div class="col-md-5 col-xs-5">
+                        <div class="col-md-5 col-xs-12">
 
-                            <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries <span ng-if="totalCount">(@{{indexFrom}} - @{{indexTo}})</span></label>
+                            <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
 
                         </div>
 
