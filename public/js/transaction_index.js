@@ -207,7 +207,6 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.dateChange = function(date){
 
-
             if($('#delivery_date').val() == '' || $('#delivery_date').val() == null){
 
                 // $('#delivery_date').datetimepicker({clear: true});
@@ -229,7 +228,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         $scope.dateChange2 = function(date){
 
-            if($('#updated_at').val()){
+            if($('#updated_at').val() == '' || $('#updated_at').val() == null){
 
                 $('#updated_at').val('');
 

@@ -172,7 +172,6 @@
 
                 <div class="row" style="padding: 20px 0px 15px 15px;">
 
-
                         <div class="col-md-4 col-xs-4">
 
                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
@@ -182,7 +181,7 @@
                         <div class="col-md-3 col-xs-3">
 
                             <div class="col-md-5 col-xs-5">
-                                Total Amount :
+                                Total:
                             </div>
 
                             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
@@ -214,87 +213,104 @@
                             </tr>
 
                             <tr style="background-color: #DDFDF8">
+
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                                     INV #
                                     <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                                     ID
                                     <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     ID Name
                                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
                                     Del Postcode
                                     <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                     Status
                                     <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                                     Delivery Date
                                     <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
                                     Delivered By
                                     <span ng-if="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
                                     Total Amount
                                     <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
                                     Total Qty
                                     <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-                                 <th class="col-md-1 text-center">
+
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
                                     <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                                     Last Modified By
                                     <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                                     Last Modified Time
                                     <span ng-if="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
+
                                 <th class="col-md-1 text-center">
                                     Action
                                 </th>
+
                             </tr>
+
                             <tbody>
-                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" total-items="totalCount" ng-controller="repeatController">
+
+                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">
@@ -334,8 +350,8 @@
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
 
-                                    <td class="col-md-1 text-center" ng-if="transaction.gst">@{{ (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2)}}</td>
-                                    <td class="col-md-1 text-center" ng-if="!transaction.gst">@{{ transaction.total }}</td>
+                                    <td class="col-md-1 text-center" ng-if="transaction.person.profile.gst">@{{ (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2)}}</td>
+                                    <td class="col-md-1 text-center" ng-if="!transaction.person.profile.gst">@{{ transaction.total }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">

@@ -71,26 +71,15 @@ class TransactionController extends Controller
 
             $transactions = $this->searchFilter($transactions, $request);
 
-            // query to lookup the total amount
-            $transactions_total = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
-
-            $transactions_total = $this->searchFilter($transactions_total, $request);
-
         }else{
 
             if($request->sortName){
 
                 $transactions = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
 
-                // query to lookup the total amount
-                $transactions_total = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-
             }else{
 
                 $transactions = Transaction::with(['person', 'person.profile'])->latest();
-
-                // query to lookup the total amount
-                $transactions_total = Transaction::with(['person', 'person.profile'])->latest();
 
             }
 
@@ -98,14 +87,11 @@ class TransactionController extends Controller
 
                 $transactions = $transactions->searchDeliveryDate(Carbon::today());
 
-                // query to lookup the total amount
-                $transactions_total = $transactions_total->searchDeliveryDate(Carbon::today());
-
             }
 
         }
 
-        $total_amount = $this->calTransactionTotal($transactions_total);
+        $total_amount = $this->calTransactionTotal($transactions);
 
         $transactions = $transactions->paginate($pageNum);
 
@@ -1371,6 +1357,7 @@ class TransactionController extends Controller
         if($request->sortName){
 
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+
         }
 
         return $transactions;
@@ -1385,38 +1372,33 @@ class TransactionController extends Controller
 
         $gst_amount = 0;
 
-        $nonGst_amount = $query->whereHas('person.profile', function($q){
+        $query1 = clone $query;
 
-                            $q->where('gst', 0);
+        $query2 = clone $query;
+
+        $nonGst_amount = $query1->whereHas('person.profile', function($query1){
+
+                            $query1->where('gst', 0);
 
                         })->sum('total');
 
         $nonGst_amount = round($nonGst_amount, 2);
 
-        // dd($nonGst_amount);
 
-        $gst_amount = $query->whereHas('person.profile', function($q){
+        $gst_amount = $query2->whereHas('person.profile', function($query2){
 
-                        $q->where('gst', 1);
+                        $query2->where('gst', 1);
 
                     })->sum('total');
 
+        // $gst_amount = round($gst_amount, 2);
+
         $gst_amount = round(($gst_amount * 107/100), 2);
 
-        // dd($gst_amount);
-
         $total_amount = $nonGst_amount + $gst_amount;
-/*
-        foreach($arr as $transaction){
-
-            $person_gst = Profile::whereId($transaction->person->profile->id)->first()->gst;
-
-            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
-        }*/
-
-        // $total_amount = $transactions->sum('total');
 
         return $total_amount;
     }
+
 
 }
