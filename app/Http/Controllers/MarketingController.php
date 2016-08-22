@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
-
 use App\Http\Requests;
 use App\Http\Requests\MemberRequest;
 use App\Http\Requests\CustomerRequest;
@@ -749,9 +748,9 @@ class MarketingController extends Controller
         if($company){
 
             $query = $query->whereHas('person', function($query) use ($company){
-
-                $query->where('company', 'LIKE', '%'.$company.'%');
-
+                $query->where('company', 'LIKE', '%'.$company.'%')->orWhere(function ($query) use ($company){
+                        $query->where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$company.'%');
+                });
             });
 
         }
