@@ -1,11 +1,7 @@
 @inject('freezers', 'App\Freezer')
-
 @inject('accessories', 'App\Accessory')
-
 @inject('items', 'App\Item')
-
 @inject('dtdprice', 'App\DtdPrice')
-
 @inject('people', 'App\Person')
 
 @extends('template')
@@ -15,57 +11,48 @@
 @section('content')
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController">
-
-@unless($person->cust_id[0] === 'D')
-
-<div class="panel panel-primary">
-
-    <div class="panel-heading">
-        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
-        -
-        @if($person->active == 'Yes')
-        [Active]
-        @else
-        [Inactive]
-        @endif
+    @unless($person->cust_id[0] === 'D')
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
+                -
+            @if($person->active == 'Yes')
+                [Active]
+            @else
+                [Inactive]
+            @endif
 
             <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
-        </h3>
-    </div>
+            </h3>
+        </div>
 
-    <div class="panel-body">
+        <div class="panel-body">
+            {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
+                    @include('person.form')
 
-        {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
-
-
-                @include('person.form')
-
-
-            <div class="col-md-12">
-                <div class="pull-right">
-                    @cannot('transaction_view')
-                    {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
-                    @endcannot
-        {!! Form::close() !!}
-
-                    <a href="/person" class="btn btn-default">Cancel</a>
-                </div>
-                <div class="pull-left row">
-                    <div class="col-md-5" style="margin-left: 3px">
-                    @cannot('transaction_view')
-                    @if($person->active == 'Yes')
-                        {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
-                    @else
-                        {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
-                    @endif
-                    @endcannot
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        @cannot('transaction_view')
+                        {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
+                        @endcannot
+                        <a href="/person" class="btn btn-default">Cancel</a>
+                    </div>
+                    <div class="pull-left row">
+                        <div class="col-md-5" style="margin-left: 3px">
+                        @cannot('transaction_view')
+                            @if($person->active == 'Yes')
+                                {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
+                            @else
+                                {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
+                            @endif
+                        @endcannot
+                        </div>
                     </div>
                 </div>
-            </div>
+            {!! Form::close() !!}
+        </div>
     </div>
-</div>
-
-@endunless
+    @endunless
 
 {{-- divider --}}
 <div class="panel panel-primary">

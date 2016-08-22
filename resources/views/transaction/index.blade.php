@@ -46,7 +46,6 @@
 
             <div class="panel-body">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
@@ -58,7 +57,6 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
-
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
@@ -68,9 +66,9 @@
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Cust ID',
                                                         'ng-model-options'=>'{ debounce: 500 }'
-                                                    ]) !!}
+                                                    ])
+                        !!}
                     </div>
-
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('company', 'ID Name:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('company', null,
@@ -80,7 +78,8 @@
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'ID Name',
                                                             'ng-model-options'=>'{ debounce: 500 }'
-                                                        ]) !!}
+                                                        ])
+                        !!}
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
@@ -92,7 +91,8 @@
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Status',
                                                             'ng-model-options'=>'{ debounce: 500 }'
-                                                        ]) !!}
+                                                        ])
+                        !!}
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
@@ -104,7 +104,8 @@
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Payment',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
-                                                            ]) !!}
+                                                            ])
+                        !!}
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
@@ -116,7 +117,8 @@
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Last Modified By',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
-                                                            ]) !!}
+                                                            ])
+                        !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('updated_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
@@ -129,7 +131,8 @@
                                                                         'placeholder'=>'Last Modify Date',
                                                                         'ng-keyup'=>'dateChange2(search.updated_at)',
                                                                         'ng-model-options'=>'{ debounce: 500 }'
-                                                                    ]) !!}
+                                                                    ])
+                                !!}
                             </div>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                             <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
