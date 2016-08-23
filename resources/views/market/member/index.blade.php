@@ -174,7 +174,7 @@ Members
                                         </td>
                                     </tr>
                                     <tr ng-show="(members | filter:search).length == 0 || ! members.length">
-                                        <td colspan="9" class="text-center">No Records Found</td>
+                                        <td colspan="12" class="text-center">No Records Found</td>
                                     </tr>
 
                                 </tbody>
