@@ -138,7 +138,11 @@ Members
                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                         <td class="col-md-1 text-center">@{{ member.cust_id }}</td>
                                         <td class="col-md-1 text-center">@{{ member.cust_type }}</td>
-                                        <td class="col-md-2 text-center">@{{ member.name }}</td>
+                                        <td class="col-md-2 text-center">
+                                            <a href="/person/@{{member.id}}/edit">
+                                            @{{ member.name }}
+                                            </a>
+                                        </td>
                                         <td class="col-md-2 text-center">
                                             @{{ member.contact }}
                                             <span ng-show="member.alt_contact.length > 0">
