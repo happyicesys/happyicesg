@@ -329,7 +329,7 @@ class RptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('items', 'deals.item_id', '=', 'items.id')
-                        ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount')
+                        ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.status', 'transactions.delivery_date', 'deals.qty', 'deals.amount')
                         ->where('transactions.delivery_date', '>=', $date1)
                         ->where('transactions.delivery_date', '<=', $date2)
                         ->get();

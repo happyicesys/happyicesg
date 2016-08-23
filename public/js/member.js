@@ -7,11 +7,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         var user_id = $('#user_id').val();
 
         angular.element(document).ready(function () {
-
             $http.get('/person/user/' + user_id). success(function(person){
-
                 $scope.person = person;
-
             });
 
             $http.get('/market/member/data').success(function(members){

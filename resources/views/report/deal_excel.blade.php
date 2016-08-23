@@ -35,6 +35,7 @@
             <td>{{$deal->cust_id}}</td>
             <td>{{$deal->company}}</td>
             <td>{{$deal->id}}</td>
+            <td>{{ $deal->status }}</td>
             <td>{{Carbon\Carbon::parse($deal->delivery_date)->format('d M y')}}</td>
             <td>{{$deal->qty}}</td>
             <td>{{$deal->amount}}</td>

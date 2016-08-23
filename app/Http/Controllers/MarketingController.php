@@ -106,50 +106,32 @@ class MarketingController extends Controller
     public function indexMemberApi()
     {
         $adminbool = false;
-
         $member_adminbool = false;
-
         $memberbool = false;
-
         $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
-
         $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
-
             if($member->cust_type === 'OM'){
-
                 $member_adminbool = true;
-
             }else{
-
                 $member_adminbool = false;
-
                 $memberbool = true;
             }
         }
 
         if(Auth::user()->hasRole('admin')){
-
             $adminbool = true;
-
             $member_adminbool = false;
-
             $memberbool = false;
         }
 
         if($memberbool){
-            // dd($member);
-
             return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get();
-
         }else if($adminbool or $member_adminbool){
-
             return $all_members;
-
         }else{
-
             return '';
         }
     }
@@ -1232,75 +1214,46 @@ class MarketingController extends Controller
     public function destroy($id, Request $request)
     {
         $dtdtransaction = DtdTransaction::findOrFail($id);
-
         if($request->input('form_delete')){
-
             if($dtdtransaction->status === 'Confirmed'){
-
                 $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
-
                 $transaction->cancel_trace = $transaction->status;
-
                 $transaction->status = 'Cancelled';
-
                 $transaction->save();
-
                 $this->dealDeleteMultiple($transaction->id);
             }
-
             $dtdtransaction->cancel_trace = $dtdtransaction->status;
-
             $dtdtransaction->status = 'Cancelled';
-
             $dtdtransaction->save();
-
             return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
-
         }else if($request->input('form_wipe')){
-
             $dtdtransaction->delete();
-
-            $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
-
-            $transaction->delete();
-
+            if($dtdtransaction->transaction_id){
+                $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+                $transaction->delete();
+            }
             return view('market.deal.index');
         }
-
     }
 
     public function reverse($id)
     {
         $dtdtransaction = DtdTransaction::findOrFail($id);
-
         if($dtdtransaction->transaction_id){
-
             $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
-
             $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', '3')->get();
-
             if($transaction->cancel_trace){
-
                 $this->dealUndoDelete($transaction->id);
-
                 $transaction->status = $transaction->cancel_trace;
-
                 $transaction->cancel_trace = '';
-
                 $transaction->updated_by = Auth::user()->name;
             }
-
             $transaction->save();
         }
-
         $dtdtransaction->status = $dtdtransaction->cancel_trace;
-
         $dtdtransaction->cancel_trace = '';
-
         $dtdtransaction->updated_by = Auth::user()->name;
-
         $dtdtransaction->save();
-
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
 
@@ -1308,19 +1261,15 @@ class MarketingController extends Controller
     public function emailDraft()
     {
         $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
-
         return view('market.customer.emaildraft', compact('email_draft'));
     }
 
     // update email draft for customer
-    public function updateEmailDraft(Request $request){
-
+    public function updateEmailDraft(Request $request)
+    {
         $email_draft = GeneralSetting::firstOrFail();
-
         $email_draft->DTDCUST_EMAIL_CONTENT = $request->content;
-
         $email_draft->save();
-
         return view('market.customer.index');
     }
 
@@ -1328,9 +1277,7 @@ class MarketingController extends Controller
     public function notifyManagerIndex($person_id)
     {
         $notifications = NotifyManager::where('person_id', $person_id)->get();
-
         $person = Person::findOrFail($person_id);
-
         return view('market.customer.notify', compact('notifications', 'person'));
     }
 
@@ -1338,31 +1285,21 @@ class MarketingController extends Controller
     public function storeNotification(Request $request, $person_id)
     {
         $person = Person::findOrFail($person_id);
-
         $manager = Person::where('id', $person->parent_id)->first();
-
         $person_send = Auth::user();
 
         if(! $manager->email){
-
             Flash::error('No email detected for this customer\'s manager');
-
             return Redirect::action('MarketingController@notifyManagerIndex', $person->id);
         }
 
         $request->merge(array('person_id', $request->person_id));
-
         $notification = NotifyManager::create($request->all());
-
         $email = $manager->email;
-
         $sender = 'system@happyice.com.sg';
-
         $data = [
-
             'notification' => $notification,
             'person' => $person,
-
         ];
 
         Mail::send('email.notify_manager', $data, function ($message) use ($email, $sender, $person_send, $person)
@@ -1372,9 +1309,7 @@ class MarketingController extends Controller
             $message->setTo($email);
         });
 
-
         Flash::success('Successfully Sent');
-
         return Redirect::action('MarketingController@notifyManagerIndex', $person->id);
     }
 

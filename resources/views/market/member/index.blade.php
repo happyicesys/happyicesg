@@ -101,14 +101,14 @@ Members
                                         <span ng-show="sortType == 'cust_type' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'cust_type' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
-                                    <th class="col-md-2 text-center">
+                                    <th class="col-md-1 text-center">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         ID Name
                                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                    <th class="col-md-2 text-center">
+                                    <th class="col-md-1 text-center">
                                         Contact
                                     </th>
                                     <th class="col-md-1 text-center">
@@ -127,6 +127,20 @@ Members
                                         <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'time_range'; sortReverse = !sortReverse">
+                                        Available On
+                                        <span ng-show="sortType == 'time_range' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'time_range' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'block_coverage'; sortReverse = !sortReverse">
+                                        Blk Coverage
+                                        <span ng-show="sortType == 'block_coverage' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'block_coverage' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
                                      <th class="col-md-1 text-center">
                                         Action
                                     </th>
@@ -138,12 +152,12 @@ Members
                                         <td class="col-md-1 text-center">@{{ number }} </td>
                                         <td class="col-md-1 text-center">@{{ member.cust_id }}</td>
                                         <td class="col-md-1 text-center">@{{ member.cust_type }}</td>
-                                        <td class="col-md-2 text-center">
+                                        <td class="col-md-1 text-center">
                                             <a href="/person/@{{member.id}}/edit">
                                             @{{ member.name }}
                                             </a>
                                         </td>
-                                        <td class="col-md-2 text-center">
+                                        <td class="col-md-1 text-center">
                                             @{{ member.contact }}
                                             <span ng-show="member.alt_contact.length > 0">
                                             / @{{ member.alt_contact }}
@@ -152,6 +166,8 @@ Members
                                         <td class="col-md-1">@{{ member.created_at }}</td>
                                         <td class="col-md-1 text-center">@{{ member.manager ? member.manager.name : '-'}}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
+                                        <td class="col-md-1 text-center">@{{ member.time_range }}</td>
+                                        <td class="col-md-1 text-center">@{{ member.block_coverage}}</td>
                                         <td class="col-md-1 text-center">
                                             {{-- <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a> --}}
                                             <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
@@ -188,25 +204,18 @@ Members
                         <div class="col-md-10 col-md-offset-1 col-xs-12">
 
                             {!! Form::model($self, ['id'=>'edit_profile','action'=>['MarketingController@updateSelf', $self->id]]) !!}
-
                                 <div class="row">
-
                                     @include('market.member.form')
-
                                 </div>
-
                                 <hr size='2'>
-
                                 <div class="form-group">
                                     {!! Form::label('password', 'Password', ['class'=>'control-label']) !!}
                                     {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>'Leave Blank to Use the Same Password']) !!}
                                 </div>
-
                                 <div class="form-group">
                                     {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
                                     {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>'Leave Blank to Use the Same Password']) !!}
                                 </div>
-
                             {!! Form::close() !!}
 
                         </div>
