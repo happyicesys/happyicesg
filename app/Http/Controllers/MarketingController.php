@@ -683,212 +683,202 @@ class MarketingController extends Controller
     // DTD Open Invoice
     public function indexDeal()
     {
-        return view('market.deal.index');
+        $commision_visible = true;
+        $user_role = Person::whereUserId(Auth::user()->id)->first();
+        if($user_role){
+            if($user_role->cust_type === 'AB'){
+                $commision_visible = false;
+            }
+        }
+        return view('market.deal.index', compact('commision_visible'));
     }
 
     public function indexDealApi(Request $request)
     {
-
         Carbon::setWeekStartsAt(Carbon::MONDAY);
-
         Carbon::setWeekEndsAt(Carbon::SUNDAY);
-
         $adminaccess_bool = false;
-
         $transaction_id = $request->transaction_id;
-
         $cust_id = $request->cust_id;
-
         $company = $request->company;
-
         $status = $request->status;
-
         $del_from = $request->del_from;
-
         $del_to = $request->del_to;
-
         $parent_name = $request->parent_name;
+        $type = $request->type;
 
-        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile']);
+        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile', 'dtddeals.item']);
 
         if($transaction_id){
-
             $query = $query->where('transaction_id', 'LIKE', '%'.$transaction_id.'%');
-
         }
 
         if($cust_id){
-
             $query = $query->whereHas('person', function($query) use ($cust_id){
-
                 $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
-
             });
-
         }
 
         if($company){
-
             $query = $query->whereHas('person', function($query) use ($company){
                 $query->where('company', 'LIKE', '%'.$company.'%')->orWhere(function ($query) use ($company){
                         $query->where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$company.'%');
                 });
             });
-
         }
 
         if($status){
-
             $query = $query->where('status', 'LIKE', '%'.$status.'%');
-
         }
 
         if($del_from and $del_to){
-
             $query = $query->where('delivery_date', '>=', $del_from)->where('delivery_date', '<=', $del_to);
-
-
         }else{
-
             $query = $query->where('delivery_date', '>=', Carbon::today()->startOfWeek()->toDateString())
-
                             ->where('delivery_date', '<=', Carbon::today()->endOfWeek()->toDateString());
-
         }
 
         if($parent_name){
-
             $query = $query->whereHas('person.manager', function($query) use ($parent_name){
-
                 $query->where('name', 'LIKE', '%'.$parent_name.'%');
-
             });
-
+        }
+        if($type){
+            $query = $query->where('type', 'LIKE', '%'.$type.'%');
         }
 
         $self = Person::where('user_id', Auth::user()->id)->first();
-
         if($self){
-
             if($self->cust_type === 'OM'){
-
                 $adminaccess_bool = true;
-
             }else{
-
                 $adminaccess_bool = false;
             }
-
         }else{
-
             if(Auth::user()->hasRole('admin')){
-
                 $adminaccess_bool = true;
-
             }else{
-
                 $adminaccess_bool = false;
             }
         }
-
         // auth only admin can see all or else own creation
         if(! $adminaccess_bool){
-
             $personid_arr = array();
-
             $people = Person::where('user_id', Auth::user()->id)->first()->getDescendantsAndSelf();
-
             foreach($people as $person){
-
                 array_push($personid_arr, $person->id);
-
             }
-
             $query = $query->whereHas('person', function($query) use ($personid_arr){
-
                 $query->whereIn('id', $personid_arr);
-
             });
-
         }
-
-        // $query = $query->where('total', '>', '0')->orderBy('id', 'desc')->get();
-
+        $caldeal = $this->calDealTotal($query);
+        $calcomm = $this->calCommTotal($query);
         $query = $query->orderBy('id', 'desc')->get();
-
-        $caltotal = $this->calTransactionTotal($query);
-
-
         $data = [
-
             'transactions' => $query,
-
-            'totalAmount' => $caltotal
+            'totalDeal' => $caldeal,
+            'totalComm' => $calcomm,
         ];
-
         return $data;
     }
 
     public function createDeal()
     {
         $people = Person::where('user_id', Auth::user()->id)->first();
-
         $adminview = Person::where('cust_id', 'LIKE', 'D%');
-
         $people = $people ? $people->descendantsAndSelf() : $adminview;
-
         return view('market.deal.create', compact('people'));
+    }
+
+    public function createCommision()
+    {
+        $people = Person::where('user_id', Auth::user()->id)->first();
+        $adminview = Person::where('cust_id', 'LIKE', 'D%');
+        $people = $people ? $people->descendants() : $adminview;
+        return view('market.deal.create_commision', compact('people'));
     }
 
     public function showDtdTransaction($person_id)
     {
-        return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '>', '0')->latest()->take(5)->get();
+        // return DtdTransaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
+        $dtdtransactions = DtdTransaction::with(['person', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
+            $query->wherehas('item', function($query){
+                $query->whereNotIn('product_id', [301, 302]);
+            });
+        })->latest()->take(5)->get();
+        return $dtdtransactions;
+    }
+
+    public function showDtdCommision($person_id)
+    {
+        // return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '>', '0')->latest()->take(5)->get();
+        $dtdtransactions = DtdTransaction::with(['person', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
+            $query->wherehas('item', function($query){
+                $query->whereIn('product_id', [301, 302]);
+            });
+        })->latest()->take(5)->get();
+        return $dtdtransactions;
     }
 
     public function storeDeal(Request $request)
     {
         $this->validate($request, [
-
             'person_id' => 'required',
-
         ],[
-
             'person_id.required' => 'Please choose an option',
-
         ]);
 
-
         $request->merge(array('updated_by' => Auth::user()->name));
-
         $request->merge(array('created_by' => Auth::user()->name));
-
         $request->merge(array('delivery_date' => Carbon::today()->addDay()));
-
         $request->merge(array('order_date' => Carbon::today()));
-
         $request->merge(array('status' => 'Pending'));
-
+        $request->merge(array('type' => 'Deal'));
         $input = $request->all();
 
         // find out customer or D code self chosen
         $person = Person::find($request->person_id);
-
         $dtdtransaction = DtdTransaction::create($input);
 /*
         if($person->cust_id[0] === 'D'){
-
             $transaction = Transaction::create($input);
-
             $transaction->dtdtransaction_id = $dtdtransaction->id;
-
             $transaction->save();
-
             $dtdtransaction->transaction_id = $transaction->id;
-
             $dtdtransaction->save();
-
         }*/
+        return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
+    }
 
+    public function storeCommision(Request $request)
+    {
+        $this->validate($request, [
+            'person_id' => 'required',
+        ],[
+            'person_id.required' => 'Please choose an option',
+        ]);
+
+        $request->merge(array('updated_by' => Auth::user()->name));
+        $request->merge(array('created_by' => Auth::user()->name));
+        $request->merge(array('delivery_date' => Carbon::today()->addDay()));
+        $request->merge(array('order_date' => Carbon::today()));
+        $request->merge(array('status' => 'Pending'));
+        $request->merge(array('type' => 'Commision'));
+        $input = $request->all();
+
+
+        // find out customer or D code self chosen
+        $person = Person::find($request->person_id);
+        $dtdtransaction = DtdTransaction::create($input);
+/*
+        if($person->cust_id[0] === 'D'){
+            $transaction = Transaction::create($input);
+            $transaction->dtdtransaction_id = $dtdtransaction->id;
+            $transaction->save();
+            $dtdtransaction->transaction_id = $transaction->id;
+            $dtdtransaction->save();
+        }*/
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
 
@@ -908,11 +898,20 @@ class MarketingController extends Controller
         }
 
         // retrieve manually to order product id asc
-        $prices = DB::table('dtdprices')
+/*        $prices = DB::table('dtdprices')
                     ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                     ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                     ->orderBy('product_id')
-                    ->get();
+                    ->get();*/
+
+        $prices = DtdPrice::whereHas('item', function($query) use ($transaction){
+            if($transaction->type === 'Deal'){
+                $query->whereNotIn('product_id', [301, 302]);
+            }else if($transaction->type === 'Commision'){
+                $query->whereIn('product_id', [301, 302]);
+            }
+            $query->orderBy('product_id');
+        })->get();
 
         // edit form disable fields logic
         $noneditable = $this->checkFormEditable($transaction);
@@ -943,128 +942,73 @@ class MarketingController extends Controller
 
         // date validation check
         $this->validate($request, [
-
             'order_date' => 'required|date|after:yesterday',
-
             'delivery_date' => 'required|date|after:yesterday',
-
         ],[
-
             'order_date.required' => 'Please fill in the Order Date',
-
             'order_date.after' => 'Order Date must at least today',
-
             'delivery_date.required' => 'Please fill in the Delivery Date',
-
             'delivery_date.after' => 'Delivery Date must at least today',
-
         ]);
 
         if($request->confirm){
-
             $request->merge(array('status' => 'Confirmed'));
-
         }else if($request->del_paid){
-
             if(! $request->paid_by){
-
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
-
             $request->merge(array('paid_at' => Carbon::now()));
-
             if(! $request->driver){
-
                 $request->merge(array('driver'=>Auth::user()->name));
             }
-
         }else if($request->del_owe){
-
             $request->merge(array('status' => 'Delivered'));
-
             $request->merge(array('pay_status' => 'Owe'));
-
             if(! $request->driver){
-
                 $request->merge(array('driver'=>Auth::user()->name));
             }
-
             $request->merge(array('paid_by'=>null));
-
         }else if($request->paid){
-
             $request->merge(array('pay_status' => 'Paid'));
-
             if(! $request->paid_by){
-
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
-
             $request->merge(array('paid_at' => Carbon::now()));
-
         }elseif($request->unpaid){
-
             $request->merge(array('pay_status' => 'Owe'));
-
             $request->merge(array('paid_by' => null));
-
             $request->merge(array('paid_at' => null));
-
         }elseif($request->update){
-
             if($dtdtransaction->status === 'Confirmed'){
-
                 $request->merge(array('driver' => null));
-
                 $request->merge(array('paid_by' => null));
-
             }else if(($dtdtransaction->status === 'Delivered' or $dtdtransaction->status === 'Verified Owe') and $dtdtransaction->pay_status === 'Owe'){
-
                 $request->merge(array('paid_by' => null));
-
             }
-
         }elseif($request->save_draft){
-
             $request->merge(array('status' => 'Draft'));
         }
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
-
         $request->merge(array('updated_by' => Auth::user()->name));
-
         $dtdtransaction->update($request->all());
-
         $this->syncDtdDeal($request, $dtdtrans_id);
-
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
-
         if($request->submit_deal){
-
             if(count($dtddeals) == 0){
-
                 Flash::error('Please entry the list');
-
                 return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
-
             }
-
             $request->merge(array('status' => 'Confirmed'));
-
             if($dtdtransaction->person->cust_id[0] === 'D'){
-
                 $request->merge(array('updated_by' => Auth::user()->name));
-
                 $dtdtransaction->update($request->all());
-
                 $this->syncTransaction($dtdtransaction->id, $request);
             }
         }
 
         if($dtdtransaction->person->cust_id[0] === 'D' and $dtdtransaction->status === 'Confirmed'){
-
             $this->syncTransaction($dtdtransaction->id, $request);
-
         }
 
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
@@ -1333,24 +1277,6 @@ class MarketingController extends Controller
         return view('market.deal.log', compact('transaction', 'transHistory'));
     }
 
-    // return commision creation page
-    public function createCommision()
-    {
-        $people = Person::where('user_id', Auth::user()->id)->first();
-
-        $adminview = Person::where('cust_id', 'LIKE', 'D%');
-
-        $people = $people ? $people->descendants() : $adminview;
-
-        return view('market.commision.create', compact('people'));
-    }
-
-    // return commision latest 5 commision for the person selected api
-    public function showDtdLatestCommision($person_id)
-    {
-        return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '<', '0')->latest()->take(5)->get();
-    }
-
     // method for deleting deals upon transaction deletion
     private function dealDeleteMultiple($transaction_id)
     {
@@ -1512,21 +1438,58 @@ class MarketingController extends Controller
         }
     }
 
-    // calculating gst and non for delivered total
-    private function calTransactionTotal($arr)
+    // calculating gst and non for deal total
+    private function calDealTotal($query)
     {
+        $query_deal = clone $query;
+        $query_deal = $query_deal->whereHas('dtddeals.item', function($q){
+            $q->whereNotIn('product_id', [301, 302]);
+        });
         $total_amount = 0;
+        $nonGst_amount = 0;
+        $gst_amount = 0;
+        $query1 = clone $query_deal;
+        $query2 = clone $query_deal;
 
-        foreach($arr as $transaction){
+        $nonGst_amount = $query1->whereHas('person.profile', function($query1){
+                            $query1->where('gst', 0);
+                        })->sum('total');
+        $nonGst_amount = round($nonGst_amount, 2);
 
-            if($transaction->status !== 'Cancelled'){
+        $gst_amount = $query2->whereHas('person.profile', function($query2){
+                        $query2->where('gst', 1);
+                    })->sum('total');
+        $gst_amount = round(($gst_amount * 107/100), 2);
 
-                $total_amount += $transaction->gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
-
-            }
-        }
-
+        $total_amount = $nonGst_amount + $gst_amount;
         return $total_amount;
+    }
+
+    // calculating gst and non for comm total
+    private function calCommTotal($query)
+    {
+        $query_comm = clone $query;
+        $query_comm = $query_comm->whereHas('dtddeals.item', function($q){
+            $q->whereIn('product_id', [301, 302]);
+        });
+        $total_amount = 0;
+        $nonGst_amount = 0;
+        $gst_amount = 0;
+        $query3 = clone $query_comm;
+        $query4 = clone $query_comm;
+
+        $nonGst_amount = $query3->whereHas('person.profile', function($query3){
+                            $query3->where('gst', 0);
+                        })->sum('total');
+        $nonGst_amount = round($nonGst_amount, 2);
+
+        $gst_amount = $query4->whereHas('person.profile', function($query4){
+                        $query4->where('gst', 1);
+                    })->sum('total');
+        $gst_amount = round(($gst_amount * 107/100), 2);
+
+        $total_amount = $nonGst_amount + $gst_amount;
+        return abs($total_amount);
     }
 
     // calculating qty total

@@ -40,14 +40,17 @@ Route::delete('/market/member/{member_id}', 'MarketingController@destroyMember')
 
 Route::get('/market/commision/create', 'MarketingController@createCommision');
 
+Route::post('market/deal/commision', 'MarketingController@storeCommision');
 Route::post('/market/log/deal/{dtdtransaction_id}', 'MarketingController@generateLogs');
 Route::post('/market/deal/index', 'MarketingController@indexDealApi');
 Route::post('/market/deal/{dtdtransaction_id}', 'MarketingController@update');
 Route::get('/market/dealData/{dtdtransaction_id}', 'MarketingController@getDealData');
 Route::get('/market/deal/{dtdtransaction_id}/edit', 'MarketingController@editDeal');
 Route::get('/market/deal/latest/{person_id}', 'MarketingController@showDtdTransaction');
+Route::get('/market/deal/commision/latest/{person_id}', 'MarketingController@showDtdCommision');
 Route::post('market/deal', 'MarketingController@storeDeal');
 Route::get('/market/deal/create', 'MarketingController@createDeal');
+Route::get('/market/deal/create/commision', 'MarketingController@createCommision');
 Route::get('/market/deal/{dtdtransaction_id}', 'MarketingController@showDeal');
 Route::get('/market/deal', 'MarketingController@indexDeal');
 Route::get('/market/deal/download/{trans_id}', 'MarketingController@generateInvoice');

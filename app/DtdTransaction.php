@@ -21,7 +21,7 @@ class DtdTransaction extends Model
     }
 
     protected $dontKeepRevisionOf = array(
-        'person_id', 'name', 'cancel_trace'
+        'person_id', 'name', 'cancel_trace', 'type'
     );
 
     protected $revisionEnabled = true;
@@ -71,7 +71,7 @@ class DtdTransaction extends Model
         'po_no', 'cancel_trace','user_id',
         'pay_method', 'note', 'paid_at',
         'updated_by', 'paid_by', 'transaction_id',
-        'contact', 'del_postcode'
+        'contact', 'del_postcode', 'type'
     ];
 
     protected $dates =[
@@ -121,7 +121,7 @@ class DtdTransaction extends Model
 
     public function dtddeals()
     {
-        return $this->hasMany('App\DtdDeal');
+        return $this->hasMany('App\DtdDeal', 'transaction_id');
     }
 
     public function getCreatedAtAttribute($date)

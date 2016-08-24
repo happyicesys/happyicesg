@@ -50,61 +50,38 @@ class TransactionController extends Controller
     {
         // showing total amount init
         $total_amount = 0;
-
         $input = $request->all();
 
         // initiate the page num when null given
         if($request->pageNum){
-
             $pageNum = $request->pageNum;
-
         }else{
-
             $pageNum = 70;
-
         }
 
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
-
             $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
-
             $transactions = $this->searchFilter($transactions, $request);
-
         }else{
-
             if($request->sortName){
-
                 $transactions = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-
             }else{
-
                 $transactions = Transaction::with(['person', 'person.profile'])->latest();
-
             }
-
             if($request->init == 'true'){
-
                 $transactions = $transactions->searchDeliveryDate(Carbon::today());
-
             }
-
         }
 
         $total_amount = $this->calTransactionTotal($transactions);
-
         $transactions = $transactions->paginate($pageNum);
-
         $data = [
-
             'total_amount' => $total_amount,
-
             'transactions' => $transactions,
-
         ];
 
         return $data;
-
     }
 
     /**
@@ -233,157 +210,102 @@ class TransactionController extends Controller
 
         // dynamic form arrays
         $quantities = $request->qty;
-
         $amounts = $request->amount;
-
         $quotes = $request->quote;
-
         $transaction = Transaction::findOrFail($id);
-
         // find out deals created
         $deals = Deal::where('transaction_id', $transaction->id)->get();
 
         if($request->input('save')){
-
             $request->merge(array('status' => 'Pending'));
-
-        }elseif($request->input('del_paid')){
-
+        }else if($request->input('del_paid')){
             $request->merge(array('status' => 'Delivered'));
-
             $request->merge(array('pay_status' => 'Paid'));
 
             if(! $request->paid_by){
-
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
-
             $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
             if(! $request->driver){
-
                 $request->merge(array('driver'=>Auth::user()->name));
             }
 
             if(count($deals) == 0){
-
                 Flash::error('Please entry the list');
-
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
-
         }elseif($request->input('del_owe')){
-
             $request->merge(array('status' => 'Delivered'));
-
             $request->merge(array('pay_status' => 'Owe'));
 
             if(! $request->driver){
-
                 $request->merge(array('driver'=>Auth::user()->name));
             }
-
             $request->merge(array('paid_by'=>null));
 
             if(count($deals) == 0){
-
                 Flash::error('Please entry the list');
-
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
-
         }elseif($request->input('paid')){
-
             $request->merge(array('pay_status' => 'Paid'));
 
             if(! $request->paid_by){
-
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
-
             $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
             if(count($deals) == 0){
-
                 Flash::error('Please entry the list');
-
                 return Redirect::action('TransactionController@edit', $transaction->id);
-
             }
 
         }elseif($request->input('confirm')){
-
             // confirmation must with the entries start
             if(array_filter($quantities) != null and array_filter($amounts) != null) {
-
                 $request->merge(array('status' => 'Confirmed'));
-
             }else{
-
                 Flash::error('The list cannot be empty upon confirmation');
-
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
             // confirmation must with the entries end
 
         }elseif($request->input('unpaid')){
-
             $request->merge(array('pay_status' => 'Owe'));
-
             $request->merge(array('paid_by' => null));
-
             $request->merge(array('paid_at' => null));
-
         }elseif($request->input('update')){
 
             if($transaction->status === 'Confirmed'){
-
                 $request->merge(array('driver' => null));
-
                 $request->merge(array('paid_by' => null));
-
                 $request->merge(array('paid_at' => null));
-
             }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
-
                 $request->merge(array('paid_by' => null));
-
                 $request->merge(array('paid_at' => null));
-
             }
         }
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
-
         $request->merge(array('updated_by' => Auth::user()->name));
-
         $transaction->update($request->all());
 
         //Qty insert to on order upon confirmed(1) transaction status
         if($transaction->status === 'Confirmed'){
-
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
-
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
-
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
-
         }
 
         if($transaction->person->cust_id[0] === 'D'){
-
             $this->syncOrder($transaction->id);
-
             // sync transaction status once not belongs to those status
             if($transaction->status !== 'Pending' or $transaction->status !== 'Verify Owe' or $transaction->status !== 'Verify Paid'){
-
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
                 // sync to be replace <-> original
                 $this->transactionXChange($dtdtransaction, $transaction);
-
             }
-
         }
 /*
         // update dtdtransaction status to delivered
@@ -414,21 +336,14 @@ class TransactionController extends Controller
         if($request->input('form_delete')){
 
             $transaction = Transaction::findOrFail($id);
-
             $transaction->cancel_trace = $transaction->status;
-
             $transaction->status = 'Cancelled';
-
             $transaction->save();
 
             if($transaction->dtdtransaction_id){
-
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
                 $dtdtransaction->cancel_trace = $dtdtransaction->status;
-
                 $dtdtransaction->status = 'Cancelled';
-
                 $dtdtransaction->save();
             }
 
@@ -437,17 +352,11 @@ class TransactionController extends Controller
             return Redirect::action('TransactionController@edit', $transaction->id);
 
         }else if($request->input('form_wipe')){
-
             $transaction = Transaction::findOrFail($id);
-
             if($transaction->dtdtransaction_id){
-
                 $dtdtransaction = DtdTransaction::find($transaction->dtdtransaction_id);
-
                 $dtdtransaction->delete();
-
             }
-
             $transaction->delete();
 
             return redirect('transaction');
@@ -1176,57 +1085,37 @@ class TransactionController extends Controller
 
         // find and sync deals
         $deals = Deal::where('transaction_id', $transaction_id)->get();
-
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
 
         if(count($deals) != count($dtddeals)){
-
             $deal_arr = array();
-
             $dtddeal_arr = array();
 
             $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
-
             foreach($dtddeals as $dtddeal){
-
                 array_push($dtddeal_arr, $dtddeal->deal_id);
             }
 
             $dealresults = Deal::where('transaction_id', $dtdtransaction->transaction_id)->whereNotIn('id', $dtddeal_arr)->get();
-
             foreach($dealresults as $dealresult){
-
                 $dtddeal = new DtdDeal();
-
                 $dtddeal->item_id = $dealresult->item_id;
-
                 $dtddeal->transaction_id = $dtdtransaction->id;
-
                 $dtddeal->qty = $dealresult->qty;
-
                 $dtddeal->amount = $dealresult->amount;
-
                 $dtddeal->unit_price = $dealresult->unit_price;
-
                 $dtddeal->qty_status = $dealresult->qty_status;
-
                 $dtddeal->deal_id = $dealresult->id;
-
                 $dtddeal->save();
-
             }
 
             $deals = Deal::where('transaction_id', $transaction_id)->get();
-
             foreach($deals as $deal){
-
                 array_push($deal_arr, $deal->id);
             }
 
             $dtdresults = DtdDeal::where('transaction_id', $dtdtransaction->id)->whereNotIn('deal_id', $deal_arr)->get();
-
             foreach($dtdresults as $dtdresult){
-
                 $dtdresult->delete();
             }
         }
@@ -1235,11 +1124,8 @@ class TransactionController extends Controller
     private function dtdDelUpdate($transaction)
     {
         $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
-
         if($dtdtransaction){
-
             $dtdtransaction->status = 'Delivered';
-
             $dtdtransaction->save();
         }
     }
@@ -1367,31 +1253,20 @@ class TransactionController extends Controller
     private function calTransactionTotal($query)
     {
         $total_amount = 0;
-
         $nonGst_amount = 0;
-
         $gst_amount = 0;
-
         $query1 = clone $query;
-
         $query2 = clone $query;
 
         $nonGst_amount = $query1->whereHas('person.profile', function($query1){
-
                             $query1->where('gst', 0);
-
                         })->sum('total');
 
         $nonGst_amount = round($nonGst_amount, 2);
 
-
         $gst_amount = $query2->whereHas('person.profile', function($query2){
-
                         $query2->where('gst', 1);
-
                     })->sum('total');
-
-        // $gst_amount = round($gst_amount, 2);
 
         $gst_amount = round(($gst_amount * 107/100), 2);
 

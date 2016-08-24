@@ -39,34 +39,34 @@
                     @foreach($prices as $price)
                     <tr class="txtMult form-group">
                         <td class="col-md-7">
-                            {{$price->product_id}} - {{$price->name}} - {{$price->remark}}
+                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
                         </td>
                         <td class="col-md-1 text-right">
                             {{-- original with delviery date less than 24 hours disable form --}}
                             {{-- @if($transaction->status === 'Pending' or ($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type !== 'AB' : true and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() > \Carbon\Carbon::parse($transaction->delivery_date)->subDay()) or $transaction->status === 'Draft' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H') --}}
                             @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H')
-                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
                             @else
-                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
                             @endif
                         </td>
                         <td class="col-md-2">
                             @if($transaction->person->cust_id[0] === 'D')
                                 <strong>
-                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    <input type="text" name="quote[{{$price->item->id}}]"
                                     value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->quote_price : $price->quote_price}}"
                                     class="text-right form-control quoteClass" readonly="readonly"/>
                                 </strong>
                             @else
                                 <strong>
-                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    <input type="text" name="quote[{{$price->item->id}}]"
                                     value="{{($person->cost_rate != 0 && $person->cost_rate) ? $person->cost_rate/ 100 * $price->retail_price : $price->retail_price}}"
                                     class="text-right form-control quoteClass" readonly="readonly"/>
                                 </strong>
                             @endif
                         </td>
                         <td class="col-md-2">
-                            <input type="text" name="amount[{{$price->item_id}}]"
+                            <input type="text" name="amount[{{$price->item->id}}]"
                             class="text-right form-control amountClass" readonly="readonly" />
                         </td>
                     </tr>
