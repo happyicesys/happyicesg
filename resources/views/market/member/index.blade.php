@@ -108,6 +108,20 @@ Members
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
+                                    <th class="col-md-3 col-sm-4 col-xs-4 text-center">
+                                        <a href="#" ng-click="sortType = 'time_range'; sortReverse = !sortReverse">
+                                        Available On
+                                        <span ng-show="sortType == 'time_range' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'time_range' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="text-center">
+                                        <a href="#" ng-click="sortType = 'block_coverage'; sortReverse = !sortReverse">
+                                        Blk Coverage
+                                        <span ng-show="sortType == 'block_coverage' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'block_coverage' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
                                     <th class="col-md-1 text-center">
                                         Contact
                                     </th>
@@ -127,20 +141,6 @@ Members
                                         <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'time_range'; sortReverse = !sortReverse">
-                                        Available On
-                                        <span ng-show="sortType == 'time_range' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'time_range' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'block_coverage'; sortReverse = !sortReverse">
-                                        Blk Coverage
-                                        <span ng-show="sortType == 'block_coverage' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'block_coverage' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
                                      <th class="col-md-1 text-center">
                                         Action
                                     </th>
@@ -157,6 +157,8 @@ Members
                                             @{{ member.name }}
                                             </a>
                                         </td>
+                                        <td class="col-md-3 col-sm-4 col-xs-4 text-center">@{{ member.time_range }}</td>
+                                        <td class="text-center">@{{ member.block_coverage}}</td>
                                         <td class="col-md-1 text-center">
                                             @{{ member.contact }}
                                             <span ng-show="member.alt_contact.length > 0">
@@ -166,8 +168,6 @@ Members
                                         <td class="col-md-1">@{{ member.created_at }}</td>
                                         <td class="col-md-1 text-center">@{{ member.manager ? member.manager.name : '-'}}</td>
                                         <td class="col-md-1 text-center">@{{ member.active }}</td>
-                                        <td class="col-md-1 text-center">@{{ member.time_range }}</td>
-                                        <td class="col-md-1 text-center">@{{ member.block_coverage}}</td>
                                         <td class="col-md-1 text-center">
                                             {{-- <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a> --}}
                                             <a href="/market/member/@{{ member.id }}/edit" class="btn btn-sm btn-primary">Edit</a>

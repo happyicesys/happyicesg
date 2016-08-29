@@ -163,14 +163,14 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="pull-left">
-                            @can('transaction_deleteitem')
+                            {{-- @can('transaction_deleteitem') --}}
                             @cannot('transaction_view')
                             @cannot('supervisor_view')
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                                 {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                             @endcannot
                             @endcannot
-                            @endcan
+                            {{-- @endcan --}}
                         </div>
                         <div class="pull-right">
                                 {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}

@@ -67,7 +67,7 @@ class TransactionController extends Controller
             if($request->sortName){
                 $transactions = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }else{
-                $transactions = Transaction::with(['person', 'person.profile'])->latest();
+                $transactions = Transaction::with(['person', 'person.profile']);
             }
             if($request->init == 'true'){
                 $transactions = $transactions->searchDeliveryDate(Carbon::today());
@@ -75,7 +75,7 @@ class TransactionController extends Controller
         }
 
         $total_amount = $this->calTransactionTotal($transactions);
-        $transactions = $transactions->paginate($pageNum);
+        $transactions = $transactions->latest()->paginate($pageNum);
         $data = [
             'total_amount' => $total_amount,
             'transactions' => $transactions,

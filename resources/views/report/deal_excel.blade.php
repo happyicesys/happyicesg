@@ -23,6 +23,7 @@
     <th>ID Code</th>
     <th>ID Name</th>
     <th>Inv #</th>
+    <th>Status</th>
     <th>Delivery Date</th>
     <th>Quantity</th>
     <th>Amount</th>
