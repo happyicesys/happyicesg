@@ -864,7 +864,7 @@ class MarketingController extends Controller
         $request->merge(array('delivery_date' => Carbon::today()->addDay()));
         $request->merge(array('order_date' => Carbon::today()));
         $request->merge(array('status' => 'Pending'));
-        $request->merge(array('type' => 'Commision'));
+        $request->merge(array('type' => 'Commission'));
         $input = $request->all();
 
 
@@ -907,7 +907,7 @@ class MarketingController extends Controller
         $prices = DtdPrice::whereHas('item', function($query) use ($transaction){
             if($transaction->type === 'Deal'){
                 $query->whereNotIn('product_id', [301, 302]);
-            }else if($transaction->type === 'Commision'){
+            }else if($transaction->type === 'Commission'){
                 $query->whereIn('product_id', [301, 302]);
             }
             $query->orderBy('product_id');
