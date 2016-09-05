@@ -255,29 +255,29 @@
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('transaction_id', 'Invoice:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'placeholder'=>'Inv Num']) !!}
+                                            {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Inv Num']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('cust_id', 'ID:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'placeholder'=>'Cust ID']) !!}
+                                            {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Cust ID']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'placeholder'=>'Company']) !!}
+                                            {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'placeholder'=>'Status']) !!}
+                                            {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Status']) !!}
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
-                                            {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'placeholder'=>'Payment']) !!}
+                                            {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Payment']) !!}
                                         </div>
                                         {{-- driver can only view himself --}}
                                         @unless(Auth::user()->hasRole('driver'))
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
                                                 {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'placeholder'=>'Pay Received By']) !!}
+                                                {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
                                             </div>
                                         @else
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
@@ -289,7 +289,8 @@
                                         {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                             {!! Form::label('paid_at', 'Date:', ['class'=>'control-label search-title']) !!}
-                                            <div class="dropdown">
+{{--
+                                                <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
                                                         {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Date', 'ng-keyup'=>'detectDate(paid_at)']) !!}
@@ -298,11 +299,22 @@
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                                 <datetimepicker data-ng-model="paid_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(paid_at)"/>
                                                 </ul>
-                                            </div>
+                                            </div> --}}
+                                            <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
+                                                <input
+                                                    type = "text"
+                                                    name = "paid_at"
+                                                    class = "form-control input-sm"
+                                                    placeholder = "Date"
+                                                    ng-model = "paid_at"
+                                                    ng-change = "dateChange2(paid_at)"
+                                                />
+                                            </datepicker>
                                         </div>
                                         <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
                                             {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
-                                            <div class="dropdown">
+{{--
+                                                <div class="dropdown">
                                                 <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
                                                     <div class="input-group">
                                                         {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'delivery_date', 'ng-init'=>"delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
@@ -311,13 +323,23 @@
                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                                 <datetimepicker data-ng-model="delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" />
                                                 </ul>
-                                            </div>
+                                            </div> --}}
+                                            <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
+                                                <input
+                                                    type = "text"
+                                                    name = "delivery_date"
+                                                    class = "form-control input-sm"
+                                                    placeholder = "Delivery Date"
+                                                    ng-model = "delivery_date"
+                                                    ng-change = "dateChange(delivery_date)"
+                                                />
+                                            </datepicker>
                                         </div>
                                         {{-- driver can only view himself --}}
                                         @unless(Auth::user()->hasRole('driver'))
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                                 {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
-                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'placeholder'=>'User']) !!}
+                                                {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'User']) !!}
                                             </div>
                                         @else
                                             <div class="form-group col-md-2 col-sm-4 col-xs-6">

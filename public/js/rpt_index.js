@@ -1,17 +1,28 @@
 // rpt_index.js
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
+var app = angular.module('app', [
+                                    // 'ui.bootstrap',
+                                    'angularUtils.directives.dirPagination',
+                                    'ui.select',
+                                    'ngSanitize',
+                                    'ui.bootstrap.datetimepicker',
+                                    '720kb.datepicker'
+                                ]);
 
     function rptController($scope, $http){
         $scope.currentPage = 1;
         $scope.indexData = {
-
             delivery_date: moment().format("YYYY-MM-DD"),
-
             paid_at: moment().format("YYYY-MM-DD"),
-
         };
         $scope.transaction = {
             payMethodModel: 'cash',
+        }
+        $scope.search = {
+            id: '',
+            cust_id: '',
+            company: '',
+            status: '',
+            pay_status: '',
         }
 
         $scope.exportData = function () {
@@ -22,29 +33,19 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             saveAs(blob, "DailyRpt"+ now + ".xls");
         };
 
-        var now = moment();
-        $scope.today = now.format("YYYY-MM-DD");
+        $scope.today = moment().format("YYYY-MM-DD");
 
         angular.element(document).ready(function () {
-
             $http.get('/user/data/' + $('#user_id').val()).success(function(person){
-
                 var driver = false;
-
                 for(var i = 0; i < person.roles.length; i++){
-
                     if(person.roles[i].name === 'driver'){
-
                         driver = true;
-
                         break;
                     }
                 }
-
                 $scope.getdriver = function(){
-
                     return driver;
-
                 }
             });
 
@@ -52,149 +53,101 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             getIndex();
 
             function getIndex(){
-
                 $http.post('/report/dailyrpt', $scope.indexData).success(function(transactions){
-
                     $scope.transactions = transactions;
-
                     $scope.All = transactions.length;
-
-                    console.log(transactions);
-
                 });
 
                 $http.post('/report/dailyrec', $scope.indexData).success(function(rptdata){
-
                     $scope.rptdata = rptdata;
-
                 });
-
             }
 
-            function syncData(){
-
+            $scope.syncData = function(){
                 $scope.indexData = {
-
                     delivery_date: $scope.delivery_date,
-
                     paid_at: $scope.paid_at,
-
                     paid_by: $scope.paid_by,
-
                     driver: $scope.driver,
-
                     role: $scope.role,
-
+                    transaction_id: $scope.search.id,
+                    cust_id: $scope.search.cust_id,
+                    company: $scope.search.company,
+                    status: $scope.search.status,
+                    pay_status: $scope.search.pay_status,
                 }
             }
 /*
             function syncDataAll(){
-
                 $scope.indexData = {
-
                     delivery_date: $scope.delivery_date,
-
                     paid_at: $scope.paid_at,
-
                     paid_by: $scope.paid_by,
-
                     driver: $scope.driver,
-
                     transaction_id: $scope.search.id,
-
                     cust_id: $scope.search.cust_id,
-
                     company: $scope.search.company,
-
                     status: $scope.search.status,
-
                     pay_status: $scope.search.pay_status,
-
                 }
             }*/
 /*
             $scope.exportPDF = function(){
-
                 // syncDataAll();
-
                 $http.post('/report/dailypdf', $scope.indexData).success(function(){
-
                     $scope.indexData['transaction_id'] = '';
-
                     $scope.indexData['cust_id'] = '';
-
                     $scope.indexData['company'] = '';
-
                     $scope.indexData['status'] = '';
-
                     $scope.indexData['pay_status'] = '';
-
                 });
             }*/
 
             $scope.dateChange = function(date){
-
-                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
-
-                $scope.paid_at = moment(date).format("YYYY-MM-DD");
-
-                syncData();
-
+                if(date){
+                    $scope.delivery_date = moment(date).format("YYYY-MM-DD");
+                    $scope.paid_at = moment(date).format("YYYY-MM-DD");
+                }else{
+                    $scope.delivery_date = '';
+                    $scope.paid_at = '';
+                }
+                $scope.syncData();
                 getIndex();
             }
 
             $scope.dateChange2 = function(date){
-
-                $scope.paid_at = moment(date).format("YYYY-MM-DD");
-
-                $scope.delivery_date = moment(date).format("YYYY-MM-DD");
-
-                syncData();
-
+                if(date){
+                    $scope.paid_at = moment(date).format("YYYY-MM-DD");
+                    $scope.delivery_date = moment(date).format("YYYY-MM-DD");
+                }else{
+                    $scope.delivery_date = '';
+                    $scope.paid_at = '';
+                }
+                $scope.syncData();
                 getIndex();
             }
 
-            $scope.detectDate = function(date){
-
-                if(date == ""){
-
-                    $scope.paid_at = '';
-
-                    $scope.delivery_date = '';
-
-                    syncData();
-
-                    getIndex();
-
-                }
+            $scope.dbSearch = function(){
+                $scope.syncData();
+                getIndex();
             }
 
-
             $scope.paidByChange = function(paid_by){
-
                 $scope.driver = paid_by;
-
-                syncData();
-
+                $scope.syncData();
                 getIndex();
             }
 
 
             $scope.driverChange = function(driver){
-
                 $scope.paid_by = driver;
-
-                syncData();
-
+                $scope.syncData();
                 getIndex();
             }
 
             $scope.onRoleChanged = function(role){
-
                 $scope.role = role;
-
-                syncData();
-
+                $scope.syncData();
                 getIndex();
             }
         });
@@ -210,7 +163,6 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                         note: noteModel,
                     },
                 }).success(function(response){
-
                     $http.get('/transaction/status/'+ transaction_id).success(function(){
                         location.reload();
                     });

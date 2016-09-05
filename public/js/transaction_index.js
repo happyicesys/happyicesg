@@ -1,80 +1,55 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize', 'ui.bootstrap.datetimepicker']);
+var app = angular.module('app', [
+                                    // 'ui.bootstrap',
+                                    'angularUtils.directives.dirPagination',
+                                    'ui.select',
+                                    'ngSanitize',
+                                    // 'ui.bootstrap.datetimepicker',
+                                    '720kb.datepicker'
+                                ]);
 
     function transController($scope, $http){
 
         // init the variables
         $scope.alldata = [];
-
         $scope.datasetTemp = {};
-
         $scope.totalCountTemp = {};
-
         $scope.totalCount = 0;
-
         $scope.totalPages = 0;
-
         $scope.currentPage = 1;
-
         $scope.itemsPerPage = 70;
-
         $scope.indexFrom = 0;
-
         $scope.indexTo = 0;
-
         $scope.sortBy = true;
-
         $scope.sortName = '';
-
         $scope.headerTemp = '';
-
         $scope.today = moment().format("YYYY-MM-DD");
-
         $scope.delivery_date = '';
-
         $scope.updated_at = '';
-
         // init page load
         getPage(1, true);
 
         $scope.exportData = function () {
-
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
-
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
-
             });
-
             var now = Date.now();
-
             saveAs(blob, "TransactionRpt"+ now + ".xls");
-
         };
 
         // switching page
         $scope.pageChanged = function(newPage){
-
             getPage(newPage, false);
-
         };
 
         $scope.pageNumChanged = function(){
-
             if($.isEmptyObject($scope.datasetTemp)){
-
                 $scope.datasetTemp = {
-
                     pageNum: $scope.itemsPerPage
-
                 }
-
             }else{
-
                 $scope.datasetTemp['pageNum'] = $scope.itemsPerPage;
-
             }
-
             getPage(1, false);
-
         };
 
         $scope.sortedOrder = function(header){
@@ -124,7 +99,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
                 driver: $scope.search.driver,
 
-                profile: $scope.search.name,
+                profile: $scope.search.profile_id,
 
             };
 
@@ -173,75 +148,45 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
         // retrieve page w/wo search
         function getPage(pageNumber, first){
-
+            $scope.spinner = true;
             $http.post('transaction/data?page=' + pageNumber + '&init=' + first, $scope.datasetTemp).success(function(data){
 
-                // populate data to ngrepeat
-                $scope.alldata = data.transactions.data;
-
-                // count for pagination
-                $scope.totalCount = data.transactions.total;
-
-                // get current page
-                $scope.currentPage = data.transactions.current_page;
-
-                // get index from
-                $scope.indexFrom = data.transactions.from;
-
-                // get index from
-                $scope.indexTo = data.transactions.to;
-
+                if(data.transactions.data){
+                    $scope.alldata = data.transactions.data;
+                    $scope.totalCount = data.transactions.total;
+                    $scope.currentPage = data.transactions.current_page;
+                    $scope.indexFrom = data.transactions.from;
+                    $scope.indexTo = data.transactions.to;
+                }else{
+                    $scope.alldata = data.transactions;
+                    $scope.totalCount = data.transactions.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.transactions.length;
+                }
                 // get total count
                 $scope.All = data.transactions.length;
 
                 // return total amount
                 $scope.total_amount = data.total_amount;
-
+                $scope.spinner = false;
             }).error(function(data){
 
-                console.log(data);
-
             });
-
         }
 
         $scope.dateChange = function(date){
-
-            if($('#delivery_date').val() == '' || $('#delivery_date').val() == null){
-
-                // $('#delivery_date').datetimepicker({clear: true});
-                $('#delivery_date').val('');
-
-                $scope.search.delivery_date = '';
-
-                // console.log($scope.search.delivery_date);
-
-            }else{
-
-                $scope.search.delivery_date = moment(date).format("YYYY-MM-DD");
-
+            if(date){
+                $scope.search.delivery_date = moment(new Date(date)).format('YYYY-MM-DD');
             }
-
             $scope.searchDB();
-
         }
 
         $scope.dateChange2 = function(date){
-
-            if($('#updated_at').val() == '' || $('#updated_at').val() == null){
-
-                $('#updated_at').val('');
-
-                $scope.search.updated_at = '';
-
-            }else{
-
-                $scope.search.updated_at = moment(date).format("YYYY-MM-DD");
-
+            if(date){
+                $scope.search.updated_at = moment(new Date(date)).format('YYYY-MM-DD');
             }
-
             $scope.searchDB();
-
         }
 
         //delete record
@@ -290,7 +235,7 @@ app.filter('delDate', [
     }
 
 ]);
-
+/*
 function repeatController($scope) {
 
     $scope.$watch('$index', function(index) {
@@ -299,9 +244,9 @@ function repeatController($scope) {
 
     })
 
-}
+}*/
 
 
 app.controller('transController', transController);
 
-app.controller('repeatController', repeatController);
+// app.controller('repeatController', repeatController);

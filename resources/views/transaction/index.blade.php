@@ -6,10 +6,12 @@
 @stop
 @section('content')
 
-    <div class="row">
-    <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i></h1></a>
-    </div>
     <div ng-app="app" ng-controller="transController">
+
+    <div class="row">
+        <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+
+    </div>
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -32,7 +34,7 @@
                         <div class="col-md-9" style="padding-top:10px">
                             {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
                                 'class'=>'select',
-                                'ng-model'=>'search.name',
+                                'ng-model'=>'search.profile_id',
                                 'ng-change' => 'searchDB()'
                                 ])
                             !!}
@@ -122,42 +124,27 @@
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('updated_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
-                        <div class="dropdown">
-                            <div class="input-group dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="">
-                                {!! Form::text('updated_at', null,
-                                                                    [
-                                                                        'class'=>'form-control input-sm',
-                                                                        'ng-model'=>'search.updated_at',
-                                                                        'placeholder'=>'Last Modify Date',
-                                                                        'ng-keyup'=>'dateChange2(search.updated_at)',
-                                                                        'ng-model-options'=>'{ debounce: 500 }'
-                                                                    ])
-                                !!}
-                            </div>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <datetimepicker data-ng-model="search.updated_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(search.updated_at)"/>
-                            </ul>
-                        </div>
+                        <datepicker>
+                            <input
+                                type="text"
+                                class="form-control input-sm"
+                                placeholder="Last Modify Date"
+                                ng-model="search.updated_at"
+                                ng-change="dateChange2(search.updated_at)"
+                            />
+                        </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
-                        <div class="dropdown">
-                            <div class="input-group dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="">
-                                {!! Form::text('delivery_date', null,
-                                                                        [
-                                                                            'id'=>'delivery_date',
-                                                                            'class'=>'form-control input-sm',
-                                                                            'ng-model'=>'search.delivery_date',
-                                                                            'ng-init'=>"search.delivery_date=today",
-                                                                            'placeholder'=>'Delivery Date',
-                                                                            'ng-keyup'=>'dateChange(search.delivery_date)',
-                                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                                        ]) !!}
-                            </div>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <datetimepicker data-ng-model="search.delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" ng-change="dateChange(search.delivery_date)"/>
-                            </ul>
-                        </div>
+                        <datepicker date-set="@{{today}}">
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Delivery Date"
+                                ng-model = "search.delivery_date"
+                                ng-change = "dateChange(search.delivery_date)"
+                            />
+                        </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
@@ -313,18 +300,18 @@
 
                             <tbody>
 
-                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" ng-controller="repeatController">
-                                    <td class="col-md-1 text-center">@{{ number }} </td>
+                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                                    <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">
                                             @{{ transaction.id }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.person.cust_id }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
 
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
-                                            @{{ transaction.person.cust_id[0] == 'D' ? transaction.person.name : transaction.person.company }}
+                                            @{{ transaction.cust_id[0] == 'D' ? transaction.name : transaction.company }}
                                         </a>
                                     </td>
 

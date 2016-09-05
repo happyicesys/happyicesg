@@ -51,31 +51,47 @@ class TransactionController extends Controller
         // showing total amount init
         $total_amount = 0;
         $input = $request->all();
-
         // initiate the page num when null given
         if($request->pageNum){
             $pageNum = $request->pageNum;
         }else{
             $pageNum = 70;
         }
+        $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->select(
+                                    'transactions.id', 'people.cust_id', 'people.company',
+                                    'people.name', 'people.id as person_id', 'transactions.del_postcode',
+                                    'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                                    'transactions.total', 'transactions.total_qty', 'transactions.pay_status',
+                                    'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
+                                    'profiles.gst'
+                                );
 
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
-            $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
-            $transactions = $this->searchFilter($transactions, $request);
+            // $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
+            $transactions = $this->searchDBFilter($transactions, $request);
         }else{
             if($request->sortName){
-                $transactions = Transaction::with(['person', 'person.profile'])->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }else{
-                $transactions = Transaction::with(['person', 'person.profile']);
+                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
             if($request->init == 'true'){
-                $transactions = $transactions->searchDeliveryDate(Carbon::today());
+                // $transactions = $transactions->searchDeliveryDate(Carbon::today());
+                $transactions = $transactions->whereDate('transactions.delivery_date', '=', Carbon::today());
             }
         }
 
-        $total_amount = $this->calTransactionTotal($transactions);
-        $transactions = $transactions->latest()->paginate($pageNum);
+        $total_amount = $this->calDBTransactionTotal($transactions);
+
+        if($pageNum == 'All'){
+            $transactions = $transactions->latest('transactions.created_at')->get();
+            // dd($transactions);
+        }else{
+            $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
+        }
+
         $data = [
             'total_amount' => $total_amount,
             'transactions' => $transactions,
@@ -1181,71 +1197,77 @@ class TransactionController extends Controller
     private function searchFilter($transactions, Request $request)
     {
         if($request->id){
-
             $transactions = $transactions->searchId($request->id);
-
         }
-
         if($request->cust_id){
-
             $transactions = $transactions->searchCustId($request->cust_id);
-
         }
-
         if($request->company){
-
             $transactions = $transactions->searchCompany($request->company);
-
         }
-
         if($request->status){
-
             $transactions = $transactions->searchStatus($request->status);
-
         }
-
         if($request->pay_status){
-
             $transactions = $transactions->searchPayStatus($request->pay_status);
-
         }
-
         if($request->updated_by){
-
             $transactions = $transactions->searchUpdatedBy($request->updated_by);
-
         }
-
         if($request->updated_at){
-
             $transactions = $transactions->searchUpdatedAt($request->updated_at);
-
         }
-
         if($request->delivery_date){
-
             $transactions = $transactions->searchDeliveryDate($request->delivery_date);
-
         }
-
         if($request->driver){
-
             $transactions = $transactions->searchDriver($request->driver);
-
         }
-
         if($request->profile){
-
             $transactions = $transactions->searchProfile($request->profile);
-
         }
-
         if($request->sortName){
-
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-
         }
+        return $transactions;
+    }
 
+    // pass value into filter search for DB (collection, collection request) [query]
+    private function searchDBFilter($transactions, Request $request)
+    {
+        if($request->id){
+            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.$request->id.'%');
+        }
+        if($request->cust_id){
+            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$request->cust_id.'%');
+        }
+        if($request->company){
+            $transactions = $transactions->where('people.company', 'LIKE', '%'.$request->company.'%');
+        }
+        if($request->status){
+            $transactions = $transactions->where('transactions.status', 'LIKE', '%'.$request->status.'%');
+        }
+        if($request->pay_status){
+            $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.$request->pay_status.'%');
+        }
+        if($request->updated_by){
+            $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.$request->updated_by.'%');
+        }
+        if($request->updated_at){
+            $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'.$request->updated_at.'%');
+        }
+        if($request->delivery_date){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '=', $request->delivery_date);
+        }
+        if($request->driver){
+            $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$request->driver.'%');
+        }
+        if($request->profile){
+            $transactions = $transactions->where('profiles.id', $request->profile);
+        }
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         return $transactions;
     }
 
@@ -1268,6 +1290,25 @@ class TransactionController extends Controller
                         $query2->where('gst', 1);
                     })->sum('total');
 
+        $gst_amount = round(($gst_amount * 107/100), 2);
+
+        $total_amount = $nonGst_amount + $gst_amount;
+
+        return $total_amount;
+    }
+
+    // calculating gst and non for delivered total
+    private function calDBTransactionTotal($query)
+    {
+        $total_amount = 0;
+        $nonGst_amount = 0;
+        $gst_amount = 0;
+        $query1 = clone $query;
+        $query2 = clone $query;
+
+        $nonGst_amount = $query1->where('profiles.gst', 0)->sum('transactions.total');
+        $nonGst_amount = round($nonGst_amount, 2);
+        $gst_amount = $query2->where('profiles.gst', 1)->sum('transactions.total');
         $gst_amount = round(($gst_amount * 107/100), 2);
 
         $total_amount = $nonGst_amount + $gst_amount;

@@ -11,13 +11,14 @@ elixir(function(mix) {
             '../bower/ui-select/dist/select.min.css',
             'angular-bootstrap-datetimepicker.css',
             'animate.min.css',
+            '../bower/angularjs-datepicker/src/css/angular-datepicker.css',
             'app.css',
             ])
         .scripts([
             'jquery.min.js',
             '../bower/moment/min/moment.min.js',
             'bootstrap-js/bootstrap.min.js',
-            'angular.min.js',
+            'angular.js',
             'angular-bootstrap.min.js',
             '../bower/angular-sanitize/angular-sanitize.min.js',
             'dirPagination.js',
@@ -34,6 +35,10 @@ elixir(function(mix) {
             'tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js',
             'tableExport/libs/html2canvas/html2canvas.min.js',
             'tableExport/tableExport.js',
+            '../bower/angularjs-datepicker/src/js/angular-datepicker.js',
+            // '../bower/angular-animate/angular-animate.js',
+            // '../bower/angular-aria/angular-aria.js',
+            // '../bower/angular-material/angular-material.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });
