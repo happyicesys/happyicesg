@@ -45,7 +45,6 @@ class MarketingController extends Controller
     public function indexSetupPriceApi()
     {
         $prices = DtdPrice::all();
-
         return $prices->toJson();
     }
 
@@ -80,12 +79,9 @@ class MarketingController extends Controller
     public function indexMember()
     {
         $self = Person::where('user_id', Auth::user()->id)->first();
-
         if(! $self){
-
             $self = null;
         }
-
         return view('market.member.index', compact('self'));
     }
 
@@ -131,112 +127,71 @@ class MarketingController extends Controller
     // create new members for dtd
     public function storeMember(MemberRequest $request)
     {
-
         $user_id = $this->createUser($request);
-
         if(! $user_id){
-
             return Redirect::action('MarketingController@createMember', $request->level);
         }
 
         $checkDupEmail = Person::where('cust_id', 'LIKE', 'D%')->where('email', $request->email)->first();
-
         if($checkDupEmail){
-
             Flash::error('The email has already been taken');
-
             return Redirect::action('MarketingController@createMember', $request->level);
         }
 
         $people = Person::withTrashed()->where('cust_id', 'LIKE', 'D%');
-
         $first_person = Person::where('cust_id', 'D100001')->first();
 
         if(count($people) > 0 and $first_person){
-
             $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
-
             $latest_cust = 'D'.$latest_cust;
-
         }else{
-
             $latest_cust = 'D100001';
         }
 
         $request->merge(array('cust_type' => strtoupper($request->level)));
-
         $request->merge(array('user_id' => $user_id));
-
         $request->merge(array('cust_id' => $latest_cust));
-
         $request->merge(array('profile_id' => 1));
-
         $input = $request->all();
-
         $person = Person::create($input);
 
         if($request->assign_parent){
-
             $assign_to = Person::findOrFail($request->assign_parent);
-
             $person->makeChildOf($assign_to);
-
             $person->parent_name = $assign_to->name;
-
             $person->save();
-
         }else{
-
             if($latest_cust == 'D100001'){
-
                 $person->makeRoot();
-
             }else{
-
                 $creator = Person::where('user_id', Auth::user()->id)->first();
 
                 if($creator){
-
                     $person->makeChildOf($creator);
-
                     $person->parent_name = $creator->name;
-
                     $person->save();
-
                 }else{
-
                     $person->makeRoot();
                 }
             }
         }
 
         if($person){
-
             $ancestors = $person->getAncestors();
-
             $today = Carbon::today()->toDateString();
-
             $mail_list = array();
 
             foreach($ancestors as $ancestor){
-
                 if($ancestor->email){
-
                     array_push($mail_list, $ancestor->email);
-
                 }
             }
 
             // $mail_list = implode(",", $mail_list);
-
             if($mail_list){
-
                 $email = $mail_list;
-
                 $sender = 'system@happyice.com.sg';
-
                 $data = [
-
                     'person' => $person,
                     'today' => $today,
                 ];
@@ -248,15 +203,10 @@ class MarketingController extends Controller
                     $message->setTo($email);
                 });
             }
-
             Flash::success('User Successfully Registered, Please Check the Registered Email for Login Password');
-
             return Redirect::action('MarketingController@indexMember');
-
         }else{
-
             Flash::error('Please Try Again');
-
             return Redirect::action('MarketingController@createMember', $request->level);
         }
     }
@@ -265,17 +215,11 @@ class MarketingController extends Controller
     public function destroyMember($person_id)
     {
         $person = Person::findOrFail($person_id);
-
         $person->delete();
-
         if($person->user_id){
-
             $user = User::findOrFail($person->user_id);
-
             $user->delete();
-
         }
-
         return Redirect::action('MarketingController@indexMember');
     }
 
@@ -285,113 +229,72 @@ class MarketingController extends Controller
         $person = Person::findOrFail($self_id);
 
         if($request->parent_id){
-
             $new_parent = Person::findOrFail($request->parent_id);
-
             $person->makeChildOf($newperson);
-
             $person->parent_name = $new_parent->name;
-
             $person->save();
         }
-
         $input = $request->except(['parent_id']);
-
         $user = User::findOrFail($person->user_id);
 
         if($request->password){
-
             if($request->password === $request->password_confirmation){
-
                 $user->password = $request->password;
-
                 Flash::success('The Password has Changed');
-
             }else{
-
                 Flash::error('The Password Confirmation is Invalid');
-
                 return Redirect::action('MarketingController@indexMember');
             }
         }
         $person->update($input);
-
         $user->email = $request->email;
-
         $user->contact = $request->contact;
-
         $user->save();
-
         return Redirect::action('MarketingController@indexMember');
     }
 
     public function editMember($id)
     {
         $person = Person::findOrFail($id);
-
         return view('market.member.edit', compact('person'));
     }
 
     public function updateMember(Request $request, $id)
     {
-
         $input = $request->except('parent_id');
-
         $person = Person::findOrFail($id);
-
         $user = User::findOrFail($person->user_id);
 
         if($request->parent_id != null or $request->parent_id != ''){
-
             $newperson = Person::findOrFail($request->parent_id);
-
             if($person->parent_id != $newperson->id){
-
                 $person->makeChildOf($newperson);
-
                 $person->parent_name = $newperson->name;
-
                 $person->save();
             }
         }
 
         $person->update($input);
-
         if($request->input('active')){
-
             $person->active = 'Yes';
-
         }else if($request->input('deactive')){
-
             $person->active = 'No';
         }
 
         if($request->input('reset')){
-
             $reset_pass = str_random(6);
-
             $user->password = $reset_pass;
-
             if($this->sendEmailReset($request, $reset_pass)){
-
                 Flash::success('The Password has been Reset');
-
             }else{
-
                 return Redirect::action('MarketingController@editMember', $id);
             }
         }
-
         $user->username = $request->company;
-
         $user->contact = $request->contact;
-
         $user->email = $request->email;
-
         $user->save();
-
         $person->save();
-
         return Redirect::action('MarketingController@editMember', $id);
     }
 
@@ -404,52 +307,34 @@ class MarketingController extends Controller
 
     public function indexCustomerApi()
     {
-
         $adminbool = false;
-
         $member_adminbool = false;
-
         $memberbool = false;
-
         $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
-
         $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
-
             if($member->cust_type === 'OM'){
-
                 $member_adminbool = true;
-
             }else{
-
                 $member_adminbool = false;
-
                 $memberbool = true;
             }
         }
 
         if(Auth::user()->hasRole('admin')){
-
             $adminbool = true;
-
             $member_adminbool = false;
-
             $memberbool = false;
         }
 
         // show results based on condition
         if($memberbool){
-
             return $member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('id', 'desc')->get();
-
         }else if($adminbool or $member_adminbool){
-
             return $all_customers;
-
         }else{
-
             return '';
         }
     }
@@ -467,67 +352,40 @@ class MarketingController extends Controller
     public function storeCustomer(CustomerRequest $request)
     {
         $people = Person::withTrashed()->where('cust_id', 'LIKE', 'H%');
-
         $first_person = Person::where('cust_id', 'H100001')->first();
-
         if(count($people) > 0 and $first_person){
-
             $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
-
             $latest_cust = 'H'.$latest_cust;
-
         }else{
-
             $latest_cust = 'H100001';
         }
 
         $request->merge(array('cust_id' => $latest_cust));
-
         $request->merge(array('profile_id' => 1));
-
         $input = $request->all();
-
         $person = Person::create($input);
 
         if($request->parent_id){
-
             $assign_to = Person::findOrFail($request->parent_id);
-
             $person->makeChildOf($assign_to);
-
             $person->parent_name = $assign_to->name;
-
             $person->save();
-
         }else{
-
             $creator = Person::where('user_id', Auth::user()->id)->first();
-
             if($creator){
-
                 $person->makeChildOf($creator);
-
                 $person->parent_name = $creator->name;
-
             }else{
-
                 $person->makeRoot();
             }
-
             $person->save();
-
         }
 
         if($person){
-
             Flash::success('Customer Successfully Created');
-
             return view('market.customer.index');
-
         }else{
-
             Flash::error('Please Try Again');
-
             return view('market.customer.create');
         }
     }
@@ -535,122 +393,75 @@ class MarketingController extends Controller
     public function storeBatchCustomer(Request $request)
     {
         $postals = $request->postalArr;
-
         $blocks = $request->blockArr;
-
         $floors = $request->floorArr;
-
         $units = $request->unitArr;
-
         $names = $request->nameArr;
-
         $contacts = $request->contactArr;
-
         $remarks = $request->remarkArr;
 
         foreach($names as $index => $name){
-
             if($name or $postals[$index] or $blocks[$index] or $floors[$index] or $units[$index] or $contacts[$index]){
-
                 $people = Person::where('cust_id', 'LIKE', 'H%');
-
                 $first_person = Person::where('cust_id', 'H100001')->first();
 
                 if(count($people) > 0 and $first_person){
-
                     $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
-
                     $latest_cust = 'H'.$latest_cust;
-
                 }else{
-
                     $latest_cust = 'H100001';
                 }
-
                 $person = new Person();
-
                 $person->cust_id = $latest_cust;
-
                 $person->profile_id = 1;
-
                 $person->payterm = 'C.O.D';
-
                 $person->del_postcode = $postals[$index];
-
                 $person->block = $blocks[$index];
-
                 $person->floor = $floors[$index];
-
                 $person->unit = $units[$index];
-
                 $person->name = $names[$index];
-
                 $person->contact = $contacts[$index];
-
                 $person->remark = $remarks[$index];
-
                 $person->save();
-
                 $creator = Person::where('user_id', Auth::user()->id)->first();
 
                 if($creator){
-
                     $person->makeChildOf($creator);
-
                     $person->parent_name = $creator->name;
-
                     $person->save();
-
                 }else{
-
                     $person->makeRoot();
                 }
             }
         }
-
         Flash::success('Customer Successfully Created');
-
         return view('market.customer.index');
-
     }
 
     public function editCustomer($id)
     {
         $person = Person::findOrFail($id);
-
         return view('market.customer.edit', compact('person'));
     }
 
     public function updateCustomer(Request $request, $id)
     {
         $person = Person::findOrFail($id);
-
         if($request->parent_id){
-
             if($request->parent_id != $person->parent_id){
-
                 $newperson = Person::findOrFail($request->parent_id);
-
                 $person->makeChildOf($newperson);
-
                 $person->parent_name = $newperson->name;
-
                 $person->save();
-
             }
         }
 
         $person->update($request->all());
-
         if($request->input('active')){
-
             $person->active = 'Yes';
-
         }else if($request->input('deactive')){
-
             $person->active = 'No';
         }
-
         $person->save();
 
         return Redirect::action('MarketingController@editCustomer', $id);
@@ -871,15 +682,10 @@ class MarketingController extends Controller
     public function editDeal($id)
     {
         $transaction = DtdTransaction::find($id);
-
         if(! $transaction){
-
             $transaction = '';
-
             $person = '';
-
         }else{
-
             $person = Person::findOrFail($transaction->person_id);
         }
 
@@ -898,7 +704,6 @@ class MarketingController extends Controller
             }
             $query->orderBy('product_id');
         })->get();
-
         // edit form disable fields logic
         $noneditable = $this->checkFormEditable($transaction);
 
@@ -909,7 +714,6 @@ class MarketingController extends Controller
     public function showDeal($id)
     {
         $transaction = DtdTransaction::findOrFail($id);
-
         return $transaction;
     }
 
@@ -917,7 +721,6 @@ class MarketingController extends Controller
     public function getDealData($transaction_id)
     {
         $deals = DtdDeal::with('item')->where('transaction_id', $transaction_id)->get();
-
         return $deals;
     }
 
@@ -996,26 +799,17 @@ class MarketingController extends Controller
         if($dtdtransaction->person->cust_id[0] === 'D' and $dtdtransaction->status === 'Confirmed'){
             $this->syncTransaction($dtdtransaction->id, $request);
         }
-
         return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
     }
 
     // generate pdf invoice for transaction
     public function generateInvoice($id)
     {
-
         $transaction = DtdTransaction::findOrFail($id);
-
         $person = Person::findOrFail($transaction->person_id);
-
         $deals = DtdDeal::whereTransactionId($transaction->id)->get();
-
         $totalprice = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('amount');
-
         $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
-
-        // $profile = Profile::firstOrFail();
-
         $data = [
             'transaction'   =>  $transaction,
             'person'        =>  $person,
@@ -1026,11 +820,8 @@ class MarketingController extends Controller
         ];
 
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
-
         $pdf = PDF::loadView('transaction.invoice', $data);
-
         $pdf->setPaper('a4');
-
         return $pdf->download($name);
     }
 
@@ -1038,9 +829,7 @@ class MarketingController extends Controller
     public function destroyAjax($id)
     {
         $dtddeal = DtdDeal::findOrFail($id);
-
         $dtddeal->delete();
-
         return $dtddeal->id . 'has been successfully deleted';
     }
 
@@ -1048,33 +837,20 @@ class MarketingController extends Controller
     public function sendEmailInv($id)
     {
         $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
-
         $transaction = DtdTransaction::findOrFail($id);
-
         $self = Auth::user()->name;
 
         if($transaction->transaction_id){
-
             $transaction = Transaction::findOrFail($transaction->transaction_id);
-
             $deals = Deal::whereTransactionId($transaction->id)->get();
-
             $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-
             $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
-
         }else{
-
             $transaction = DtdTransaction::findOrFail($id);
-
             $deals = DtdDeal::whereTransactionId($transaction->id)->get();
-
             $totalprice = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('amount');
-
             $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
-
         }
-
         $person = Person::findOrFail($transaction->person_id);
 
         if(! $person->email){
@@ -1085,11 +861,7 @@ class MarketingController extends Controller
         }
 
         $email = $person->email;
-
         $now = Carbon::now()->format('dmyhis');
-
-        // $profile = Profile::firstOrFail();
-
         $data = [
             'transaction'   =>  $transaction,
             'person'        =>  $person,
@@ -1097,27 +869,18 @@ class MarketingController extends Controller
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
         ];
-
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
-
         $pdf = PDF::loadView('transaction.invoice', $data);
-
         $pdf->setPaper('a4');
-
         $sent = $pdf->save(storage_path('/invoice/'.$name));
-
         $store_path = storage_path('/invoice/'.$name);
-
         $sender = 'system@happyice.com.sg';
-
         $datamail = [
-
             'person' => $person,
             'transaction' => $transaction,
             'email_draft' => $email_draft,
             'self' => $self,
             'url' => 'http://www.happyice.com.sg',
-
         ];
 
         Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $transaction)
@@ -1129,14 +892,10 @@ class MarketingController extends Controller
         });
 
         if($sent){
-
             Flash::success('Successfully Sent');
-
         }else{
-
             Flash::error('Please Try Again');
         }
-
         return Redirect::action('MarketingController@editDeal', $id);
     }
 
@@ -1247,9 +1006,7 @@ class MarketingController extends Controller
     public function destroyNotification($id)
     {
         $notification = NotifyManager::findOrFail($id);
-
         $notification->delete();
-
         return Redirect::action('MarketingController@notifyManagerIndex', $notification->person_id);
     }
 
@@ -1257,38 +1014,39 @@ class MarketingController extends Controller
     public function generateLogs($id)
     {
         $transaction = DtdTransaction::findOrFail($id);
-
         $transHistory = $transaction->revisionHistory;
-
         return view('market.deal.log', compact('transaction', 'transHistory'));
+    }
+
+    // store postcode excel file import
+    public function storePostcode(Request $request)
+    {
+        // dd($request->all());
+        $this->validate($request, [
+            'postcode_excel' => 'required|mimes:xls,xlsx|max:500000'
+        ], [
+            'postcode_excel.required' => 'Please insert the postcode excel file',
+            // 'postcode_excel.mimes' => 'Only excel file is accepted',
+            'postcode_excel.max' => 'The excel file cannot exceed 5 mb',
+        ]);
+
     }
 
     // method for deleting deals upon transaction deletion
     private function dealDeleteMultiple($transaction_id)
     {
         $deals = Deal::where('transaction_id', $transaction_id)->get();
-
         foreach($deals as $deal){
-
             $item = Item::findOrFail($deal->item_id);
-
             if($deal->qty_status == '1'){
-
                 $deal->qty_status = 3;
-
                 $deal->save();
-
             }else if($deal->qty_status == '2'){
-
                 $item->qty_now += $deal->qty;
-
                 $deal->qty_status = 3;
-
                 $deal->save();
             }
-
             $item->save();
-
             $this->dealSyncOrder($item->id);
         }
     }
@@ -1297,34 +1055,21 @@ class MarketingController extends Controller
     private function dealUndoDelete($transaction_id)
     {
         $deals = Deal::where('transaction_id', $transaction_id)->where('qty_status', '3')->get();
-
         $transaction = Transaction::findOrFail($transaction_id);
 
         if($transaction->cancel_trace === 'Confirmed'){
-
             foreach($deals as $deal){
-
                 $item = Item::findOrFail($deal->item_id);
-
                 $deal->qty_status = 1;
-
                 $deal->save();
-
                 $this->dealSyncOrder($item->id);
             }
-
         }else if($transaction->cancel_trace === 'Delivered' or $transaction->cancel_trace === 'Verified Owe' or $transaction->cancel_trace === 'Verified Paid'){
-
             foreach($deals as $deal){
-
                 $item = Item::findOrFail($deal->item_id);
-
                 $deal->qty_status = 2;
-
                 $deal->save();
-
                 $item->qty_now -= $deal->qty;
-
                 $item->save();
             }
         }
@@ -1334,32 +1079,21 @@ class MarketingController extends Controller
     private function createUser($request)
     {
         $request->merge(array('username' => $request->company));
-
         // random password generator
         $ran_password = str_random(6);
-
         $request->merge(array('password' => $ran_password));
 
         if($request->email){
-
             $this->sendEmailUponRegistration($request, $ran_password);
-
             $user = User::create($request->all());
-
             $role = Role::where('name', 'marketer')->first();
-
             $user->type = 'marketer';
-
             $user->save();
             // assign marketer role
             $user->roles()->attach($role->id);
-
             return $user->id;
-
         }else{
-
             Flash::error('Please fill up the email');
-
             return null;
         }
     }
@@ -1367,17 +1101,12 @@ class MarketingController extends Controller
     // user get the credentials via email
     private function sendEmailUponRegistration($request, $password)
     {
-
         $email = $request->email;
-
         $sender = 'system@happyice.com.sg';
-
         $data = [
-
             'username' => $request->company,
             'password' => $password,
             'url' => 'http://www.happyice.com.sg/admin',
-
         ];
 
         Mail::send('email.marketing_registration', $data, function ($message) use ($email, $sender)
@@ -1393,24 +1122,17 @@ class MarketingController extends Controller
     {
 
         $email = $request->email;
-
         if(! $email){
-
             Flash::error('Please fill up the email');
-
             return false;
-
         }else{
-
             // $sender = 'daniel.ma@happyice.com.sg';
             $sender = 'system@happyice.com.sg';
 
             $data = [
-
                 'username' => $request->company,
                 'password' => $password,
                 'url' => 'http://www.happyice.com.sg/admin',
-
             ];
 
             Mail::send('email.marketing_registration', $data, function ($message) use ($email, $sender)
@@ -1419,7 +1141,6 @@ class MarketingController extends Controller
                 $message->subject('Email Reset (Door To Door Project)');
                 $message->setTo($email);
             });
-
             return true;
         }
     }
@@ -1482,143 +1203,85 @@ class MarketingController extends Controller
     private function calQtyTotal($arr)
     {
         $total_qty = 0;
-
         foreach($arr as $transaction){
-
             $total_qty += $transaction->total_qty;
-
         }
-
         return $total_qty;
     }
 
     private function syncDtdDeal($request, $dtdtrans_id)
     {
         $qtys = $request->qty;
-
         $quotes = $request->quote;
-
         $amounts = $request->amount;
-
         $dtdtransaction = DtdTransaction::findOrFail($dtdtrans_id);
-
         $init_d = $dtdtransaction->person->cust_id[0] == 'D' ? true : false;
-
         $errors = array();
 
         if($qtys){
-
             foreach($qtys as $index => $qty){
-
                 if($qty != NULL or $qty != 0){
-
                     $item = Item::findOrFail($index);
-
                     // inventory email notification for stock running low
                     if($init_d and $item->email_limit){
-
                         if($this->calOrderEmailLimit($qty, $item)){
-
                             if(! $item->emailed){
-
                                 $this->sendEmailAlert($item);
-
                                 // restrict only send 1 mail if insufficient
                                 $item->emailed = true;
-
                                 $item->save();
                             }
-
                         }else{
                             // reactivate email alert
                             $item->emailed = false;
-
                             $item->save();
                         }
                     }
 
                     if($init_d){
-
                         if($this->calOrderLimit($qty, $item)){
-
                             array_push($errors, $item->product_id.' - '.$item->name);
-
                         }else{
-
                             $dtddeal = new DtdDeal();
-
                             $dtddeal->transaction_id = $dtdtrans_id;
-
                             $dtddeal->item_id = $index;
-
                             $dtddeal->qty = $qty;
-
                             $dtddeal->amount = $amounts[$index];
-
                             $dtddeal->unit_price = $quotes[$index];
-
                             $dtddeal->qty_status = 1;
-
                             $dtddeal->save();
-
                             $dtddeal->deal_id = 'D'.$dtddeal->id;
-
                             $dtddeal->save();
                         }
-
                     }else{
-
                         $dtddeal = new DtdDeal();
-
                         $dtddeal->transaction_id = $dtdtrans_id;
-
                         $dtddeal->item_id = $index;
-
                         $dtddeal->qty = $qty;
-
                         $dtddeal->amount = $amounts[$index];
-
                         $dtddeal->unit_price = $quotes[$index];
-
                         $dtddeal->qty_status = 1;
-
                         $dtddeal->save();
-
                         $dtddeal->deal_id = 'D'.$dtddeal->id;
-
                         $dtddeal->save();
-
                     }
                 }
             }
         }
-
         $dtddeals = DtdDeal::whereTransactionId($dtdtrans_id)->get();
-
         $deal_total = $dtddeals->sum('amount');
-
         $deal_totalqty = $dtddeals->sum('qty');
-
         $dtdtransaction->total = $deal_total;
-
         $dtdtransaction->total_qty = $deal_totalqty;
-
         $dtdtransaction->save();
 
         if(isset($errors)){
-
             if(count($errors) > 0){
-
                 $errors_str = '';
-
                 $errors_str = implode(" <br>", $errors);
-
                 Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): <br> '.$errors_str)->important();
-
             }
-
         }else{
-
             Flash::success('Successfully Added');
         }
     }
@@ -1627,91 +1290,53 @@ class MarketingController extends Controller
     private function syncTransaction($dtdtransaction_id, $request)
     {
         $dtdtransaction = DtdTransaction::findOrFail($dtdtransaction_id);
-
         $person = Person::findOrFail($dtdtransaction->person_id);
-
         $request->merge(array('person_code' => $person->cust_id));
 
         if($dtdtransaction->transaction_id == null || $dtdtransaction->transaction_id == ''){
-
             $transaction = Transaction::create($request->all());
-
         }else{
-
             $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
-
             $transaction->update($request->all());
-
         }
-
         $transaction->total = $dtdtransaction->total;
-
         $transaction->total_qty = $dtdtransaction->total_qty;
-
         $transaction->dtdtransaction_id = $dtdtransaction->id;
-
         $transaction->save();
-
         $dtdtransaction->transaction_id = $transaction->id;
-
         $dtdtransaction->save();
-
         // find and sync deals
         $deals = Deal::where('transaction_id', $transaction->id)->get();
-
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
-
         if(count($deals) != count($dtddeals)){
-
             $deal_arr = array();
-
             $dtddeal_arr = array();
-
             foreach($deals as $deal){
-
                 array_push($deal_arr, $deal->id);
             }
 
             $dtdresults = DtdDeal::where('transaction_id', $dtdtransaction->id)->whereNotIn('deal_id', $deal_arr)->get();
-
             foreach($dtdresults as $dtddeal){
-
                 $deal = new Deal();
-
                 $deal->item_id = $dtddeal->item_id;
-
                 $deal->transaction_id = $transaction->id;
-
                 $deal->qty = $dtddeal->qty;
-
                 $deal->amount = $dtddeal->amount;
-
                 $deal->unit_price = $dtddeal->unit_price;
-
                 $deal->qty_status = 1;
-
                 $deal->save();
-
                 $dtddeal->deal_id = $deal->id;
-
                 $dtddeal->save();
-
                 $this->dealSyncOrder($deal->item_id);
             }
 
             $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
-
             foreach($dtddeals as $dtddeal){
-
                 array_push($dtddeal_arr, $dtddeal->deal_id);
             }
-
             $dealresults = Deal::where('transaction_id', $dtdtransaction->transaction_id)->whereNotIn('id', $dtddeal_arr)->get();
-
             foreach($dealresults as $dealresult){
-
                 $dealresult->delete();
-
                 $this->dealSyncOrder($dealresult->item_id);
             }
         }
@@ -1720,9 +1345,7 @@ class MarketingController extends Controller
     private function calOrderEmailLimit($qty, $item)
     {
         if($item->qty_now - $item->qty_order - $qty < $item->email_limit){
-
             return true;
-
         }else{
 
             return false;
@@ -1733,11 +1356,8 @@ class MarketingController extends Controller
     private function calOrderLimit($qty, $item)
     {
         if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0){
-
             return true;
-
         }else{
-
             return false;
         }
     }
@@ -1747,23 +1367,17 @@ class MarketingController extends Controller
     private function sendEmailAlert($item)
     {
         $today = Carbon::now()->format('d-m-Y H:i');
-
         $emails = EmailAlert::where('status', 'active')->get();
-
         $email_list = array();
 
         foreach($emails as $email){
-
             $email_list[] = $email->email;
         }
 
         $email = array_unique($email_list);
-
         // $sender = 'daniel.ma@happyice.com.sg';
         $sender = 'system@happyice.com.sg';
-
         $data = [
-
             'product_id' => $item->product_id,
             'name' => $item->name,
             'remark' => $item->remark,
@@ -1771,7 +1385,6 @@ class MarketingController extends Controller
             'qty_now' => $item->qty_now,
             'lowest_limit' => $item->lowest_limit,
             'email_limit' => $item->email_limit,
-
         ];
 
         Mail::send('email.stock_alert', $data, function ($message) use ($item, $email, $today, $sender)
@@ -1785,13 +1398,9 @@ class MarketingController extends Controller
     private function dealSyncOrder($item_id)
     {
         $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
-
         $item = Item::findOrFail($item_id);
-
         $item->qty_order = $deals->sum('qty');
-
         $item->save();
-
     }
 
     // pass through to check the form valid for edit or not (single collection)
@@ -1801,57 +1410,35 @@ class MarketingController extends Controller
 /*
         // find person is belongs to dtd member
         if($transaction->person->cust_id[0] === 'D'){
-
             $noneditable = true;
-
         }else{
-
             return false;
-
         }
 
         // determine the current user is dtd embassador or not
         if(Person::whereUserId(Auth::user()->id)->first()){
-
             if(Person::whereUserId(Auth::user()->id)->first()->cust_type === 'AB'){
-
                 $noneditable = true;
-
             }else{
-
                 return false;
-
             }
-
         }else{
-
             return false;
-
         }
 
         // determine the current transaction status is confirmed
         if($transaction->status === 'Confirmed'){
-
             $noneditable = true;
-
         }else{
-
             return false;
-
         }
 
         // determine the delivery date is more than today
         if(Carbon::today() >= Carbon::parse($transaction->delivery_date)->subDay()){
-
             $noneditable = true;
-
         }else{
-
             return false;
-
         }*/
-
         return $noneditable;
-
     }
 }

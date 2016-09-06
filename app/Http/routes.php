@@ -14,6 +14,7 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/market/setup/postcode', 'MarketingController@storePostcode');
 Route::get('/market/setup/price', 'MarketingController@indexSetupPriceApi');
 Route::post('/market/setup/price', 'MarketingController@storeSetupPrice');
 Route::get('/market/setup', 'MarketingController@indexSetup');
