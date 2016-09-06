@@ -104,7 +104,7 @@
                                     {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.total }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.person.profile.gst ? transaction.total * 107/100 : transaction.total | currency: "" }}</td>
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                                         @{{ transaction.pay_status }}

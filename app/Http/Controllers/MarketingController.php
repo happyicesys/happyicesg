@@ -46,47 +46,33 @@ class MarketingController extends Controller
     {
         $prices = DtdPrice::all();
 
-        // dd($prices->toArray());
-
         return $prices->toJson();
     }
 
     public function storeSetupPrice(Request $request)
     {
         $input = $request->all();
-
         $retails = $request->retail;
-
         $quotes = $request->quote;
-
         foreach($retails as $index => $retail){
-
             if(($retail != null and $retail != '' and is_numeric($retail)) or ($quotes[$index] != null and $quotes[$index] != '' and is_numeric($quotes[$index]))){
-
                 $price = DtdPrice::where('item_id', $index)->first();
 
                 if(!$price){
-
                     $price = new DtdPrice;
-
                     $price->item_id = $index;
                 }
 
                 $price->retail_price = $retail;
-
                 $price->quote_price = $quotes[$index];
-
                 $price->updated_by = Auth::user()->name;
-
                 $price->save();
 
                 if($price->retail_price == 0 and $price->quote_price == 0){
-
                     $price->delete();
                 }
             }
         }
-
         return view('market.setup.index');
     }
 
@@ -802,7 +788,7 @@ class MarketingController extends Controller
     public function showDtdTransaction($person_id)
     {
         // return DtdTransaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
-        $dtdtransactions = DtdTransaction::with(['person', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
+        $dtdtransactions = DtdTransaction::with(['person', 'person.profile', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
             $query->wherehas('item', function($query){
                 $query->whereNotIn('product_id', [301, 302]);
             });

@@ -16,7 +16,7 @@ Setup
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
-            {{-- <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li> --}}
+            {{-- <li><a href="#postal" role="tab" data-toggle="tab">Postal Data</a></li> --}}
         </ul>
     </div>
 
@@ -109,13 +109,41 @@ Setup
             </div>
             {{-- end of first element--}}
             {{-- second element --}}
-{{--             <div class="tab-pane" id="freezer">
-
-            </div> --}}
+            <div class="tab-pane" id="postal">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="pull-left">
+                                <strong>
+                                    Postal Data
+                                </strong>
+                            </div>
+                            <div class="pull-right">
+                                <a href="" class="btn btn-success">+ Upload Database (Excel)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{-- end of second element --}}
         </div>
     </div>
 </div>
 
 <script src="/js/dtdprice.js"></script>
+<script>
+    $(function() {
+        // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            // save the latest tab; use cookies if you like 'em better:
+            localStorage.setItem('lastTab', $(this).attr('href'));
+        });
+
+        // go to the latest tab, if it exists:
+        var lastTab = localStorage.getItem('lastTab');
+        if (lastTab) {
+            $('[href="' + lastTab + '"]').tab('show');
+        }
+    });
+</script>
 @stop

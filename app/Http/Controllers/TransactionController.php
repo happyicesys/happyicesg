@@ -574,7 +574,7 @@ class TransactionController extends Controller
 
     public function showPersonTransac($person_id)
     {
-        return Transaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
+        return Transaction::with(['person', 'person.profile'])->wherePersonId($person_id)->latest()->take(5)->get();
     }
 
     // undo the cancelled transaction

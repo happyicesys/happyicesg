@@ -90,7 +90,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                             url: '/person/profile/' + transaction.person_id,
                             method: "GET",
                         }).success(function(profile){
-
+                            console.log(total);
                                 $scope.totalModel = total;
                                 $scope.totalqtyModel = totalqty;
 
@@ -132,41 +132,29 @@ var app = angular.module('app', [   'ui.bootstrap',
                     // choose which to display
                     // transremark
                     if(transaction.transremark){
-
                         $scope.transremarkModel = transaction.transremark;
-
                     }else{
-
                         $scope.transremarkModel = person.remark;
                     }
 
                     // delivery address
                     if(transaction.del_address){
-
                         $scope.delModel = transaction.del_address;
-
                     }else{
-
                         $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     }
 
                     // display default delivery postcode
                     if(transaction.del_postcode){
-
                         $scope.postcodeModel = transaction.del_postcode;
-
                     }else{
-
                         $scope.postcodeModel = person.del_postcode;
                     }
 
                     // display default delivery name
                     if(transaction.name){
-
                         $scope.attNameModel = transaction.name;
-
                     }else{
-
                         $scope.attNameModel = person.name;
                     }
 
@@ -196,9 +184,7 @@ var app = angular.module('app', [   'ui.bootstrap',
                             $scope.items = items;
                         });
                 });
-
             });
-
         });
 
         // previous on select real time select cust function

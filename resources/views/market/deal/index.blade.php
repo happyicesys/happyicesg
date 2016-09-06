@@ -252,9 +252,9 @@ Deals
                                     @{{ transaction.status }}
                                 </td>
                                 <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
-
-                                <td class="col-md-1 text-center" ng-if="transaction.gst">@{{ (+(transaction.total * 7/100).toFixed(2) + transaction.total * 1).toFixed(2)}}</td>
-                                <td class="col-md-1 text-center" ng-if="!transaction.gst">@{{ transaction.total }}</td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.gst ? transaction.total * 107/100 : transaction.total | currency: ""}}
+                                </td>
                                 <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                 {{-- pay status --}}
                                 <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
