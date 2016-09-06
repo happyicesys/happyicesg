@@ -194,17 +194,11 @@ class Transaction extends Model
     public function scopeSearchCompany($query, $company)
     {
         return $query->whereHas('person', function($query) use ($company){
-
             $query->where('company', 'LIKE', '%'.$company.'%')
-
                 ->orWhere(function ($q) use ($company){
-
                     $q->where('name', 'LIKE', '%'.$company.'%')->where('cust_id', 'LIKE', 'D%');
-
             });
-
         });
-
     }
 
     // (query, string) [query]

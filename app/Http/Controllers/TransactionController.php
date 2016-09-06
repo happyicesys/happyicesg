@@ -1242,7 +1242,14 @@ class TransactionController extends Controller
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$request->cust_id.'%');
         }
         if($request->company){
-            $transactions = $transactions->where('people.company', 'LIKE', '%'.$request->company.'%');
+            $com = $request->company;
+            $transactions = $transactions->where(function($query) use ($com){
+                $query->where('people.company', 'LIKE', '%'.$com.'%')
+                        ->orWhere(function ($query) use ($com){
+                                $query->where('people.cust_id', 'LIKE', 'D%')
+                                        ->where('people.name', 'LIKE', '%'.$com.'%');
+                        });
+                });
         }
         if($request->status){
             $transactions = $transactions->where('transactions.status', 'LIKE', '%'.$request->status.'%');
