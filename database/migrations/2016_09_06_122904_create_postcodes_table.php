@@ -5,11 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreatePostcodesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up()
     {
         Schema::create('postcodes', function (Blueprint $table) {
@@ -25,11 +21,7 @@ class CreatePostcodesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+
     public function down()
     {
         Schema::drop('postcodes');
