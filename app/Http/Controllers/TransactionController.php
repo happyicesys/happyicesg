@@ -70,7 +70,7 @@ class TransactionController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver or $request->profile){
             // $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
             $transactions = $this->searchDBFilter($transactions, $request);
         }else{
@@ -82,7 +82,7 @@ class TransactionController extends Controller
                 $transactions = $transactions->whereDate('transactions.delivery_date', '=', Carbon::today());
             }
         }
-
+        // dd($request->all());
         $total_amount = $this->calDBTransactionTotal($transactions);
 
         if($pageNum == 'All'){

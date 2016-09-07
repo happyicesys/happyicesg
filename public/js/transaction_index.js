@@ -80,70 +80,39 @@ var app = angular.module('app', [
         $scope.searchDB = function(){
 
             $scope.datasetTemp = {
-
                 id: $scope.search.id,
-
                 cust_id: $scope.search.cust_id,
-
                 company: $scope.search.company,
-
                 status: $scope.search.status,
-
                 pay_status: $scope.search.pay_status,
-
                 updated_by: $scope.search.updated_by,
-
                 updated_at: $scope.search.updated_at,
-
                 delivery_date: $scope.search.delivery_date,
-
                 driver: $scope.search.driver,
-
                 profile: $scope.search.profile_id,
-
             };
-
             $scope.sortName = '';
-
             $scope.sortBy = '';
 
-            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_date || $scope.search.driver || $scope.search.name){
-
+            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_date || $scope.search.driver || $scope.search.profile_id){
                 if($.isEmptyObject($scope.datasetTemp)){
-
                     $scope.datasetTemp = $scope.alldata;
-
                     $scope.totalCountTemp = $scope.totalCount;
-
                     $scope.alldata = {};
-
                 }
-
                 getPage(1, false);
-
             }else{
-
                 if(! $.isEmptyObject($scope.datasetTemp)){
-
                     $scope.alldata = $scope.datasetTemp;
-
                     $scope.totalCount = $scope.totalCountTemp;
-
                     $scope.datasetTemp = {
-
                         pageNum: $scope.itemsPerPage,
-
                         sortName: $scope.sortName,
-
                         sortBy: $scope.sortBy,
                     };
-
                 }
-
                 getPage(1, false);
-
             }
-
         }
 
         // retrieve page w/wo search

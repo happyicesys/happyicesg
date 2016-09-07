@@ -75,6 +75,14 @@ Members
                                 {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
                                 {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.parent_name', 'placeholder'=>'Manager']) !!}
                             </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('time_range', 'Available On:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('time_range', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.time_range', 'placeholder'=>'Available On']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('block_coverage', 'Blk Coverage:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('block_coverage', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.block_coverage', 'placeholder'=>'Blk Coverage']) !!}
+                            </div>
                         </div>
 
                         <div class="row">
@@ -108,14 +116,14 @@ Members
                                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                    <th class="col-md-3 col-sm-4 col-xs-4 text-center">
+                                    <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'time_range'; sortReverse = !sortReverse">
                                         Available On
                                         <span ng-show="sortType == 'time_range' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'time_range' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                    <th class="text-center">
+                                    <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'block_coverage'; sortReverse = !sortReverse">
                                         Blk Coverage
                                         <span ng-show="sortType == 'block_coverage' && !sortReverse" class="fa fa-caret-down"></span>
@@ -157,8 +165,8 @@ Members
                                             @{{ member.name }}
                                             </a>
                                         </td>
-                                        <td class="col-md-3 col-sm-4 col-xs-4 text-center">@{{ member.time_range }}</td>
-                                        <td class="text-center">@{{ member.block_coverage}}</td>
+                                        <td class="col-md-2 text-center long_data">@{{ member.time_range }}</td>
+                                        <td class="col-md-2 text-center long_data">@{{ member.block_coverage}}</td>
                                         <td class="col-md-1 text-center">
                                             @{{ member.contact }}
                                             <span ng-show="member.alt_contact.length > 0">
