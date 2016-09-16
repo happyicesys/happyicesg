@@ -14,6 +14,9 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/market/setup/postcode/update', 'MarketingController@updatePostcodeForm');
+Route::get('/market/setup/members', 'MarketingController@getAllMembers');
+Route::get('/market/setup/postcodes', 'MarketingController@getPostcodes');
 Route::post('/market/setup/postcode', 'MarketingController@storePostcode');
 Route::get('/market/setup/price', 'MarketingController@indexSetupPriceApi');
 Route::post('/market/setup/price', 'MarketingController@storeSetupPrice');

@@ -9,8 +9,8 @@ class Area extends Model
     protected $fillable = [
         'area_code', 'name'
     ];
-    public function postcodes()
+    public function groups()
     {
-        return $this->hasMany('App\Postcode');
+        return $this->hasMany('App\Group');
     }
 }

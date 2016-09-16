@@ -36,6 +36,7 @@ elixir(function(mix) {
             'tableExport/libs/html2canvas/html2canvas.min.js',
             'tableExport/tableExport.js',
             '../bower/angularjs-datepicker/src/js/angular-datepicker.js',
+            '../bower/angular-ui-select2/src/select2.js',
             // '../bower/angular-animate/angular-animate.js',
             // '../bower/angular-aria/angular-aria.js',
             // '../bower/angular-material/angular-material.js',

@@ -15,15 +15,15 @@
 <div class="panel panel-warning" ng-app="app" ng-controller="setupController">
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
-            <li class="active"><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
-            {{-- <li><a href="#postcode" role="tab" data-toggle="tab">Postcode Management</a></li> --}}
+            <li><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
+            <li class="active"><a href="#postcode" role="tab" data-toggle="tab">Postcode Management</a></li>
         </ul>
     </div>
 
     <div class="panel-body">
         <div class="tab-content">
             {{-- first element --}}
-            <div class="tab-pane active" id="price">
+            <div class="tab-pane" id="price">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
@@ -109,26 +109,142 @@
             </div>
             {{-- end of first element--}}
             {{-- second element --}}
-            <div class="tab-pane" id="postcode">
+            <div class="tab-pane active" id="postcode">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                            <div class="form-group">
-                            {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
-                                {{ csrf_field() }}
-                                <div class="pull-left">
-                                    {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
-                                    {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
-                                </div>
+                        <div class="panel-title">
 
-                                <div class="pull-right" style="margin-top: 8px;">
-                                    <button type="submit" class="btn btn-success">+ Import</button>
-                                </div>
-                            {!! Form::close() !!}
+                            <div class="pull-left display_num">
+                                <label for="display_num">Display</label>
+                                <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
+                                  <option>50</option>
+                                  <option>100</option>
+                                  <option>150</option>
+                                </select>
+                                <label for="display_num" style="padding-right: 20px">per Page</label>
                             </div>
+
+                            <div class="pull-right">
+                                {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
+                                    {{ csrf_field() }}
+                                    <div class="col-md-9 col-xs-6">
+                                        {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
+                                        {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
+                                    </div>
+                                    <div class="col-md-3 col-xs-6" style="padding-top: 10px;">
+                                        <button type="submit" class="btn btn-success">+ Import</button>
+                                    </div>
+                                {!! Form::close() !!}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="panel-body">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('area', 'Area', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group.area.name', 'placeholder'=>'Area']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('group', 'Group', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group.group_id', 'placeholder'=>'Group']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('postcode', 'Postcode:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('postcode', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.value', 'placeholder'=>'Postcode']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.person.name', 'placeholder'=>'Manager']) !!}
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div style="padding: 20px 0px 10px 15px">
+                                {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
+                                {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            {!! Form::open(['id'=>'update_form', 'method'=>'POST','action'=>['MarketingController@updatePostcodeForm']]) !!}
+                            <table class="table table-list-search table-hover table-bordered">
+                                <tr style="background-color: #DDFDF8">
+                                    <th class="col-md-1 text-center">
+                                        <input type="checkbox" id="checkAll" />
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        #
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'group.area.area_code'; sortReverse = !sortReverse">
+                                        Area Code
+                                        <span ng-show="sortType == 'group.area.area_code' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'group.area.area_code' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'group.area.name'; sortReverse = !sortReverse">
+                                        Area
+                                        <span ng-show="sortType == 'group.area.name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'group.area.name' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'group.group_id'; sortReverse = !sortReverse">
+                                        Group
+                                        <span ng-show="sortType == 'group.group_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'group.group_id' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'value'; sortReverse = !sortReverse">
+                                        Postcode
+                                        <span ng-show="sortType == 'value' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'value' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'block'; sortReverse = !sortReverse">
+                                        Block
+                                        <span ng-show="sortType == 'block' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                    <th class="col-md-2 text-center">
+                                        <a href="#" ng-click="sortType = 'person.name'; sortReverse = !sortReverse">
+                                        Manager
+                                        <span ng-show="sortType == 'person.name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'person.name' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                </tr>
+
+                                <tbody>
+                                     <tr dir-paginate="postcode in postcodes | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="postcode" current-page="currentPage" ng-controller="repeatController">
+                                        <td class="col-md-1 text-center"><input type="checkbox" name="checkbox[@{{postcode.id}}]" value="1" id="checkAll" /></td>
+                                        <td class="col-md-1 text-center">@{{ number }} </td>
+                                        <td class="col-md-1 text-center">@{{ postcode.group.area.area_code }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.group.area.name }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.group.group_id }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.value }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.block }}</td>
+                                        <td class="col-md-2 text-center">
+                                            <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
+                                                    <option value=""></option>
+                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.id}} - @{{member.name}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="(postcodes | filter:search).length == 0 || ! postcodes.length">
+                                        <td colspan="12" class="text-center">No Records Found</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                          <dir-pagination-controls pagination-id="postcode" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                          <label class="pull-right totalnum" for="totalnum">Showing @{{(postcodes | filter:search).length}} of @{{postcodes.length}} entries</label>
                     </div>
                 </div>
             </div>
@@ -137,7 +253,7 @@
     </div>
 </div>
 
-<script src="/js/dtdprice.js"></script>
+<script src="/js/setup.js"></script>
 <script>
     $(function() {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
@@ -151,6 +267,11 @@
         if (lastTab) {
             $('[href="' + lastTab + '"]').tab('show');
         }
+    });
+
+    $('#checkAll').change(function(){
+        var all = this;
+        $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
     });
 </script>
 @stop

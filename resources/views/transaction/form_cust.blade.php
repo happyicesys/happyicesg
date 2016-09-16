@@ -212,6 +212,17 @@
                         {!! Form::text('note', null, ['class'=>'form-control']) !!}
                     </div>
                 @endif
+
+                @if($transaction->cust_id[0] === 'D')
+                    <div class="col-md-4 form-group">
+                        {!! Form::label('type', 'Dtd Deal Type :', ['class'=>'control-label']) !!}
+                        {!! Form::select('type',
+                            [''=>null, 'Deal'=>'Deal', 'Commission'=>'Commission'],
+                            null,
+                            ['class'=>'select form-control'])
+                        !!}
+                    </div>
+                @endif
             </div>
 
         </div>
