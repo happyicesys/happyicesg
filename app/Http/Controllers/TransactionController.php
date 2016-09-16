@@ -128,40 +128,26 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate($request, [
-
             'person_id' => 'required',
-
         ],[
-
             'person_id.required' => 'Please choose an option',
-
         ]);
 
         $request->merge(array('updated_by' => Auth::user()->name));
-
         $request->merge(['delivery_date' => Carbon::today()]);
-
         $request->merge(['order_date' => Carbon::today()]);
-
         $input = $request->all();
 
         $transaction = Transaction::create($input);
-
         // create dtd transaction once detect person code is D
         if($transaction->person->cust_id[0] === 'D'){
-
+            $request->merge(array('type' => 'Deal'));
             $dtdtransaction = DtdTransaction::create($input);
-
             $dtdtransaction->transaction_id = $transaction->id;
-
             $dtdtransaction->save();
-
             $transaction->dtdtransaction_id = $dtdtransaction->id;
-
             $transaction->save();
-
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
