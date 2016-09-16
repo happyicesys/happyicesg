@@ -90,7 +90,7 @@ class MarketingController extends Controller
         $adminbool = false;
         $member_adminbool = false;
         $memberbool = false;
-        $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
+        $member = Person::where('user_id', Auth::user()->id)->first();
         $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
@@ -110,7 +110,7 @@ class MarketingController extends Controller
         }
 
         if($memberbool){
-            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get();
+            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->with('manager')->reOrderBy('id', 'desc')->get();
         }else if($adminbool or $member_adminbool){
             return $all_members;
         }else{
@@ -310,7 +310,7 @@ class MarketingController extends Controller
         $adminbool = false;
         $member_adminbool = false;
         $memberbool = false;
-        $member = Person::where('user_id', Auth::user()->id)->with('manager')->first();
+        $member = Person::where('user_id', Auth::user()->id)->first();
         $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
@@ -331,7 +331,7 @@ class MarketingController extends Controller
 
         // show results based on condition
         if($memberbool){
-            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('id', 'desc')->get();
+            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->with('manager')->reOrderBy('id', 'desc')->get();
         }else if($adminbool or $member_adminbool){
             return $all_customers;
         }else{
@@ -347,6 +347,59 @@ class MarketingController extends Controller
     public function createBatchCustomer()
     {
         return view('market.customer.batchcreate');
+    }
+
+    // transfer customers from one AB to another AB
+    public function transferBatchCustomer()
+    {
+        return view('market.customer.batchtransfer');
+    }
+
+    // return single person descendant list for customers H ($id)
+    public function getDescendantCustomer($id)
+    {
+        $person = Person::findOrFail($id);
+        $customers = $person->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('id', 'desc')->get();
+        return $customers;
+    }
+
+    // return descendant exclude the id parse in
+    public function getDescMembersExcept(Request $request)
+    {
+        $manager_id = $request->manager_id;
+        $desc_id = $request->desc_id;
+        if($manager_id){
+            $members = Person::findOrFail($manager_id)->descendants()->where('cust_id', 'LIKE', 'D%')->whereNotIn('id', [$desc_id])->reOrderBy('id', 'desc')->get();
+        }else{
+            $members = Person::where('cust_id', 'LIKE', 'D%')->whereNotIn('id', [$desc_id])->reOrderBy('id', 'desc')->get();
+        }
+        return $members;
+    }
+
+    // transfer customer post process(FormRequest)
+    public function transferCustomer(Request $request)
+    {
+        $this->validate($request, [
+            'trans_from' => 'required',
+            'trans_to' => 'required',
+        ],[
+            'trans_from.required' => 'Please select a transfer from member',
+            'trans_to.required' => 'Please select a  transfer to member'
+        ]);
+        $trans_from_collection = json_decode($request->trans_from);
+        $trans_to_id = $request->trans_to;
+        $from_member = Person::findOrFail($trans_from_collection->id);
+        $to_member = Person::findOrFail($trans_to_id);
+
+        $customers = $from_member->descendants()->where('cust_id', 'LIKE', 'H%')->reOrderBy('id', 'desc')->get();
+
+        foreach($customers as $customer){
+            $customer->makeChildOf($to_member);
+            $customer->parent_name = $to_member->name;
+            $customer->save();
+        }
+        Flash::success('Successfully Updated');
+        return Redirect::action('MarketingController@indexCustomer');
     }
 
     public function storeCustomer(CustomerRequest $request)

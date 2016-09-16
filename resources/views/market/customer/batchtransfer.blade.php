@@ -1,13 +1,55 @@
+@inject('people', 'App\Person')
 @extends('template')
 @section('title')
 Customers
 @stop
 @section('content')
 
-    <div class="row">
-    <a class="title_hyper pull-left" href="/market/customer"><h1>Customers <i class="fa fa-male"></i></h1></a>
+<div class="create_edit" ng-app="app" ng-controller="transCustomerController">
+    {!! Form::hidden('member_id',
+                    App\Person::whereUserId(Auth::user()->id)->first() ? App\Person::whereUserId(Auth::user()->id)->first()->id : null,
+                    ['id'=>'member_id']
+    ) !!}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"><strong>Transfer Customers (H)</strong></h3>
+        </div>
+
+        <div class="panel-body">
+            {!! Form::model($customer = new \App\Person, ['action'=>'MarketingController@transferCustomer']) !!}
+                    <div class="form-group">
+                        <label for="trans_from" class="control-label">Transfer From</label>
+                        <select name="trans_from" class="select" class="form-control" ng-model="transFromModel" ng-change='onPersonSelected(transFromModel)'>
+                            @if($people::whereUserId(Auth::user()->id)->first())
+                                @foreach($people::whereUserId(Auth::user()->id)->first()->descendants()->where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get() as $person)
+                                    <option value=""></option>
+                                    <option value="{{$person}}">{{$person->name}}</option>
+                                @endforeach
+                            @else
+                                @foreach($people::where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get() as $person)
+                                    <option value=""></option>
+                                    <option value="{{$person->id}}">{{$person->name}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="trans_to" class="control-label">Transfer To</label>
+                        <select name="trans_to" class="select" class="form-control" ng-model="transToModel">
+                            <option value=""></option>
+                            <option ng-repeat="member in members" value="@{{member.id}}">@{{member.name}}</option>
+                        </select>
+                    </div>
+                <div class="col-md-12">
+                    <div class="form-group pull-right" style="padding-top: 15px;">
+                        {!! Form::submit('Transfer customers', ['class'=> 'btn btn-success']) !!}
+                        <a href="/market/customer" class="btn btn-default">Cancel</a>
+                    </div>
+                </div>
+            {!! Form::close() !!}
+        </div>
     </div>
-    <div ng-app="app" ng-controller="customerController">
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -22,15 +64,7 @@ Customers
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
                     </div>
-
-                    <div class="pull-right">
-                        <a href="/market/customer/create" class="btn btn-success">+ New Customer</a>
-                        <a href="/market/customer/batchcreate" class="btn btn-primary">+ Batch Create Customer</a>
-                        <a href="/market/customer/batchtransfer" class="btn btn-info">Transfer Customer</a>
-                        @if(Auth::user()->hasRole('admin'))
-                            <a href="/market/customer/emaildraft" class="btn btn-warning">Customer Email Draft</a>
-                        @endif
-                    </div>
+                    <label ng-if="chosen_member" class="control-label">(Customers for @{{chosen_member}})</label>
                 </div>
             </div>
 
@@ -63,10 +97,6 @@ Customers
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('active', 'Active:', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('active', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.active', 'placeholder'=>'Active']) !!}
-                    </div>
-                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('parent_name', 'Manager:', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('parent_name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.manager.name', 'placeholder'=>'Manager']) !!}
                     </div>
                 </div>
 
@@ -132,12 +162,6 @@ Customers
                                 <span ng-show="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortType = 'parent_name'; sortReverse = !sortReverse">
-                                Manager
-                                <span ng-show="sortType == 'parent_name' && !sortReverse" class="fa fa-caret-down"></span>
-                                <span ng-show="sortType == 'parent_name' && sortReverse" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'active'; sortReverse = !sortReverse">
                                 Active
                                 <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
@@ -162,9 +186,8 @@ Customers
                                 <td class="col-md-1">@{{ customer.block }}</td>
                                 <td class="col-md-1">@{{ customer.floor }}</td>
                                 <td class="col-md-1">@{{ customer.unit }}</td>
-                                <td class="col-md-1">@{{ customer.created_at }}</td>
+                                <td class="col-md-1 text-center">@{{ customer.created_at }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.del_postcode }}</td>
-                                <td class="col-md-1 text-center">@{{ customer.manager.name }}</td>
                                 <td class="col-md-1 text-center">@{{ customer.active }}</td>
                             </tr>
                             <tr ng-if="(customers | filter:search).length == 0 || ! customers.length">
@@ -181,5 +204,6 @@ Customers
         </div>
     </div>
 
-    <script src="/js/customer.js"></script>
+</div>
+<script src="/js/transferCustomer.js"></script>
 @stop

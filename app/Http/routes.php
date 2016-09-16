@@ -18,6 +18,7 @@ Route::post('/market/setup/postcode', 'MarketingController@storePostcode');
 Route::get('/market/setup/price', 'MarketingController@indexSetupPriceApi');
 Route::post('/market/setup/price', 'MarketingController@storeSetupPrice');
 Route::get('/market/setup', 'MarketingController@indexSetup');
+Route::post('/market/customer/transfer', 'MarketingController@transferCustomer');
 Route::post('/market/customer/{customer_id}', 'MarketingController@updateCustomer');
 Route::get('/market/customer/{customer_id}/edit', 'MarketingController@editCustomer');
 Route::get('/market/customer/notify/{customer_id}', 'MarketingController@notifyManagerIndex');
@@ -27,17 +28,20 @@ Route::post('/market/customer', 'MarketingController@storeCustomer');
 Route::post('/market/batchcustomer', 'MarketingController@storeBatchCustomer');
 Route::get('/market/customer/create', 'MarketingController@createCustomer');
 Route::get('/market/customer/batchcreate', 'MarketingController@createBatchCustomer');
+Route::get('/market/customer/batchtransfer', 'MarketingController@transferBatchCustomer');
 Route::get('/market/customer/data', 'MarketingController@indexCustomerApi');
 Route::get('/market/customer/emaildraft', 'MarketingController@emailDraft');
 Route::post('/market/customer/update/emaildraft', 'MarketingController@updateEmailDraft');
 Route::get('/market/customer', 'MarketingController@indexCustomer');
 Route::delete('/market/customer/{member_id}', 'MarketingController@destroyCustomer');
+Route::get('/api/market/customer/{member_id}', 'MarketingController@getDescendantCustomer');
 Route::get('/market/member/{member_id}/edit', 'MarketingController@editMember');
 Route::post('/market/member/{member_id}', 'MarketingController@updateMember');
 Route::post('/market/member', 'MarketingController@storeMember');
 Route::post('/market/member/self/{self_id}', 'MarketingController@updateSelf');
 Route::get('/market/member/create/{level}', 'MarketingController@createMember');
 Route::delete('/market/member/{member_id}', 'MarketingController@destroyMember');
+Route::get('/api/market/exclude/descmember', 'MarketingController@getDescMembersExcept');
 
 Route::get('/market/commision/create', 'MarketingController@createCommision');
 
