@@ -300,7 +300,9 @@ Deals
                             @cannot('transaction_view')
                             @cannot('supervisor_view')
 
-                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                                @if($transaction->status != 'Delivered' or $transaction->status != 'Verified Owe' or $transaction->status != 'Verified Paid')
+                                    {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                                @endif
 
                                 {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
 
