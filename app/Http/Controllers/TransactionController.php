@@ -1275,18 +1275,13 @@ class TransactionController extends Controller
 
         $nonGst_amount = $query1->whereHas('person.profile', function($query1){
                             $query1->where('gst', 0);
-                        })->sum('total');
-
-        $nonGst_amount = round($nonGst_amount, 2);
+                        })->sum(DB::raw('ROUND(total, 2)'));
 
         $gst_amount = $query2->whereHas('person.profile', function($query2){
                         $query2->where('gst', 1);
-                    })->sum('total');
-
-        $gst_amount = round(($gst_amount * 107/100), 2);
+                    })->sum(DB::raw('ROUND((total * 107/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
-
         return $total_amount;
     }
 
@@ -1299,10 +1294,8 @@ class TransactionController extends Controller
         $query1 = clone $query;
         $query2 = clone $query;
 
-        $nonGst_amount = $query1->where('profiles.gst', 0)->sum('transactions.total');
-        $nonGst_amount = round($nonGst_amount, 2);
-        $gst_amount = $query2->where('profiles.gst', 1)->sum('transactions.total');
-        $gst_amount = round(($gst_amount * 107/100), 2);
+        $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $gst_amount = $query2->where('profiles.gst', 1)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
 

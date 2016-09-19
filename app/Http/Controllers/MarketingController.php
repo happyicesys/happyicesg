@@ -1213,13 +1213,11 @@ class MarketingController extends Controller
 
         $nonGst_amount = $query1->whereHas('person.profile', function($query1){
                             $query1->where('gst', 0);
-                        })->sum('total');
-        $nonGst_amount = round($nonGst_amount, 2);
+                        })->sum(DB::raw('ROUND(total, 2)'));
 
         $gst_amount = $query2->whereHas('person.profile', function($query2){
                         $query2->where('gst', 1);
-                    })->sum('total');
-        $gst_amount = round(($gst_amount * 107/100), 2);
+                    })->sum(DB::raw('ROUND((total * 107/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
         return $total_amount;
@@ -1240,13 +1238,11 @@ class MarketingController extends Controller
 
         $nonGst_amount = $query3->whereHas('person.profile', function($query3){
                             $query3->where('gst', 0);
-                        })->sum('total');
-        $nonGst_amount = round($nonGst_amount, 2);
+                        })->sum(DB::raw('ROUND(total, 2)'));
 
         $gst_amount = $query4->whereHas('person.profile', function($query4){
                         $query4->where('gst', 1);
-                    })->sum('total');
-        $gst_amount = round(($gst_amount * 107/100), 2);
+                    })->sum(DB::raw('ROUND((total * 107/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
         return abs($total_amount);

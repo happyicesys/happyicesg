@@ -194,7 +194,6 @@ class ClientController extends Controller
     public function emailOrder(Request $request)
     {
         $this->validate($request, [
-
             'name' => 'required',
             'contact' => 'required',
             'email' => 'required',
@@ -202,17 +201,17 @@ class ClientController extends Controller
             'block' => 'required',
             'floor' => 'required',
             'unit' => 'required',
-
         ]);
+
+        if($request->total == 0){
+            Flash::error('Please choose something before proceed');
+            return Redirect::action('ClientController@d2dIndex');
+        }
 /*
         if($request->email){
-
             $existing = Person::where('email', $request->email)->first();
-
             if(! $existing){
-
                 // do the logic to store the customer based on postal code and auto assign AB
-
             }
         }*/
 
@@ -245,89 +244,54 @@ class ClientController extends Controller
 
         // email array send to
         $adminemails = User::whereHas('roles', function($q){
-
             $q->where('name', 'admin');
-
         })->get();
 
         if($adminemails){
-
             foreach($adminemails as $adminemail){
-
                 if($adminemail->email){
-
                     $sendto[] = $adminemail->email;
                 }
             }
-
             $sendto = array_unique($sendto);
-
         }else{
-
             $sendto = ['daniel.ma@happyice.com.sg'];
-
         }
         // $sendto = ['leehongjie91@gmail.com'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
-
         $data = array(
-
             'name' => $request->name,
-
             'contact' => $request->contact,
-
             'email' => $request->email,
-
             'street' => $request->street,
-
             'postcode' => $request->postcode,
-
             'block' => $request->block,
-
             'floor' => $request->floor,
-
             'unit' => $request->unit,
-
             'remark' => $request->remark,
-
             'total' => $request->total,
-
             'itemArr' => $request->itemArr,
-
             'qtyArr' => $request->qtyArr,
-
             'amountArr' => $request->amountArr,
-
             'lookupArr' => $lookupArr,
-
             'timeslot' => $timeArr[$request->del_time],
-
             'dayslot' => $dayArr[$request->del_date],
-
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){
-
                     $message->from($sendfrom);
-
                     $message->subject('D2D Online Order Form ['.$today.']');
-
                     $message->setTo($sendto);
         });
 
         if($mail){
-
             Flash::success('The order has been submitted');
-
         }else{
-
             Flash::error('Please Try Again');
-
         }
 
         return Redirect::action('ClientController@d2dIndex');
     }
-
 }
