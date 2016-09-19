@@ -536,13 +536,9 @@ class RptController extends Controller
         $query1 = clone $query;
         $query2 = clone $query;
 
-        $nonGst_amount = $query1->where('profiles.gst', 0)->sum('transactions.total');
-        $nonGst_amount = round($nonGst_amount, 2);
-        $gst_amount = $query2->where('profiles.gst', 1)->sum('transactions.total');
-        $gst_amount = round(($gst_amount * 107/100), 2);
-
+        $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND((transactions.total), 2)'));
+        $gst_amount = $query2->where('profiles.gst', 1)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
         $total_amount = $nonGst_amount + $gst_amount;
-
         return $total_amount;
     }
 
@@ -703,17 +699,11 @@ class RptController extends Controller
 
         $query2 = $this->extraField($request, $query2);
         $query2 = $query2->orderBy('transactions.id', 'desc');
-        // $amt_del = $this->calTransactionTotal($query1->get());
         $amt_del = $this->calDBTransactionTotal($query1);
-        // $qty_del = $this->calQtyTotal($query1->get());
         $qty_del = $this->calDBQtyTotal($query1);
-        // $paid_del = $this->calTransactionTotal($query1->where('pay_status', '=', 'Paid')->get());
         $paid_del = $this->calDBTransactionTotal($query1->where('pay_status', '=', 'Paid'));
-        // $amt_mod = $this->calTransactionTotal($query2->get());
         $amt_mod = $this->calDBTransactionTotal($query2);
-        // $cash_mod = $this->payMethodCon($query2->get(), 'cash');
         $cash_mod = $this->payMethodConDB($query2, 'cash');
-        // $cheque_mod = $this->payMethodCon($query2->get(), 'cheque');
         $cheque_mod = $this->payMethodConDB($query2, 'cheque');
 
         $data = [
