@@ -119,7 +119,6 @@ var app = angular.module('app', [
         function getPage(pageNumber, first){
             $scope.spinner = true;
             $http.post('transaction/data?page=' + pageNumber + '&init=' + first, $scope.datasetTemp).success(function(data){
-
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;

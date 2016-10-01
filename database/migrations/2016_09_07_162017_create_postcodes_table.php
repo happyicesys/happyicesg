@@ -12,11 +12,11 @@ class CreatePostcodesTable extends Migration
             $table->increments('id');
             $table->string('value')->unique();
             $table->string('block')->nullable();
-            $table->text('remark')->nullable();
+            $table->string('area_code')->nullable();
+            $table->string('area_name')->nullable();
+            $table->string('group')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');
-            $table->integer('area_id')->unsigned()->nullable();
-            $table->foreign('area_id')->references('id')->on('areas');
             $table->timestamps();
         });
     }

@@ -1,6 +1,8 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize']);
+var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select2', 'ngSanitize']);
 
     function setupController($scope, $http){
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 10;
 
         $http.get('/item/data').success(function(items){
             $scope.items = items;
@@ -32,6 +34,13 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             }
         });
 
+        $http.get('/market/setup/postcodes').success(function(data){
+            $scope.postcodes = data;
+        });
+
+        $http.get('/market/setup/members').success(function(data){
+            $scope.members = data;
+        });
     }
 
 function repeatController($scope) {

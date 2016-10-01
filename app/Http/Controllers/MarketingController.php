@@ -26,6 +26,8 @@ use App\Role;
 use App\GeneralSetting;
 use App\NotifyManager;
 use App\EmailAlert;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Postcode;
 
 class MarketingController extends Controller
 {
@@ -1071,18 +1073,119 @@ class MarketingController extends Controller
         return view('market.deal.log', compact('transaction', 'transHistory'));
     }
 
+    // return all postcodes list
+    public function getPostcodes()
+    {
+        $dtdperson = Person::whereUserId(Auth::user()->id)->first();
+        $dtdrole = '';
+        if($dtdperson){
+            $dtdrole = $dtdperson->cust_type;
+        }
+        if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
+            $postcodes = Postcode::with('person')->get();
+        }else{
+            // setup array to fetch self and descendants id
+            $descAndSelfID = [];
+            $descAndSelf = $dtdperson->getDescendantsAndSelf();
+            foreach($descAndSelf as $member){
+                array_push($descAndSelfID, $member->id);
+            }
+            // filter through postcode that suppose to be shown
+            $postcodes = Postcode::with('person')->whereIn('person_id', $descAndSelfID)->get();
+        }
+        return $postcodes;
+    }
+
+    // return d2d members list
+    public function getAllMembers()
+    {
+        $dtdperson = Person::whereUserId(Auth::user()->id)->first();
+        if($dtdperson){
+            $dtdrole = $dtdperson->cust_type;
+        }else{
+            $dtdrole = '';
+        }
+        if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
+            $people = Person::where('cust_id', 'LIKE', 'D%')->get();
+        }else{
+            $people = Person::whereUserId(Auth::user()->id)->first()->descendantsAndSelf()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_id')->get();
+        }
+        return $people;
+    }
+
     // store postcode excel file import
     public function storePostcode(Request $request)
     {
-        // dd($request->all());
         $this->validate($request, [
-            'postcode_excel' => 'required|mimes:xls,xlsx|max:500000'
+            'postcode_excel' => 'required|max:500000'
         ], [
             'postcode_excel.required' => 'Please insert the postcode excel file',
             // 'postcode_excel.mimes' => 'Only excel file is accepted',
             'postcode_excel.max' => 'The excel file cannot exceed 5 mb',
         ]);
+        $file = $request->file('postcode_excel');
+        $excel = Excel::load($file, function($reader) {
+            foreach($reader->all() as $row){
+                if($row->postcode != '' and $row->postcode != null){
+                    // find out the postcode of the row is exisiting or new
+                    $postcode = Postcode::whereValue($row->postcode)->first();
+                    if(!$postcode){
+                        $postcode = Postcode::create(['value'=>$row->postcode]);
+                    }
+                    $postcode->block = $row->block;
+                    $postcode->area_code = $row->area_code;
+                    $postcode->area_name = $row->area_name;
+                    $postcode->group = $row->group;
 
+                    $assign_to = $row->assign_to;
+                    if($assign_to){
+                        $person = Person::where('cust_id', 'LIKE', 'D%')
+                                        ->where(function($q) use ($assign_to){
+                                            $q->where('name', 'LIKE', '%'.$assign_to.'%')
+                                                ->orWhere('company', 'LIKE', '%'.$assign_to.'%');
+                                        })->first();
+                        if($person){
+                            $postcode->person_id = $person->id;
+                        }else{
+                            $postcode->person_id = null;
+                        }
+                    }
+                    $postcode->save();
+                }
+            }
+        });
+        if($excel){
+            Flash::success('Successfully synced');
+        }else{
+            Flash::error('Please check the file again');
+        }
+        return Redirect::action('MarketingController@indexSetup');
+    }
+
+    // update postcode attach person id
+    public function updatePostcodeForm(Request $request)
+    {
+        $checked = $request->checkbox;
+        $manager = $request->manager;
+        if($checked){
+            foreach($checked as $index => $check){
+                $postcode = Postcode::findOrFail($index);
+                if($request->delete){
+                    $postcode->delete();
+                }else{
+                    if($manager[$index]){
+                        $postcode->person_id = $manager[$index];
+                    }else{
+                        $postcode->person_id = null;
+                    }
+                    $postcode->save();
+                }
+            }
+            Flash::success('Successfully updated');
+        }else{
+            Flash::error('Please select the list to edit');
+        }
+        return Redirect::action('MarketingController@indexSetup');
     }
 
     // method for deleting deals upon transaction deletion

@@ -20,6 +20,7 @@ use App\User;
 use App\Profile;
 use App\Role;
 use App\DtdPrice;
+use App\Postcode;
 
 class ClientController extends Controller
 {
@@ -226,22 +227,35 @@ class ClientController extends Controller
             '8' => 'Strawberry (6pcs/ set)',
             '9' => 'Mint Chocolate (6pcs/ set)'
         ];
-
         $dayArr = [
             '1' => 'Same Day',
             '2' => 'Within 1 Day',
             '3' => 'Within 2 Days',
         ];
-
         $timeArr = [
             '1' => '8am - 12pm',
             '2' => '12pm - 5pm',
             '3' => '5pm - 9pm',
         ];
 
+        $covered_custid = false;
+        // trace the postcode is within the coverage
+        if($request->postcode){
+            $search_postcode = Postcode::whereValue($request->postcode)->first();
+            if($search_postcode){
+                if($search_postcode->person_id){
+                    // create d2d customer (H) based on the online order postcode given
+                    $covered_custid = $this->createDtdCustomer($search_postcode, $request);
+                }
+            }
+        }
+        // create dtdtransaction if the dtd online order is within the coverage
+        if($covered_custid){
+
+        }
+
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
-
         // email array send to
         $adminemails = User::whereHas('roles', function($q){
             $q->where('name', 'admin');
@@ -281,9 +295,9 @@ class ClientController extends Controller
         );
 
         $mail =  Mail::send('client.email_order', $data, function ($message) use ($sendfrom, $sendto, $today){
-                    $message->from($sendfrom);
-                    $message->subject('D2D Online Order Form ['.$today.']');
-                    $message->setTo($sendto);
+            $message->from($sendfrom);
+            $message->subject('D2D Online Order Form ['.$today.']');
+            $message->setTo($sendto);
         });
 
         if($mail){
@@ -291,7 +305,32 @@ class ClientController extends Controller
         }else{
             Flash::error('Please Try Again');
         }
-
         return Redirect::action('ClientController@d2dIndex');
+    }
+
+    // create H code customer process based on given postcode and assign to member
+    private function createDtdCustomer($postcode_data, $request)
+    {
+        $existing_cust = Person::where('cust_id', 'LIKE', 'H%')->whereContact(preg_replace('/\D/', '', $request->contact))->first();
+        $latest_id = Person::where('cust_id', 'LIKE', 'H%')->first() ? (int) substr(Person::where('cust_id', 'LIKE', 'H%')->max('cust_id'), 1) : (int) '100001';
+
+        if(!$existing_cust){
+            $new_cust = Person::create([
+                'cust_id' => 'H'.($latest_id + 1),
+                'name' => $request->name,
+                'contact' => $request->contact,
+                'email' => $request->email,
+                'street' => $request->street,
+                'del_postcode' => $request->postcode,
+                'block' => $request->block,
+                'floor' => $request->floor,
+                'unit' => $request->unit,
+                'profile_id' => 1,
+                'payterm' => 'C.O.D',
+            ]);
+            return $new_cust->id;
+        }else{
+            return $existing_cust->id;
+        }
     }
 }

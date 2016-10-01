@@ -202,6 +202,16 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Person', 'parent_id');
     }
 
+    public function postcodes()
+    {
+        return $this->hasMany('App\Postcode');
+    }
+
+    public function getPostcodeListAttribute()
+    {
+        return $this->postcodes->lists('id')->toArray();
+    }
+
     /**
      * search like name
      * @param $name in string

@@ -1,18 +1,18 @@
 var app = angular.module('app', [
-    'ui.bootstrap', 
+    'ui.bootstrap',
     'angularUtils.directives.dirPagination',
     ]);
 
     function userController($scope, $http){
 
-    $scope.currentPage = 1;
-    $scope.itemsPerPage = 10; 
-    $scope.currentPage2 = 1;
-    $scope.itemsPerPage2 = 10; 
-    $scope.currentPage3 = 1;
-    $scope.itemsPerPage3 = 10; 
-    $scope.currentPage4 = 1;
-    $scope.itemsPerPage4 = 10;             
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 10;
+        $scope.currentPage2 = 1;
+        $scope.itemsPerPage2 = 10;
+        $scope.currentPage3 = 1;
+        $scope.itemsPerPage3 = 10;
+        $scope.currentPage4 = 1;
+        $scope.itemsPerPage4 = 10;
 
         $http.get('/user/data').success(function(users){
             $scope.users = users;
@@ -28,7 +28,7 @@ var app = angular.module('app', [
 
         $http.get('/payterm/data').success(function(payterms){
             $scope.payterms = payterms;
-        });                        
+        });
 
         //delete record
         $scope.confirmDelete = function(id){
@@ -65,7 +65,7 @@ var app = angular.module('app', [
             }else{
                 return false;
             }
-        } 
+        }
 
         $scope.confirmDelete3 = function(id){
             var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
@@ -83,7 +83,7 @@ var app = angular.module('app', [
             }else{
                 return false;
             }
-        } 
+        }
 
         $scope.confirmDelete4 = function(id){
             var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
@@ -101,8 +101,8 @@ var app = angular.module('app', [
             }else{
                 return false;
             }
-        }                        
-    } 
+        }
+    }
 
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
@@ -114,20 +114,20 @@ function repeatController2($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage2 - 1) * $scope.itemsPerPage2;
     })
-} 
+}
 
 function repeatController3($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage3 - 1) * $scope.itemsPerPage3;
     })
-} 
+}
 
 function repeatController4($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage4 - 1) * $scope.itemsPerPage4;
     })
-} 
-    
+}
+
 
 app.controller('userController', userController);
 app.controller('repeatController', repeatController);
