@@ -28,7 +28,7 @@ Customers
                             @else
                                 @foreach($people::where('cust_id', 'LIKE', 'D%')->reOrderBy('id', 'desc')->get() as $person)
                                     <option value=""></option>
-                                    <option value="{{$person->id}}">{{$person->name}}</option>
+                                    <option value="{{$person}}">{{$person->name}}</option>
                                 @endforeach
                             @endif
                         </select>
