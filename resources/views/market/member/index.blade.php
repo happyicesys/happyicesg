@@ -1,5 +1,4 @@
 @inject('person', 'App\Person')
-
 @extends('template')
 @section('title')
 Members
@@ -202,7 +201,6 @@ Members
 
                     <div class="panel-body">
                         <div class="col-md-10 col-md-offset-1 col-xs-12">
-
                             {!! Form::model($self, ['id'=>'edit_profile','action'=>['MarketingController@updateSelf', $self->id]]) !!}
                                 <div class="row">
                                     @include('market.member.form')

@@ -1,5 +1,6 @@
 @inject('items', 'App\Item')
 @inject('price', 'App\DtdPrice')
+@inject('people', 'App\Person')
 
 @extends('template')
 @section('title')
@@ -15,7 +16,9 @@
 <div class="panel panel-warning" ng-app="app" ng-controller="setupController">
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
-            <li><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
+            @if(Auth::user()->hasRole('admin') or $people::where('user_id', Auth::user()->id)->first()->cust_type === 'OM')
+                <li><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
+            @endif
             <li class="active"><a href="#postcode" role="tab" data-toggle="tab">Postcode Management</a></li>
         </ul>
     </div>
@@ -124,18 +127,20 @@
                                 <label for="display_num" style="padding-right: 20px">per Page</label>
                             </div>
 
-                            <div class="pull-right">
-                                {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
-                                    {{ csrf_field() }}
-                                    <div class="col-md-9 col-xs-6">
-                                        {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
-                                        {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
-                                    </div>
-                                    <div class="col-md-3 col-xs-6" style="padding-top: 10px;">
-                                        <button type="submit" class="btn btn-success">+ Import</button>
-                                    </div>
-                                {!! Form::close() !!}
-                            </div>
+                            @if(Auth::user()->hasRole('admin'))
+                                <div class="pull-right">
+                                    {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
+                                        {{ csrf_field() }}
+                                        <div class="col-md-9 col-xs-6">
+                                            {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
+                                            {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
+                                        </div>
+                                        <div class="col-md-3 col-xs-6" style="padding-top: 10px;">
+                                            <button type="submit" class="btn btn-success">+ Import</button>
+                                        </div>
+                                    {!! Form::close() !!}
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -143,11 +148,11 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('area', 'Area', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group.area.name', 'placeholder'=>'Area']) !!}
+                                {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.area_name', 'placeholder'=>'Area']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('group', 'Group', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group.group_id', 'placeholder'=>'Group']) !!}
+                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group', 'placeholder'=>'Group']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('postcode', 'Postcode:', ['class'=>'control-label search-title']) !!}
@@ -162,7 +167,9 @@
                         <div class="row">
                             <div style="padding: 20px 0px 10px 15px">
                                 {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
-                                {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
+                                @if(Auth::user()->hasRole('admin'))
+                                    {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
+                                @endif
                             </div>
                         </div>
 
@@ -177,23 +184,23 @@
                                         #
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'group.area.area_code'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = 'area_code'; sortReverse = !sortReverse">
                                         Area Code
-                                        <span ng-show="sortType == 'group.area.area_code' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'group.area.area_code' && sortReverse" class="fa fa-caret-up"></span>
+                                        <span ng-show="sortType == 'area_code' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'area_code' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'group.area.name'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = 'area_name'; sortReverse = !sortReverse">
                                         Area
-                                        <span ng-show="sortType == 'group.area.name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'group.area.name' && sortReverse" class="fa fa-caret-up"></span>
+                                        <span ng-show="sortType == 'area_name' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'area_name' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'group.group_id'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = 'group'; sortReverse = !sortReverse">
                                         Group
-                                        <span ng-show="sortType == 'group.group_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'group.group_id' && sortReverse" class="fa fa-caret-up"></span>
+                                        <span ng-show="sortType == 'group' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'group' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-1 text-center">
@@ -220,15 +227,15 @@
                                      <tr dir-paginate="postcode in postcodes | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="postcode" current-page="currentPage" ng-controller="repeatController">
                                         <td class="col-md-1 text-center"><input type="checkbox" name="checkbox[@{{postcode.id}}]" value="1" id="checkAll" /></td>
                                         <td class="col-md-1 text-center">@{{ number }} </td>
-                                        <td class="col-md-1 text-center">@{{ postcode.group.area.area_code }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.group.area.name }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.group.group_id }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.area_code }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.area_name }}</td>
+                                        <td class="col-md-1 text-center">@{{ postcode.group }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.value }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.block }}</td>
                                         <td class="col-md-2 text-center">
                                             <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
                                                     <option value=""></option>
-                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.id}} - @{{member.name}}</option>
+                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
                                             </select>
                                         </td>
                                     </tr>

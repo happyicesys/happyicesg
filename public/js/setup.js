@@ -39,10 +39,8 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
         });
 
         $http.get('/market/setup/members').success(function(data){
-            console.log(data);
             $scope.members = data;
         });
-
     }
 
 function repeatController($scope) {

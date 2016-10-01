@@ -1,5 +1,6 @@
 @inject('payterm', 'App\Payterm')
 @inject('members', 'App\Person')
+@inject('postcodes', 'App\Postcode')
 
 <div class="col-md-6">
 {{--
@@ -43,16 +44,29 @@
     </div>
 
     @if(Auth::user()->hasRole('admin'))
-    <div class="form-group">
-        {!! Form::label('cost_rate', 'Cost Rate (%)', ['class'=>'control-label']) !!}
-        {!! Form::text('cost_rate', null, ['class'=>'form-control', 'placeholder'=>'Leave Blank for 100% as Default']) !!}
-    </div>
+        <div class="form-group">
+            {!! Form::label('cost_rate', 'Cost Rate (%)', ['class'=>'control-label']) !!}
+            {!! Form::text('cost_rate', null, ['class'=>'form-control', 'placeholder'=>'Leave Blank for 100% as Default']) !!}
+        </div>
+    @endif
+
+    @if(isset($self))
+        <div class="form-group">
+            {!! Form::label('postcode_list', 'Postcodes', ['class'=>'control-label']) !!}
+            {!! Form::select('postcode_list', $postcodes::wherePersonId($self->id)->lists('value', 'id'), null, ['class'=>'select_mul form-control', 'multiple', 'disabled']) !!}
+        </div>
+    @endif
+
+    @if(isset($person))
+        <div class="form-group">
+            {!! Form::label('postcode_list', 'Postcodes', ['class'=>'control-label']) !!}
+            {!! Form::select('postcode_list', $postcodes::wherePersonId($person->id)->lists('value', 'id'), null, ['class'=>'select_mul form-control', 'multiple', 'disabled']) !!}
+        </div>
     @endif
 
 </div>
 
 <div class="col-md-6">
-
     @if(isset($self))
         <div class="form-group">
             {!! Form::label('company', 'Username', ['class'=>'control-label']) !!}
@@ -96,51 +110,37 @@
 </div>
 
     <div class="row">
-
         <div class="col-md-12 col-xs-12">
-
             <div class="col-md-6 col-xs-12">
-
                 <div class="form-group">
-
                     {!! Form::label('time_range', 'Available Time Range', ['class'=>'control-label']) !!}
                     {!! Form::textarea('time_range', null, ['class'=>'form-control', 'rows'=>'2']) !!}
-
                 </div>
-
             </div>
 
             <div class="col-md-6 col-xs-12">
-
                 <div class="form-group">
-
                     {!! Form::label('block_coverage', 'Block Coverage', ['class'=>'control-label']) !!}
                     {!! Form::textarea('block_coverage', null, ['class'=>'form-control', 'rows'=>'2']) !!}
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <div class="row"></div>
 
     <div class="col-md-12">
-
-        @if(isset($person) and Auth::user()->hasRole('admin'))
+        @if(Auth::user()->hasRole('admin'))
         <hr>
-        {{-- @if(isset($person)) --}}
             <div class="form-group">
                 {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
                 {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
             </div>
-        @elseif(isset($person))
+        @elseif($person)
         <hr>
             <div class="form-group">
                 {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
-                {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
+                {!! Form::select('parent_id', $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
             </div>
         @endif
 
@@ -167,11 +167,13 @@
             ], null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
         </div>
         @endif
-
     </div>
 
 <script>
     $('.select').select2({
         placeholder: 'Please Select...'
+    });
+    $('.select_mul').select2({
+        placeholder: 'Not Available'
     });
 </script>

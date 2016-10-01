@@ -27,8 +27,6 @@ use App\GeneralSetting;
 use App\NotifyManager;
 use App\EmailAlert;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Area;
-use App\Group;
 use App\Postcode;
 
 class MarketingController extends Controller
@@ -1025,16 +1023,40 @@ class MarketingController extends Controller
     // return all postcodes list
     public function getPostcodes()
     {
-        $postcodes = Postcode::with(['group', 'group.area'])->whereHas('group', function($query) {
-            $query->orderBy('group_id', 'asc');
-        })->get();
+        $dtdperson = Person::whereUserId(Auth::user()->id)->first();
+        $dtdrole = '';
+        if($dtdperson){
+            $dtdrole = $dtdperson->cust_type;
+        }
+        if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
+            $postcodes = Postcode::with('person')->get();
+        }else{
+            // setup array to fetch self and descendants id
+            $descAndSelfID = [];
+            $descAndSelf = $dtdperson->getDescendantsAndSelf();
+            foreach($descAndSelf as $member){
+                array_push($descAndSelfID, $member->id);
+            }
+            // filter through postcode that suppose to be shown
+            $postcodes = Postcode::with('person')->whereIn('person_id', $descAndSelfID)->get();
+        }
         return $postcodes;
     }
 
     // return d2d members list
     public function getAllMembers()
     {
-        $people = Person::where('cust_id', 'LIKE', 'D%')->get();
+        $dtdperson = Person::whereUserId(Auth::user()->id)->first();
+        if($dtdperson){
+            $dtdrole = $dtdperson->cust_type;
+        }else{
+            $dtdrole = '';
+        }
+        if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
+            $people = Person::where('cust_id', 'LIKE', 'D%')->get();
+        }else{
+            $people = Person::whereUserId(Auth::user()->id)->first()->descendantsAndSelf()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_id')->get();
+        }
         return $people;
     }
 
@@ -1052,20 +1074,30 @@ class MarketingController extends Controller
         $excel = Excel::load($file, function($reader) {
             foreach($reader->all() as $row){
                 if($row->postcode != '' and $row->postcode != null){
-                    $area = Area::firstOrCreate([
-                        'area_code' => $row->area_code,
-                        'name' => $row->area_name,
-                    ]);
-                    $group = Group::firstOrCreate([
-                        'group_id' => $row->group,
-                        'area_id' => $area->id,
-                    ]);
-                    $postcode = Postcode::firstOrCreate([
-                        'group_id' => $group->id,
-                        'value' => $row->postcode,
-                        'block' => $row->block,
-                        'remark' => $row->remark,
-                    ]);
+                    // find out the postcode of the row is exisiting or new
+                    $postcode = Postcode::whereValue($row->postcode)->first();
+                    if(!$postcode){
+                        $postcode = Postcode::create(['value'=>$row->postcode]);
+                    }
+                    $postcode->block = $row->block;
+                    $postcode->area_code = $row->area_code;
+                    $postcode->area_name = $row->area_name;
+                    $postcode->group = $row->group;
+
+                    $assign_to = $row->assign_to;
+                    if($assign_to){
+                        $person = Person::where('cust_id', 'LIKE', 'D%')
+                                        ->where(function($q) use ($assign_to){
+                                            $q->where('name', 'LIKE', '%'.$assign_to.'%')
+                                                ->orWhere('company', 'LIKE', '%'.$assign_to.'%');
+                                        })->first();
+                        if($person){
+                            $postcode->person_id = $person->id;
+                        }else{
+                            $postcode->person_id = null;
+                        }
+                    }
+                    $postcode->save();
                 }
             }
         });
