@@ -271,6 +271,7 @@ class ClientController extends Controller
         }else{
             $sendto = ['daniel.ma@happyice.com.sg'];
         }
+        array_push($sendto, 'jiahaur91@hotmail.com');
         // $sendto = ['leehongjie91@gmail.com'];
 
         // capture email sending date
