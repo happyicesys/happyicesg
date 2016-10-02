@@ -237,7 +237,7 @@ class ClientController extends Controller
             '2' => '12pm - 5pm',
             '3' => '5pm - 9pm',
         ];
-
+/*
         $covered_custid = false;
         // trace the postcode is within the coverage
         if($request->postcode){
@@ -252,7 +252,7 @@ class ClientController extends Controller
         // create dtdtransaction if the dtd online order is within the coverage
         if($covered_custid){
 
-        }
+        }*/
 
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
