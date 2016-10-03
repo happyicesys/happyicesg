@@ -1,9 +1,7 @@
 var app = angular.module('app', [
-                                    // 'ui.bootstrap',
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
-                                    // 'ui.bootstrap.datetimepicker',
                                     '720kb.datepicker'
                                 ]);
 
@@ -23,7 +21,9 @@ var app = angular.module('app', [
         $scope.sortName = '';
         $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
-        $scope.delivery_date = '';
+        // $scope.delivery_date = '';
+        $scope.delivery_from = '';
+        $scope.delivery_to = '';
         $scope.updated_at = '';
         // init page load
         getPage(1, true);
@@ -53,32 +53,20 @@ var app = angular.module('app', [
         };
 
         $scope.sortedOrder = function(header){
-
             $scope.sortName = header;
-
             if($scope.headerTemp != $scope.sortName){
-
                 $scope.sortBy = true;
-
                 $scope.headerTemp = $scope.sortName;
-
             }else{
-
                 $scope.sortBy = !$scope.sortBy;
-
             }
-
             $scope.datasetTemp['sortName'] = $scope.sortName;
-
             $scope.datasetTemp['sortBy'] = $scope.sortBy;
-
             getPage($scope.currentPage, false);
-
         }
 
           // when hitting search button
         $scope.searchDB = function(){
-
             $scope.datasetTemp = {
                 id: $scope.search.id,
                 cust_id: $scope.search.cust_id,
@@ -87,14 +75,16 @@ var app = angular.module('app', [
                 pay_status: $scope.search.pay_status,
                 updated_by: $scope.search.updated_by,
                 updated_at: $scope.search.updated_at,
-                delivery_date: $scope.search.delivery_date,
+                // delivery_date: $scope.search.delivery_date,
+                delivery_from: $scope.search.delivery_from,
+                delivery_to: $scope.search.delivery_to,
                 driver: $scope.search.driver,
                 profile: $scope.search.profile_id,
             };
             $scope.sortName = '';
             $scope.sortBy = '';
 
-            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_date || $scope.search.driver || $scope.search.profile_id){
+            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_from || $scope.search.delivery_to || $scope.search.driver || $scope.search.profile_id){
                 if($.isEmptyObject($scope.datasetTemp)){
                     $scope.datasetTemp = $scope.alldata;
                     $scope.totalCountTemp = $scope.totalCount;
@@ -142,10 +132,24 @@ var app = angular.module('app', [
 
             });
         }
-
+/*
         $scope.dateChange = function(date){
             if(date){
                 $scope.search.delivery_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }*/
+
+        $scope.delFromChange = function(date){
+            if(date){
+                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.delToChange = function(date){
+            if(date){
+                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
@@ -159,62 +163,36 @@ var app = angular.module('app', [
 
         //delete record
         $scope.confirmDelete = function(id){
-
             var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
-
             if(isConfirmDelete){
-
                 $http({
-
                     method: 'DELETE',
-
                     url: '/transaction/data/' + id
-
                 }).success(function(data){
-
                     location.reload();
-
                 }).error(function(data){
-
                     alert('Unable to delete');
-
                 })
-
             }else{
-
                 return false;
-
             }
-
         }
-
     }
 
 app.filter('delDate', [
-
     '$filter', function($filter) {
-
         return function(input, format) {
-
             return $filter('date')(new Date(input), format);
-
         };
-
     }
-
 ]);
 /*
 function repeatController($scope) {
-
     $scope.$watch('$index', function(index) {
-
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
-
     })
-
 }*/
 
 
 app.controller('transController', transController);
-
 // app.controller('repeatController', repeatController);

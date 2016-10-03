@@ -70,7 +70,7 @@ class TransactionController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver or $request->profile){
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
             // $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
             $transactions = $this->searchDBFilter($transactions, $request);
         }else{
@@ -1234,8 +1234,8 @@ class TransactionController extends Controller
             $transactions = $transactions->where(function($query) use ($com){
                 $query->where('people.company', 'LIKE', '%'.$com.'%')
                         ->orWhere(function ($query) use ($com){
-                                $query->where('people.cust_id', 'LIKE', 'D%')
-                                        ->where('people.name', 'LIKE', '%'.$com.'%');
+                            $query->where('people.cust_id', 'LIKE', 'D%')
+                                    ->where('people.name', 'LIKE', '%'.$com.'%');
                         });
                 });
         }
@@ -1251,8 +1251,11 @@ class TransactionController extends Controller
         if($request->updated_at){
             $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'.$request->updated_at.'%');
         }
-        if($request->delivery_date){
-            $transactions = $transactions->whereDate('transactions.delivery_date', '=', $request->delivery_date);
+        if($request->delivery_from){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $request->delivery_from);
+        }
+        if($request->delivery_to){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $request->delivery_to);
         }
         if($request->driver){
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$request->driver.'%');

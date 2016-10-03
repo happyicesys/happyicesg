@@ -10,7 +10,6 @@
 
     <div class="row">
         <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
-
     </div>
 
         <div class="panel panel-default">
@@ -134,7 +133,7 @@
                             />
                         </datepicker>
                     </div>
-                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+{{--                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
                         <datepicker date-set="@{{today}}">
                             <input
@@ -143,6 +142,30 @@
                                 placeholder = "Delivery Date"
                                 ng-model = "search.delivery_date"
                                 ng-change = "dateChange(search.delivery_date)"
+                            />
+                        </datepicker>
+                    </div> --}}
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
+                        <datepicker date-set="@{{today}}">
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Delivery From"
+                                ng-model = "search.delivery_from"
+                                ng-change = "delFromChange(search.delivery_from)"
+                            />
+                        </datepicker>
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_to', 'Delivery To:', ['class'=>'control-label search-title']) !!}
+                        <datepicker date-set="@{{today}}">
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Delivery To"
+                                ng-model = "search.delivery_to"
+                                ng-change = "delToChange(search.delivery_to)"
                             />
                         </datepicker>
                     </div>
@@ -161,15 +184,11 @@
                 </div>
 
                 <div class="row" style="padding: 20px 0px 15px 15px;">
-
                         <div class="col-md-4 col-xs-12">
-
                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
-
                         </div>
 
                         <div class="col-md-3 col-xs-12">
-
                             <div class="col-md-5 col-xs-5">
                                 Total:
                             </div>
@@ -177,16 +196,11 @@
                             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                                 <strong>@{{ total_amount | currency: "": 2}}</strong>
                             </div>
-
-
                         </div>
 
                         <div class="col-md-5 col-xs-12">
-
                             <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
-
                         </div>
-
 
                 </div>
                     <div class="table-responsive" id="exportable">
