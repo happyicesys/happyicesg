@@ -22,8 +22,10 @@ var app = angular.module('app', [
         $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         // $scope.delivery_date = '';
-        $scope.delivery_from = '';
-        $scope.delivery_to = '';
+        $scope.search = {
+            delivery_from: $scope.today,
+            delivery_to: $scope.today,
+        }
         $scope.updated_at = '';
         // init page load
         getPage(1, true);

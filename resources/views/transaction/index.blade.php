@@ -147,7 +147,7 @@
                     </div> --}}
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
-                        <datepicker date-set="@{{today}}">
+                        <datepicker>
                             <input
                                 type = "text"
                                 class = "form-control input-sm"
@@ -159,7 +159,8 @@
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_to', 'Delivery To:', ['class'=>'control-label search-title']) !!}
-                        <datepicker date-set="@{{today}}">
+                        {{-- <datepicker date-set="@{{today}}"> --}}
+                        <datepicker>
                             <input
                                 type = "text"
                                 class = "form-control input-sm"
