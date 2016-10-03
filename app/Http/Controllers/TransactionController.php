@@ -733,101 +733,60 @@ class TransactionController extends Controller
     private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
     {
         if($quantities and $amounts){
-
             if(array_filter($quantities) != null and array_filter($amounts) != null){
-
                 // create array of errors to fetch errors from loop if any
                 $errors = array();
 
                 foreach($quantities as $index => $qty){
-
                     if($qty != NULL or $qty != 0 ){
-
                         // inventory lookup before saving to deals
                         $item = Item::findOrFail($index);
-
                         // inventory email notification for stock running low
                         if($item->email_limit){
-
                             if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
-
                                 if(! $item->emailed){
-
                                     $this->sendEmailAlert($item);
-
                                     // restrict only send 1 mail if insufficient
                                     $item->emailed = true;
-
                                     $item->save();
                                 }
-
                             }else{
                                 // reactivate email alert
                                 $item->emailed = false;
-
                                 $item->save();
                             }
                         }
 
                         // restrict picking negative stock & deduct/add actual/order if success
                         if($status == 1){
-
                             if($this->calOrderLimit($qty, $item)){
-
                                 array_push($errors, $item->product_id.' - '.$item->name);
-
                             }else{
-
                                 $deal = new Deal();
-
                                 $deal->transaction_id = $transaction->id;
-
                                 $deal->item_id = $index;
-
                                 $deal->qty = $qty;
-
                                 $deal->amount = $amounts[$index];
-
                                 $deal->unit_price = $quotes[$index];
-
                                 $deal->qty_status = $status;
-
                                 $deal->save();
-
                                 $this->dealSyncOrder($index);
-
                             }
-
                         }else if($status == 2){
-
                             if($this->calActualLimit($qty, $item)){
-
                                 array_push($errors, $item->product_id.' - '.$item->name);
-
                             }else{
-
                                 $deal = new Deal();
-
                                 $deal->transaction_id = $transaction->id;
-
                                 $deal->item_id = $index;
-
                                 $deal->qty = $qty;
-
                                 $deal->amount = $amounts[$index];
-
                                 $deal->unit_price = $quotes[$index];
-
                                 $deal->qty_status = $status;
-
                                 $deal->save();
-
                                 $item->qty_now -= $qty;
-
                                 $item->save();
-
                                 $this->dealSyncOrder($index);
-
                             }
                         }
                     }
@@ -836,53 +795,33 @@ class TransactionController extends Controller
         }
 
         if($status == 2){
-
             $this->dealOrder2Actual($transaction->id);
         }
 
-
         $deals = Deal::whereTransactionId($transaction->id)->get();
-
         $deal_total = $deals->sum('amount');
-
         $deal_totalqty = $deals->sum('qty');
-
         $transaction->total = $deal_total;
-
         $transaction->total_qty = $deal_totalqty;
-
         $transaction->save();
 
         // sync dtdtransaction totals if valid
         if($transaction->dtdtransaction_id){
-
             $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
             $dtdtransaction->total = $deal_total;
-
             $dtdtransaction->total_qty = $deal_totalqty;
-
             $dtdtransaction->save();
-
         }
 
         if(isset($errors)){
-
             if(count($errors) > 0){
-
                 $errors_str = '';
-
                 $errors_str = implode(" <br>", $errors);
-
                 Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): <br> '.$errors_str)->important();
-
             }
-
         }else{
-
             Flash::success('Successfully Added');
         }
-
     }
 
     // email alert for stock insufficient
@@ -890,13 +829,9 @@ class TransactionController extends Controller
     {
 
         $today = Carbon::now()->format('d-m-Y H:i');
-
         $emails = EmailAlert::where('status', 'active')->get();
-
         $email_list = array();
-
         foreach($emails as $email){
-
             $email_list[] = $email->email;
         }
 

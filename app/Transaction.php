@@ -59,7 +59,7 @@ class Transaction extends Model
 
     protected $fillable=[
         'total', 'delivery_date', 'status',
-        'user_id', 'transremark', 'updated_by',
+        'transremark', 'updated_by',
         'pay_status', 'person_code', 'person_id',
         'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no',

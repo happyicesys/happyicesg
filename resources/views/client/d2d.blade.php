@@ -20,11 +20,27 @@ Door To Door
                 <div class="col-md-6 col-xs-12">
                     <div class="panel panel-primary">
                         <div class="panel-body">
-
                             {!! Form::open(['action'=>'ClientController@emailOrder']) !!}
-
                             <div id="itemInterface">
                                 <div class="col-md-12 col-xs-12">
+                                    <fieldset>
+                                        <div class="form-top">
+                                            <div class="form-top-left">
+                                                <h3>Step 1 / 2</h3>
+                                                <p>Please enter your postcode</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-12">
+                                                <div class="form-bottom">
+                                                    <div class="form-group">
+                                                        <input type="text" name="postcode" placeholder="Postcode..." class="form-first-name form-control" id="form-first-name">
+                                                    </div>
+                                                    <button type="button" class="btn btn-success btn-next">Next</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
                                     <div class="table-responsive">
                                     <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;" id="tabledata">
                                         <tr style="background-color: #f7f9f7">
@@ -43,52 +59,15 @@ Door To Door
                                         </tr>
                                             @foreach($lookupArr as $index => $lookup)
                                             <tr class="txtMult">
-
-                                                    <td class="col-md-1 text-center rowCount">
-                                                        {{$index}}
-                                                    </td>
-                                                    <td class="col-md-6 text-center">
-                                                        {{$lookup}}
-                                                    </td>
-                                                    <td class="col-md-2 text-center">
-                                                        <select name="qtyArr[{{$index}}]" class="select qtyClass">
-                                                            <option value="0">0</option>
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                            <option value="6">6</option>
-                                                            <option value="7">7</option>
-                                                            <option value="8">8</option>
-                                                            <option value="9">9</option>
-                                                        </select>
-                                                    </td>
+                                                <td class="col-md-1 text-center rowCount">
+                                                    {{$index}}
+                                                </td>
+                                                <td class="col-md-6 text-left">
+                                                    {{$lookup}}
+                                                </td>
                                                 <td class="col-md-2 text-center">
-                                                    <input type="text" name="amountArr[{{$index}}]" class="input-sm form-control amountClass text-right" readonly="readonly" />
-                                                </td>
-                                                <td class="hidden">
-                                                    <input type="text" class=" input-sm form-control priceClass text-right" value="{{$priceArr[$index]}}" />
-                                                </td>
-
-{{--                                                 <td class="col-md-1 text-center rowCount">
-                                                    1
-                                                </td>
-                                                <td class="col-md-6 text-center">
-                                                    <select name="itemArr[1]" class="select itemClass">
-                                                        <option value="1">Red Bean Jelly (5pcs/box) - $7.90</option>
-                                                        <option value="2">Chocolate Pie with Mango (5pcs/box) - $7.90</option>
-                                                        <option value="3">QQ Pudding (5pcs/box) - $7.90</option>
-                                                        <option value="4">Green Mango & Lime (5pcs/box) - $7.90</option>
-                                                        <option value="5">Chocolate Roll (5pcs/flavor) - $8.50</option>
-                                                        <option value="6">Vanilla Roll (5pcs/flavor) - $8.50</option>
-                                                        <option value="7">Matcha Roll (5pcs/flavor) - $8.50</option>
-                                                        <option value="8">Strawberry (6pcs/set) - $7.90</option>
-                                                        <option value="9">Mint Chocolate (6pcs/set) - $9.50</option>
-                                                    </select>
-                                                </td>
-                                                <td class="col-md-1 text-center">
-                                                    <select name="qtyArr[1]" class="select qtyClass">
+                                                    <select name="qtyArr[{{$index}}]" class="select qtyClass">
+                                                        <option value="0">0</option>
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
@@ -100,14 +79,22 @@ Door To Door
                                                         <option value="9">9</option>
                                                     </select>
                                                 </td>
-                                                <td class="col-md-1 text-center">
-                                                    <input type="text" name="amountArr[1]" class="input-sm form-control amountClass text-right" readonly="readonly" />
+                                                <td class="col-md-2 text-center">
+                                                    <input type="text" name="amountArr[{{$index}}]" class="input-sm form-control amountClass text-right" readonly="readonly" />
                                                 </td>
-                                                <td class="col-md-1 text-center" style="color:red;">
-                                                    <span class="removeClass">&#10006;</span>
-                                                </td> --}}
+                                                <td class="hidden">
+                                                    <input type="text" class=" input-sm form-control priceClass text-right" value="{{$priceArr[$index]}}" />
+                                                </td>
                                             </tr>
                                             @endforeach
+                                            <tr>
+                                                <td></td>
+                                                <td class="text-center">Delivery Fees</td>
+                                                <td></td>
+                                                <td>
+                                                    <input type="text" name="del_fee" class="input-sm form-control delfeeTotal text-right" readonly="readonly">
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td></td>
                                                 <td class="text-center"><strong>Total</strong></td>
@@ -255,13 +242,9 @@ Door To Door
     }
 
     $('#nextButton').on('click', function(event){
-
         event.preventDefault();
-
         $('#detailInterface').show();
-
         $('#nextButton').hide();
-
     });
 
 </script>

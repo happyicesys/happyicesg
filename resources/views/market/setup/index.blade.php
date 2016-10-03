@@ -17,7 +17,8 @@
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             @if(Auth::user()->hasRole('admin') or $people::where('user_id', Auth::user()->id)->first()->cust_type === 'OM')
-                <li><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
+                <li><a href="#member_price" role="tab" data-toggle="tab"> Member Price List</a></li>
+                <li><a href="#cust_price" role="tab" data-toggle="tab"> D2D Customer Price List</a></li>
             @endif
             <li class="active"><a href="#postcode" role="tab" data-toggle="tab">Postcode Management</a></li>
         </ul>
@@ -26,12 +27,12 @@
     <div class="panel-body">
         <div class="tab-content">
             {{-- first element --}}
-            <div class="tab-pane" id="price">
+            <div class="tab-pane" id="member_price">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="pull-left ">
-                                <h4><strong>Price Management for DTD</strong></h4>
+                                <h4><strong>Price Management for DTD Members</strong></h4>
                             </div>
                             <div class="pull-right ">
                                 {!! Form::submit('Done', ['class'=> 'btn btn-success', 'form'=>'done_price']) !!}
@@ -41,7 +42,6 @@
 
                     <div class="panel-body">
                         {!! Form::model($price = new \App\DtdPrice, ['action'=>'MarketingController@storeSetupPrice', 'id'=>'done_price']) !!}
-                        {{-- {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!} --}}
 
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered table-condensed">
@@ -58,25 +58,6 @@
                                 </tr>
 
                                 <tbody>
-{{--                                 <tr ng-repeat="item in items" class="form-group">
-                                    <td class="col-md-8">
-                                        @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                                    </td>
-                                    <td class="col-md-2">
-                                        <strong>
-                                            <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel=getRetailInit(item.id)" ng-model="retailModel" />
-                                        </strong>
-                                    </td>
-                                    <td class="col-md-2">
-                                        <strong>
-                                            <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel=getQuoteInit(item.id)" ng-model="quoteModel" />
-                                        </strong>
-                                    </td>
-                                </tr>
-                                <tr ng-if="items.length == 0 || ! items.length">
-                                    <td colspan="4" class="text-center">No Records Found!</td>
-                                </tr> --}}
-
                                     @unless(count($items)>0)
                                         <td class="text-center" colspan="7">No Records Found</td>
                                     @else
