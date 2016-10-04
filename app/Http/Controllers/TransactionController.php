@@ -569,31 +569,20 @@ class TransactionController extends Controller
     public function reverse($id)
     {
         $transaction = Transaction::findOrFail($id);
-
         $deals = Deal::where('transaction_id', $transaction->id)->where('qty_status', '3')->get();
-
         if($transaction->cancel_trace){
-
             $this->dealUndoDelete($transaction->id);
-
             $transaction->status = $transaction->cancel_trace;
-
             $transaction->cancel_trace = '';
-
             $transaction->updated_by = Auth::user()->name;
-
             if($transaction->dtdtransaction_id){
-
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
                 $dtdtransaction->status = 'Confirmed';
-
                 $dtdtransaction->save();
             }
         }
 
         $transaction->save();
-
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
@@ -601,17 +590,11 @@ class TransactionController extends Controller
     public function rptDetail(Request $request, $id)
     {
         $paymethod = $request->input('paymethod');
-
         $note = $request->input('note');
-
         $transaction = Transaction::findOrFail($id);
-
         $transaction->pay_method = $paymethod;
-
         $transaction->note = $note;
-
         $transaction->save();
-
         return "Sucess updating transaction #" . $transaction->id;
     }
 
@@ -619,32 +602,19 @@ class TransactionController extends Controller
     public function sendEmailInv($id)
     {
         $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
-
         $transaction = Transaction::findOrFail($id);
-
         $self = Auth::user()->name;
-
         $deals = Deal::whereTransactionId($transaction->id)->get();
-
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
-
         $person = Person::findOrFail($transaction->person_id);
-
         if(! $person->email){
-
             Flash::error('Please set the email before sending');
-
             return Redirect::action('TransactionController@edit', $id);
         }
-
         $email = $person->email;
-
         $now = Carbon::now()->format('dmyhis');
-
         // $profile = Profile::firstOrFail();
-
         $data = [
             'transaction'   =>  $transaction,
             'person'        =>  $person,
@@ -652,27 +622,18 @@ class TransactionController extends Controller
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
         ];
-
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
-
         $pdf = PDF::loadView('transaction.invoice', $data);
-
         $pdf->setPaper('a4');
-
         $sent = $pdf->save(storage_path('/invoice/'.$name));
-
         $store_path = storage_path('/invoice/'.$name);
-
         $sender = 'system@happyice.com.sg';
-
         $datamail = [
-
             'person' => $person,
             'transaction' => $transaction,
             'email_draft' => $email_draft,
             'self' => $self,
             'url' => 'http://www.happyice.com.sg',
-
         ];
 
         Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $transaction)
@@ -684,11 +645,8 @@ class TransactionController extends Controller
         });
 
         if($sent){
-
             Flash::success('Successfully Sent');
-
         }else{
-
             Flash::error('Please Try Again');
         }
 
@@ -733,101 +691,63 @@ class TransactionController extends Controller
     private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
     {
         if($quantities and $amounts){
-
             if(array_filter($quantities) != null and array_filter($amounts) != null){
-
                 // create array of errors to fetch errors from loop if any
                 $errors = array();
-
                 foreach($quantities as $index => $qty){
-
                     if($qty != NULL or $qty != 0 ){
-
                         // inventory lookup before saving to deals
                         $item = Item::findOrFail($index);
-
                         // inventory email notification for stock running low
                         if($item->email_limit){
-
                             if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
-
                                 if(! $item->emailed){
-
                                     $this->sendEmailAlert($item);
-
                                     // restrict only send 1 mail if insufficient
                                     $item->emailed = true;
-
                                     $item->save();
                                 }
-
                             }else{
                                 // reactivate email alert
                                 $item->emailed = false;
-
                                 $item->save();
                             }
                         }
 
                         // restrict picking negative stock & deduct/add actual/order if success
                         if($status == 1){
-
                             if($this->calOrderLimit($qty, $item)){
-
                                 array_push($errors, $item->product_id.' - '.$item->name);
-
                             }else{
-
                                 $deal = new Deal();
-
                                 $deal->transaction_id = $transaction->id;
-
                                 $deal->item_id = $index;
-
                                 $deal->qty = $qty;
-
+                                $deal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
+                                $deal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
                                 $deal->amount = $amounts[$index];
-
                                 $deal->unit_price = $quotes[$index];
-
                                 $deal->qty_status = $status;
-
                                 $deal->save();
-
                                 $this->dealSyncOrder($index);
-
                             }
-
                         }else if($status == 2){
-
                             if($this->calActualLimit($qty, $item)){
-
                                 array_push($errors, $item->product_id.' - '.$item->name);
-
                             }else{
-
                                 $deal = new Deal();
-
                                 $deal->transaction_id = $transaction->id;
-
                                 $deal->item_id = $index;
-
                                 $deal->qty = $qty;
-
+                                $deal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
+                                $deal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
                                 $deal->amount = $amounts[$index];
-
                                 $deal->unit_price = $quotes[$index];
-
                                 $deal->qty_status = $status;
-
                                 $deal->save();
-
                                 $item->qty_now -= $qty;
-
                                 $item->save();
-
                                 $this->dealSyncOrder($index);
-
                             }
                         }
                     }
@@ -836,77 +756,50 @@ class TransactionController extends Controller
         }
 
         if($status == 2){
-
             $this->dealOrder2Actual($transaction->id);
         }
 
-
         $deals = Deal::whereTransactionId($transaction->id)->get();
-
         $deal_total = $deals->sum('amount');
-
         $deal_totalqty = $deals->sum('qty');
-
         $transaction->total = $deal_total;
-
         $transaction->total_qty = $deal_totalqty;
-
         $transaction->save();
 
         // sync dtdtransaction totals if valid
         if($transaction->dtdtransaction_id){
-
             $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
-
             $dtdtransaction->total = $deal_total;
-
             $dtdtransaction->total_qty = $deal_totalqty;
-
             $dtdtransaction->save();
-
         }
 
         if(isset($errors)){
-
             if(count($errors) > 0){
-
                 $errors_str = '';
-
                 $errors_str = implode(" <br>", $errors);
-
                 Flash::error('Stock Insufficient 缺货 (Please contact company 请联络公司): <br> '.$errors_str)->important();
-
             }
-
         }else{
-
             Flash::success('Successfully Added');
         }
-
     }
 
     // email alert for stock insufficient
     private function sendEmailAlert($item)
     {
-
         $today = Carbon::now()->format('d-m-Y H:i');
-
         $emails = EmailAlert::where('status', 'active')->get();
-
         $email_list = array();
-
         foreach($emails as $email){
-
             $email_list[] = $email->email;
         }
-
         $email = array_unique($email_list);
 
         // $sender = 'daniel.ma@happyice.com.sg';
         $sender = 'system@happyice.com.sg';
 
         $data = [
-
             'product_id' => $item->product_id,
             'name' => $item->name,
             'remark' => $item->remark,
@@ -914,7 +807,6 @@ class TransactionController extends Controller
             'qty_now' => $item->qty_now,
             'lowest_limit' => $item->lowest_limit,
             'email_limit' => $item->email_limit,
-
         ];
 
         Mail::send('email.stock_alert', $data, function ($message) use ($item, $email, $today, $sender)
@@ -928,32 +820,21 @@ class TransactionController extends Controller
     private function dealSyncOrder($item_id)
     {
         $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
-
         $item = Item::findOrFail($item_id);
-
         $item->qty_order = $deals->sum('qty');
-
         $item->save();
-
     }
 
     // convert order to actual deduction
     private function dealOrder2Actual($transaction_id)
     {
         $deals = Deal::where('qty_status', '1')->where('transaction_id', $transaction_id)->get();
-
         foreach($deals as $deal){
-
             $item = Item::findOrFail($deal->item_id);
-
             $deal->qty_status = 2;
-
             $item->qty_now -= $deal->qty;
-
             $deal->save();
-
             $item->save();
-
             $this->dealSyncOrder($item->id);
         }
     }
@@ -961,64 +842,38 @@ class TransactionController extends Controller
     private function dealDeleteMultiple($transaction_id)
     {
         $deals = Deal::where('transaction_id', $transaction_id)->get();
-
         foreach($deals as $deal){
-
             $item = Item::findOrFail($deal->item_id);
-
             if($deal->qty_status == '1'){
-
                 $deal->qty_status = 3;
-
                 $deal->save();
-
             }else if($deal->qty_status == '2'){
-
                 $item->qty_now += $deal->qty;
-
                 $deal->qty_status = 3;
-
                 $deal->save();
             }
-
             $item->save();
-
             $this->dealSyncOrder($item->id);
-
         }
     }
 
     private function dealUndoDelete($transaction_id)
     {
         $deals = Deal::where('transaction_id', $transaction_id)->where('qty_status', '3')->get();
-
         $transaction = Transaction::findOrFail($transaction_id);
-
         if($transaction->cancel_trace === 'Confirmed'){
-
             foreach($deals as $deal){
-
                 $item = Item::findOrFail($deal->item_id);
-
                 $deal->qty_status = 1;
-
                 $deal->save();
-
                 $this->dealSyncOrder($item->id);
             }
-
         }else if($transaction->cancel_trace === 'Delivered' or $transaction->cancel_trace === 'Verified Owe' or $transaction->cancel_trace === 'Verified Paid'){
-
             foreach($deals as $deal){
-
                 $item = Item::findOrFail($deal->item_id);
-
                 $deal->qty_status = 2;
-
                 $deal->save();
-
                 $item->qty_now -= $deal->qty;
-
                 $item->save();
             }
         }
@@ -1026,54 +881,36 @@ class TransactionController extends Controller
 
     private function calOrderLimit($qty, $item)
     {
-
         if(($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
-
             return true;
-
         }else{
-
             return false;
         }
-
     }
 
     private function calActualLimit($qty, $item)
     {
-
         if(($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
-
             return true;
-
         }else{
-
             return false;
         }
-
     }
 
     private function calOrderEmailLimit($qty, $item)
     {
-
         if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($qty > 0)){
-
             return true;
-
         }else{
-
             return false;
         }
     }
 
     private function calActualEmailLimit($qty, $item)
     {
-
         if(($item->qty_now - $qty < $item->email_limit) and ($qty > 0)){
-
             return true;
-
         }else{
-
             return false;
         }
     }
@@ -1081,12 +918,9 @@ class TransactionController extends Controller
     private function syncOrder($transaction_id)
     {
         $transaction = Transaction::find($transaction_id);
-
         $dtdtransaction = DtdTransaction::where('transaction_id', $transaction_id)->first();
-
         // sync to be replaced <-> original
         $this->transactionXChange($dtdtransaction, $transaction);
-
         // find and sync deals
         $deals = Deal::where('transaction_id', $transaction_id)->get();
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
@@ -1094,7 +928,6 @@ class TransactionController extends Controller
         if(count($deals) != count($dtddeals)){
             $deal_arr = array();
             $dtddeal_arr = array();
-
             $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
             foreach($dtddeals as $dtddeal){
                 array_push($dtddeal_arr, $dtddeal->deal_id);
@@ -1106,6 +939,8 @@ class TransactionController extends Controller
                 $dtddeal->item_id = $dealresult->item_id;
                 $dtddeal->transaction_id = $dtdtransaction->id;
                 $dtddeal->qty = $dealresult->qty;
+                $dtddeal->dividend = $dealresult->dividend;
+                $dtddeal->divisor = $dealresult->divisor;
                 $dtddeal->amount = $dealresult->amount;
                 $dtddeal->unit_price = $dealresult->unit_price;
                 $dtddeal->qty_status = $dealresult->qty_status;
@@ -1137,11 +972,8 @@ class TransactionController extends Controller
     private function dtdPaidUpdate($transaction)
     {
         $dtdtransaction = DtdTransaction::where('id', $transaction->dtdtransaction_id)->first();
-
         if($dtdtransaction){
-
             $dtdtransaction->pay_status = 'Paid';
-
             $dtdtransaction->save();
         }
     }
@@ -1150,35 +982,20 @@ class TransactionController extends Controller
     private function transactionXChange($transactionSync, $transactionOri)
     {
         $transactionSync->total = $transactionOri->total;
-
         $transactionSync->total_qty = $transactionOri->total_qty;
-
         $transactionSync->delivery_date = $transactionOri->delivery_date;
-
         $transactionSync->del_postcode = $transactionOri->del_postcode;
-
         $transactionSync->status = $transactionOri->status;
-
         $transactionSync->transremark = $transactionOri->transremark;
-
         $transactionSync->updated_by = $transactionOri->updated_by;
-
         $transactionSync->pay_status = $transactionOri->pay_status;
-
         $transactionSync->person_code = $transactionOri->person_code;
-
         $transactionSync->person_id = $transactionOri->person_id;
-
         $transactionSync->order_date = $transactionOri->order_date;
-
         $transactionSync->del_address = $transactionOri->del_address;
-
         $transactionSync->name = $transactionOri->name;
-
         $transactionSync->po_no = $transactionOri->po_no;
-
         $transactionSync->save();
-
     }
 
     // pass value into filter search (collection, collection request) [query]

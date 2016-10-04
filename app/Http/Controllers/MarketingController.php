@@ -1473,6 +1473,8 @@ class MarketingController extends Controller
                 $deal->item_id = $dtddeal->item_id;
                 $deal->transaction_id = $transaction->id;
                 $deal->qty = $dtddeal->qty;
+                $deal->dividend = $dtddeal->dividend;
+                $deal->divisor = $dtddeal->divisor;
                 $deal->amount = $dtddeal->amount;
                 $deal->unit_price = $dtddeal->unit_price;
                 $deal->qty_status = 1;

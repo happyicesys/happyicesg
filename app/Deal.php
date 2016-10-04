@@ -41,12 +41,13 @@ class Deal extends Model
     );
 
     protected $dontKeepRevisionOf = array(
-        'qty_status'
+        'qty_status', 'dividend', 'divisor'
     );
 
     protected $fillable = [
         'item_id', 'transaction_id', 'qty',
-        'amount', 'unit_price', 'qty_status'
+        'amount', 'unit_price', 'qty_status',
+        'dividend', 'divisor'
     ];
 
     public function item()
