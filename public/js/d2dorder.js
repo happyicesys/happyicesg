@@ -15,6 +15,9 @@ var app = angular.module('app', []);
             $http.post('/postcode/verify', {postcode: postcode})
             .success(function(data) {
                 console.log(data);
+                $scope.loading = false;
+                $scope.step1 = false;
+                $scope.step2 = true;
             }).error(function(data) {
                 $errors = data.responseJSON;
                 errorsHtml = '<ul>';

@@ -25,7 +25,7 @@ Door To Door
                             <fieldset ng-if="step1">
                                 <div class="form-top">
                                     <div class="form-top-left">
-                                        <h3>Step 1 / 2</h3>
+                                        <h3 style="color:#323299;">Step 1 / 2</h3>
                                         <p>Please enter your postcode</p>
                                     </div>
                                 </div>
@@ -44,7 +44,7 @@ Door To Door
                         </div>
                         <div id="itemInterface" ng-if="step2">
                             <div class="col-md-12 col-xs-12">
-                                <h3>Step 2 / 2</h3>
+                                <h3 style="color:#323299;">Step 2 / 2</h3>
                                 <div class="table-responsive">
                                 <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;" id="tabledata">
                                     <tr style="background-color: #f7f9f7">
