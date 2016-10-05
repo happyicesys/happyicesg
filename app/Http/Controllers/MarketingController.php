@@ -406,6 +406,13 @@ class MarketingController extends Controller
 
     public function storeCustomer(CustomerRequest $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'parent_id' => 'required'
+        ],[
+            'name.required' => 'Please fill in the name',
+            'parent_id.required' => 'Please select the manager'
+        ]);
         $people = Person::withTrashed()->where('cust_id', 'LIKE', 'H%');
         $first_person = Person::where('cust_id', 'H100001')->first();
         if(count($people) > 0 and $first_person){

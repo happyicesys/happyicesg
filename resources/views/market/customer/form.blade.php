@@ -78,7 +78,7 @@
     @elseif(!Auth::user()->hasRole('admin') and $people::whereUserId(Auth::user()->id)->first())
         <div class="form-group">
             {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
-            {!! Form::select('parent_id', [''=>null] + $people::whereUserId(Auth::user()->id)->first()->descendants()->select(DB::raw("CONCAT(name,' - ',cust_id,' (',cust_type,')') AS full, id"))->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->lists('full', 'id')->all(), null, ['class'=>'select form-control']) !!}
+            {!! Form::select('parent_id', [''=>null] + $people::whereUserId(Auth::user()->id)->first()->descendantsAndSelf()->select(DB::raw("CONCAT(name,' - ',cust_id,' (',cust_type,')') AS full, id"))->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_type', 'desc')->lists('full', 'id')->all(), null, ['class'=>'select form-control']) !!}
         </div>
     @endif
 
