@@ -1,14 +1,12 @@
 var app = angular.module('app', []);
 
-    $('.select').select2({
-        placeholder: 'Please select..'
-    });
+    $('.select').select2();
 
     function d2dorderController($scope, $http){
         // show div init
         $scope.step1 = true;
         $scope.step2 = false;
-        $scope.step3 = true;
+        $scope.step3 = false;
         $scope.loading = false;
 
         $scope.verifyPostcode = function(postcode) {

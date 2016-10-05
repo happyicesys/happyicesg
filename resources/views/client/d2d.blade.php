@@ -5,7 +5,7 @@ Door To Door
 @section('content')
 <div ng-app="app" ng-controller="d2dorderController">
 
-<section id="portfolio" style="padding:25px 20px 10px 0px;">
+<section id="portfolio" style="padding:25px 5px 10px 0px;">
     <div class="container-fluid">
         <div class="row no-gutter">
             <div class="col-md-6 col-xs-12">
