@@ -42,7 +42,7 @@ Door To Door
                                 </div>
                             </fieldset>
                         </div>
-                        <div id="itemInterface" ng-if="step2">
+                        <div ng-if="step2">
                             <div class="col-md-12 col-xs-12">
                                 <h3 style="color:#323299;">Step 2 / 2</h3>
                                 <div class="table-responsive">
@@ -110,12 +110,12 @@ Door To Door
                                 </table>
                                 </div>
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-lg btn-success" id="nextButton">Next <i class="fa fa-spinner fa-spin" ng-if="loading" ng-click="verifyPostcode(form.postcode)"></i></button>
+                                    <button class="btn btn-lg btn-success">Next <i class="fa fa-spinner fa-spin" ng-if="loading" ng-click="verifyPostcode(form.postcode)"></i></button>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="detailInterface">
+                        <div ng-if="step3">
                             <div class="col-md-4 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
@@ -216,17 +216,7 @@ Door To Door
         </div>
     </div>
 </section>
-
 </div>
 
-<script>
-    $('#detailInterface').hide();
-
-    $('#nextButton').on('click', function(event){
-        event.preventDefault();
-        $('#detailInterface').show();
-        $('#nextButton').hide();
-    });
-</script>
 <script src="/js/d2dorder.js"></script>
 @stop

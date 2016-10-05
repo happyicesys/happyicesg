@@ -8,6 +8,7 @@ var app = angular.module('app', []);
         // show div init
         $scope.step1 = true;
         $scope.step2 = false;
+        $scope.step3 = true;
         $scope.loading = false;
 
         $scope.verifyPostcode = function(postcode) {
