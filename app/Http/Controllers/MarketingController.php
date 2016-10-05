@@ -464,7 +464,7 @@ class MarketingController extends Controller
 
         foreach($names as $index => $name){
             if($name or $postals[$index] or $blocks[$index] or $floors[$index] or $units[$index] or $contacts[$index]){
-                $people = Person::where('cust_id', 'LIKE', 'H%');
+                $people = Person::withTrashed()->where('cust_id', 'LIKE', 'H%');
                 $first_person = Person::where('cust_id', 'H100001')->first();
 
                 if(count($people) > 0 and $first_person){
