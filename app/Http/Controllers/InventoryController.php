@@ -356,7 +356,7 @@ class InventoryController extends Controller
     }
 
     // individual line record for each of the inventory incoming/ decution
-    private function createInvRecord(int $inv_id, array $currentQty, array $incomingQty, array $afterQty)
+    private function createInvRecord($inv_id, array $currentQty, array $incomingQty, array $afterQty)
     {
         foreach(array_filter($incomingQty) as $index => $qty){
 
