@@ -1069,7 +1069,9 @@ class TransactionController extends Controller
             $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'.$request->updated_at.'%');
         }
         if($request->delivery_from === $request->delivery_to){
-            $transactions = $transactions->where('transactions.delivery_date', '=', $request->delivery_from);
+            if($request->delivery_from != '' and $request->delivery_to != ''){
+                $transactions = $transactions->where('transactions.delivery_date', '=', $request->delivery_from);
+            }
         }else{
             if($request->delivery_from){
                 $transactions = $transactions->where('transactions.delivery_date', '>=', $request->delivery_from);
