@@ -1,8 +1,33 @@
 var app = angular.module('app', []);
 
-    $('.select').select2();
+    $('.select').select2({
+        placeholder: 'Please select..'
+    });
 
     function d2dorderController($scope, $http){
+        // show div init
+        $scope.step1 = true;
+        $scope.step2 = false;
+        $scope.loading = false;
+
+        $scope.verifyPostcode = function(postcode) {
+            $scope.loading = true;
+            $http.post('/postcode/verify', {postcode: postcode})
+            .success(function(data) {
+                console.log(data);
+            }).error(function(data) {
+                $errors = data.responseJSON;
+                errorsHtml = '<ul>';
+                $.each( data, function( key, value ) {
+                    errorsHtml = '<li style="color:red; padding-top:0px; padding-bottom:10px;">' + value[0] + '</li>';
+                });
+                errorsHtml += '</ul></di>';
+                $( '#form-errors' ).html( errorsHtml );
+                $scope.loading = false;
+            });
+        }
+
+        // calculations
         $(document).on('change', '.itemClass' ,function() {
             multInputs();
         });

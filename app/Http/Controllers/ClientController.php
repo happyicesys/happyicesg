@@ -28,7 +28,6 @@ class ClientController extends Controller
     public function clientProduct()
     {
         $items = Item::wherePublish(1)->orderBy('product_id', 'asc')->get();
-
         return $items;
     }
 
@@ -72,30 +71,18 @@ class ClientController extends Controller
     {
         // find out the latest ecommerce id for incrementation ExxxxxL
         $latest_custid = Person::where('cust_id', 'LIKE', 'E%L')->max('cust_id');
-
         $cust_id = preg_replace("/[^0-9]/", "", $latest_custid) + 1;
-
         // replace the person attributes
         $request->merge(array('cust_id' => 'E'.$cust_id.'L'));
-
         $request->merge(array('username' => strtolower(preg_replace('/\s+/', '', $request->name))));
-
         $request->merge(array('company' => $request->name));
-
         $request->merge(array('bill_address' => $request->del_address));
-
         $request->merge(array('profile_id' => Profile::whereGst(0)->first()->id));
-
         $request->merge(array('cust_id' => 'E'.$cust_id.'L'));
-
         $input = $request->all();
-
         $person = Person::create($input);
-
         $user = User::create($input);
-
         $user->roles()->attach(Role::whereName('ecommerce')->firstOrFail()->id);
-
         // login the user right after registration
         Auth::login($user);
 
@@ -105,7 +92,6 @@ class ClientController extends Controller
 
     public function sendContactEmail(ContactFormRequest $request)
     {
-
         // email array send from
         $sendfrom = ['daniel.ma@happyice.com.sg'];
 
@@ -117,37 +103,24 @@ class ClientController extends Controller
         $today = Carbon::now()->format('d-F-Y');
 
         $data = array(
-
             'name' => $request->name,
-
             'email' => $request->email,
-
             'contact' => $request->contact,
-
             'subject' => $request->subject,
-
             'bodymessage' => $request->message,
         );
 
         $mail =  Mail::send('client.email_contact', $data, function ($message) use ($sendfrom, $sendto, $today){
-
-                    $message->from($sendfrom);
-
-                    $message->subject('Contact Form Submission ['.$today.']');
-
-                    $message->setTo($sendto);
+            $message->from($sendfrom);
+            $message->subject('Contact Form Submission ['.$today.']');
+            $message->setTo($sendto);
         });
 
         if($mail){
-
             Flash::success('The form has been submitted');
-
         }else{
-
             Flash::error('Please Try Again');
-
         }
-
         return view('client.index');
     }
 
@@ -373,7 +346,7 @@ class ClientController extends Controller
         return $add_string;
     }
 
-    // creating deals based on the online order
+    // creating deals based on the online order in transaction [not within d2d coverage]
     private function createDeals($request, $transaction_id)
     {
 
