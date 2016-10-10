@@ -153,7 +153,7 @@
                                     'OE' => 'OE',
                                     'AM' => 'AM',
                                     'AB' => 'AB',
-            ], strtoupper($level), ['id'=>'parent_id', 'class'=>'select form-control']) !!}
+            ], isset($level) ? strtoupper($level) : null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
         </div>
         @else
         <div class="form-group">
@@ -164,7 +164,7 @@
                                     'OE' => 'OE',
                                     'AM' => 'AM',
                                     'AB' => 'AB',
-            ], strtoupper($level), ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
+            ], isset($level) ? strtoupper($level) : null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
         </div>
         @endif
     </div>
