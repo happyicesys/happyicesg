@@ -130,13 +130,13 @@
     <div class="row"></div>
 
     <div class="col-md-12">
-        @if(Auth::user()->hasRole('admin'))
+        @if(Auth::user()->hasRole('admin') and isset($person))
         <hr>
             <div class="form-group">
                 {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
                 {!! Form::select('parent_id', [''=>null] + $members::where('cust_id', 'LIKE', 'D%')->where('active', 'Yes')->whereNotIn('id', [$person->id])->lists('name', 'id')->all(), null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
             </div>
-        @elseif($person)
+        @elseif(isset($person))
         <hr>
             <div class="form-group">
                 {!! Form::label('parent_id', 'Manager', ['class'=>'control-label']) !!}
@@ -153,7 +153,7 @@
                                     'OE' => 'OE',
                                     'AM' => 'AM',
                                     'AB' => 'AB',
-            ], null, ['id'=>'parent_id', 'class'=>'select form-control']) !!}
+            ], strtoupper($level), ['id'=>'parent_id', 'class'=>'select form-control']) !!}
         </div>
         @else
         <div class="form-group">
@@ -164,7 +164,7 @@
                                     'OE' => 'OE',
                                     'AM' => 'AM',
                                     'AB' => 'AB',
-            ], null, ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
+            ], strtoupper($level), ['id'=>'parent_id', 'class'=>'select form-control', 'disabled'=>'disabled']) !!}
         </div>
         @endif
     </div>
