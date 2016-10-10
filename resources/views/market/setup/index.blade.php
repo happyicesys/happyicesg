@@ -100,16 +100,16 @@
 
                             <div class="pull-left display_num">
                                 <label for="display_num">Display</label>
-                                <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
+                                <select ng-model="itemsPerPage2" ng-init="itemsPerPage2='50'">
                                   <option>50</option>
                                   <option>100</option>
-                                  <option>150</option>
+                                  <option>200</option>
                                 </select>
-                                <label for="display_num" style="padding-right: 20px">per Page</label>
+                                <label for="display_num2" style="padding-right: 20px">per Page</label>
                             </div>
 
                             <div class="pull-right">
-                                <a href="/market/setup/d2donline" class="btn btn-success">Add Item</a>
+                                <a href="/market/setup/d2ditem/create" class="btn btn-success">+ Dtd online item</a>
                             </div>
                         </div>
                     </div>
@@ -117,111 +117,94 @@
                     <div class="panel-body">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('area', 'Area', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.area_name', 'placeholder'=>'Area']) !!}
+                                {!! Form::label('item', 'Item:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('item', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.item.product_id', 'placeholder'=>'Item']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('group', 'Group', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group', 'placeholder'=>'Group']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('postcode', 'Postcode:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('postcode', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.value', 'placeholder'=>'Postcode']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.person.name', 'placeholder'=>'Manager']) !!}
+                                {!! Form::label('caption', 'Caption:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('caption', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.caption', 'placeholder'=>'Caption']) !!}
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div style="padding: 20px 0px 10px 15px">
-                                {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
-                                @if(Auth::user()->hasRole('admin'))
-                                    {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
-                                @endif
-                            </div>
-                        </div>
+                        <div class="row"></div>
 
                         <div class="table-responsive">
-                            {!! Form::open(['id'=>'update_form', 'method'=>'POST','action'=>['MarketingController@updatePostcodeForm']]) !!}
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1 text-center">
-                                        <input type="checkbox" id="checkAll" />
-                                    </th>
-                                    <th class="col-md-1 text-center">
                                         #
                                     </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'area_code'; sortReverse = !sortReverse">
-                                        Area Code
-                                        <span ng-show="sortType == 'area_code' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'area_code' && sortReverse" class="fa fa-caret-up"></span>
+                                    <th class="col-md-4 text-center">
+                                        <a href="#" ng-click="sortType = 'item.product_id'; sortReverse = !sortReverse">
+                                        Item
+                                        <span ng-show="sortType == 'item.product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'item.product_id' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
                                     </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'area_name'; sortReverse = !sortReverse">
-                                        Area
-                                        <span ng-show="sortType == 'area_name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'area_name' && sortReverse" class="fa fa-caret-up"></span>
+                                    <th class="col-md-3 text-center">
+                                        <a href="#" ng-click="sortType = 'caption'; sortReverse = !sortReverse">
+                                        Caption
+                                        <span ng-show="sortType == 'caption' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'caption' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'group'; sortReverse = !sortReverse">
-                                        Group
-                                        <span ng-show="sortType == 'group' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'group' && sortReverse" class="fa fa-caret-up"></span>
+                                        <a href="#" ng-click="sortType = 'unit_price'; sortReverse = !sortReverse">
+                                        Unit Price
+                                        <span ng-show="sortType == 'unit_price' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'unit_price' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'value'; sortReverse = !sortReverse">
-                                        Postcode
-                                        <span ng-show="sortType == 'value' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'value' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'block'; sortReverse = !sortReverse">
-                                        Block
-                                        <span ng-show="sortType == 'block' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
+                                        <a href="#" ng-click="sortType = 'qty_divisor'; sortReverse = !sortReverse">
+                                        Divisor
+                                        <span ng-show="sortType == 'qty_divisor' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'qty_divisor' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
                                     </th>
                                     <th class="col-md-2 text-center">
-                                        <a href="#" ng-click="sortType = 'person.name'; sortReverse = !sortReverse">
-                                        Manager
-                                        <span ng-show="sortType == 'person.name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'person.name' && sortReverse" class="fa fa-caret-up"></span>
+                                        Action
                                     </th>
                                 </tr>
 
                                 <tbody>
-                                     <tr dir-paginate="postcode in postcodes | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="postcode" current-page="currentPage" ng-controller="repeatController">
-                                        <td class="col-md-1 text-center"><input type="checkbox" name="checkbox[@{{postcode.id}}]" value="1" id="checkAll" /></td>
-                                        <td class="col-md-1 text-center">@{{ number }} </td>
-                                        <td class="col-md-1 text-center">@{{ postcode.area_code }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.area_name }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.group }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.value }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.block }}</td>
+                                     <tr dir-paginate="salesitem in salesitems | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage2"
+                                        pagination-id="salesitem"
+                                        current-page="currentPage2"
+                                        ng-controller="repeatController2"
+                                    >
+                                        <td class="col-md-1 text-center">
+                                            @{{ number }}
+                                        </td>
+                                        <td class="col-md-4 text-center">
+                                            @{{ salesitem.item.product_id }} -
+                                            @{{ salesitem.item.name }}
+                                        </td>
+                                        <td class="col-md-3 text-center">
+                                            @{{ salesitem.caption }}
+                                        </td>
+                                        <td class="col-md-1 text-right">
+                                            @{{ salesitem.unit_price }}
+                                        </td>
+                                        <td class="col-md-1 text-center">
+                                            @{{ salesitem.qty_divisor }}
+                                        </td>
                                         <td class="col-md-2 text-center">
-                                            <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
-                                                    <option value=""></option>
-                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
-                                            </select>
+                                            <a href="/market/setup/d2ditem/@{{ salesitem.id }}/edit" class="btn btn-sm btn-primary">
+                                            Edit</a>
                                         </td>
                                     </tr>
-                                    <tr ng-show="(postcodes | filter:search).length == 0 || ! postcodes.length">
-                                        <td colspan="12" class="text-center">No Records Found</td>
+                                    <tr ng-show="(salesitems | filter:search).length == 0 || ! salesitems.length">
+                                        <td colspan="14" class="text-center">No Records Found</td>
                                     </tr>
-
                                 </tbody>
                             </table>
-                            {!! Form::close() !!}
                         </div>
                     </div>
 
                     <div class="panel-footer">
-                          <dir-pagination-controls pagination-id="postcode" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(postcodes | filter:search).length}} of @{{postcodes.length}} entries</label>
+                          <dir-pagination-controls pagination-id="salesitem" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                          <label class="pull-right totalnum" ng-if="salesitems" for="totalnum">Showing @{{(salesitems | filter:search).length}} of @{{salesitems.length}} entries</label>
                     </div>
                 </div>
             </div>

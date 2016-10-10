@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests;
 use App\Http\Requests\MemberRequest;
 use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\D2dOnlineSaleRequest;
 use App\Http\Controllers\Controller;
 use App\Person;
 use Auth;
@@ -28,6 +29,7 @@ use App\NotifyManager;
 use App\EmailAlert;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Postcode;
+use App\D2dOnlineSale;
 
 class MarketingController extends Controller
 {
@@ -1189,6 +1191,93 @@ class MarketingController extends Controller
         return Redirect::action('MarketingController@indexSetup');
     }
 
+    // return create view of d2d online order sales item
+    public function createDtdOnlineItems()
+    {
+        return view('market.d2ditem.create');
+    }
+
+    // store d2d online order sales item data
+    public function storeDtdOnlineItem(D2dOnlineSaleRequest $request)
+    {
+        // preset sequence
+        if(!$request->sequence){
+            $max_sequence = (int) D2dOnlineSale::max('sequence') + 1;
+        }else{
+            $max_sequence = $this->createSequence($request->sequence);
+        }
+        $request->merge(array('sequence' => $max_sequence));
+
+        // preset qty divisor
+        if(!$request->qty_divisor){
+            $reqeust->merge(array('qty_divisor' => 1));
+        }
+
+        $salesitem = D2dOnlineSale::create($request->all());
+        if($salesitem){
+            Flash::success('D2d online sales item was added successfully');
+        }else{
+            Flash::error('Please try again');
+        }
+        return Redirect::action('MarketingController@indexSetup');
+    }
+
+    // return d2d online sales item edit page(int $id)
+    public function editDtdOnlineItem($id)
+    {
+        $salesitem = D2dOnlineSale::findOrFail($id);
+        return view('market.d2ditem.edit', compact('salesitem'));
+    }
+
+    // update d2d online sales item from edit page(Formrequest $request, int $id)
+    public function updateDtdOnlineItem(D2dOnlineSaleRequest $request, $id)
+    {
+        $salesitem = D2dOnlineSale::findOrFail($id);
+
+        if($request->sequence != $salesitem->sequence){
+            // if the request seq is bigger than original, move to right
+            if($request->sequence > $salesitem->sequence){
+                $right_moves = D2dOnlineSale::where('sequence', '>', $salesitem->sequence)->where('sequence', '<=', $request->sequence)->get();
+                if($right_moves){
+                    foreach($right_moves as $right_move){
+                        $right_move->sequence -= 1;
+                        $right_move->save();
+                    }
+                }
+            }else{
+                $left_moves = D2dOnlineSale::where('sequence', '>=', $request->sequence)->where('sequence', '<', $salesitem->sequence)->get();
+                if($left_moves){
+                    foreach($left_moves as $left_move){
+                        $left_move->sequence += 1;
+                        $left_move->save();
+                    }
+                }
+            }
+        }
+        if(!$request->qty_divisor){
+            $request->merge(array('qty_divisor' => 1));
+        }
+        $salesitem->update($request->all());
+        return Redirect::action('MarketingController@indexSetup');
+    }
+
+    // delete salesitem by id (int $id)
+    public function destroyDtdOnlineItem($id)
+    {
+        $salesitem = D2dOnlineSale::findOrFail($id);
+        $salesitem->delete();
+        $remains = D2dOnlineSale::where('sequence', '>', $salesitem->sequence)->get();
+        if($remains){
+            foreach($remains as $remain){
+                $remain->sequence -= 1;
+                $remain->save();
+            }
+        }
+        return Redirect::action('MarketingController@indexSetup');
+
+    }
+
+    // PRIVATE MEHTODS
     // method for deleting deals upon transaction deletion
     private function dealDeleteMultiple($transaction_id)
     {
@@ -1593,5 +1682,24 @@ class MarketingController extends Controller
             return false;
         }*/
         return $noneditable;
+    }
+
+    // processing d2d sales items sequence number
+    // based on entered sequence taking action rearrange number for creation(int $sequence_num) [int $running_num]
+    public function createSequence($sequence_num)
+    {
+        $running_num = 0;
+        $duplicate = D2dOnlineSale::whereSequence($sequence_num)->first();
+        if($duplicate){
+            $greater_numbers = D2dOnlineSale::where('sequence', '>=', $sequence_num)->get();
+            foreach($greater_numbers as $greater_number){
+                $greater_number->sequence = $greater_number->sequence + 1;
+                $greater_number->save();
+            }
+            $running_num = $sequence_num;
+        }else{
+            $running_num = (int) D2dOnlineSale::max('sequence') + 1;
+        }
+        return $running_num;
     }
 }

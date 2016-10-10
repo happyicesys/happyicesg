@@ -1,3 +1,5 @@
+@inject('salesitems', 'App\D2dOnlineSale')
+
 @extends('template_client')
 @section('title')
 Door To Door
@@ -61,13 +63,14 @@ Door To Door
                                             Price
                                         </th>
                                     </tr>
-                                    @foreach($lookupArr as $index => $lookup)
+                                    <p>{{$salesitems}}</p>
+                                    @foreach($salesitems as $index => $salesitem)
                                     <tr class="txtMult">
                                         <td class="col-md-1 text-center rowCount">
                                             {{$index}}
                                         </td>
                                         <td class="col-md-6 text-left">
-                                            {{$lookup}}
+                                            {{$salesitem}}
                                         </td>
                                         <td class="col-md-2 text-center">
                                             <select name="qtyArr[{{$index}}]" class="select qtyClass">
@@ -87,7 +90,7 @@ Door To Door
                                             <input type="text" name="amountArr[{{$index}}]" class="input-sm form-control amountClass text-right" readonly="readonly" />
                                         </td>
                                         <td class="hidden">
-                                            <input type="text" class=" input-sm form-control priceClass text-right" value="{{$priceArr[$index]}}" />
+                                            <input type="text" class=" input-sm form-control priceClass text-right" value="{{$salesitem}}" />
                                         </td>
                                     </tr>
                                     @endforeach

@@ -14,9 +14,10 @@ class CreateD2dOnlineSalesTable extends Migration
     {
         Schema::create('d2d_online_sales', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('sequence')->unsigned();
             $table->decimal('unit_price', 12, 2);
             $table->decimal('qty_divisor', 12, 4);
-            $table->string('desc')->nullable;
+            $table->string('caption');
 
             $table->integer('item_id')->unsigned()->nullable();
             $table->foreign('item_id')->references('id')->on('items');

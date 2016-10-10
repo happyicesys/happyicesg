@@ -2,10 +2,16 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
 
     function setupController($scope, $http){
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;
+        $scope.itemsPerPage = 50;
+        $scope.currentPage2 = 1;
+        $scope.itemsPerPage2 = 50;
 
         $http.get('/item/data').success(function(items){
             $scope.items = items;
+        });
+
+        $http.get('/api/d2donlinesales').success(function(salesitems) {
+            $scope.salesitems = salesitems;
         });
 
         $http.get('/market/setup/price').success(function(prices){
@@ -49,5 +55,12 @@ function repeatController($scope) {
     })
 }
 
+function repeatController2($scope) {
+    $scope.$watch('$index', function(index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage2 - 1) * $scope.itemsPerPage2;
+    })
+}
+
 app.controller('setupController', setupController);
 app.controller('repeatController', repeatController);
+app.controller('repeatController2', repeatController2);

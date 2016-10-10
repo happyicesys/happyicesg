@@ -13,11 +13,17 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('welcome');
 });
+Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
 
 Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
 Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');
 
 Route::post('/market/setup/postcode/update', 'MarketingController@updatePostcodeForm');
+Route::get('/market/setup/d2ditem/create', 'MarketingController@createDtdOnlineItems');
+Route::post('/market/setup/d2ditem', 'MarketingController@storeDtdOnlineItem');
+Route::get('/market/setup/d2ditem/{id}/edit', 'MarketingController@editDtdOnlineItem');
+Route::post('/market/setup/d2ditem/{id}', 'MarketingController@updateDtdOnlineItem');
+Route::delete('/market/setup/d2ditem/{id}', 'MarketingController@destroyDtdOnlineItem');
 Route::get('/market/setup/members', 'MarketingController@getAllMembers');
 Route::get('/market/setup/postcodes', 'MarketingController@getPostcodes');
 Route::post('/market/setup/postcode', 'MarketingController@storePostcode');
