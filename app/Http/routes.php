@@ -83,6 +83,7 @@ Route::delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 Route::get('/inventory/data', 'InventoryController@getData');
 Route::resource('inventory', 'InventoryController');
 
+Route::get('/franchise', 'ClientController@franchiseIndex');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');
 Route::get('/vending', 'ClientController@vendingIndex');
 Route::get('/d2d', 'ClientController@d2dIndex');

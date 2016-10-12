@@ -68,6 +68,12 @@ class ClientController extends Controller
         return view('client.recruitment');
     }
 
+    // return franchise page
+    public function franchiseIndex()
+    {
+        return view('client.franchise');
+    }
+
     public function store(ClientRegisterRequest $request)
     {
         // find out the latest ecommerce id for incrementation ExxxxxL

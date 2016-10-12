@@ -27,6 +27,9 @@
                     <a class="page-scroll" style="color: white;" href="/vending">Vending Machine</a>
                 </li>
                 <li>
+                    <a class="page-scroll" style="color: white;" href="/franchise">Franchise</a>
+                </li>
+                <li>
                     <a class="page-scroll" style="color: white;" href="/client/about">About</a>
                 </li>
                 <li>
