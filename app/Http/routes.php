@@ -86,6 +86,7 @@ Route::resource('inventory', 'InventoryController');
 Route::get('/franchise', 'ClientController@franchiseIndex');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');
 Route::get('/vending', 'ClientController@vendingIndex');
+Route::post('/vending', 'ClientController@vendingInquiry');
 Route::get('/d2d', 'ClientController@d2dIndex');
 Route::post('/d2d/email', 'ClientController@emailOrder');
 Route::get('/client/item', 'ClientController@clientProduct');

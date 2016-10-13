@@ -59,7 +59,15 @@ class ClientController extends Controller
     // return vending page
     public function vendingIndex()
     {
-        return view('client.vending');
+        $locArr = [
+            1 => 'Food Court',
+            2 => 'Restaurant',
+            3 => 'Shopping Malls',
+            4 => 'Office Building',
+            5 => 'Condominium',
+            6 => 'Others'
+        ];
+        return view('client.vending', compact('locArr'));
     }
 
     // return recruitment page
@@ -313,6 +321,56 @@ class ClientController extends Controller
             Flash::error('Please Try Again');
         }
         return Redirect::action('ClientController@d2dIndex');
+    }
+
+    public function vendingInquiry(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'contact' => 'required',
+            'loc' => 'required',
+        ], [
+            'name.required' => 'Please fill in the name',
+            'contact.required' => 'Please fill in the contact number',
+            'loc.required' => 'Please select proposed location',
+        ]);
+
+        $locArr = [
+            1 => 'Food Court',
+            2 => 'Restaurant',
+            3 => 'Shopping Malls',
+            4 => 'Office Building',
+            5 => 'Condominium',
+            6 => 'Others'
+        ];
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+        // email array send to
+
+        $sendto = ['daniel.ma@happyice.com.sg'];
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+        $data = array(
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'loc' => $locArr[$request->loc],
+        );
+
+        $mail =  Mail::send('client.email_vendingInq', $data, function ($message) use ($sendfrom, $sendto, $today){
+            $message->from($sendfrom);
+            $message->subject('Vending Machine Propose Location ['.$today.']');
+            $message->setTo($sendto);
+        });
+
+        if($mail){
+            Flash::success('The form has been submitted');
+        }else{
+            Flash::error('Please Try Again');
+        }
+        return Redirect::action('ClientController@vendingIndex');
     }
 
     // create H code customer process based on given postcode and assign to member
