@@ -4,13 +4,13 @@ Healthier Life
 @stop
 @section('content')
 
-<section id="franchise" style="padding-top: 30px;">
+<section id="franchise" style="padding-top: 30px; font-size: 17px;">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-12">
-                <h3>Franchise on Fun-Vending Machine</h3><br>
-                <h4><strong>Mission statements:</strong></h4>
-                <p>Happy Ice aims to provide healthier choice of ice cream and different variety of ice creams to the market by using its own unique vending machine. It strives to tap into unserved market segments using vending machines.</p>
+                <h1>Franchise on Fun-Vending Machine</h1><br>
+                <h3>Mission statements:</h3>
+                <p style="font-size: 17px;">Happy Ice aims to provide healthier choice of ice cream and different variety of ice creams to the market by using its own unique vending machine. It strives to tap into unserved market segments using vending machines.</p>
             </div>
         </div>
 
@@ -21,21 +21,21 @@ Healthier Life
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <h4><strong>What kind of Vending Machines?</strong></h4>
-                <p>The machine is a vending machine that allows the customer to catch the ice cream using an electronic controllable claw.  Customer will be given unlimited chances to control the claw until the ice cream is dispensed out. It turns a boring vending process into a fun and engaging experience. The machine is unique in the market and patent is pending. It is probably the world's first fun-vending machine.</p>
+                <p style="font-size: 17px;">The machine is a vending machine that allows the customer to catch the ice cream using an electronic controllable claw.  Customer will be given unlimited chances to control the claw until the ice cream is dispensed out. It turns a boring vending process into a fun and engaging experience. The machine is unique in the market and patent is pending. It is probably the world's first fun-vending machine.</p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <h4><strong>Ideal locations for our fun vending machine:</strong></h4>
-                <p>Recreational places like theme parks, science center, Shopping malls, F&B shops, retails places, touristic spots, schools, and hostels.</p>
+                <p style="font-size: 17px;">Recreational places like theme parks, science center, Shopping malls, F&B shops, retails places, touristic spots, schools, and hostels.</p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <h4><strong>Target audience for the machines:</strong></h4>
-                <p>Family with young children, teenagers and youngsters, and any adventurous adults.</p>
+                <p style="font-size: 17px;">Family with young children, teenagers and youngsters, and any adventurous adults.</p>
             </div>
         </div>
 
@@ -73,7 +73,7 @@ Healthier Life
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <h4><strong>How do I invest and earn money using this machine?</strong></h4>
-                <p>Yes, you are welcome to invest on our machine. Happy Ice do have a very unique franchise model. You probably have heard of franchising a F&B outlet, a fashion boutique, but not a vending machine. Today we are glad to announce to the public that our Ice cream machine is open up for franchising.</p>
+                <p style="font-size: 17px;">Yes, you are welcome to invest on our machine. Happy Ice do have a very unique franchise model. You probably have heard of franchising a F&B outlet, a fashion boutique, but not a vending machine. Today we are glad to announce to the public that our Ice cream machine is open up for franchising.</p>
             </div>
         </div>
 
@@ -113,9 +113,9 @@ Healthier Life
 
         <div class="row">
             <div class="col-lg-12 col-md-12" style="font-size: 16px;">
-                <h4>
-                    <strong>Speak to us today to find out how you can invest on this ice cream vending machine.</strong>
-                </h4>
+                <h3>
+                    Speak to us today to find out how you can invest on this ice cream vending machine.
+                </h3>
             </div>
         </div>
     </div>
