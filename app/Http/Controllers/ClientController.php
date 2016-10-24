@@ -21,6 +21,7 @@ use App\Profile;
 use App\Role;
 use App\DtdPrice;
 use App\Postcode;
+use App\Http\Utilities\Country;
 
 class ClientController extends Controller
 {
@@ -121,10 +122,10 @@ class ClientController extends Controller
     {
 
         // email array send from
-        $sendfrom = ['daniel.ma@happyice.com.sg'];
+        $sendfrom = ['system@happyice.com.sg'];
 
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
         // $sendto = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -283,7 +284,7 @@ class ClientController extends Controller
             }
             $sendto = array_unique($sendto);
         }else{
-            $sendto = ['daniel.ma@happyice.com.sg'];
+            $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
         }
         array_push($sendto, 'jiahaur91@hotmail.com');
         // $sendto = ['leehongjie91@gmail.com'];
@@ -347,8 +348,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-
-        $sendto = ['daniel.ma@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
@@ -388,6 +388,36 @@ class ClientController extends Controller
             'email.email' => 'Email format is not right, please try again',
             'country.required' => 'Please select a country',
         ]);
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+        // email array send to
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        // $sendto = ['leehongjie91@happyice.com.sg'];
+
+        $countries = Country::all();
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+        $data = array(
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'country' => array_search($request->country, $countries)
+        );
+
+        $mail =  Mail::send('client.email_franchiseInq', $data, function ($message) use ($sendfrom, $sendto, $today){
+            $message->from($sendfrom);
+            $message->subject('Franchise Enquiry ['.$today.']');
+            $message->setTo($sendto);
+        });
+
+        if($mail){
+            Flash::success('The form has been submitted');
+        }else{
+            Flash::error('Please Try Again');
+        }
+        return Redirect::action('ClientController@franchiseIndex');
     }
 
     // create H code customer process based on given postcode and assign to member
