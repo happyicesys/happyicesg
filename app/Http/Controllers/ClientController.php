@@ -373,6 +373,23 @@ class ClientController extends Controller
         return Redirect::action('ClientController@vendingIndex');
     }
 
+    // submit franchise inquiry (FormRequest $request)
+    public function franchiseInquiry(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'contact' => 'required',
+            'email' => 'email|required',
+            'country' => 'required',
+        ], [
+            'name.required' => 'Please fill in the name',
+            'contact.required' => 'Please fill in the contact number',
+            'email.required' => 'Please fill in the email',
+            'email.email' => 'Email format is not right, please try again',
+            'country.required' => 'Please select a country',
+        ]);
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($postcode_data, $request)
     {

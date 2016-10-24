@@ -690,7 +690,7 @@ class MarketingController extends Controller
 
         $request->merge(array('updated_by' => Auth::user()->name));
         $request->merge(array('created_by' => Auth::user()->name));
-        $request->merge(array('delivery_date' => Carbon::today()->addDay()));
+        $request->merge(array('delivery_date' => Carbon::today()));
         $request->merge(array('order_date' => Carbon::today()));
         $request->merge(array('status' => 'Pending'));
         $request->merge(array('type' => 'Deal'));
@@ -720,7 +720,7 @@ class MarketingController extends Controller
 
         $request->merge(array('updated_by' => Auth::user()->name));
         $request->merge(array('created_by' => Auth::user()->name));
-        $request->merge(array('delivery_date' => Carbon::today()->addDay()));
+        $request->merge(array('delivery_date' => Carbon::today()));
         $request->merge(array('order_date' => Carbon::today()));
         $request->merge(array('status' => 'Pending'));
         $request->merge(array('type' => 'Commission'));
@@ -794,12 +794,11 @@ class MarketingController extends Controller
         // date validation check
         $this->validate($request, [
             'order_date' => 'required|date|after:yesterday',
-            'delivery_date' => 'required|date|after:yesterday',
+            'delivery_date' => 'required|date',
         ],[
             'order_date.required' => 'Please fill in the Order Date',
             'order_date.after' => 'Order Date must at least today',
             'delivery_date.required' => 'Please fill in the Delivery Date',
-            'delivery_date.after' => 'Delivery Date must at least today',
         ]);
 
         if($request->confirm){
