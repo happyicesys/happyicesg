@@ -236,7 +236,11 @@
                                 {{ $deal->item->name}} {{ $deal->item->remark }}
                             </td>
                             <td class="col-xs-2 text-right">
-                                {{ $deal->qty + 0 }}  {{ $deal->item->unit }}
+                                @if($deal->divisor)
+                                    {{ $deal->divisor == 1 ? $deal->qty + 0 : $deal->dividend.'/'.$deal->divisor}} {{ $deal->item->unit }}
+                                @else
+                                    {{ $deal->qty + 0 }}
+                                @endif
                             </td>
                             @if($deal->unit_price == 0 || $deal->unit_price == null)
                             <td class="col-xs-1 text-right">

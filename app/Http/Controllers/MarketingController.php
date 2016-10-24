@@ -1404,6 +1404,8 @@ class MarketingController extends Controller
                             $dtddeal->transaction_id = $dtdtrans_id;
                             $dtddeal->item_id = $index;
                             $dtddeal->qty = $qty;
+                            $dtddeal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
+                            $dtddeal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
                             $dtddeal->amount = $amounts[$index];
                             $dtddeal->unit_price = $quotes[$index];
                             $dtddeal->qty_status = 1;
@@ -1416,6 +1418,8 @@ class MarketingController extends Controller
                         $dtddeal->transaction_id = $dtdtrans_id;
                         $dtddeal->item_id = $index;
                         $dtddeal->qty = $qty;
+                        $dtddeal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
+                        $dtddeal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
                         $dtddeal->amount = $amounts[$index];
                         $dtddeal->unit_price = $quotes[$index];
                         $dtddeal->qty_status = 1;
