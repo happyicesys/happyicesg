@@ -37,7 +37,11 @@ Door To Door
                                             <div class="form-group">
                                                 <input type="text" name="postcode" placeholder="Postcode..." class="form-first-name form-control input-lg" ng-model="form.postcode">
                                             </div>
-                                            <div id="form-errors"></div>
+                                            <span ng-if="formErrors['postcode']" class="help-block" style="color:red;">
+                                                <ul class="row">
+                                                    <li style="color:red;">@{{ formErrors['postcode'][0] }}</li>
+                                                </ul>
+                                            </span>
                                             <button type="button" class="btn btn-success btn-next btn-lg" ng-click="verifyPostcode(form.postcode)">Next <i class="fa fa-spinner fa-spin" ng-if="loading"></i></button>
                                         </div>
                                     </div>

@@ -8,6 +8,7 @@ var app = angular.module('app', []);
         $scope.step2 = false;
         $scope.step3 = false;
         $scope.loading = false;
+        $scope.formErrors = [];
 
         $scope.verifyPostcode = function(postcode) {
             $scope.loading = true;
@@ -18,13 +19,8 @@ var app = angular.module('app', []);
                 $scope.step1 = false;
                 $scope.step2 = true;
             }).error(function(data) {
-                $errors = data.responseJSON;
-                errorsHtml = '<ul>';
-                $.each( data, function( key, value ) {
-                    errorsHtml = '<li style="color:red; padding-top:0px; padding-bottom:10px;">' + value[0] + '</li>';
-                });
-                errorsHtml += '</ul></di>';
-                $( '#form-errors' ).html( errorsHtml );
+                console.log(data);
+                $scope.formErrors = data;
                 $scope.loading = false;
             });
         }
