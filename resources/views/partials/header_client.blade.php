@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {{-- seo keywords--}}
 <meta name="keywords" content="Happy Ice, Ice Cream, Healthier Choice, Healthier Life, Xiao Mei Ice Cream, Made In Taiwan, Flavoured Ice Cream, Chocolate, Vanilla, Red Bean Taro, QQ Pudding, Choc Pie, Japanese Matcha, Low Fat Frozen Yogurt, Oshare"/>
-
+<meta id="_token" name="_token" content="{{ csrf_token() }}">
 
 {{-- CSS & Javascript versioning gulpfile --}}
     <!-- Bootstrap Core CSS -->
@@ -37,10 +37,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-{{-- including CDN assets --}}
-@include('partials.cdn')
-
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    {{-- including CDN assets --}}
+    @include('partials.cdn')
+    <script src="{{ elixir('js/all.js') }}"></script>
     <!-- jQuery -->
     <script src="/js/jquery.js"></script>
 
@@ -62,6 +61,17 @@
 
     <!-- videojs cdn -->
     <script src="//vjs.zencdn.net/5.4.6/video.min.js"></script>
+    <script>
+        window.Laravel = <?php echo json_encode([
+            'csrfToken' => csrf_token(),
+        ]); ?>
+
+        Vue.http.interceptors.push((request, next) => {
+            request.headers.set('X-CSRF-TOKEN', Laravel.csrfToken);
+
+            next();
+        });
+    </script>
 
 <style type="text/css">
     body {
