@@ -1,11 +1,5 @@
 <?php
 
-//debug purpose
-/*Event::listen('illuminate.query', function($query)
-{
-    var_dump($query);
-});*/
-
 Route::get('/', function () {
     return view('client.index');
 });
@@ -14,6 +8,7 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
+Route::post('/api/d2donlinesales', 'D2dOnlineSaleController@submitOrder');
 
 Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
 Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');

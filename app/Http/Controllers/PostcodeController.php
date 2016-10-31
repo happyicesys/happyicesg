@@ -19,14 +19,18 @@ class PostcodeController extends Controller
     // verify postcode is within coverage (null)
     public function verifyPostcode(Request $request)
     {
+        $covered = false;
         $this->validate($request, [
             'postcode' => 'required|digits:6'
         ]);
-        $postcode = Postcode::whereValue($request->postcode)->whereNotNull('person_id')->first();
-        if($postcode){
-            return $postcode;
-        }else{
-            return '';
+        $postcode = Postcode::whereValue($request->postcode)->first();
+        if($postcode) {
+            $covered = $postcode->person_id ? true : false;
         }
+        $data = [
+            'postcode' => $postcode,
+            'covered' => $covered,
+        ];
+        return $data;
     }
 }

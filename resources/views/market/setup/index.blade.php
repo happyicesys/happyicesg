@@ -134,7 +134,7 @@
                                     <th class="col-md-1 text-center">
                                         #
                                     </th>
-                                    <th class="col-md-4 text-center">
+                                    <th class="col-md-5 text-center">
                                         <a href="#" ng-click="sortType = 'item.product_id'; sortReverse = !sortReverse">
                                         Item
                                         <span ng-show="sortType == 'item.product_id' && !sortReverse" class="fa fa-caret-down"></span>
@@ -146,13 +146,6 @@
                                         Caption
                                         <span ng-show="sortType == 'caption' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'caption' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'unit_price'; sortReverse = !sortReverse">
-                                        Unit Price
-                                        <span ng-show="sortType == 'unit_price' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'unit_price' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th class="col-md-1 text-center">
@@ -176,15 +169,12 @@
                                         <td class="col-md-1 text-center">
                                             @{{ number }}
                                         </td>
-                                        <td class="col-md-4 text-center">
-                                            @{{ salesitem.item.product_id }} -
-                                            @{{ salesitem.item.name }}
+                                        <td class="col-md-5 text-center">
+                                            @{{ salesitem.product_id }} -
+                                            @{{ salesitem.item_name }}
                                         </td>
                                         <td class="col-md-3 text-center">
                                             @{{ salesitem.caption }}
-                                        </td>
-                                        <td class="col-md-1 text-right">
-                                            @{{ salesitem.unit_price }}
                                         </td>
                                         <td class="col-md-1 text-center">
                                             @{{ salesitem.qty_divisor }}
@@ -314,6 +304,12 @@
                                         <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-2 text-center">
+                                        <a href="#" ng-click="sortType = 'street'; sortReverse = !sortReverse">
+                                        Street
+                                        <span ng-show="sortType == 'street' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'street' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                    <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'person.name'; sortReverse = !sortReverse">
                                         Manager
                                         <span ng-show="sortType == 'person.name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -330,10 +326,11 @@
                                         <td class="col-md-1 text-center">@{{ postcode.group }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.value }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.block }}</td>
+                                        <td class="col-md-2 text-center">@{{ postcode.street }}</td>
                                         <td class="col-md-2 text-center">
                                             <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
-                                                    <option value=""></option>
-                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
+                                                <option value=""></option>
+                                                <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
                                             </select>
                                         </td>
                                     </tr>

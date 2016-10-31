@@ -27,7 +27,6 @@ class D2dOnlineSaleRequest extends Request
             'sequence' => 'integer',
             'item_id' => 'required',
             'caption' => 'required',
-            'unit_price' => 'numeric|required',
             'qty_divisor' => 'numeric|min:1'
         ];
     }
@@ -38,8 +37,6 @@ class D2dOnlineSaleRequest extends Request
             'sequence.integer' => 'Sequence number must be a whole number',
             'item_id.required' => 'Please select an item',
             'caption.required' => 'Please fill in the caption',
-            'unit_price.numeric' => 'Unit price must be in numbers',
-            'unit_price.required' => 'Please fill in the unit price',
             'qty_divisor.numeric' => 'Qty divisor must be in numbers',
             'qty_divisor.min' => 'Qty divisor must be greater than 1'
         ];

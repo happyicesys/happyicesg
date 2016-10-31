@@ -9,9 +9,8 @@ class D2dOnlineSale extends Model
     protected $table = 'd2d_online_sales';
 
     protected $fillable = [
-        'unit_price', 'qty_divisor', 'caption', 'sequence',
-
-        'item_id'
+        'caption', 'sequence', 'qty_divisor',
+        'item_id', 'person_id',
     ];
 
     // getter
@@ -24,5 +23,10 @@ class D2dOnlineSale extends Model
     public function item()
     {
         return $this->belongsTo('App\Item');
+    }
+
+    public function person()
+    {
+        return $this->belongsTo('App\Person');
     }
 }
