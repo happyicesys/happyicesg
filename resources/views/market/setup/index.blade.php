@@ -17,7 +17,8 @@
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             @if(Auth::user()->hasRole('admin') or $people::where('user_id', Auth::user()->id)->first()->cust_type === 'OM')
-                <li><a href="#price" role="tab" data-toggle="tab"> Item Price List</a></li>
+                <li><a href="#member_price" role="tab" data-toggle="tab"> Member Price List</a></li>
+                <li><a href="#cust_price" role="tab" data-toggle="tab"> D2D Customer Price List</a></li>
             @endif
             <li class="active"><a href="#postcode" role="tab" data-toggle="tab">Postcode Management</a></li>
         </ul>
@@ -26,12 +27,12 @@
     <div class="panel-body">
         <div class="tab-content">
             {{-- first element --}}
-            <div class="tab-pane" id="price">
+            <div class="tab-pane" id="member_price">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="pull-left ">
-                                <h4><strong>Price Management for DTD</strong></h4>
+                                <h4><strong>Price Management for DTD Members</strong></h4>
                             </div>
                             <div class="pull-right ">
                                 {!! Form::submit('Done', ['class'=> 'btn btn-success', 'form'=>'done_price']) !!}
@@ -41,7 +42,6 @@
 
                     <div class="panel-body">
                         {!! Form::model($price = new \App\DtdPrice, ['action'=>'MarketingController@storeSetupPrice', 'id'=>'done_price']) !!}
-                        {{-- {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!} --}}
 
                         <div class="table-responsive">
                             <table class="table table-list-search table-hover table-bordered table-condensed">
@@ -58,25 +58,6 @@
                                 </tr>
 
                                 <tbody>
-{{--                                 <tr ng-repeat="item in items" class="form-group">
-                                    <td class="col-md-8">
-                                        @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                                    </td>
-                                    <td class="col-md-2">
-                                        <strong>
-                                            <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel=getRetailInit(item.id)" ng-model="retailModel" />
-                                        </strong>
-                                    </td>
-                                    <td class="col-md-2">
-                                        <strong>
-                                            <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel=getQuoteInit(item.id)" ng-model="quoteModel" />
-                                        </strong>
-                                    </td>
-                                </tr>
-                                <tr ng-if="items.length == 0 || ! items.length">
-                                    <td colspan="4" class="text-center">No Records Found!</td>
-                                </tr> --}}
-
                                     @unless(count($items)>0)
                                         <td class="text-center" colspan="7">No Records Found</td>
                                     @else
@@ -112,6 +93,113 @@
             </div>
             {{-- end of first element--}}
             {{-- second element --}}
+            <div class="tab-pane" id="cust_price">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+
+                            <div class="pull-left display_num">
+                                <label for="display_num">Display</label>
+                                <select ng-model="itemsPerPage2" ng-init="itemsPerPage2='50'">
+                                  <option>50</option>
+                                  <option>100</option>
+                                  <option>200</option>
+                                </select>
+                                <label for="display_num2" style="padding-right: 20px">per Page</label>
+                            </div>
+
+                            <div class="pull-right">
+                                <a href="/market/setup/d2ditem/create" class="btn btn-success">+ Dtd online item</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('item', 'Item:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('item', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.item.product_id', 'placeholder'=>'Item']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('caption', 'Caption:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('caption', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.caption', 'placeholder'=>'Caption']) !!}
+                            </div>
+                        </div>
+
+                        <div class="row"></div>
+
+                        <div class="table-responsive">
+                            <table class="table table-list-search table-hover table-bordered">
+                                <tr style="background-color: #DDFDF8">
+                                    <th class="col-md-1 text-center">
+                                        #
+                                    </th>
+                                    <th class="col-md-5 text-center">
+                                        <a href="#" ng-click="sortType = 'item.product_id'; sortReverse = !sortReverse">
+                                        Item
+                                        <span ng-show="sortType == 'item.product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'item.product_id' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-3 text-center">
+                                        <a href="#" ng-click="sortType = 'caption'; sortReverse = !sortReverse">
+                                        Caption
+                                        <span ng-show="sortType == 'caption' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'caption' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'qty_divisor'; sortReverse = !sortReverse">
+                                        Divisor
+                                        <span ng-show="sortType == 'qty_divisor' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'qty_divisor' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th class="col-md-2 text-center">
+                                        Action
+                                    </th>
+                                </tr>
+
+                                <tbody>
+                                     <tr dir-paginate="salesitem in salesitems | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage2"
+                                        pagination-id="salesitem"
+                                        current-page="currentPage2"
+                                        ng-controller="repeatController2"
+                                    >
+                                        <td class="col-md-1 text-center">
+                                            @{{ number }}
+                                        </td>
+                                        <td class="col-md-5 text-center">
+                                            @{{ salesitem.product_id }} -
+                                            @{{ salesitem.item_name }}
+                                        </td>
+                                        <td class="col-md-3 text-center">
+                                            @{{ salesitem.caption }}
+                                        </td>
+                                        <td class="col-md-1 text-center">
+                                            @{{ salesitem.qty_divisor }}
+                                        </td>
+                                        <td class="col-md-2 text-center">
+                                            <a href="/market/setup/d2ditem/@{{ salesitem.id }}/edit" class="btn btn-sm btn-primary">
+                                            Edit</a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="(salesitems | filter:search).length == 0 || ! salesitems.length">
+                                        <td colspan="14" class="text-center">No Records Found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                          <dir-pagination-controls pagination-id="salesitem" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                          <label class="pull-right totalnum" ng-if="salesitems" for="totalnum">Showing @{{(salesitems | filter:search).length}} of @{{salesitems.length}} entries</label>
+                    </div>
+                </div>
+            </div>
+            {{-- end of second element --}}
+            {{-- third element --}}
             <div class="tab-pane active" id="postcode">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -216,6 +304,12 @@
                                         <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-2 text-center">
+                                        <a href="#" ng-click="sortType = 'street'; sortReverse = !sortReverse">
+                                        Street
+                                        <span ng-show="sortType == 'street' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'street' && sortReverse" class="fa fa-caret-up"></span>
+                                    </th>
+                                    <th class="col-md-2 text-center">
                                         <a href="#" ng-click="sortType = 'person.name'; sortReverse = !sortReverse">
                                         Manager
                                         <span ng-show="sortType == 'person.name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -232,10 +326,11 @@
                                         <td class="col-md-1 text-center">@{{ postcode.group }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.value }}</td>
                                         <td class="col-md-1 text-center">@{{ postcode.block }}</td>
+                                        <td class="col-md-2 text-center">@{{ postcode.street }}</td>
                                         <td class="col-md-2 text-center">
                                             <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
-                                                    <option value=""></option>
-                                                    <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
+                                                <option value=""></option>
+                                                <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -255,7 +350,7 @@
                     </div>
                 </div>
             </div>
-            {{-- end of second element --}}
+            {{-- end of third element --}}
         </div>
     </div>
 </div>

@@ -15,6 +15,7 @@ elixir(function(mix) {
             'app.css',
             ])
         .scripts([
+            'lodash.js',
             'jquery.min.js',
             '../bower/moment/min/moment.min.js',
             'bootstrap-js/bootstrap.min.js',
@@ -37,9 +38,8 @@ elixir(function(mix) {
             'tableExport/tableExport.js',
             '../bower/angularjs-datepicker/src/js/angular-datepicker.js',
             '../bower/angular-ui-select2/src/select2.js',
-            // '../bower/angular-animate/angular-animate.js',
-            // '../bower/angular-aria/angular-aria.js',
-            // '../bower/angular-material/angular-material.js',
+            'vue/vue.js',
+            'vue/vue-resource.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

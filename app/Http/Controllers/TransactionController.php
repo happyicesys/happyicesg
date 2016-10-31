@@ -1129,6 +1129,4 @@ class TransactionController extends Controller
 
         return $total_amount;
     }
-
-
 }

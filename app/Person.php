@@ -182,9 +182,9 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Payterm');
     }
 
-    public function price()
+    public function prices()
     {
-        return $this->hasOne('App\Price');
+        return $this->hasMany('App\Price');
     }
 
     public function profile()

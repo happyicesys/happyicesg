@@ -15,6 +15,7 @@ class CreatePostcodesTable extends Migration
             $table->string('area_code')->nullable();
             $table->string('area_name')->nullable();
             $table->string('group')->nullable();
+            $table->string('street')->nullable();
             $table->integer('person_id')->unsigned()->nullable();
             $table->foreign('person_id')->references('id')->on('people');
             $table->timestamps();

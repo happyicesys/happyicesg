@@ -1,11 +1,5 @@
 <?php
 
-//debug purpose
-/*Event::listen('illuminate.query', function($query)
-{
-    var_dump($query);
-});*/
-
 Route::get('/', function () {
     return view('client.index');
 });
@@ -13,8 +7,18 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('welcome');
 });
+Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
+Route::post('/api/d2donlinesales', 'D2dOnlineSaleController@submitOrder');
+
+Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
+Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');
 
 Route::post('/market/setup/postcode/update', 'MarketingController@updatePostcodeForm');
+Route::get('/market/setup/d2ditem/create', 'MarketingController@createDtdOnlineItems');
+Route::post('/market/setup/d2ditem', 'MarketingController@storeDtdOnlineItem');
+Route::get('/market/setup/d2ditem/{id}/edit', 'MarketingController@editDtdOnlineItem');
+Route::post('/market/setup/d2ditem/{id}', 'MarketingController@updateDtdOnlineItem');
+Route::delete('/market/setup/d2ditem/{id}', 'MarketingController@destroyDtdOnlineItem');
 Route::get('/market/setup/members', 'MarketingController@getAllMembers');
 Route::get('/market/setup/postcodes', 'MarketingController@getPostcodes');
 Route::post('/market/setup/postcode', 'MarketingController@storePostcode');
