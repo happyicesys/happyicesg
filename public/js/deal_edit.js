@@ -15,6 +15,7 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
 
         $scope.selection = {};
         $scope.Math = window.Math;
+        $scope.delivery = '';
 
             $(document).ready(function () {
 

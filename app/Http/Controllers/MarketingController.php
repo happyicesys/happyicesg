@@ -840,7 +840,7 @@ class MarketingController extends Controller
         }elseif($request->save_draft){
             $request->merge(array('status' => 'Draft'));
         }
-
+        // dd($request->all());
         $request->merge(array('person_id' => $request->input('person_copyid')));
         $request->merge(array('updated_by' => Auth::user()->name));
         $dtdtransaction->update($request->all());
@@ -848,6 +848,7 @@ class MarketingController extends Controller
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
         if($request->submit_deal){
             if(count($dtddeals) == 0){
+                dd('here');
                 Flash::error('Please entry the list');
                 return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
             }
@@ -1609,10 +1610,13 @@ class MarketingController extends Controller
 
     private function calOrderLimit($qty, $item)
     {
-        if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0){
-            return true;
-        }else{
-            return false;
+        $limit = false;
+        if($item->lowest_limit) {
+            if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit) {
+                $limit = true;
+            }
+        }else {
+            $limit = true;
         }
     }
 
