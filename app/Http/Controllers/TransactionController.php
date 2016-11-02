@@ -180,15 +180,25 @@ class TransactionController extends Controller
 
         // retrieve manually to order product id asc
         if($transaction->person->cust_id[0] === 'D'){
-
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->orderBy('product_id')
                         ->get();
-
+        }else if($transaction->person->cust_id[0] === 'H'){
+            $prices = DB::table('d2d_online_sales')
+                            ->leftJoin('people', 'd2d_online_sales.person_id', '=', 'people.id')
+                            ->leftJoin('items', 'd2d_online_sales.item_id', '=', 'items.id')
+                            ->leftJoin('prices', function($join) {
+                                $join->on('prices.person_id', '=', 'people.id')
+                                        ->on('prices.item_id', '=', 'items.id');
+                            })
+                            ->select(
+                                'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id'
+                                )
+                            ->orderBy('product_id')
+                            ->get();
         }else{
-
             $prices = DB::table('prices')
                         ->leftJoin('items', 'prices.item_id', '=', 'items.id')
                         ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
@@ -309,19 +319,15 @@ class TransactionController extends Controller
                 $this->transactionXChange($dtdtransaction, $transaction);
             }
         }
-/*
-        // update dtdtransaction status to delivered
-        if($request->input('del_owe') or $request->input('del_paid')){
 
-            $this->dtdDelUpdate($transaction);
-
+        // waive off delivery fees if update with more than 4 quantities (dividend)
+        if($transaction->person->cust_id[0] === 'H') {
+            $total_qty = Deal::whereTransactionId($transaction->id)->sum('dividend');
+            if($total_qty >= 4) {
+                $transaction->delivery_fee = 0;
+                $transaction->save();
+            }
         }
-
-        if($request->input('paid') or $request->input('del_paid')){
-
-            $this->dtdPaidUpdate($transaction);
-
-        }*/
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 

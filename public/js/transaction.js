@@ -71,13 +71,12 @@ var app = angular.module('app', [   'ui.bootstrap',
                 url: '/transaction/' + $trans_id.val(),
                 method: "GET",
             }).success(function(transaction){
-
+                $scope.delivery = transaction.delivery_fee
                 $http({
                     url: '/deal/data/' + transaction.id,
                     method: "GET",
                 }).success(function(deals){
                     $scope.deals = deals;
-
                     var total = 0;
                     var totalqty = 0;
                     for(var i = 0; i < $scope.deals.length; i++){
@@ -90,18 +89,12 @@ var app = angular.module('app', [   'ui.bootstrap',
                             url: '/person/profile/' + transaction.person_id,
                             method: "GET",
                         }).success(function(profile){
-                            console.log(total);
-                                $scope.totalModel = total;
-                                $scope.totalqtyModel = totalqty;
-
+                            $scope.totalModel = total;
+                            $scope.totalqtyModel = totalqty;
                             if(profile.gst){
-
                                 $scope.totalModelStore = (total * 7/100) + total;
-
                             }else{
-
                                 $scope.totalModelStore = total;
-
                             }
 /*
                             if(! $scope.totalModelStore == transaction.total){
@@ -160,11 +153,8 @@ var app = angular.module('app', [   'ui.bootstrap',
 
                     // display default delivery contact
                     if(transaction.contact){
-
                         $scope.contactModel = transaction.contact;
-
                     }else{
-
                         $scope.contactModel = person.contact;
                     }
 

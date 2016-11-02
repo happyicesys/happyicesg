@@ -282,6 +282,17 @@
                         </tr>
                         @endif
 
+                        @if($transaction->delivery_fee != 0)
+                        <tr>
+                            <td colspan="4" class="col-xs-3 text-center">
+                                <span style="padding-left:210px;"><strong>Delivery Fee</strong></span>
+                            </td>
+                            <td class="text-right">
+                                {{ number_format(($transaction->delivery_fee), 2, '.', ',')}}
+                            </td>
+                        </tr>
+                        @endif
+
                         <tr>
                             @if($person->profile->gst)
                                 <td colspan="3">
@@ -290,7 +301,7 @@
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
+                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice * 107/100 + $transaction->delivery_fee), 2, '.', ',') : number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
                                 </td>
                             @else
                                 <td colspan="3">
@@ -299,7 +310,7 @@
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $totalprice }}</strong>
+                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice + $transaction->delivery_fee), 2, '.', ',') : $totalprice}}</strong>
                                 </td>
                             @endif
                         </tr>

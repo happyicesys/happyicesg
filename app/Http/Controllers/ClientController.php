@@ -57,7 +57,7 @@ class ClientController extends Controller
     }
 
     // return vending page
-    public function vendingIndex()
+/*    public function vendingIndex()
     {
         $locArr = [
             1 => 'Food Court',
@@ -68,6 +68,26 @@ class ClientController extends Controller
             6 => 'Others'
         ];
         return view('client.vending', compact('locArr'));
+    }*/
+
+    // return fun vending page
+    public function funVendingIndex()
+    {
+        $locArr = [
+            1 => 'Food Court',
+            2 => 'Restaurant',
+            3 => 'Shopping Malls',
+            4 => 'Office Building',
+            5 => 'Condominium',
+            6 => 'Others'
+        ];
+        return view('client.vending.funv', compact('locArr'));
+    }
+
+    // return honest vending page
+    public function honestVendingIndex()
+    {
+        return view('client.vending.honestv');
     }
 
     // return recruitment page
@@ -280,7 +300,7 @@ class ClientController extends Controller
         return Redirect::action('ClientController@d2dIndex');
     }
 
-    public function vendingInquiry(Request $request)
+    public function funVendingInquiry(Request $request)
     {
         $this->validate($request, [
             'name' => 'required',
@@ -326,7 +346,45 @@ class ClientController extends Controller
         }else{
             Flash::error('Please Try Again');
         }
-        return Redirect::action('ClientController@vendingIndex');
+        return Redirect::action('ClientController@funVendingIndex');
+    }
+
+    // honest vending inquiry
+    public function honestVendingInquiry(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'contact' => 'required',
+        ], [
+            'name.required' => 'Please fill in the name',
+            'contact.required' => 'Please fill in the contact number',
+        ]);
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+        // email array send to
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+        $data = array(
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+        );
+
+        $mail =  Mail::send('client.email_honestv', $data, function ($message) use ($sendfrom, $sendto, $today){
+            $message->from($sendfrom);
+            $message->subject('HonestV Machine Inquiry ['.$today.']');
+            $message->setTo($sendto);
+        });
+
+        if($mail){
+            Flash::success('The form has been submitted');
+        }else{
+            Flash::error('Please Try Again');
+        }
+        return Redirect::action('ClientController@honestVendingIndex');
     }
 
     // submit franchise inquiry (FormRequest $request)

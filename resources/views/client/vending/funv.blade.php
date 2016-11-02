@@ -4,7 +4,7 @@ Healthier Life
 @stop
 @section('content')
 
-<section id="services" style="padding-top: 30px;">
+<section id="services" style="padding-top: 15px;">
     <div class="container">
         <h2 class="text-center">Happy Ice Fun Vending Machine</h2>
         <img class="center-block" src="/img/vending/3D_Fun_Vending_Machine.png" class="img-responsive" alt="First Ice Cream Vending Machine">
@@ -63,11 +63,117 @@ Healthier Life
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12 col-xs-12" style="margin-top: 10px;">
+                <h3>Interested in renting this machine for your company corporate event or </h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tr style="background-color: #d7d7d7;">
+                            <th colspan="2" class="col-md-12">
+                                Package A : 2-Days rental package (Up to 48hrs)
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                100 pcs of ice cream <br>
+                                Free machine delivery (round trip)
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $368
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Additional day's rental charges
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $50
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr style="background-color: #d7d7d7;">
+                            <th colspan="2" class="col-md-12">
+                                Package B : 1-Week rental package (Up to 7 days)
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                200 pcs of ice cream<br>
+                                Free machine delivery (round trip)
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $499
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Additional day's rental charges
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $50
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr style="background-color: #d7d7d7;">
+                            <th colspan="2" class="col-md-12">
+                                Ala Carte Menu
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Machine Rental Fees
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $100/day<br>
+                                $200/week<br>
+                                $350/month
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Ice Cream (100pcs)*
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $150
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Machine Delivery Fees (Round trip)
+                            </td>
+                            <td class="col-md-3 text-right">
+                                $160
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr style="background-color: #d7d7d7;">
+                            <th colspan="2" class="col-md-12">
+                                Extra Charges
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="col-md-9">
+                                Machine delivery on weekend<br>
+                                <small><em>* There is no delivery fees for ice cream</em></small>
+                            </td>
+                            <td class="col-md-3 text-right">
+                                Additional $50 per trip
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <h3>Interested in having this fun machine? Call us today or submit the following form.</h3>
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-body">
-                {!! Form::open(['action'=>'ClientController@vendingInquiry']) !!}
+                {!! Form::open(['action'=>'ClientController@funVendingInquiry']) !!}
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
@@ -105,7 +211,6 @@ Healthier Life
             </div>
         </div>
     </div>
-
 </section>
 
 <script>

@@ -13,7 +13,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" role="navigation">
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/product">Products</a>
                 </li>
@@ -23,8 +23,15 @@
                 <li>
                     <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>
                 </li>
-                <li>
+{{--                 <li>
                     <a class="page-scroll" style="color: white;" href="/vending">Vending Machine</a>
+                </li> --}}
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:white;">Vending Machine <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/vending/funv">Fun Vending Machine</a></li>
+                    <li><a href="/vending/honestv">HonestV</a></li>
+                  </ul>
                 </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/franchise">Franchise</a>

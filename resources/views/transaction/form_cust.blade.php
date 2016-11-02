@@ -33,7 +33,7 @@
 
             <div class="row">
                 <div class="col-md-4 form-group">
-                    {!! Form::label('bill_address', 'Bill To :', ['class'=>'control-label']) !!}
+                    {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
                     {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                     'ng-model'=>'billModel',
                     'readonly'=>'readonly',
@@ -42,7 +42,7 @@
 
                 @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                     <div class="col-md-4 form-group">
-                        {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
+                        {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control',
                         'ng-model'=>'delModel',
                         'readonly'=>'readonly',
@@ -55,7 +55,7 @@
                     </div>
                 @else
                     <div class="col-md-4 form-group">
-                        {!! Form::label('del_address', 'Delivery Add :', ['class'=>'control-label']) !!}
+                        {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control',
                         'ng-model'=>'delModel',
                         'rows'=>'3']) !!}
@@ -74,7 +74,7 @@
             <div class="row">
             @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                 <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
+                    {!! Form::label('order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'readonly'=>'readonly']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
+                    {!! Form::label('delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'readonly'=>'readonly']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -90,7 +90,7 @@
                 </div>
             @else
                 <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('order_date', 'Order On :', ['class'=>'control-label']) !!}
+                    {!! Form::label('order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('delivery_date', 'Delivery On :', ['class'=>'control-label']) !!}
+                    {!! Form::label('delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group date">
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -107,7 +107,7 @@
             @endif
 
                 <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('payterm', 'Pay Term :', ['class'=>'control-label']) !!}
+                    {!! Form::label('payterm', 'Pay Term', ['class'=>'control-label']) !!}
                     {!! Form::textarea('payterm', null, ['class'=>'form-control',
                     'ng-model'=>'paytermModel',
                     'readonly'=>'readonly',
@@ -116,14 +116,14 @@
 
                 @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                     <div class="col-md-3 col-xs-6 form-group">
-                        {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
+                        {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
                         {!! Form::text('del_postcode', null, ['class'=>'form-control',
                         'ng-model'=>'postcodeModel',
                         'readonly'=>'readonly']) !!}
                     </div>
                 @else
                     <div class="col-md-3 col-xs-6 form-group">
-                        {!! Form::label('del_postcode', 'PostCode :', ['class'=>'control-label']) !!}
+                        {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
                         {!! Form::text('del_postcode', null, ['class'=>'form-control',
                         'ng-model'=>'postcodeModel']) !!}
                     </div>
@@ -133,33 +133,33 @@
             <div class="row">
                 @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                     <div class="col-md-4 form-group">
-                        {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
+                        {!! Form::label('po_no', 'PO #', ['class'=>'control-label']) !!}
                         {!! Form::text('po_no', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                        {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                         {!! Form::text('name', null, ['class'=>'form-control', 'ng-model'=>'attNameModel', 'readonly'=>'readonly']) !!}
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
+                        {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
                         {!! Form::text('contact', null, ['class'=>'form-control', 'ng-model'=>'contactModel', 'readonly'=>'readonly']) !!}
                     </div>
                 @else
                     <div class="col-md-4 form-group">
-                        {!! Form::label('po_no', 'PO # :', ['class'=>'control-label']) !!}
+                        {!! Form::label('po_no', 'PO #', ['class'=>'control-label']) !!}
                         {!! Form::text('po_no', null, ['class'=>'form-control']) !!}
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('name', 'Attn. Name :', ['class'=>'control-label']) !!}
+                        {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                         {!! Form::text('name', null, ['class'=>'form-control',
                         'ng-model'=>'attNameModel']) !!}
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('contact', 'Tel No. :', ['class'=>'control-label']) !!}
+                        {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
                         {!! Form::text('contact', null, ['class'=>'form-control',
                         'ng-model'=>'contactModel']) !!}
                     </div>
@@ -170,7 +170,7 @@
                 @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
                     @cannot('transaction_view')
                         <div class="col-md-4 form-group">
-                            {!! Form::label('driver', 'Delivered By :', ['class'=>'control-label']) !!}
+                            {!! Form::label('driver', 'Delivered By', ['class'=>'control-label']) !!}
                             {!! Form::select('driver',
                                     [''=>null]+$users::lists('name', 'name')->all(),
                                     null,
@@ -179,7 +179,7 @@
                         </div>
 
                         <div class="col-md-4 form-group">
-                            {!! Form::label('paid_by', 'Payment Received By :', ['class'=>'control-label']) !!}
+                            {!! Form::label('paid_by', 'Payment Received By', ['class'=>'control-label']) !!}
                             {!! Form::select('paid_by',
                                     [''=>null]+$users::lists('name', 'name')->all(),
                                     null,
@@ -188,7 +188,7 @@
                         </div>
 
                         <div class="col-md-4 form-group">
-                            {!! Form::label('paid_at', 'Payment Received On :', ['class'=>'control-label']) !!}
+                            {!! Form::label('paid_at', 'Payment Received On', ['class'=>'control-label']) !!}
                         <div class="input-group date">
                             {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at']) !!}
                             <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -199,7 +199,7 @@
 
                 @if($transaction->status === 'Verified Paid' or $transaction->pay_status === 'Paid')
                     <div class="col-md-4 form-group">
-                        {!! Form::label('pay_method', 'Payment Method :', ['class'=>'control-label']) !!}
+                        {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label']) !!}
                         {!! Form::select('pay_method',
                             [''=>null, 'cash'=>'Cash', 'cheque'=>'Cheque/TT'],
                             null,
@@ -208,7 +208,7 @@
                     </div>
 
                     <div class="col-md-4 form-group">
-                        {!! Form::label('note', 'Note :', ['class'=>'control-label']) !!}
+                        {!! Form::label('note', 'Note', ['class'=>'control-label']) !!}
                         {!! Form::text('note', null, ['class'=>'form-control']) !!}
                     </div>
                 @endif

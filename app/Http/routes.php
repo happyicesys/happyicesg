@@ -8,7 +8,8 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
-Route::post('/api/d2donlinesales', 'D2dOnlineSaleController@submitOrder');
+Route::post('/api/validateOrder', 'D2dOnlineSaleController@validateOrder');
+Route::post('/api/submitOrder', 'D2dOnlineSaleController@submitOrder');
 
 Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
 Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');
@@ -90,8 +91,10 @@ Route::resource('inventory', 'InventoryController');
 Route::get('/franchise', 'ClientController@franchiseIndex');
 Route::post('/franchise', 'ClientController@franchiseInquiry');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');
-Route::get('/vending', 'ClientController@vendingIndex');
-Route::post('/vending', 'ClientController@vendingInquiry');
+Route::get('/vending/funv', 'ClientController@funVendingIndex');
+Route::get('/vending/honestv', 'ClientController@honestVendingIndex');
+Route::post('/vending/funv', 'ClientController@funVendingInquiry');
+Route::post('/vending/honestv', 'ClientController@honestVendingInquiry');
 Route::get('/d2d', 'ClientController@d2dIndex');
 Route::post('/d2d/email', 'ClientController@emailOrder');
 Route::get('/client/item', 'ClientController@clientProduct');

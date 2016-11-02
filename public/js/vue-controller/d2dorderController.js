@@ -15,8 +15,8 @@ if(document.querySelector('#d2dorderController')){
           block: '',
           floor: '',
           unit: '',
-          del_date: '',
-          del_time: '',
+          del_date: 'Same Day',
+          del_time: '8am - 12pm',
           remark: '',
         },
         deldate_option: [
@@ -37,6 +37,7 @@ if(document.querySelector('#d2dorderController')){
         subtotal: 0,
         total: 0,
         totalqty: 0,
+        submitable: false,
       }
     },
     methods: {
@@ -47,11 +48,9 @@ if(document.querySelector('#d2dorderController')){
             const verified = response.body
             this.covered = verified.covered
             if(verified.postcode){
-              this.form = {
-                postcode: verified.postcode.value,
-                street: verified.postcode.street,
-                block: verified.postcode.block
-              }
+              this.form.postcode = verified.postcode.value
+              this.form.street = verified.postcode.street
+              this.form.block = verified.postcode.block
             }
             this.$http.get('/api/d2donlinesales').then((response) => {
               const result = JSON.parse(JSON.stringify(response.body))
@@ -80,6 +79,14 @@ if(document.querySelector('#d2dorderController')){
       fillForm() {
         this.step3 = true
       },
+      submitOrder() {
+        this.$http.post('/api/submitOrder', this.form).then((response) => {
+          console.log(response)
+        }, (response) => {
+          console.log(response)
+          this.formErrors = response.body
+        });
+      }
     },
     computed: {
       total() {
@@ -90,6 +97,13 @@ if(document.querySelector('#d2dorderController')){
         }
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
       },
+      submitable() {
+        if(this.form.name && this.form.contact && this.form.email && this.form.postcode && this.form.block && this.form.floor && this.form.unit) {
+          return true
+        }else{
+          return false
+        }
+      }
     }
   });
 

@@ -4,7 +4,7 @@ Healthier Life
 @stop
 @section('content')
 
-<div class="row" style="padding: 70px 0px 30px 0px;">
+<div class="row" style="padding: 50px 0px 30px 0px;">
     <div class="col-md-6 col-sm-6 col-xs-12 text-center">
         <span style="font-size: 18px; margin-bottom: 10px;">
             <strong>Happy Ice Logistics Pte Ltd</strong>

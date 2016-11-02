@@ -10,8 +10,13 @@
 <meta id="_token" name="_token" content="{{ csrf_token() }}">
 
 {{-- CSS & Javascript versioning gulpfile --}}
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <!-- Bootstrap Core CSS
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css"> -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Custom Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -41,10 +46,17 @@
     @include('partials.cdn')
     <script src="{{ elixir('js/all.js') }}"></script>
     <!-- jQuery -->
-    <script src="/js/jquery.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/js/bootstrap.min.js"></script>
+    <!--<script src="/js/jquery.js"></script> -->
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Core JavaScript
+    <script src="/js/bootstrap.min.js"></script> -->
+<!-- Latest compiled and minified JavaScript
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
 
     <script src="/js/dirPagination.js"></script>
 
@@ -57,7 +69,6 @@
     <script src="/js/select2.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="/js/creative.js"></script>
 
     <!-- videojs cdn -->
     <script src="//vjs.zencdn.net/5.4.6/video.min.js"></script>
@@ -68,7 +79,6 @@
 
         Vue.http.interceptors.push((request, next) => {
             request.headers.set('X-CSRF-TOKEN', Laravel.csrfToken);
-
             next();
         });
     </script>

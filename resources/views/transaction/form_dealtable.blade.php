@@ -79,30 +79,6 @@
                                 <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
 
                             @endunless
-{{--
-                                @if($transaction->pay_status === 'Owe')
-                                    @if($transaction->status === 'Delivered')
-                                        @can('transaction_deleteitem')
-                                            @unless($transaction->person->cust_id[0] === 'D')
-                                            <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                            @endunless
-                                        @endcan
-
-                                    original show delete button logic based on one day before delivery date
-                                    @elseif($transaction->status == 'Cancelled' or $transaction->status == 'Deleted' or (($transaction->person->cust_id[0] == 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type === 'AB' : false and $transaction->status == 'Confirmed' and \Carbon\Carbon::today() >= \Carbon\Carbon::parse($transaction->delivery_date)->subDay())))
-
-                                    @elseif($transaction->status === 'Cancelled' or $transaction->status === 'Deleted')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-                                    @else
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                    @endif
-                                @else
-                                    @cannot('transaction_view')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                    @else
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-                                    @endcannot
-                                @endif --}}
                             </td>
                         </tr>
                         @if($person->profile->gst)
@@ -125,19 +101,28 @@
                             </td>
                         </tr>
                         @endif
+                        <tr ng-if="delivery != 0">
+                            <td></td>
+                            <td colspan="3" class="col-md-2 text-center">
+                                <strong>Delivery Fee</strong>
+                            </td>
+                            <td class="col-md-3 text-right">
+                                <td class="text-right">@{{delivery | currency: ""}}</td>
+                            </td>
+                        </tr>
                         <tr ng-if="deals.length">
                             @if($person->profile->gst)
                             <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
                             <td class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ (+(totalModel * 7/100) + totalModel) | currency: ""}}</strong></td>
-                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ (totalModel * 107/100 ).toFixed(2)}}</strong></td>                                 --}}
+                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ (+(totalModel * 7/100) + totalModel) | currency: ""}}</strong></td> --}}
+                                <td class="text-right"><strong>@{{ delivery ? (+(totalModel * 7/100) + totalModel + delivery/1).toFixed(2) : (+(totalModel * 7/100) + totalModel).toFixed(2)}}</strong></td>
                             </td>
                             @else
                             <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
                             <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
                             <td class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel"><strong>@{{ totalModel.toFixed(2) }}</strong></td>
+                                <td class="text-right"><strong>@{{ delivery != 0 ? (+totalModel+delivery/1).toFixed(2) : totalModel.toFixed(2) }}</strong></td>
                             </td>
                             @endif
                         </tr>

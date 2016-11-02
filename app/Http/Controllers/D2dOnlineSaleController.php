@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 use Carbon\Carbon;
 use App\Http\Requests;
 use App\D2dOnlineSale;
 use App\EmailAlert;
 use App\Person;
 use App\Deal;
+use App\Postcode;
+use App\Transaction;
+use App\Price;
+use App\Item;
 use DB;
 
 class D2dOnlineSaleController extends Controller
@@ -38,10 +43,15 @@ class D2dOnlineSaleController extends Controller
     // proceed d2d online order form
     public function submitOrder(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        $this->validateOrder($request);
         $generate_trans = false;
         $avail_postcode = Postcode::whereValue($request->postcode)->first();
+        $sendfrom = 'system@happyice.com.sg';
         $sendto = array();
+        $cc = array();
+        $transaction_id = '';
+        $today = Carbon::now()->format('d-F-Y');
 
         // validate whether the postcode is available or not
         if($avail_postcode) {
@@ -49,20 +59,19 @@ class D2dOnlineSaleController extends Controller
         }else{
             $generate_trans = true;
         }
-
         // sync existing customer or create new one based on unique contact number
-        $this->syncCustomer($request);
-
+        $customer_id = $this->syncCustomer($request);
+        $sendto = [$request->email];
         if($generate_trans) {
-            $this->createTransaction($request);
+            $transaction_id = $this->createTransaction($request, $customer_id);
+            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
         }else{
-            // find out whether postcode bind to a person_id or not and take action
             if($avail_postcode->person_id) {
-
-            }else {
-
+                $member = Person::findOrFail($avail_postcode->person_id);
+                $cc = [$member->email];
             }
         }
+
         $data = [
             'idArr' => $request->idArr,
             'captionArr' => $request->captionArr,
@@ -70,30 +79,65 @@ class D2dOnlineSaleController extends Controller
             'amountArr' => $request->amountArr,
             'total' => $request->total,
             'totalqty' => $request->totalqty,
-            'delivery' => $request->$delivery,
+            'delivery' => $request->delivery,
+            'person' => Person::findOrFail($customer_id),
+            'transaction' => $transaction_id ? Transaction::findOrFail($transaction_id) : '',
+            'timing' => $request->del_date[0].'; '.$request->del_time[0],
+            'remark' => $request->remark,
         ];
 
-        foreach($qtyArr as $index => $qty) {
-            if($qty != '' and $qty != null and $qty != 0) {
+        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $today){
+            $message->from($sendfrom);
+            $message->cc($cc);
+            // $message->cc('leehongjie91@gmail.com');
+            $message->subject('HappyIce - Thanks for purchase ['.$today.']');
+            $message->setTo($sendto);
+            // $message->setTo('leehongjie91@gmail.com');
+        });
 
-            }
-        }
+        Flash::success('Thanks for ordering, an email will be sent to your inbox');
+        return redirect('/');
+    }
+
+    // validate order via vue resource
+    private function validateOrder(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            // 'email' => 'required',
+            // 'contact' => 'regex:/^([0-9\s\-\+\(\)]*)$/|required',
+            'postcode' => 'required|digits:6',
+        ], [
+            'name.required' => 'Please fill in the name',
+            // 'email.required' => 'Please fill in the email',
+            // 'contact.regex' => 'Only accept numbers 0-9',
+            // 'contact.required' => 'Please fill in the contact number',
+            'postcode.required' => 'Please fill in the postcode',
+            'postcode.digits' => 'The postcode format is not right'
+        ]);
     }
 
     // generate new customer upon submitting the order - H code unique contact number(FormRequest request)
     private function syncCustomer($request)
     {
-        $customer = Person::where('cust_id', 'LIKE', 'H%')->where('contact', $request->contact)->orWhere('alt_contact', $request->contact)->first();
+        $contact = $request->contact;
+        $customer = Person::where('cust_id', 'LIKE', 'H%')
+                            ->whereNotNull('contact')
+                            ->where('contact', '!=', '')
+                            ->where('contact', $contact)
+                            ->first();
         if(!$customer) {
             $customer = new Person();
             $customer->cust_id = $this->getCustRunningNum();
             $customer->name = $request->name;
+            $customer->company = $request->name;
             $customer->contact = $request->contact;
             $customer->email = $request->email;
             $customer->del_postcode = $request->postcode;
             $customer->block = $request->block;
             $customer->floor = $request->floor;
-            $customer->unit = $requet->unit;
+            $customer->unit = $request->unit;
+            $customer->profile_id = 1;
             $customer->save();
         }
         return $customer->id;
@@ -113,19 +157,24 @@ class D2dOnlineSaleController extends Controller
         return $latest_cust;
     }
 
-    // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request)
-    private function createTransaction($request)
+    // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request, int person_id)
+    private function createTransaction($request, $person_id)
     {
+        $person = Person::findOrFail($person_id);
         $transaction = new Transaction();
-        $transaction->updated_by = 'D2d System';
+        $transaction->updated_by = 'D2D System';
         $transaction->delivery_date = Carbon::today();
         $transaction->order_date = Carbon::today();
         $transaction->status = 'Confirmed';
         $transaction->total = $request->total;
         $transaction->total_qty = $request->totalqty;
-        $transaction->remark = $request->delivery ? 'D2d - Delivery charge: '.$request->delivery : 'D2d';
+        $transaction->transremark = $request->del_date[0].'; '.$request->del_time[0];
+        $transaction->person_id = $person->id;
+        $transaction->person_code = $person->cust_id;
+        $transaction->delivery_fee = $request->delivery;
         $transaction->save();
         $this->createDeals($request, $transaction->id);
+        return $transaction->id;
     }
 
     // create deals (ForrmRequest request, integer transaction_id)
@@ -139,8 +188,11 @@ class D2dOnlineSaleController extends Controller
             foreach($qtyArr as $index => $qty) {
                 if($qty != null or $qty != '' or $qty != 0) {
                     $onlinesaleitem = D2dOnlineSale::findOrFail($idArr[$index]);
-                    $item = Item::findOrFail($onlinesaleitem->id);
-                    if($item->email_limit) {
+                    $item = Item::findOrFail($onlinesaleitem->item_id);
+                    $price = Price::wherePersonId(1643)->whereItemId($item->id)->first();
+
+                    // comment out once live
+/*                    if($item->email_limit) {
                         if($this->calOrderEmailLimit($qty, $item)) {
                             if(!$item->emailed) {
                                 $this->sendEmailAlert($item);
@@ -151,17 +203,19 @@ class D2dOnlineSaleController extends Controller
                             $item->emailed = false;
                             $item->save();
                         }
-                    }
+                    }*/
 
                     $deal = new Deal();
                     $deal->transaction_id = $transaction_id;
                     $deal->item_id = $item->id;
-                    $deal->qty = $qty;
+                    $deal->dividend = $qty;
+                    $deal->divisor = $onlinesaleitem->qty_divisor;
+                    $deal->qty = $qty / $onlinesaleitem->qty_divisor;
                     $deal->amount = $amountArr[$index];
-                    $deal->unit_price = $quotes[$index];
-                    $deal->qty_status = $status;
+                    $deal->unit_price = $price->quote_price;
+                    $deal->qty_status = 1;
                     $deal->save();
-                    $this->dealSyncOrder($index);
+                    $this->dealSyncOrder($item->id);
                 }
             }
         }
@@ -203,5 +257,14 @@ class D2dOnlineSaleController extends Controller
             $message->subject('Stock Insufficient Alert ['.$item->product_id.'-'.$item->name.'] - '.$today);
             $message->setTo($email);
         });
+    }
+
+    // sync confirmed deal status 1
+    private function dealSyncOrder($item_id)
+    {
+        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+        $item = Item::findOrFail($item_id);
+        $item->qty_order = $deals->sum('qty');
+        $item->save();
     }
 }
