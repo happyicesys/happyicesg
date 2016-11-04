@@ -1149,11 +1149,7 @@ class MarketingController extends Controller
 
                     $assign_to = $row->assign_to;
                     if($assign_to){
-                        $person = Person::where('cust_id', 'LIKE', 'D%')
-                                        ->where(function($q) use ($assign_to){
-                                            $q->where('name', 'LIKE', '%'.$assign_to.'%')
-                                                ->orWhere('company', 'LIKE', '%'.$assign_to.'%');
-                                        })->first();
+                        $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$assign_to.'%')->first();
                         if($person){
                             $postcode->person_id = $person->id;
                         }else{
