@@ -1152,11 +1152,12 @@ class MarketingController extends Controller
                         $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$assign_to.'%')->first();
                         if($person){
                             $postcode->person_id = $person->id;
+                            $postcode->save();
                         }else{
                             $postcode->person_id = null;
+                            $postcode->save();
                         }
                     }
-                    $postcode->save();
                 }
             }
         });
