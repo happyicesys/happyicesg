@@ -57,6 +57,7 @@ Door To Door
     {!! Form::open(['action'=>'D2dOnlineSaleController@submitOrder']) !!}
     <div v-if="step2">
       <div class="col-md-12 col-xs-12">
+          <p style="color:red;" v-if="covered">**Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**</p>
           <h3 style="color:#323299;">Step 2 / 3</h3>
           <div class="table-responsive">
           <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;">

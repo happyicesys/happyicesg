@@ -1146,7 +1146,7 @@ class MarketingController extends Controller
                     $postcode->block = $row->block;
                     $postcode->area_code = $row->area_code;
                     $postcode->area_name = $row->area_name;
-                    $postcode->group = $row->group;
+                    $postcode->group = $row->AM;
                     $postcode->street = $row->street;
 
                     $assign_to = $row->assign_to;

@@ -239,8 +239,8 @@
                                 {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.area_name', 'placeholder'=>'Area']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('group', 'Group', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group', 'placeholder'=>'Group']) !!}
+                                {!! Form::label('group', 'AM', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group', 'placeholder'=>'AM']) !!}
                             </div>
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('postcode', 'Postcode:', ['class'=>'control-label search-title']) !!}
@@ -249,6 +249,10 @@
                             <div class="form-group col-md-2 col-sm-4 col-xs-6">
                                 {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
                                 {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.person.name', 'placeholder'=>'Manager']) !!}
+                            </div>
+                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                                {!! Form::label('street', 'Street:', ['class'=>'control-label search-title']) !!}
+                                {!! Form::text('street', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.street', 'placeholder'=>'Street']) !!}
                             </div>
                         </div>
 
@@ -286,7 +290,7 @@
                                     </th>
                                     <th class="col-md-1 text-center">
                                         <a href="#" ng-click="sortType = 'group'; sortReverse = !sortReverse">
-                                        Group
+                                        AM
                                         <span ng-show="sortType == 'group' && !sortReverse" class="fa fa-caret-down"></span>
                                         <span ng-show="sortType == 'group' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
