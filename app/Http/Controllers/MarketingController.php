@@ -969,11 +969,13 @@ class MarketingController extends Controller
         $dtdtransaction = DtdTransaction::findOrFail($id);
         if($request->input('form_delete')){
             if($dtdtransaction->status === 'Confirmed'){
-                $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
-                $transaction->cancel_trace = $transaction->status;
-                $transaction->status = 'Cancelled';
-                $transaction->save();
-                $this->dealDeleteMultiple($transaction->id);
+                if($dtdtransaction->transaction_id) {
+                    $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
+                    $transaction->cancel_trace = $transaction->status;
+                    $transaction->status = 'Cancelled';
+                    $transaction->save();
+                    $this->dealDeleteMultiple($transaction->id);
+                }
             }
             $dtdtransaction->cancel_trace = $dtdtransaction->status;
             $dtdtransaction->status = 'Cancelled';
@@ -985,7 +987,7 @@ class MarketingController extends Controller
                 $transaction = Transaction::findOrFail($dtdtransaction->transaction_id);
                 $transaction->delete();
             }
-            return view('market.deal.index');
+            return redirect('market/deal');
         }
     }
 
