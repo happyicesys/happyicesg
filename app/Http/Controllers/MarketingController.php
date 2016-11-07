@@ -1135,7 +1135,7 @@ class MarketingController extends Controller
             'postcode_excel.max' => 'The excel file cannot exceed 5 mb',
         ]);
         $file = $request->file('postcode_excel');
-        $excel = Excel::filter('chunk')->load($file)->chunk(300, function($reader) {
+        $excel = Excel::filter('chunk')->load($file)->chunk(500, function($reader) {
          // $excel = Excel::load($file, function($reader) {
             foreach($reader->all() as $row){
                 if($row->postcode != '' and $row->postcode != null){
