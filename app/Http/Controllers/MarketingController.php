@@ -1140,7 +1140,7 @@ class MarketingController extends Controller
             foreach($reader->all() as $row){
                 if($row->postcode != '' and $row->postcode != null){
                     // find out the postcode of the row is exisiting or new
-                    $postcode = Postcode::whereValue($row->postcode)->first();
+/*                    $postcode = Postcode::whereValue($row->postcode)->first();
                     if(!$postcode){
                         $postcode = Postcode::create(['value'=>$row->postcode]);
                     }
@@ -1148,8 +1148,25 @@ class MarketingController extends Controller
                     $postcode->area_code = $row->area_code;
                     $postcode->area_name = $row->area_name;
                     $postcode->group = $row->AM;
-                    $postcode->street = $row->street;
+                    $postcode->street = $row->street;*/
+                    $person_id = null;
+                    if($row->assign_to) {
+                        $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$assign_to.'%')->first();
+                        if($person) {
+                            $person_id = $person->id;
+                        }
+                    }
 
+                    Postcode::updateOrCreate([$row->postcode],[
+                        $postcode->value = $row->postcode,
+                        $postcode->block = $row->block,
+                        $postcode->area_code = $row->area_code,
+                        $postcode->area_name = $row->area_name,
+                        $postcode->group = $row->AM,
+                        $postcode->street = $row->street,
+                        $postcode->person_id = $person_id,
+                    ]);
+/*
                     $assign_to = $row->assign_to;
                     if($assign_to){
                         $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$assign_to.'%')->first();
@@ -1161,7 +1178,7 @@ class MarketingController extends Controller
                             $postcode->save();
                         }
                     }
-                    $postcode->save();
+                    $postcode->save();*/
                 }
             }
         });
