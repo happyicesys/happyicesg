@@ -1147,7 +1147,6 @@ class MarketingController extends Controller
                     $postcode->area_code = $row->area_code;
                     $postcode->area_name = $row->area_name;
                     $postcode->group = $row->group;
-                    $postcode->street = $row->street;
 
                     $assign_to = $row->assign_to;
                     if($assign_to){
@@ -1160,6 +1159,7 @@ class MarketingController extends Controller
                             $postcode->save();
                         }
                     }
+                    $postcode->save();
                 }
             }
         });
