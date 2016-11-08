@@ -1135,8 +1135,8 @@ class MarketingController extends Controller
             'postcode_excel.max' => 'The excel file cannot exceed 5 mb',
         ]);
         $file = $request->file('postcode_excel');
-        $excel = Excel::filter('chunk')->load($file)->chunk(500, function($reader) {
-         // $excel = Excel::load($file, function($reader) {
+        // $excel = Excel::filter('chunk')->load($file)->chunk(500, function($reader) {
+         $excel = Excel::load($file, function($reader) {
             foreach($reader->all() as $row){
                 if($row->postcode != '' and $row->postcode != null){
                     // find out the postcode of the row is exisiting or new
@@ -1151,20 +1151,20 @@ class MarketingController extends Controller
                     $postcode->street = $row->street;*/
                     $person_id = null;
                     if($row->assign_to) {
-                        $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$assign_to.'%')->first();
+                        $person = Person::where('cust_id', 'LIKE', 'D%')->where('name', 'LIKE', '%'.$row->assign_to.'%')->first();
                         if($person) {
                             $person_id = $person->id;
                         }
                     }
 
-                    Postcode::updateOrCreate([$row->postcode],[
-                        $postcode->value = $row->postcode,
-                        $postcode->block = $row->block,
-                        $postcode->area_code = $row->area_code,
-                        $postcode->area_name = $row->area_name,
-                        $postcode->group = $row->AM,
-                        $postcode->street = $row->street,
-                        $postcode->person_id = $person_id,
+                    Postcode::updateOrCreate(['value' => $row->postcode],[
+                        'value' => $row->postcode,
+                        'block' => $row->block,
+                        'area_code' => $row->area_code,
+                        'area_name' => $row->area_name,
+                        'group' => $row->am,
+                        'street' => $row->street,
+                        'person_id' => $person_id,
                     ]);
 /*
                     $assign_to = $row->assign_to;
