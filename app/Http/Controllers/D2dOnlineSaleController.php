@@ -43,8 +43,6 @@ class D2dOnlineSaleController extends Controller
     // proceed d2d online order form
     public function submitOrder(Request $request)
     {
-        // dd($request->all());
-        $this->validateOrder($request);
         $generate_trans = false;
         $avail_postcode = Postcode::whereValue($request->postcode)->first();
         $sendfrom = 'system@happyice.com.sg';
@@ -65,10 +63,12 @@ class D2dOnlineSaleController extends Controller
         if($generate_trans) {
             $transaction_id = $this->createTransaction($request, $customer_id);
             $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
+            $bcc = '';
         }else{
             if($avail_postcode->person_id) {
                 $member = Person::findOrFail($avail_postcode->person_id);
                 $cc = [$member->email];
+                $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
             }
         }
 
@@ -90,6 +90,7 @@ class D2dOnlineSaleController extends Controller
             $message->from($sendfrom);
             $message->cc($cc);
             // $message->cc('leehongjie91@gmail.com');
+            $message->bcc($bcc);
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
             $message->setTo($sendto);
             // $message->setTo('leehongjie91@gmail.com');
@@ -100,20 +101,25 @@ class D2dOnlineSaleController extends Controller
     }
 
     // validate order via vue resource
-    private function validateOrder(Request $request)
+    public function validateOrder(Request $request)
     {
         $this->validate($request, [
             'name' => 'required',
-            // 'email' => 'required',
-            // 'contact' => 'regex:/^([0-9\s\-\+\(\)]*)$/|required',
+            'email' => 'email',
             'postcode' => 'required|digits:6',
+            'contact' => 'regex:/^[89]\d{7}$/',
+            'block' => 'required',
+            'floor' => 'required',
+            'unit' => 'required',
         ], [
             'name.required' => 'Please fill in the name',
-            // 'email.required' => 'Please fill in the email',
-            // 'contact.regex' => 'Only accept numbers 0-9',
-            // 'contact.required' => 'Please fill in the contact number',
+            'email.email' => 'The email format is not right',
             'postcode.required' => 'Please fill in the postcode',
-            'postcode.digits' => 'The postcode format is not right'
+            'postcode.digits' => 'The postcode format is not right',
+            'contact.regex' => 'The contact number can only contain 8 numbers and started with 8 or 9',
+            'block.required' => 'Please fill in the block',
+            'floor.required' => 'Please fill in the floor',
+            'unit.required' => 'Please fill in the unit',
         ]);
     }
 
@@ -133,6 +139,8 @@ class D2dOnlineSaleController extends Controller
             $customer->company = $request->name;
             $customer->contact = $request->contact;
             $customer->email = $request->email;
+            $customer->bill_address = $request->street;
+            $customer->del_address = $request->street;
             $customer->del_postcode = $request->postcode;
             $customer->block = $request->block;
             $customer->floor = $request->floor;
@@ -160,10 +168,11 @@ class D2dOnlineSaleController extends Controller
     // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request, int person_id)
     private function createTransaction($request, $person_id)
     {
+        $cutoff_time = Carbon::createFromTime(20, 30, 0, 'Asia/Singapore');
         $person = Person::findOrFail($person_id);
         $transaction = new Transaction();
         $transaction->updated_by = 'D2D System';
-        $transaction->delivery_date = Carbon::today();
+        $transaction->delivery_date = $cutoff_time >= Carbon::now() ? Carbon::today()->addDay() : Carbon::today();
         $transaction->order_date = Carbon::today();
         $transaction->status = 'Confirmed';
         $transaction->total = $request->total;

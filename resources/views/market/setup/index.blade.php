@@ -256,6 +256,8 @@
                             </div>
                         </div>
 
+                        <label class="pull-right totalnum" for="totalnum">Showing @{{(postcodes | filter:search).length}} of @{{postcodes.length}} entries</label>
+
                         <div class="row">
                             <div style="padding: 20px 0px 10px 15px">
                                 {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
@@ -350,7 +352,6 @@
 
                     <div class="panel-footer">
                           <dir-pagination-controls pagination-id="postcode" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
-                          <label class="pull-right totalnum" for="totalnum">Showing @{{(postcodes | filter:search).length}} of @{{postcodes.length}} entries</label>
                     </div>
                 </div>
             </div>
@@ -358,8 +359,147 @@
         </div>
     </div>
 </div>
+{{--
+<template id="postcode-template">
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <form action="#" @submit.prevent="searchData" method="GET">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-6">
+                                <div class="form-group">
+                                    <label for="area_name" class="control-label">Area</label>
+                                    <input type="text" name="area_name" class="form-control" v-model="search.area_name" placeholder="Area">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <div class="form-group">
+                                    <label for="group" class="control-label">AM</label>
+                                    <input type="text" name="group" class="form-control" v-model="search.group" placeholder="AM">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <div class="form-group">
+                                    <label for="postcode" class="control-label">Postcode</label>
+                                    <input type="text" name="postcode" class="form-control" v-model="search.postcode" placeholder="Postcode">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <div class="form-group">
+                                    <label for="manager" class="control-label">Manager</label>
+                                    <input type="text" name="manager" class="form-control" v-model="search.manager" placeholder="Manager">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-6">
+                                <div class="form-group">
+                                    <label for="street" class="control-label">Street</label>
+                                    <input type="text" name="street" class="form-control" v-model="search.street" placeholder="Street">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-6 pull-right">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-10 pull-right text-center">
+                                        <select2 v-model="selected_page">
+                                            <option value="50">50 /page</option>
+                                            <option value="100">100 /page</option>
+                                            <option value="200">200 /page</option>
+                                        </select2>
+                                        <span style="margin-top: 5px; font-size: 15px;" v-if="pagination.total">
+                                            @{{pagination.from}} - @{{pagination.to}} (@{{pagination.total}})
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="pull-left" style="margin-bottom: 20px;">
+                            <button type="submit" class="btn btn-default btn-md">
+                                <i class="fa fa-search"></i>
+                                <span class="hidden-xs"> Search</span>
+                                <i class="fa fa-circle-o-notch fa-spin" v-if="searching"></i>
+                            </button>
+                            <a href="customer/create" class="btn btn-success btn-md">
+                                <i class="fa fa-plus"></i>
+                                <span class="hidden-xs"> Create Customer</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <tr style="background-color: #a3a3c2;" class="inverse head">
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="#" @click="sortBy('cust_id')">Customer ID</a>
+                            <span v-if="sortkey == 'cust_id' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'cust_id' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="#" @click="sortBy('company')">Company</a>
+                            <span v-if="sortkey == 'company' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'company' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="#" @click="sortBy('attn_name')">Name</a>
+                            <span v-if="sortkey == 'attn_name' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'attn_name' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="#" @click="sortBy('contact')">Contact</a>
+                            <span v-if="sortkey == 'contact' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'contact' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="#" @click="sortBy('email')">Email</a>
+                            <span v-if="sortkey == 'email' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'email' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                    </tr>
+
+                    <tr v-for="(customer, index) in list" @click="redirectEdit(customer.id)" class="row_edit">
+                        <td class="col-md-1 text-center">
+                            @{{ index + pagination.from }}
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{ customer.cust_id }}
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{ customer.company }}
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{ customer.attn_name }}
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{ customer.contact }}
+                            <span v-if="customer.alt_contact">/ @{{ customer.alt_contact }}</span>
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{ customer.email }}
+                        </td>
+                    </tr>
+                    <tr v-if="! pagination.total">
+                        <td colspan="14" class="text-center"> No Results Found </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="pull-left">
+                <pagination :pagination="pagination" :callback="fetchTable" :offset="4"></pagination>
+            </div>
+        </div>
+    </div>
+</template> --}}
 
 <script src="/js/setup.js"></script>
+{{-- <script src="/js/setupController.js"></script> --}}
 <script>
     $(function() {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line

@@ -1,6 +1,6 @@
-if(document.querySelector('#d2dorderController')){
-  Vue.component('order', {
-    template: '#order-template',
+if(document.querySelector('#setupController')){
+  Vue.component('postcodes', {
+    template: '#postcode-template',
     data() {
       return {
         step1: true,
@@ -109,79 +109,7 @@ if(document.querySelector('#d2dorderController')){
         }
       }
     }
-  });
-
-Vue.component('select2', {
-  props: ['options', 'value'],
-  template: '#select2-template',
-  mounted: function () {
-    var vm = this
-    $(this.$el)
-      .val(this.value)
-      .select2({
-        data: this.options,
-      })
-      .on('change', function () {
-        vm.$emit('input', this.value)
-      })
-  },
-  watch: {
-    value: function (value) {
-      $(this.$el).select2('val', value)
-    },
-    options: function (options) {
-      $(this.$el).select2({ data: options })
-    }
-  },
-  destroyed: function () {
-    $(this.$el).off().select2('destroy')
-  }
-})
-
-Vue.component('salesItem', {
-  template: '#item-template',
-  props: ['number', 'item', 'items', 'subtotal'],
-  data() {
-    return {
-      options: [
-        {id: '' , text: ''},
-        {id: 0 , text: '0'},
-        {id: 1, text: '1'},
-        {id: 2, text: '2'},
-        {id: 3, text: '3'},
-        {id: 4, text: '4'},
-        {id: 5, text: '5'},
-        {id: 6, text: '6'},
-        {id: 7, text: '7'},
-        {id: 8, text: '8'},
-        {id: 9, text: '9'},
-        {id: 10, text: '10'},
-      ],
-      prev_amount: 0,
-      amount: 0,
-      after_amount: 0,
-      prev_qty: 0,
-      qty: 0,
-      after_qty: 0
-    }
-  },
-  watch: {
-    'qty'(val) {
-      this.amount = (this.qty * (this.item.quote_price / this.item.qty_divisor)).toFixed(2)
-      this.after_amount = this.amount
-      this.qty = val
-      this.after_qty = this.qty
-      this.$emit('beforeamount', this.prev_amount)
-      this.$emit('beforeqty', this.prev_qty)
-      this.$emit('afteramount', this.after_amount)
-      this.$emit('afterqty', this.after_qty)
-      this.prev_amount = this.after_amount
-      this.after_amount = 0
-      this.prev_qty = this.after_qty
-      this.after_qty = 0
-    }
-  },
-})
+  })
   new Vue({
     el: '#d2dorderController',
   });

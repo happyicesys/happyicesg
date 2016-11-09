@@ -126,7 +126,7 @@ Door To Door
             <div class="form-group" :class="{ 'has-error' : formErrors['name'] }">
               <label for="name" class="control-label">Name</label>
               <label for="required" class="control-label" style="color:red;" v-if="!form.name">*</label>
-              <input type="text" name="name" class="form-control" v-model="form.name">
+              <input type="text" name="name" class="form-control" v-model="form.name" @keyup="validateOrder">
               <span v-if="formErrors['name']" class="help-block" style="color:red;">
                 <ul class="row">
                     <li style="color:red;">@{{ formErrors['name'][0] }}</li>
@@ -139,7 +139,7 @@ Door To Door
             <div class="form-group" :class="{ 'has-error' : formErrors['contact'] }">
               <label for="contact" class="control-label">Contact Number</label>
               <label for="required" class="control-label" style="color:red;" v-if="!form.contact">*</label>
-              <input type="text" name="contact" class="form-control" v-model="form.contact">
+              <input type="text" name="contact" class="form-control" v-model="form.contact" @keyup="validateOrder">
               <span v-if="formErrors['contact']" class="help-block" style="color:red;">
                 <ul class="row">
                     <li style="color:red;">@{{ formErrors['contact'][0] }}</li>
@@ -152,7 +152,7 @@ Door To Door
             <div class="form-group" :class="{ 'has-error' : formErrors['email'] }">
               <label for="email" class="control-label">Email</label>
               <label for="required" class="control-label" style="color:red;" v-if="!form.email">*</label>
-              <input type="email" name="email" class="form-control" v-model="form.email">
+              <input type="email" name="email" class="form-control" v-model="form.email" @keyup="validateOrder">
               <span v-if="formErrors['email']" class="help-block" style="color:red;">
                 <ul class="row">
                     <li style="color:red;">@{{ formErrors['email'][0] }}</li>
@@ -160,7 +160,9 @@ Door To Door
               </span>
             </div>
           </div>
+          </div>
 
+          <div class="row">
           <div class="col-md-6 col-xs-6">
             <div class="form-group">
               <label for="street" class="control-label">Street</label>
@@ -172,7 +174,7 @@ Door To Door
             <div class="form-group" :class="{ 'has-error' : formErrors['postcode'] }">
               <label for="postcode" class="control-label">Postcode</label>
               <label for="required" class="control-label" style="color:red;" v-if="!form.postcode">*</label>
-              <input type="text" name="postcode" class="form-control" v-model="form.postcode">
+              <input type="text" name="postcode" class="form-control" v-model="form.postcode" @change="verifyPostcode">
               <span v-if="formErrors['postcode']" class="help-block" style="color:red;">
                 <ul class="row">
                     <li style="color:red;">@{{ formErrors['postcode'][0] }}</li>
@@ -180,7 +182,9 @@ Door To Door
               </span>
             </div>
           </div>
+          </div>
 
+          <div class="row">
           <div class="col-md-4 col-xs-6">
             <div class="form-group">
               <label for="block" class="control-label">Block</label>
@@ -204,7 +208,9 @@ Door To Door
               <input type="text" name="unit" class="form-control" v-model="form.unit">
             </div>
           </div>
+          </div>
 
+          <div class="row">
           <div class="col-md-6 col-xs-12 form-group">
             <label for="del_date" class="control-label">Preferred Delivery Day:</label>
             <select2 name="del_date[]" v-model="form.del_date" :options="deldate_option"></select2>
@@ -215,12 +221,16 @@ Door To Door
             <select2 name="del_time[]" v-model="form.del_time" :options="deltime_option"></select2>
             <small>{!! Form::label('del', '** Final Timing will be Confirmed via Phone/ SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
           </div>
+          </div>
 
+          <div class="row">
           <div class="col-md-12 col-xs-12 form-group">
             <label for="remark" class="control-label">Remark (Optional)</label>
             <textarea name="remark" class="form-control" rows="2" v-model="form.remark"></textarea>
           </div>
+          </div>
 
+          <div class="row">
           <div class="col-md-12 col-xs-12" style="padding-top:20px;">
             <div class="form-group pull-right">
               <button

@@ -46,6 +46,11 @@
         </div>
         <br>
         <p>
+            <span style="font-weight:bold">Send to:</span><br>
+            <span class="col-xs-12"> B{{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span>
+            <span class="col-xs-12">{{$person->del_address}}</span>
+            <span class="col-xs-offset-1">{{$person->del_postcode}}</span> <br>
+            <span style="font-weight:bold">Contact Number:</span>&nbsp;{{ $person->contact }}<br>
             <span style="font-weight:bold">Preferred Timing:</span>&nbsp;{{ $timing }}<br><br>
             @if($remark)
             <span style="font-weight:bold">Remark:</span>&nbsp;{{ $remark }} <br><br>
