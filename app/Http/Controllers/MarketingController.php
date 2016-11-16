@@ -1085,26 +1085,60 @@ class MarketingController extends Controller
     }
 
     // return all postcodes list
-    public function getPostcodes()
+    public function getPostcodes(Request $request)
     {
+        $area = $request->area;
+        $am = $request->am;
+        $postcode = $request->postcode;
+        $assignto = $request->assignto;
+        $street = $request->street;
+        $sortkey = $request->sortkey;
+
         $dtdperson = Person::whereUserId(Auth::user()->id)->first();
         $dtdrole = '';
         if($dtdperson){
             $dtdrole = $dtdperson->cust_type;
         }
         if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
-            $postcodes = Postcode::with('person')->get();
+            $results = Postcode::with('person');
         }else{
+            $member = Person::whereUserId(Auth::user()->id)->first();
+            $results = Postcode::whereGroup($member->name)->with('person');
             // setup array to fetch self and descendants id
-            $descAndSelfID = [];
+/*            $descAndSelfID = [];
             $descAndSelf = $dtdperson->getDescendantsAndSelf();
             foreach($descAndSelf as $member){
                 array_push($descAndSelfID, $member->id);
             }
             // filter through postcode that suppose to be shown
-            $postcodes = Postcode::with('person')->whereIn('person_id', $descAndSelfID)->get();
+            $results = Postcode::with('person')->whereIn('person_id', $descAndSelfID);*/
         }
-        return $postcodes;
+
+        if($area) {
+            $results = $results->where('area_name', 'LIKE', '%'.$area.'%');
+        }
+        if($am) {
+            $results = $results->where('group', 'LIKE', '%'.$am.'%');
+        }
+        if($postcode) {
+            $results = $results->where('value', 'LIKE', '%'.$postcode.'%');
+        }
+        if($assignto) {
+            $results = $results->whereHas('person', function($query) use ($assignto) {
+                $query->where('name', 'LIKE', '%'.$assignto.'%');
+            });
+        }
+        if($street) {
+            $results = $results->where('street', 'LIKE', '%'.$street.'%');
+        }
+        if($sortkey) {
+            $results = $results->orderBy($sortkey, $request->reverse == 'true' ? 'asc' : 'desc');
+        }else{
+            $results = $results->orderBy('value', 'asc');
+        }
+        // dd($request->perpage);
+        $results = $results->paginate($request->perpage);
+        return $results;
     }
 
     // return d2d members list
@@ -1193,6 +1227,7 @@ class MarketingController extends Controller
     // update postcode attach person id
     public function updatePostcodeForm(Request $request)
     {
+        // dd($request->all());
         $checked = $request->checkbox;
         $manager = $request->manager;
         if($checked){
@@ -1235,7 +1270,7 @@ class MarketingController extends Controller
 
         // preset qty divisor
         if(!$request->qty_divisor){
-            $reqeust->merge(array('qty_divisor' => 1));
+            $request->merge(array('qty_divisor' => 1));
         }
 
         $salesitem = D2dOnlineSale::create($request->all());

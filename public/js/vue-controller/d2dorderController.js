@@ -55,7 +55,7 @@ if(document.querySelector('#d2dorderController')){
               this.form.street = verified.postcode.street
               this.form.block = verified.postcode.block
             }
-            this.$http.get('/api/d2donlinesales').then((response) => {
+            this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
               const result = JSON.parse(JSON.stringify(response.body))
               this.items = result
             })

@@ -40,6 +40,29 @@ class D2dOnlineSaleController extends Controller
         return $salesitems;
     }
 
+    // showing d2d sales items
+    public function allItems($covered)
+    {
+        $covered = $covered == 'true' ? 'within' : 'without';
+        $salesitems = DB::table('d2d_online_sales')
+                        ->leftJoin('people', 'd2d_online_sales.person_id', '=', 'people.id')
+                        ->leftJoin('items', 'd2d_online_sales.item_id', '=', 'items.id')
+                        ->leftJoin('prices', function($join) {
+                            $join->on('prices.person_id', '=', 'people.id')
+                                    ->on('prices.item_id', '=', 'items.id');
+                        })
+                        ->whereIn('d2d_online_sales.coverage', ['all', $covered])
+                        ->select(
+                            'people.id as person_id', 'people.cust_id as cust_id', 'items.name as item_name',
+                            'items.product_id', 'd2d_online_sales.id', 'd2d_online_sales.caption',
+                            'd2d_online_sales.qty_divisor', 'prices.quote_price'
+                            )
+                        ->orderBy('sequence')
+                        ->get();
+        // $salesitems = D2dOnlineSale::with(['item', 'person', 'person.prices'])->orderBy('sequence')->get();
+        return $salesitems;
+    }
+
     // proceed d2d online order form
     public function submitOrder(Request $request)
     {

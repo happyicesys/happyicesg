@@ -17,6 +17,7 @@ class CreateD2dOnlineSalesTable extends Migration
             $table->integer('sequence')->unsigned();
             $table->string('caption');
             $table->integer('qty_divisor')->default(1);
+            $table->string('coverage')->default('all');
 
             $table->integer('item_id')->unsigned()->nullable();
             $table->foreign('item_id')->references('id')->on('items');

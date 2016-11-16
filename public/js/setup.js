@@ -39,10 +39,10 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
                 }
             }
         });
-
+/*
         $http.get('/market/setup/postcodes').success(function(data){
             $scope.postcodes = data;
-        });
+        });*/
 
         $http.get('/market/setup/members').success(function(data){
             $scope.members = data;

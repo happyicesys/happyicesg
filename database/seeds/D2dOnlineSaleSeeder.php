@@ -17,7 +17,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Red Bean Jelly (5pcs/ box)',
             'item_id' => 9,
             'qty_divisor' => 6,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -25,7 +26,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Chocolate Pie with Mango (5pcs/ box)',
             'item_id' => 11,
             'qty_divisor' => 6,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -33,7 +35,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'QQ Pudding (5pcs/ box)',
             'item_id' => 10,
             'qty_divisor' => 6,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -41,7 +44,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Green Mango & Lime (5pcs/ box)',
             'item_id' => 6,
             'qty_divisor' => 6,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -49,7 +53,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Chocolate Roll (5pcs/ flavor)',
             'item_id' => 4,
             'qty_divisor' => 3,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -57,7 +62,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Vanilla Roll (5pcs/ flavor)',
             'item_id' => 5,
             'qty_divisor' => 3,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -65,7 +71,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Matcha Roll (5pcs/ flavor)',
             'item_id' => 26,
             'qty_divisor' => 3,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -73,7 +80,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Strawberry (6pcs/ set)',
             'item_id' => 18,
             'qty_divisor' => 5,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
 
         D2dOnlineSale::create([
@@ -81,7 +89,8 @@ class D2dOnlineSaleSeeder extends Seeder
             'caption' => 'Mint Chocolate (6pcs/ set)',
             'item_id' => 19,
             'qty_divisor' => 6,
-            'person_id' => 1643
+            'person_id' => 1643,
+            'coverage' => 'all'
         ]);
     }
 }

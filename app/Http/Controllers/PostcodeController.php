@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests;
 use App\Postcode;
+use Carbon\Carbon;
 
 class PostcodeController extends Controller
 {
@@ -32,5 +34,21 @@ class PostcodeController extends Controller
             'covered' => $covered,
         ];
         return $data;
+    }
+
+    // export postcodes into excel files
+    public function exportPostcode()
+    {
+        $title = 'Postcodes';
+        $postcodes = Postcode::orderBy('value', 'asc')->get();
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($postcodes) {
+            $excel->sheet('sheet1', function($sheet) use ($postcodes) {
+                $sheet->setAutoSize(true);
+                $sheet->setColumnFormat(array(
+                    'A:T' => '@'
+                ));
+                $sheet->loadView('excel.postcode', compact('postcodes'));
+            });
+        })->download('xls');
     }
 }

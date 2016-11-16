@@ -19,12 +19,26 @@
         {!! Form::text('caption', null, ['class'=>'form-control']) !!}
     </div>
 
-    <div class="form-group">
-        {!! Form::label('person_id', 'Customer ID', ['class'=>'control-label']) !!}
-        {!! Form::select('person_id',
-            [''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->pluck('full', 'id')->all(),
-            null,
-            ['class'=>'select form-control']) !!}
+    <div class="row">
+    <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('person_id', 'Customer ID', ['class'=>'control-label']) !!}
+            {!! Form::select('person_id',
+                [''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->pluck('full', 'id')->all(),
+                null,
+                ['class'=>'select form-control']) !!}
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('coverage', 'D2D Coverage', ['class'=>'control-label']) !!}
+            {!! Form::select('coverage',
+                ['all'=>'All', 'within'=>'Within', 'without'=>'Without'],
+                null,
+                ['class'=>'select form-control']) !!}
+        </div>
+    </div>
     </div>
 </div>
 

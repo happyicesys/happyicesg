@@ -8,9 +8,11 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
+Route::get('/api/d2ditems/{covered}', 'D2dOnlineSaleController@allItems');
 Route::post('/api/validateOrder', 'D2dOnlineSaleController@validateOrder');
 Route::post('/api/submitOrder', 'D2dOnlineSaleController@submitOrder');
 
+Route::post('/api/postcodes/excel', 'PostcodeController@exportPostcode');
 Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
 Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');
 
@@ -125,6 +127,7 @@ Route::delete('/person/data/{id}', 'PersonController@destroyAjax');
 Route::resource('person', 'PersonController');
 Route::post('person/{id}/file', 'PersonController@addFile');
 Route::delete('person/{id}/file', 'PersonController@removeFile');
+Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');

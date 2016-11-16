@@ -10,7 +10,7 @@ class D2dOnlineSale extends Model
 
     protected $fillable = [
         'caption', 'sequence', 'qty_divisor',
-        'item_id', 'person_id',
+        'item_id', 'person_id', 'coverage'
     ];
 
     // getter

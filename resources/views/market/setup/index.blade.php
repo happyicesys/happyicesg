@@ -201,165 +201,33 @@
             {{-- end of second element --}}
             {{-- third element --}}
             <div class="tab-pane active" id="postcode">
-                <div class="panel panel-default">
+                <div class="panel panel-default" id="setupController">
                     <div class="panel-heading">
-                        <div class="panel-title">
-
-                            <div class="pull-left display_num">
-                                <label for="display_num">Display</label>
-                                <select ng-model="itemsPerPage" ng-init="itemsPerPage='50'">
-                                  <option>50</option>
-                                  <option>100</option>
-                                  <option>150</option>
-                                </select>
-                                <label for="display_num" style="padding-right: 20px">per Page</label>
+                        @if(Auth::user()->hasRole('admin'))
+                            <div class="pull-right">
+                                {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
+                                    {{ csrf_field() }}
+                                    <div class="col-md-9 col-xs-6">
+                                        {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
+                                        {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
+                                    </div>
+                                    <div class="col-md-3 col-xs-6" style="padding-top: 10px;">
+                                        <button type="submit" class="btn btn-success">+ Import</button>
+                                    </div>
+                                {!! Form::close() !!}
                             </div>
-
-                            @if(Auth::user()->hasRole('admin'))
-                                <div class="pull-right">
-                                    {!! Form::open(['action'=>'MarketingController@storePostcode', 'files'=>true]) !!}
-                                        {{ csrf_field() }}
-                                        <div class="col-md-9 col-xs-6">
-                                            {!! Form::label('postcode_excel', 'Import Postcodes (Excel)', ['class'=>'control-label']) !!}
-                                            {!! Form::file('postcode_excel', null, ['class'=>'form-control']) !!}
-                                        </div>
-                                        <div class="col-md-3 col-xs-6" style="padding-top: 10px;">
-                                            <button type="submit" class="btn btn-success">+ Import</button>
-                                        </div>
-                                    {!! Form::close() !!}
-                                </div>
-                            @endif
-                        </div>
+                        @endif
                     </div>
-
                     <div class="panel-body">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('area', 'Area', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('area', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.area_name', 'placeholder'=>'Area']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('group', 'AM', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('group', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.group', 'placeholder'=>'AM']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('postcode', 'Postcode:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('postcode', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.value', 'placeholder'=>'Postcode']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('manager', 'Manager:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('manager', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.person.name', 'placeholder'=>'Manager']) !!}
-                            </div>
-                            <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                                {!! Form::label('street', 'Street:', ['class'=>'control-label search-title']) !!}
-                                {!! Form::text('street', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.street', 'placeholder'=>'Street']) !!}
-                            </div>
-                        </div>
-
-                        <label class="pull-right totalnum" for="totalnum">Showing @{{(postcodes | filter:search).length}} of @{{postcodes.length}} entries</label>
-
-                        <div class="row">
-                            <div style="padding: 20px 0px 10px 15px">
-                                {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
-                                @if(Auth::user()->hasRole('admin'))
-                                    {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="table-responsive">
-                            {!! Form::open(['id'=>'update_form', 'method'=>'POST','action'=>['MarketingController@updatePostcodeForm']]) !!}
-                            <table class="table table-list-search table-hover table-bordered">
-                                <tr style="background-color: #DDFDF8">
-                                    <th class="col-md-1 text-center">
-                                        <input type="checkbox" id="checkAll" />
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        #
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'area_code'; sortReverse = !sortReverse">
-                                        Area Code
-                                        <span ng-show="sortType == 'area_code' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'area_code' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'area_name'; sortReverse = !sortReverse">
-                                        Area
-                                        <span ng-show="sortType == 'area_name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'area_name' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'group'; sortReverse = !sortReverse">
-                                        AM
-                                        <span ng-show="sortType == 'group' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'group' && sortReverse" class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'value'; sortReverse = !sortReverse">
-                                        Postcode
-                                        <span ng-show="sortType == 'value' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'value' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                    <th class="col-md-1 text-center">
-                                        <a href="#" ng-click="sortType = 'block'; sortReverse = !sortReverse">
-                                        Block
-                                        <span ng-show="sortType == 'block' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'block' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                    <th class="col-md-2 text-center">
-                                        <a href="#" ng-click="sortType = 'street'; sortReverse = !sortReverse">
-                                        Street
-                                        <span ng-show="sortType == 'street' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'street' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                    <th class="col-md-2 text-center">
-                                        <a href="#" ng-click="sortType = 'person.name'; sortReverse = !sortReverse">
-                                        Manager
-                                        <span ng-show="sortType == 'person.name' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'person.name' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
-                                </tr>
-
-                                <tbody>
-                                     <tr dir-paginate="postcode in postcodes | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="postcode" current-page="currentPage" ng-controller="repeatController">
-                                        <td class="col-md-1 text-center"><input type="checkbox" name="checkbox[@{{postcode.id}}]" value="1" id="checkAll" /></td>
-                                        <td class="col-md-1 text-center">@{{ number }} </td>
-                                        <td class="col-md-1 text-center">@{{ postcode.area_code }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.area_name }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.group }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.value }}</td>
-                                        <td class="col-md-1 text-center">@{{ postcode.block }}</td>
-                                        <td class="col-md-2 text-center">@{{ postcode.street }}</td>
-                                        <td class="col-md-2 text-center">
-                                            <select ui-select2 name="manager[@{{postcode.id}}]" ng-model="person[postcode.id]" ng-init="person[postcode.id] = postcode.person_id">
-                                                <option value=""></option>
-                                                <option value="@{{member.id}}" ng-repeat="member in members">@{{member.name}}</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="(postcodes | filter:search).length == 0 || ! postcodes.length">
-                                        <td colspan="12" class="text-center">No Records Found</td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
-
-                    <div class="panel-footer">
-                          <dir-pagination-controls pagination-id="postcode" max-size="5" direction-links="true" boundary-links="true" class="pull-left"> </dir-pagination-controls>
+                        <postcodes></postcodes>
                     </div>
                 </div>
             </div>
             {{-- end of third element --}}
         </div>
     </div>
-</div>
-{{--
+
+
 <template id="postcode-template">
     <div class="row">
         <div class="col-md-12 col-xs-12">
@@ -370,13 +238,13 @@
                             <div class="col-md-2 col-xs-6">
                                 <div class="form-group">
                                     <label for="area_name" class="control-label">Area</label>
-                                    <input type="text" name="area_name" class="form-control" v-model="search.area_name" placeholder="Area">
+                                    <input type="text" name="area_name" class="form-control" v-model="search.area" placeholder="Area">
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-6">
                                 <div class="form-group">
                                     <label for="group" class="control-label">AM</label>
-                                    <input type="text" name="group" class="form-control" v-model="search.group" placeholder="AM">
+                                    <input type="text" name="group" class="form-control" v-model="search.am" placeholder="AM">
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-6">
@@ -388,7 +256,7 @@
                             <div class="col-md-2 col-xs-6">
                                 <div class="form-group">
                                     <label for="manager" class="control-label">Manager</label>
-                                    <input type="text" name="manager" class="form-control" v-model="search.manager" placeholder="Manager">
+                                    <input type="text" name="manager" class="form-control" v-model="search.assignto" placeholder="Manager">
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-6">
@@ -400,14 +268,11 @@
                             <div class="col-md-2 col-xs-6 pull-right">
                                 <div class="row">
                                     <div class="col-md-9 col-xs-10 pull-right text-center">
-                                        <select2 v-model="selected_page">
-                                            <option value="50">50 /page</option>
-                                            <option value="100">100 /page</option>
-                                            <option value="200">200 /page</option>
-                                        </select2>
+                                        <select2 v-model="selected_page" :options="page_options"></select2>
                                         <span style="margin-top: 5px; font-size: 15px;" v-if="pagination.total">
                                             @{{pagination.from}} - @{{pagination.to}} (@{{pagination.total}})
                                         </span>
+                                        <span><i class="fa fa-spinner fa-2x fa-spin" v-if="loading"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -415,6 +280,8 @@
                     </div>
                 </div>
 
+                {!! Form::open(['id'=>'export_excel', 'method'=>'POST', 'action'=>['PostcodeController@exportPostcode']]) !!}
+                {!! Form::close() !!}
                 <div class="row">
                     <div class="col-md-12 col-xs-12">
                         <div class="pull-left" style="margin-bottom: 20px;">
@@ -423,84 +290,165 @@
                                 <span class="hidden-xs"> Search</span>
                                 <i class="fa fa-circle-o-notch fa-spin" v-if="searching"></i>
                             </button>
-                            <a href="customer/create" class="btn btn-success btn-md">
-                                <i class="fa fa-plus"></i>
-                                <span class="hidden-xs"> Create Customer</span>
-                            </a>
+                            {!! Form::submit('Batch Update', ['name'=>'save', 'class'=> 'btn btn-success', 'form'=>'update_form']) !!}
+                            @if(Auth::user()->hasRole('admin'))
+                                {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
+                            @endif
+                            {!! Form::submit('Export Excel', ['class'=>'btn btn-primary', 'form'=>'export_excel']) !!}
                         </div>
                     </div>
                 </div>
             </form>
 
+            {!! Form::open(['id'=>'update_form', 'method'=>'POST','action'=>['MarketingController@updatePostcodeForm']]) !!}
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
-                    <tr style="background-color: #a3a3c2;" class="inverse head">
+                    <tr style="background-color: #f7f9f7;" class="inverse head">
+                        <th class="col-md-1 text-center">
+                            <input type="checkbox" id="checkAll" />
+                        </th>
                         <th class="col-md-1 text-center">
                             #
                         </th>
-                        <th class="col-md-2 text-center">
-                            <a href="#" @click="sortBy('cust_id')">Customer ID</a>
-                            <span v-if="sortkey == 'cust_id' && !reverse" class="fa fa-caret-down"></span>
-                            <span v-if="sortkey == 'cust_id' && reverse" class="fa fa-caret-up"></span>
+                        <th class="col-md-1 text-center">
+                            <a href="#" @click="sortBy('area_code')">Area Code</a>
+                            <span v-if="sortkey == 'area_code' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'area_code' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="#" @click="sortBy('area_name')">Area</a>
+                            <span v-if="sortkey == 'area_name' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'area_name' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="#" @click="sortBy('group')">AM</a>
+                            <span v-if="sortkey == 'group' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'group' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="#" @click="sortBy('value')">Postcode</a>
+                            <span v-if="sortkey == 'value' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'value' && reverse" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="#" @click="sortBy('block')">Block</a>
+                            <span v-if="sortkey == 'block' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'block' && reverse" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-2 text-center">
-                            <a href="#" @click="sortBy('company')">Company</a>
-                            <span v-if="sortkey == 'company' && !reverse" class="fa fa-caret-down"></span>
-                            <span v-if="sortkey == 'company' && reverse" class="fa fa-caret-up"></span>
+                            <a href="#" @click="sortBy('street')">Street</a>
+                            <span v-if="sortkey == 'street' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'street' && reverse" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-2 text-center">
-                            <a href="#" @click="sortBy('attn_name')">Name</a>
-                            <span v-if="sortkey == 'attn_name' && !reverse" class="fa fa-caret-down"></span>
-                            <span v-if="sortkey == 'attn_name' && reverse" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-2 text-center">
-                            <a href="#" @click="sortBy('contact')">Contact</a>
-                            <span v-if="sortkey == 'contact' && !reverse" class="fa fa-caret-down"></span>
-                            <span v-if="sortkey == 'contact' && reverse" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-2 text-center">
-                            <a href="#" @click="sortBy('email')">Email</a>
-                            <span v-if="sortkey == 'email' && !reverse" class="fa fa-caret-down"></span>
-                            <span v-if="sortkey == 'email' && reverse" class="fa fa-caret-up"></span>
+                            <a href="#" @click="sortBy('manager')">Manager</a>
+                            <span v-if="sortkey == 'manager' && !reverse" class="fa fa-caret-down"></span>
+                            <span v-if="sortkey == 'manager' && reverse" class="fa fa-caret-up"></span>
                         </th>
                     </tr>
 
-                    <tr v-for="(customer, index) in list" @click="redirectEdit(customer.id)" class="row_edit">
-                        <td class="col-md-1 text-center">
-                            @{{ index + pagination.from }}
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @{{ customer.cust_id }}
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @{{ customer.company }}
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @{{ customer.attn_name }}
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @{{ customer.contact }}
-                            <span v-if="customer.alt_contact">/ @{{ customer.alt_contact }}</span>
-                        </td>
-                        <td class="col-md-2 text-center">
-                            @{{ customer.email }}
-                        </td>
+                    <tr is="item-postcodes"
+                      v-for="(item, number) in items"
+                      :number="number"
+                      :item="item"
+                      :items="items"
+                      :pagination="pagination"
+                      :options="options"
+                      >
                     </tr>
+
                     <tr v-if="! pagination.total">
                         <td colspan="14" class="text-center"> No Results Found </td>
                     </tr>
                 </table>
             </div>
+            {!! Form::close() !!}
             <div class="pull-left">
                 <pagination :pagination="pagination" :callback="fetchTable" :offset="4"></pagination>
             </div>
         </div>
     </div>
-</template> --}}
+</template>
+
+<template id="postcode-item">
+    <tr>
+        <td class="col-md-1 text-center">
+            <input type="checkbox" v-bind:name="'checkbox[' + item.id + ']'" value="1" id="checkAll" />
+        </td>
+        <td class="col-md-1 text-center">
+          @{{number + pagination.from}}
+        </td>
+        <td class="col-md-1 text-center">
+          @{{item.area_code}}
+        </td>
+        <td class="col-md-1 text-center">
+          @{{item.area_name}}
+        </td>
+        <td class="col-md-1 text-center">
+          @{{item.group}}
+        </td>
+        <td class="col-md-1 text-center">
+          @{{item.value}}
+        </td>
+        <td class="col-md-1 text-center">
+          @{{item.block}}
+        </td>
+        <td class="col-md-2 text-center">
+          @{{item.street}}
+        </td>
+        <td class="col-md-2 text-center">
+{{--           <select2 v-bind:name="'manager[' + item.id + ']'" :options="options" :value="item.person ? item.person.name : ''">
+              <option v-for="option in options" v-bind:value="option.id">@{{option.name}}</option>
+          </select2>  --}}
+          <select class="select form-control" v-bind:name="'manager[' + item.id + ']'" v-bind:value="item.person ? item.person.id : ''">
+            <option v-for="option in options" v-bind:value="option.id">@{{option.name}}</option>
+          </select>
+        </td>
+        {{-- <td>@{{item.person ? item.person.name : ''}}</td> --}}
+    </tr>
+</template>
+</div>
+
+<template id="select2-template">
+  <select>
+    <slot></slot>
+  </select>
+</template>
+
+<template id="paginate-template">
+    <nav>
+        <ul class="pagination">
+            <li :class="{'disabled': pagination.current_page <= 1}" v-if="pagination.total">
+                <a href="" aria-label="Previous" @click.prevent="changePage(1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li :class="{'disabled': pagination.current_page <= 1}" v-if="pagination.total">
+                <a href="" aria-label="Previous" @click.prevent="changePage(pagination.current_page - 1)">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li v-for="num in array" :class="{'active': num == pagination.current_page}" class="hidden-xs">
+                <a href="" @click.prevent="changePage(num)">@{{ num }}</a>
+            </li>
+            <li :class="{'disabled': pagination.current_page >= pagination.last_page}" v-if="pagination.total">
+                <a href="" aria-label="Next" @click.prevent="changePage(pagination.current_page + 1)">
+                <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <li :class="{'disabled': pagination.current_page >= pagination.last_page}" v-if="pagination.total">
+                <a href="" aria-label="Next" @click.prevent="changePage(pagination.last_page)">
+                <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</template>
 
 <script src="/js/setup.js"></script>
-{{-- <script src="/js/setupController.js"></script> --}}
+<script src="/js/vue-controller/setupController.js"></script>
 <script>
+    $('.select').select2();
     $(function() {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
