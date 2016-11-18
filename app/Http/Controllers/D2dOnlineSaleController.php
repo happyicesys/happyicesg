@@ -113,7 +113,9 @@ class D2dOnlineSaleController extends Controller
             $message->from($sendfrom);
             $message->cc($cc);
             // $message->cc('leehongjie91@gmail.com');
-            $message->bcc($bcc);
+            if(isset($bcc)) {
+                $message->bcc($bcc);
+            }
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
             $message->setTo($sendto);
             // $message->setTo('leehongjie91@gmail.com');
