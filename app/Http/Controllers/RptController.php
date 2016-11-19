@@ -592,7 +592,7 @@ class RptController extends Controller
             }
 
             $query = $this->extraField($request, $query);
-            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
 
         $query1 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -610,7 +610,7 @@ class RptController extends Controller
             }
 
             $query1 = $this->extraField($request, $query1);
-            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
 
         $query2 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -628,7 +628,7 @@ class RptController extends Controller
             }
 
             $query2 = $this->extraField($request, $query2);
-            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
 
             $query2 = $query2
                 ->union($query)->union($query1)
@@ -705,14 +705,19 @@ class RptController extends Controller
         $amt_mod = $this->calDBTransactionTotal($query2);
         $cash_mod = $this->payMethodConDB($query2, 'cash');
         $cheque_mod = $this->payMethodConDB($query2, 'cheque');
-
+        $del_cashmod = $this->payMethodConDBDelivery($query2, 'cash');
+        $del_chequemod = $this->payMethodConDBDelivery($query2, 'cheque');
+        $delivery_total1 = $this->calDBDeliveryTotal($query1);
+        $delivery_paid = $this->calDBDeliveryTotal($query1->where('pay_status', '=', 'Paid'));
+        $delivery_total2 = $this->calDBDeliveryTotal($query2);
+        // dd($amt_del, $delivery_total1);
         $data = [
-            'amt_del' => $amt_del,
+            'amt_del' => $amt_del /*+ $delivery_total1*/,
             'qty_del' => $qty_del,
-            'paid_del' => $paid_del,
-            'amt_mod' => $amt_mod,
-            'cash_mod' => $cash_mod,
-            'cheque_mod' => $cheque_mod,
+            'paid_del' => $paid_del /*+ $delivery_paid*/,
+            'amt_mod' => $amt_mod /*+ $delivery_total2*/,
+            'cash_mod' => $cash_mod /*+ $del_cashmod*/,
+            'cheque_mod' => $cheque_mod /*+ $del_chequemod*/,
         ];
         return $data;
     }
@@ -742,6 +747,13 @@ class RptController extends Controller
         return $total;
     }
 
+    private function payMethodConDBDelivery($query, $con)
+    {
+        $q1 = clone $query;
+        $delivery = $this->calDBTransactionTotal($q1->where('transactions.pay_method', $con));
+        return $delivery;
+    }
+
     private function extraField($request, $query)
     {
         $transaction_id = $request->transaction_id;
@@ -754,27 +766,25 @@ class RptController extends Controller
         }
         if($cust_id){
             $query = $query->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
-/*
-            $query = $query->whereHas('person', function($query){
-                $query->where('cust_id', 'LIKE', $cust_id);
-            });*/
         }
-
         if($company){
             $query = $query->where('people.company', 'LIKE', '%'.$company.'%');
-/*
-            $query = $query->whereHas('person', function($query){
-                $query->where('company', 'LIKE', $company);
-            });*/
         }
-
         if($status){
             $query = $query->where('transactions.status', 'LIKE', '%'.$status.'%');
         }
-
         if($pay_status){
             $query = $query->where('transactions.pay_status', 'LIKE', '%'.$pay_status.'%');
         }
         return $query;
+    }
+
+    // calculate delivery total
+    private function calDBDeliveryTotal($query)
+    {
+        $q = clone $query;
+        $delivery_fee = $q->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
+        // dd($delivery_fee);
+        return $delivery_fee;
     }
 }

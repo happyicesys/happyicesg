@@ -134,7 +134,7 @@
                                     <th class="col-md-1 text-center">
                                         #
                                     </th>
-                                    <th class="col-md-5 text-center">
+                                    <th class="col-md-4 text-center">
                                         <a href="#" ng-click="sortType = 'item.product_id'; sortReverse = !sortReverse">
                                         Item
                                         <span ng-show="sortType == 'item.product_id' && !sortReverse" class="fa fa-caret-down"></span>
@@ -155,6 +155,13 @@
                                         <span ng-show="sortType == 'qty_divisor' && sortReverse" class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" ng-click="sortType = 'coverage'; sortReverse = !sortReverse">
+                                        D2D Coverage
+                                        <span ng-show="sortType == 'coverage' && !sortReverse" class="fa fa-caret-down"></span>
+                                        <span ng-show="sortType == 'coverage' && sortReverse" class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
                                     <th class="col-md-2 text-center">
                                         Action
                                     </th>
@@ -169,7 +176,7 @@
                                         <td class="col-md-1 text-center">
                                             @{{ number }}
                                         </td>
-                                        <td class="col-md-5 text-center">
+                                        <td class="col-md-4 text-center">
                                             @{{ salesitem.product_id }} -
                                             @{{ salesitem.item_name }}
                                         </td>
@@ -178,6 +185,9 @@
                                         </td>
                                         <td class="col-md-1 text-center">
                                             @{{ salesitem.qty_divisor }}
+                                        </td>
+                                        <td class="col-md-1 text-center">
+                                            @{{ salesitem.coverage }}
                                         </td>
                                         <td class="col-md-2 text-center">
                                             <a href="/market/setup/d2ditem/@{{ salesitem.id }}/edit" class="btn btn-sm btn-primary">

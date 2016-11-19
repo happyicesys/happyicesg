@@ -412,22 +412,6 @@
                                     <div class="row">
                                         <div style="padding: 20px 0px 10px 15px">
                                             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
-                                            {{-- <button class="btn btn-warning" ng-click="exportPDF()">Export PDF</button> --}}
-{{--                                             <button class="btn btn-warning" onclick="$('.export-table').tableExport({
-                                                                                        type:'pdf',
-                                                                                        format: 'a4',
-                                                                                        ignoreColumn: [13, 14, 15],
-                                                                                        jspdf: {
-                                                                                            orientation: 'l',
-                                                                                            autotable: {
-                                                                                                theme: 'grid',
-                                                                                                alternateRowStyles: 'none'
-                                                                                            },
-                                                                                        },
-                                                                                        escape:'false',
-                                                                                        pdfFontSize:10,
-                                                                                        fileName: 'DailyRpt'
-                                                                                    });" >Export PDF</button> --}}
                                             {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
                                             @cannot('transaction_view')
                                             {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!}
@@ -603,20 +587,6 @@
                                                     @endcannot
                                                 </tr>
                                                 <tbody>
-{{--                                                     <tr>
-                                                        <td class="hidden text-center" data-tableexport-display="always">#</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Inv</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">ID</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Company</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Status</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Delivery Date</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Delivery By</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Total Amount</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Total Qty</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Payment</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Pay Received By</td>
-                                                        <td class="hidden text-center" data-tableexport-display="always">Pay Received Dt</td>
-                                                    </tr> --}}
                                                     <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                                                         <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td>
                                                         <td class="col-md-1 text-center">@{{ number }} </td>
@@ -654,8 +624,11 @@
                                                         {{-- status by color ended --}}
                                                         <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                                                         <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
-                                                        <td class="col-md-1 text-center">
-                                                            @{{transaction.gst ? transaction.total * 107/100 : transaction.total | currency: ""}}
+                                                        <td class="col-md-1 text-center" ng-if="transaction.delivery_fee <= 0">
+                                                            @{{ transaction.gst ? transaction.total * 107/100 : transaction.total | currency: "" }}
+                                                        </td>
+                                                        <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">
+                                                            @{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}
                                                         </td>
                                                         <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                                         {{-- pay status --}}
@@ -671,16 +644,8 @@
                                                         {{-- pay status ended --}}
                                                         @cannot('transaction_view')
                                                         <td class="col-md-1 text-center">
-                                                            {{-- print invoice         --}}
-                                                            {{-- <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a> --}}
-                                                            {{-- button view shown when cancelled --}}
-                                                            {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a> --}}
-                                                            {{-- <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-warning" ng-if="transaction.status != 'Cancelled'">Edit</a> --}}
-                                                            {{-- Payment Verification --}}
                                                             <a href="/transaction/status/@{{transaction.id}}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
                                                             <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, transaction.payMethodModel, transaction.noteModel)">Verify Paid</a>
-                                                            {{-- <a href="/transaction/singlestatus/@{{transaction.id}}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a> --}}
-                                                            {{-- {!! Form::submit('Verify Paid', ['name'=>'verify_single', 'class'=> 'btn btn-sm btn-success verify_single', 'form'=>'verify', 'ng-if'=>'(transaction.status == "Verified Owe" || transaction.status == "Delivered") && transaction.pay_status == "Paid"']) !!} --}}
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="!transaction.pay_method">
                                                             {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
@@ -690,11 +655,6 @@
                                                                                 'ng-init'=>"transaction.payMethodModel='cash'",
                                                                                 'placeholder'=>'Inv Num'
                                                                             ]) !!}
-
-{{--                                                             <select name="pay_method[@{{transaction.id}}]" class="form-control input-sm" ng-model="transaction.payMethodModel" ng-if="(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'" ng-init="transaction.payMethodModel='cash'">
-                                                                <option value="cash">Cash</option>
-                                                                <option value="cheque">Cheque/TT</option>
-                                                            </select> --}}
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="transaction.pay_method">
                                                             @{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}
@@ -757,12 +717,9 @@
     });
 
     $(function() {
-        // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            // save the latest tab; use cookies if you like 'em better:
             localStorage.setItem('lastTab', $(this).attr('href'));
         });
-        // go to the latest tab, if it exists:
         var lastTab = localStorage.getItem('lastTab');
         if (lastTab) {
             $('[href="' + lastTab + '"]').tab('show');

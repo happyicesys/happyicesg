@@ -107,6 +107,13 @@ if(document.querySelector('#d2dorderController')){
         }else{
           return false
         }
+      },
+      disableNext() {
+        if(this.total == 0 || (this.covered == false && this.totalqty <= 1)) {
+          return true
+        }else {
+          return false
+        }
       }
     }
   });

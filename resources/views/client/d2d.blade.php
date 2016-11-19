@@ -113,7 +113,7 @@ Door To Door
               </table>
               </div>
               <div class="form-group pull-right">
-                <button class="btn btn-lg btn-success" v-bind:class="{'disabled': total==0}" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
+                <button class="btn btn-lg btn-success" v-bind:class="{'disabled': disableNext}" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@ Door To Door
 
                 <div class="col-md-4 col-xs-12">
                   <div class="form-group" :class="{ 'has-error' : formErrors['contact'] }">
-                    <label for="contact" class="control-label">Contact Number</label>
+                    <label for="contact" class="control-label">Handphone Number</label>
                     <label for="required" class="control-label" style="color:red;" v-if="!form.contact">*</label>
                     <input type="text" name="contact" class="form-control" v-model="form.contact" @keyup="validateOrder">
                     <span v-if="formErrors['contact']" class="help-block" style="color:red;">

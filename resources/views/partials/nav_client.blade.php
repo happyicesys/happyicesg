@@ -18,7 +18,7 @@
                     <a class="page-scroll" style="color: white;" href="/client/product">Products</a>
                 </li>
                 <li>
-                    <a class="page-scroll" style="color: white;" href="/d2d">Door To Door</a>
+                    <a class="page-scroll" style="color: white;" href="/d2d">Online Order</a>
                 </li>
                 <li>
                     <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>

@@ -66,7 +66,7 @@ class TransactionController extends Controller
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total', 'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
-                                    'profiles.gst'
+                                    'profiles.gst', 'transactions.delivery_fee'
                                 );
 
         // reading whether search input is filled
@@ -84,6 +84,7 @@ class TransactionController extends Controller
         }
         // dd($request->all());
         $total_amount = $this->calDBTransactionTotal($transactions);
+        $delivery_total = $this->calDBDeliveryTotal($transactions);
 
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
@@ -93,7 +94,7 @@ class TransactionController extends Controller
         }
 
         $data = [
-            'total_amount' => $total_amount,
+            'total_amount' => $total_amount + $delivery_total,
             'transactions' => $transactions,
         ];
 
@@ -1134,5 +1135,13 @@ class TransactionController extends Controller
         $total_amount = $nonGst_amount + $gst_amount;
 
         return $total_amount;
+    }
+
+    // calculate delivery fees total
+    private function calDBDeliveryTotal($query)
+    {
+        $query3 = clone $query;
+        $delivery_fee = $query3->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
+        return $delivery_fee;
     }
 }

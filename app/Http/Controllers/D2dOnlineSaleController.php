@@ -32,7 +32,7 @@ class D2dOnlineSaleController extends Controller
                         ->select(
                             'people.id as person_id', 'people.cust_id as cust_id', 'items.name as item_name',
                             'items.product_id', 'd2d_online_sales.id', 'd2d_online_sales.caption',
-                            'd2d_online_sales.qty_divisor', 'prices.quote_price'
+                            'd2d_online_sales.qty_divisor', 'prices.quote_price', 'd2d_online_sales.coverage'
                             )
                         ->orderBy('sequence')
                         ->get();
