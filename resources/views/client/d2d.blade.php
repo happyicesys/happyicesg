@@ -58,6 +58,7 @@ Door To Door
           <div v-if="step2">
             <div class="col-md-12 col-xs-12">
                 <p style="color:red;" v-if="covered">**Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**</p>
+                <p style="color:red;" v-if="!covered">**Minimum purchase is 2 boxes; buy 4 boxes and above for FREE delivery.**</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
                 <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;">
@@ -69,7 +70,7 @@ Door To Door
                     Item
                   </th>
                   <th class="col-md-2 text-center">
-                    Qty
+                    Box
                   </th>
                   <th class="col-md-2 text-center">
                     Price

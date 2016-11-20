@@ -697,6 +697,7 @@ class RptController extends Controller
             $query2 = $query2->where('paid_by', 'like', '%'.$paid_by.'%');
         }
 
+
         $query2 = $this->extraField($request, $query2);
         $query2 = $query2->orderBy('transactions.id', 'desc');
         $amt_del = $this->calDBTransactionTotal($query1);
@@ -710,6 +711,7 @@ class RptController extends Controller
         $delivery_total1 = $this->calDBDeliveryTotal($query1);
         $delivery_paid = $this->calDBDeliveryTotal($query1->where('pay_status', '=', 'Paid'));
         $delivery_total2 = $this->calDBDeliveryTotal($query2);
+        // dd($query1->toSql());
         // dd($amt_del, $delivery_total1);
         $data = [
             'amt_del' => $amt_del /*+ $delivery_total1*/,
@@ -783,8 +785,8 @@ class RptController extends Controller
     private function calDBDeliveryTotal($query)
     {
         $q = clone $query;
-        $delivery_fee = $q->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
-        // dd($delivery_fee);
+        // dd($q->toSql());
+        $delivery_fee = $q->sum('transactions.delivery_fee');
         return $delivery_fee;
     }
 }
