@@ -165,8 +165,8 @@ class D2dOnlineSaleController extends Controller
             $customer->company = $request->name;
             $customer->contact = $request->contact;
             $customer->email = $request->email;
-            $customer->bill_address = $request->street;
-            $customer->del_address = $request->street;
+            $customer->bill_address = $request->block.', #'.$request->floor.'-'.$request->unit;
+            $customer->del_address = $request->block.', #'.$request->floor.'-'.$request->unit;
             $customer->del_postcode = $request->postcode;
             $customer->block = $request->block;
             $customer->floor = $request->floor;
