@@ -90,7 +90,8 @@ class D2dOnlineSaleController extends Controller
         }else{
             if($avail_postcode->person_id) {
                 $member = Person::findOrFail($avail_postcode->person_id);
-                $cc = [$member->email];
+                $member_manager = Person::find($member->parent_id)->first();
+                $cc = [$member->email, isset($member_manager) ? $member_manager->email : ''];
                 $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
             }
         }

@@ -147,7 +147,7 @@ Vue.component('select2', {
 
 Vue.component('salesItem', {
   template: '#item-template',
-  props: ['number', 'item', 'items', 'subtotal'],
+  props: ['number', 'item', 'items', 'subtotal', 'finalstep'],
   data() {
     return {
       options: [
