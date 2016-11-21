@@ -15,12 +15,11 @@ if(document.querySelector('#d2dorderController')){
           block: '',
           floor: '',
           unit: '',
-          del_date: 'Same Day',
+          del_date: 'Within 1 Day',
           del_time: '8am - 12pm',
           remark: '',
         },
         deldate_option: [
-          {id: 'Same Day', text: 'Same Day'},
           {id: 'Within 1 Day', text: 'Within 1 Day'},
           {id: 'Within 2 Days', text: 'Within 2 Days'},
         ],

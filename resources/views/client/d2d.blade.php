@@ -266,7 +266,7 @@ Door To Door
 
 <template id="item-template">
   <tr>
-    <td class="col-md-1 col-xs-1 text-center">
+    <td class="col-md-1 text-center">
       @{{number}}
     </td>
     <td class="col-md-6 col-xs-11 text-left">
@@ -282,7 +282,7 @@ Door To Door
       <input type="text" class="hidden" name="captionArr[]" v-model="item.caption">
     </td>
     <td class="col-md-2 col-xs-6 text-center">
-      <select2 name="qtyArr[]" v-model="qty" :options="options"></select2>
+      <select2 name="qtyArr[]" v-model="qty" :options="options" ></select2>
     </td>
     <td class="col-md-2 col-xs-6 text-center">
       <input type="text" name="amountArr[]" v-model="amount" class="input-sm form-control text-right" readonly="readonly" />
