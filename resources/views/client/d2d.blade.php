@@ -56,9 +56,9 @@ Door To Door
 
           {!! Form::open(['action'=>'D2dOnlineSaleController@submitOrder']) !!}
           <div v-if="step2">
+            <div class="row">
             <div class="col-md-12 col-xs-12">
                 <p style="color:red;" v-if="covered">**Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**</p>
-                {{-- <p style="color:red;" v-if="!covered">**Minimum purchase is 2 boxes; buy 4 boxes and above for FREE delivery.**</p> --}}
                 <p style="color:red;" v-if="!covered">**Promotion: buy any 2 boxes and above for FREE deliver, valid until 30/11/16</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
                 <div class="table-responsive">
@@ -118,6 +118,7 @@ Door To Door
               <div class="form-group pull-right">
                 <button class="btn btn-lg btn-success" v-bind:class="{'disabled': disableNext}" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
               </div>
+            </div>
             </div>
           </div>
 
@@ -265,10 +266,10 @@ Door To Door
 
 <template id="item-template">
   <tr>
-    <td class="col-md-1 text-center">
+    <td class="col-md-1 col-xs-1 text-center">
       @{{number}}
     </td>
-    <td class="col-md-6 text-left">
+    <td class="col-md-6 col-xs-11 text-left">
 {{--       <div class="thumbnail">
         <img v-bind:src="item.main_imgpath" class="img-responsive">
       </div> --}}
@@ -280,10 +281,10 @@ Door To Door
     <td class="hidden">
       <input type="text" class="hidden" name="captionArr[]" v-model="item.caption">
     </td>
-    <td class="col-md-2 text-center">
+    <td class="col-md-2 col-xs-6 text-center">
       <select2 name="qtyArr[]" v-model="qty" :options="options"></select2>
     </td>
-    <td class="col-md-2 text-center">
+    <td class="col-md-2 col-xs-6 text-center">
       <input type="text" name="amountArr[]" v-model="amount" class="input-sm form-control text-right" readonly="readonly" />
     </td>
   </tr>

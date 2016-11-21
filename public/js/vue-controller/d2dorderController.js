@@ -94,9 +94,9 @@ if(document.querySelector('#d2dorderController')){
     },
     computed: {
       total() {
-        if(this.totalqty >= 4 || this.totalqty == 0 || this.covered){
+        if(this.totalqty >= 2 || this.totalqty == 0 || this.covered){
           this.delivery = 0
-        }else if(this.totalqty > 0 && this.totalqty < 4){
+        }else if(this.totalqty > 0 && this.totalqty < 2){
           this.delivery = 7
         }
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
