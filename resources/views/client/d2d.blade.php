@@ -77,7 +77,6 @@ Door To Door
                     Price
                   </th>
                 </tr>
-                @{{step3}}
                 <tr is="sales-item"
                     v-for="(item, number) in items"
                     :number="number + 1"
