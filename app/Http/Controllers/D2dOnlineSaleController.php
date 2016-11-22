@@ -109,7 +109,7 @@ class D2dOnlineSaleController extends Controller
             'timing' => $request->del_date[0].'; '.$request->del_time[0],
             'remark' => $request->remark,
         ];
-/*
+
         Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
@@ -120,7 +120,7 @@ class D2dOnlineSaleController extends Controller
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
             $message->setTo($sendto);
             // $message->setTo('leehongjie91@gmail.com');
-        });*/
+        });
 
         Flash::success('Thanks for ordering, an email will be sent to your inbox');
         return redirect('/');
