@@ -198,7 +198,7 @@ class D2dOnlineSaleController extends Controller
         $person = Person::findOrFail($person_id);
         $transaction = new Transaction();
         $transaction->updated_by = 'D2D System';
-        $transaction->delivery_date = $cutoff_time >= Carbon::now() ? Carbon::today()->addDay() : Carbon::today();
+        $transaction->delivery_date = Carbon::now() >= $cutoff_time ? Carbon::today()->addDay() : Carbon::today();
         $transaction->order_date = Carbon::today();
         $transaction->status = 'Confirmed';
         $transaction->total = $request->total;
