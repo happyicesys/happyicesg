@@ -184,7 +184,6 @@ header {
     -moz-background-size: cover;
     background-size: cover;
     -o-background-size: cover;
-    margin-top: 50px;
     padding: 150px 20px 10px 20px;
 }
 
@@ -480,4 +479,8 @@ body {
 .select2-container {
   width: 100% !important;
   padding: 0;
+}
+
+.alert {
+    margin-bottom: 0px;
 }
