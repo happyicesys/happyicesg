@@ -56,9 +56,9 @@
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                 <div style="font-size:14px"><strong>Send To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                <span class="col-xs-12"> B{{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span>
-                                <span class="col-xs-12">{{$person->del_address}}</span>
-                                <span class="col-xs-offset-1">{{$person->del_postcode}}</span>
+                                {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
+                                <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
+                                <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
                                 </div>
                             </div>
                         @else

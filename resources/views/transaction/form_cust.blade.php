@@ -36,7 +36,6 @@
                     {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
                     {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                     'ng-model'=>'billModel',
-                    'readonly'=>'readonly',
                     'rows'=>'3']) !!}
                 </div>
 
