@@ -515,10 +515,4 @@ class ClientController extends Controller
         $add_string = $add_string.', Singapore '.$request->postcode;
         return $add_string;
     }
-
-    // creating deals based on the online order in transaction [not within d2d coverage]
-    private function createDeals($request, $transaction_id)
-    {
-
-    }
 }

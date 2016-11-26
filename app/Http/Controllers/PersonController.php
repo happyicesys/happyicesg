@@ -62,9 +62,7 @@ class PersonController extends Controller
     public function store(PersonRequest $request)
     {
         $input = $request->all();
-
         $person = Person::create($input);
-
         return redirect('person');
     }
 
@@ -146,16 +144,24 @@ class PersonController extends Controller
 
     public function showTransac($person_id)
     {
-
-        // using sql query instead of eloquent for super fast pre-load (api)
-        $transactions = DB::table('transactions')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
-                        ->where('people.id', '=', $person_id)
-                        ->latest('created_at')
-                        ->get();
-
+        $person = Person::findOrFail($person_id);
+        if($person->cust_id[0] === 'H') {
+            $transactions = DB::table('dtdtransactions')
+                            ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
+                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                            ->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst')
+                            ->where('people.id', '=', $person_id)
+                            ->latest('created_at')
+                            ->get();
+        }else{
+            $transactions = DB::table('transactions')
+                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                            ->where('people.id', '=', $person_id)
+                            ->latest('created_at')
+                            ->get();
+        }
         return $transactions;
     }
 
@@ -207,7 +213,12 @@ class PersonController extends Controller
 
     public function personPrice($person_id)
     {
-        $prices = Price::wherePersonId($person_id)->get();
+        $person = Person::findOrFail($person_id);
+        if($person->cust_id[0] === 'H') {
+            $prices = Price::wherePersonId(1643)->get();
+        }else{
+            $prices = Price::wherePersonId($person_id)->get();
+        }
         return $prices;
     }
 

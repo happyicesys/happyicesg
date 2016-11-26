@@ -77,7 +77,6 @@ var app = angular.module('app', [
                 pay_status: $scope.search.pay_status,
                 updated_by: $scope.search.updated_by,
                 updated_at: $scope.search.updated_at,
-                // delivery_date: $scope.search.delivery_date,
                 delivery_from: $scope.search.delivery_from,
                 delivery_to: $scope.search.delivery_to,
                 driver: $scope.search.driver,

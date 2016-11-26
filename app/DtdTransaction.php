@@ -21,7 +21,7 @@ class DtdTransaction extends Model
     }
 
     protected $dontKeepRevisionOf = array(
-        'person_id', 'name', 'cancel_trace', 'type'
+        'person_id', 'name', 'cancel_trace', 'type', 'delivery_fee'
     );
 
     protected $revisionEnabled = true;
@@ -58,7 +58,6 @@ class DtdTransaction extends Model
         'contact' => 'Contact',
         'del_postcode' => 'PostCode',
         'transaction_id' => 'Confirmed Inv#'
-
     );
 
     protected $table = 'dtdtransactions';
@@ -71,7 +70,8 @@ class DtdTransaction extends Model
         'po_no', 'cancel_trace','user_id',
         'pay_method', 'note', 'paid_at',
         'updated_by', 'paid_by', 'transaction_id',
-        'contact', 'del_postcode', 'type'
+        'contact', 'del_postcode', 'type',
+        'delivery_fee'
     ];
 
     protected $dates =[
@@ -94,14 +94,15 @@ class DtdTransaction extends Model
     public function setOrderDateAttribute($date)
     {
         if($date){
-
             $this->attributes['order_date'] = Carbon::parse($date);
-
         }else{
-
             $this->attributes['order_date'] = null;
-
         }
+    }
+
+    public function setDeliveryFeeAttribute($value)
+    {
+        $this->attributes['delivery_fee'] = $value ? $value : 0;
     }
 
     public function setTransremarkAttribute($value)

@@ -1,6 +1,7 @@
 @inject('freezers', 'App\Freezer')
 @inject('accessories', 'App\Accessory')
 @inject('items', 'App\Item')
+@inject('prices', 'App\Price')
 @inject('dtdprice', 'App\DtdPrice')
 @inject('people', 'App\Person')
 
@@ -11,7 +12,7 @@
 @section('content')
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController">
-    @unless($person->cust_id[0] === 'D')
+    @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
@@ -62,10 +63,8 @@
 
             <strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong>
 
-            @if($person->cust_id[0] === 'D')
-
+            @if($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
                 <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
-
             @endif
 
         </h3>
@@ -191,7 +190,10 @@
                         <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                             <td class="col-md-1 text-center">@{{ number }} </td>
                             <td class="col-md-1 text-center">
-                                <a href="/transaction/@{{ transaction.id }}/edit">
+                                <a href="/transaction/@{{ transaction.id }}/edit" ng-if="transaction.cust_id[0] !== 'H'">
+                                    @{{ transaction.id }}
+                                </a>
+                                <a href="/market/deal/@{{ transaction.id }}/edit" ng-if="transaction.cust_id[0] === 'H'">
                                     @{{ transaction.id }}
                                 </a>
                             </td>
@@ -309,6 +311,25 @@
                             </tr>
                             @endforeach
                         @endunless
+                    @elseif($person->cust_id[0] === 'H')
+                        <tr ng-repeat="item in items" class="form-group">
+                            <td class="col-md-8">
+                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" readonly/>
+                                </strong>
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)" readonly/>
+                                </strong>
+                            </td>
+                        </tr>
+                        <tr ng-if="items.length == 0 || ! items.length">
+                            <td colspan="4" class="text-center">No Records Found!</td>
+                        </tr>
                     @else
                     <tr ng-repeat="item in items" class="form-group">
                         <td class="col-md-8">

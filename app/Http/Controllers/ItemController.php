@@ -31,7 +31,6 @@ class ItemController extends Controller
     public function getData()
     {
         $item =  Item::orderBy('product_id')->get();
-
         return $item;
     }
 

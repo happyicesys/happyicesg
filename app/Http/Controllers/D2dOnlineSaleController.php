@@ -13,6 +13,8 @@ use App\Person;
 use App\Deal;
 use App\Postcode;
 use App\Transaction;
+use App\DtdTransaction;
+use App\DtdDeal;
 use App\Price;
 use App\Item;
 use DB;
@@ -72,6 +74,7 @@ class D2dOnlineSaleController extends Controller
         $sendto = array();
         $cc = array();
         $transaction_id = '';
+        $dtdtransaction_id = '';
         $today = Carbon::now()->format('d-F-Y');
 
         // validate whether the postcode is available or not
@@ -88,12 +91,11 @@ class D2dOnlineSaleController extends Controller
             $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
             $bcc = '';
         }else{
-            if($avail_postcode->person_id) {
-                $member = Person::findOrFail($avail_postcode->person_id);
-                $member_manager = Person::find($member->parent_id)->first();
-                $cc = [$member->email, isset($member_manager) ? $member_manager->email : ''];
-                $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
-            }
+            $member = Person::findOrFail($avail_postcode->person_id);
+            $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : null;
+            $cc = [$member->email, isset($member_manager) ? $member_manager->email : ''];
+            $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
+            $dtdtransaction_id = $this->createDtdTransaction($request, $customer_id);
         }
 
         $data = [
@@ -105,16 +107,17 @@ class D2dOnlineSaleController extends Controller
             'totalqty' => $request->totalqty,
             'delivery' => $request->delivery,
             'person' => Person::findOrFail($customer_id),
-            'transaction' => $transaction_id ? Transaction::findOrFail($transaction_id) : '',
+            'transaction' => $transaction_id ? Transaction::findOrFail($transaction_id) : null,
+            'dtdtransaction' => $dtdtransaction_id ? DtdTransaction::findOrFail($dtdtransaction_id) : null,
             'timing' => $request->del_date[0].'; '.$request->del_time[0],
             'remark' => $request->remark,
         ];
 
-        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $today){
+        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
             // $message->cc('leehongjie91@gmail.com');
-            if(isset($bcc)) {
+            if(isset($bcc) and $bcc != '') {
                 $message->bcc($bcc);
             }
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
@@ -165,8 +168,8 @@ class D2dOnlineSaleController extends Controller
             $customer->company = $request->name;
             $customer->contact = $request->contact;
             $customer->email = $request->email;
-            $customer->bill_address = $request->block.', #'.$request->floor.'-'.$request->unit;
-            $customer->del_address = $request->block.', #'.$request->floor.'-'.$request->unit;
+            $customer->bill_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
+            $customer->del_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
             $customer->del_postcode = $request->postcode;
             $customer->block = $request->block;
             $customer->floor = $request->floor;
@@ -224,21 +227,6 @@ class D2dOnlineSaleController extends Controller
                     $onlinesaleitem = D2dOnlineSale::findOrFail($idArr[$index]);
                     $item = Item::findOrFail($onlinesaleitem->item_id);
                     $price = Price::wherePersonId(1643)->whereItemId($item->id)->first();
-
-                    // comment out once live
-/*                    if($item->email_limit) {
-                        if($this->calOrderEmailLimit($qty, $item)) {
-                            if(!$item->emailed) {
-                                $this->sendEmailAlert($item);
-                                $item->emailed = true;
-                                $item->save();
-                            }
-                        }else {
-                            $item->emailed = false;
-                            $item->save();
-                        }
-                    }*/
-
                     $deal = new Deal();
                     $deal->transaction_id = $transaction_id;
                     $deal->item_id = $item->id;
@@ -300,5 +288,53 @@ class D2dOnlineSaleController extends Controller
         $item = Item::findOrFail($item_id);
         $item->qty_order = $deals->sum('qty');
         $item->save();
+    }
+
+    // create d2dtransaction for H code within coverage(FormRequest, int $person_id)
+    private function createDtdTransaction($request, $person_id)
+    {
+        $cutoff_time = Carbon::createFromTime(20, 30, 0, 'Asia/Singapore');
+        $person = Person::findOrFail($person_id);
+        $dtdtransaction = new DtdTransaction();
+        $dtdtransaction->updated_by = 'D2D System';
+        $dtdtransaction->delivery_date = Carbon::now() >= $cutoff_time ? Carbon::today()->addDay() : Carbon::today();
+        $dtdtransaction->order_date = Carbon::today();
+        $dtdtransaction->status = 'Confirmed';
+        $dtdtransaction->total = $request->total;
+        $dtdtransaction->total_qty = $request->totalqty;
+        $dtdtransaction->transremark = $request->del_date[0].'; '.$request->del_time[0];
+        $dtdtransaction->person_id = $person->id;
+        $dtdtransaction->person_code = $person->cust_id;
+        $dtdtransaction->delivery_fee = $request->delivery;
+        $dtdtransaction->save();
+        $this->createDtdDeals($request, $dtdtransaction->id);
+        return $dtdtransaction->id;
+    }
+
+    // create DtdDeals for online order within coverage(FormRequest $request, int $dtdtransaction_id)
+    private function createDtdDeals($request, $dtdtransaction_id)
+    {
+        $idArr = $request->idArr;
+        $qtyArr = $request->qtyArr;
+        $amountArr = $request->amountArr;
+        if(array_filter($qtyArr) != null) {
+            foreach($qtyArr as $index => $qty) {
+                if($qty != null and $qty != '' and $qty != 0) {
+                    $onlinesaleitem = D2dOnlineSale::findOrFail($idArr[$index]);
+                    $item = Item::findOrFail($onlinesaleitem->item_id);
+                    $price = Price::wherePersonId(1643)->whereItemId($item->id)->first();
+                    $deal = new DtdDeal();
+                    $deal->transaction_id = $dtdtransaction_id;
+                    $deal->item_id = $item->id;
+                    $deal->dividend = $qty;
+                    $deal->divisor = $onlinesaleitem->qty_divisor;
+                    $deal->qty = $qty / $onlinesaleitem->qty_divisor;
+                    $deal->amount = $amountArr[$index];
+                    $deal->unit_price = $price->quote_price;
+                    $deal->qty_status = 1;
+                    $deal->save();
+                }
+            }
+        }
     }
 }

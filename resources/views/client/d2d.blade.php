@@ -58,7 +58,12 @@ Door To Door
           <div v-if="step2">
             <div class="row">
             <div class="col-md-12 col-xs-12">
-                <p style="color:red;" v-if="covered">**Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**</p>
+                <p style="color:red;" v-if="covered">
+                  **Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**
+                </p>
+                <p v-if="covered">
+                  - To order with more flavor, click <a href="" style="color:blue;" @click.prevent="covered = !covered">HERE</a>. Minimum purchase applied for free delivery
+                </p>
                 <p style="color:red;" v-if="!covered">**Promotion: buy any 2 boxes and above for FREE deliver, valid until 30/11/16</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
                 <div class="table-responsive">

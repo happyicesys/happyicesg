@@ -568,7 +568,10 @@ class MarketingController extends Controller
         $parent_name = $request->parent_name;
         $type = $request->type;
 
-        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile', 'dtddeals.item']);
+        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile', 'dtddeals.item'])
+                    ->whereHas('person', function($query) {
+                        $query->where('cust_id', 'LIKE', 'D%');
+                    });
 
         if($transaction_id){
             $query = $query->where('transaction_id', 'LIKE', '%'.$transaction_id.'%');
@@ -848,7 +851,6 @@ class MarketingController extends Controller
         $dtddeals = DtdDeal::where('transaction_id', $dtdtransaction->id)->get();
         if($request->submit_deal){
             if(count($dtddeals) == 0){
-                dd('here');
                 Flash::error('Please entry the list');
                 return Redirect::action('MarketingController@editDeal', $dtdtransaction->id);
             }
@@ -916,14 +918,10 @@ class MarketingController extends Controller
             $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
         }
         $person = Person::findOrFail($transaction->person_id);
-
         if(! $person->email){
-
             Flash::error('Please set the email before sending');
-
             return Redirect::action('MarketingController@editDeal', $id);
         }
-
         $email = $person->email;
         $now = Carbon::now()->format('dmyhis');
         $data = [
@@ -946,7 +944,6 @@ class MarketingController extends Controller
             'self' => $self,
             'url' => 'http://www.happyice.com.sg',
         ];
-
         Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $transaction)
         {
             $message->from($sender);
@@ -954,7 +951,6 @@ class MarketingController extends Controller
             $message->setTo($email);
             $message->attach($store_path);
         });
-
         if($sent){
             Flash::success('Successfully Sent');
         }else{
@@ -1334,7 +1330,88 @@ class MarketingController extends Controller
             }
         }
         return Redirect::action('MarketingController@indexSetup');
+    }
 
+    public function getIndexDtdCustTrans(Request $request)
+    {
+        $adminaccess_bool = false;
+        $transaction_id = $request->transaction_id;
+        $cust_id = $request->cust_id;
+        $company = $request->company;
+        $status = $request->status;
+        $del_from = $request->del_from;
+        $del_to = $request->del_to;
+        $parent_name = $request->parent_name;
+        $type = $request->type;
+
+        $query = DtdTransaction::with(['person', 'person.manager', 'person.profile', 'dtddeals.item'])
+                    ->whereHas('person', function($query) {
+                        $query->where('cust_id', 'LIKE', 'H%');
+                    });
+
+        if($transaction_id){
+            $query = $query->where('id', 'LIKE', '%'.$transaction_id.'%');
+        }
+        if($cust_id){
+            $query = $query->whereHas('person', function($query) use ($cust_id){
+                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+            });
+        }
+        if($company){
+            $query = $query->whereHas('person', function($query) use ($company){
+                $query->where('company', 'LIKE', '%'.$company.'%')->orWhere(function ($query) use ($company){
+                        $query->where('cust_id', 'LIKE', 'H%')->where('name', 'LIKE', '%'.$company.'%');
+                });
+            });
+        }
+        if($status){
+            $query = $query->where('status', 'LIKE', '%'.$status.'%');
+        }
+        if($del_from and $del_to){
+            $query = $query->where('delivery_date', '>=', $del_from)->where('delivery_date', '<=', $del_to);
+        }else{
+            $query = $query->where('delivery_date', '=', Carbon::today());
+        }
+        if($parent_name){
+            $query = $query->whereHas('person.manager', function($query) use ($parent_name){
+                $query->where('name', 'LIKE', '%'.$parent_name.'%');
+            });
+        }
+        if($type){
+            $query = $query->where('type', 'LIKE', '%'.$type.'%');
+        }
+        $self = Person::where('user_id', Auth::user()->id)->first();
+        if($self){
+            if($self->cust_type === 'OM'){
+                $adminaccess_bool = true;
+            }else{
+                $adminaccess_bool = false;
+            }
+        }else{
+            if(Auth::user()->hasRole('admin')){
+                $adminaccess_bool = true;
+            }else{
+                $adminaccess_bool = false;
+            }
+        }
+        // auth only admin can see all or else own creation
+        if(! $adminaccess_bool){
+            $personid_arr = array();
+            $people = Person::where('user_id', Auth::user()->id)->first()->getDescendantsAndSelf();
+            foreach($people as $person){
+                array_push($personid_arr, $person->id);
+            }
+            $query = $query->whereHas('person', function($query) use ($personid_arr){
+                $query->whereIn('id', $personid_arr);
+            });
+        }
+        $total = $this->calTotal($query);
+        $query = $query->orderBy('id', 'desc')->get();
+        $data = [
+            'transactions' => $query,
+            'total' => $total,
+        ];
+        return $data;
     }
 
     // PRIVATE MEHTODS
@@ -1499,6 +1576,28 @@ class MarketingController extends Controller
 
         $total_amount = $nonGst_amount + $gst_amount;
         return abs($total_amount);
+    }
+
+    // calculating total for dtd cust trans
+    private function calTotal($query)
+    {
+        $query_deal = clone $query;
+        $total_amount = 0;
+        $nonGst_amount = 0;
+        $gst_amount = 0;
+        $query1 = clone $query_deal;
+        $query2 = clone $query_deal;
+
+        $nonGst_amount = $query1->whereHas('person.profile', function($query1){
+                            $query1->where('gst', 0);
+                        })->sum(DB::raw('ROUND(total, 2)'));
+
+        $gst_amount = $query2->whereHas('person.profile', function($query2){
+                        $query2->where('gst', 1);
+                    })->sum(DB::raw('ROUND((total * 107/100), 2)'));
+
+        $total_amount = $nonGst_amount + $gst_amount;
+        return $total_amount;
     }
 
     // calculating qty total

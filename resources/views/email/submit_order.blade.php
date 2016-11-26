@@ -3,7 +3,7 @@
     <body>
       <p>
         Dear {{$person->name}} ({{$person->cust_id}}), <br><br>
-        Thanks for the purchase on HappyIce Door to Door. The following is your order. <br><br>
+        Thanks for the purchase on HappyIce Door to Door. The following is your order {{ $transaction ? $transaction->id : ''}} {{ $dtdtransaction ? $dtdtransaction->id : ''}}. <br><br>
         <div style="font-family: 'Open Sans'; font-size: 15px;">
             <table style="border: 1px solid black; border-collapse:collapse;">
                 <tr style="background-color: #D8BFD8;">

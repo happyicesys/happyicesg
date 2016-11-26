@@ -16,6 +16,7 @@ Route::post('/api/postcodes/excel', 'PostcodeController@exportPostcode');
 Route::get('/api/postcodes/all', 'PostcodeController@allPostcodesApi');
 Route::post('/postcode/verify', 'PostcodeController@verifyPostcode');
 
+Route::post('/market/dtdtrans/index', 'MarketingController@getIndexDtdCustTrans');
 Route::post('/market/setup/postcode/update', 'MarketingController@updatePostcodeForm');
 Route::get('/market/setup/d2ditem/create', 'MarketingController@createDtdOnlineItems');
 Route::post('/market/setup/d2ditem', 'MarketingController@storeDtdOnlineItem');
