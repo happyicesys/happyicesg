@@ -146,13 +146,18 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($person_id);
         if($person->cust_id[0] === 'H') {
-            $transactions = DB::table('dtdtransactions')
+            $transactions1 = DB::table('dtdtransactions')
                             ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst')
-                            ->where('people.id', '=', $person_id)
-                            ->latest('created_at')
-                            ->get();
+                            ->where('people.id', '=', $person_id);
+
+            $transactions2 = DB::table('transactions')
+                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                            ->where('people.id', '=', $person_id);
+            $transactions = $transactions1->union($transactions2)->orderBy('created_at', 'desc')->get();
         }else{
             $transactions = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')

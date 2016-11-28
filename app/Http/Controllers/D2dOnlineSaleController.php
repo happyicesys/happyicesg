@@ -92,8 +92,12 @@ class D2dOnlineSaleController extends Controller
             $bcc = '';
         }else{
             $member = Person::findOrFail($avail_postcode->person_id);
-            $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : null;
-            $cc = [$member->email, isset($member_manager) ? $member_manager->email : ''];
+            $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : '';
+            if($member_manager) {
+                $cc = [$member->email, $member_manager->email];
+            }else{
+                $cc = [$member->email];
+            }
             $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
             $dtdtransaction_id = $this->createDtdTransaction($request, $customer_id);
         }
