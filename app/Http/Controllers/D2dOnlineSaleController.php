@@ -94,7 +94,7 @@ class D2dOnlineSaleController extends Controller
             $member = Person::findOrFail($avail_postcode->person_id);
             $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : '';
             if($member_manager != null and $member_manager != '') {
-                $cc = [$member->email, $member_manager->email];
+                $cc = $member_manager->email != null ? [$member->email, $member_manager->email] : [$member->email];
             }else{
                 $cc = [$member->email];
             }
