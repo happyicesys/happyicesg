@@ -116,7 +116,7 @@ class D2dOnlineSaleController extends Controller
             'timing' => $request->del_date[0].'; '.$request->del_time[0],
             'remark' => $request->remark,
         ];
-
+        dd($sendfrom, $sendto, $cc, $bcc);
         Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
