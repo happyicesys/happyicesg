@@ -95,6 +95,9 @@ Deals
                             @endunless
                         </div>
                         <div class="pull-right">
+                                @if($transaction->person->cust_id[0] === 'H')
+                                    {!! Form::submit('Delivered & Paid', ['name'=>'dtd_del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
+                                @endif
                                 @unless($noneditable)
                                     {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                                 @else

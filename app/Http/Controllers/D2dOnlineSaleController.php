@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
@@ -84,7 +85,7 @@ class D2dOnlineSaleController extends Controller
             $generate_trans = true;
         }
         // sync existing customer or create new one based on unique contact number
-        $customer_id = $this->syncCustomer($request);
+        $customer_id = $this->syncCustomer($request, $avail_postcode);
         $sendto = [$request->email];
         if($generate_trans) {
             $transaction_id = $this->createTransaction($request, $customer_id);
@@ -116,7 +117,6 @@ class D2dOnlineSaleController extends Controller
             'timing' => $request->del_date[0].'; '.$request->del_time[0],
             'remark' => $request->remark,
         ];
-        // dd($sendfrom, $sendto, $cc, $bcc);
         Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
@@ -129,8 +129,7 @@ class D2dOnlineSaleController extends Controller
             // $message->setTo('leehongjie91@gmail.com');
         });
 
-        Flash::success('Thanks for ordering, an email will be sent to your inbox');
-        return redirect('/');
+        return view('client.order_confirmed', compact('today', 'data'));
     }
 
     // validate order via vue resource
@@ -157,7 +156,7 @@ class D2dOnlineSaleController extends Controller
     }
 
     // generate new customer upon submitting the order - H code unique contact number(FormRequest request)
-    private function syncCustomer($request)
+    private function syncCustomer($request, $avail_postcode)
     {
         $contact = $request->contact;
         $customer = Person::where('cust_id', 'LIKE', 'H%')
@@ -180,6 +179,11 @@ class D2dOnlineSaleController extends Controller
             $customer->unit = $request->unit;
             $customer->profile_id = 1;
             $customer->save();
+            if($avail_postcode){
+                $manager = Person::findOrFail($avail_postcode->person_id);
+                $customer->parent_name = $manager->name;
+                $customer->makeChildOf($manager);
+            }
         }
         return $customer->id;
     }
@@ -214,6 +218,7 @@ class D2dOnlineSaleController extends Controller
         $transaction->person_id = $person->id;
         $transaction->person_code = $person->cust_id;
         $transaction->delivery_fee = $request->delivery;
+        $transaction->del_postcode = $request->postcode;
         $transaction->save();
         $this->createDeals($request, $transaction->id);
         return $transaction->id;

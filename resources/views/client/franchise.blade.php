@@ -150,6 +150,11 @@ Healthier Life
                 </select>
             </div>
 
+            <div class="form-group">
+                {!! Form::label('note', 'Note', ['class'=>'control-label']) !!}
+                {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+            </div>
+
             {!! Form::submit('Submit', ['class'=> 'btn btn-lg btn-success']) !!}
 
             {!! Form::close() !!}

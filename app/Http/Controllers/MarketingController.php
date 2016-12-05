@@ -840,6 +840,11 @@ class MarketingController extends Controller
             }else if(($dtdtransaction->status === 'Delivered' or $dtdtransaction->status === 'Verified Owe') and $dtdtransaction->pay_status === 'Owe'){
                 $request->merge(array('paid_by' => null));
             }
+        }elseif($request->dtd_del_paid){
+            $request->merge(array('status' => 'Delivered'));
+            $request->merge(array('pay_status' => 'Paid'));
+            $request->merge(array('paid_by' => Auth::user()->name));
+            $request->merge(array('paid_at' => Carbon::now()));
         }elseif($request->save_draft){
             $request->merge(array('status' => 'Draft'));
         }

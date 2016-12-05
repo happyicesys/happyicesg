@@ -191,7 +191,14 @@ Healthier Life
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
+                            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
                             {!! Form::email('email', null, ['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('note', 'Note', ['class'=>'control-label']) !!}
+                            {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12">

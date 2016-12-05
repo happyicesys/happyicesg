@@ -306,10 +306,12 @@ class ClientController extends Controller
             'name' => 'required',
             'contact' => 'required',
             'loc' => 'required',
+            'email' => 'required',
         ], [
             'name.required' => 'Please fill in the name',
             'contact.required' => 'Please fill in the contact number',
             'loc.required' => 'Please select proposed location',
+            'email.required' => 'Please fill in the email'
         ]);
 
         $locArr = [
@@ -332,6 +334,7 @@ class ClientController extends Controller
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,
+            'note' => $request->note,
             'loc' => $locArr[$request->loc],
         );
 
@@ -355,9 +358,11 @@ class ClientController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'contact' => 'required',
+            'email' => 'required'
         ], [
             'name.required' => 'Please fill in the name',
             'contact.required' => 'Please fill in the contact number',
+            'email.required' => 'Please fill in the email'
         ]);
 
         // email array send from
@@ -371,6 +376,7 @@ class ClientController extends Controller
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,
+            'note' => $request->note,
         );
 
         $mail =  Mail::send('client.email_honestv', $data, function ($message) use ($sendfrom, $sendto, $today){
@@ -417,7 +423,8 @@ class ClientController extends Controller
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,
-            'country' => array_search($request->country, $countries)
+            'country' => array_search($request->country, $countries),
+            'note' => $request->note,
         );
 
         $mail =  Mail::send('client.email_franchiseInq', $data, function ($message) use ($sendfrom, $sendto, $today){
