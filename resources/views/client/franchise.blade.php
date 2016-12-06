@@ -151,7 +151,7 @@ Healthier Life
             </div>
 
             <div class="form-group">
-                {!! Form::label('note', 'Note', ['class'=>'control-label']) !!}
+                {!! Form::label('note', 'Message (Optional)', ['class'=>'control-label']) !!}
                 {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
             </div>
 

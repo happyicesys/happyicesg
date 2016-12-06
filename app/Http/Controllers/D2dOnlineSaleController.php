@@ -205,7 +205,7 @@ class D2dOnlineSaleController extends Controller
     // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request, int person_id)
     private function createTransaction($request, $person_id)
     {
-        $cutoff_time = Carbon::createFromTime(20, 30, 0, 'Asia/Singapore');
+        $cutoff_time = Carbon::createFromTime(22, 30, 0, 'Asia/Singapore');
         $person = Person::findOrFail($person_id);
         $transaction = new Transaction();
         $transaction->updated_by = 'D2D System';
