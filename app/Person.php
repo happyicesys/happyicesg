@@ -101,9 +101,12 @@ class Person extends Baum\Node
     // set default nullable value upon detection
     public function setRemarkAttribute($value)
     {
-
         $this->attributes['remark'] = $value ?: null;
+    }
 
+    public function setParentIdAttribute($value)
+    {
+        $this->attributes['parent_id'] = $value ?: null;
     }
 
     public function roles()

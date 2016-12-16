@@ -186,6 +186,9 @@ Route::post('/report/transaction', 'RptController@generateTransaction');
 Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
+Route::get('/detailrpt/account', 'DetailRptController@accountIndex');
+Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
+
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');
 Route::resource('freezer', 'FreezerController');
