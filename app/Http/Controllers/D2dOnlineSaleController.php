@@ -219,6 +219,7 @@ class D2dOnlineSaleController extends Controller
         $transaction->person_code = $person->cust_id;
         $transaction->delivery_fee = $request->delivery;
         $transaction->del_postcode = $request->postcode;
+        $transaction->company = $request->name;
         $transaction->save();
         $this->createDeals($request, $transaction->id);
         return $transaction->id;
