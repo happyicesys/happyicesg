@@ -326,7 +326,7 @@
 
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
-                                            @{{ transaction.cust_id[0] == 'D' ? transaction.name : transaction.company }}
+                                            @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                                         </a>
                                     </td>
 
