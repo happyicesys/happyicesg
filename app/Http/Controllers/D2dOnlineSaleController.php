@@ -220,7 +220,7 @@ class D2dOnlineSaleController extends Controller
         $transaction->delivery_fee = $request->delivery;
         $transaction->del_postcode = $request->postcode;
         $transaction->name = $request->name;
-        $transaction->transremark = $request->remark;
+        $transaction->transremark = $request->del_date[0].'; '.$request->del_time[0].'; '.$request->remark;
         $transaction->save();
         $this->createDeals($request, $transaction->id);
         return $transaction->id;

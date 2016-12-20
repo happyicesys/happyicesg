@@ -121,7 +121,7 @@ Door To Door
               </table>
               </div>
               <div class="form-group pull-right">
-                <button class="btn btn-lg btn-success" v-bind:class="{'disabled': disableNext}" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
+                <button class="btn btn-lg btn-success" v-bind:disabled="disableNext" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
               </div>
             </div>
             </div>
@@ -246,7 +246,7 @@ Door To Door
                       type="submit"
                       class="btn btn-lg btn-success"
                       style="border-radius: 5px;"
-                      v-bind:class="{'disabled' : !submitable}"
+                      v-bind:disabled="!submitable"
                     >
                       Confirm
                     </button>
