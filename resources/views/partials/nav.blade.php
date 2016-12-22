@@ -52,13 +52,13 @@
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>
-                <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
+{{--                 <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }}</a>
                     <ul class="dropdown-menu">
                         <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
                     </ul>
-                </li>
+                </li> --}}
             @endunless
 
                 {{-- @can('marketer_view') --}}
