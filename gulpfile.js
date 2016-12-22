@@ -12,6 +12,7 @@ elixir(function(mix) {
             'angular-bootstrap-datetimepicker.css',
             'animate.min.css',
             '../bower/angularjs-datepicker/src/css/angular-datepicker.css',
+            '../bower/angular-datepicker/dist/angular-datepicker.css',
             'app.css',
             ])
         .scripts([
@@ -38,6 +39,7 @@ elixir(function(mix) {
             'tableExport/tableExport.js',
             '../bower/angularjs-datepicker/src/js/angular-datepicker.js',
             '../bower/angular-ui-select2/src/select2.js',
+            '../bower/angular-datepicker/dist/angular-datepicker.js',
             'vue/vue.js',
             'vue/vue-resource.js',
             ])

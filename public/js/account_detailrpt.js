@@ -2,7 +2,8 @@ var app = angular.module('app', [
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
-                                    '720kb.datepicker'
+                                    '720kb.datepicker',
+                                    'datePicker'
                                 ]);
 
     $('.select').select2();
@@ -25,8 +26,16 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
         // $scope.delivery_date = '';
         $scope.search = {
-            delivery_from: $scope.today,
-            delivery_to: $scope.today,
+            profile_id: '',
+            delivery_from: moment(),
+            payment_from: '',
+            cust_id: '',
+            delivery_to: '',
+            payment_to: '',
+            company: '',
+            status: '',
+            customer: '',
+            payment: ''
         }
         $scope.updated_at = '';
         // init page load
@@ -189,6 +198,21 @@ app.filter('delDate', [
         };
     }
 ]);
+
+app.config(function ($provide)
+    {
+        $provide.decorator('mFormatFilter', function ()
+        {
+            return function newFilter(m, format, tz)
+            {
+                if (!(moment.isMoment(m))) {
+                    return '';
+                }
+                return tz ? moment.tz(m, tz).format(format) : m.format(format);
+            };
+        });
+    });
+
 /*
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {

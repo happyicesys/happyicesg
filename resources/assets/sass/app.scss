@@ -195,6 +195,14 @@ label{
     body {
         font-size: 0.8em; /* 0.8x default size */
         }
+
+    ._720kb-datepicker-calendar{
+        /*margin-left: -0.5%;*/
+        margin-left:-80%;
+        /*width:101%;*/
+        width:200px;
+        z-index: 9999;
+    }
     }
 
 .bgimage {
@@ -301,14 +309,6 @@ margin: 0px auto 15px;
 .search-title{
     padding: 0px 0px;
     margin: 0px 0px;
-}
-
-._720kb-datepicker-calendar{
-    /*margin-left: -0.5%;*/
-    margin-left:-80%;
-    /*width:101%;*/
-    width:200px;
-    z-index: 9999;
 }
 
 td.long_data {
