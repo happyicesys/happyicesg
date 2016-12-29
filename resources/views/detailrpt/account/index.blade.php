@@ -9,21 +9,24 @@
 
     <div ng-app="app">
         <div class="row">
-            <a class="title_hyper pull-left" href="/detailrpt/account"><h1>{{ $DETAILRPT_TITLE }} (Account) <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+            <a class="title_hyper pull-left" href="/detailrpt/account"><h1>Account - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
                     <li><a href="#cust_outstanding" role="tab" data-toggle="tab">Customer Outstanding Summary</a></li>
-                    <li><a href="#payment_detail" role="tab" data-toggle="tab">Payment Detail</a></li>
-                    <li><a href="#payment_summary" role="tab" data-toggle="tab">Payment Summary</a></li>
+                    {{-- <li><a href="#payment_detail" role="tab" data-toggle="tab">Payment Detail</a></li> --}}
+                    {{-- <li><a href="#payment_summary" role="tab" data-toggle="tab">Payment Summary</a></li> --}}
                 </ul>
             </div>
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="cust_detail">
                         @include('detailrpt.account.cust_detail')
+                    </div>
+                    <div class="tab-pane" id="cust_outstanding">
+                        @include('detailrpt.account.cust_outstanding')
                     </div>
                 </div>
             </div>

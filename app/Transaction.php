@@ -162,14 +162,10 @@ class Transaction extends Model
     public function getOrderDateAttribute($date)
     {
         if($date){
-
             return Carbon::parse($date)->format('Y-m-d');
-
         }else{
-
             return null;
         }
-
     }
 
     // searching scopes

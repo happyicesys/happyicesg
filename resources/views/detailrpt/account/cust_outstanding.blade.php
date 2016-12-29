@@ -1,5 +1,4 @@
-<div ng-controller="custDetailController">
-{!! Form::open(['id'=>'exportSOA', 'method'=>'POST', 'action'=>['DetailRptController@getAccountCustdetailApi']]) !!}
+<div ng-controller="custOutstandingController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-xs-6">
@@ -25,21 +24,6 @@
                         placeholder="Delivery From"
                         ng-model="search.delivery_from"
                         ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_from"
-                        placeholder="Payment From"
-                        ng-model="search.payment_from"
-                        ng-change="onPaymentFromChanged(search.payment_from)"
                     />
                 </datepicker>
             </div>
@@ -71,21 +55,6 @@
                         placeholder="Delivery To"
                         ng-model="search.delivery_to"
                         ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_to"
-                        placeholder="Payment To"
-                        ng-model="search.payment_to"
-                        ng-change="onPaymentToChanged(search.payment_to)"
                     />
                 </datepicker>
             </div>
@@ -154,11 +123,10 @@
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-success" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">
-                Total:
+                Total Outstanding:
             </div>
             <div class="col-md-7 col-xs-7" style="border: thin black solid">
                 <strong>@{{ total_amount | currency: "": 2}}</strong>
@@ -175,7 +143,6 @@
         <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
     </div>
 </div>
-{!! Form::close() !!}
 
     <div class="table-responsive" id="exportable" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
@@ -183,7 +150,7 @@
             {{-- hidden table for excel export --}}
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Total Amount</td>
+                <td data-tableexport-display="always">Total Outstanding</td>
                 <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
             </tr>
             <tr class="hidden" data-tableexport-display="always">
@@ -191,72 +158,50 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-
                 <th class="col-md-1 text-center">
                     #
                 </th>
-
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
-                    INV #
-                    <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
+                    Profile
+                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                     ID
                     <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                     ID Name
                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
-                    Status
-                    <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
-                </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
-                    Delivery Date
+                    Outstanding (This Month)
                     <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
-                    Total Amount
+                    Outstanding (Last Month)
                     <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
-                    Payment
+                    Outstanding (Last 2 Monts)
                     <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'paid_at'; sortReverse = !sortReverse">
-                    Payment Received Dt
+                    Outstanding (>3 Months)
                     <span ng-if="sortType == 'paid_at' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'paid_at' && sortReverse" class="fa fa-caret-up"></span>
-                </th>
-
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
-                    Profile
-                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
@@ -264,11 +209,7 @@
 
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
-                    <td class="col-md-1 text-center">
-                        <a href="/transaction/@{{ transaction.id }}/edit">
-                            @{{ transaction.id }}
-                        </a>
-                    </td>
+                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
 
                     <td class="col-md-1 text-center">
@@ -276,42 +217,15 @@
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-
-                    {{-- status by color --}}
-                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
-                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
-                    </td>
-                    {{-- status by color ended --}}
-                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
-
+{{--
                     <td class="col-md-1 text-center" ng-if="transaction.gst && transaction.delivery_fee <= 0">@{{ (+(transaction.total * 7/100) + transaction.total * 1) | currency: ""}} </td>
                     <td class="col-md-1 text-center" ng-if="!transaction.gst && transaction.delivery_fee <= 0">@{{ transaction.total | currency: "" }}</td>
-                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td>
-                    {{-- pay status --}}
-                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
-                        @{{ transaction.pay_status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
-                        @{{ transaction.pay_status }}
-                    </td>
+                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td> --}}
                     {{-- pay status ended --}}
-                    <td class="col-md-1 text-center">@{{ transaction.paid_at }}</td>
-                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
+                    <td class="col-md-1 text-center"></td>
+                    <td class="col-md-1 text-center"></td>
+                    <td class="col-md-1 text-center"></td>
+                    <td class="col-md-1 text-center"></td>
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">

@@ -310,7 +310,6 @@
                                 <th class="col-md-1 text-center">
                                     Action
                                 </th>
-
                             </tr>
 
                             <tbody>
