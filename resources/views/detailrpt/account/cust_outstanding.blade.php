@@ -217,12 +217,12 @@
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-{{--
+
                     <td class="col-md-1 text-center" ng-if="transaction.gst && transaction.delivery_fee <= 0">@{{ (+(transaction.total * 7/100) + transaction.total * 1) | currency: ""}} </td>
                     <td class="col-md-1 text-center" ng-if="!transaction.gst && transaction.delivery_fee <= 0">@{{ transaction.total | currency: "" }}</td>
-                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td> --}}
+                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td>
                     {{-- pay status ended --}}
-                    <td class="col-md-1 text-center"></td>
+                    {{-- <td class="col-md-1 text-center"></td> --}}
                     <td class="col-md-1 text-center"></td>
                     <td class="col-md-1 text-center"></td>
                     <td class="col-md-1 text-center"></td>

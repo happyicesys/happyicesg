@@ -69,6 +69,11 @@ class D2dOnlineSaleController extends Controller
     // proceed d2d online order form
     public function submitOrder(Request $request)
     {
+        $this->validate($request, [
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
+        ]);
+
         $generate_trans = false;
         $avail_postcode = Postcode::whereValue($request->postcode)->first();
         $sendfrom = 'system@happyice.com.sg';
@@ -139,7 +144,7 @@ class D2dOnlineSaleController extends Controller
             'name' => 'required',
             'email' => 'email',
             'postcode' => 'required|digits:6',
-            'contact' => 'regex:/^[89]\d{7}$/',
+            'contact' => 'required|regex:/^[89]\d{7}$/',
             'block' => 'required',
             'floor' => 'required',
             'unit' => 'required',
@@ -148,7 +153,8 @@ class D2dOnlineSaleController extends Controller
             'email.email' => 'The email format is not right',
             'postcode.required' => 'Please fill in the postcode',
             'postcode.digits' => 'The postcode format is not right',
-            'contact.regex' => 'The contact number can only contain 8 numbers and started with 8 or 9',
+            'contact.required' => 'Please fill in the handphone number',
+            'contact.regex' => 'The handphone number can only contain 8 numbers and started with 8 or 9',
             'block.required' => 'Please fill in the block',
             'floor.required' => 'Please fill in the floor',
             'unit.required' => 'Please fill in the unit',

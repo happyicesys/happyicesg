@@ -93,15 +93,34 @@ class DetailRptController extends Controller
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->distinct('people.id')
+                        ->join(DB::raw('(SELECT ROUND(SUM(CASE WHEN total = 1 THEN total*107/100 ELSE total END), 2) AS total1, people.id AS person_id, people.profile_id FROM transactions
+                                        LEFT JOIN people ON transactions.person_id=people.id
+                                        LEFT JOIN profiles ON people.profile_id=profiles.id
+                                        WHERE DATE(transactions.delivery_date) >=\''.Carbon::today()->startOfMonth()->toDateString().'\'
+                                        AND DATE(transactions.delivery_date) <= \''.Carbon::today()->endOfMonth()->toDateString().'\'
+                                        GROUP BY people.id) transtotal1') , function($join) {
+                            $join->on('people.id', '=', 'transtotal1.person_id');
+                        })
+                        ->join(DB::raw('(SELECT ROUND(SUM(CASE WHEN total = 1 THEN total*107/100 ELSE total END), 2) AS total2, people.id AS person_id, people.profile_id FROM transactions
+                                        LEFT JOIN people ON transactions.person_id=people.id
+                                        LEFT JOIN profiles ON people.profile_id=profiles.id
+                                        WHERE DATE(transactions.delivery_date) >=\''.Carbon::today()->subMonth()->startOfMonth()->toDateString().'\'
+                                        AND DATE(transactions.delivery_date) <= \''.Carbon::today()->subMonth()->endOfMonth()->toDateString().'\'
+                                        GROUP BY people.id) transtotal2') , function($join) {
+                            $join->on('people.id', '=', 'transtotal2.person_id');
+                        })
+                        ->distinct()
                         ->select(
+                                    DB::raw('SUM(transactions.total) as total'),
                                     'transactions.id', 'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
-                                    'transactions.total', 'transactions.pay_status',
+                                    'transactions.pay_status',
                                     'profiles.id as profile_id',
-                                    'profiles.gst', 'transactions.delivery_fee', 'transactions.paid_at'
+                                    'profiles.gst', 'transactions.delivery_fee', 'transactions.paid_at', 'transtotal1.total1', 'transtotal2.total2'
                                 );
+                        // ->whereStatus($request->status)
+                        // ->wherePayStatus($request->payment);
 
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
@@ -118,6 +137,7 @@ class DetailRptController extends Controller
             $this->convertSoaExcel($transactions, $total_amount + $delivery_total);
         }
 
+        // dd($transactions->toSql());
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id')->get();
         }else{
@@ -192,14 +212,8 @@ class DetailRptController extends Controller
                         });
                 });
         }
-        if($status){
-            $transactions = $transactions->where('transactions.status', $status);
-        }
         if($person_id){
             $transactions = $transactions->where('people.id', $person_id);
-        }
-        if($payment){
-            $transaction = $transactions->where('transactions.pay_status',$payment);
         }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');

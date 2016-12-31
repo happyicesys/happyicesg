@@ -148,6 +148,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
         Baum\Providers\BaumServiceProvider::class,
+        Msurguy\Honeypot\HoneypotServiceProvider::class,
         // Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
@@ -201,6 +202,7 @@ return [
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
         'PDF'       => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'Image'     => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'Honeypot' => Msurguy\Honeypot\HoneypotFacade::class,
         // 'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],

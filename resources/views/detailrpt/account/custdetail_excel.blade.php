@@ -41,5 +41,12 @@
                 </td>
             </tr>
         @endforeach
+        <tr>
+            <th>Total Due</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th>{{$total}}</th>
+        </tr>
     </tbody>
 </table>

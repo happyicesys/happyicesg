@@ -55,6 +55,7 @@ Door To Door
           </fieldset>
 
           {!! Form::open(['action'=>'D2dOnlineSaleController@submitOrder']) !!}
+            {!! Honeypot::generate('my_name', 'my_time') !!}
           <div v-if="step2">
             <div class="row">
             <div class="col-md-12 col-xs-12">

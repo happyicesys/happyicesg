@@ -39,6 +39,12 @@ if(document.querySelector('#d2dorderController')){
         submitable: false,
       }
     },
+    mounted() {
+      var el = this.$el
+      setTimeout(function () {
+        $(el).find('input').trigger('change')
+      }, 20)
+    },
     methods: {
       verifyPostcode() {
         this.loading = true
@@ -100,13 +106,13 @@ if(document.querySelector('#d2dorderController')){
         }
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
       },
-      submitable() {
+/*      submitable() {
         if(this.form.name && this.form.contact && this.form.email && this.form.postcode && this.form.block && this.form.floor && this.form.unit) {
           return true
         }else{
           return false
         }
-      },
+      },*/
       disableNext() {
         if(this.total == 0 || (this.covered == false && this.totalqty <= 1)) {
           return true
