@@ -199,7 +199,12 @@ Door To Door
                   <div class="form-group">
                     <label for="block" class="control-label">Block</label>
                     <label for="required" class="control-label" style="color:red;" v-if="!form.block">*</label>
-                    <input type="text" name="block" class="form-control" v-model="form.block">
+                    <input type="text" name="block" class="form-control" v-model="form.block" @keyup="validateOrder">
+                    <span v-if="formErrors['block']" class="help-block" style="color:red;">
+                      <ul class="row">
+                          <li style="color:red;">@{{ formErrors['block'][0] }}</li>
+                      </ul>
+                    </span>
                   </div>
                 </div>
 
@@ -207,7 +212,12 @@ Door To Door
                   <div class="form-group">
                     <label for="floor" class="control-label">Floor</label>
                     <label for="required" class="control-label" style="color:red;" v-if="!form.floor">*</label>
-                    <input type="text" name="floor" class="form-control" v-model="form.floor">
+                    <input type="text" name="floor" class="form-control" v-model="form.floor" @keyup="validateOrder">
+                    <span v-if="formErrors['floor']" class="help-block" style="color:red;">
+                      <ul class="row">
+                          <li style="color:red;">@{{ formErrors['floor'][0] }}</li>
+                      </ul>
+                    </span>
                   </div>
                 </div>
 
@@ -215,7 +225,12 @@ Door To Door
                   <div class="form-group">
                     <label for="unit" class="control-label">Unit</label>
                     <label for="required" class="control-label" style="color:red;" v-if="!form.unit">*</label>
-                    <input type="text" name="unit" class="form-control" v-model="form.unit">
+                    <input type="text" name="unit" class="form-control" v-model="form.unit" @keyup="validateOrder">
+                    <span v-if="formErrors['unit']" class="help-block" style="color:red;">
+                      <ul class="row">
+                          <li style="color:red;">@{{ formErrors['unit'][0] }}</li>
+                      </ul>
+                    </span>
                   </div>
                 </div>
                 </div>
