@@ -83,6 +83,20 @@ class D2dOnlineSaleController extends Controller
         $dtdtransaction_id = '';
         $today = Carbon::now()->format('d-F-Y');
 
+        $date_options = [
+            1 => 'Within 1 Day',
+            2 => 'Within 2 Days'
+        ];
+
+        $time_options = [
+            1 => '8am - 12pm',
+            2 => '12pm - 5pm',
+            3 => '5pm - 9pm'
+        ];
+
+        $request->merge(array('del_date' => $date_options[$request->del_date]));
+        $request->merge(array('del_time' => $time_options[$request->del_time]));
+
         // validate whether the postcode is available or not
         if($avail_postcode) {
             $generate_trans = $avail_postcode->person_id ? false : true;
@@ -119,7 +133,7 @@ class D2dOnlineSaleController extends Controller
             'person' => Person::findOrFail($customer_id),
             'transaction' => $transaction_id ? Transaction::findOrFail($transaction_id) : null,
             'dtdtransaction' => $dtdtransaction_id ? DtdTransaction::findOrFail($dtdtransaction_id) : null,
-            'timing' => $request->del_date[0].'; '.$request->del_time[0],
+            'timing' => $request->del_date.'; '.$request->del_time,
             'remark' => $request->remark,
         ];
         Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
@@ -220,13 +234,13 @@ class D2dOnlineSaleController extends Controller
         $transaction->status = 'Confirmed';
         $transaction->total = $request->total;
         $transaction->total_qty = $request->totalqty;
-        $transaction->transremark = $request->del_date[0].'; '.$request->del_time[0];
+        $transaction->transremark = $request->del_date.'; '.$request->del_time;
         $transaction->person_id = $person->id;
         $transaction->person_code = $person->cust_id;
         $transaction->delivery_fee = $request->delivery;
         $transaction->del_postcode = $request->postcode;
         $transaction->name = $request->name;
-        $transaction->transremark = $request->del_date[0].'; '.$request->del_time[0].'; '.$request->remark;
+        $transaction->transremark = $request->del_date.'; '.$request->del_time.'; '.$request->remark;
         $transaction->save();
         $this->createDeals($request, $transaction->id);
         return $transaction->id;
@@ -319,7 +333,7 @@ class D2dOnlineSaleController extends Controller
         $dtdtransaction->status = 'Confirmed';
         $dtdtransaction->total = $request->total;
         $dtdtransaction->total_qty = $request->totalqty;
-        $dtdtransaction->transremark = $request->del_date[0].'; '.$request->del_time[0];
+        $dtdtransaction->transremark = $request->del_date.'; '.$request->del_time;
         $dtdtransaction->person_id = $person->id;
         $dtdtransaction->person_code = $person->cust_id;
         $dtdtransaction->delivery_fee = $request->delivery;

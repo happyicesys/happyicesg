@@ -238,12 +238,12 @@ Door To Door
                 <div class="row">
                 <div class="col-md-6 col-xs-12 form-group">
                   <label for="del_date" class="control-label">Preferred Delivery Day:</label>
-                  <select2 name="del_date[]" v-model="form.del_date" :options="deldate_option"></select2>
+                  <select2 name="del_date" v-model="form.del_date" :options="deldate_option"></select2>
                 </div>
 
                 <div class="col-md-6 col-xs-12 form-group">
                   <label for="del_time" class="control-label">Preferred Delivery Timeslot:</label>
-                  <select2 name="del_time[]" v-model="form.del_time" :options="deltime_option"></select2>
+                  <select2 name="del_time" v-model="form.del_time" :options="deltime_option"></select2>
                   <small>{!! Form::label('del', '** Final Timing will be Confirmed via Phone/ SMS', ['class'=>'control-label', 'style'=>'color:red;']) !!}</small>
                 </div>
                 </div>
