@@ -65,10 +65,10 @@ Door To Door
                 <p v-if="covered">
                   - To order with more flavor, click <a href="" style="color:blue;" @click.prevent="covered = !covered">HERE</a>. Minimum purchase applied for free delivery
                 </p>
-                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE deliver, valid until 31/12/16</p>
+                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE deliver, valid until 31/1/17</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
                 <div class="table-responsive">
-                <table class="table table-list-search table-hover table-bordered add_item" style="margin-top:10px;">
+                <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">
                 <tr style="background-color: #f7f9f7">
                   <th class="col-md-1 text-center">
                     #
@@ -290,10 +290,7 @@ Door To Door
     <td class="col-md-1 text-center">
       @{{number}}
     </td>
-    <td class="col-md-6 col-xs-11 text-left">
-{{--       <div class="thumbnail">
-        <img v-bind:src="item.main_imgpath" class="img-responsive">
-      </div> --}}
+    <td class="col-md-6 col-xs-6 text-left">
       @{{item.caption}}
     </td>
     <td class="hidden">
@@ -302,10 +299,10 @@ Door To Door
     <td class="hidden">
       <input type="text" class="hidden" name="captionArr[]" v-model="item.caption">
     </td>
-    <td class="col-md-2 col-xs-6 text-center">
+    <td class="col-md-2 col-xs-3 text-center" style="width: 100px;">
       <select2 name="qtyArr[]" v-model="qty" :options="options" ></select2>
     </td>
-    <td class="col-md-2 col-xs-6 text-center">
+    <td class="col-md-2 col-xs-3 text-center">
       <input type="text" name="amountArr[]" v-model="amount" class="input-sm form-control text-right" readonly="readonly" />
     </td>
   </tr>

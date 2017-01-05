@@ -28,6 +28,12 @@
                     <div class="tab-pane" id="cust_outstanding">
                         @include('detailrpt.account.cust_outstanding')
                     </div>
+                    <div class="tab-pane" id="payment_detail">
+                        @include('detailrpt.account.payment_detail')
+                    </div>
+                    <div class="tab-pane" id="payment_summary">
+                        {{-- @include('detailrpt.account.payment_summary') --}}
+                    </div>
                 </div>
             </div>
         </div>

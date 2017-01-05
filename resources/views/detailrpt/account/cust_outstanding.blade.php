@@ -126,9 +126,9 @@
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">
-                Total Outstanding:
+                This Month Total:
             </div>
-            <div class="col-md-7 col-xs-7" style="border: thin black solid">
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                 <strong>@{{ total_amount | currency: "": 2}}</strong>
             </div>
     </div>
@@ -206,8 +206,7 @@
             </tr>
 
             <tbody>
-
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_outstanding" total-items="totalCount">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
@@ -217,15 +216,10 @@
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-
-                    <td class="col-md-1 text-center" ng-if="transaction.gst && transaction.delivery_fee <= 0">@{{ (+(transaction.total * 7/100) + transaction.total * 1) | currency: ""}} </td>
-                    <td class="col-md-1 text-center" ng-if="!transaction.gst && transaction.delivery_fee <= 0">@{{ transaction.total | currency: "" }}</td>
-                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td>
-                    {{-- pay status ended --}}
-                    {{-- <td class="col-md-1 text-center"></td> --}}
-                    <td class="col-md-1 text-center"></td>
-                    <td class="col-md-1 text-center"></td>
-                    <td class="col-md-1 text-center"></td>
+                    <td class="col-md-1 text-center">@{{transaction.thistotal}}</td>
+                    <td class="col-md-1 text-center">@{{transaction.prevtotal}}</td>
+                    <td class="col-md-1 text-center">@{{transaction.prev2total}}</td>
+                    <td class="col-md-1 text-center">@{{transaction.prevmore3total}}</td>
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">
@@ -234,5 +228,9 @@
 
             </tbody>
         </table>
+
+        <div>
+              <dir-pagination-controls max-size="5" pagination-id="cust_outstanding" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+        </div>
     </div>
 </div>

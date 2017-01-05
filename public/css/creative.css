@@ -484,3 +484,16 @@ body {
 .alert {
     margin-bottom: 0px;
 }
+
+.table-order
+{
+    table-layout: fixed;
+    width: 100px;
+}
+
+.table-ord {
+    width: 30px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+}

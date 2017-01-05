@@ -185,16 +185,25 @@ label{
     body {
         font-size: 1.5em; /* 1.5x default size */
     }
+    h1 {
+        font-size: 1.9em;
+    }
 }
 @media all and (max-width: 1000px) { /* screen size until 1000px */
     body {
         font-size: 1.2em; /* 1.2x default size */
         }
+    h1 {
+        font-size: 1.6em;
+    }
     }
 @media all and (max-width: 500px) { /* screen size until 500px */
     body {
         font-size: 0.8em; /* 0.8x default size */
         }
+    h1 {
+        font-size: 1.2em;
+    }
 
     ._720kb-datepicker-calendar{
         /*margin-left: -0.5%;*/
@@ -311,8 +320,16 @@ margin: 0px auto 15px;
     margin: 0px 0px;
 }
 
-td.long_data {
-    max-width: 0;
-    max-height: 0;
-    overflow-y: auto;
+.table-order
+{
+    table-layout: fixed;
+    width: 100px;
 }
+
+.table-ord {
+    width: 30px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+}
+

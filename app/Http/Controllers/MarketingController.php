@@ -269,6 +269,26 @@ class MarketingController extends Controller
         $person = Person::findOrFail($id);
         $user = User::findOrFail($person->user_id);
 
+        if($request->input('reset')){
+            $reset_pass = str_random(6);
+            $user->password = $reset_pass;
+            $user->save();
+            if($this->sendEmailReset($request, $reset_pass)){
+                Flash::success('The Password has been Reset');
+            }else{
+                return Redirect::action('MarketingController@editMember', $id);
+            }
+        }
+
+        if($request->input('update')){
+            $this->validate($request, [
+                'email' => 'required|unique:people,email,'.$request->id,
+            ], [
+                'email.required' => 'Please fill in the email',
+                'email.unique' => 'The email was in used, please try another'
+            ]);
+        }
+
         if($request->parent_id != null or $request->parent_id != ''){
             $newperson = Person::findOrFail($request->parent_id);
             if($person->parent_id != $newperson->id){
@@ -285,15 +305,6 @@ class MarketingController extends Controller
             $person->active = 'No';
         }
 
-        if($request->input('reset')){
-            $reset_pass = str_random(6);
-            $user->password = $reset_pass;
-            if($this->sendEmailReset($request, $reset_pass)){
-                Flash::success('The Password has been Reset');
-            }else{
-                return Redirect::action('MarketingController@editMember', $id);
-            }
-        }
         $user->username = $request->company;
         $user->contact = $request->contact;
         $user->email = $request->email;
@@ -1526,7 +1537,7 @@ class MarketingController extends Controller
             Mail::send('email.marketing_registration', $data, function ($message) use ($email, $sender)
             {
                 $message->from($sender);
-                $message->subject('Email Reset (Door To Door Project)');
+                $message->subject('Password Reset (Door To Door Project)');
                 $message->setTo($email);
             });
             return true;

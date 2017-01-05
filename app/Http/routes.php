@@ -189,6 +189,8 @@ Route::post('/report/driver', 'RptController@generateDriver');
 Route::get('/detailrpt/account', 'DetailRptController@accountIndex');
 Route::post('/api/detailrpt/account/custdetail', 'DetailRptController@getAccountCustdetailApi');
 Route::post('/api/detailrpt/account/outstanding', 'DetailRptController@getAccountOutstandingApi');
+Route::post('/api/detailrpt/account/paydetail', 'DetailRptController@getAccountPaydetailApi');
+Route::post('/api/detailrpt/account/paysummary', 'DetailRptController@getAccountPaysummaryApi');
 Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
 // Route::post('/detailrpt/account/custdetail/exportsoa', 'DetailRptController@getAccountCustdetailApi');
 

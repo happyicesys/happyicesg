@@ -31,7 +31,7 @@ if(document.querySelector('#d2dorderController')){
         loading: false,
         formErrors: [],
         items: [],
-        delivery: 7,
+        delivery: 5,
         covered: false,
         subtotal: 0,
         total: 0,
@@ -102,7 +102,7 @@ if(document.querySelector('#d2dorderController')){
         if(this.totalqty >= 3 || this.totalqty == 0 || this.covered){
           this.delivery = 0
         }else if(this.totalqty > 0 && this.totalqty < 3){
-          this.delivery = 7
+          this.delivery = 5
         }
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
       },
