@@ -113,11 +113,13 @@
                         <tbody>
                             <tr dir-paginate="person in people | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                 <td class="col-md-1 text-center">@{{ number }} </td>
-                                <td class="col-md-1">@{{ person.cust_id }}</td>
-                                <td class="col-md-2">
+                                <td class="col-md-1">
                                     <a href="/person/@{{ person.id }}/edit">
-                                    @{{ person.company }}
+                                    @{{ person.cust_id }}
                                     </a>
+                                </td>
+                                <td class="col-md-2">
+                                    @{{ person.company }}
                                 </td>
                                 <td class="col-md-1">@{{ person.name }}</td>
                                 <td class="col-md-2">
