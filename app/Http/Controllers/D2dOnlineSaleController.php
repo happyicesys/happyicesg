@@ -143,7 +143,7 @@ class D2dOnlineSaleController extends Controller
             'timing' => $request->del_date.'; '.$request->del_time,
             'remark' => $request->remark,
         ];
-        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
+/*        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
             // $message->cc('leehongjie91@gmail.com');
@@ -153,7 +153,7 @@ class D2dOnlineSaleController extends Controller
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
             $message->setTo($sendto);
             // $message->setTo('leehongjie91@gmail.com');
-        });
+        });*/
 
         return view('client.order_confirmed', compact('today', 'data'));
     }
@@ -245,6 +245,7 @@ class D2dOnlineSaleController extends Controller
         $transaction->person_id = $person->id;
         $transaction->person_code = $person->cust_id;
         $transaction->delivery_fee = $request->delivery;
+        $transaction->del_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
         $transaction->del_postcode = $request->postcode;
         $transaction->name = $request->name;
         $transaction->transremark = $request->del_date.'; '.$request->del_time.'; '.$request->remark;
@@ -344,6 +345,8 @@ class D2dOnlineSaleController extends Controller
         $dtdtransaction->person_id = $person->id;
         $dtdtransaction->person_code = $person->cust_id;
         $dtdtransaction->delivery_fee = $request->delivery;
+        $dtdtransaction->del_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
+        $dtdtransaction->name = $request->name;
         $dtdtransaction->save();
         $this->createDtdDeals($request, $dtdtransaction->id);
         return $dtdtransaction->id;
