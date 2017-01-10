@@ -139,7 +139,8 @@ if (document.querySelector('#d2dorderController')) {
     },
     computed: {
       total() {
-        if (this.totalqty >= 3 || this.totalqty == 0 || this.covered) {
+        // if (this.totalqty >= 3 || this.totalqty == 0 || this.covered) {
+        if (this.totalqty >= 3 || this.totalqty == 0) {
           this.delivery = 0
         } else if (this.totalqty > 0 && this.totalqty < 3) {
           this.delivery = 5

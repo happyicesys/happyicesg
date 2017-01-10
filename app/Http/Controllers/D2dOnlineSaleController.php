@@ -108,7 +108,7 @@ class D2dOnlineSaleController extends Controller
         $sendto = [$request->email];
         if($generate_trans) {
             $transaction_id = $this->createTransaction($request, $customer_id);
-            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
+            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jiahaur91@hotmail.com'];
             $bcc = '';
         }else{
             $member = Person::findOrFail($avail_postcode->person_id);
@@ -118,7 +118,7 @@ class D2dOnlineSaleController extends Controller
             }else{
                 $cc = [$member->email];
             }
-            $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com'];
+            $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jiahaur91@hotmail.com'];
             $dtdtransaction_id = $this->createDtdTransaction($request, $customer_id);
         }
 
@@ -131,6 +131,13 @@ class D2dOnlineSaleController extends Controller
             'totalqty' => $request->totalqty,
             'delivery' => $request->delivery,
             'person' => Person::findOrFail($customer_id),
+            'name' => $request->name,
+            'email' => $request->email,
+            'street' => $request->street,
+            'postcode' => $request->postcode,
+            'block' => $request->block,
+            'floor' => $request->floor,
+            'unit' => $request->unit,
             'transaction' => $transaction_id ? Transaction::findOrFail($transaction_id) : null,
             'dtdtransaction' => $dtdtransaction_id ? DtdTransaction::findOrFail($dtdtransaction_id) : null,
             'timing' => $request->del_date.'; '.$request->del_time,

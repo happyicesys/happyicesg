@@ -7,7 +7,7 @@ Healthier Life
 <div class="row" style="padding: 20px 0px 20px 0px;">
     <div class="col-md-9 col-md-offset-3 col-xs-12">
       <p>
-        Dear {{$data['person']->name}} ({{$data['person']->cust_id}}), <br><br>
+        Dear {{$data['name']}} ({{$data['person']->cust_id}}), <br><br>
         Thanks for the purchase on HappyIce Door to Door. The following is your order {{ $data['transaction'] ? $data['transaction']->id : ''}} {{ $data['dtdtransaction'] ? $data['dtdtransaction']->id : ''}}. <br><br>
         <div style="font-family: 'Open Sans'; font-size: 15px;">
             <table style="border: 1px solid black; border-collapse:collapse;">
@@ -54,8 +54,8 @@ Healthier Life
         <p>
             <span style="font-weight:bold">Send to:</span><br>
             {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
-            <span class="col-xs-12">{{$data['person']->del_address}}</span>
-            <span class="col-xs-offset-1">{{$data['person']->del_postcode}}</span> <br>
+            <span class="col-xs-12">{{$data['block']}}, #{{$data['floor']}}-{{$data['unit']}}</span>
+            <span class="col-xs-12">Singapore {{$data['postcode']}}</span> <br>
             <span style="font-weight:bold">Contact Number:</span>&nbsp;{{ $data['person']->contact }}<br>
             <span style="font-weight:bold">Preferred Timing:</span>&nbsp;{{ $data['timing'] }}<br>
             <span style="color:red;">**Cash payment upon delivery, We will contact you for final delivery timing via Phone/ SMS</span>

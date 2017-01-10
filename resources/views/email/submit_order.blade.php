@@ -2,7 +2,7 @@
 <html>
     <body>
       <p>
-        Dear {{$person->name}} ({{$person->cust_id}}), <br><br>
+        Dear {{$name}} ({{$person->cust_id}}), <br><br>
         Thanks for the purchase on HappyIce Door to Door. The following is your order {{ $transaction ? $transaction->id : ''}} {{ $dtdtransaction ? $dtdtransaction->id : ''}}. <br><br>
         <div style="font-family: 'Open Sans'; font-size: 15px;">
             <table style="border: 1px solid black; border-collapse:collapse;">
@@ -48,9 +48,9 @@
         <p>
             <span style="font-weight:bold">Send to:</span><br>
             {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
-            <span class="col-xs-12">{{$person->del_address}}</span>
+            <span class="col-xs-12">{{$block}}, #{{$floor}} - {{$unit}}, {{$street}};</span>
             <span class="col-xs-12">
-                Singapore {{$person->del_postcode}}
+                Singapore {{$postcode}}
             </span> <br>
             <span style="font-weight:bold">Contact Number:</span>&nbsp;{{ $person->contact }}<br>
             <span style="font-weight:bold">Preferred Timing:</span>&nbsp;{{ $timing }}<br>
