@@ -33,7 +33,7 @@ class PersonRequest extends Request
             'contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'postcode' => 'numeric',
-            'cost_rate' => 'integer',
+            'cost_rate' => 'numeric',
         ];
     }
 
@@ -49,7 +49,7 @@ class PersonRequest extends Request
             'contact.regex' => 'The contact number only accepts 0-9, +, -',
             'alt_contact.regex' => 'The Alt contact number only accepts 0-9, +, -',
             'postcode.numeric' => 'The postcode must be in numbers',
-            'cost_rate.integer' => 'Cost rate need to be in whole number',
+            'cost_rate.numeric' => 'Cost rate must be in numbers',
         ];
     }
 }
