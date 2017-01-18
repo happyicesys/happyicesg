@@ -192,7 +192,8 @@ Route::post('/api/detailrpt/account/outstanding', 'DetailRptController@getAccoun
 Route::post('/api/detailrpt/account/paydetail', 'DetailRptController@getAccountPaydetailApi');
 Route::post('/api/detailrpt/account/paysummary', 'DetailRptController@getAccountPaysummaryApi');
 Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
-// Route::post('/detailrpt/account/custdetail/exportsoa', 'DetailRptController@getAccountCustdetailApi');
+Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCustdetailApi');
+Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

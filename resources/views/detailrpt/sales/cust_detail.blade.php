@@ -1,4 +1,4 @@
-<div ng-controller="custOutstandingController">
+<div ng-controller="custDetailController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-xs-6">
@@ -13,23 +13,37 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-md-offset-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
+                {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
+                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
+                    <option value="">All</option>
+                    @foreach($month_options as $key => $value)
+                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
     </div>
     <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                </select>
+            </div>
+        </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
@@ -46,23 +60,6 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
                                                 [
@@ -72,48 +69,6 @@
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.status',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('person_id',
-                    [''=>'All'] + $customers::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.person_id',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('payment', 'Payment', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('payment',
-                    [''=>'All', 'Paid'=>'Paid', 'Owe'=>'Owe'],
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.payment',
-                    'ng-change'=>'searchDB()'
-                    ])
                 !!}
             </div>
         </div>
@@ -144,13 +99,13 @@
     </div>
 </div>
 
-    <div class="table-responsive" id="exportable_custoutstanding" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Total Outstanding</td>
+                <td data-tableexport-display="always">This Month Total</td>
                 <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
             </tr>
             <tr class="hidden" data-tableexport-display="always">
@@ -161,64 +116,87 @@
                 <th class="col-md-1 text-center">
                     #
                 </th>
-                <th class="col-md-1 text-center">
+
+                <th class="col-md-2 text-center">
                     <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
                     Profile
                     <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
+
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                     ID
                     <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-1 text-center">
+
+                <th class="col-md-2 text-center">
                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                     ID Name
                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
+
                 <th class="col-md-1 text-center">
-                    Outstanding (This Month)
+                    Total<br>
+                    (This Month)
                 </th>
+
                 <th class="col-md-1 text-center">
-                    Outstanding (Last Month)
+                    Total<br>
+                    (Last Month)
                 </th>
+
                 <th class="col-md-1 text-center">
-                    Outstanding (Last 2 Monts)
+                    Total<br>
+                    (Last 2 Month)
                 </th>
-                <th class="col-md-1 text-center">
-                    Outstanding (>3 Months)
+
+                <th class="col-md-2 text-center">
+                    Total<br>
+                    (Last Yr Same Mth)
                 </th>
             </tr>
 
             <tbody>
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_outstanding" total-items="totalCount" current-page="currentPage">
-                    <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
-                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
-                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
 
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
+                        @{{ $index + indexFrom }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.profile_name }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.cust_id }}
+                    </td>
                     <td class="col-md-1 text-center">
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-                    <td class="col-md-1 text-center">@{{transaction.thistotal}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prevtotal}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prev2total}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prevmore3total}}</td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.thistotal }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.prevtotal }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.prev2total }}
+                    </td>
+                    <td class="col-md-2 text-right">
+                        @{{ transaction.prevyeartotal }}
+                    </td>
                 </tr>
-
                 <tr ng-if="!alldata || alldata.length == 0">
                     <td colspan="14" class="text-center">No Records Found</td>
                 </tr>
-
             </tbody>
         </table>
 
         <div>
-              <dir-pagination-controls max-size="5" pagination-id="cust_outstanding" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+              <dir-pagination-controls max-size="5" pagination-id="cust_detail" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
 </div>

@@ -15,15 +15,15 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('paid_from', 'Payment From', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="paid_from"
+                        name="payment_from"
                         placeholder="Payment From"
-                        ng-model="search.paid_from"
-                        ng-change="onPaidFromChanged(search.paid_from)"
+                        ng-model="search.payment_from"
+                        ng-change="onPaidFromChanged(search.payment_from)"
                     />
                 </datepicker>
             </div>
@@ -61,15 +61,15 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('paid_to', 'Payment To', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="paid_to"
+                        name="payment_to"
                         placeholder="Payment To"
-                        ng-model="search.paid_to"
-                        ng-change="onPaidToChanged(search.paid_to)"
+                        ng-model="search.payment_to"
+                        ng-change="onPaidToChanged(search.payment_to)"
                     />
                 </datepicker>
             </div>
@@ -196,7 +196,7 @@
     </div>
     <div class="col-md-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage1" name="pageNum" ng-init="itemsPerPage1='100'" ng-change="pageNumChanged()">
+        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
             <option ng-value="100">100</option>
             <option ng-value="200">200</option>
             <option ng-value="All">All</option>
@@ -206,7 +206,7 @@
     </div>
 </div>
 
-    <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_paydetail" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
@@ -311,7 +311,11 @@
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="payment_detail" total-items="totalCount">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
-                    <td class="col-md-1 text-center">@{{ transaction.id }}</td>
+                    <td class="col-md-1 text-center">
+                        <a href="/transaction/@{{ transaction.id }}/edit">
+                            @{{ transaction.id }}
+                        </a>
+                    </td>
                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
                     <td class="col-md-1 text-center">
                         <a href="/person/@{{ transaction.person_id }}">

@@ -26,8 +26,9 @@ class DatabaseSeeder extends Seeder
         $this->call(FreezerSeeder::class);
         $this->call(AccessorySeeder::class);
         $this->call(GeneralSettingSeeder::class);
-*/
         $this->call(D2dOnlineSaleSeeder::class);
+*/
+        $this->call(MonthSeeder::class);
         Model::reguard();
     }
 }

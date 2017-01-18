@@ -1,5 +1,5 @@
 <div ng-controller="custDetailController">
-{!! Form::open(['id'=>'exportSOA', 'method'=>'POST', 'action'=>['DetailRptController@getAccountCustdetailApi']]) !!}
+{!! Form::open(['id'=>'exportData', 'method'=>'POST', 'action'=>['DetailRptController@getAccountCustdetailApi']]) !!}
 <div class="col-md-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-xs-6">
@@ -154,7 +154,7 @@
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-success" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
+        <button type="submit" class="btn btn-success" form="exportData" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">
@@ -166,7 +166,7 @@
     </div>
     <div class="col-md-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage1" name="pageNum" ng-init="itemsPerPage1='100'" ng-change="pageNumChanged()">
+        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
             <option ng-value="100">100</option>
             <option ng-value="200">200</option>
             <option ng-value="All">All</option>
@@ -177,7 +177,7 @@
 </div>
 {!! Form::close() !!}
 
-    <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
@@ -262,7 +262,7 @@
 
             <tbody>
 
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_detail" total-items="totalCount">
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">
                         <a href="/transaction/@{{ transaction.id }}/edit">
@@ -299,9 +299,7 @@
                     {{-- status by color ended --}}
                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
 
-                    <td class="col-md-1 text-center" ng-if="transaction.gst && transaction.delivery_fee <= 0">@{{ (+(transaction.total * 7/100) + transaction.total * 1) | currency: ""}} </td>
-                    <td class="col-md-1 text-center" ng-if="!transaction.gst && transaction.delivery_fee <= 0">@{{ transaction.total | currency: "" }}</td>
-                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td>
+                    <td class="col-md-1 text-center">@{{ transaction.total | currency: ""}} </td>
                     {{-- pay status --}}
                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                         @{{ transaction.pay_status }}

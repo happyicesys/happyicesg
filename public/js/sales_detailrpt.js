@@ -9,8 +9,6 @@ var app = angular.module('app', [
     function custDetailController($scope, $http){
         // init the variables
         $scope.alldata = [];
-        $scope.datasetTemp = {};
-        $scope.totalCountTemp = {};
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -19,22 +17,15 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.sortBy = true;
         $scope.sortName = '';
-        $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
-            delivery_from: $scope.today,
-            payment_from: '',
+            current_month: moment().month()+1 + '-' + moment().year(),
+            id_prefix: '',
             cust_id: '',
-            delivery_to: $scope.today,
-            payment_to: '',
             company: '',
-            status: '',
-            person_id: '',
-            payment: '',
             pageNum: 100,
         }
-        $scope.updated_at = '';
         // init page load
         getPage(1, true);
 
@@ -42,38 +33,12 @@ var app = angular.module('app', [
             $('.select').select2();
         });
 
-        $scope.onDeliveryFromChanged = function(date){
-            if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentFromChanged = function(date){
-            if(date){
-                $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onDeliveryToChanged = function(date){
-            if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentToChanged = function(date){
-            if(date){
-                $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
-
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_custdetail').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "Customer Details (Account)"+ now + ".xls");
+            saveAs(blob, "Customer Details (Sales)"+ now + ".xls");
         };
 
         // switching page
@@ -90,14 +55,14 @@ var app = angular.module('app', [
           // when hitting search button
         $scope.searchDB = function(){
             $scope.sortName = '';
-            $scope.sortBy = '';
+            $scope.sortBy = ''
             getPage(1, false);
         }
 
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/detailrpt/account/custdetail?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/detailrpt/sales/custdetail?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;
@@ -111,21 +76,16 @@ var app = angular.module('app', [
                     $scope.indexFrom = 1;
                     $scope.indexTo = data.transactions.length;
                 }
-                // get total count
                 $scope.All = data.transactions.length;
-
-                // return total amount
                 $scope.total_amount = data.total_amount;
                 $scope.spinner = false;
             });
         }
     }
-
-    function custOutstandingController($scope, $http){
+/*
+    function custSummaryController($scope, $http){
         // init the variables
         $scope.alldata = [];
-        $scope.datasetTemp = {};
-        $scope.totalCountTemp = {};
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -134,7 +94,6 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.sortBy = true;
         $scope.sortName = '';
-        $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
@@ -146,10 +105,8 @@ var app = angular.module('app', [
             company: '',
             status: 'Delivered',
             person_id: '',
-            payment: 'Owe',
-            pageNum: 100,
+            payment: 'Owe'
         }
-        $scope.updated_at = '';
         // init page load
         getPage(1, true);
 
@@ -184,7 +141,7 @@ var app = angular.module('app', [
 
 
         $scope.exportData = function () {
-            var blob = new Blob(["\ufeff", document.getElementById('exportable_custoutstanding').innerHTML], {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
@@ -197,9 +154,14 @@ var app = angular.module('app', [
         };
 
         $scope.pageNumChanged = function(){
-            $scope.search['pageNum'] = $scope.itemsPerPage
-            $scope.currentPage = 1
-            getPage(1, false)
+            if($.isEmptyObject($scope.datasetTemp)){
+                $scope.datasetTemp = {
+                    pageNum: $scope.itemsPerPage
+                }
+            }else{
+                $scope.datasetTemp['pageNum'] = $scope.itemsPerPage;
+            }
+            getPage(1, false);
         };
 
           // when hitting search button
@@ -234,13 +196,11 @@ var app = angular.module('app', [
                 $scope.spinner = false;
             });
         }
-    }
+    }*/
 
-    function custPayDetailController($scope, $http){
+    function productDayDetailController($scope, $http){
         // init the variables
         $scope.alldata = [];
-        $scope.datasetTemp = {};
-        $scope.totalCountTemp = {};
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -249,23 +209,16 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.sortBy = true;
         $scope.sortName = '';
-        $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
-            profile_id: '',
-            payment_from: $scope.today,
-            delivery_from: '',
             cust_id: '',
-            payment_to: $scope.today,
-            delivery_to: '',
+            delivery_from: $scope.today,
+            product_id: '',
             company: '',
-            payment: '',
-            status: 'Delivered',
-            person_id: '',
-            pay_method: '',
+            delivery_to: $scope.today,
+            product_name: '',
             pageNum: 100,
         }
-        $scope.updated_at = '';
         // init page load
         getPage(1, true);
 
@@ -273,38 +226,12 @@ var app = angular.module('app', [
             $('.select').select2();
         });
 
-        $scope.onDeliveryFromChanged = function(date){
-            if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaidFromChanged = function(date){
-            if(date){
-                $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onDeliveryToChanged = function(date){
-            if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaidToChanged = function(date){
-            if(date){
-                $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
-
         $scope.exportData = function () {
-            var blob = new Blob(["\ufeff", document.getElementById('exportable_paydetail').innerHTML], {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_productday').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "Payment Detail(Account)"+ now + ".xls");
+            saveAs(blob, "Product Detail(Day)"+ now + ".xls");
         };
 
         // switching page
@@ -328,7 +255,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/detailrpt/account/paydetail?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/detailrpt/sales/productday?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;
@@ -342,12 +269,9 @@ var app = angular.module('app', [
                     $scope.indexFrom = 1;
                     $scope.indexTo = data.transactions.length;
                 }
-                // get total count
                 $scope.All = data.transactions.length;
-                // return total amount
                 $scope.total_amount = data.total_amount;
-                $scope.total_inv_amount = data.total_inv_amount;
-                $scope.total_gst = data.total_gst;
+                $scope.total_qty = data.total_qty;
                 $scope.spinner = false;
             });
         }
@@ -378,5 +302,5 @@ app.config(function ($provide){
 });
 
 app.controller('custDetailController', custDetailController);
-app.controller('custOutstandingController', custOutstandingController);
-app.controller('custPayDetailController', custPayDetailController);
+/*app.controller('custOutstandingController', custOutstandingController);*/
+app.controller('productDayDetailController', productDayDetailController);

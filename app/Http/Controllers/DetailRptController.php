@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests;
 use App\Transaction;
+use App\Month;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -28,7 +29,17 @@ class DetailRptController extends Controller
     // return index page for detailed report - sales
     public function salesIndex()
     {
-        return view('detailrpt.sales.index');
+        // past year till now months option
+        $month_options = array();
+        $oneyear_ago = Carbon::today()->subYear();
+        $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
+        $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        for($i=1; $i<=$diffmonths; $i++) {
+            $oneyear_ago = $oneyear_ago->addMonth();
+            $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        }
+
+        return view('detailrpt.sales.index', compact('month_options'));
     }
 
     // retrieve the account cust detail rpt(FormRequest $request)
@@ -44,27 +55,27 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->select(
+                                    DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
                                     'transactions.id', 'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
-                                    'transactions.total', 'transactions.pay_status',
+                                    'transactions.pay_status',
                                     'profiles.id as profile_id', 'transactions.order_date',
                                     'profiles.gst', 'transactions.delivery_fee', 'transactions.paid_at'
                                 );
 
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
-            $transactions = $this->searchDBFilter($transactions, $request);
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $total_amount = $this->calDBTransactionTotal($transactions);
-        $delivery_total = $this->calDBDeliveryTotal($transactions);
+        $total_amount = $this->calDBOriginalTotal($transactions);
 
         if($request->exportSOA) {
-            $this->convertSoaExcel($transactions, $total_amount + $delivery_total);
+            $this->convertSoaExcel($transactions, $total_amount);
         }
 
         if($pageNum == 'All'){
@@ -73,8 +84,12 @@ class DetailRptController extends Controller
             $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
         }
 
+        if($request->exportExcel) {
+            $this->convertAccountCustdetailExcel($transactions, $total_amount);
+        }
+
         $data = [
-            'total_amount' => $total_amount + $delivery_total,
+            'total_amount' => $total_amount,
             'transactions' => $transactions,
         ];
 
@@ -132,7 +147,6 @@ class DetailRptController extends Controller
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
                         ->leftJoin($prevmore3total, 'people.id', '=', 'prevmore3total.person_id')
-                        ->distinct('people.id')
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
@@ -141,18 +155,20 @@ class DetailRptController extends Controller
                                 );
 
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
-            $transactions = $this->searchDBFilter($transactions, $request);
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $total_amount = $this->calTransactionTotalSql($transactions);
+        $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
+
+        $total_amount = $this->calCustoutstandingTotal($transactions);
 
         if($pageNum == 'All'){
-            $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id')->get();
+            $transactions = $transactions->get();
         }else{
-            $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id')->paginate($pageNum);
+            $transactions = $transactions->paginate($pageNum);
         }
 
         $data = [
@@ -183,10 +199,9 @@ class DetailRptController extends Controller
                                     DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END) AS amount'),
                                     DB::raw('(CASE WHEN profiles.gst=1 THEN (transactions.total * 7/100) ELSE null END) AS gst')
                                 );
-
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
-            $transactions = $this->searchDBFilter($transactions, $request);
+        if($request->profile_id or $request->paid_from or $request->delivery_from or $request->cust_id or $request->paid_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method) {
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -194,10 +209,6 @@ class DetailRptController extends Controller
         }
         $total_amount = $this->calDBTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
-
-        if($request->exportSOA) {
-            $this->convertSoaExcel($transactions, $total_amount + $delivery_total);
-        }
 
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
@@ -216,7 +227,7 @@ class DetailRptController extends Controller
 
         return $data;
     }
-
+/*
     // retrieve the account customer payment summary api
     public function getAccountPaysummaryApi(Request $request)
     {
@@ -238,7 +249,7 @@ class DetailRptController extends Controller
 
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
-            $transactions = $this->searchDBFilter($transactions, $request);
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -257,6 +268,10 @@ class DetailRptController extends Controller
             $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
         }
 
+        if($request->exportExcel) {
+            $this->convertAccountCustdetailExcel($transactions, $total_amount + $delivery_total);
+        }
+
         $caldata = $this->calAllTotal($transactions);
 
         $data = [
@@ -264,6 +279,154 @@ class DetailRptController extends Controller
             'total_gst' => $caldata['total_gst'],
             'total_amount' => $caldata['total_amount'],
             'transactions' => $transactions,
+        ];
+
+        return $data;
+    }*/
+
+    // retrieve the sales cust detail(FormRequest $request)
+    public function getSalesCustdetailApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+        // indicate the month and year
+        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
+        $delivery_from = $carbondate->startOfMonth()->toDateString();
+        $delivery_to = $carbondate->endOfMonth()->toDateString();
+        $request->merge(array('delivery_from' => $delivery_from));
+        $request->merge(array('delivery_to' => $delivery_to));
+
+        $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.profile_id FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                AND transactions.delivery_date<='".$delivery_to."'
+                                GROUP BY people.id) thistotal");
+
+        $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.profile_id FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
+                                GROUP BY people.id) prevtotal");
+
+        $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.profile_id FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
+                                GROUP BY people.id) prev2total");
+
+        $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevyeartotal, people.profile_id FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
+                                GROUP BY people.id) prevyeartotal");
+
+        $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
+                        ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
+                        ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
+                        ->leftJoin($prevyeartotal, 'people.id', '=', 'prevyeartotal.person_id')
+                        ->select(
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
+                                    'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                                    'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
+                                );
+
+        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix){
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
+        }else{
+            if($request->sortName){
+                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            }
+        }
+/*
+        $totalSql = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                AND transactions.delivery_date<='".$delivery_to."'
+                                GROUP BY people.id)");*/
+        // dd($totalSql);
+        $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
+
+        $total_amount = $this->calTransactionTotalSql($transactions);
+
+        if($pageNum == 'All'){
+            $transactions = $transactions->get();
+        }else{
+            $transactions = $transactions->paginate($pageNum);
+        }
+
+        $data = [
+            'total_amount' => $total_amount,
+            'transactions' => $transactions,
+        ];
+
+        return $data;
+    }
+
+    // retrieve the product detail for day api(FormRequest $request)
+    public function getSalesProductDetailDayApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+
+        $thisamount = DB::raw("(SELECT ROUND(SUM(deals.amount)), 2) AS thisamount, items.item_id AS item_id FROM deals
+                                LEFT JOIN items ON deals.item_id=items.id
+                                GROUP BY item_id) thisamount");
+
+        $thisqty = DB::raw("(SELECT ROUND(SUM(deals.qty)), 4) AS thisqty, items.item_id AS item_id FROM deals
+                                LEFT JOIN items ON deals.item_id=items.id
+                                GROUP BY item_id) thisqty");
+
+        $items = DB::table('items')
+                        ->leftJoin($thisamount, 'items.id', '=', 'thisamount.item_id')
+                        ->leftJoin($thisqty, 'items.id', '=', 'thisqty.item_id')
+                        ->select(
+                                    'items.name', 'items.remark', 'items.product_id',
+                                    'thisamount.thisamount AS thisamount', 'thisqty.thisqty AS thisqty'
+                                );
+        // reading whether search input is filled
+        if($request->cust_id or $request->delivery_from or $request->product_id or $request->company or $request->delivery_to or $request->product_name) {
+            $items = $this->searchItemDBFilter($items, $request);
+        }else{
+            if($request->sortName){
+                $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            }
+        }
+        $total_amount = $this->calDBTransactionTotal($items);
+        $delivery_total = $this->calDBDeliveryTotal($items);
+
+        if($pageNum == 'All'){
+            $items = $items->latest('items.created_at')->get();
+        }else{
+            $items = $items->latest('items.created_at')->paginate($pageNum);
+        }
+
+        $caldata = $this->calAllTotal($items);
+
+        $data = [
+            'total_inv_amount' => $caldata['total_inv_amount'],
+            'total_gst' => $caldata['total_gst'],
+            'total_amount' => $caldata['total_amount'],
+            'items' => $items,
         ];
 
         return $data;
@@ -283,13 +446,30 @@ class DetailRptController extends Controller
                     'A:D' => '@',
                     'E' => '0.00'
                 ));
+                $sheet->loadView('detailrpt.account.custdetail_soa_excel', compact('data', 'total'));
+            });
+        })->download('xls');
+    }
+
+    // export account cust detail excel(Collection $transactions, float $total)
+    private function convertAccountCustdetailExcel($transactions, $total)
+    {
+        $data = $transactions;
+        $title = 'Cust Detail (Account)';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($data, $total) {
+            $excel->sheet('sheet1', function($sheet) use ($data, $total) {
+                $sheet->setAutoSize(true);
+                $sheet->setColumnFormat(array(
+                    'A:F' => '@',
+                    'G' => '0.00'
+                ));
                 $sheet->loadView('detailrpt.account.custdetail_excel', compact('data', 'total'));
             });
         })->download('xls');
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
-    private function searchDBFilter($transactions, $request)
+    private function searchTransactionDBFilter($transactions, $request)
     {
         $profile_id = $request->profile_id;
         $delivery_from = $request->delivery_from;
@@ -302,6 +482,7 @@ class DetailRptController extends Controller
         $person_id = $request->person_id;
         $payment = $request->payment;
         $pay_method = $request->pay_method;
+        $id_prefix = $request->id_prefix;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -348,6 +529,9 @@ class DetailRptController extends Controller
         if($pay_method) {
             $transactions = $transactions->where('transactions.pay_method', $pay_method);
         }
+        if($id_prefix) {
+            $transactions = $transactions->where('people.cust_id', 'LIKE', $id_prefix.'%');
+        }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -371,6 +555,15 @@ class DetailRptController extends Controller
         return $total_amount;
     }
 
+    // calculate original total
+    private function calDBOriginalTotal($query)
+    {
+        $total_amount = 0;
+        $query1 = clone $query;
+        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        return $total_amount;
+    }
+
     // calculate delivery fees total
     private function calDBDeliveryTotal($query)
     {
@@ -382,8 +575,24 @@ class DetailRptController extends Controller
     // calculate total when sql done the filter job
     private function calTransactionTotalSql($query)
     {
+        $total_amount = 0;
         $query1 = clone $query;
-        $total_amount = $query1->sum('thistotal');
+        $totals = $query1->get();
+        foreach($totals as $total) {
+            $total_amount += $total->thistotal;
+        }
+        return $total_amount;
+    }
+
+    // calculate account cust outstanding total
+    private function calCustoutstandingTotal($query)
+    {
+        $total_amount = 0;
+        $query1 = clone $query;
+        $totals = $query1->get();
+        foreach($totals as $total) {
+            $total_amount += $total->thistotal;
+        }
         return $total_amount;
     }
 
@@ -405,5 +614,18 @@ class DetailRptController extends Controller
         ];
 
         return $caldata;
+    }
+
+    // conditional filter items parser(Collection $query, Formrequest $request)
+    private function searchItemDBFilter($items, $request)
+    {
+        $cust_id = $request->cust_id;
+        $delivery_from = $request->delivery_from;
+        $product_id = $request->product_id;
+        $company = $request->company;
+        $delivery_to = $request->delivery_to;
+        $product_name = $request->product_name;
+
+        return $items;
     }
 }
