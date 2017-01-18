@@ -246,6 +246,7 @@ class D2dOnlineSaleController extends Controller
         $transaction->person_code = $person->cust_id;
         $transaction->delivery_fee = $request->delivery;
         $transaction->del_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
+        $transaction->bill_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
         $transaction->del_postcode = $request->postcode;
         $transaction->name = $request->name;
         $transaction->transremark = $request->del_date.'; '.$request->del_time.'; '.$request->remark;
@@ -346,6 +347,7 @@ class D2dOnlineSaleController extends Controller
         $dtdtransaction->person_code = $person->cust_id;
         $dtdtransaction->delivery_fee = $request->delivery;
         $dtdtransaction->del_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
+        $dtdtransaction->bill_address = $request->block.', #'.$request->floor.'-'.$request->unit.', '.$request->street;
         $dtdtransaction->name = $request->name;
         $dtdtransaction->save();
         $this->createDtdDeals($request, $dtdtransaction->id);

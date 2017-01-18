@@ -137,6 +137,13 @@ var app = angular.module('app', [   'ui.bootstrap',
                         $scope.delModel = person.del_address + ' ' + person.del_postcode;
                     }
 
+                    // billing address
+                    if(transaction.bill_address){
+                        $scope.billModel = transaction.bill_address;
+                    }else{
+                        $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
+                    }
+
                     // display default delivery postcode
                     if(transaction.del_postcode){
                         $scope.postcodeModel = transaction.del_postcode;

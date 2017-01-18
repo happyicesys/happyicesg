@@ -65,7 +65,8 @@ class Transaction extends Model
         'del_address', 'name', 'po_no',
         'total_qty', 'pay_method', 'note',
         'paid_at', 'cancel_trace', 'dtdtransaction_id',
-        'contact', 'del_postcode', 'delivery_fee'
+        'contact', 'del_postcode', 'delivery_fee',
+        'bill_address'
     ];
 
     protected $dates =[

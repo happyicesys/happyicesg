@@ -71,7 +71,7 @@ class DtdTransaction extends Model
         'pay_method', 'note', 'paid_at',
         'updated_by', 'paid_by', 'transaction_id',
         'contact', 'del_postcode', 'type',
-        'delivery_fee'
+        'delivery_fee', 'bill_address'
     ];
 
     protected $dates =[

@@ -67,8 +67,8 @@
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
                                 <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span>
                                 <span class="col-xs-12">{{$person->company}}</span>
-                                <span class="col-xs-12">{{$person->bill_address}}</span>
-                                <span class="col-xs-offset-1">{{$person->bill_postcode}}</span>
+                                <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
+                                {{-- <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> --}}
                                 </div>
                             </div>
                         @endif
