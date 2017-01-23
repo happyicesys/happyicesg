@@ -378,8 +378,8 @@ class DetailRptController extends Controller
         return $data;
     }
 
-    // retrieve the product detail for day api(FormRequest $request)
-    public function getSalesProductDetailDayApi(Request $request)
+    // retrieve the product detail for month api(FormRequest $request)
+    public function getSalesProductDetailMonthApi(Request $request)
     {
         // showing total amount init
         $total_amount = 0;
@@ -387,21 +387,34 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
+        $thismonth = Carbon::createFromFormat('m-Y', $request->current_month);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
 
-        $thisamount = DB::raw("(SELECT ROUND(SUM(deals.amount)), 2) AS thisamount, items.item_id AS item_id FROM deals
-                                LEFT JOIN items ON deals.item_id=items.id
-                                GROUP BY item_id) thisamount");
+        $thistotal = DB::raw("(SELECT ROUND(SUM(amount), 2) AS amount, ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id FROM deals
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON people.id=transactions.person_id
+                                LEFT JOIN profiles ON profiles.id=people.profile_id
+                                WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'
+                                GROUP BY profile_id, item_id) thistotal");
 
-        $thisqty = DB::raw("(SELECT ROUND(SUM(deals.qty)), 4) AS thisqty, items.item_id AS item_id FROM deals
-                                LEFT JOIN items ON deals.item_id=items.id
-                                GROUP BY item_id) thisqty");
+/*        $prevqty = DB::raw("(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id FROM deals
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON people.id=transactions.person_id
+                                LEFT JOIN profiles ON profiles.id=people.profile_id
+                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
+                                GROUP BY profile_id, item_id) prevqty");*/
 
         $items = DB::table('items')
-                        ->leftJoin($thisamount, 'items.id', '=', 'thisamount.item_id')
-                        ->leftJoin($thisqty, 'items.id', '=', 'thisqty.item_id')
+                        ->leftJoin($thistotal, 'thistotal.item_id', '=', 'items.id')
+                        // ->leftJoin($prevqty, 'prevqty.item_id', '=', 'items.id')
                         ->select(
-                                    'items.name', 'items.remark', 'items.product_id',
-                                    'thisamount.thisamount AS thisamount', 'thisqty.thisqty AS thisqty'
+                                    'items.name AS product_name', 'items.remark', 'items.product_id',
+                                    'thistotal.amount AS amount', 'thistotal.qty AS qty', 'thistotal.profile_name'
+                                    // 'prevqty.qty AS prevqty'
                                 );
         // reading whether search input is filled
         if($request->cust_id or $request->delivery_from or $request->product_id or $request->company or $request->delivery_to or $request->product_name) {
@@ -411,8 +424,6 @@ class DetailRptController extends Controller
                 $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $total_amount = $this->calDBTransactionTotal($items);
-        $delivery_total = $this->calDBDeliveryTotal($items);
 
         if($pageNum == 'All'){
             $items = $items->latest('items.created_at')->get();
@@ -420,12 +431,68 @@ class DetailRptController extends Controller
             $items = $items->latest('items.created_at')->paginate($pageNum);
         }
 
-        $caldata = $this->calAllTotal($items);
+        // $totals_arr = $this->calItemTotals($items);
 
         $data = [
-            'total_inv_amount' => $caldata['total_inv_amount'],
-            'total_gst' => $caldata['total_gst'],
-            'total_amount' => $caldata['total_amount'],
+            // 'total_qty' => $totals_arr['total_qty'],
+            // 'total_amount' => $totals_arr['total_amount'],
+            'items' => $items,
+        ];
+
+        return $data;
+    }
+
+    // retrieve the product detail for day api(FormRequest $request)
+    public function getSalesProductDetailDayApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id FROM deals LEFT JOIN transactions ON transactions.id=deals.transaction_id LEFT JOIN people ON people.id=transactions.person_id WHERE 1=1";
+
+        if($request->delivery_from) {
+            $amountstr = $amountstr." AND delivery_date >= '".$request->delivery_from."'";
+        }
+        if($request->delivery_to) {
+            $amountstr = $amountstr." AND delivery_date <= '".$request->delivery_to."'";
+        }
+        if($request->cust_id) {
+            $amountstr = $amountstr." AND people.cust_id LIKE '%".$request->cust_id."%'";
+        }
+        if($request->company) {
+            $amountstr = $amountstr." AND people.company LIKE '%".$request->company."%'";
+        }
+        $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");
+
+        $items = DB::table('items')
+                        ->leftJoin($totals, 'items.id', '=', 'totals.item_id')
+                        ->select(
+                                    'items.name AS product_name', 'items.remark', 'items.product_id',
+                                    'totals.thisamount AS amount', 'totals.thisqty AS qty'
+                                );
+        // reading whether search input is filled
+        if($request->cust_id or $request->delivery_from or $request->product_id or $request->company or $request->delivery_to or $request->product_name) {
+            $items = $this->searchItemDBFilter($items, $request);
+        }else{
+            if($request->sortName){
+                $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            }
+        }
+
+        if($pageNum == 'All'){
+            $items = $items->latest('items.created_at')->get();
+        }else{
+            $items = $items->latest('items.created_at')->paginate($pageNum);
+        }
+
+        $totals_arr = $this->calItemTotals($items);
+
+        $data = [
+            'total_qty' => $totals_arr['total_qty'],
+            'total_amount' => $totals_arr['total_amount'],
             'items' => $items,
         ];
 
@@ -619,13 +686,31 @@ class DetailRptController extends Controller
     // conditional filter items parser(Collection $query, Formrequest $request)
     private function searchItemDBFilter($items, $request)
     {
-        $cust_id = $request->cust_id;
-        $delivery_from = $request->delivery_from;
         $product_id = $request->product_id;
-        $company = $request->company;
-        $delivery_to = $request->delivery_to;
         $product_name = $request->product_name;
 
+        if($product_id) {
+            $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
+        }
+        if($product_name) {
+            $items = $items->where('items.name', 'LIKE', '%'.$product_name.'%');
+        }
         return $items;
+    }
+
+    // retrieve total amount and qty for the items product detail daily(Collection $items)
+    private function calItemTotals($query)
+    {
+        $query_total = clone $query;
+        $query_qty = clone $query;
+
+        $total_amount = $query_total->sum('amount');
+        $total_qty = $query_qty->sum('qty');
+        $totals = [
+            'total_amount' => $total_amount,
+            'total_qty' => $total_qty
+        ];
+
+        return $totals;
     }
 }

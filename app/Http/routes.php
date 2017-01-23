@@ -194,6 +194,7 @@ Route::post('/api/detailrpt/account/paysummary', 'DetailRptController@getAccount
 Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
 Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCustdetailApi');
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
+Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

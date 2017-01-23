@@ -94,21 +94,25 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData_productday()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
-            <div class="col-md-5 col-xs-5">
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
                 Total Amount:
             </div>
-            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_amount | currency: "": 2}}</strong>
             </div>
-            <div class="col-md-5 col-xs-5">
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
                 Total Qty:
             </div>
-            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_qty }}</strong>
             </div>
+        </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
@@ -122,7 +126,7 @@
     </div>
 </div>
 
-    <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_productday" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
@@ -145,14 +149,14 @@
                     #
                 </th>
 
-                <th class="col-md-2 text-center">
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
                     Product ID
                     <span ng-if="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
 
-                <th class="col-md-5 text-center">
+                <th class="col-md-6 text-center">
                     <a href="" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
                     Product Name
                     <span ng-if="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -176,21 +180,24 @@
 
             <tbody>
 
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="product_detail_day" total-items="totalCount" current-page="currentPage">
-                    <td class="col-md-2 text-center">
+                <tr dir-paginate="item in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="product_detail_day" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
                         @{{ $index + indexFrom }}
                     </td>
-                    <td class="col-md-2 text-center">
-                        @{{ transaction.product_id }}
+                    <td class="col-md-1 text-center">
+                        @{{ item.product_id }}
                     </td>
-                    <td class="col-md-5 text-left">
-                        @{{ transaction.product_name }}
+                    <td class="col-md-6 text-left">
+                        @{{ item.product_name }}
+                        <span ng-if="item.remark">
+                            - @{{ item.remark }}
+                        </span>
                     </td>
                     <td class="col-md-2 text-right">
-                        @{{ transaction.amount }}
+                        @{{ item.amount }}
                     </td>
                     <td class="col-md-2 text-right">
-                        @{{ transaction.qty }}
+                        @{{ item.qty | currency: "": 4}}
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">

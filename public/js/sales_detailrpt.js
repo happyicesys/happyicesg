@@ -198,6 +198,83 @@ var app = angular.module('app', [
         }
     }*/
 
+    function productMonthDetailController($scope, $http){
+        // init the variables
+        $scope.alldata = [];
+        $scope.totalCount = 0;
+        $scope.totalPages = 0;
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.indexFrom = 0;
+        $scope.indexTo = 0;
+        $scope.sortBy = true;
+        $scope.sortName = '';
+        $scope.today = moment().format("YYYY-MM-DD");
+        $scope.search = {
+            profile_id: '',
+            current_month: moment().month()+1 + '-' + moment().year(),
+            product_id: '',
+            product_name: '',
+            pageNum: 100,
+        }
+        // init page load
+        getPage(1, true);
+
+        angular.element(document).ready(function () {
+            $('.select').select2();
+        });
+
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_productmonth').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "Product Detail(Month)"+ now + ".xls");
+        };
+
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+          // when hitting search button
+        $scope.searchDB = function(){
+            $scope.sortName = '';
+            $scope.sortBy = '';
+            getPage(1, false);
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber, first){
+            $scope.spinner = true;
+            $http.post('/api/detailrpt/sales/productmonth?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.items.data){
+                    $scope.alldata = data.items.data;
+                    $scope.totalCount = data.items.total;
+                    $scope.currentPage = data.items.current_page;
+                    $scope.indexFrom = data.items.from;
+                    $scope.indexTo = data.items.to;
+                }else{
+                    $scope.alldata = data.items;
+                    $scope.totalCount = data.items.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.items.length;
+                }
+                $scope.All = data.items.length;
+                // $scope.total_amount = data.total_amount;
+                // $scope.total_qty = data.total_qty.toFixed(4);
+                $scope.spinner = false;
+            });
+        }
+    }
+
     function productDayDetailController($scope, $http){
         // init the variables
         $scope.alldata = [];
@@ -225,6 +302,20 @@ var app = angular.module('app', [
         angular.element(document).ready(function () {
             $('.select').select2();
         });
+
+        $scope.onDeliveryFromChanged = function(date){
+            if(date){
+                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.onDeliveryToChanged = function(date){
+            if(date){
+                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_productday').innerHTML], {
@@ -256,22 +347,22 @@ var app = angular.module('app', [
         function getPage(pageNumber, first){
             $scope.spinner = true;
             $http.post('/api/detailrpt/sales/productday?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-                if(data.transactions.data){
-                    $scope.alldata = data.transactions.data;
-                    $scope.totalCount = data.transactions.total;
-                    $scope.currentPage = data.transactions.current_page;
-                    $scope.indexFrom = data.transactions.from;
-                    $scope.indexTo = data.transactions.to;
+                if(data.items.data){
+                    $scope.alldata = data.items.data;
+                    $scope.totalCount = data.items.total;
+                    $scope.currentPage = data.items.current_page;
+                    $scope.indexFrom = data.items.from;
+                    $scope.indexTo = data.items.to;
                 }else{
-                    $scope.alldata = data.transactions;
-                    $scope.totalCount = data.transactions.length;
+                    $scope.alldata = data.items;
+                    $scope.totalCount = data.items.length;
                     $scope.currentPage = 1;
                     $scope.indexFrom = 1;
-                    $scope.indexTo = data.transactions.length;
+                    $scope.indexTo = data.items.length;
                 }
-                $scope.All = data.transactions.length;
+                $scope.All = data.items.length;
                 $scope.total_amount = data.total_amount;
-                $scope.total_qty = data.total_qty;
+                $scope.total_qty = data.total_qty.toFixed(4);
                 $scope.spinner = false;
             });
         }
@@ -303,4 +394,5 @@ app.config(function ($provide){
 
 app.controller('custDetailController', custDetailController);
 /*app.controller('custOutstandingController', custOutstandingController);*/
+app.controller('productMonthDetailController', productMonthDetailController);
 app.controller('productDayDetailController', productDayDetailController);
