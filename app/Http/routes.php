@@ -112,6 +112,7 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::get('/person/replicate/{person_id}', 'PersonController@replicatePerson');
 Route::get('/person/user/{user_id}', 'PersonController@getPersonUserId');
 Route::post('/person/{person_id}/note', 'PersonController@storeNote');
 Route::get('/person/specific/data/{person_id}', 'PersonController@getPersonData');

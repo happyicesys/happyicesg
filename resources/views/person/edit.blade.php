@@ -22,8 +22,18 @@
             @else
                 [Inactive]
             @endif
-
-            <a href="/person/log/{{$person->id}}" class="btn btn-warning pull-right">Log History</a>
+            <div class="pull-right">
+                {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
+                <a href="/person/replicate/{{$person->id}}" class="btn btn-default">
+                    <i class="fa fa-files-o"></i> <span class="hidden-xs">Replicate</span>
+                </a>
+                <a href="/person/log/{{$person->id}}" class="btn btn-warning">
+                    <i class="fa fa-history"></i> <span class="hidden-xs">Log History</span>
+                </a>
+            </div>
+            {!! Form::open(['id'=>'person_transaction', 'method'=>'POST', 'action'=>['TransactionController@store']]) !!}
+                {!! Form::hidden('person_id', $person->id) !!}
+            {!! Form::close() !!}
             </h3>
         </div>
 

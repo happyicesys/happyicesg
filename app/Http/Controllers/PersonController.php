@@ -251,4 +251,27 @@ class PersonController extends Controller
         // return [''] + $members;
         return $members;
     }
+
+    // replicate the person particulars(int $person_id)
+    public function replicatePerson($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+        $rep_person = $person->replicate();
+        $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id.'-replicate-%');
+        $rep_person->cust_id = $find_already_replicate->first() ?  substr($find_already_replicate->max('cust_id'), 0, -1).(substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id.'-replicate-1';
+        $rep_person->save();
+
+        // replicate pricelist
+        $prices = $person->prices;
+        foreach($prices as $price) {
+            $rep_price = new Price();
+            $rep_price->retail_price = $price->retail_price;
+            $rep_price->quote_price = $price->quote_price;
+            $rep_price->remark = $price->remark;
+            $rep_price->person_id = $rep_person->id;
+            $rep_price->item_id = $price->item_id;
+            $rep_price->save();
+        }
+        return Redirect::action('PersonController@edit', $rep_person->id);
+    }
 }
