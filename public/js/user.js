@@ -104,6 +104,33 @@ var app = angular.module('app', [
         }
     }
 
+    function custCategoryController($scope, $http) {
+        $scope.currentPage5 = 1;
+        $scope.itemsPerPage5 = 100;
+
+        $http.get('/custcat/data').success(function(custcats) {
+            $scope.custcats = custcats;
+        });
+
+        $scope.confirmDelete5 = function(id){
+            var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
+            if(isConfirmDelete){
+                $http({
+                    method: 'DELETE',
+                    url: '/custcat/data/' + id
+                })
+                .success(function(data){
+                    location.reload();
+                })
+                .error(function(data){
+                    alert('Unable to delete');
+                })
+            }else{
+                return false;
+            }
+        }
+    }
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -128,21 +155,24 @@ function repeatController4($scope) {
     })
 }
 
+function repeatController5($scope) {
+    $scope.$watch('$index', function(index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage5 - 1) * $scope.itemsPerPage5;
+    })
+}
 
 app.controller('userController', userController);
+app.controller('custCategoryController', custCategoryController);
 app.controller('repeatController', repeatController);
 app.controller('repeatController2', repeatController2);
 app.controller('repeatController3', repeatController3);
 app.controller('repeatController4', repeatController4);
+app.controller('repeatController5', repeatController5);
 
 $(function() {
-    // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        // save the latest tab; use cookies if you like 'em better:
         localStorage.setItem('lastTab', $(this).attr('href'));
     });
-
-    // go to the latest tab, if it exists:
     var lastTab = localStorage.getItem('lastTab');
     if (lastTab) {
         $('[href="' + lastTab + '"]').tab('show');

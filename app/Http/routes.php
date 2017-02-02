@@ -125,6 +125,7 @@ Route::get('/person/profile/{person_id}', 'PersonController@getProfile');
 Route::get('/person/log/{person_id}', 'PersonController@generateLogs');
 Route::get('person/transac/{person_id}', 'PersonController@showTransac');
 Route::get('/person/data', 'PersonController@getData');
+Route::delete('/person/{id}', 'PersonController@destroy');
 Route::delete('/person/data/{id}', 'PersonController@destroyAjax');
 Route::resource('person', 'PersonController');
 Route::post('person/{id}/file', 'PersonController@addFile');
@@ -208,6 +209,10 @@ Route::resource('accessory', 'AccessoryController');
 Route::get('/payterm/data', 'PaytermController@getData');
 Route::delete('/payterm/data/{id}', 'PaytermController@destroyAjax');
 Route::resource('payterm', 'PaytermController');
+
+Route::get('/custcat/data', 'CustcategoryController@getData');
+Route::delete('/custcat/data/{id}', 'CustcategoryController@destroyAjax');
+Route::resource('custcat', 'CustcategoryController');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');

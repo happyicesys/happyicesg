@@ -18,10 +18,9 @@
 
                     <div class="pull-left display_num">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='70'" ng-change="pageNumChanged()">
-                            <option ng-value="10">10</option>
-                            <option ng-value="30">30</option>
-                            <option ng-value="70">70</option>
+                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                            <option ng-value="100">100</option>
+                            <option ng-value="200">200</option>
                             <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
@@ -238,6 +237,13 @@
                                 </th>
 
                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'custcategory_id'; sortReverse = !sortReverse">
+                                    Cust Cat
+                                    <span ng-if="sortType == 'custcategory_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-if="sortType == 'custcategory_id' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     ID Name
                                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
@@ -322,7 +328,7 @@
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-
+                                    <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
                                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}

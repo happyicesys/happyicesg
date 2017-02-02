@@ -59,6 +59,7 @@ class Person extends Baum\Node
         'cust_type' => 'Role Level',
         'time_range' => 'Available Time Range',
         'block_coverage' => 'Block Coverage',
+        'custcategory_id' => 'Customer Category'
     );
 
 
@@ -72,7 +73,8 @@ class Person extends Baum\Node
     'note', 'salutation', 'dob',
     'cust_type', 'user_id', 'parent_name',
     'parent_id', 'block', 'floor',
-    'unit', 'time_range', 'block_coverage'
+    'unit', 'time_range', 'block_coverage',
+    'custcategory_id'
     ];
 
     /**
@@ -107,6 +109,11 @@ class Person extends Baum\Node
     public function setParentIdAttribute($value)
     {
         $this->attributes['parent_id'] = $value ?: null;
+    }
+
+    public function setCustcategoryIdAttribute($value)
+    {
+        $this->attributes['custcategory_id'] = $value ?: null;
     }
 
     public function roles()

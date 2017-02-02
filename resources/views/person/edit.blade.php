@@ -24,9 +24,11 @@
             @endif
             <div class="pull-right">
                 {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
-                <a href="/person/replicate/{{$person->id}}" class="btn btn-default">
-                    <i class="fa fa-files-o"></i> <span class="hidden-xs">Replicate</span>
-                </a>
+                @if(Auth::user()->hasRole('admin'))
+                    <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
+                        <i class="fa fa-files-o"></i> <span class="hidden-xs">Replicate</span>
+                    </a>
+                @endif
                 <a href="/person/log/{{$person->id}}" class="btn btn-warning">
                     <i class="fa fa-history"></i> <span class="hidden-xs">Log History</span>
                 </a>
@@ -48,18 +50,24 @@
                         @endcannot
                         <a href="/person" class="btn btn-default">Cancel</a>
                     </div>
-                    <div class="pull-left row">
-                        <div class="col-md-5" style="margin-left: 3px">
+                    <div class="pull-left">
                         @cannot('transaction_view')
                             @if($person->active == 'Yes')
                                 {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
                             @else
-                                {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
+                                <div class="btn-group">
+                                    {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
+                                    @if(Auth::user()->hasRole('admin'))
+                                        {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_person']) !!}
+                                    @endif
+                                </div>
                             @endif
                         @endcannot
-                        </div>
                     </div>
                 </div>
+            {!! Form::close() !!}
+
+            {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['PersonController@destroy', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
             {!! Form::close() !!}
         </div>
     </div>
@@ -494,19 +502,7 @@ $(document).ready(function() {
 $('.select').select2({
     placeholder:'Select...'
 });
-/*
-    $('.selectCreate').select2({
-        tags:true,
 
-        createTag: function(newItem){
-
-         return {
-                    id: 'new:' + newItem.term,
-                    text: newItem.term + ' [new]'
-                };
-        }
-
-    }); */
 </script>
 <script src="/js/person_edit.js"></script>
 

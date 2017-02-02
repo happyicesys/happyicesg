@@ -53,6 +53,8 @@ class CreatePeopleTable extends Migration
             // recording which profile person belongs
             $table->integer('profile_id')->unsigned();
             $table->foreign('profile_id')->references('id')->on('profiles');
+            $table->integer('custcategory_id')->unsigned()->nullable();
+            $table->foreign('custcategory_id')->references('id')->on('custcategories')->onDelete('set null');
 
         });
     }

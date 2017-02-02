@@ -9,21 +9,22 @@
     </div>
 
 
-<div class="panel panel-warning" ng-app="app" ng-controller="userController">
+<div class="panel panel-warning" ng-app="app">
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
             <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
             <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
             <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+            <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
         </ul>
     </div>
 
     <div class="panel-body">
         <div class="tab-content">
             {{-- first element --}}
-            <div class="tab-pane active" id="data">
-                <div class="panel panel-default">
+            <div class="tab-pane active" id="data" >
+                <div class="panel panel-default" ng-controller="userController">
                     <div class="panel-heading">
                         <div class="panel-title">
 
@@ -136,7 +137,7 @@
             {{-- end of first element--}}
             {{-- second element --}}
             <div class="tab-pane" id="freezer">
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-controller="userController">
                     <div class="panel-heading">
                         <div class="panel-title">
 
@@ -210,7 +211,7 @@
             {{-- end of second element --}}
             {{-- start of third element --}}
             <div class="tab-pane" id="accessory">
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-controller="userController">
                     <div class="panel-heading">
                         <div class="panel-title">
 
@@ -284,7 +285,7 @@
             {{-- end of third element--}}
             {{-- start of fourth element --}}
             <div class="tab-pane" id="payterm">
-                <div class="panel panel-default">
+                <div class="panel panel-default" ng-controller="userController">
                     <div class="panel-heading">
                         <div class="panel-title">
 
@@ -360,6 +361,12 @@
                 </div>
             </div>
             {{-- end of fourth element--}}
+
+            {{-- fifth element --}}
+            <div class="tab-pane" id="cust_cat" ng-controller="custCategoryController">
+                @include('user.custcat_template')
+            </div>
+            {{-- end of fifth element --}}
     </div>
 </div>
 

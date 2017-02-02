@@ -55,18 +55,19 @@ class TransactionController extends Controller
         if($request->pageNum){
             $pageNum = $request->pageNum;
         }else{
-            $pageNum = 70;
+            $pageNum = 100;
         }
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->select(
                                     'transactions.id', 'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total', 'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
-                                    'profiles.gst', 'transactions.delivery_fee'
+                                    'profiles.gst', 'transactions.delivery_fee', 'custcategories.name as custcategory'
                                 );
 
         // reading whether search input is filled
@@ -1129,8 +1130,8 @@ class TransactionController extends Controller
         $query1 = clone $query;
         $query2 = clone $query;
 
-        $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_amount = $query2->where('profiles.gst', 1)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $nonGst_amount = $query1->where('profiles.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $gst_amount = $query2->where('profiles.gst', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
 
@@ -1141,7 +1142,7 @@ class TransactionController extends Controller
     private function calDBDeliveryTotal($query)
     {
         $query3 = clone $query;
-        $delivery_fee = $query3->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
+        $delivery_fee = $query3->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
         return $delivery_fee;
     }
 }

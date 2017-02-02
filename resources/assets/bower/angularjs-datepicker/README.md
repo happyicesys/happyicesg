@@ -15,7 +15,7 @@ AngularJS v1.3+
 
 ###Browser support
 
-![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)
+Chrome | Firefox | IE | Opera | Safari
 --- | --- | --- | --- | --- |
  ✔ | ✔ | IE9 + | ✔ | ✔ |
 
@@ -87,12 +87,14 @@ date-max-limit="" | String | false | Set a maximum date limit - you can use all 
 date-set-hidden="" | String(Boolean) | false | Set the default date to be shown only in calendar and not in the input field
 date-disabled-dates="" | String([Date(), Date(), ...]) | false | Disable specific dates using an _Array_ of dates
 date-refocus="" | String(Boolean) | false | Set the datepicker to re-focus the input after selecting a date
-date-typer="" | String(Boolean) | false | Set the datepicker to update calendar date when user is typing a date, see validation [tips](#date-validation) 
+date-typer="" | String(Boolean) | false | Set the datepicker to update calendar date when user is typing a date, see validation [tips](#date-validation)
+date-week-start-day="" | String(Number) | 0 | Set the first day of the week. Must be an integer between 0 (Sunday) and 6 (Saturday). (e.g. 1 for Monday)
 datepicker-class="" | String('class1 class2 class3') | false | Set custom class/es for the datepicker calendar
 datepicker-append-to="" | String('#id','.classname', 'body') | false | Append the datepicker to #id or  .class element or to body
 datepicker-toggle="" | String(Boolean) | true | Set the datepicker to toggle its visibility on focus and blur
 datepicker-show="" | String | false | Trigger the datepicker visibility, if true datepicker is shown if false it is hidden
  |  | | **tip:** _You may use this option together with datepicker-toggle="false" for a stable behavior_
+datepicker-mobile="" | String | true | Set to `false` to force override of mobile styles. Especially useful for using desktop-style pagination control in mobile apps.
 
 ##Options
 Angular datepicker allows you to use some options via `attribute` data
@@ -193,14 +195,14 @@ You can show validation errors simply validating the ngModel, as you would do fo
 ```javascript
 .controller('Ctrl', ['$scope', function ($scope) {
   var liveDate;
-  
+
   $scope.$watch('myDate', function (value) {
     try {
      liveDate = new Date(value);
     } catch(e) {}
-    
+
     if (!liveDate) {
-    
+
       $scope.error = "This is not a valid date";
     } else {
       $scope.error = false;
