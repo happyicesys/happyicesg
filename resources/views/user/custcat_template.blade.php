@@ -7,7 +7,6 @@
                 <select ng-model="itemsPerPage5" ng-init="itemsPerPage5='100'">
                   <option>100</option>
                   <option>200</option>
-                  <option>300</option>
                 </select>
                 <label for="display_num2" style="padding-right: 20px">per Page</label>
             </div>
@@ -38,9 +37,16 @@
                     </th>
                     <th class="col-md-9">
                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                        Name
+                        Category
                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </th>
+                    <th class="col-md-9">
+                        <a href="#" ng-click="sortType = 'desc'; sortReverse = !sortReverse">
+                        Description
+                        <span ng-show="sortType == 'desc' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'desc' && sortReverse" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-2 text-center">
@@ -51,7 +57,9 @@
                 <tbody>
                      <tr dir-paginate="custcat in custcats | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage5" pagination-id="custcat" current-page="currentPage5" ng-controller="repeatController5">
                         <td class="col-md-1 text-center">@{{ number }} </td>
-                        <td class="col-md-9">@{{ custcat.name }}</td>
+                        <td class="col-md-4">@{{ custcat.name }}</td>
+                        <td class="col-md-5">@{{ custcat.desc }}</td>
+
                         <td class="col-md-2 text-center">
                             <a href="/custcat/@{{ custcat.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete5(custcat.id)">Delete</button>

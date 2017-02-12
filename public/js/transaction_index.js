@@ -23,12 +23,25 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
         // $scope.delivery_date = '';
         $scope.search = {
+            id: '',
+            cust_id: '',
+            company: '',
+            status: '',
+            pay_status: '',
+            updated_by: '',
+            updated_at: '',
             delivery_from: $scope.today,
             delivery_to: $scope.today,
+            driver: '',
+            custcategory: ''
         }
         $scope.updated_at = '';
         // init page load
         getPage(1, true);
+
+        angular.element(document).ready(function () {
+            $('.select').select2();
+        });
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
@@ -80,12 +93,13 @@ var app = angular.module('app', [
                 delivery_from: $scope.search.delivery_from,
                 delivery_to: $scope.search.delivery_to,
                 driver: $scope.search.driver,
+                custcategory: $scope.search.custcategory,
                 profile: $scope.search.profile_id,
             };
             $scope.sortName = '';
             $scope.sortBy = '';
 
-            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_from || $scope.search.delivery_to || $scope.search.driver || $scope.search.profile_id){
+            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_from || $scope.search.delivery_to || $scope.search.driver || $scope.search.profile_id || $scope.search.custcategory){
                 if($.isEmptyObject($scope.datasetTemp)){
                     $scope.datasetTemp = $scope.alldata;
                     $scope.totalCountTemp = $scope.totalCount;

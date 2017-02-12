@@ -35,7 +35,7 @@
                 <td>{{$transaction->cust_id}}</td>
                 <td>{{$transaction->company}}</td>
                 {{-- <td>{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</td> --}}
-                <td>{{Carbon\Carbon::parse($transaction->order_date)->format('Y-m-d')}}</td>
+                <td>{{Carbon\Carbon::parse($transaction->delivery_date)->format('Y-m-d')}}</td>
                 <td>
                     {{$transaction->total}}
                 </td>

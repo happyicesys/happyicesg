@@ -131,6 +131,11 @@ class Person extends Baum\Node
         return $this->belongsToMany(Accessory::class);
     }
 
+    public function custcategory()
+    {
+        return $this->belongsTo('App\Custcategory');
+    }
+
     //select field populate selected
     public function getRoleListAttribute()
     {

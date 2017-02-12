@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Custcategory extends Model
 {
     protected $fillable = [
-    	'name'
+    	'name', 'desc'
     ];
+
+    // relationships
+    public function people()
+    {
+    	return $this->hasMany('App\Person');
+    }
 }

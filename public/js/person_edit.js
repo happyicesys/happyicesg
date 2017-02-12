@@ -1,49 +1,120 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.select', 'ngSanitize']);
+var app = angular.module('app', [
+                                    'angularUtils.directives.dirPagination',
+                                    'ui.select',
+                                    'ngSanitize',
+                                    '720kb.datepicker',
+                                    'datePicker'
+                                ]);
 
     function personEditController($scope, $http){
+        // init the variables
+        $scope.alldata = [];
+        $scope.datasetTemp = {};
+        $scope.totalCountTemp = {};
+        $scope.totalCount = 0;
+        $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 10;
+        $scope.itemsPerPage = 100;
+        $scope.indexFrom = 0;
+        $scope.indexTo = 0;
+        $scope.sortBy = true;
+        $scope.sortName = '';
+        $scope.headerTemp = '';
+        $scope.today = moment().format("YYYY-MM-DD");
+        $scope.search = {
+            id: '',
+            status: '',
+            pay_status: '',
+            updated_by: '',
+            updated_at: '',
+            delivery_date: '',
+            driver: '',
+            pageNum: 100,
+        }
+        $scope.total_amount = 0.00;
+        $scope.total_paid = 0.00;
+        $scope.total_owe = 0.00;
+        // init page load
+        getPage(1, true);
 
         angular.element(document).ready(function () {
+            $('.select').select2();
+        });
 
+        $scope.onUpdatedAtChanged = function(date){
+            if(date){
+                $scope.search.updated_at = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+        $scope.onDeliveryDateChanged = function(date){
+            if(date){
+                $scope.search.delivery_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "TransactionRpt"+ now + ".xls");
+        };
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+          // when hitting search button
+        $scope.searchDB = function(){
+            $scope.sortName = '';
+            $scope.sortBy = '';
+            getPage(1, false);
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber, first){
+            $scope.spinner = true;
+            $http.post('/person/transac/' + $('#person_id').val() +'?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.transactions.data){
+                    $scope.alldata = data.transactions.data;
+                    $scope.totalCount = data.transactions.total;
+                    $scope.currentPage = data.transactions.current_page;
+                    $scope.indexFrom = data.transactions.from;
+                    $scope.indexTo = data.transactions.to;
+                }else{
+                    $scope.alldata = data.transactions;
+                    $scope.totalCount = data.transactions.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.transactions.length;
+                }
+                // get total count
+                $scope.All = data.transactions.length;
+
+                // return total amount
+                $scope.total_amount = data.total_amount;
+                $scope.total_paid = data.total_paid;
+                $scope.total_owe = data.total_owe;
+                $scope.spinner = false;
+            });
+        }
+
+/*
             $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
                 $scope.transactions = transactions;
                 $scope.All = transactions.length;
-            });
-
-            //delete record
-            $scope.confirmDelete = function(id){
-                var isConfirmDelete = confirm('Are you sure you want to delete the entry');
-                if(isConfirmDelete){
-                    $http({
-                        method: 'DELETE',
-                        url: '/transaction/data/' + id
-                    })
-                    .success(function(data){
-                        location.reload();
-                    })
-                    .error(function(data){
-                        alert('Unable to delete');
-                    })
-                }else{
-                    return false;
-                }
-            }
+            });*/
 
 
-
-            $scope.exportData = function () {
-                var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
-                    type: "application/vnd.ms-excel;charset=charset=utf-8"
-                });
-                var now = Date.now();
-                saveAs(blob, "TransactionRpt"+ now + ".xls");
-            };
-
-            $http.get('/item/data').success(function(items){
-                $scope.items = items;
-            });
-
+        $http.get('/item/data').success(function(items){
+            $scope.items = items;
         });
 
         $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){

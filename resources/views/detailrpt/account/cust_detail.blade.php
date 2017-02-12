@@ -191,7 +191,6 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-
                 <th class="col-md-1 text-center">
                     #
                 </th>

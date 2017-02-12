@@ -37,10 +37,52 @@ class PersonController extends Controller
 
     public function getData()
     {
-        $person =  Person::where(function($query){
+        $person =  Person::with('custcategory')->where(function($query){
             $query->where('cust_id', 'NOT LIKE', 'H%');
         })->orderBy('cust_id')->get();
         return $person;
+    }
+
+    // retrieve api data list for the person index (Formrequest $request)
+    public function getPeopleApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+        $people = DB::table('people')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+                        ->select(
+                                    'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact',
+                                    'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active',
+                                    'custcategories.name as custcategory'
+                                );
+
+        // reading whether search input is filled
+        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active){
+            $people = $this->searchPeopleDBFilter($people, $request);
+        }else{
+            if($request->sortName){
+                $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            }
+        }
+
+        // condition (exclude all H code)
+        $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
+
+        if($pageNum == 'All'){
+            $people = $people->latest('people.created_at')->get();
+        }else{
+            $people = $people->latest('people.created_at')->paginate($pageNum);
+        }
+
+        $data = [
+            'people' => $people,
+        ];
+
+        return $data;
     }
 
     public function getPersonUserId($user_id)
@@ -142,32 +184,62 @@ class PersonController extends Controller
         }
     }
 
-    public function showTransac($person_id)
+    public function showTransac(Request $request, $person_id)
     {
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
         $person = Person::findOrFail($person_id);
         if($person->cust_id[0] === 'H') {
             $transactions1 = DB::table('dtdtransactions')
                             ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->select('dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst')
+                            ->select(
+                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total*107/100 + dtdtransactions.delivery_fee ELSE dtdtransactions.total*107/100 END) ELSE (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total + dtdtransactions.delivery_fee ELSE dtdtransactions.total END) END, 2) AS total'),
+                                'dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst')
                             ->where('people.id', '=', $person_id);
 
             $transactions2 = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                            ->select(
+                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                'transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
                             ->where('people.id', '=', $person_id);
-            $transactions = $transactions1->union($transactions2)->orderBy('created_at', 'desc')->get();
+            $transactions = $transactions1->union($transactions2);
         }else{
             $transactions = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->select('transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
-                            ->where('people.id', '=', $person_id)
-                            ->latest('created_at')
-                            ->get();
+                            ->select(
+                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                'transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                            ->where('people.id', '=', $person_id);
         }
-        return $transactions;
+
+        // reading whether search input is filled
+        if($request->id or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
+        }else{
+            if($request->sortName){
+                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            }
+        }
+        $totals = $this->calTotals($transactions);
+
+        if($pageNum == 'All'){
+            $transactions = $transactions->latest('transactions.created_at')->get();
+        }else{
+            $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
+        }
+
+        $data = [
+            'total_amount' => $totals['total_amount'],
+            'total_paid' => $totals['total_paid'],
+            'total_owe' => $totals['total_owe'],
+            'transactions' => $transactions,
+        ];
+
+        return $data;
     }
 
     public function generateLogs($id)
@@ -273,5 +345,90 @@ class PersonController extends Controller
             $rep_price->save();
         }
         return Redirect::action('PersonController@edit', $rep_person->id);
+    }
+
+    // conditional filter parser(Collection $query, Formrequest $request)
+    private function searchPeopleDBFilter($people, $request)
+    {
+        $cust_id = $request->cust_id;
+        $custcategory = $request->custcategory;
+        $company = $request->company;
+        $contact = $request->contact;
+        $active = $request->active;
+
+        if($cust_id){
+            $people = $people->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($custcategory){
+            $people = $people->where('custcategories.id', $custcategory);
+        }
+        if($company){
+            $people = $people->where('people.company', 'LIKE', '%'.$company.'%');
+        }
+        if($contact){
+            $people = $people->where(function($query) use ($contact) {
+                $query->where('people.contact', 'LIKE', '%'.$contact.'%')->orWhere('people.alt_contact', 'LIKE', '%'.$contact.'%');
+            });
+        }
+        if($active){
+            $people = $people->where('people.active', 'LIKE', '%'.$active.'%');
+        }
+        return $people;
+    }
+
+    // conditional filter parser for transactions(Collection $query, Formrequest $request)
+    private function searchTransactionDBFilter($transactions, $request)
+    {
+        $id = $request->id;
+        $status = $request->status;
+        $pay_status = $request->pay_status;
+        $updated_by = $request->updated_by;
+        $updated_at = $request->updated_at;
+        $delivery_date = $request->delivery_date;
+        $driver = $request->driver;
+
+        if($id){
+            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.$id.'%');
+        }
+        if($status){
+            $transactions = $transactions->where('transactions.status', 'LIKE', '%'.$status.'%');
+        }
+        if($pay_status){
+            $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.$pay_status.'%');
+        }
+        if($updated_by){
+            $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.$updated_by.'%');
+        }
+        if($updated_at){
+            $transactions = $transactions->whereDate('transactions.updated_at', '=', $updated_at);
+        }
+        if($delivery_date){
+            $transactions = $transactions->where('transactions.delivery_date', $delivery_date);
+        }
+        if($driver){
+            $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$driver.'%');
+        }
+        return $transactions;
+    }
+
+    // calculate transactions totals (Collection $transactiions)
+    private function calTotals($query)
+    {
+        $total_amount = 0;
+        $total_paid = 0;
+        $total_owe = 0;
+        $query1 = clone $query;
+        $query2 = clone $query;
+        $query3 = clone $query;
+
+        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        $totals = [
+            'total_amount' => $total_amount,
+            'total_paid' => $total_paid,
+            'total_owe' => $total_owe
+        ];
+        return $totals;
     }
 }

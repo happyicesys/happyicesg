@@ -1,4 +1,5 @@
 @inject('profiles', 'App\Profile')
+@inject('custcategories', 'App\Custcategory')
 
 @extends('template')
 @section('title')
@@ -132,18 +133,6 @@
                             />
                         </datepicker>
                     </div>
-{{--                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
-                        <datepicker date-set="@{{today}}">
-                            <input
-                                type = "text"
-                                class = "form-control input-sm"
-                                placeholder = "Delivery Date"
-                                ng-model = "search.delivery_date"
-                                ng-change = "dateChange(search.delivery_date)"
-                            />
-                        </datepicker>
-                    </div> --}}
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
                         <datepicker>
@@ -158,7 +147,6 @@
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('delivery_to', 'Delivery To:', ['class'=>'control-label search-title']) !!}
-                        {{-- <datepicker date-set="@{{today}}"> --}}
                         <datepicker>
                             <input
                                 type = "text"
@@ -180,6 +168,16 @@
                                                             'placeholder'=>'Delivered By',
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('custcategory', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                            [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.custcategory',
+                            'ng-change'=>'searchDB()'
+                            ])
+                        !!}
                     </div>
                 </div>
 
@@ -205,7 +203,6 @@
                 </div>
                     <div class="table-responsive" id="exportable">
                         <table class="table table-list-search table-hover table-bordered">
-
                             {{-- hidden table for excel export --}}
                             <tr class="hidden">
                                 <td></td>
@@ -215,111 +212,93 @@
                             <tr class="hidden" data-tableexport-display="always">
                                 <td></td>
                             </tr>
-
                             <tr style="background-color: #DDFDF8">
-
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
                                     INV #
                                     <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
                                     ID
                                     <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'custcategory_id'; sortReverse = !sortReverse">
                                     Cust Cat
                                     <span ng-if="sortType == 'custcategory_id' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'custcategory_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     ID Name
                                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
                                     Del Postcode
                                     <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                                     Status
                                     <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
                                     Delivery Date
                                     <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
                                     Delivered By
                                     <span ng-if="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
                                     Total Amount
                                     <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
                                     Total Qty
                                     <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
                                     Payment
                                     <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                                     Last Modified By
                                     <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
                                     Last Modified Time
                                     <span ng-if="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
-
                                 <th class="col-md-1 text-center">
                                     Action
                                 </th>
                             </tr>
-
                             <tbody>
-
                                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
@@ -334,9 +313,7 @@
                                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                                         </a>
                                     </td>
-
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
-
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
@@ -389,13 +366,9 @@
                                         @endcannot --}}
                                     </td>
                                 </tr>
-
                                 <tr ng-if="!alldata || alldata.length == 0">
-
                                     <td colspan="14" class="text-center">No Records Found</td>
-
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>
