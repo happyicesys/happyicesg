@@ -200,16 +200,13 @@ class DetailRptController extends Controller
                                     DB::raw('(CASE WHEN profiles.gst=1 THEN (transactions.total * 7/100) ELSE null END) AS gst')
                                 );
         // reading whether search input is filled
-        if($request->profile_id or $request->paid_from or $request->delivery_from or $request->cust_id or $request->paid_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method) {
+        if($request->profile_id or $request->payment_from or $request->delivery_from or $request->cust_id or $request->payment_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method) {
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $total_amount = $this->calDBTransactionTotal($transactions);
-        $delivery_total = $this->calDBDeliveryTotal($transactions);
-
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
         }else{
@@ -451,7 +448,7 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id FROM deals LEFT JOIN transactions ON transactions.id=deals.transaction_id LEFT JOIN people ON people.id=transactions.person_id WHERE 1=1";
+        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id FROM deals LEFT JOIN transactions ON transactions.id=deals.transaction_id LEFT JOIN people ON people.id=transactions.person_id LEFT JOIN profiles ON profiles.id=people.profile_id LEFT JOIN custcategories ON custcategories.id=people.custcategory_id WHERE 1=1";
 
         if($request->delivery_from) {
             $amountstr = $amountstr." AND delivery_date >= '".$request->delivery_from."'";
@@ -464,6 +461,12 @@ class DetailRptController extends Controller
         }
         if($request->company) {
             $amountstr = $amountstr." AND people.company LIKE '%".$request->company."%'";
+        }
+        if($request->profile_id) {
+            $amountstr = $amountstr." AND profiles.id =".$request->profile_id;
+        }
+        if($request->cust_category) {
+            $amountstr = $amountstr." AND custcategories.id =".$request->cust_category;
         }
         $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");
 
@@ -555,19 +558,19 @@ class DetailRptController extends Controller
             $transactions = $transactions->where('profiles.id', $profile_id);
         }
         if($delivery_from){
-            $transactions = $transactions->where('transactions.delivery_date', '>=', $delivery_from);
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
         }
         if($payment_from){
-            $transactions = $transactions->where('transactions.paid_at', '>=', $payment_from);
+            $transactions = $transactions->whereDate('transactions.paid_at', '>=', $payment_from);
         }
         if($cust_id){
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
         }
         if($delivery_to){
-            $transactions = $transactions->where('transactions.delivery_date', '<=', $delivery_to);
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
         }
         if($payment_to){
-            $transactions = $transactions->where('transactions.paid_at', '<=', $payment_to);
+            $transactions = $transactions->whereDate('transactions.paid_at', '<=', $payment_to);
         }
         if($status) {
             if($status == 'Delivered') {

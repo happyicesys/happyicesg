@@ -117,18 +117,18 @@
                                 <span ng-show="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
-                                Cat
-                                <span ng-show="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
-                                <span ng-show="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
-                            </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                 ID Name
                                 <span ng-show="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                                 </a>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                                Cat
+                                <span ng-show="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
@@ -167,11 +167,11 @@
                                     @{{ person.cust_id }}
                                     </a>
                                 </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ person.custcategory }}
-                                </td>
                                 <td class="col-md-2">
                                     @{{ person.company }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ person.custcategory }}
                                 </td>
                                 <td class="col-md-1">@{{ person.name }}</td>
                                 <td class="col-md-1">

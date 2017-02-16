@@ -229,16 +229,16 @@
                                     <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'custcategory_id'; sortReverse = !sortReverse">
-                                    Cust Cat
-                                    <span ng-if="sortType == 'custcategory_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'custcategory_id' && sortReverse" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
                                     ID Name
                                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortType = 'custcategory_id'; sortReverse = !sortReverse">
+                                    Cust Cat
+                                    <span ng-if="sortType == 'custcategory_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-if="sortType == 'custcategory_id' && sortReverse" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
@@ -307,12 +307,12 @@
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
                                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                                         </a>
                                     </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">

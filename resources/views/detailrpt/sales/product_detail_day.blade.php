@@ -1,3 +1,6 @@
+@inject('profiles', 'App\Profile')
+@inject('custcategories', 'App\Custcategory')
+
 <div ng-controller="productDayDetailController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
@@ -86,6 +89,32 @@
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
+                !!}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.profile_id',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('cust_category', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('cust_category', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.cust_category',
+                    'ng-change'=>'searchDB()'
+                    ])
                 !!}
             </div>
         </div>

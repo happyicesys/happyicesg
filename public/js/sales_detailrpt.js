@@ -294,6 +294,8 @@ var app = angular.module('app', [
             company: '',
             delivery_to: $scope.today,
             product_name: '',
+            profile_id: '',
+            cust_category: '',
             pageNum: 100,
         }
         // init page load

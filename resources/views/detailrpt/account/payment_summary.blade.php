@@ -15,160 +15,43 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('paid_from', 'Payment From', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="paid_from"
+                        name="payment_from"
                         placeholder="Payment From"
-                        ng-model="search.paid_from"
-                        ng-change="onPaidFromChanged(search.paid_from)"
+                        ng-model="search.payment_from"
+                        ng-change="onPaymentFromChanged(search.payment_from)"
                     />
                 </datepicker>
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('paid_to', 'Payment To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="paid_to"
+                        name="payment_to"
                         placeholder="Payment To"
-                        ng-model="search.paid_to"
-                        ng-change="onPaidToChanged(search.paid_to)"
+                        ng-model="search.payment_to"
+                        ng-change="onPaymentToChanged(search.payment_to)"
                     />
                 </datepicker>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('payment', 'Payment', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('payment',
-                    [''=>'All', 'Paid'=>'Paid', 'Owe'=>'Owe'],
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.payment',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.status',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('person_id',
-                    [''=>'All'] + $customers::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.person_id',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('pay_method',
-                    [''=>'All', 'cash'=>'Cash', 'cheque'=>'Cheque'],
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.pay_method',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
             </div>
         </div>
     </div>
 </div>
 
 <div class="row" style="padding-left: 15px;">
-    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+    <div class="col-md-2 col-xs-12" style="padding-top: 20px;">
+        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
+        <button class="btn btn-success" type="submit"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Batch Update</span></button>
     </div>
-    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-3 col-xs-12" style="padding-top: 20px;">
         <div class="row">
             <div class="col-md-6 col-xs-6">
                 Total Inv Amount:

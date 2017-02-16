@@ -192,6 +192,7 @@ class D2dOnlineSaleController extends Controller
                             ->where('contact', $contact)
                             ->first();
         if(!$customer) {
+            $cust_category = Custcategory::whereName('H')->first();
             $customer = new Person();
             $customer->cust_id = $this->getCustRunningNum();
             $customer->name = $request->name;
@@ -205,6 +206,9 @@ class D2dOnlineSaleController extends Controller
             $customer->floor = $request->floor;
             $customer->unit = $request->unit;
             $customer->profile_id = 1;
+            if($cust_category) {
+                $customer->custcategory_id = $cust_category->id;
+            }
             $customer->save();
             if($avail_postcode){
                 $manager = Person::findOrFail($avail_postcode->person_id);

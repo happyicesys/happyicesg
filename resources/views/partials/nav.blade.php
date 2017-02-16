@@ -48,10 +48,6 @@
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
                 @endcannot
-                @endcannot
-                <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
-                    <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
-                </li>
                 <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }}</a>
                     <ul class="dropdown-menu">
@@ -59,18 +55,11 @@
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
                     </ul>
                 </li>
+                @endcannot
+                <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
+                    <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
+                </li>
             @endunless
-
-                {{-- @can('marketer_view') --}}
-{{--                 <li class="{{ strpos(Request::path(), 'marketing') !== false ? 'active' : '' }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-arrows-h"></i> Door to Door <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-wpforms"></i> Open Invoice</a></li>
-                            <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-users"></i> Customers</a></li>
-                            <li style="margin: 10px 0px 10px 0px;"><a href="/marketing"><i class="fa fa-fw fa-sitemap"></i> Members</a></li>
-                        </ul>
-                </li> --}}
-                {{-- @endcan --}}
                 @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer' or $people::where('user_id', Auth::user()->id)->first())
                     <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
                         <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
