@@ -25,9 +25,8 @@ var app = angular.module('app', [
             id: '',
             status: '',
             pay_status: '',
-            updated_by: '',
-            updated_at: '',
-            delivery_date: '',
+            delivery_from: '',
+            delivery_to: '',
             driver: '',
             pageNum: 100,
         }
@@ -40,16 +39,15 @@ var app = angular.module('app', [
         angular.element(document).ready(function () {
             $('.select').select2();
         });
-
-        $scope.onUpdatedAtChanged = function(date){
+        $scope.onDeliveryFromChanged = function(date){
             if(date){
-                $scope.search.updated_at = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
-        $scope.onDeliveryDateChanged = function(date){
+        $scope.onDeliveryToChanged = function(date){
             if(date){
-                $scope.search.delivery_date = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }

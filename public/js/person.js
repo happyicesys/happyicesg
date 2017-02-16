@@ -31,7 +31,7 @@ function personController($scope, $http){
     });
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable_custdetail').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();

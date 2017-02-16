@@ -119,7 +119,7 @@
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
-                                Category
+                                Cat
                                 <span ng-show="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
@@ -136,13 +136,13 @@
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'contact'; sortReverse = !sortReverse">
                                 Contact
                                 <span ng-show="sortType == 'contact' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'contact' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-3 text-center">
                                 Delivery Add
                             </th>
                             <th class="col-md-1 text-center">
@@ -174,13 +174,13 @@
                                     @{{ person.company }}
                                 </td>
                                 <td class="col-md-1">@{{ person.name }}</td>
-                                <td class="col-md-2">
+                                <td class="col-md-1">
                                     @{{ person.contact }}
                                     <span ng-show="person.alt_contact.length > 0">
                                     / @{{ person.alt_contact }}
                                     </span>
                                 </td>
-                                <td class="col-md-2">@{{ person.del_address }}</td>
+                                <td class="col-md-3">@{{ person.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
                                 <td class="col-md-1 text-center">@{{ person.active }}</td>
                             </tr>

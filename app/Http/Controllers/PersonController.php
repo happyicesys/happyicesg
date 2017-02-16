@@ -217,7 +217,7 @@ class PersonController extends Controller
         }
 
         // reading whether search input is filled
-        if($request->id or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_date or $request->driver){
+        if($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
@@ -382,9 +382,8 @@ class PersonController extends Controller
         $id = $request->id;
         $status = $request->status;
         $pay_status = $request->pay_status;
-        $updated_by = $request->updated_by;
-        $updated_at = $request->updated_at;
-        $delivery_date = $request->delivery_date;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
         $driver = $request->driver;
 
         if($id){
@@ -396,14 +395,11 @@ class PersonController extends Controller
         if($pay_status){
             $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.$pay_status.'%');
         }
-        if($updated_by){
-            $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.$updated_by.'%');
+        if($delivery_from){
+            $transactions = $transactions->where('transactions.delivery_date', '>=', $delivery_from);
         }
-        if($updated_at){
-            $transactions = $transactions->whereDate('transactions.updated_at', '=', $updated_at);
-        }
-        if($delivery_date){
-            $transactions = $transactions->where('transactions.delivery_date', $delivery_date);
+        if($delivery_to){
+            $transactions = $transactions->where('transactions.delivery_date', '<=', $delivery_to);
         }
         if($driver){
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$driver.'%');

@@ -44,44 +44,32 @@
         </div>
         <div class="col-md-3 col-xs-6">
             <div class="form-group">
-                {!! Form::label('updated_by', 'Last Mod By', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('updated_by', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.updated_by',
-                                                'placeholder'=>'Last Mod By',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('updated_at', 'Last Mod Date', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="updated_at"
-                        placeholder="Last Mod Date"
-                        ng-model="search.updated_at"
-                        ng-change="onUpdatedAtChanged(search.updated_at)"
+                        name="delivery_from"
+                        placeholder="Delivery From"
+                        ng-model="search.delivery_from"
+                        ng-change="onDeliveryFromChanged(search.delivery_from)"
                     />
                 </datepicker>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-3 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_date', 'Delivery On', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                 <datepicker>
                     <input
                         type="text"
                         class="form-control input-sm"
-                        name="delivery_date"
-                        placeholder="Delivery On"
-                        ng-model="search.delivery_date"
-                        ng-change="onDeliveryDateChanged(search.delivery_date)"
+                        name="delivery_to"
+                        placeholder="Delivery To"
+                        ng-model="search.delivery_to"
+                        ng-change="onDeliveryToChanged(search.delivery_to)"
                     />
                 </datepicker>
             </div>

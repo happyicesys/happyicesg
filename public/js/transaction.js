@@ -134,7 +134,8 @@ var app = angular.module('app', [   'ui.bootstrap',
                     if(transaction.del_address){
                         $scope.delModel = transaction.del_address;
                     }else{
-                        $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                        // $scope.delModel = person.del_address + ' ' + person.del_postcode;
+                        $scope.delModel = person.del_address;
                     }
 
                     // billing address
