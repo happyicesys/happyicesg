@@ -15,6 +15,7 @@ use App\Deal;
 use App\Postcode;
 use App\Transaction;
 use App\DtdTransaction;
+use App\Custcategory;
 use App\DtdDeal;
 use App\Price;
 use App\Item;
@@ -143,7 +144,7 @@ class D2dOnlineSaleController extends Controller
             'timing' => $request->del_date.'; '.$request->del_time,
             'remark' => $request->remark,
         ];
-        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
+/*        Mail::send('email.submit_order', $data, function ($message) use ($sendfrom, $sendto, $cc, $bcc, $today){
             $message->from($sendfrom);
             $message->cc($cc);
             // $message->cc('leehongjie91@gmail.com');
@@ -153,7 +154,7 @@ class D2dOnlineSaleController extends Controller
             $message->subject('HappyIce - Thanks for purchase ['.$today.']');
             $message->setTo($sendto);
             // $message->setTo('leehongjie91@gmail.com');
-        });
+        });*/
 
         return view('client.order_confirmed', compact('today', 'data'));
     }

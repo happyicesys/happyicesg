@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests;
+use App\Paysummaryinfo;
 use App\Transaction;
 use App\Month;
 use Carbon\Carbon;
@@ -224,7 +225,7 @@ class DetailRptController extends Controller
 
         return $data;
     }
-/*
+
     // retrieve the account customer payment summary api
     public function getAccountPaysummaryApi(Request $request)
     {
@@ -235,51 +236,56 @@ class DetailRptController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin('paysummaryinfos', function($join) {
+                            $join->on(DB::raw('Date(paysummaryinfos.paid_at)'), '=', DB::raw('Date(transactions.paid_at)'));
+                            $join->on('paysummaryinfos.pay_method', '=', 'transactions.pay_method');
+                            $join->on('paysummaryinfos.id', '=', 'profiles.id');
+                        })
+                        ->leftJoin('users', 'users.id', '=', 'paysummaryinfos.user_id')
                         ->select(
-                                    'profiles.name as profile_name', 'profiles.id as profile_id',
-                                    'transactions.id', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.order_date', 'transactions.note', 'transactions.pay_method',
-                                    DB::raw('(CASE WHEN transactions.delivery_fee>0 THEN (transactions.total + transactions.delivery_fee) ELSE transactions.total END) AS inv_amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END) AS amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (transactions.total * 7/100) ELSE null END) AS gst')
+                                    'profiles.name as profile', 'profiles.id as profile_id',
+                                    'transactions.delivery_fee', 'transactions.pay_status', 'transactions.pay_method', 'transactions.paid_at as payreceived_date',
+                                    'paysummaryinfos.remark', 'users.name',
+                                    DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
                                 );
-
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
+        if($request->profile_id or $request->payment_from or $request->payment_to){
+            // $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $total_amount = $this->calDBTransactionTotal($transactions);
-        $delivery_total = $this->calDBDeliveryTotal($transactions);
 
-        if($request->exportSOA) {
-            $this->convertSoaExcel($transactions, $total_amount + $delivery_total);
-        }
+        // paid conditions
+        $transactions = $transactions->where('transactions.pay_status', 'Paid')->whereNotNull('transactions.pay_method');
 
         if($pageNum == 'All'){
-            $transactions = $transactions->latest('transactions.created_at')->get();
+            // $transactions = $transactions->groupBy('profiles.id', 'transactions.paid_at')->latest('transactions.created_at')->get();
+            $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
+            // dd($transactions->toSql());
+            $transactions = $transactions->get();
         }else{
-            $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
+            // $transactions = $transactions->groupBy('profiles.id', 'transactions.paid_at')->latest('transactions.created_at')->paginate($pageNum);
+            $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
+            // dd($transactions->toSql());
+            $transactions = $transactions->paginate($pageNum);
         }
-
-        if($request->exportExcel) {
-            $this->convertAccountCustdetailExcel($transactions, $total_amount + $delivery_total);
-        }
-
-        $caldata = $this->calAllTotal($transactions);
+        // dd($transactions->toArray());
+        // $caldata = $this->calAccPaySummary($transactions);
 
         $data = [
-            'total_inv_amount' => $caldata['total_inv_amount'],
-            'total_gst' => $caldata['total_gst'],
-            'total_amount' => $caldata['total_amount'],
+/*            'total_cash_happyice' => $caldata['total_cash_happyice'],
+            'total_cheque_happyice' => $caldata['total_cheque_happyice'],
+            'total_cash_logistic' => $caldata['total_cash_logistic'],
+            'total_cheque_logistic' => $caldata['total_cheque_logistic'],*/
             'transactions' => $transactions,
         ];
 
         return $data;
-    }*/
+    }
 
     // retrieve the sales cust detail(FormRequest $request)
     public function getSalesCustdetailApi(Request $request)
@@ -500,6 +506,30 @@ class DetailRptController extends Controller
         ];
 
         return $data;
+    }
+
+    // submit pay summary form (Formrequest $request)
+    public function submitPaySummary(Request $request)
+    {
+        $checkboxes = $request->checkboxes;
+        $remarks = $request->remarks;
+        $paid_ats = $request->paid_ats;
+        $pay_methods = $request->pay_methods;
+        $profile_ids = $request->profile_ids;
+        if($checkboxes) {
+            foreach($checkboxes as $index => $checkbox) {
+                if($remarks[$index] !== '') {
+                    $paysummaryinfo = new Paysummaryinfo();
+                    $paysummaryinfo->paid_at = $paid_ats[$index];
+                    $paysummaryinfo->pay_method = $pay_methods[$index];
+                    $paysummaryinfo->remark = $remarks[$index];
+                    $paysummaryinfo->profile_id = $profile_ids[$index];
+                    $paysummaryinfo->user_id = Auth::user()->id;
+                    $paysummaryinfo->save();
+                }
+            }
+        }
+        return redirect('detailrpt/account');
     }
 
     // export SOA report(Array $data)

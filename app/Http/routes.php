@@ -194,6 +194,7 @@ Route::post('/api/detailrpt/account/custdetail', 'DetailRptController@getAccount
 Route::post('/api/detailrpt/account/outstanding', 'DetailRptController@getAccountOutstandingApi');
 Route::post('/api/detailrpt/account/paydetail', 'DetailRptController@getAccountPaydetailApi');
 Route::post('/api/detailrpt/account/paysummary', 'DetailRptController@getAccountPaysummaryApi');
+Route::post('/detailrpt/account/paysummary', 'DetailRptController@submitPaySummary');
 Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
 Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCustdetailApi');
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');

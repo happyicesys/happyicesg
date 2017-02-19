@@ -353,6 +353,107 @@ var app = angular.module('app', [
         }
     }
 
+    function custPaySummaryController($scope, $http) {
+        // init the variables
+        $scope.alldata = [];
+        $scope.datasetTemp = {};
+        $scope.totalCountTemp = {};
+        $scope.totalCount = 0;
+        $scope.totalPages = 0;
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.indexFrom = 0;
+        $scope.indexTo = 0;
+        $scope.sortBy = true;
+        $scope.sortName = '';
+        $scope.headerTemp = '';
+        $scope.today = moment().format("YYYY-MM-DD");
+        $scope.search = {
+            profile_id: '',
+            payment_from: $scope.today,
+            payment_to: $scope.today,
+            pageNum: 100,
+        }
+        // init page load
+        getPage(1, true);
+
+        angular.element(document).ready(function () {
+            $('.select').select2();
+
+            $('#checkAll').change(function(){
+                var all = this;
+                $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
+            });
+        });
+
+        $scope.onPaymentFromChanged = function(date){
+            if(date){
+                $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+        $scope.onPaymentToChanged = function(date){
+            if(date){
+                $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_paysummary').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "Payment Summary(Account)"+ now + ".xls");
+        };
+
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+          // when hitting search button
+        $scope.searchDB = function(){
+            $scope.sortName = '';
+            $scope.sortBy = '';
+            getPage(1, false);
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber, first){
+            $scope.spinner = true;
+            $http.post('/api/detailrpt/account/paysummary?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.transactions.data){
+                    $scope.alldata = data.transactions.data;
+                    $scope.totalCount = data.transactions.total;
+                    $scope.currentPage = data.transactions.current_page;
+                    $scope.indexFrom = data.transactions.from;
+                    $scope.indexTo = data.transactions.to;
+                }else{
+                    $scope.alldata = data.transactions;
+                    $scope.totalCount = data.transactions.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.transactions.length;
+                }
+                // get total count
+                $scope.All = data.transactions.length;
+                // return total amount
+                $scope.total_cash_happyice = data.total_cash_happyice;
+                $scope.total_cheque_happyice = data.total_cheque_happyice;
+                $scope.total_cash_logistic = data.total_cash_logistic;
+                $scope.total_cheque_logistic = data.total_cheque_logistic;
+                $scope.spinner = false;
+            });
+        }
+    }
+
 app.filter('delDate', [
     '$filter', function($filter) {
         return function(input, format) {
@@ -380,3 +481,4 @@ app.config(function ($provide){
 app.controller('custDetailController', custDetailController);
 app.controller('custOutstandingController', custOutstandingController);
 app.controller('custPayDetailController', custPayDetailController);
+app.controller('custPaySummaryController', custPaySummaryController);

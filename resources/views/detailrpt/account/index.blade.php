@@ -17,7 +17,7 @@
                     <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
                     <li><a href="#cust_outstanding" role="tab" data-toggle="tab">Customer Outstanding Summary</a></li>
                     <li><a href="#payment_detail" role="tab" data-toggle="tab">Payment Detail</a></li>
-                    {{-- <li><a href="#payment_summary" role="tab" data-toggle="tab">Payment Summary</a></li> --}}
+                    <li><a href="#payment_summary" role="tab" data-toggle="tab">Payment Summary</a></li>
                 </ul>
             </div>
             <div class="panel-body">
@@ -32,7 +32,7 @@
                         @include('detailrpt.account.payment_detail')
                     </div>
                     <div class="tab-pane" id="payment_summary">
-                        {{-- @include('detailrpt.account.payment_summary') --}}
+                        @include('detailrpt.account.payment_summary')
                     </div>
                 </div>
             </div>
