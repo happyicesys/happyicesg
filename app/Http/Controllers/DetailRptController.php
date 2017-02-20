@@ -241,7 +241,7 @@ class DetailRptController extends Controller
                         ->leftJoin('paysummaryinfos', function($join) {
                             $join->on(DB::raw('Date(paysummaryinfos.paid_at)'), '=', DB::raw('Date(transactions.paid_at)'));
                             $join->on('paysummaryinfos.pay_method', '=', 'transactions.pay_method');
-                            $join->on('paysummaryinfos.id', '=', 'profiles.id');
+                            $join->on('paysummaryinfos.profile_id', '=', 'profiles.id');
                         })
                         ->leftJoin('users', 'users.id', '=', 'paysummaryinfos.user_id')
                         ->select(
@@ -252,7 +252,7 @@ class DetailRptController extends Controller
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to){
-            // $transactions = $this->searchTransactionDBFilter($transactions, $request);
+            $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }else{
             if($request->sortName){
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -261,26 +261,20 @@ class DetailRptController extends Controller
 
         // paid conditions
         $transactions = $transactions->where('transactions.pay_status', 'Paid')->whereNotNull('transactions.pay_method');
-
+        $caldata = $this->calAccPaySummary($transactions);
         if($pageNum == 'All'){
-            // $transactions = $transactions->groupBy('profiles.id', 'transactions.paid_at')->latest('transactions.created_at')->get();
             $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
-            // dd($transactions->toSql());
             $transactions = $transactions->get();
         }else{
-            // $transactions = $transactions->groupBy('profiles.id', 'transactions.paid_at')->latest('transactions.created_at')->paginate($pageNum);
             $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
-            // dd($transactions->toSql());
             $transactions = $transactions->paginate($pageNum);
         }
-        // dd($transactions->toArray());
-        // $caldata = $this->calAccPaySummary($transactions);
 
         $data = [
-/*            'total_cash_happyice' => $caldata['total_cash_happyice'],
+            'total_cash_happyice' => $caldata['total_cash_happyice'],
             'total_cheque_happyice' => $caldata['total_cheque_happyice'],
             'total_cash_logistic' => $caldata['total_cash_logistic'],
-            'total_cheque_logistic' => $caldata['total_cheque_logistic'],*/
+            'total_cheque_logistic' => $caldata['total_cheque_logistic'],
             'transactions' => $transactions,
         ];
 
@@ -518,7 +512,9 @@ class DetailRptController extends Controller
         $profile_ids = $request->profile_ids;
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
+                // dd('here1');
                 if($remarks[$index] !== '') {
+                    // dd('here2');
                     $paysummaryinfo = new Paysummaryinfo();
                     $paysummaryinfo->paid_at = $paid_ats[$index];
                     $paysummaryinfo->pay_method = $pay_methods[$index];
@@ -745,5 +741,32 @@ class DetailRptController extends Controller
         ];
 
         return $totals;
+    }
+
+    // calculate all the totals for pay summary detailed rpt (query $transactions)
+    private function calAccPaySummary($transactions)
+    {
+        $cash_happyice = clone $transactions;
+        $cheque_happyice = clone $transactions;
+        $cash_logistic = clone $transactions;
+        $cheque_logistic = clone $transactions;
+        $total_cash_happyice = 0;
+        $total_cheque_happyice = 0;
+        $total_cash_logistic = 0;
+        $total_cheque_logistic = 0;
+
+        $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
+        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
+        $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
+        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
+
+        $data = [
+           'total_cash_happyice' =>  $total_cash_happyice,
+           'total_cheque_happyice' => $total_cheque_happyice,
+           'total_cash_logistic' => $total_cash_logistic,
+           'total_cheque_logistic' => $total_cheque_logistic
+        ];
+
+        return $data;
     }
 }

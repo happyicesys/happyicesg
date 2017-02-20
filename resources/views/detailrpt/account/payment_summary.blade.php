@@ -62,7 +62,7 @@
                 Cash:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cash_happyice | currency: "": 2}}</strong>
+                <strong>@{{ total_cash_happyice ? total_cash_happyice : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -70,7 +70,7 @@
                 Cheque/ TT:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cheque_happyice | currency: "": 2}}</strong>
+                <strong>@{{ total_cheque_happyice ? total_cheque_happyice : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
                 Cash:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cash_logistic | currency: "": 2}}</strong>
+                <strong>@{{ total_cash_logistic ? total_cash_logistic : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -93,7 +93,7 @@
                 Cheque/ TT:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cheque_logistic | currency: "": 2}}</strong>
+                <strong>@{{ total_cheque_logistic ? total_cheque_logistic : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>
