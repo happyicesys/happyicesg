@@ -32,6 +32,7 @@ var app = angular.module('app', [
             status: '',
             person_id: '',
             payment: '',
+            custcategory: '',
             pageNum: 100,
         }
         $scope.updated_at = '';
@@ -147,6 +148,7 @@ var app = angular.module('app', [
             status: 'Delivered',
             person_id: '',
             payment: 'Owe',
+            custcategory: '',
             pageNum: 100,
         }
         $scope.updated_at = '';
@@ -263,6 +265,7 @@ var app = angular.module('app', [
             status: 'Delivered',
             person_id: '',
             pay_method: '',
+            custcategory: '',
             pageNum: 100,
         }
         $scope.updated_at = '';

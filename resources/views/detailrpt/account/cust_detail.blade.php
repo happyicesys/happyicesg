@@ -4,13 +4,15 @@
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.profile_id',
-                    'ng-change'=>'searchDB()'
-                    ])
+                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('cust_id', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.cust_id',
+                                                'placeholder'=>'Cust ID',
+                                                'ng-change'=>'searchDB()',
+                                                'ng-model-options'=>'{ debounce: 500 }'
+                                            ])
                 !!}
             </div>
         </div>
@@ -48,15 +50,15 @@
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
+                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('company', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.company',
+                                                    'placeholder'=>'ID Name',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
                 !!}
             </div>
         </div>
@@ -94,15 +96,15 @@
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
+                {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('person_id',
+                    [''=>'All'] + $customers::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
+                    null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.person_id',
+                    'ng-change'=>'searchDB()'
+                    ])
                 !!}
             </div>
         </div>
@@ -118,17 +120,27 @@
                 !!}
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.profile_id',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('person_id',
-                    [''=>'All'] + $customers::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
-                    null,
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('custcategory', [''=>'All'] + $custcategories::pluck('name', 'id')->all(), null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.person_id',
+                    'ng-model'=>'search.custcategory',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}
@@ -217,6 +229,13 @@
                 </th>
 
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                    Category
+                    <span ng-if="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
                     Status
                     <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
@@ -275,7 +294,7 @@
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-
+                    <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     {{-- status by color --}}
                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                         @{{ transaction.status }}

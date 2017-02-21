@@ -13,7 +13,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-md-offset-4 col-xs-6">
+        <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
                 <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
@@ -22,6 +22,20 @@
                         <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
                     @endforeach
                 </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('cust_id', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.cust_id',
+                                                'placeholder'=>'Cust ID',
+                                                'ng-change'=>'searchDB()',
+                                                'ng-model-options'=>'{ debounce: 500 }'
+                                            ])
+                !!}
             </div>
         </div>
     </div>
@@ -44,20 +58,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
-            </div>
-        </div>
+
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
@@ -69,6 +70,18 @@
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('custcategory', [''=>'All'] + $custcategories::pluck('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.custcategory',
+                    'ng-change'=>'searchDB()'
+                    ])
                 !!}
             </div>
         </div>
@@ -137,25 +150,42 @@
                     <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
                     <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                    Category
+                    <span ng-if="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'thistotal'; sortReverse = !sortReverse">
                     Total<br>
                     (This Month)
+                    <span ng-if="sortType == 'thistotal' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'thistotal' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prevtotal'; sortReverse = !sortReverse"> --}}
                     Total<br>
                     (Last Month)
+                    {{-- <span ng-if="sortType == 'prevtotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prevtotal' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
 
                 <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prev2total'; sortReverse = !sortReverse"> --}}
                     Total<br>
                     (Last 2 Month)
+                    {{-- <span ng-if="sortType == 'prev2total' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prev2total' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
 
-                <th class="col-md-2 text-center">
+                <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prevyeartotal'; sortReverse = !sortReverse"> --}}
                     Total<br>
                     (Last Yr Same Mth)
+                    {{-- <span ng-if="sortType == 'prevyeartotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prevyeartotal' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
             </tr>
 
@@ -176,6 +206,7 @@
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
+                    <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.thistotal }}
                     </td>
@@ -185,7 +216,7 @@
                     <td class="col-md-1 text-right">
                         @{{ transaction.prev2total }}
                     </td>
-                    <td class="col-md-2 text-right">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.prevyeartotal }}
                     </td>
                 </tr>

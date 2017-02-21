@@ -1,5 +1,6 @@
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
+@inject('custcategories', 'App\Custcategory')
 
 @extends('template')
 @section('title')
@@ -15,8 +16,8 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
-                    {{-- <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li> --}}
-                    {{-- <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail(Month)</a></li> --}}
+                    <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li>
+                    <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail(Month)</a></li>
                     <li><a href="#product_detail_day" role="tab" data-toggle="tab">Product Detail(Day)</a></li>
                 </ul>
             </div>

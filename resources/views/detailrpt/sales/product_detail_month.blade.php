@@ -67,7 +67,7 @@
                 Total Amount:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -75,7 +75,7 @@
                 Total Qty:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_qty }}</strong>
+                <strong>@{{ total_qty ? total_qty : 0.0000 }}</strong>
             </div>
         </div>
     </div>
@@ -132,40 +132,40 @@
                     <span ng-if="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'amount'; sortReverse = !sortReverse">
+                    {{-- <a href="" ng-click="sortType = 'amount'; sortReverse = !sortReverse"> --}}
                     Amount (This Month)
-                    <span ng-if="sortType == 'amount' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'amount' && sortReverse" class="fa fa-caret-up"></span>
+                    {{-- <span ng-if="sortType == 'amount' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'amount' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'qty'; sortReverse = !sortReverse">
+                    {{-- <a href="" ng-click="sortType = 'qty'; sortReverse = !sortReverse"> --}}
                     Qty (This Month)
-                    <span ng-if="sortType == 'qty' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'qty' && sortReverse" class="fa fa-caret-up"></span>
+                    {{-- <span ng-if="sortType == 'qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'qty' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'prev_qty'; sortReverse = !sortReverse">
+                    {{-- <a href="" ng-click="sortType = 'prev_qty'; sortReverse = !sortReverse"> --}}
                     Qty (Last Month)
-                    <span ng-if="sortType == 'prev_qty' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'prev_qty' && sortReverse" class="fa fa-caret-up"></span>
+                    {{-- <span ng-if="sortType == 'prev_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prev_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'prev2_qty'; sortReverse = !sortReverse">
+                    {{-- <a href="" ng-click="sortType = 'prev2_qty'; sortReverse = !sortReverse"> --}}
                     Qty (Last 2 Months)
-                    <span ng-if="sortType == 'prev2_qty' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'prev2_qty' && sortReverse" class="fa fa-caret-up"></span>
+                    {{-- <span ng-if="sortType == 'prev2_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prev2_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'prevyear_qty'; sortReverse = !sortReverse">
+                    {{-- <a href="" ng-click="sortType = 'prevyear_qty'; sortReverse = !sortReverse"> --}}
                     Qty (Last Yr Same Mth)
-                    <span ng-if="sortType == 'prevyear_qty' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'prevyear_qty' && sortReverse" class="fa fa-caret-up"></span>
+                    {{-- <span ng-if="sortType == 'prevyear_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prevyear_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
                 </th>
             </tr>
 
             <tbody>
 
-                <tr dir-paginate="item in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="product_detail_day" total-items="totalCount" current-page="currentPage">
+                <tr dir-paginate="item in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="product_detail_month" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">
                         @{{ $index + indexFrom }}
                     </td>
@@ -190,6 +190,12 @@
                     <td class="col-md-1 text-right">
                         @{{ item.prevqty | currency: "": 4}}
                     </td>
+                    <td class="col-md-1 text-right">
+                        @{{ item.prev2qty | currency: "": 4}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ item.prevyrqty | currency: "": 4}}
+                    </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
                     <td colspan="14" class="text-center">No Records Found</td>
@@ -198,7 +204,7 @@
         </table>
 
         <div>
-              <dir-pagination-controls max-size="5" pagination-id="product_detail_day" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+              <dir-pagination-controls max-size="5" pagination-id="product_detail_month" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
 </div>

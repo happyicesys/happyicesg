@@ -1,0 +1,189 @@
+@inject('profiles', 'App\Profile')
+@inject('custcategories', 'App\Custcategory')
+
+<div ng-controller="custSummaryController">
+<div class="col-md-12 col-xs-12">
+    <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.profile_id',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
+                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
+                    <option value="">All</option>
+                    @foreach($month_options as $key => $value)
+                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('cust_category', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('cust_category', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.cust_category',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="padding-left: 15px;">
+    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+    </div>
+    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Total Amount:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-xs-12 text-right">
+        <label for="display_num">Display</label>
+        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+            <option ng-value="100">100</option>
+            <option ng-value="200">200</option>
+            <option ng-value="All">All</option>
+        </select>
+        <label for="display_num2" style="padding-right: 20px">per Page</label>
+        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+    </div>
+</div>
+
+    <div class="table-responsive" id="exportable_custsummary" style="padding-top: 20px;">
+        <table class="table table-list-search table-hover table-bordered">
+
+            {{-- hidden table for excel export --}}
+            <tr class="hidden">
+                <td></td>
+                <td data-tableexport-display="always">Total Amount</td>
+                <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
+            </tr>
+            <tr class="hidden" data-tableexport-display="always">
+                <td></td>
+            </tr>
+
+            <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    #
+                </th>
+
+                <th class="col-md-2 text-center">
+                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
+                    Profile
+                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                    Category
+                    <span ng-if="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'thistotal'; sortReverse = !sortReverse">
+                    Total<br>
+                    (This Month)
+                    <span ng-if="sortType == 'thistotal' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'thistotal' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+
+                <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prevtotal'; sortReverse = !sortReverse"> --}}
+                    Total<br>
+                    (Last Month)
+                    {{-- <span ng-if="sortType == 'prevtotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prevtotal' && sortReverse" class="fa fa-caret-up"></span> --}}
+                </th>
+
+                <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prev2total'; sortReverse = !sortReverse"> --}}
+                    Total<br>
+                    (Last 2 Month)
+                    {{-- <span ng-if="sortType == 'prev2total' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prev2total' && sortReverse" class="fa fa-caret-up"></span> --}}
+                </th>
+
+                <th class="col-md-1 text-center">
+                    {{-- <a href="" ng-click="sortType = 'prevyeartotal'; sortReverse = !sortReverse"> --}}
+                    Total<br>
+                    (Last Yr Same Mth)
+                    {{-- <span ng-if="sortType == 'prevyeartotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
+                    {{-- <span ng-if="sortType == 'prevyeartotal' && sortReverse" class="fa fa-caret-up"></span> --}}
+                </th>
+            </tr>
+
+            <tbody>
+
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_summary" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
+                        @{{ $index + indexFrom }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.profile_name }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.custcategory }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.thistotal }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.prevtotal }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.prev2total }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.prevyeartotal }}
+                    </td>
+                </tr>
+                <tr ng-if="!alldata || alldata.length == 0">
+                    <td colspan="14" class="text-center">No Records Found</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+              <dir-pagination-controls max-size="5" pagination-id="cust_summary" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+        </div>
+    </div>
+</div>

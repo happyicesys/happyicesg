@@ -1,5 +1,6 @@
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
+@inject('custcategories', 'App\Custcategory')
 
 @extends('template')
 @section('title')

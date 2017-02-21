@@ -24,6 +24,7 @@ var app = angular.module('app', [
             id_prefix: '',
             cust_id: '',
             company: '',
+            custcategory: '',
             pageNum: 100,
         }
         // init page load
@@ -82,7 +83,7 @@ var app = angular.module('app', [
             });
         }
     }
-/*
+
     function custSummaryController($scope, $http){
         // init the variables
         $scope.alldata = [];
@@ -97,15 +98,10 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
-            delivery_from: '',
-            payment_from: '',
-            cust_id: '',
-            delivery_to: $scope.today,
-            payment_to: '',
-            company: '',
-            status: 'Delivered',
-            person_id: '',
-            payment: 'Owe'
+            current_month: moment().month()+1 + '-' + moment().year(),
+            id_prefix: '',
+            custcategory: '',
+            pageNum: 100,
         }
         // init page load
         getPage(1, true);
@@ -113,39 +109,12 @@ var app = angular.module('app', [
         angular.element(document).ready(function () {
             $('.select').select2();
         });
-
-        $scope.onDeliveryFromChanged = function(date){
-            if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentFromChanged = function(date){
-            if(date){
-                $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onDeliveryToChanged = function(date){
-            if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentToChanged = function(date){
-            if(date){
-                $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
-
         $scope.exportData = function () {
-            var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_custsummary').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "Outstanding (Account)"+ now + ".xls");
+            saveAs(blob, "Cust Summary (Sales)"+ now + ".xls");
         };
 
         // switching page
@@ -174,7 +143,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/detailrpt/account/outstanding?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/detailrpt/sales/custsummary?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;
@@ -196,7 +165,7 @@ var app = angular.module('app', [
                 $scope.spinner = false;
             });
         }
-    }*/
+    }
 
     function productMonthDetailController($scope, $http){
         // init the variables
@@ -268,8 +237,8 @@ var app = angular.module('app', [
                     $scope.indexTo = data.items.length;
                 }
                 $scope.All = data.items.length;
-                // $scope.total_amount = data.total_amount;
-                // $scope.total_qty = data.total_qty.toFixed(4);
+                $scope.total_amount = data.total_amount;
+                $scope.total_qty = data.total_qty;
                 $scope.spinner = false;
             });
         }
@@ -395,6 +364,6 @@ app.config(function ($provide){
 });
 
 app.controller('custDetailController', custDetailController);
-/*app.controller('custOutstandingController', custOutstandingController);*/
+app.controller('custSummaryController', custSummaryController);
 app.controller('productMonthDetailController', productMonthDetailController);
 app.controller('productDayDetailController', productDayDetailController);

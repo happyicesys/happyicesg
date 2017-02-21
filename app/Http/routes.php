@@ -197,6 +197,7 @@ Route::post('/api/detailrpt/account/paysummary', 'DetailRptController@getAccount
 Route::post('/detailrpt/account/paysummary', 'DetailRptController@submitPaySummary');
 Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
 Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCustdetailApi');
+Route::post('/api/detailrpt/sales/custsummary', 'DetailRptController@getSalesCustSummaryApi');
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 
