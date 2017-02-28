@@ -70,15 +70,16 @@ class DetailRptController extends Controller
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
+
         $total_amount = $this->calDBOriginalTotal($transactions);
 
         if($request->exportSOA) {
             $this->convertSoaExcel($transactions, $total_amount);
+        }
+
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
         if($pageNum == 'All'){
@@ -161,13 +162,11 @@ class DetailRptController extends Controller
 
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
         $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
-
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         $total_amount = $this->calCustoutstandingTotal($transactions);
 
         if($pageNum == 'All'){
@@ -209,10 +208,9 @@ class DetailRptController extends Controller
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->delivery_from or $request->cust_id or $request->payment_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method or $request->custcategory) {
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
+        }
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
@@ -259,20 +257,18 @@ class DetailRptController extends Controller
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
-
         // paid conditions
         $transactions = $transactions->where('transactions.pay_status', 'Paid')->whereNotNull('transactions.pay_method');
         $caldata = $this->calAccPaySummary($transactions);
+
+        $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         if($pageNum == 'All'){
-            $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
             $transactions = $transactions->get();
         }else{
-            $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
             $transactions = $transactions->paginate($pageNum);
         }
 
@@ -355,12 +351,11 @@ class DetailRptController extends Controller
 
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
         $transactions = $transactions->orderBy('people.cust_id')->groupBy('people.id');
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
 
         $total_amount = $this->calTransactionTotalSql($transactions);
 
@@ -447,21 +442,19 @@ class DetailRptController extends Controller
                 })
                 ->select(
                         'items.name AS product_name', 'items.remark', 'items.product_id',
-                        'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name',
+                        'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name', 'profiles.id AS profile_id',
                         'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty'
                     );
 
         // reading whether search input is filled
         if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory) {
             $items = $this->searchItemDBFilter($items, $request);
-        }else{
-            if($request->sortName){
-                $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
 
         $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
-
+        if($request->sortName){
+            $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         if($pageNum == 'All'){
             $items = $items->get();
         }else{
@@ -518,10 +511,9 @@ class DetailRptController extends Controller
         // reading whether search input is filled
         if($request->cust_id or $request->delivery_from or $request->product_id or $request->company or $request->delivery_to or $request->product_name) {
             $items = $this->searchItemDBFilter($items, $request);
-        }else{
-            if($request->sortName){
-                $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
+        }
+        if($request->sortName){
+            $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
         if($pageNum == 'All'){
@@ -590,33 +582,37 @@ class DetailRptController extends Controller
         $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$delivery_from."'
                                 AND transactions.delivery_date<='".$delivery_to."'
-                                GROUP BY people.id) thistotal");
+                                GROUP BY profiles.id, custcategories.id) thistotal");
 
         // $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.profile_id FROM transactions
         $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
-                                GROUP BY people.id) prevtotal");
+                                GROUP BY profiles.id, custcategories.id) prevtotal");
 
         // $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.profile_id FROM transactions
         $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
-                                GROUP BY people.id) prev2total");
+                                GROUP BY profiles.id, custcategories.id) prev2total");
 
         // $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevyeartotal, people.profile_id FROM transactions
         $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
-                                GROUP BY people.id) prevyeartotal");
+                                GROUP BY profiles.id, custcategories.id) prevyeartotal");
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -636,12 +632,12 @@ class DetailRptController extends Controller
 
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
         }
-        $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id');
+        $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
+
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
 
         $total_amount = $this->calTransactionTotalSql($transactions);
 
@@ -862,6 +858,9 @@ class DetailRptController extends Controller
         }
         if($profile_id) {
             $items = $items->where('profiles.id', $profile_id);
+        }
+        if($request->sortName){
+            $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
         return $items;
     }

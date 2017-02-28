@@ -179,31 +179,31 @@
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('product_id')">
                     Product ID
-                    <span ng-if="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'product_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'product_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-6 text-center">
-                    <a href="" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('product_name')">
                     Product Name
-                    <span ng-if="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'product_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'product_name' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'amount'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('amount')">
                     Total Amount
-                    <span ng-if="sortType == 'amount' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'amount' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'amount' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'amount' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'qty'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('qty')">
                     Total Qty
-                    <span ng-if="sortType == 'qty' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'qty' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'qty' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 

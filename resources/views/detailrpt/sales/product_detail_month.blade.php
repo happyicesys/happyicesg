@@ -114,58 +114,58 @@
                     #
                 </th>
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('profile_id')">
                     Profile
-                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('product_id')">
                     Product ID
-                    <span ng-if="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'product_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'product_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-3 text-center">
-                    <a href="" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('product_name')">
                     Product Name
-                    <span ng-if="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'product_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'product_name' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'amount'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('amount')">
                     Amount (This Month)
-                    {{-- <span ng-if="sortType == 'amount' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'amount' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'amount' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'amount' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'qty'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('qty')">
                     Qty (This Month)
-                    {{-- <span ng-if="sortType == 'qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'qty' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'qty' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prev_qty'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prevqty')">
                     Qty (Last Month)
-                    {{-- <span ng-if="sortType == 'prev_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prev_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prevqty' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevqty' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prev2_qty'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prev2qty')">
                     Qty (Last 2 Months)
-                    {{-- <span ng-if="sortType == 'prev2_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prev2_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prev2qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prev2qty' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prevyear_qty'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prevyrqty')">
                     Qty (Last Yr Same Mth)
-                    {{-- <span ng-if="sortType == 'prevyear_qty' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prevyear_qty' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prevyrqty' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevyrqty' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
             <tbody>
 
-                <tr dir-paginate="item in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="product_detail_month" total-items="totalCount" current-page="currentPage">
+                <tr dir-paginate="item in alldata | itemsPerPage:itemsPerPage" pagination-id="product_detail_month" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">
                         @{{ $index + indexFrom }}
                     </td>

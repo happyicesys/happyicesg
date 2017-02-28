@@ -149,40 +149,37 @@
                     #
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'payreceived_date'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('transactions.paid_at')">
                     Pay Received Date
-                    <span ng-if="sortType == 'payreceived_date' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'payreceived_date' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'transactions.paid_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.paid_at' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'pay_method'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('transactions.pay_method')">
                     Pay Method
-                    <span ng-if="sortType == 'pay_method' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'pay_method' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'transactions.pay_method' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.pay_method' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('total')">
                     Total
-                    <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'profile'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('profiles.id')">
                     Profile
-                    <span ng-if="sortType == 'profile' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'profile' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'profiles.id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'profiles.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-3 text-center">
-                    <a href="" ng-click="sortType = 'remark'; sortReverse = !sortReverse">
                     Remark
-                    <span ng-if="sortType == 'remark' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'remark' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('updated_by')">
                     Updated By
-                    <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
             <tbody>

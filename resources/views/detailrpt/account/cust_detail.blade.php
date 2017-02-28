@@ -206,81 +206,79 @@
                 <th class="col-md-1 text-center">
                     #
                 </th>
-
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('transactions.id')">
                     INV #
-                    <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'transactions.id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('cust_id')">
                     ID
-                    <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('company')">
                     ID Name
-                    <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('custcategories.id')">
                     Category
-                    <span ng-if="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'custcategories.id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'custcategories.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('status')">
                     Status
-                    <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('delivery_date')">
                     Delivery Date
-                    <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('total')">
                     Total Amount
-                    <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('pay_status')">
                     Payment
-                    <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'paid_at'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('paid_at')">
                     Payment Received Dt
-                    <span ng-if="sortType == 'paid_at' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'paid_at' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'paid_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'paid_at' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('profile_id')">
                     Profile
-                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
             <tbody>
 
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">
                         <a href="/transaction/@{{ transaction.id }}/edit">

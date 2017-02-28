@@ -15,8 +15,6 @@ var app = angular.module('app', [
         $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.sortBy = true;
-        $scope.sortName = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
@@ -26,6 +24,8 @@ var app = angular.module('app', [
             company: '',
             custcategory: '',
             pageNum: 100,
+            sortName: '',
+            sortBy: true
         }
         // init page load
         getPage(1, true);
@@ -53,10 +53,16 @@ var app = angular.module('app', [
             getPage(1, false)
         };
 
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
           // when hitting search button
         $scope.searchDB = function(){
-            $scope.sortName = '';
-            $scope.sortBy = ''
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
             getPage(1, false);
         }
 
@@ -93,8 +99,6 @@ var app = angular.module('app', [
         $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.sortBy = true;
-        $scope.sortName = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
@@ -102,6 +106,8 @@ var app = angular.module('app', [
             id_prefix: '',
             custcategory: '',
             pageNum: 100,
+            sortBy: true,
+            sortName: '',
         }
         // init page load
         getPage(1, true);
@@ -133,10 +139,16 @@ var app = angular.module('app', [
             getPage(1, false);
         };
 
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
           // when hitting search button
         $scope.searchDB = function(){
-            $scope.sortName = '';
-            $scope.sortBy = '';
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
             getPage(1, false);
         }
 
@@ -176,8 +188,6 @@ var app = angular.module('app', [
         $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.sortBy = true;
-        $scope.sortName = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
@@ -185,6 +195,8 @@ var app = angular.module('app', [
             product_id: '',
             product_name: '',
             pageNum: 100,
+            sortBy: true,
+            sortName: ''
         }
         // init page load
         getPage(1, true);
@@ -212,10 +224,16 @@ var app = angular.module('app', [
             getPage(1, false)
         };
 
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
           // when hitting search button
         $scope.searchDB = function(){
-            $scope.sortName = '';
-            $scope.sortBy = '';
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
             getPage(1, false);
         }
 
@@ -253,8 +271,6 @@ var app = angular.module('app', [
         $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.sortBy = true;
-        $scope.sortName = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             cust_id: '',
@@ -266,6 +282,8 @@ var app = angular.module('app', [
             profile_id: '',
             cust_category: '',
             pageNum: 100,
+            sortBy: true,
+            sortName: ''
         }
         // init page load
         getPage(1, true);
@@ -307,10 +325,16 @@ var app = angular.module('app', [
             getPage(1, false)
         };
 
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
           // when hitting search button
         $scope.searchDB = function(){
-            $scope.sortName = '';
-            $scope.sortBy = '';
+            $scope.search.sortName = '';
+            $scope.search.sortBy = '';
             getPage(1, false);
         }
 

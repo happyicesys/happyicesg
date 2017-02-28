@@ -49,11 +49,11 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('cust_category', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('cust_category', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('custcategory', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.cust_category',
+                    'ng-model'=>'search.custcategory',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}
@@ -107,47 +107,47 @@
                 </th>
 
                 <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortType = 'profile_id'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('profile_id')">
                     Profile
-                    <span ng-if="sortType == 'profile_id' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'profile_id' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'custcategory'; sortReverse = !sortReverse">
+                <a href="" ng-click="sortTable('custcategory')">
                     Category
-                    <span ng-if="sortType == 'custcategory' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortType = 'thistotal'; sortReverse = !sortReverse">
+                    <a href="" ng-click="sortTable('thistotal')">
                     Total<br>
                     (This Month)
-                    <span ng-if="sortType == 'thistotal' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-if="sortType == 'thistotal' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'thistotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'thistotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prevtotal'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prevtotal')">
                     Total<br>
                     (Last Month)
-                    {{-- <span ng-if="sortType == 'prevtotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prevtotal' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prevtotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevtotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prev2total'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prev2total')">
                     Total<br>
                     (Last 2 Month)
-                    {{-- <span ng-if="sortType == 'prev2total' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prev2total' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prev2total' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prev2total' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    {{-- <a href="" ng-click="sortType = 'prevyeartotal'; sortReverse = !sortReverse"> --}}
+                    <a href="" ng-click="sortTable('prevyeartotal')">
                     Total<br>
                     (Last Yr Same Mth)
-                    {{-- <span ng-if="sortType == 'prevyeartotal' && !sortReverse" class="fa fa-caret-down"></span> --}}
-                    {{-- <span ng-if="sortType == 'prevyeartotal' && sortReverse" class="fa fa-caret-up"></span> --}}
+                    <span ng-if="search.sortName == 'prevyeartotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevyeartotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
