@@ -17,17 +17,13 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
+                {!! Form::label('current_month', 'Delivery Month', ['class'=>'control-label search-title']) !!}
+                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
+                    <option value="">All</option>
+                    @foreach($month_options as $key => $value)
+                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
@@ -60,17 +56,14 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
+                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.status',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
             </div>
         </div>
     </div>
@@ -91,11 +84,13 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                {!! Form::label('payment', 'Payment', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('payment',
+                    [''=>'All', 'Paid'=>'Paid', 'Owe'=>'Owe'],
+                    null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.status',
+                    'ng-model'=>'search.payment',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}
@@ -110,20 +105,6 @@
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.custcategory',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('payment', 'Payment', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('payment',
-                    [''=>'All', 'Paid'=>'Paid', 'Owe'=>'Owe'],
-                    null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.payment',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}

@@ -24,22 +24,14 @@ class DetailRptController extends Controller
     // return index page for detailed report - account
     public function accountIndex()
     {
-        return view('detailrpt.account.index');
+        $month_options = $this->getMonthOptions();
+        return view('detailrpt.account.index', compact('month_options'));
     }
 
     // return index page for detailed report - sales
     public function salesIndex()
     {
-        // past year till now months option
-        $month_options = array();
-        $oneyear_ago = Carbon::today()->subYear();
-        $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
-        $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
-        for($i=1; $i<=$diffmonths; $i++) {
-            $oneyear_ago = $oneyear_ago->addMonth();
-            $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
-        }
-
+        $month_options = $this->getMonthOptions();
         return view('detailrpt.sales.index', compact('month_options'));
     }
 
@@ -109,11 +101,17 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
+        // indicate the month and year
+        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
+        $prev3Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(3);
+
         $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".Carbon::now()->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".Carbon::now()->endOfMonth()->toDateString()."'
+                                WHERE transactions.delivery_date>='".$carbondate->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$carbondate->endOfMonth()->toDateString()."'
                                 AND pay_status='Owe'
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) thistotal");
@@ -121,8 +119,8 @@ class DetailRptController extends Controller
         $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".Carbon::now()->subMonth()->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".Carbon::now()->subMonth()->endOfMonth()->toDateString()."'
+                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
                                 AND pay_status='Owe'
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prevtotal");
@@ -130,8 +128,8 @@ class DetailRptController extends Controller
         $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".Carbon::now()->subMonths(2)->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".Carbon::now()->subMonth(2)->endOfMonth()->toDateString()."'
+                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                                AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
                                 AND pay_status='Owe'
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prev2total");
@@ -139,7 +137,7 @@ class DetailRptController extends Controller
         $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date<='".Carbon::now()->subMonths(3)->endOfMonth()->toDateString()."'
+                                WHERE transactions.delivery_date<='".$prev3Months->endOfMonth()->toDateString()."'
                                 AND pay_status='Owe'
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prevmore3total");
@@ -160,7 +158,7 @@ class DetailRptController extends Controller
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevmore3total.prevmore3total AS prevmore3total'
                                 );
 
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile){
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->driver or $request->profile){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
         $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
@@ -349,7 +347,7 @@ class DetailRptController extends Controller
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
                                 );
 
-        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory){
+        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
         $transactions = $transactions->orderBy('people.cust_id')->groupBy('people.id');
@@ -381,80 +379,117 @@ class DetailRptController extends Controller
         $input = $request->all();
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
-
         $thismonth = Carbon::createFromFormat('m-Y', $request->current_month);
         $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
         $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
         $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
+        $profile_id = $request->profile_id;
 
-        $thistotal = DB::raw("(SELECT ROUND(SUM(amount), 2) AS amount, ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON people.id=transactions.person_id
-                                LEFT JOIN profiles ON profiles.id=people.profile_id
-                                WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'
-                                GROUP BY item_id, profile_id) thistotal");
+        $thistotal = "(SELECT ROUND(SUM(amount), 2) AS amount, ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON people.id=transactions.person_id
+                        LEFT JOIN profiles ON profiles.id=people.profile_id
+                        WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
+                        AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'";
+        $prevqty = "(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+                    LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                    LEFT JOIN people ON people.id=transactions.person_id
+                    LEFT JOIN profiles ON profiles.id=people.profile_id
+                    WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                    AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
+        $prev2qty = "(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+                    LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                    LEFT JOIN people ON people.id=transactions.person_id
+                    LEFT JOIN profiles ON profiles.id=people.profile_id
+                    WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                    AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
+        $prevyrqty = "(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON people.id=transactions.person_id
+                        LEFT JOIN profiles ON profiles.id=people.profile_id
+                        WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
+                        AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
 
-        $prevqty = DB::raw("(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON people.id=transactions.person_id
-                                LEFT JOIN profiles ON profiles.id=people.profile_id
-                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
-                                GROUP BY profile_id, item_id) prevqty");
-
-        $prev2qty = DB::raw("(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON people.id=transactions.person_id
-                                LEFT JOIN profiles ON profiles.id=people.profile_id
-                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
-                                GROUP BY profile_id, item_id) prev2qty");
-
-        $prevyrqty = DB::raw("(SELECT ROUND(SUM(qty), 2) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON people.id=transactions.person_id
-                                LEFT JOIN profiles ON profiles.id=people.profile_id
-                                WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
-                                GROUP BY profile_id, item_id) prevyrqty");
+        if($request->status) {
+            if($request->status === 'Delivered') {
+                $thistotal .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
+                $prevqty .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
+                $prev2qty .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
+                $prevyrqty .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
+            }else {
+                $thistotal .= " AND transactions.status='".$request->status."'";
+                $prevqty .= " AND transactions.status='".$request->status."'";
+                $prev2qty .= " AND transactions.status='".$request->status."'";
+                $prevyrqty .= " AND transactions.status='".$request->status."'";
+            }
+        }
+        if($request->profile_id) {
+            $thistotal .= " GROUP BY item_id, profile_id) thistotal";
+            $prevqty .= " GROUP BY item_id, profile_id) prevqty";
+            $prev2qty .= " GROUP BY item_id, profile_id) prev2qty";
+            $prevyrqty .= " GROUP BY item_id, profile_id) prevyrqty";
+        }else {
+            $thistotal .= " GROUP BY item_id) thistotal";
+            $prevqty .= " GROUP BY item_id) prevqty";
+            $prev2qty .= " GROUP BY item_id) prev2qty";
+            $prevyrqty .= " GROUP BY item_id) prevyrqty";
+        }
+        $thistotal = DB::raw($thistotal);
+        $prevqty = DB::raw($prevqty);
+        $prev2qty = DB::raw($prev2qty);
+        $prevyrqty = DB::raw($prevyrqty);
 
         $items = DB::table('deals')
                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                ->leftJoin($thistotal, function($join) {
-                    $join->on('thistotal.profile_id', '=', 'profiles.id');
+                ->leftJoin($thistotal, function($join) use ($profile_id) {
+                    if($profile_id) {
+                        $join->on('thistotal.profile_id', '=', 'profiles.id');
+                    }
                     $join->on('thistotal.item_id', '=', 'items.id');
                 })
-                ->leftJoin($prevqty, function($join) {
+                ->leftJoin($prevqty, function($join) use ($profile_id){
+                    if($profile_id) {
+                        $join->on('thistotal.profile_id', '=', 'profiles.id');
+                    }
                     $join->on('prevqty.profile_id', '=', 'profiles.id');
                     $join->on('prevqty.item_id', '=', 'items.id');
                 })
-                ->leftJoin($prev2qty, function($join) {
-                    $join->on('prev2qty.profile_id', '=', 'profiles.id');
+                ->leftJoin($prev2qty, function($join) use ($profile_id){
+                    if($profile_id) {
+                        $join->on('prev2qty.profile_id', '=', 'profiles.id');
+                    }
                     $join->on('prev2qty.item_id', '=', 'items.id');
                 })
-                ->leftJoin($prevyrqty, function($join) {
-                    $join->on('prevyrqty.profile_id', '=', 'profiles.id');
+                ->leftJoin($prevyrqty, function($join) use ($profile_id){
+                    if($profile_id) {
+                        $join->on('prevyrqty.profile_id', '=', 'profiles.id');
+                    }
                     $join->on('prevyrqty.item_id', '=', 'items.id');
                 })
                 ->select(
                         'items.name AS product_name', 'items.remark', 'items.product_id',
                         'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name', 'profiles.id AS profile_id',
+                        'transactions.status',
                         'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty'
                     );
 
         // reading whether search input is filled
-        if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory) {
+        if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory or $request->status) {
             $items = $this->searchItemDBFilter($items, $request);
         }
+        if($request->profile_id) {
+            $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
+        }else {
+            $items = $items->groupBy('items.id')->orderBy('items.product_id');
+        }
 
-        $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
+
         if($pageNum == 'All'){
             $items = $items->get();
         }else{
@@ -500,6 +535,13 @@ class DetailRptController extends Controller
         if($request->cust_category) {
             $amountstr = $amountstr." AND custcategories.id =".$request->cust_category;
         }
+        if($request->status) {
+            if($request->status == 'Delivered') {
+                $amountstr .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
+            }else {
+                $amountstr = " AND transactions.status='".$request->status."'";
+            }
+        }
         $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");
 
         $items = DB::table('items')
@@ -508,10 +550,6 @@ class DetailRptController extends Controller
                                     'items.name AS product_name', 'items.remark', 'items.product_id',
                                     'totals.thisamount AS amount', 'totals.thisqty AS qty'
                                 );
-        // reading whether search input is filled
-        if($request->cust_id or $request->delivery_from or $request->product_id or $request->company or $request->delivery_to or $request->product_name) {
-            $items = $this->searchItemDBFilter($items, $request);
-        }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -630,7 +668,7 @@ class DetailRptController extends Controller
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
                                 );
 
-        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory){
+        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
         $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
@@ -729,7 +767,7 @@ class DetailRptController extends Controller
         if($status) {
             if($status == 'Delivered') {
                 $transactions = $transactions->where(function($query) {
-                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe');
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
                 });
             }else {
                 $transactions = $transactions->where('transactions.status', $status);
@@ -849,6 +887,7 @@ class DetailRptController extends Controller
         $product_id = $request->product_id;
         $product_name = $request->product_name;
         $profile_id = $request->profile_id;
+        $status = $request->status;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -858,6 +897,15 @@ class DetailRptController extends Controller
         }
         if($profile_id) {
             $items = $items->where('profiles.id', $profile_id);
+        }
+        if($status) {
+            if($status === 'Delivered') {
+                $items = $items->where(function($query) {
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });
+            }else {
+                $items = $items->where('transactions.status', $status);
+            }
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -923,5 +971,20 @@ class DetailRptController extends Controller
             'total_amount' => $total_amount,
             'total_qty' => $total_qty
         ];
+    }
+
+    // generate month options for a past year from this month()
+    private function getMonthOptions()
+    {
+        // past year till now months option
+        $month_options = array();
+        $oneyear_ago = Carbon::today()->subYear();
+        $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
+        $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        for($i=1; $i<=$diffmonths; $i++) {
+            $oneyear_ago = $oneyear_ago->addMonth();
+            $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        }
+        return $month_options;
     }
 }

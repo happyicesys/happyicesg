@@ -143,11 +143,8 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
-            delivery_from: '',
-            payment_from: '',
+            current_month: moment().month()+1 + '-' + moment().year(),
             cust_id: '',
-            delivery_to: $scope.today,
-            payment_to: '',
             company: '',
             status: 'Delivered',
             person_id: '',
@@ -164,32 +161,6 @@ var app = angular.module('app', [
         angular.element(document).ready(function () {
             $('.select').select2();
         });
-
-        $scope.onDeliveryFromChanged = function(date){
-            if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentFromChanged = function(date){
-            if(date){
-                $scope.search.payment_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onDeliveryToChanged = function(date){
-            if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-        $scope.onPaymentToChanged = function(date){
-            if(date){
-                $scope.search.payment_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_custoutstanding').innerHTML], {

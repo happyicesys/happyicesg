@@ -24,6 +24,18 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.status',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4 col-xs-6">
@@ -113,19 +125,13 @@
                 <th class="col-md-1 text-center">
                     #
                 </th>
-                <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortTable('profile_id')">
-                    Profile
-                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('product_id')">
                     Product ID
                     <span ng-if="search.sortName == 'product_id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'product_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-3 text-center">
+                <th class="col-md-4 text-center">
                     <a href="" ng-click="sortTable('product_name')">
                     Product Name
                     <span ng-if="search.sortName == 'product_name' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -170,12 +176,9 @@
                         @{{ $index + indexFrom }}
                     </td>
                     <td class="col-md-1 text-center">
-                        @{{ item.profile_name }}
-                    </td>
-                    <td class="col-md-1 text-center">
                         @{{ item.product_id }}
                     </td>
-                    <td class="col-md-6 text-left">
+                    <td class="col-md-4 text-left">
                         @{{ item.product_name }}
                         <span ng-if="item.remark">
                             - @{{ item.remark }}

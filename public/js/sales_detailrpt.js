@@ -23,6 +23,7 @@ var app = angular.module('app', [
             cust_id: '',
             company: '',
             custcategory: '',
+            status: 'Delivered',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -105,6 +106,7 @@ var app = angular.module('app', [
             current_month: moment().month()+1 + '-' + moment().year(),
             id_prefix: '',
             custcategory: '',
+            status: 'Delivered',
             pageNum: 100,
             sortBy: true,
             sortName: '',
@@ -194,6 +196,7 @@ var app = angular.module('app', [
             current_month: moment().month()+1 + '-' + moment().year(),
             product_id: '',
             product_name: '',
+            status: 'Delivered',
             pageNum: 100,
             sortBy: true,
             sortName: ''
@@ -281,6 +284,7 @@ var app = angular.module('app', [
             product_name: '',
             profile_id: '',
             cust_category: '',
+            status: 'Delivered',
             pageNum: 100,
             sortBy: true,
             sortName: ''

@@ -27,6 +27,18 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.status',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4 col-xs-6">
