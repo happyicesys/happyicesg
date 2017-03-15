@@ -648,16 +648,15 @@
                                                             <a href="#" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'" ng-click="onVerifiedPaid($event, transaction.id, transaction.payMethodModel, transaction.noteModel)">Verify Paid</a>
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="!transaction.pay_method">
-                                                            {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque/TT'], null, [
+                                                            {!! Form::select('pay_method[@{{transaction.id}}]', ['cash'=>'Cash', 'cheque'=>'Cheque', 'tt'=>'TT'], null, [
                                                                                 'class'=>'form-control input-sm',
                                                                                 'ng-model'=>'transaction.payMethodModel',
                                                                                 'ng-if'=>"(transaction.status == 'Delivered' || transaction.status == 'Verified Owe') && transaction.pay_status == 'Paid'",
                                                                                 'ng-init'=>"transaction.payMethodModel='cash'",
-                                                                                'placeholder'=>'Inv Num'
                                                                             ]) !!}
                                                         </td>
                                                         <td class="col-md-1 text-center" ng-if="transaction.pay_method">
-                                                            @{{transaction.pay_method == 'cash' ? 'Cash' : 'Cheque/TT'}}
+                                                            @{{transaction.pay_method | capitalize}}
                                                         </td>
                                                         <td class="col-md-2 text-center" ng-if="!transaction.pay_method">
                                                             {!! Form::textarea('note[@{{transaction.id}}]', null, [

@@ -1,8 +1,10 @@
 var app = angular.module('app', [
+                                    // 'ui.bootstrap',
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
                                     '720kb.datepicker',
+                                    'ui.bootstrap.datetimepicker',
                                     'datePicker'
                                 ]);
 
@@ -352,7 +354,6 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.sortBy = true;
@@ -363,9 +364,9 @@ var app = angular.module('app', [
             profile_id: '',
             payment_from: $scope.today,
             payment_to: $scope.today,
-            pageNum: 100,
             sortBy: true,
-            sortName: ''
+            sortName: '',
+            itemsPerPage: 100
         }
         // init page load
         getPage(1, true);
@@ -464,6 +465,12 @@ app.filter('delDate', [
         };
     }
 ]);
+
+app.filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
+});
 
 app.config(function ($provide){
     $provide.decorator('mFormatFilter', function (){

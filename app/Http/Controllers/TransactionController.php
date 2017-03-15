@@ -52,11 +52,7 @@ class TransactionController extends Controller
         $total_amount = 0;
         $input = $request->all();
         // initiate the page num when null given
-        if($request->pageNum){
-            $pageNum = $request->pageNum;
-        }else{
-            $pageNum = 100;
-        }
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
@@ -69,23 +65,18 @@ class TransactionController extends Controller
                                     'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
                                     'profiles.gst', 'transactions.delivery_fee', 'custcategories.name as custcategory'
                                 );
-
+        // dd($input);
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory){
-            // $transactions = Transaction::with(['person', 'person.profile'])->whereNotNull('created_at');
             $transactions = $this->searchDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
-            if($request->init == 'true'){
-                // $transactions = $transactions->searchDeliveryDate(Carbon::today());
-                $transactions = $transactions->whereDate('transactions.delivery_date', '=', Carbon::today());
-            }
         }
         // dd($request->all());
         $total_amount = $this->calDBTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
+
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
 
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
@@ -98,7 +89,6 @@ class TransactionController extends Controller
             'total_amount' => $total_amount + $delivery_total,
             'transactions' => $transactions,
         ];
-
         return $data;
     }
 

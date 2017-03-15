@@ -7,7 +7,7 @@
 @section('content')
 
     <div class="row">
-    <a class="title_hyper pull-left" href="/person"><h1>{{ $PERSON_TITLE }} <i class="fa fa-briefcase"></i></h1></a>
+    <a class="title_hyper pull-left" href="/person"><h1>{{ $PERSON_TITLE }} <i class="fa fa-users"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="personController">
 
@@ -89,23 +89,27 @@
                     </div>
                 </div>
 
-                <div class="row" style="padding-left: 15px;">
-                    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+                <div class="row" style="padding-left: 15px; padding-top: 20px;">
+                    <div class="col-md-4 col-xs-12">
                         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
                     </div>
                     <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
-                        <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-                            <option ng-value="100">100</option>
-                            <option ng-value="200">200</option>
-                            <option ng-value="All">All</option>
-                        </select>
-                        <label for="display_num2" style="padding-right: 20px">per Page</label>
-                        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                        <div class="row" style="padding-right:18px;">
+                            <label>Display</label>
+                            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                                <option ng-value="100">100</option>
+                                <option ng-value="200">200</option>
+                                <option ng-value="All">All</option>
+                            </select>
+                            <label>per Page</label>
+                        </div>
+                        <div class="row">
+                            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                        </div>
                     </div>
                 </div>
                 </div>
-                <div class="table-responsive" id="exportable">
+                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
                     <table class="table table-list-search table-hover table-bordered">
                         <tr style="background-color: #DDFDF8">
                             <th class="col-md-1 text-center">

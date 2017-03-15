@@ -1,6 +1,6 @@
 {
   "name": "angularjs-datepicker",
-  "version": "2.1.12",
+  "version": "2.1.14",
   "description": "A datepicker directive for angularjs.",
   "authors": [
     "Filippo Oretti <filippo.oretti@gmail.com",
@@ -28,11 +28,11 @@
     "test",
     "tests"
   ],
-  "_release": "2.1.12",
+  "_release": "2.1.14",
   "_resolution": {
     "type": "version",
-    "tag": "2.1.12",
-    "commit": "f130d695e4b6c14e0b7db4c5b807d3e0485e51a0"
+    "tag": "2.1.14",
+    "commit": "0af53fc1b34b05e90bac211e07884e5f6bd28751"
   },
   "_source": "https://github.com/720kb/angular-datepicker.git",
   "_target": "^2.1.6",

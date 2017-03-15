@@ -69,11 +69,11 @@
     </div>
 </div>
 
-<div class="row" style="padding-left: 15px;">
-    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+<div class="row" style="padding-left: 15px; padding-top:20px;">
+    <div class="col-md-4 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
     </div>
-    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-4 col-xs-12">
         <div class="row">
             <div class="col-md-6 col-xs-6">
                 Total Amount:
@@ -92,14 +92,18 @@
         </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
-        <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-            <option ng-value="100">100</option>
-            <option ng-value="200">200</option>
-            <option ng-value="All">All</option>
-        </select>
-        <label for="display_num2" style="padding-right: 20px">per Page</label>
-        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        </div>
     </div>
 </div>
 

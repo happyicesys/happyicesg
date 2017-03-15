@@ -110,7 +110,7 @@
           '<a href="javascript:void(0)" ng-repeat="px in prevMonthDays" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
             '{{px}}',
           '</a>',
-          '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item)}" class="_720kb-datepicker-calendar-day">',
+          '<a href="javascript:void(0)" ng-repeat="item in days" ng-click="setDatepickerDay(item)" ng-class="{\'_720kb-datepicker-active\': selectedDay === item && selectedMonth === monthNumber && selectedYear === year, \'_720kb-datepicker-disabled\': !isSelectableMinDate(year + \'/\' + monthNumber + \'/\' + item ) || !isSelectableMaxDate(year + \'/\' + monthNumber + \'/\' + item) || !isSelectableDate(monthNumber, year, item),\'_720kb-datepicker-today\': item === today.getDate() && monthNumber === (today.getMonth() + 1) && year === today.getFullYear() && !selectedDay}" class="_720kb-datepicker-calendar-day">',
             '{{item}}',
           '</a>',
           '<a href="javascript:void(0)" ng-repeat="nx in nextMonthDays" class="_720kb-datepicker-calendar-day _720kb-datepicker-disabled">',
@@ -276,6 +276,62 @@
 
             $scope.year = Number($scope.year) + 1;
           }
+          , localDateTimestamp = function localDateTimestamp(rawDate, dateFormatDefinition) {
+            
+            var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|MMMM|MMM|MM|M|dd?d?|yy?yy?y?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g
+            ,formatDate,dateSplit, m, d, y, index, el, longName, shortName;
+
+            for (index = 0; index < datetime.MONTH.length; index += 1) {
+              longName = datetime.MONTH[index];
+              shortName = datetime.SHORTMONTH[index];
+
+              if (rawDate.indexOf(longName) !== -1) {
+                rawDate = rawDate.replace(longName, index + 1);
+                break;
+              }
+
+              if (rawDate.indexOf(shortName) !== -1) {
+                rawDate = rawDate.replace(shortName, index + 1);
+                break;
+              }              
+            }
+
+            dateSplit = rawDate
+              .split(/\D/)
+              .filter(function dateSplitFilter(item) {
+                return item.length > 0;
+              });
+
+            formatDate = dateFormatDefinition
+              .match(formattingTokens)
+              .filter(function fromatDateFilter(item) {
+                return item.match(/^[a-zA-Z]+$/i) !== null;
+              });
+
+            for (index = 0; index < formatDate.length; index += 1) {
+              el = formatDate[index];
+
+              switch (true) {
+                case el.indexOf('d') !== -1: {
+                  d = dateSplit[index];
+                  break;
+                }
+                case el.indexOf('M') !== -1: {
+                  m = dateSplit[index];
+                  break;
+                }
+                case el.indexOf('y') !== -1: {
+                  y = dateSplit[index];
+                  break; 
+                }
+                default: {
+                  break;  
+                }                                 
+              }
+            }
+
+            return new Date(y + '/' + m + '/' + d);
+          }
           , setInputValue = function setInputValue() {
 
             if ($scope.isSelectableMinDate($scope.year + '/' + $scope.monthNumber + '/' + $scope.day) &&
@@ -358,6 +414,7 @@
 
               classHelper.add(theCalendar, '_720kb-datepicker-open');
             }
+            $scope.today = new Date();
           }
           , checkToggle = function checkToggle() {
             if (!$scope.datepickerToggle) {
@@ -618,9 +675,8 @@
                 thisInput[0].value.length > 0) {
 
                 try {
-
                   if (dateFormat) {
-                    date = new Date($filter('date')(thisInput[0].value.toString(), dateFormat));
+                    date = localDateTimestamp(thisInput[0].value.toString(), dateFormat);
                   } else {
                     date = new Date(thisInput[0].value.toString());
                   }

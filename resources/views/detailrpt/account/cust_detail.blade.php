@@ -177,14 +177,18 @@
             </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
-        <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-            <option ng-value="100">100</option>
-            <option ng-value="200">200</option>
-            <option ng-value="All">All</option>
-        </select>
-        <label for="display_num2" style="padding-right: 20px">per Page</label>
-        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        </div>
     </div>
 </div>
 {!! Form::close() !!}
@@ -267,13 +271,6 @@
                     <span ng-if="search.sortName == 'paid_at' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'paid_at' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('profile_id')">
-                    Profile
-                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
             </tr>
 
             <tbody>
@@ -325,7 +322,6 @@
                     </td>
                     {{-- pay status ended --}}
                     <td class="col-md-1 text-center">@{{ transaction.paid_at }}</td>
-                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">

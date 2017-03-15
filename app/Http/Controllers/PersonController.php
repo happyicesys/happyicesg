@@ -194,16 +194,16 @@ class PersonController extends Controller
                             ->leftJoin('people', 'dtdtransactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->select(
-                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total*107/100 + dtdtransactions.delivery_fee ELSE dtdtransactions.total*107/100 END) ELSE (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total + dtdtransactions.delivery_fee ELSE dtdtransactions.total END) END, 2) AS total'),
-                                'dtdtransactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status', 'dtdtransactions.delivery_date', 'dtdtransactions.driver', 'dtdtransactions.total_qty', 'dtdtransactions.pay_status', 'dtdtransactions.updated_by', 'dtdtransactions.updated_at', 'profiles.name', 'dtdtransactions.created_at', 'profiles.gst')
+                                // DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total*107/100 + dtdtransactions.delivery_fee ELSE dtdtransactions.total*107/100 END) ELSE (CASE WHEN dtdtransactions.delivery_fee>0 THEN dtdtransactions.total + dtdtransactions.delivery_fee ELSE dtdtransactions.total END) END, 2) AS total'),
+                                'dtdtransactions.id AS id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'dtdtransactions.status AS status', 'dtdtransactions.delivery_date AS delivery_date', 'dtdtransactions.driver AS driver', 'dtdtransactions.total_qty AS total_qty', 'dtdtransactions.pay_status AS pay_status', 'dtdtransactions.updated_by AS updated_by', 'dtdtransactions.updated_at AS updated_at', 'profiles.name', 'dtdtransactions.created_at AS created_at', 'profiles.gst')
                             ->where('people.id', '=', $person_id);
 
             $transactions2 = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->select(
-                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
-                                'transactions.id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst')
+                                // DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                'transactions.id AS id', 'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id', 'transactions.status AS status', 'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver', 'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status', 'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at', 'profiles.name', 'transactions.created_at AS created_at', 'profiles.gst')
                             ->where('people.id', '=', $person_id);
             $transactions = $transactions1->union($transactions2);
         }else{
@@ -224,18 +224,18 @@ class PersonController extends Controller
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
-        $totals = $this->calTotals($transactions);
+        // $totals = $this->calTotals($transactions);
 
         if($pageNum == 'All'){
-            $transactions = $transactions->latest('transactions.created_at')->get();
+            $transactions = $transactions->latest('created_at')->get();
         }else{
-            $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
+            $transactions = $transactions->latest('created_at')->paginate($pageNum);
         }
 
         $data = [
-            'total_amount' => $totals['total_amount'],
+/*            'total_amount' => $totals['total_amount'],
             'total_paid' => $totals['total_paid'],
-            'total_owe' => $totals['total_owe'],
+            'total_owe' => $totals['total_owe'],*/
             'transactions' => $transactions,
         ];
 

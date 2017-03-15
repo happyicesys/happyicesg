@@ -1,15 +1,14 @@
 
 /* font for the system */
-head, body{
+/*head, body{
     font-family: 'Verdana', serif;
     font-size: 14px;
 }
 
-/* font for title part of system */
 th, label, .panel-title, .panel-footer, .modal-title, .search{
     font-family: 'Tahoma', serif;
     font-size: 16px;
-}
+}*/
 
 /* panel padding problem */
 .panel-heading, .panel-footer {
@@ -182,37 +181,38 @@ label{
 
 //font size responsive
 @media all and (max-width: 1200px) { /* screen size until 1200px */
-    body {
-        font-size: 1.5em; /* 1.5x default size */
+    body, label, div label {
+        font-size: 1.8em; /* 1.5x default size */
     }
     h1 {
         font-size: 1.9em;
     }
 }
 @media all and (max-width: 1000px) { /* screen size until 1000px */
-    body {
-        font-size: 1.2em; /* 1.2x default size */
+    body, label, div label {
+        font-size: 1.5em; /* 1.2x default size */
         }
     h1 {
         font-size: 1.6em;
     }
-    }
+}
 @media all and (max-width: 500px) { /* screen size until 500px */
-    body {
-        font-size: 0.8em; /* 0.8x default size */
+    body, label, div label {
+        font-size: 1.1em; /* 0.8x default size */
         }
     h1 {
         font-size: 1.2em;
     }
 
     ._720kb-datepicker-calendar{
-        /*margin-left: -0.5%;*/
-        margin-left:-80%;
-        /*width:101%;*/
+       margin-left: -0.5%;
+        margin-left:-50%;
+        width:101%;
         width:200px;
+        position: absolute;
         z-index: 9999;
     }
-    }
+}
 
 .bgimage {
     background-image: url(../../img/main1.jpg);
@@ -314,12 +314,6 @@ margin: 0px auto 15px;
   max-height: 500px !important;
 }
 
-/*search form index alignment*/
-.search-title{
-    padding: 0px 0px;
-    margin: 0px 0px;
-}
-
 .table-order
 {
     table-layout: fixed;
@@ -333,3 +327,6 @@ margin: 0px auto 15px;
     white-space: nowrap;
 }
 
+._720kb-datepicker-calendar{
+    z-index: 9999;
+}

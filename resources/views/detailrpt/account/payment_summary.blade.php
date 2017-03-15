@@ -46,12 +46,12 @@
     </div>
 </div>
 
-<div class="row" style="padding-left: 15px;">
-    <div class="col-md-2 col-xs-12" style="padding-top: 20px;">
+<div class="row" style="padding-left: 15px; padding-top: 20px;">
+    <div class="col-md-2 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
         <button class="btn btn-success" type="submit" form="submit_form"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Batch Update</span></button>
     </div>
-    <div class="col-md-3 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-3 col-xs-12">
         <div class="row">
             <div class="col-md-12 col-xs-12 text-center">
                 <strong>HappyIce P/L</strong>
@@ -67,14 +67,22 @@
         </div>
         <div class="row">
             <div class="col-md-6 col-xs-6">
-                Cheque/ TT:
+                Cheque:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_cheque_happyice ? total_cheque_happyice : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                TT:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_tt_happyice ? total_tt_happyice : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
     </div>
-    <div class="col-md-3 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-3 col-xs-12">
         <div class="row">
             <div class="col-md-12 col-xs-12 text-center">
                 <strong>HappyIce Logistics P/L</strong>
@@ -90,22 +98,34 @@
         </div>
         <div class="row">
             <div class="col-md-6 col-xs-6">
-                Cheque/ TT:
+                Cheque:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_cheque_logistic ? total_cheque_logistic : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                TT:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_tt_logistic ? total_tt_logistic : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
+        <div class="row">
         <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage1" name="pageNum" ng-init="itemsPerPage1='100'" ng-change="pageNumChanged()">
+        <select ng-model="search.itemsPerPage" ng-init="search.itemsPerPage='100'"  name="pageNum" ng-change="pageNumChanged()">
             <option ng-value="100">100</option>
             <option ng-value="200">200</option>
             <option ng-value="All">All</option>
         </select>
         <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
         <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        </div>
     </div>
 </div>
 
@@ -172,8 +192,11 @@
                     <span ng-if="search.sortName == 'profiles.id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'profiles.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-3 text-center">
-                    Remark
+                <th class="col-md-2 text-center">
+                    <a href="" ng-click="sortTable('bankin_date')">
+                    Bank In Date
+                    <span ng-if="search.sortName == 'bankin_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'bankin_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
                     <a href="" ng-click="sortTable('updated_by')">
@@ -187,15 +210,19 @@
                     <td class="col-md-1 text-center">{!! Form::checkbox('checkboxes[@{{$index}}]') !!}</td>
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.payreceived_date | delDate: "yyyy-MM-dd" }}</td>
-                    <td class="col-md-1 text-center">@{{ transaction.pay_method }}</td>
+                    <td class="col-md-1 text-center">@{{ transaction.pay_method | capitalize }}</td>
                     <td class="col-md-1 text-right">@{{ transaction.total }} </td>
-                    <td class="col-md-3 text-center">@{{ transaction.profile }} </td>
-                    <td class="col-md-3 text-left">
-                        {!! Form::textarea('remarks[@{{$index}}]', null, [
-                                        'class'=>'input-sm form-control',
-                                        'rows'=>'2',
-                                        'ng-model'=>'transaction.remark',
-                                        ]) !!}
+                    <td class="col-md-3 text-left">@{{ transaction.profile }} </td>
+                    <td class="col-md-2 text-left">
+                        <datepicker date-format="yyyy-MM-dd">
+                            <input
+                                type="text"
+                                name="bankin_dates[@{{$index}}]"
+                                class="form-control"
+                                placeholder="Date"
+                                ng-model="transaction.bankin_date"
+                            />
+                        </datepicker>
                     </td>
                     <td class="col-md-1 text-left">@{{ transaction.name }} </td>
 
@@ -214,3 +241,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('.date').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+</script>

@@ -207,14 +207,18 @@
         </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
-        <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-            <option ng-value="100">100</option>
-            <option ng-value="200">200</option>
-            <option ng-value="All">All</option>
-        </select>
-        <label for="display_num2" style="padding-right: 20px">per Page</label>
-        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        </div>
     </div>
 </div>
 
@@ -244,12 +248,6 @@
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     #
-                </th>
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('profile_id')">
-                    Profile
-                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('transactions.id')">
@@ -328,7 +326,6 @@
             <tbody>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="payment_detail" total-items="totalCount">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
-                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
                     <td class="col-md-1 text-center">
                         <a href="/transaction/@{{ transaction.id }}/edit">
                             @{{ transaction.id }}
@@ -347,7 +344,7 @@
                     <td class="col-md-1 text-center">@{{transaction.gst | currency: "": 2}}</td>
                     <td class="col-md-1 text-center">@{{transaction.amount | currency: "": 2}}</td>
                     <td class="col-md-1 text-center">@{{transaction.pay_status}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.pay_method}}</td>
+                    <td class="col-md-1 text-center">@{{transaction.pay_method | capitalize}}</td>
                     <td class="col-md-1 text-center">@{{transaction.note}}</td>
                 </tr>
 

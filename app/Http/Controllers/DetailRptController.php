@@ -249,7 +249,8 @@ class DetailRptController extends Controller
                         ->select(
                                     'profiles.name as profile', 'profiles.id as profile_id',
                                     'transactions.delivery_fee', 'transactions.pay_status', 'transactions.pay_method', 'transactions.paid_at as payreceived_date',
-                                    'paysummaryinfos.remark', 'users.name',
+                                    'users.name',
+                                    'paysummaryinfos.bankin_date',
                                     DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
                                 );
         // reading whether search input is filled
@@ -273,8 +274,10 @@ class DetailRptController extends Controller
         $data = [
             'total_cash_happyice' => $caldata['total_cash_happyice'],
             'total_cheque_happyice' => $caldata['total_cheque_happyice'],
+            'total_tt_happyice' => $caldata['total_tt_happyice'],
             'total_cash_logistic' => $caldata['total_cash_logistic'],
             'total_cheque_logistic' => $caldata['total_cheque_logistic'],
+            'total_tt_logistic' => $caldata['total_tt_logistic'],
             'transactions' => $transactions,
         ];
         return $data;
@@ -575,20 +578,25 @@ class DetailRptController extends Controller
     public function submitPaySummary(Request $request)
     {
         $checkboxes = $request->checkboxes;
-        $remarks = $request->remarks;
+        $bankin_dates = $request->bankin_dates;
         $paid_ats = $request->paid_ats;
         $pay_methods = $request->pay_methods;
         $profile_ids = $request->profile_ids;
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
-                // dd('here1');
-                if($remarks[$index] !== '') {
-                    // dd('here2');
-                    $paysummaryinfo = new Paysummaryinfo();
-                    $paysummaryinfo->paid_at = $paid_ats[$index];
-                    $paysummaryinfo->pay_method = $pay_methods[$index];
-                    $paysummaryinfo->remark = $remarks[$index];
-                    $paysummaryinfo->profile_id = $profile_ids[$index];
+                if($bankin_dates[$index] !== '') {
+                    $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->whereProfileId($profile_ids[$index])->first();
+                    // dd($exist->toArray(), Carbon::parse($paid_ats[$index]), $profile_ids[$index], $request->all());
+                    if(! $exist) {
+                        $paysummaryinfo = new Paysummaryinfo();
+                        $paysummaryinfo->paid_at = $paid_ats[$index];
+                        $paysummaryinfo->pay_method = $pay_methods[$index];
+                        $paysummaryinfo->profile_id = $profile_ids[$index];
+                    }else {
+                        $paysummaryinfo = $exist;
+                    }
+
+                    $paysummaryinfo->bankin_date = Carbon::parse($bankin_dates[$index]);
                     $paysummaryinfo->user_id = Auth::user()->id;
                     $paysummaryinfo->save();
                 }
@@ -613,53 +621,83 @@ class DetailRptController extends Controller
         $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
         $delivery_from = $carbondate->startOfMonth()->toDateString();
         $delivery_to = $carbondate->endOfMonth()->toDateString();
+        $profile_id = $request->profile_id;
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
 
-        // $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.profile_id FROM transactions
-        $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                                WHERE transactions.delivery_date>='".$delivery_from."'
-                                AND transactions.delivery_date<='".$delivery_to."'
-                                GROUP BY profiles.id, custcategories.id) thistotal");
+        $thistotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+                            LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN profiles ON people.profile_id=profiles.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            WHERE transactions.delivery_date>='".$delivery_from."'
+                            AND transactions.delivery_date<='".$delivery_to."'";
 
-        // $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.profile_id FROM transactions
-        $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
-                                GROUP BY profiles.id, custcategories.id) prevtotal");
+        $prevtotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+                            LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN profiles ON people.profile_id=profiles.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                            AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
 
-        // $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.profile_id FROM transactions
-        $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
-                                GROUP BY profiles.id, custcategories.id) prev2total");
+        $prev2total_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+                            LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN profiles ON people.profile_id=profiles.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                            AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
 
-        // $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevyeartotal, people.profile_id FROM transactions
-        $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id FROM transactions
+        $prevyeartotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
-                                GROUP BY profiles.id, custcategories.id) prevyeartotal");
+                                AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
+
+        if($profile_id) {
+            $thistotal_str .= " GROUP BY profiles.id, custcategories.id) thistotal";
+            $prevtotal_str .= " GROUP BY profiles.id, custcategories.id) prevtotal";
+            $prev2total_str .= " GROUP BY profiles.id, custcategories.id) prev2total";
+            $prevyeartotal_str .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+        }else  {
+            $thistotal_str .= " GROUP BY custcategories.id) thistotal";
+            $prevtotal_str .= " GROUP BY custcategories.id) prevtotal";
+            $prev2total_str .= " GROUP BY custcategories.id) prev2total";
+            $prevyeartotal_str .= " GROUP BY custcategories.id) prevyeartotal";
+        }
+
+        $thistotal = DB::raw($thistotal_str);
+        $prevtotal = DB::raw($prevtotal_str);
+        $prev2total = DB::raw($prev2total_str);
+        $prevyeartotal = DB::raw($prevyeartotal_str);
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                        ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
-                        ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
-                        ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
-                        ->leftJoin($prevyeartotal, 'people.id', '=', 'prevyeartotal.person_id')
+                        ->leftJoin($thistotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thistotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prev2total, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2total.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
+                        })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
@@ -671,7 +709,13 @@ class DetailRptController extends Controller
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
-        $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
+
+        if($profile_id) {
+            $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
+        }else {
+            $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id');
+        }
+
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -936,21 +980,29 @@ class DetailRptController extends Controller
         $cheque_happyice = clone $transactions;
         $cash_logistic = clone $transactions;
         $cheque_logistic = clone $transactions;
+        $tt_happyice = clone $transactions;
+        $tt_logistic = clone $transactions;
         $total_cash_happyice = 0;
         $total_cheque_happyice = 0;
+        $total_tt_happyice = 0;
         $total_cash_logistic = 0;
         $total_cheque_logistic = 0;
+        $total_tt_logistic = 0;
 
         $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
         $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
+        $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum('total');
         $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
         $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
+        $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum('total');
 
         $data = [
            'total_cash_happyice' =>  $total_cash_happyice,
            'total_cheque_happyice' => $total_cheque_happyice,
+           'total_tt_happyice' => $total_tt_happyice,
            'total_cash_logistic' => $total_cash_logistic,
-           'total_cheque_logistic' => $total_cheque_logistic
+           'total_cheque_logistic' => $total_cheque_logistic,
+           'total_tt_logistic' => $total_tt_logistic
         ];
 
         return $data;

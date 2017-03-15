@@ -15,29 +15,15 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-title">
-
-                    <div class="pull-left display_num">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class=" pull-left">
                         <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
                             <option ng-value="100">100</option>
                             <option ng-value="200">200</option>
                             <option ng-value="All">All</option>
                         </select>
                         <label for="display_num2" style="padding-right: 20px">per Page</label>
-                    </div>
-                    <div class="col-md-6 col-md-offset-2" style="padding-left:200px">
-                        <div class="col-md-3"  style="padding-top:10px">
-                            <label for="profile_id" class="search">Profile:</label>
-                        </div>
-                        <div class="col-md-9" style="padding-top:10px">
-                            {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
-                                'class'=>'select',
-                                'ng-model'=>'search.profile_id',
-                                'ng-change' => 'searchDB()'
-                                ])
-                            !!}
-                        </div>
                     </div>
                     <div class="pull-right">
                         <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
@@ -48,7 +34,7 @@
             <div class="panel-body">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('invoice', 'Invoice:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
                                                         [
                                                             'class'=>'form-control input-sm',
@@ -59,7 +45,7 @@
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('id', 'ID:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
                                                     [
                                                         'class'=>'form-control input-sm',
@@ -71,7 +57,7 @@
                         !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('company', 'ID Name:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('company', null,
                                                         [
                                                             'class'=>'form-control input-sm',
@@ -84,7 +70,7 @@
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('status', null,
                                                         [
                                                             'class'=>'form-control input-sm',
@@ -97,7 +83,7 @@
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('pay_status', null,
                                                             [
                                                                 'class'=>'form-control input-sm',
@@ -110,7 +96,7 @@
                     </div>
 
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('updated_by', 'Last Modify By:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('updated_by', null,
                                                             [
                                                                 'class'=>'form-control input-sm',
@@ -122,7 +108,7 @@
                         !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('updated_at', 'Last Modify Dt:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
                         <datepicker>
                             <input
                                 type="text"
@@ -134,7 +120,7 @@
                         </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_from', 'Delivery From:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                         <datepicker>
                             <input
                                 type = "text"
@@ -146,7 +132,7 @@
                         </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_to', 'Delivery To:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                         <datepicker>
                             <input
                                 type = "text"
@@ -158,7 +144,7 @@
                         </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('driver', 'Delivered By:', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('driver', null,
                                                         [
                                                             'id'=>'updated_at',
@@ -179,29 +165,38 @@
                             ])
                         !!}
                     </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.profile_id',
+                            'ng-change' => 'searchDB()'
+                            ])
+                        !!}
+                    </div>
                 </div>
 
-                <div class="row" style="padding: 20px 0px 15px 15px;">
-                        <div class="col-md-4 col-xs-12">
-                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                <div class="row">
+                    <div class="col-md-4 col-xs-12">
+                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                    </div>
+
+                    <div class="col-md-3 col-xs-12" style="padding-top:5px;">
+                        <div class="col-md-5 col-xs-5">
+                            Total
                         </div>
 
-                        <div class="col-md-3 col-xs-12">
-                            <div class="col-md-5 col-xs-5">
-                                Total:
-                            </div>
-
-                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                                <strong>@{{ total_amount | currency: "": 2}}</strong>
-                            </div>
+                        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                            <strong>@{{ total_amount | currency: "": 2}}</strong>
                         </div>
+                    </div>
 
-                        <div class="col-md-5 col-xs-12">
-                            <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
-                        </div>
-
+                    <div class="col-md-5 col-xs-12">
+                        <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                    </div>
                 </div>
-                    <div class="table-responsive" id="exportable">
+
+                    <div class="table-responsive" id="exportable" style="padding-top:20px;">
                         <table class="table table-list-search table-hover table-bordered">
                             {{-- hidden table for excel export --}}
                             <tr class="hidden">
@@ -217,82 +212,82 @@
                                     #
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('id')">
                                     INV #
-                                    <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('cust_id')">
                                     ID
-                                    <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('company')">
                                     ID Name
-                                    <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'custcategory_id'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('custcategory_id')">
                                     Cust Cat
-                                    <span ng-if="sortType == 'custcategory_id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'custcategory_id' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'custcategory_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'custcategory_id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'del_postcode'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('del_postcode')">
                                     Del Postcode
-                                    <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('status')">
                                     Status
-                                    <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('delivery_date')">
                                     Delivery Date
-                                    <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('driver')">
                                     Delivered By
-                                    <span ng-if="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('total')">
                                     Total Amount
-                                    <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('total_qty')">
                                     Total Qty
-                                    <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('pay_status')">
                                     Payment
-                                    <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('updated_by')">
                                     Last Modified By
-                                    <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'updated_by' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortType = 'updated_at'; sortReverse = !sortReverse">
+                                    <a href="" ng-click="sortTable('updated_at')">
                                     Last Modified Time
-                                    <span ng-if="sortType == 'updated_at' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-if="sortType == 'updated_at' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Action
@@ -367,15 +362,14 @@
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
-                                    <td colspan="14" class="text-center">No Records Found</td>
+                                    <td colspan="18" class="text-center">No Records Found</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-            </div>
-                <div class="panel-footer">
-                      <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
-                </div>
+                    <div>
+                        <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+                    </div>
         </div>
     </div>
 
@@ -385,6 +379,6 @@
             format: 'DD-MMMM-YYYY'
         });
 
-        $('.select').select2({});
+        // $('.select').select2({});
     </script>
 @stop

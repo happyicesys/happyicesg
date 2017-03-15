@@ -127,7 +127,7 @@
     </div>
     <div class="col-md-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
-        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+        <select ng-model="itemsPerPage" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
             <option ng-value="100">100</option>
             <option ng-value="200">200</option>
             <option ng-value="All">All</option>
@@ -153,12 +153,6 @@
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     #
-                </th>
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('profile_id')">
-                    Profile
-                    <span ng-if="search.sortName == 'profile_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'profile_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('cust_id')">
@@ -207,7 +201,6 @@
             <tbody>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_outstanding" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
-                    <td class="col-md-1 text-center">@{{ transaction.profile_name }}</td>
                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
 
                     <td class="col-md-1 text-center">

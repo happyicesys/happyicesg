@@ -78,20 +78,6 @@ var app = angular.module('app', [
                 }
             }
 /*
-            function syncDataAll(){
-                $scope.indexData = {
-                    delivery_date: $scope.delivery_date,
-                    paid_at: $scope.paid_at,
-                    paid_by: $scope.paid_by,
-                    driver: $scope.driver,
-                    transaction_id: $scope.search.id,
-                    cust_id: $scope.search.cust_id,
-                    company: $scope.search.company,
-                    status: $scope.search.status,
-                    pay_status: $scope.search.pay_status,
-                }
-            }*/
-/*
             $scope.exportPDF = function(){
                 // syncDataAll();
                 $http.post('/report/dailypdf', $scope.indexData).success(function(){
@@ -192,6 +178,12 @@ app.filter('delDate', [
     }
 ]);
 
+app.filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
+});
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -203,15 +195,12 @@ function repeatController($scope) {
 var exportTable = function(){
 
     var link = function($scope, elm, attr){
-
         $scope.$on('export-pdf', function(e, d){
             elm.tableExport({type:'pdf', escape:false});
         });
-
         $scope.$on('export-excel', function(e, d){
             elm.tableExport({type:'excel', escape:false});
         });
-
         $scope.$on('export-doc', function(e, d){
             elm.tableExport({type: 'doc', escape:false});
         });

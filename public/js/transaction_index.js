@@ -6,7 +6,6 @@ var app = angular.module('app', [
                                 ]);
 
     function transController($scope, $http){
-
         // init the variables
         $scope.alldata = [];
         $scope.datasetTemp = {};
@@ -14,14 +13,10 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.sortBy = true;
-        $scope.sortName = '';
         $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
-        // $scope.delivery_date = '';
         $scope.search = {
             id: '',
             cust_id: '',
@@ -33,11 +28,14 @@ var app = angular.module('app', [
             delivery_from: $scope.today,
             delivery_to: $scope.today,
             driver: '',
-            custcategory: ''
+            custcategory: '',
+            itemsPerPage: 100,
+            sortName: '',
+            sortBy: true
         }
         $scope.updated_at = '';
         // init page load
-        getPage(1, true);
+        getPage(1);
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -51,79 +49,55 @@ var app = angular.module('app', [
             saveAs(blob, "TransactionRpt"+ now + ".xls");
         };
 
+        $scope.delFromChange = function(date){
+            if(date){
+                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.delToChange = function(date){
+            if(date){
+                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.dateChange2 = function(date){
+            if(date){
+                $scope.search.updated_at = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
         // switching page
         $scope.pageChanged = function(newPage){
-            getPage(newPage, false);
+            getPage(newPage);
         };
 
         $scope.pageNumChanged = function(){
-            if($.isEmptyObject($scope.datasetTemp)){
-                $scope.datasetTemp = {
-                    pageNum: $scope.itemsPerPage
-                }
-            }else{
-                $scope.datasetTemp['pageNum'] = $scope.itemsPerPage;
-            }
-            getPage(1, false);
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1)
         };
 
-        $scope.sortedOrder = function(header){
-            $scope.sortName = header;
-            if($scope.headerTemp != $scope.sortName){
-                $scope.sortBy = true;
-                $scope.headerTemp = $scope.sortName;
-            }else{
-                $scope.sortBy = !$scope.sortBy;
-            }
-            $scope.datasetTemp['sortName'] = $scope.sortName;
-            $scope.datasetTemp['sortBy'] = $scope.sortBy;
-            getPage($scope.currentPage, false);
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1);
         }
 
           // when hitting search button
         $scope.searchDB = function(){
-            $scope.datasetTemp = {
-                id: $scope.search.id,
-                cust_id: $scope.search.cust_id,
-                company: $scope.search.company,
-                status: $scope.search.status,
-                pay_status: $scope.search.pay_status,
-                updated_by: $scope.search.updated_by,
-                updated_at: $scope.search.updated_at,
-                delivery_from: $scope.search.delivery_from,
-                delivery_to: $scope.search.delivery_to,
-                driver: $scope.search.driver,
-                custcategory: $scope.search.custcategory,
-                profile: $scope.search.profile_id,
-            };
-            $scope.sortName = '';
-            $scope.sortBy = '';
-
-            if($scope.search.id || $scope.search.cust_id || $scope.search.company || $scope.search.status || $scope.search.pay_status || $scope.search.updated_by || $scope.search.updated_at || $scope.search.delivery_from || $scope.search.delivery_to || $scope.search.driver || $scope.search.profile_id || $scope.search.custcategory){
-                if($.isEmptyObject($scope.datasetTemp)){
-                    $scope.datasetTemp = $scope.alldata;
-                    $scope.totalCountTemp = $scope.totalCount;
-                    $scope.alldata = {};
-                }
-                getPage(1, false);
-            }else{
-                if(! $.isEmptyObject($scope.datasetTemp)){
-                    $scope.alldata = $scope.datasetTemp;
-                    $scope.totalCount = $scope.totalCountTemp;
-                    $scope.datasetTemp = {
-                        pageNum: $scope.itemsPerPage,
-                        sortName: $scope.sortName,
-                        sortBy: $scope.sortBy,
-                    };
-                }
-                getPage(1, false);
-            }
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
+            getPage(1);
         }
 
         // retrieve page w/wo search
-        function getPage(pageNumber, first){
+        function getPage(pageNumber){
             $scope.spinner = true;
-            $http.post('transaction/data?page=' + pageNumber + '&init=' + first, $scope.datasetTemp).success(function(data){
+            $http.post('transaction/data?page=' + pageNumber, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;
@@ -146,34 +120,6 @@ var app = angular.module('app', [
             }).error(function(data){
 
             });
-        }
-/*
-        $scope.dateChange = function(date){
-            if(date){
-                $scope.search.delivery_date = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }*/
-
-        $scope.delFromChange = function(date){
-            if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
-        $scope.delToChange = function(date){
-            if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
-        }
-
-        $scope.dateChange2 = function(date){
-            if(date){
-                $scope.search.updated_at = moment(new Date(date)).format('YYYY-MM-DD');
-            }
-            $scope.searchDB();
         }
 
         //delete record
@@ -201,13 +147,5 @@ app.filter('delDate', [
         };
     }
 ]);
-/*
-function repeatController($scope) {
-    $scope.$watch('$index', function(index) {
-        $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
-    })
-}*/
-
 
 app.controller('transController', transController);
-// app.controller('repeatController', repeatController);
