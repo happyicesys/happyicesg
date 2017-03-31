@@ -70,15 +70,21 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
+        $scope.onPrevDateClicked = function() {
+            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
         $scope.onTodayDateClicked = function() {
             $scope.search.delivery_from = moment().format('YYYY-MM-DD');
             $scope.search.delivery_to = moment().format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
-        $scope.onYesterdayDateClicked = function() {
-            $scope.search.delivery_from = moment().subtract(1, 'days').format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment().subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.onNextDateClicked = function() {
+            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).add(1, 'days').format('YYYY-MM-DD');
+            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).add(1, 'days').format('YYYY-MM-DD');
             $scope.searchDB();
         }
 

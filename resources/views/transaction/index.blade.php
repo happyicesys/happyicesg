@@ -177,10 +177,13 @@
                         </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_shortcut', 'Delivery Shortcut', ['class'=>'control-label search-title']) !!}
+                        <div class="row col-md-12 col-sm-12 col-xs-12">
+                            {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
+                        </div>
                         <div class="btn-group">
-                            <a href="" ng-click="onYesterdayDateClicked()" class="btn btn-default">Yesterday</a>
-                            <a href="" ng-click="onTodayDateClicked()" class="btn btn-default">Today</a>
+                            <a href="" ng-click="onPrevDateClicked()" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                            <a href="" ng-click="onTodayDateClicked()" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                            <a href="" ng-click="onNextDateClicked()" class="btn btn-default"><i class="fa fa-forward"></i></a>
                         </div>
                     </div>
                 </div>

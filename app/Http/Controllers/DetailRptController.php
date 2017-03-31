@@ -187,7 +187,6 @@ class DetailRptController extends Controller
         // showing total amount init
         $total_amount = 0;
         $input = $request->all();
-        // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         $transactions = DB::table('transactions')
@@ -205,6 +204,7 @@ class DetailRptController extends Controller
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->delivery_from or $request->cust_id or $request->payment_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method or $request->custcategory) {
+            // dd($request->all());
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
         if($request->sortName){
