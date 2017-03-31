@@ -1,9 +1,9 @@
 <div ng-controller="custPaySummaryController">
-<div class="col-md-12 col-xs-12">
+<div class="col-md-12 col-xs-12" style="padding-bottom:20px;">
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('profile', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
                     [
                     'class'=>'select form-control',
@@ -41,6 +41,52 @@
                         ng-change="onPaymentToChanged(search.payment_to)"
                     />
                 </datepicker>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('bankin_from', 'Bank In From', ['class'=>'control-label search-title']) !!}
+                <datepicker>
+                    <input
+                        type="text"
+                        class="form-control input-sm"
+                        name="bankin_from"
+                        placeholder="Bank In From"
+                        ng-model="search.bankin_from"
+                        ng-change="onBankinFromChanged(search.bankin_from)"
+                    />
+                </datepicker>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('bankin_to', 'Bank In To', ['class'=>'control-label search-title']) !!}
+                <datepicker>
+                    <input
+                        type="text"
+                        class="form-control input-sm"
+                        name="bankin_to"
+                        placeholder="Bank In To"
+                        ng-model="search.bankin_to"
+                        ng-change="onBankinToChanged(search.bankin_to)"
+                    />
+                </datepicker>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6 text-right">
+            <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="search.itemsPerPage" ng-init="search.itemsPerPage='100'"  name="pageNum" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+            </div>
+            <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
             </div>
         </div>
     </div>
@@ -113,18 +159,35 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-xs-12 text-right">
+    <div class="col-md-3 col-xs-12">
         <div class="row">
-        <label for="display_num">Display</label>
-        <select ng-model="search.itemsPerPage" ng-init="search.itemsPerPage='100'"  name="pageNum" ng-change="pageNumChanged()">
-            <option ng-value="100">100</option>
-            <option ng-value="200">200</option>
-            <option ng-value="All">All</option>
-        </select>
-        <label for="display_num2" style="padding-right: 20px">per Page</label>
+            <div class="col-md-12 col-xs-12 text-center">
+                <strong>All Profile</strong>
+            </div>
         </div>
         <div class="row">
-        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+            <div class="col-md-6 col-xs-6">
+                Cash:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_cash_all ? total_cash_all : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Cheque:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_cheque_all ? total_cheque_all : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                TT:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_tt_all ? total_tt_all : 0.00 | currency: "": 2}}</strong>
+            </div>
         </div>
     </div>
 </div>

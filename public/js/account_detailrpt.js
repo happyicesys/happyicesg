@@ -392,6 +392,18 @@ var app = angular.module('app', [
             }
             $scope.searchDB();
         }
+        $scope.onBankinFromChanged = function(date){
+            if(date){
+                $scope.search.bankin_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+        $scope.onBankinToChanged = function(date){
+            if(date){
+                $scope.search.bankin_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_paysummary').innerHTML], {
@@ -447,8 +459,13 @@ var app = angular.module('app', [
                 // return total amount
                 $scope.total_cash_happyice = data.total_cash_happyice;
                 $scope.total_cheque_happyice = data.total_cheque_happyice;
+                $scope.total_tt_happyice = data.total_tt_happyice;
                 $scope.total_cash_logistic = data.total_cash_logistic;
                 $scope.total_cheque_logistic = data.total_cheque_logistic;
+                $scope.total_tt_logistic = data.total_tt_logistic;
+                $scope.total_cash_all = data.total_cash_all;
+                $scope.total_cheque_all = data.total_cheque_all;
+                $scope.total_tt_all = data.total_tt_all;
                 $scope.spinner = false;
             });
         }

@@ -516,14 +516,10 @@ class RptController extends Controller
     private function calTransactionTotal($arr)
     {
         $total_amount = 0;
-
         foreach($arr as $transaction){
-
             $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
-
             $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
         }
-
         return $total_amount;
     }
 
@@ -546,13 +542,9 @@ class RptController extends Controller
     private function calQtyTotal($arr)
     {
         $total_qty = 0;
-
         foreach($arr as $transaction){
-
             $total_qty += $transaction->total_qty;
-
         }
-
         return $total_qty;
     }
 
@@ -562,6 +554,7 @@ class RptController extends Controller
         $query1 = clone $query;
         $total_qty = 0;
         $total_qty = $query1->sum('transactions.total_qty');
+        $total_qty = round(floatval($total_qty), 4);
         return $total_qty;
     }
 
@@ -574,6 +567,7 @@ class RptController extends Controller
         $paid_by = $request->paid_by;
         $driver = $request->driver;
         $role = $request->role;
+        // dd($request->all());
 
         $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -633,7 +627,9 @@ class RptController extends Controller
             $query2 = $query2
                 ->union($query)->union($query1)
                 ->orderBy('id', 'desc')
+                // dd($query2->toSql());
                 ->get();
+                // dd($query2);
 
         return $query2;
     }
@@ -706,13 +702,13 @@ class RptController extends Controller
         $amt_mod = $this->calDBTransactionTotal($query2);
         $cash_mod = $this->payMethodConDB($query2, 'cash');
         $cheque_mod = $this->payMethodConDB($query2, 'cheque');
+        $tt_mod = $this->payMethodConDB($query2, 'tt');
         $del_cashmod = $this->payMethodConDBDelivery($query2, 'cash');
         $del_chequemod = $this->payMethodConDBDelivery($query2, 'cheque');
         $delivery_total1 = $this->calDBDeliveryTotal($query1);
         $delivery_paid = $this->calDBDeliveryTotal($query1->where('pay_status', '=', 'Paid'));
         $delivery_total2 = $this->calDBDeliveryTotal($query2);
-        // dd($query1->toSql());
-        // dd($amt_del, $delivery_total1);
+
         $data = [
             'amt_del' => $amt_del /*+ $delivery_total1*/,
             'qty_del' => $qty_del,
@@ -720,6 +716,7 @@ class RptController extends Controller
             'amt_mod' => $amt_mod /*+ $delivery_total2*/,
             'cash_mod' => $cash_mod /*+ $del_cashmod*/,
             'cheque_mod' => $cheque_mod /*+ $del_chequemod*/,
+            'tt_mod' => $tt_mod
         ];
         return $data;
     }
@@ -763,6 +760,7 @@ class RptController extends Controller
         $company = $request->company;
         $status = $request->status;
         $pay_status = $request->pay_status;
+        $profile_id = $request->profile_id;
         if($transaction_id){
             $query = $query->where('transactions.id', 'LIKE', '%'.$transaction_id.'%');
         }
@@ -777,6 +775,9 @@ class RptController extends Controller
         }
         if($pay_status){
             $query = $query->where('transactions.pay_status', 'LIKE', '%'.$pay_status.'%');
+        }
+        if($profile_id) {
+            $query = $query->where('profiles.id', $profile_id);
         }
         return $query;
     }

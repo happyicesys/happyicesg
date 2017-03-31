@@ -32,7 +32,7 @@
             </div>
 
             <div class="panel-body">
-                <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
@@ -120,30 +120,6 @@
                         </datepicker>
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                        <datepicker>
-                            <input
-                                type = "text"
-                                class = "form-control input-sm"
-                                placeholder = "Delivery From"
-                                ng-model = "search.delivery_from"
-                                ng-change = "delFromChange(search.delivery_from)"
-                            />
-                        </datepicker>
-                    </div>
-                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                        <datepicker>
-                            <input
-                                type = "text"
-                                class = "form-control input-sm"
-                                placeholder = "Delivery To"
-                                ng-model = "search.delivery_to"
-                                ng-change = "delToChange(search.delivery_to)"
-                            />
-                        </datepicker>
-                    </div>
-                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
                         {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('driver', null,
                                                         [
@@ -173,6 +149,39 @@
                             'ng-change' => 'searchDB()'
                             ])
                         !!}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+                        <datepicker>
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Delivery From"
+                                ng-model = "search.delivery_from"
+                                ng-change = "delFromChange(search.delivery_from)"
+                            />
+                        </datepicker>
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
+                        <datepicker>
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Delivery To"
+                                ng-model = "search.delivery_to"
+                                ng-change = "delToChange(search.delivery_to)"
+                            />
+                        </datepicker>
+                    </div>
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('delivery_shortcut', 'Delivery Shortcut', ['class'=>'control-label search-title']) !!}
+                        <div class="btn-group">
+                            <a href="" ng-click="onYesterdayDateClicked()" class="btn btn-default">Yesterday</a>
+                            <a href="" ng-click="onTodayDateClicked()" class="btn btn-default">Today</a>
+                        </div>
                     </div>
                 </div>
 

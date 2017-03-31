@@ -23,6 +23,7 @@ var app = angular.module('app', [
             company: '',
             status: '',
             pay_status: '',
+            // profile_id: ''
         }
 
         $scope.exportData = function () {
@@ -36,6 +37,8 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
 
         angular.element(document).ready(function () {
+            $('.select_profile').select2();
+
             $http.get('/user/data/' + $('#user_id').val()).success(function(person){
                 var driver = false;
                 for(var i = 0; i < person.roles.length; i++){
@@ -75,19 +78,9 @@ var app = angular.module('app', [
                     company: $scope.search.company,
                     status: $scope.search.status,
                     pay_status: $scope.search.pay_status,
+                    // profile_id: $scope.search.profile_id
                 }
             }
-/*
-            $scope.exportPDF = function(){
-                // syncDataAll();
-                $http.post('/report/dailypdf', $scope.indexData).success(function(){
-                    $scope.indexData['transaction_id'] = '';
-                    $scope.indexData['cust_id'] = '';
-                    $scope.indexData['company'] = '';
-                    $scope.indexData['status'] = '';
-                    $scope.indexData['pay_status'] = '';
-                });
-            }*/
 
             $scope.dateChange = function(date){
                 if(date){
@@ -156,9 +149,7 @@ var app = angular.module('app', [
         }
 
         $scope.exportAction = function(){
-
             switch($scope.export_action){
-
                 case 'pdf': $scope.$broadcast('export-pdf', {});
                           break;
                 case 'excel': $scope.$broadcast('export-excel', {});

@@ -254,7 +254,7 @@ class DetailRptController extends Controller
                                     DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
                                 );
         // reading whether search input is filled
-        if($request->profile_id or $request->payment_from or $request->payment_to){
+        if($request->profile_id or $request->payment_from or $request->payment_to or $request->bankin_from or $request->bankin_to){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
         // paid conditions
@@ -278,6 +278,9 @@ class DetailRptController extends Controller
             'total_cash_logistic' => $caldata['total_cash_logistic'],
             'total_cheque_logistic' => $caldata['total_cheque_logistic'],
             'total_tt_logistic' => $caldata['total_tt_logistic'],
+            'total_cash_all' => $caldata['total_cash_all'],
+            'total_cheque_all' => $caldata['total_cheque_all'],
+            'total_tt_all' => $caldata['total_tt_all'],
             'transactions' => $transactions,
         ];
         return $data;
@@ -716,7 +719,6 @@ class DetailRptController extends Controller
             $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id');
         }
 
-
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -789,6 +791,8 @@ class DetailRptController extends Controller
         $pay_method = $request->pay_method;
         $id_prefix = $request->id_prefix;
         $custcategory = $request->custcategory;
+        $bankin_from = $request->bankin_from;
+        $bankin_to = $request->bankin_to;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -840,6 +844,12 @@ class DetailRptController extends Controller
         }
         if($custcategory) {
             $transactions = $transactions->where('custcategories.id', $custcategory);
+        }
+        if($bankin_from) {
+            $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
+        }
+        if($bankin_to) {
+            $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '<=', $bankin_to);
         }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -978,23 +988,32 @@ class DetailRptController extends Controller
     {
         $cash_happyice = clone $transactions;
         $cheque_happyice = clone $transactions;
+        $tt_happyice = clone $transactions;
         $cash_logistic = clone $transactions;
         $cheque_logistic = clone $transactions;
-        $tt_happyice = clone $transactions;
         $tt_logistic = clone $transactions;
+        $cash_all = clone $transactions;
+        $cheque_all = clone $transactions;
+        $tt_all = clone $transactions;
         $total_cash_happyice = 0;
         $total_cheque_happyice = 0;
         $total_tt_happyice = 0;
         $total_cash_logistic = 0;
         $total_cheque_logistic = 0;
         $total_tt_logistic = 0;
+        $total_cash_all = 0;
+        $total_cheque_all = 0;
+        $total_tt_all = 0;
 
-        $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
-        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
-        $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum('total');
-        $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum('total');
-        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum('total');
-        $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum('total');
+        $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_all = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cheque_all = $cheque_all->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_tt_all = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
 
         $data = [
            'total_cash_happyice' =>  $total_cash_happyice,
@@ -1002,7 +1021,10 @@ class DetailRptController extends Controller
            'total_tt_happyice' => $total_tt_happyice,
            'total_cash_logistic' => $total_cash_logistic,
            'total_cheque_logistic' => $total_cheque_logistic,
-           'total_tt_logistic' => $total_tt_logistic
+           'total_tt_logistic' => $total_tt_logistic,
+           'total_cash_all' => $total_cash_all,
+           'total_cheque_all' => $total_cheque_all,
+           'total_tt_all' => $total_tt_all
         ];
 
         return $data;

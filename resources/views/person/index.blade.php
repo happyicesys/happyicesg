@@ -156,6 +156,12 @@
                                 <span ng-show="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'payterm'; sortReverse = !sortReverse">
+                                Payterm
+                                <span ng-show="sortType == 'payterm' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'payterm' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'active'; sortReverse = !sortReverse">
                                 Active
                                 <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
@@ -186,6 +192,7 @@
                                 </td>
                                 <td class="col-md-3">@{{ person.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
+                                <td class="col-md-1 text-center">@{{person.payterm}}</td>
                                 <td class="col-md-1 text-center">@{{ person.active }}</td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">

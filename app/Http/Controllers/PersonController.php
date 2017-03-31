@@ -57,6 +57,7 @@ class PersonController extends Controller
                         ->select(
                                     'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact',
                                     'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active',
+                                    'people.payterm',
                                     'custcategories.name as custcategory'
                                 );
 

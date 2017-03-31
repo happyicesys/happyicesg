@@ -70,6 +70,18 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
+        $scope.onTodayDateClicked = function() {
+            $scope.search.delivery_from = moment().format('YYYY-MM-DD');
+            $scope.search.delivery_to = moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
+        $scope.onYesterdayDateClicked = function() {
+            $scope.search.delivery_from = moment().subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.search.delivery_to = moment().subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
         // switching page
         $scope.pageChanged = function(newPage){
             getPage(newPage);

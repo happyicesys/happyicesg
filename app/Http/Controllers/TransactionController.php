@@ -67,7 +67,7 @@ class TransactionController extends Controller
                                 );
         // dd($input);
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory){
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile_id or $request->custcategory){
             $transactions = $this->searchDBFilter($transactions, $request);
         }
         // dd($request->all());
@@ -1081,8 +1081,8 @@ class TransactionController extends Controller
         if($request->driver){
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$request->driver.'%');
         }
-        if($request->profile){
-            $transactions = $transactions->where('profiles.id', $request->profile);
+        if($request->profile_id){
+            $transactions = $transactions->where('profiles.id', $request->profile_id);
         }
         if($request->custcategory) {
             $transactions = $transactions->where('custcategories.id', $request->custcategory);
