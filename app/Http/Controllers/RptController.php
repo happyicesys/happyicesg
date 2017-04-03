@@ -586,7 +586,7 @@ class RptController extends Controller
             }
 
             $query = $this->extraField($request, $query);
-            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
+            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
 
         $query1 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -604,7 +604,7 @@ class RptController extends Controller
             }
 
             $query1 = $this->extraField($request, $query1);
-            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
 
         $query2 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -622,7 +622,7 @@ class RptController extends Controller
             }
 
             $query2 = $this->extraField($request, $query2);
-            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
 
             $query2 = $query2
                 ->union($query)->union($query1)

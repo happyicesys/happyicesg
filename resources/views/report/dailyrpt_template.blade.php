@@ -114,7 +114,7 @@
                     {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'readonly'=>'readonly']) !!}
                 </div>
             @endunless
-{{--             <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-4 col-xs-6">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
                     'class'=>'select_profile form-control',
@@ -122,7 +122,7 @@
                     'ng-change' => 'dbSearch()'
                     ])
                 !!}
-            </div> --}}
+            </div>
         </div>
             {!! Form::close() !!}
         </div>

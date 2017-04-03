@@ -104,7 +104,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cash:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -112,7 +112,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cheque:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -120,7 +120,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 TT:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -135,7 +135,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cash:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -143,7 +143,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cheque:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -151,7 +151,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 TT:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -166,7 +166,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cash:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -174,7 +174,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 Cheque:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -182,7 +182,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-xs-6 text-right">
                 TT:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
@@ -193,7 +193,7 @@
 </div>
 
     {!! Form::open(['id'=>'submit_form', 'method'=>'POST','action'=>['DetailRptController@submitPaySummary']]) !!}
-    <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+    <div id="exportable" style="padding-top: 20px;" style="overflow-x: scroll;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
@@ -262,6 +262,9 @@
                     <span ng-if="search.sortName == 'bankin_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
+                    Remark
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('updated_by')">
                     Updated By
                     <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -275,7 +278,7 @@
                     <td class="col-md-1 text-center">@{{ transaction.payreceived_date | delDate: "yyyy-MM-dd" }}</td>
                     <td class="col-md-1 text-center">@{{ transaction.pay_method | capitalize }}</td>
                     <td class="col-md-1 text-right">@{{ transaction.total }} </td>
-                    <td class="col-md-3 text-left">@{{ transaction.profile }} </td>
+                    <td class="col-md-2 text-left">@{{ transaction.profile }} </td>
                     <td class="col-md-2 text-left">
                         <datepicker date-format="yyyy-MM-dd">
                             <input
@@ -286,6 +289,9 @@
                                 ng-model="transaction.bankin_date"
                             />
                         </datepicker>
+                    </td>
+                    <td class="col-md-2 text-left">
+                        <textarea name="remarks[@{{$index}}]" ng-model="transaction.remark" class="form-control"></textarea>
                     </td>
                     <td class="col-md-1 text-left">@{{ transaction.name }} </td>
 

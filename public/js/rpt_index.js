@@ -23,7 +23,7 @@ var app = angular.module('app', [
             company: '',
             status: '',
             pay_status: '',
-            // profile_id: ''
+            profile_id: ''
         }
 
         $scope.exportData = function () {
@@ -78,7 +78,7 @@ var app = angular.module('app', [
                     company: $scope.search.company,
                     status: $scope.search.status,
                     pay_status: $scope.search.pay_status,
-                    // profile_id: $scope.search.profile_id
+                    profile_id: $scope.search.profile_id
                 }
             }
 

@@ -182,10 +182,10 @@ label{
 //font size responsive
 @media all and (max-width: 1200px) { /* screen size until 1200px */
     body {
-        font-size: 1.6em; /* 1.5x default size */
+        font-size: 1.5em; /* 1.5x default size */
     }
     h1 {
-        font-size: 1.9em;
+        font-size: 1.8em;
     }
 }
 @media all and (max-width: 1000px) { /* screen size until 1000px */
@@ -206,7 +206,7 @@ label{
 
     ._720kb-datepicker-calendar{
        margin-left: -0.5%;
-        margin-left:-50%;
+        /*margin-left:-50%;*/
         width:101%;
         width:200px;
         position: absolute;

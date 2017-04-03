@@ -250,7 +250,7 @@ class DetailRptController extends Controller
                                     'profiles.name as profile', 'profiles.id as profile_id',
                                     'transactions.delivery_fee', 'transactions.pay_status', 'transactions.pay_method', 'transactions.paid_at as payreceived_date',
                                     'users.name',
-                                    'paysummaryinfos.bankin_date',
+                                    'paysummaryinfos.bankin_date', 'paysummaryinfos.remark',
                                     DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
                                 );
         // reading whether search input is filled
@@ -585,6 +585,7 @@ class DetailRptController extends Controller
         $paid_ats = $request->paid_ats;
         $pay_methods = $request->pay_methods;
         $profile_ids = $request->profile_ids;
+        $remarks = $request->remarks;
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
                 if($bankin_dates[$index] !== '') {
@@ -598,7 +599,7 @@ class DetailRptController extends Controller
                     }else {
                         $paysummaryinfo = $exist;
                     }
-
+                    $paysummaryinfo->remark = $remarks[$index];
                     $paysummaryinfo->bankin_date = Carbon::parse($bankin_dates[$index]);
                     $paysummaryinfo->user_id = Auth::user()->id;
                     $paysummaryinfo->save();
