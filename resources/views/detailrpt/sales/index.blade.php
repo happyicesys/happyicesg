@@ -19,7 +19,7 @@
                     <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li>
                     <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail(Month)</a></li>
                     <li><a href="#product_detail_day" role="tab" data-toggle="tab">Product Detail(Day)</a></li>
-                    <li><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li>
+                    {{-- <li><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li> --}}
                 </ul>
             </div>
             <div class="panel-body">
