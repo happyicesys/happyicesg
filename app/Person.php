@@ -59,22 +59,18 @@ class Person extends Baum\Node
         'cust_type' => 'Role Level',
         'time_range' => 'Available Time Range',
         'block_coverage' => 'Block Coverage',
-        'custcategory_id' => 'Customer Category'
+        'custcategory_id' => 'Customer Category',
+        'is_vending' => 'Vending?'
     );
 
 
     protected $fillable = [
-    'contact', 'alt_contact', 'com_remark',
-    'email', 'name', 'cust_id',
-    'remark', 'del_postcode',
-    'company', 'bill_address', 'del_address',
-    'payterm', 'cost_rate',
-    'active', 'site_name', 'profile_id',
-    'note', 'salutation', 'dob',
-    'cust_type', 'user_id', 'parent_name',
-    'parent_id', 'block', 'floor',
-    'unit', 'time_range', 'block_coverage',
-    'custcategory_id'
+    'contact', 'alt_contact', 'com_remark', 'email', 'name', 'cust_id',
+    'remark', 'del_postcode', 'company', 'bill_address', 'del_address',
+    'payterm', 'cost_rate', 'active', 'site_name', 'profile_id',
+    'note', 'salutation', 'dob', 'cust_type', 'user_id', 'parent_name',
+    'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
+    'custcategory_id', 'is_vending'
     ];
 
     /**

@@ -1,101 +1,105 @@
-<div class="col-md-12 col-xs-12">
-    <div class="row">
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('id', 'Inv', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.id',
-                                                'placeholder'=>'Inv',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('id', 'Inv', ['class'=>'control-label']) !!}
+                    {!! Form::text('id', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.id',
+                                                    'placeholder'=>'Inv',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
+                    !!}
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('status', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.status',
-                                                'placeholder'=>'Status',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('status', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.status',
+                                                    'placeholder'=>'Status',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
+                    !!}
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('pay_status', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.pay_status',
-                                                'placeholder'=>'Payment',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('pay_status', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.pay_status',
+                                                    'placeholder'=>'Payment',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
+                    !!}
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+                    <datepicker>
+                        <input
+                            type="text"
+                            class="form-control input-sm"
+                            name="delivery_from"
+                            placeholder="Delivery From"
+                            ng-model="search.delivery_from"
+                            ng-change="onDeliveryFromChanged(search.delivery_from)"
+                        />
+                    </datepicker>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
+                    <datepicker>
+                        <input
+                            type="text"
+                            class="form-control input-sm"
+                            name="delivery_to"
+                            placeholder="Delivery To"
+                            ng-model="search.delivery_to"
+                            ng-change="onDeliveryToChanged(search.delivery_to)"
+                        />
+                    </datepicker>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('driver', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.driver',
-                                                'placeholder'=>'Delivered By',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
+            <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('driver', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.driver',
+                                                    'placeholder'=>'Delivered By',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
+                    !!}
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row" style="padding-left: 15px;">
-    <div class="col-md-3 col-xs-12" style="padding-top: 20px;">
+<div class="row">
+    <div class="col-md-3 col-sm-3 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
     </div>
-    <div class="col-md-5 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-5 col-sm-5 col-xs-12" style="padding-top: 20px;">
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Total:
@@ -121,7 +125,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-xs-12 text-right">
+    <div class="col-md-4 col-sm-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
         <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
             <option ng-value="100">100</option>
@@ -135,7 +139,6 @@
 
 <div class="table-responsive" id="exportable" style="padding-top: 20px;">
     <table class="table table-list-search table-hover table-bordered">
-
         {{-- hidden table for excel export --}}
         <tr class="hidden">
             <td></td>

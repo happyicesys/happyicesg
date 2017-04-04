@@ -167,6 +167,7 @@
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         <button type="submit" class="btn btn-success" form="exportData" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
+        <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">

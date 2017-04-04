@@ -106,6 +106,8 @@ class PersonController extends Controller
     {
         $input = $request->all();
         $person = Person::create($input);
+        $person->is_vending = $request->has('is_vending')? 1 : 0;
+        $person->save();
         return redirect('person');
     }
 
@@ -141,6 +143,8 @@ class PersonController extends Controller
         }
         $input = $request->all();
         $person->update($input);
+        $person->is_vending = $request->has('is_vending') ? 1 : 0;
+        $person->save();
         return Redirect::action('PersonController@edit', $person->id);
     }
 

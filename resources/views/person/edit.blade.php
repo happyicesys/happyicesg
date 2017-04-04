@@ -15,23 +15,36 @@
     @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
-                -
-            @if($person->active == 'Yes')
-                [Active]
-            @else
-                [Inactive]
-            @endif
-            <div class="pull-right">
-                {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
-                @if(Auth::user()->hasRole('admin'))
-                    <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
-                        <i class="fa fa-files-o"></i> <span class="hidden-xs">Replicate</span>
-                    </a>
-                @endif
-                <a href="/person/log/{{$person->id}}" class="btn btn-warning">
-                    <i class="fa fa-history"></i> <span class="hidden-xs">Log History</span>
-                </a>
+            <div class="row">
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <div class="form-group">
+                    <span class="control-label">
+                        <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
+                            -
+                        @if($person->active == 'Yes')
+                            [Active]
+                        @else
+                            [Inactive]
+                        @endif
+                    </span>
+                    </div>
+                </div>
+
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                    <div class="input-group-btn">
+                        <div class="pull-right">
+                            {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
+                            @if(Auth::user()->hasRole('admin'))
+                                <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
+                                    <i class="fa fa-files-o"></i> <span class="hidden-xs hidden-sm">Replicate</span>
+                                </a>
+                            @endif
+                            <a href="/person/log/{{$person->id}}" class="btn btn-warning">
+                                <i class="fa fa-history"></i> <span class="hidden-xs hidden-sm">Log History</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             {!! Form::open(['id'=>'person_transaction', 'method'=>'POST', 'action'=>['TransactionController@store']]) !!}
                 {!! Form::hidden('person_id', $person->id) !!}
@@ -43,7 +56,9 @@
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
                     @include('person.form')
 
-                <div class="col-md-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                <div class="input-group-btn">
                     <div class="pull-right">
                         @cannot('transaction_view')
                         {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
@@ -65,6 +80,8 @@
                         @endcannot
                     </div>
                 </div>
+                </div>
+            </div>
             {!! Form::close() !!}
 
             {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['PersonController@destroy', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
@@ -87,10 +104,7 @@
 
     <div class="panel-body">
 
-    <div class="panel panel-default">
-        <div class="panel-body">
             @include('person.transaction_history')
-        </div>
     </div>
 </div>
 {{-- divider --}}
