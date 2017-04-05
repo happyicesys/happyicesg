@@ -58,28 +58,28 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="row">
-                <div class="input-group-btn">
-                    <div class="pull-right">
-                        @cannot('transaction_view')
-                        {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
-                        @endcannot
-                        <a href="/person" class="btn btn-default">Cancel</a>
+                    <div class="input-group-btn">
+                        <div class="pull-right">
+                            @cannot('transaction_view')
+                            {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
+                            @endcannot
+                            <a href="/person" class="btn btn-default">Cancel</a>
+                        </div>
+                        <div class="pull-left">
+                            @cannot('transaction_view')
+                                @if($person->active == 'Yes')
+                                    {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
+                                @else
+                                    <div class="btn-group">
+                                        {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
+                                        @if(Auth::user()->hasRole('admin'))
+                                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_person']) !!}
+                                        @endif
+                                    </div>
+                                @endif
+                            @endcannot
+                        </div>
                     </div>
-                    <div class="pull-left">
-                        @cannot('transaction_view')
-                            @if($person->active == 'Yes')
-                                {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
-                            @else
-                                <div class="btn-group">
-                                    {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
-                                    @if(Auth::user()->hasRole('admin'))
-                                        {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_person']) !!}
-                                    @endif
-                                </div>
-                            @endif
-                        @endcannot
-                    </div>
-                </div>
                 </div>
             </div>
             {!! Form::close() !!}

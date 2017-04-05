@@ -13,7 +13,7 @@ class AddDeliveryfeeTransactions extends Migration
     public function up()
     {
         Schema::table('transactions', function ($table){
-            $table->decimal('delivery_fee', 10, 2)->nullable;
+            $table->decimal('delivery_fee', 10, 2)->nullable();
         });
     }
 

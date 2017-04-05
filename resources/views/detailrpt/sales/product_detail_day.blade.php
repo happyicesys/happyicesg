@@ -167,7 +167,7 @@
             <label for="display_num2" style="padding-right: 20px">per Page</label>
         </div>
         <div class="row">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+            <label style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
         </div>
     </div>
 </div>

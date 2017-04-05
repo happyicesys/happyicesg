@@ -39,19 +39,17 @@
         </div>
     </div>
 
-    <div class="panel-body">
+    {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
+    {!! Form::close() !!}
 
-            {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
-            {!! Form::close() !!}
+    <div class="panel-body">
         <div class="row">
-            <div class="col-md-12" style="padding: 0px 30px 10px 0px;">
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                 {!! Form::submit('Log History', ['class'=> 'btn btn-warning pull-right', 'form'=>'log']) !!}
             </div>
         </div>
-
-        <div class="col-md-12">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 col-sm-12 col-xs-12">
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id]]) !!}
                         @include('transaction.form_cust')
 
@@ -182,7 +180,6 @@
                 </div>
                 @endif
 
-        </div>
 
     </div>
 </div>

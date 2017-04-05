@@ -377,16 +377,13 @@ var app = angular.module('app', [
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.today = moment().format("YYYY-MM-DD");
+        $scope.monthstart = moment().startOf('month').format('YYYY-MM-DD');
+        $scope.monthend = moment().endOf('month').format('YYYY-MM-DD');
         $scope.search = {
             person_id: '',
-            status: '',
-            product_id: '',
-            company: '',
-            delivery_to: $scope.today,
-            product_name: '',
-            profile_id: '',
-            cust_category: '',
             status: 'Delivered',
+            delivery_from: $scope.monthstart,
+            delivery_to: $scope.monthend,
             pageNum: 100,
             sortBy: true,
             sortName: ''
@@ -395,7 +392,7 @@ var app = angular.module('app', [
         getPage(1, true);
 
         angular.element(document).ready(function () {
-            $('.select').select2();
+            $('.select').select2({placeholder: 'Select...'});
         });
 
         $scope.onDeliveryFromChanged = function(date){
@@ -447,7 +444,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/detailrpt/sales/productday?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/detailrpt/sales/invbreakdown?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.items.data){
                     $scope.alldata = data.items.data;
                     $scope.totalCount = data.items.total;

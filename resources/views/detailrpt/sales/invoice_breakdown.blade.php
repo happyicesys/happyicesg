@@ -1,161 +1,81 @@
+@inject('people', 'App\Person')
+
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
 
 <div ng-controller="invoiceBreakdownController">
-<div class="col-md-12 col-xs-12">
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('person_id', null,
-                                            [
-                                                'class'=>'form-control input-sm',
-                                                'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
-                                            ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('product_id', 'Product ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('product_id', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.product_id',
-                                                    'placeholder'=>'Product ID',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
+<div class="row form-group">
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
+            {!! Form::select('person_id', [''=>null]+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(), null,
+                [
+                'class'=>'select form-control',
+                'ng-model'=>'search.person_id',
+                'ng-change'=>'searchDB()'
+                ])
+            !!}
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('product_name', 'Product Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('product_name', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.product_name',
-                                                    'placeholder'=>'Product Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+            {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                [
+                'class'=>'select form-control',
+                'ng-model'=>'search.status',
+                'ng-change'=>'searchDB()'
+                ])
+            !!}
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.profile_id',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+            <datepicker>
+                <input
+                    type="text"
+                    class="form-control input-sm"
+                    name="delivery_from"
+                    placeholder="Delivery From"
+                    ng-model="search.delivery_from"
+                    ng-change="onDeliveryFromChanged(search.delivery_from)"
+                />
+            </datepicker>
         </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('cust_category', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('cust_category', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.cust_category',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.status',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
+            <datepicker>
+                <input
+                    type="text"
+                    class="form-control input-sm"
+                    name="delivery_to"
+                    placeholder="Delivery To"
+                    ng-model="search.delivery_to"
+                    ng-change="onDeliveryToChanged(search.delivery_to)"
+                />
+            </datepicker>
         </div>
     </div>
 </div>
 
-<div class="row" style="padding-left: 15px; padding-top:20px;">
-    <div class="col-md-4 col-xs-12">
+<div class="row form-group">
+    <div class="col-md-4 col-sm-3 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
     </div>
-    <div class="col-md-4 col-xs-12">
+    <div class="col-md-4 col-sm-5 col-xs-12">
         <div class="row">
-            <div class="col-md-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-6">
                 Total Amount:
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                Total Qty:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_qty }}</strong>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_amount ? total_amount : 0 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-xs-12 text-right">
+    <div class="col-md-4 col-sm-4 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>
             <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
@@ -166,7 +86,7 @@
             <label for="display_num2" style="padding-right: 20px">per Page</label>
         </div>
         <div class="row">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+            <label style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
         </div>
     </div>
 </div>
@@ -180,48 +100,40 @@
                 <td data-tableexport-display="always">Total Amount</td>
                 <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
             </tr>
-            <tr class="hidden">
-                <td></td>
-                <td data-tableexport-display="always">Total Qty</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_qty }}</td>
-            </tr>
             <tr class="hidden" data-tableexport-display="always">
                 <td></td>
             </tr>
 
-            <tr style="background-color: #DDFDF8">
-                <th class="col-md-1 text-center">
-                    #
+            <tr>
+                <th class="col-md-1 text-left">
+                    Invoice #
                 </th>
-
-                <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('product_id')">
-                    Product ID
-                    <span ng-if="search.sortName == 'product_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'product_id' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
-
-                <th class="col-md-6 text-center">
-                    <a href="" ng-click="sortTable('product_name')">
-                    Product Name
-                    <span ng-if="search.sortName == 'product_name' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'product_name' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
-
-                <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortTable('amount')">
-                    Total Amount
-                    <span ng-if="search.sortName == 'amount' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'amount' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
-
-                <th class="col-md-2 text-center">
-                    <a href="" ng-click="sortTable('qty')">
-                    Total Qty
-                    <span ng-if="search.sortName == 'qty' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'qty' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>
+                <th></th>
+                <th></th>
             </tr>
+            <tr>
+                <th class="col-md-1 text-left">
+                    Delivery Date
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th class="col-md-1 text-left">
+                    Delivered By
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th class="col-md-1 text-left">
+                    Payment
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr></tr>
+
 
             <tbody>
 

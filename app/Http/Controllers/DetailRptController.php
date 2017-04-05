@@ -250,7 +250,8 @@ class DetailRptController extends Controller
                                     'profiles.name as profile', 'profiles.id as profile_id',
                                     'transactions.delivery_fee', 'transactions.pay_status', 'transactions.pay_method', 'transactions.paid_at as payreceived_date',
                                     'users.name',
-                                    'paysummaryinfos.bankin_date', 'paysummaryinfos.remark',
+                                    'paysummaryinfos.remark',
+                                    DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
                                     DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
                                 );
         // reading whether search input is filled
@@ -588,7 +589,7 @@ class DetailRptController extends Controller
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
                 if($bankin_dates[$index] !== '') {
-                    $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->whereProfileId($profile_ids[$index])->first();
+                    $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
                     // dd($exist->toArray(), Carbon::parse($paid_ats[$index]), $profile_ids[$index], $request->all());
                     if(! $exist) {
                         $paysummaryinfo = new Paysummaryinfo();
@@ -737,6 +738,12 @@ class DetailRptController extends Controller
         ];
 
         return $data;
+    }
+
+    // retrieve invoice breakdown api (Formrequest $request)
+    public function getSalesInvoiceBreakdownApi(Request $request)
+    {
+
     }
 
     // export SOA report(Array $data)

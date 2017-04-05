@@ -223,9 +223,9 @@ class TransactionController extends Controller
         if($request->input('save')){
             $request->merge(array('status' => 'Pending'));
         }else if($request->input('del_paid')){
+            // $this->vendingMachineValidation($request, $id);
             $request->merge(array('status' => 'Delivered'));
             $request->merge(array('pay_status' => 'Paid'));
-
             if(! $request->paid_by){
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
@@ -234,15 +234,14 @@ class TransactionController extends Controller
             if(! $request->driver){
                 $request->merge(array('driver'=>Auth::user()->name));
             }
-
             if(count($deals) == 0){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
         }elseif($request->input('del_owe')){
+            // $this->vendingMachineValidation($request, $id);
             $request->merge(array('status' => 'Delivered'));
             $request->merge(array('pay_status' => 'Owe'));
-
             if(! $request->driver){
                 $request->merge(array('driver'=>Auth::user()->name));
             }
@@ -1137,5 +1136,25 @@ class TransactionController extends Controller
         $query3 = clone $query;
         $delivery_fee = $query3->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.delivery_fee, 2)'));
         return $delivery_fee;
+    }
+
+    // validate is whether vending machine for the final state udpate(Formrequest $request, int transaction_id)
+    private function vendingMachineValidation($request, $transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        if($transaction->person->is_vending === 1) {
+            $this->validate($request, [
+                'digital_clock' => 'required|integer',
+                'analog_clock' => 'required|integer',
+                'balance_coin' => 'required|numeric'
+            ], [
+                'digital_clock.required' => 'Please fill in the digital clock',
+                'digital_clock.integer' => 'Digital clock must be in integer',
+                'analog_clock.required' => 'Please fill in the analog clock',
+                'analag_clock.integer' => 'Analog clock must be in integer',
+                'balance_coin.required' => 'Please fill in the balance coin',
+                'balance_coin.numeric' => 'Balance coin must be in numbers'
+            ]);
+        }
     }
 }

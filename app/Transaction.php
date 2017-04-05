@@ -55,18 +55,17 @@ class Transaction extends Model
         'note' => 'Note',
         'contact' => 'Contact',
         'del_postcode' => 'PostCode',
+        'digital_clock' => 'Digital Clock',
+        'analog_clock' => 'Analog Clock',
+        'balance_coin' => 'Balance Coin'
     );
 
     protected $fillable=[
-        'total', 'delivery_date', 'status',
-        'transremark', 'updated_by',
-        'pay_status', 'person_code', 'person_id',
-        'order_date', 'driver', 'paid_by',
-        'del_address', 'name', 'po_no',
-        'total_qty', 'pay_method', 'note',
-        'paid_at', 'cancel_trace', 'dtdtransaction_id',
-        'contact', 'del_postcode', 'delivery_fee',
-        'bill_address'
+        'total', 'delivery_date', 'status', 'transremark', 'updated_by',
+        'pay_status', 'person_code', 'person_id', 'order_date', 'driver', 'paid_by',
+        'del_address', 'name', 'po_no', 'total_qty', 'pay_method', 'note',
+        'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
+        'bill_address', 'digital_clock', 'analog_clock', 'balance_coin'
     ];
 
     protected $dates =[

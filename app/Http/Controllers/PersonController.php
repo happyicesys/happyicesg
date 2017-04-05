@@ -62,10 +62,10 @@ class PersonController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active){
+        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active) {
             $people = $this->searchPeopleDBFilter($people, $request);
-        }else{
-            if($request->sortName){
+        }else {
+            if($request->sortName) {
                 $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
@@ -108,7 +108,7 @@ class PersonController extends Controller
         $person = Person::create($input);
         $person->is_vending = $request->has('is_vending')? 1 : 0;
         $person->save();
-        return redirect('person');
+        return Redirect::action('PersonController@edit', $person->id);
     }
 
     public function show($id)
@@ -145,6 +145,12 @@ class PersonController extends Controller
         $person->update($input);
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
         $person->save();
+        if(! $person->is_vending) {
+            $person->vending_piece_price = 0.00;
+            $person->vending_monthly_rental = 0.00;
+            $person->vending_profit_sharing = 0.00;
+            $person->save();
+        }
         return Redirect::action('PersonController@edit', $person->id);
     }
 
@@ -181,9 +187,7 @@ class PersonController extends Controller
         {
             $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
-        }
-        else
-        {
+        }else {
             $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
         }
