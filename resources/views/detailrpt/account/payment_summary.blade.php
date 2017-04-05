@@ -1,4 +1,5 @@
 <div ng-controller="custPaySummaryController">
+{!! Form::open(['id'=>'export_excel', 'method'=>'POST','action'=>['DetailRptController@getAccountPaysummaryApi']]) !!}
 <div class="col-md-12 col-xs-12" style="padding-bottom:20px;">
     <div class="row">
         <div class="col-md-4 col-xs-6">
@@ -78,7 +79,7 @@
         <div class="col-md-4 col-xs-6 text-right">
             <div class="row">
             <label for="display_num">Display</label>
-            <select ng-model="search.itemsPerPage" ng-init="search.itemsPerPage='100'"  name="pageNum" ng-change="pageNumChanged()">
+            <select ng-model="search.itemsPerPage" ng-init="search.itemsPerPage='100'" name="pageNum" ng-change="pageNumChanged()">
                 <option ng-value="100">100</option>
                 <option ng-value="200">200</option>
                 <option ng-value="All">All</option>
@@ -91,10 +92,12 @@
         </div>
     </div>
 </div>
+{!! Form::close() !!}
 
 <div class="row" style="padding-left: 15px; padding-top: 20px;">
     <div class="col-md-2 col-xs-12">
-        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
+        {{-- <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button> --}}
+        <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
         <button class="btn btn-success" type="submit" form="submit_form"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Batch Update</span></button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
@@ -194,32 +197,32 @@
 </div>
 
     {!! Form::open(['id'=>'submit_form', 'method'=>'POST','action'=>['DetailRptController@submitPaySummary']]) !!}
-    <div id="exportable" style="padding-top: 20px;" style="overflow-x: scroll;">
+    <div id="exportable_paysummary" style="padding-top: 20px;" style="overflow-x: scroll;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Happyice P/L</td>
+                <td>Happyice P/L</td>
                 <td></td>
                 <td></td>
-                <td data-tableexport-display="always">Happyice Logistic P/L</td>
+                <td>Happyice Logistic P/L</td>
             </tr>
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Total Cash</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_cash_happyice | currency: "": 2}}</td>
+                <td>Total Cash</td>
+                <td class="text-right">@{{total_cash_happyice | currency: "": 2}}</td>
                 <td></td>
-                <td data-tableexport-display="always">Total Cash</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_cash_logistic | currency: "": 2}}</td>
+                <td>Total Cash</td>
+                <td class="text-right">@{{total_cash_logistic | currency: "": 2}}</td>
             </tr>
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Total Cheque/ TT</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_cheque_happyice | currency: "": 2}}</td>
+                <td>Total Cheque/ TT</td>
+                <td class="text-right">@{{total_cheque_happyice | currency: "": 2}}</td>
                 <td></td>
-                <td data-tableexport-display="always">Total Cheque/ TT</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_cheque_logistic | currency: "": 2}}</td>
+                <td>Total Cheque/ TT</td>
+                <td class="text-right">@{{total_cheque_logistic | currency: "": 2}}</td>
             </tr>
             <tr class="hidden" data-tableexport-display="always">
                 <td></td>
@@ -280,7 +283,7 @@
                     <td class="col-md-1 text-center">@{{ transaction.pay_method | capitalize }}</td>
                     <td class="col-md-1 text-right">@{{ transaction.total }} </td>
                     <td class="col-md-2 text-left">@{{ transaction.profile }} </td>
-                    <td class="col-md-2 text-left">
+                    <td class="col-md-2 text-left" data-tableexport-display="none">
                         <datepicker date-format="yyyy-MM-dd">
                             <input
                                 type="text"

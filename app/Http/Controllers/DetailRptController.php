@@ -284,6 +284,11 @@ class DetailRptController extends Controller
             'total_tt_all' => $caldata['total_tt_all'],
             'transactions' => $transactions,
         ];
+
+        if($request->export_excel) {
+            $this->paySummaryExportExcel($data);
+        }
+
         return $data;
     }
 
@@ -1067,5 +1072,18 @@ class DetailRptController extends Controller
             $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
         }
         return $month_options;
+    }
+
+    // export excel for account pay summary (Collection $data)
+    private function paySummaryExportExcel($data)
+    {
+        $title = 'Payment Summary(Account)';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($data) {
+            $excel->sheet('sheet1', function($sheet) use ($data) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->loadView('detailrpt.account.paymentsummary_excel', compact('data'));
+            });
+        })->download('xlsx');
     }
 }
