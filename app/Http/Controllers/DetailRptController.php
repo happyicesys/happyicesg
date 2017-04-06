@@ -547,10 +547,10 @@ class DetailRptController extends Controller
             $amountstr = $amountstr." AND custcategories.id =".$request->cust_category;
         }
         if($request->status) {
-            if($request->status == 'Delivered') {
+            if($request->status === 'Delivered') {
                 $amountstr .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
             }else {
-                $amountstr = " AND transactions.status='".$request->status."'";
+                $amountstr .=" AND transactions.status='".$request->status."'";
             }
         }
         $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");

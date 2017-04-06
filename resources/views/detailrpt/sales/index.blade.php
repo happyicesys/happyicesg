@@ -36,9 +36,9 @@
                     <div class="tab-pane" id="product_detail_day">
                         @include('detailrpt.sales.product_detail_day')
                     </div>
-                    <div class="tab-pane" id="invoice_breakdown">
+{{--                     <div class="tab-pane" id="invoice_breakdown">
                         @include('detailrpt.sales.invoice_breakdown')
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
