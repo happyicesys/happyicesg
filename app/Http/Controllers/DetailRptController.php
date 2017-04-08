@@ -9,6 +9,8 @@ use App\Http\Requests;
 use App\Paysummaryinfo;
 use App\Transaction;
 use App\Month;
+use App\Item;
+use App\Person;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -746,9 +748,29 @@ class DetailRptController extends Controller
     }
 
     // retrieve invoice breakdown api (Formrequest $request)
-    public function getSalesInvoiceBreakdownApi(Request $request)
+    public function getInvoiceBreakdownIndex(Request $request)
     {
+        // $request->merge(['status' => 'Delivered']);
+        // $request->merge(['person_id' => '2232']);
 
+        $itemsArr = [];
+        $transactionArr = [];
+        $transactions = Transaction::with(['deals', 'deals.item'])->wherePersonId($request->person_id);
+        if($request->status or $request->delivery_from or $request->delivery_to) {
+            $transactions = $this->searchSalesInvoiceBreakdown($transactions, $request);
+        }
+        $transactions = $transactions->orderBy('created_at', 'desc')->take(3)->get();
+
+        foreach($transactions as $transaction) {
+            array_push($transactionArr, $transaction->id);
+            foreach($transaction->deals as $deal) {
+                array_push($itemsArr, $deal->item_id);
+            }
+        }
+        $itemsArr = array_unique($itemsArr);
+        $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
+        $person = Person::find($request->person_id);
+        return view('detailrpt.invoice_breakdown', compact('transactions', 'items', 'transactionArr', 'person', 'person_id'));
     }
 
     // export SOA report(Array $data)
@@ -1085,5 +1107,35 @@ class DetailRptController extends Controller
                 $sheet->loadView('detailrpt.account.paymentsummary_excel', compact('data'));
             });
         })->download('xlsx');
+    }
+
+    // search sales invoice breakdown db scope(Query $transactions, Formrequest $request)
+    private function searchSalesInvoiceBreakdown($transactions, $request)
+    {
+        $status = $request->status;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+
+        if($status) {
+            if($status == 'Delivered') {
+                $transactions = $transactions->where(function($query) {
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });
+            }else {
+                $transactions = $transactions->where('transactions.status', $status);
+            }
+        }
+
+        if($delivery_from){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
+        }else {
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', Carbon::today()->subMonth()->startOfMonth()->toDateString());
+        }
+        if($delivery_to){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
+        }else {
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', Carbon::today()->endOfMonth()->toDateString());
+        }
+        return $transactions;
     }
 }

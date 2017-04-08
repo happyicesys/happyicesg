@@ -134,7 +134,7 @@
     <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group">
-                {!! Form::label('vending_piece_price', 'Piece Per Price', ['class'=>'control-label']) !!}
+                {!! Form::label('vending_piece_price', 'Price Per Piece', ['class'=>'control-label']) !!}
                 {!! Form::text('vending_piece_price', null, ['class'=>'form-control']) !!}
             </div>
         </div>

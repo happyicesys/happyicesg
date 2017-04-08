@@ -16,9 +16,8 @@ class DtdDeal extends Model
     protected $table = 'dtddeals';
 
     protected $fillable = [
-        'qty', 'amount', 'unit_price',
-        'qty_status', 'item_id', 'transaction_id',
-        'dividend', 'divisor'
+        'qty', 'amount', 'unit_price', 'qty_status', 'item_id', 'transaction_id',
+        'dividend', 'divisor', 'unit_cost'
     ];
 
     public function item()

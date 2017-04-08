@@ -1,6 +1,6 @@
 @inject('units', 'App\Unit')
 
-<div class="col-md-10 col-md-offset-1">
+<div class="col-md-12 col-sm-12 col-xs-12">
 
 
     <div class="row" style="padding-bottom: 20px;">
@@ -43,30 +43,43 @@
         @endif
     </div>
 
-    <div class="form-group">
-        {!! Form::label('product_id', 'ID', ['class'=>'control-label']) !!}
-        {!! Form::text('product_id', null, ['class'=>'form-control']) !!}
-    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('product_id', 'ID', ['class'=>'control-label']) !!}
+                {!! Form::text('product_id', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
 
-    <div class="form-group">
-        {!! Form::label('name', 'Product', ['class'=>'control-label']) !!}
-        {!! Form::text('name', null, ['class'=>'form-control']) !!}
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('name', 'Product', ['class'=>'control-label']) !!}
+                {!! Form::text('name', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
     </div>
 
     <div class="form-group">
         {!! Form::label('remark', 'Description', ['class'=>'control-label']) !!}
-        {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group">
                 {!! Form::label('unit', 'Unit', ['class'=>'control-label']) !!}
                 {!! Form::select('unit', $units::lists('name', 'name'), null, ['id'=>'unit', 'class'=>'select form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('unit_cost', 'Cost Price', ['class'=>'control-label']) !!}
+                {!! Form::text('unit_cost', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group" style="padding:30px 0px 0px 50px;">
                 {!! Form::checkbox('publish', $item->publish) !!}
                 {!! Form::label('publish', 'Publish Ecommerce', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}

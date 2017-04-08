@@ -725,6 +725,9 @@ class TransactionController extends Controller
                                 $deal->amount = $amounts[$index];
                                 $deal->unit_price = $quotes[$index];
                                 $deal->qty_status = $status;
+                                if($item->unit_cost) {
+                                    $deal->unit_cost = $item->unit_cost;
+                                }
                                 $deal->save();
                                 $this->dealSyncOrder($index);
                             }
@@ -743,6 +746,9 @@ class TransactionController extends Controller
                                 $deal->qty_status = $status;
                                 $deal->save();
                                 $item->qty_now -= $qty;
+                                if($item->unit_cost) {
+                                    $deal->unit_cost = $item->unit_cost;
+                                }
                                 $item->save();
                                 $this->dealSyncOrder($index);
                             }
@@ -942,6 +948,12 @@ class TransactionController extends Controller
                 $dtddeal->unit_price = $dealresult->unit_price;
                 $dtddeal->qty_status = $dealresult->qty_status;
                 $dtddeal->deal_id = $dealresult->id;
+                $item = Item::find($dealresult->item_id);
+                if($item) {
+                    if($item->unit_cost) {
+                        $dtddeal->unit_cost = $item->unit_cost;
+                    }
+                }
                 $dtddeal->save();
             }
 

@@ -18,14 +18,14 @@
 
                 @include('item.form')
 
-                <div class="col-md-12">
-                    <div class="pull-right" style="padding: 20px 95px 0px 0px">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="pull-right" >
                         {!! Form::submit('Edit', ['class'=> 'btn btn-primary']) !!}
             {!! Form::close() !!}
 
                         <a href="/item" class="btn btn-default">Cancel</a>
                     </div>
-                    <div class="pull-left" style="padding: 20px 0px 0px 95px">
+                    <div class="pull-left">
                         {!! Form::open(['method'=>'DELETE', 'action'=>['ItemController@destroy', $item->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
                         {!! Form::close() !!}

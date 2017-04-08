@@ -129,6 +129,12 @@ ul.alert-dropdown {
         background-color: #000 !important;
     }
 
+    .side-nav li .btn-link:hover,
+    .side-nav li .btn-link:focus {
+        outline: none;
+        background-color: #000 !important;
+    }
+
     /*shift content to right and bottom*/
     body{
         padding-left: 170px;
@@ -328,4 +334,13 @@ margin: 0px auto 15px;
 
 ._720kb-datepicker-calendar{
     z-index: 9999;
+}
+
+.button-link {
+     background:none!important;
+     color:black;
+     border:none;
+     font: inherit;
+     /*border is optional*/
+     cursor: pointer;
 }

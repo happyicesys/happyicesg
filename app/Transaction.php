@@ -75,40 +75,28 @@ class Transaction extends Model
     public function setDeliveryDateAttribute($date)
     {
         if($date){
-
             $this->attributes['delivery_date'] = Carbon::parse($date);
-
         }else{
-
             $this->attributes['delivery_date'] = null;
-
         }
     }
 
     public function setOrderDateAttribute($date)
     {
         if($date){
-
             $this->attributes['order_date'] = Carbon::parse($date);
-
         }else{
-
             $this->attributes['order_date'] = null;
-
         }
     }
 
     public function setPaidAtAttribute($date)
     {
-        if($date){
-
+        if($date) {
             $this->attributes['paid_at'] = Carbon::parse($date);
-
-        }else{
-
+        }else {
             $this->attributes['paid_at'] = null;
         }
-
     }
 
     public function setTransremarkAttribute($value)
@@ -140,23 +128,14 @@ class Transaction extends Model
     {
         return Carbon::parse($date)->format('d M y');
     }
-/*
-    public function getUpdatedAtAttribute($date)
-    {
-        return Carbon::parse($date)->format('d M y h:i A');
-    }  */
 
     public function getDeliveryDateAttribute($date)
     {
         if($date){
-
             return Carbon::parse($date)->format('Y-m-d');
-
         }else{
-
             return null;
         }
-
     }
 
     public function getOrderDateAttribute($date)
@@ -179,11 +158,8 @@ class Transaction extends Model
     public function scopeSearchCustId($query, $cust_id)
     {
         return $query->whereHas('person', function($query) use ($cust_id){
-
             $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
-
         });
-
     }
 
     // (query, integer) [query]
@@ -238,53 +214,33 @@ class Transaction extends Model
     // (query, integer) [query]
     public function scopeSearchProfile($query, $profile)
     {
-
         return $query->whereHas('person.profile', function($query) use ($profile){
-
             return $query->where('id', $profile);
-
         });
-
     }
 
     public function scopeSearchDateRange($query, $datefrom, $dateto)
     {
         $datefrom = Carbon::createFromFormat('d M y', $datefrom)->format('Y-m-d');
-        // dd($datefrom);
-
         $dateto = Carbon::createFromFormat('d M y', $dateto)->format('Y-m-d');
-
-        // return $query->whereBetween('delivery_date',array($datefrom, $dateto));
         return $query->where('delivery_date', '>=', $datefrom)->where('delivery_date', '<=', $dateto);
     }
 
     public function scopeSearchYearRange($query, $period)
     {
        if($period == 'this'){
-
-           // return $query->whereBetween('delivery_date', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
-        return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
-
+            return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
        }else if($period == 'last'){
-
-           // return $query->whereBetween('delivery_date', array(Carbon::now()->subYear()->startOfYear(), Carbon::now()->subYear()->endOfYear()));
-        return $query->where('delivery_date', '>=', Carbon::now()->subYear()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->subYear()->endOfYear()->format('Y-m-d'));
-
+            return $query->where('delivery_date', '>=', Carbon::now()->subYear()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->subYear()->endOfYear()->format('Y-m-d'));
        }
     }
 
     public function scopeSearchMonthRange($query, $month)
     {
         if($month != '0'){
-
-            // return $query->whereBetween('delivery_date', array(Carbon::create(Carbon::now()->year, $month)->startOfMonth(), Carbon::create(Carbon::now()->year, $month)->endOfMonth()));
             return $query->where('delivery_date', '>=', Carbon::create(Carbon::now()->year, $month)->startOfMonth()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::create(Carbon::now()->year, $month)->endOfMonth()->format('Y-m-d'));
-
         }else{
-
-            // return $query->whereBetween('delivery_date', array(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()));
             return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
-
         }
     }
 }
