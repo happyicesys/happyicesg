@@ -9,7 +9,7 @@ class Item extends Model
     protected $fillable=[
         'name', 'remark', 'unit', 'product_id', 'main_imgpath', 'sub_imgpath',
         'img_remain', 'main_imgcaption', 'publish', 'qty_now', 'qty_last', 'lowest_limit',
-        'email_limit', 'qty_order', 'unit_cost'
+        'email_limit', 'qty_order'
     ];
 
     public function transactions()

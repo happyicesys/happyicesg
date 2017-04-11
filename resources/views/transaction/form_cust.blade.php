@@ -222,14 +222,14 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('digital_clocker', 'Digital Clocker', ['class'=>'control-label']) !!}
-                        {!! Form::text('digital_clocker', null, ['class'=>'form-control']) !!}
+                        {!! Form::label('digital_clock', 'Digital Clocker', ['class'=>'control-label']) !!}
+                        {!! Form::text('digital_clock', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('analog_clocker', 'Analog Clocker', ['class'=>'control-label']) !!}
-                        {!! Form::text('analog_clocker', null, ['class'=>'form-control']) !!}
+                        {!! Form::label('analog_clock', 'Analog Clocker', ['class'=>'control-label']) !!}
+                        {!! Form::text('analog_clock', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">

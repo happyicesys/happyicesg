@@ -759,7 +759,12 @@ class DetailRptController extends Controller
         if($request->status or $request->delivery_from or $request->delivery_to) {
             $transactions = $this->searchSalesInvoiceBreakdown($transactions, $request);
         }
-        $transactions = $transactions->orderBy('created_at', 'desc')->take(3)->get();
+        $transactions = $transactions->orderBy('created_at', 'desc');
+
+        $caltransactions = clone $transactions;
+
+        $transactions = $transactions->take(3)->get();
+        $caltransactions = $caltransactions->take(4)->get();
 
         foreach($transactions as $transaction) {
             array_push($transactionArr, $transaction->id);
@@ -767,10 +772,11 @@ class DetailRptController extends Controller
                 array_push($itemsArr, $deal->item_id);
             }
         }
+        // dd($request->url());
         $itemsArr = array_unique($itemsArr);
         $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
         $person = Person::find($request->person_id);
-        return view('detailrpt.invoice_breakdown', compact('transactions', 'items', 'transactionArr', 'person', 'person_id'));
+        return view('detailrpt.invoice_breakdown', compact('transactions', 'items', 'transactionArr', 'person', 'person_id', 'caltransactions'));
     }
 
     // export SOA report(Array $data)

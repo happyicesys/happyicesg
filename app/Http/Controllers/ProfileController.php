@@ -29,7 +29,7 @@ class ProfileController extends Controller
         $profile =  Profile::all();
 
         return $profile;
-    }  
+    }
 
     /**
      * Return viewing page.
@@ -60,31 +60,13 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-
-        $gst = $request->has('gst')? 1 : 0; 
-        
+        $gst = $request->has('gst')? 1 : 0;
         $request->merge(array('gst' => $gst));
-
         $input = $request->all();
-
         $profile = Profile::create($input);
-
         if($request->hasFile('logo')){
-
         }
-
         return redirect('profile');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -96,83 +78,48 @@ class ProfileController extends Controller
     public function edit($id)
     {
         $profile = Profile::findOrFail($id);
-
-        // return view('user.profile.edit', compact('profile'));
         return view('profile.edit', compact('profile'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $profile = Profile::findOrFail($id);
-
-        $gst = $request->has('gst')? 1 : 0; 
-        
-        $request->merge(array('gst' => $gst));        
-
+        $gst = $request->has('gst')? 1 : 0;
+        $request->merge(array('gst' => $gst));
         $input = $request->all();
-
-        if($request->hasFile('logo')){
+/*        if($request->hasFile('logo')){
             dd('yeah');
-        }
-
+        }*/
         $profile->update($input);
-
         return redirect('profile');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $profile = Profile::findOrFail($id);
-
         $this->removeFile($profile);
-
         $profile->delete();
-
     }
-    
+
     //adding file
     //@param file var, request
     private function addFile($file, $request)
     {
         $file = $request->file($file);
-
         $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-
         $file->move('cust_asset/profile', $name);
-
     }
 
     //remove file and delete file path
     //param fileid
     private function removeFile(Profile $profile)
     {
-
         $path = public_path();
-
         $logo = $profile->logo;
-
         $header = $profile->header;
-
         $footer = $profile->footer;
-
         File::delete($logo);
-
         File::delete($header);
-
         File::delete($footer);
-    }  
-  
+    }
 }

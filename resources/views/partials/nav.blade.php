@@ -53,12 +53,9 @@
                     <ul class="dropdown-menu">
                         <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
-                        {{-- <li class="text-left"><a href="/detailrpt/invoicebreakdown" form="invoice_breakdown" type="submit"> Invoice Breakdown</a></li> --}}
-                        <li class="text-left"><button type="submit" form="invoice_breakdown" style="width:100%;" class="btn btn-default text-center">Invoice Breakdown</button></li>
+                        <li class="text-left"><a href="/detailrpt/invoicebreakdown"> Invoice Breakdown</a></li>
                     </ul>
                 </li>
-                {!! Form::open(['id'=>'invoice_breakdown', 'method'=>'POST', 'action'=>['DetailRptController@getInvoiceBreakdownIndex']]) !!}
-                {!! Form::close() !!}
                 @endcannot
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>

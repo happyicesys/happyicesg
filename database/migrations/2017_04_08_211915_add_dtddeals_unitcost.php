@@ -24,7 +24,7 @@ class AddDtddealsUnitcost extends Migration
      */
     public function down()
     {
-        Schema::table('deals', function($table){
+        Schema::table('dtddeals', function($table){
             $table->dropColumn('unit_cost');
         });
     }

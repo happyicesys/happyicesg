@@ -136,12 +136,14 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
+Route::post('/api/item/unitcost', 'ItemController@getUnitcostIndexApi');
 Route::post('/item/{item_id}/photo', 'ItemController@addImage');
 Route::get('/item/image/{item_id}', 'ItemController@imageItem');
 Route::delete('/item/image/{item_id}', 'ItemController@destroyImageAjax');
 Route::post('/item/image/{item_id}', 'ItemController@editCaption');
 Route::get('/item/data', 'ItemController@getData');
 Route::delete('/item/data/{id}', 'ItemController@destroyAjax');
+Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
 Route::resource('item', 'ItemController');
 
 Route::resource('price', 'PriceController');
@@ -190,6 +192,7 @@ Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
 Route::post('/detailrpt/invoicebreakdown', 'DetailRptController@getInvoiceBreakdownIndex');
+Route::get('/detailrpt/invoicebreakdown', 'DetailRptController@getInvoiceBreakdownIndex');
 Route::get('/detailrpt/account', 'DetailRptController@accountIndex');
 Route::post('/api/detailrpt/account/custdetail', 'DetailRptController@getAccountCustdetailApi');
 Route::post('/api/detailrpt/account/outstanding', 'DetailRptController@getAccountOutstandingApi');

@@ -15,6 +15,7 @@ use Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Transaction;
+use App\UnitCost;
 use App\Item;
 use App\Person;
 use App\Price;
@@ -695,6 +696,7 @@ class TransactionController extends Controller
                     if($qty != NULL or $qty != 0 ){
                         // inventory lookup before saving to deals
                         $item = Item::findOrFail($index);
+                        $unitcost = UnitCost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
                         // inventory email notification for stock running low
                         if($item->email_limit){
                             if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
@@ -725,8 +727,8 @@ class TransactionController extends Controller
                                 $deal->amount = $amounts[$index];
                                 $deal->unit_price = $quotes[$index];
                                 $deal->qty_status = $status;
-                                if($item->unit_cost) {
-                                    $deal->unit_cost = $item->unit_cost;
+                                if($unitcost) {
+                                    $deal->unit_cost = $unitcost->unit_cost;
                                 }
                                 $deal->save();
                                 $this->dealSyncOrder($index);
@@ -746,8 +748,8 @@ class TransactionController extends Controller
                                 $deal->qty_status = $status;
                                 $deal->save();
                                 $item->qty_now -= $qty;
-                                if($item->unit_cost) {
-                                    $deal->unit_cost = $item->unit_cost;
+                                if($unitcost) {
+                                    $deal->unit_cost = $unitcost->unit_cost;
                                 }
                                 $item->save();
                                 $this->dealSyncOrder($index);
@@ -938,6 +940,7 @@ class TransactionController extends Controller
 
             $dealresults = Deal::where('transaction_id', $dtdtransaction->transaction_id)->whereNotIn('id', $dtddeal_arr)->get();
             foreach($dealresults as $dealresult){
+                $unitcost = Unitcost::whereProfileId($dtdtransaction->person->profile_id)->whereItemId($dealresult->item_id)->first();
                 $dtddeal = new DtdDeal();
                 $dtddeal->item_id = $dealresult->item_id;
                 $dtddeal->transaction_id = $dtdtransaction->id;
@@ -949,10 +952,8 @@ class TransactionController extends Controller
                 $dtddeal->qty_status = $dealresult->qty_status;
                 $dtddeal->deal_id = $dealresult->id;
                 $item = Item::find($dealresult->item_id);
-                if($item) {
-                    if($item->unit_cost) {
-                        $dtddeal->unit_cost = $item->unit_cost;
-                    }
+                if($unitcost) {
+                    $dtddeal->unit_cost = $unitcost->unit_cost;
                 }
                 $dtddeal->save();
             }
