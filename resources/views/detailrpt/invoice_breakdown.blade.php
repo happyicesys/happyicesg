@@ -273,6 +273,7 @@
                                     </td>
                                 @endforeach
                             </tr>
+
                             <tr>
                                 <td class="col-md-2">Balance Coin</td>
                                 <td class="col-md-1"></td>
@@ -280,6 +281,8 @@
                                     <td class="col-md-3 text-right">{{$transaction->balance_coin}}</td>
                                 @endforeach
                             </tr>
+ {{--                            @if(count($deals::whereIn('transaction_id', $transactionArr)->whereItemId($products::whereProductId('051')->get())) > 0 and count($deals::whereIn('transaction_id', $transactionArr)->whereItemId($products::whereProductId('051a')->get())) > 0) --}}
+
                             <tr>
                                 <td class="col-md-2">{{$products::whereProductId('051')->first()->product_id}} - {{$products::whereProductId('051')->first()->name}}</td>
                                 <td></td>
@@ -316,6 +319,7 @@
                                     {{ number_format(($deals::whereIn('transaction_id', $transactionArr)->whereItemId($products::whereProductId('051a')->first()->id)->sum('amount')) - ($transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $transactionArr)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount'))), 2, '.', '')}}
                                 </td>
                             </tr>
+                            {{-- @endif --}}
                         </table>
                     </div>
                 </div>

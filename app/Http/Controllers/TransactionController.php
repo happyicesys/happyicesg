@@ -15,7 +15,7 @@ use Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Transaction;
-use App\UnitCost;
+use App\Unitcost;
 use App\Item;
 use App\Person;
 use App\Price;
@@ -696,7 +696,7 @@ class TransactionController extends Controller
                     if($qty != NULL or $qty != 0 ){
                         // inventory lookup before saving to deals
                         $item = Item::findOrFail($index);
-                        $unitcost = UnitCost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
+                        $unitcost = Unitcost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
                         // inventory email notification for stock running low
                         if($item->email_limit){
                             if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
