@@ -769,7 +769,7 @@ class DetailRptController extends Controller
                 $transactions = $transactions->where('transactions.status', $status);
             }
         }
-        $allTransactions = $allTransactions->get();
+        $allTransactions = $allTransactions->latest()->get();
 
         if($delivery_from){
             $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
@@ -797,7 +797,7 @@ class DetailRptController extends Controller
         $person = Person::find($request->person_id);
 
         if($request->export_excel) {
-            $this->exportInvoiceBreakdownExcel($allTransactionsId, $person);
+            $this->exportInvoiceBreakdownExcel($allTransactionsId, $allTransactions, $person, $items);
         }
 
         return view('detailrpt.invoice_breakdown', compact('latest3Transactions', 'items', 'latest3ArrId', 'person', 'person_id', 'latest4Transactions', 'allTransactionsId'));
@@ -1170,14 +1170,15 @@ class DetailRptController extends Controller
     }
 
     // export excel for invoice breakdown (array $allTransactions, Collection $person)
-    private function exportInvoiceBreakdownExcel($allTransactionsId, $person)
+    private function exportInvoiceBreakdownExcel($allTransactionsId, $allTransactions, $person, $items)
     {
         $title = 'Invoice Breakdown ('.$person->cust_id.')';
-        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($allTransactionsId, $person) {
-            $excel->sheet('sheet1', function($sheet) use ($allTransactionsId, $person) {
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($allTransactionsId, $allTransactions, $person, $items) {
+            $excel->sheet('sheet1', function($sheet) use ($allTransactionsId, $allTransactions, $person, $items) {
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
-                $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('allTransactionsId', 'person'));
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('allTransactionsId', 'allTransactions', 'person', 'items'));
             });
         })->download('xlsx');
     }

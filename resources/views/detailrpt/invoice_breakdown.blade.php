@@ -65,7 +65,7 @@
                 </button>
 {{--                 @if($person)
                     <button type="submit" class="btn btn-primary" name="export_excel" value="export_excel" form="submit_invoicebreakdown">
-                    <i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span>
+                    <i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export All Excel</span>
                     </button>
                 @endif --}}
             </div>
@@ -145,8 +145,8 @@
                 @foreach($items as $item)
                 <tr>
                     <td class="col-md-4">{{$item->product_id}} - {{$item->name}}</td>
-                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($item->id)->sum('qty')}}</td>
-                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($item->id)->sum('amount')}}</td>
+                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($item->id)->sum('qty')}}</td>
+                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($item->id)->sum('amount')}}</td>
                     @foreach($latest3Transactions as $transaction)
                         <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('qty')}}</td>
                         <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('amount')}}</td>
@@ -296,7 +296,7 @@
                             </tr>
                             <tr>
                                 <td class="col-md-2">Actual Subtotal Received</td>
-                                <td class="col-md-1 text-right">{{number_format($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')), 2, '.', '')}}</td>
+                                <td class="col-md-1 text-right">{{number_format($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount')), 2, '.', '')}}</td>
                             </tr>
                             <tr>
                                 <th class="col-md-2">Difference(Actual - Expected)</th>
@@ -318,7 +318,7 @@
                             <tr>
                                 <th class="col-md-2">Stock Value in VM</th>
                                 <td class="col-md-1 text-right">
-                                    {{ number_format(($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051a')->first()->id)->sum('amount')) - ($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount'))), 2, '.', '')}}
+                                    {{ number_format(($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051a')->first()->id)->sum('amount')) + ($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount'))), 2, '.', '')}}
                                 </td>
                             </tr>
                             {{-- @endif --}}
