@@ -595,7 +595,7 @@ class DetailRptController extends Controller
         $remarks = $request->remarks;
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
-                if($bankin_dates[$index] !== '') {
+                if($bankin_dates[$index] !== '' or $remarks[$index] !== '') {
                     $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
                     // dd($exist->toArray(), Carbon::parse($paid_ats[$index]), $profile_ids[$index], $request->all());
                     if(! $exist) {
@@ -607,7 +607,7 @@ class DetailRptController extends Controller
                         $paysummaryinfo = $exist;
                     }
                     $paysummaryinfo->remark = $remarks[$index];
-                    $paysummaryinfo->bankin_date = Carbon::parse($bankin_dates[$index]);
+                    $paysummaryinfo->bankin_date = $bankin_dates[$index] ? Carbon::parse($bankin_dates[$index]) : null;
                     $paysummaryinfo->user_id = Auth::user()->id;
                     $paysummaryinfo->save();
                 }
@@ -750,33 +750,57 @@ class DetailRptController extends Controller
     // retrieve invoice breakdown api (Formrequest $request)
     public function getInvoiceBreakdownIndex(Request $request)
     {
-        // $request->merge(['status' => 'Delivered']);
-        // $request->merge(['person_id' => '2232']);
-
         $itemsArr = [];
-        $transactionArr = [];
+        $latest3ArrId = [];
+        $allTransactionsId = [];
+        $status = $request->status;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+
         $transactions = Transaction::with(['deals', 'deals.item'])->wherePersonId($request->person_id);
-        if($request->status or $request->delivery_from or $request->delivery_to) {
-            $transactions = $this->searchSalesInvoiceBreakdown($transactions, $request);
+        $allTransactions = clone $transactions;
+
+        if($status) {
+            if($status == 'Delivered') {
+                $transactions = $transactions->where(function($query) {
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });
+            }else {
+                $transactions = $transactions->where('transactions.status', $status);
+            }
         }
+        $allTransactions = $allTransactions->get();
+
+        if($delivery_from){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
+        }
+        if($delivery_to){
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
+        }
+
         $transactions = $transactions->orderBy('created_at', 'desc');
+        $latest3Transactions = $transactions->take(3)->get();
+        $latest4Transactions = clone $transactions;
+        $latest4Transactions = $latest4Transactions->take(4)->get();
 
-        $caltransactions = clone $transactions;
-
-        $transactions = $transactions->take(3)->get();
-        $caltransactions = $caltransactions->take(4)->get();
-
-        foreach($transactions as $transaction) {
-            array_push($transactionArr, $transaction->id);
+        foreach($latest3Transactions as $transaction) {
+            array_push($latest3ArrId, $transaction->id);
             foreach($transaction->deals as $deal) {
                 array_push($itemsArr, $deal->item_id);
             }
         }
-        // dd($request->url());
+        foreach($allTransactions as $transaction) {
+            array_push($allTransactionsId, $transaction->id);
+        }
         $itemsArr = array_unique($itemsArr);
         $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
         $person = Person::find($request->person_id);
-        return view('detailrpt.invoice_breakdown', compact('transactions', 'items', 'transactionArr', 'person', 'person_id', 'caltransactions'));
+
+        if($request->export_excel) {
+            $this->exportInvoiceBreakdownExcel($allTransactionsId, $person);
+        }
+
+        return view('detailrpt.invoice_breakdown', compact('latest3Transactions', 'items', 'latest3ArrId', 'person', 'person_id', 'latest4Transactions', 'allTransactionsId'));
     }
 
     // export SOA report(Array $data)
@@ -1143,5 +1167,18 @@ class DetailRptController extends Controller
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', Carbon::today()->endOfMonth()->toDateString());
         }
         return $transactions;
+    }
+
+    // export excel for invoice breakdown (array $allTransactions, Collection $person)
+    private function exportInvoiceBreakdownExcel($allTransactionsId, $person)
+    {
+        $title = 'Invoice Breakdown ('.$person->cust_id.')';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($allTransactionsId, $person) {
+            $excel->sheet('sheet1', function($sheet) use ($allTransactionsId, $person) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('allTransactionsId', 'person'));
+            });
+        })->download('xlsx');
     }
 }

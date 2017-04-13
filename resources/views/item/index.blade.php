@@ -31,7 +31,9 @@
                             <li class="active"><a href="#item" role="tab" data-toggle="tab">Item</a></li>
                             @cannot('transaction_view')
                                 <li><a href="#stock" role="tab" data-toggle="tab">Stock Movement</a></li>
-                                <li><a href="#unit_cost" role="tab" data-toggle="tab">Unit Cost</a></li>
+                                @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="#unit_cost" role="tab" data-toggle="tab">Unit Cost</a></li>
+                                @endif
                             @endcannot
                         </ul>
                     </div>

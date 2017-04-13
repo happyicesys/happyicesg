@@ -85,7 +85,7 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Custcategory');
     }
 
-    public function transaction()
+    public function transactions()
     {
         return $this->hasMany('App\Transaction');
     }
