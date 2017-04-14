@@ -785,22 +785,23 @@ class DetailRptController extends Controller
 
         foreach($latest3Transactions as $transaction) {
             array_push($latest3ArrId, $transaction->id);
+        }
+        foreach($allTransactions as $transaction) {
+            array_push($allTransactionsId, $transaction->id);
             foreach($transaction->deals as $deal) {
                 array_push($itemsArr, $deal->item_id);
             }
         }
-        foreach($allTransactions as $transaction) {
-            array_push($allTransactionsId, $transaction->id);
-        }
         $itemsArr = array_unique($itemsArr);
         $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
         $person = Person::find($request->person_id);
+        // dd(\App\Deal::whereIn('transaction_id', $allTransactionsId)->whereItemId(Item::whereProductId('051')->first()->id)->first()->toArray());
 
         if($request->export_excel) {
             $this->exportInvoiceBreakdownExcel($allTransactionsId, $allTransactions, $person, $items);
         }
 
-        return view('detailrpt.invoice_breakdown', compact('latest3Transactions', 'items', 'latest3ArrId', 'person', 'person_id', 'latest4Transactions', 'allTransactionsId'));
+        return view('detailrpt.invoice_breakdown', compact('latest3Transactions', 'items', 'latest3ArrId', 'person', 'person_id', 'latest4Transactions', 'allTransactionsId', 'allTransactions'));
     }
 
     // export SOA report(Array $data)

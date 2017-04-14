@@ -156,8 +156,8 @@
 
                 <tr>
                     <th class="col-md-4">Total</th>
-                    <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $latest3ArrId)->sum('qty')}}</th>
-                    <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $latest3ArrId)->sum('amount')}}</th>
+                    <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $allTransactionsId)->sum('qty')}}</th>
+                    <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $allTransactionsId)->sum('amount')}}</th>
                     @foreach($latest3Transactions as $transaction)
                         <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->sum('qty')}}</td>
                         <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->sum('amount')}}</td>
@@ -267,7 +267,7 @@
                             <tr>
                                 <td class="col-md-2">Expected Payment Received</td>
                                 <td class="col-md-1 text-right">
-                                    {{ number_format(($latest3Transactions[0]->analog_clock - $latest3Transactions[2]->analog_clock) * $person->vending_piece_price , 2, '.', '') }}
+                                    {{ number_format(($allTransactions[0]->analog_clock - $allTransactions[count($allTransactions) - 1]->analog_clock) * $person->vending_piece_price , 2, '.', '') }}
                                 </td>
                                 @foreach($latest4Transactions as $index => $caltransaction)
                                     <td class="col-md-3 text-right">
@@ -296,11 +296,11 @@
                             </tr>
                             <tr>
                                 <td class="col-md-2">Actual Subtotal Received</td>
-                                <td class="col-md-1 text-right">{{number_format($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount')), 2, '.', '')}}</td>
+                                <td class="col-md-1 text-right">{{number_format($allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount')), 2, '.', '')}}</td>
                             </tr>
                             <tr>
                                 <th class="col-md-2">Difference(Actual - Expected)</th>
-                                <td class="col-md-1 text-right">{{number_format($latest3Transactions[0]->balance_coin + ($deals::whereIn('transaction_id', $latest3ArrId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) - (($latest3Transactions[0]->analog_clock - $latest3Transactions[2]->analog_clock) * $person->vending_piece_price), 2, '.', '')}}</td>
+                                <td class="col-md-1 text-right">{{number_format($allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) - (($allTransactions[0]->analog_clock - $allTransactions[count($allTransactions) - 1]->analog_clock) * $person->vending_piece_price), 2, '.', '')}}</td>
                             </tr>
                             <tr>
                                 <td class="col-md-2">
