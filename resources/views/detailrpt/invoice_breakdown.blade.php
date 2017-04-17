@@ -46,6 +46,7 @@
                     </div>
                 </div>
             </div>
+            <? old('delivery_from') ?>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
@@ -63,11 +64,11 @@
                 <button type="submit" class="btn btn-default" form="submit_invoicebreakdown">
                     <i class="fa fa-search"></i><span class="hidden-xs"> Search</span>
                 </button>
-{{--                 @if($person)
+                @if($person)
                     <button type="submit" class="btn btn-primary" name="export_excel" value="export_excel" form="submit_invoicebreakdown">
                     <i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export All Excel</span>
                     </button>
-                @endif --}}
+                @endif
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
@@ -104,7 +105,9 @@
                     <th class="col-md-1"></th>
                     <th class="col-md-1"></th>
                     @foreach($latest3Transactions as $transaction)
-                        <th class="col-md-1 text-center" colspan="2">{{$transaction->id}}</th>
+                        <th class="col-md-1 text-center" colspan="2">
+                            <a href="/transaction/{{$transaction->id}}/edit">{{$transaction->id}}</a>
+                        </th>
                     @endforeach
                 </tr>
                 <tr style="background-color: #DDFDF8">

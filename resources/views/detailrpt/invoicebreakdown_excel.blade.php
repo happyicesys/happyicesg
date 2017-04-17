@@ -1,6 +1,6 @@
 @inject('deals', 'App\Deal')
 @inject('transactions', 'App\Transaction')
-@inject('products', 'App\Transaction')
+@inject('products', 'App\Item')
 <meta charset="utf-8">
 <table>
     <tbody>
@@ -146,7 +146,7 @@
                 {{ ($allTransactions[0]->analog_clock - $allTransactions[count($allTransactions) - 1]->analog_clock) * $person->vending_piece_price }}
             </td>
             @foreach($allTransactions as $index => $transaction)
-                <td colspan="2" data-format="0.00">
+                <td colspan="2" data-format="0.00" align="center">
                     {{$index + 1 < count($allTransactions) ? ($transaction->analog_clock - $allTransactions[$index + 1]->analog_clock) * $person->vending_piece_price : 0.00}}
                 </td>
             @endforeach
@@ -155,46 +155,46 @@
             <td colspan="2">Balance Coin</td>
             <td></td>
             @foreach($allTransactions as $transaction)
-                <td colspan="2" data-format="0.00">{{$transaction->balance_coin}}</td>
+                <td colspan="2" data-format="0.00" align="center">{{$transaction->balance_coin}}</td>
             @endforeach
         </tr>
         </table>
 
-        @if($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->whereItemId($products::whereProductId('051a')->first()->id)->whereItemId($products::whereProductId('052')->get()))
+        @if($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->first() and $deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051a')->first()->id)->first() and $deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('052')->first()->id)->first())
             <tr>
-                {{-- <td colspan="2">{{$items::whereProductId('051')->first()->product_id}} - {{$items::whereProductId('051')->first()->name}}</td> --}}
+                <td colspan="2">{{$products::whereProductId('051')->first()->product_id}} - {{$products::whereProductId('051')->first()->name}}</td>
                 <td></td>
                 @foreach($allTransactions as $transaction)
-                    <td colspan="2" data-format="0.00">
-                        {{-- {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first()->amount}} --}}
+                    <td colspan="2" data-format="0.00" align="center">
+                        {{$deals::whereTransactionId($transaction->id)->whereItemId($products::whereProductId('051')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($products::whereProductId('051')->first()->id)->first()->amount : 0.00}}
                     </td>
                 @endforeach
             </tr>
             <tr>
                 <td colspan="2">Actual Subtotal Received</td>
-                {{-- <td data-format="0.00">{{$allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')}}</td> --}}
+                <td data-format="0.00">{{$allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount'))}}</td>
             </tr>
             <tr>
                 <th colspan="2">Difference(Actual - Expected)</th>
-                {{-- <td data-format="0.00">{{ $allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) - ($allTransactions[0]->analog_clock - $allTransactions[count($allTransactions)-1]->analog_clock) * $person->vending_piece_price}}</td> --}}
+                <td data-format="0.00">{{ $allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) - ($allTransactions[0]->analog_clock - $allTransactions[count($allTransactions)-1]->analog_clock) * $person->vending_piece_price}}</td>
             </tr>
             <tr>
                 <td colspan="2">
-                    {{-- {{$items::whereProductId('051a')->first()->product_id}} - {{$items::whereProductId('051a')->first()->name}} --}}
+                    {{$products::whereProductId('051a')->first()->product_id}} - {{$products::whereProductId('051a')->first()->name}}
                 </td>
-                <td class="col-md-1 text-right">
-                    {{-- {{$deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')}} --}}
+                <td  data-format="0.00">
+                    {{$deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051a')->first()->id)->sum('amount')}}
                 </td>
                 @foreach($allTransactions as $transaction)
-                    <td colspan="2">
-                        {{-- {{ $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first()->amount }} --}}
+                    <td data-format="0.00" colspan="2" align="center">
+                        {{ $deals::whereTransactionId($transaction->id)->whereItemId($products::whereProductId('051a')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($products::whereProductId('051a')->first()->id)->first()->amount : 0.00 }}
                     </td>
                 @endforeach
             </tr>
             <tr>
                 <th colspan="2">Stock Value in VM</th>
-                <td>
-                    {{-- {{ ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')))}} --}}
+                <td data-format="0.00">
+                    {{ ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051a')->first()->id)->sum('amount')) + ($allTransactions[0]->balance_coin + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $allTransactionsId)->whereItemId($products::whereProductId('052')->first()->id)->sum('amount')))}}
                 </td>
             </tr>
         @endif

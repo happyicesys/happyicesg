@@ -80,6 +80,8 @@ function unitcostController($scope, $http){
         product_id: '',
         name: '',
         profile_id: '',
+        sortName: '',
+        sortBy: true
     }
     $scope.updated_at = '';
     // init page load
@@ -102,6 +104,12 @@ function unitcostController($scope, $http){
         var now = Date.now();
         saveAs(blob, "Unit Cost"+ now + ".xls");
     };
+
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage();
+    }
 
       // when hitting search button
     $scope.searchDB = function(){

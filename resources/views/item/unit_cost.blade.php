@@ -50,7 +50,10 @@
                     #
                 </th>
                 <th class="col-md-2 text-center">
+                    <a href="" ng-click="sortTable('product_id')">
                     ID
+                    <span ng-if="search.sortName == 'product_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'product_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-3 text-center">
                     Product

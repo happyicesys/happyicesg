@@ -167,7 +167,9 @@ class ItemController extends Controller
         if($request->name) {
             $items = $items->where('name', 'LIKE', '%'.$request->name.'%');
         }
-
+        if($request->sortName){
+            $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         if($request->profile_id) {
             $profiles = $profiles->where('id', '=', $request->profile_id);
         }
