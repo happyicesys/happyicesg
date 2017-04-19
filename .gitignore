@@ -8,5 +8,6 @@ Homestead.json
 .env
 .vagrant/
 Vagrantfile
+.DS_Store
 
 
