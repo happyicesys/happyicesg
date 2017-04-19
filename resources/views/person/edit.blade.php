@@ -34,11 +34,11 @@
                     <div class="input-group-btn">
                         <div class="pull-right">
                             {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
-                            @if(Auth::user()->hasRole('admin'))
+                            @cannot('transaction_view')
                                 <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
                                     <i class="fa fa-files-o"></i> <span class="hidden-xs hidden-sm">Replicate</span>
                                 </a>
-                            @endif
+                            @endcannot
                             <a href="/person/log/{{$person->id}}" class="btn btn-warning">
                                 <i class="fa fa-history"></i> <span class="hidden-xs hidden-sm">Log History</span>
                             </a>
