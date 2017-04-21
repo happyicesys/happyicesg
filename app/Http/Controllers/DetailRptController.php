@@ -750,15 +750,15 @@ class DetailRptController extends Controller
     // retrieve invoice breakdown api (Formrequest $request)
     public function getInvoiceBreakdownIndex(Request $request)
     {
-        $itemsArr = [];
-        $latest3ArrId = [];
-        $allTransactionsId = [];
+        $itemsId = [];
+        // $latest3ArrId = [];
+        $transactionsId = [];
         $status = $request->status;
         $delivery_from = $request->delivery_from;
         $delivery_to = $request->delivery_to;
 
         $transactions = Transaction::with(['deals', 'deals.item'])->wherePersonId($request->person_id);
-        $allTransactions = clone $transactions;
+        // $allTransactions = clone $transactions;
 
         if($status) {
             if($status == 'Delivered') {
@@ -769,7 +769,7 @@ class DetailRptController extends Controller
                 $transactions = $transactions->where('transactions.status', $status);
             }
         }
-        $allTransactions = $allTransactions->latest()->get();
+        // $allTransactions = $allTransactions->latest()->get();
 
         if($delivery_from){
             $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
@@ -778,30 +778,30 @@ class DetailRptController extends Controller
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
         }
 
-        $transactions = $transactions->orderBy('created_at', 'desc');
-        $latest3Transactions = $transactions->take(3)->get();
-        $latest4Transactions = clone $transactions;
-        $latest4Transactions = $latest4Transactions->take(4)->get();
-
+        $transactions = $transactions->orderBy('created_at', 'desc')->get();
+        // $latest3Transactions = $transactions->take(3)->get();
+        // $latest4Transactions = clone $transactions;
+        // $latest4Transactions = $latest4Transactions->take(4)->get();
+/*
         foreach($latest3Transactions as $transaction) {
             array_push($latest3ArrId, $transaction->id);
-        }
-        foreach($allTransactions as $transaction) {
-            array_push($allTransactionsId, $transaction->id);
+        }*/
+        foreach($transactions as $transaction) {
+            array_push($transactionsId, $transaction->id);
             foreach($transaction->deals as $deal) {
-                array_push($itemsArr, $deal->item_id);
+                array_push($itemsId, $deal->item_id);
             }
         }
-        $itemsArr = array_unique($itemsArr);
-        $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
-        $person = Person::find($request->person_id);
+        $itemsId = array_unique($itemsId);
+        // $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
+        $person_id = $request->person_id ? Person::find($request->person_id)->id : null ;
         // dd(\App\Deal::whereIn('transaction_id', $allTransactionsId)->whereItemId(Item::whereProductId('051')->first()->id)->first()->toArray());
 
         if($request->export_excel) {
-            $this->exportInvoiceBreakdownExcel($allTransactionsId, $allTransactions, $person, $items);
+            $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
         }
 
-        return view('detailrpt.invoice_breakdown', compact('latest3Transactions', 'items', 'latest3ArrId', 'person', 'person_id', 'latest4Transactions', 'allTransactionsId', 'allTransactions'));
+        return view('detailrpt.invoice_breakdown', compact('request' ,'transactionsId', 'itemsId', 'person_id'));
     }
 
     // export SOA report(Array $data)
@@ -1170,16 +1170,17 @@ class DetailRptController extends Controller
         return $transactions;
     }
 
-    // export excel for invoice breakdown (array $allTransactions, Collection $person)
-    private function exportInvoiceBreakdownExcel($allTransactionsId, $allTransactions, $person, $items)
+    // export excel for invoice breakdown (Formrequest $request, Array $transactionsId, Array itemsId, int person_id)
+    private function exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id)
     {
+        $person = Person::findOrFail($person_id);
         $title = 'Invoice Breakdown ('.$person->cust_id.')';
-        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($allTransactionsId, $allTransactions, $person, $items) {
-            $excel->sheet('sheet1', function($sheet) use ($allTransactionsId, $allTransactions, $person, $items) {
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $transactionsId, $itemsId, $person_id) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $transactionsId, $itemsId, $person_id) {
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('allTransactionsId', 'allTransactions', 'person', 'items'));
+                $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('request', 'transactionsId', 'itemsId', 'person_id'));
             });
         })->download('xlsx');
     }
