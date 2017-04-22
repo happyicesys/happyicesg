@@ -338,7 +338,7 @@
                             <tr>
                                 <th class="col-md-2">Stock Value in VM</th>
                                 <td class="col-md-1 text-right">
-                                    {{ number_format(($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) - ($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))), 2, '.', '')}}
+                                    {{ number_format(($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))), 2, '.', '')}}
                                 </td>
                             </tr>
                         </table>
