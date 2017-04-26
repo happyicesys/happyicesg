@@ -44,7 +44,9 @@ class ItemController extends Controller
     public function store(ItemRequest $request)
     {
         $publish = $request->has('publish')? 1 : 0;
+        $is_inventory = $request->has('is_inventory')? 1 : 0;
         $request->merge(array('publish' => $publish));
+        $request->merge(array('is_inventory' => $is_inventory));
         $input = $request->all();
         $item = Item::create($input);
         if($request->file('main_imgpath')){
@@ -72,7 +74,9 @@ class ItemController extends Controller
     public function update(ItemRequest $request, $id)
     {
         $publish = $request->has('publish')? 1 : 0;
+        $is_inventory = $request->has('is_inventory')? 1 : 0;
         $request->merge(array('publish' => $publish));
+        $request->merge(array('is_inventory' => $is_inventory));
         $item = Item::findOrFail($id);
         $input = $request->all();
         $item->update($input);

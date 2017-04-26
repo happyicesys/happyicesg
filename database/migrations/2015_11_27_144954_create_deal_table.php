@@ -14,7 +14,7 @@ class CreateDealTable extends Migration
     {
         Schema::create('deals', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('qty', 12, 4);
+            $table->decimal('qty', 12, 4)->nullable();
             $table->decimal('amount', 10, 2);
             $table->decimal('unit_price', 10, 2)->nullable();
             $table->string('qty_status')->nullable();

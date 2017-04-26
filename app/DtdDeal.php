@@ -33,25 +33,21 @@ class DtdDeal extends Model
     public function setQtyAttribute($value)
     {
         if(strstr($value, '/')){
-
             $this->attributes['qty'] = $this->fraction($value);
-
-        }else{
-
+        }else if(!$value) {
+            $this->attributes['qty'] = null;
+        }else {
             $this->attributes['qty'] = $value;
         }
     }
 
+
     private function fraction($frac)
     {
-
         $fraction = explode("/",$frac);
-
         if($fraction[1] != 0) {
-
             return $fraction[0]/$fraction[1];
         }
-
         return "Division by zero error!";
 
     }

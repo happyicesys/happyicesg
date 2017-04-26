@@ -26,6 +26,7 @@ class CreateItemsTable extends Migration
             $table->decimal('email_limit', 12, 4)->nullable();
             $table->decimal('qty_order', 12, 4)->nullable();
             $table->boolean('emailed');
+            $table->boolean('is_inventory')->default(0);
             $table->timestamps();
         });
 
