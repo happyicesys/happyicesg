@@ -72,7 +72,7 @@
 
         <div class="row">
         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-            <div class="col-md-3 col-xs-6 form-group">
+            <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group">
                     <datepicker>
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-xs-6 form-group">
+            <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group">
                     <datepicker>
@@ -108,12 +108,13 @@
                 </div>
             </div>
         @else
-            <div class="col-md-3 col-xs-6 form-group">
+            <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group">
                     <datepicker>
                         <input
                             type = "text"
+                            name = "order_date"
                             class = "form-control"
                             placeholder = "Order Date"
                             ng-model = "form.order_date"
@@ -125,12 +126,13 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-xs-6 form-group">
+            <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group">
                     <datepicker>
                         <input
                             type = "text"
+                            name = "delivery_date"
                             class = "form-control"
                             placeholder = "Delivery Date"
                             ng-model = "form.delivery_date"

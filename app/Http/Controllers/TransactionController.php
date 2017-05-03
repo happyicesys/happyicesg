@@ -212,7 +212,6 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, $id)
     {
-
         // dynamic form arrays
         $quantities = $request->qty;
         $amounts = $request->amount;
