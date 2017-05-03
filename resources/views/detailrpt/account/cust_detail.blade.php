@@ -2,7 +2,7 @@
 {!! Form::open(['id'=>'exportData', 'method'=>'POST', 'action'=>['DetailRptController@getAccountCustdetailApi']]) !!}
 <div class="col-md-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -16,39 +16,46 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_from"
-                        placeholder="Delivery From"
-                        ng-model="search.delivery_from"
-                        ng-change="onDeliveryFromChanged(search.delivery_from)"
-                    />
+
+                <datepicker selector="form-control">
+                    <div class="input-group">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Delivery From"
+                            ng-model = "search.delivery_from"
+                            ng-change = "onDeliveryFromChanged(search.delivery_from)"
+                        />
+                        <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
+                        <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
+                    </div>
                 </datepicker>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_from"
-                        placeholder="Payment From"
-                        ng-model="search.payment_from"
-                        ng-change="onPaymentFromChanged(search.payment_from)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Payment From"
+                            ng-model = "search.payment_from"
+                            ng-change = "onPaymentFromChanged(search.payment_from)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('payment_from', search.payment_from)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('payment_from', search.payment_from)"></span>
+                </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
@@ -62,34 +69,40 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="delivery_to"
-                        placeholder="Delivery To"
-                        ng-model="search.delivery_to"
-                        ng-change="onDeliveryToChanged(search.delivery_to)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Delivery To"
+                            ng-model = "search.delivery_to"
+                            ng-change = "onDeliveryToChanged(search.delivery_to)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
+                </div>
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_to"
-                        placeholder="Payment To"
-                        ng-model="search.payment_to"
-                        ng-change="onPaymentToChanged(search.payment_to)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Payment To"
+                            ng-model = "search.payment_to"
+                            ng-change = "onPaymentToChanged(search.payment_to)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('payment_to', search.payment_to)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('payment_to', search.payment_to)"></span>
+                </div>
             </div>
         </div>
     </div>

@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-
+{{--
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12 form-group">
             <div class="pull-left">
@@ -33,11 +33,45 @@
                 <label for="display_num2" style="padding-right: 20px">per Page</label>
             </div>
         </div>
+    </div> --}}
+    <div class="row">
+        <div class="col-md-3 col-sm-4 col-xs-12">
+            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+        </div>
+
+        <div class="col-md-5 col-sm-8 col-xs-12" style="padding-top:5px;">
+            <div class="row">
+                <div class="col-md-5 col-sm-5 col-xs-5">
+                    Total Available
+                </div>
+                <div class="col-md-7 col-sm-7 col-xs-7 text-right" style="border: thin black solid">
+                    <strong>@{{ total_available | currency: "": 4}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-sm-5 col-xs-5">
+                    Total Booked
+                </div>
+                <div class="col-md-7 col-sm-7 col-xs-7 text-right" style="border: thin black solid">
+                    <strong>@{{ total_booked | currency: "": 4}}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="pull-right display_panel_title">
+                <label for="display_num">Display</label>
+                <select ng-model="itemsPerPage" ng-init="itemsPerPage='100'">
+                  <option ng-value="100">100</option>
+                  <option ng-value="200">200</option>
+                  <option ng-value="All">All</option>
+                </select>
+                <label for="display_num2" style="padding-right: 20px">per Page</label>
+            </div>
+        </div>
     </div>
 
-    <div class="row"></div>
-
-    <div class="table-responsive" id="exportable">
+    <div class="table-responsive" id="exportable" style="padding-top:15px;">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">

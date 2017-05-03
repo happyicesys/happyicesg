@@ -13,29 +13,29 @@
                 [
                 'id'=>'person_id',
                 'class'=>'person form-control',
-                'ng-model'=>'personModel',
-                'ng-change'=>'onPersonSelected(personModel)'
+                'ng-model'=>'form.person',
+                'ng-change'=>'onPersonSelected(form.person)'
                 ])
             !!}
         </div>
         @else --}}
             {{-- {!! Form::text('person_id', $transaction->person->cust_id.' - '.$transaction->person->company, ['class'=>'form-control', 'id'=>'person_id', 'readonly'=>'readonly', 'style'=>'margin-bottom:10px']) !!} --}}
         <label style="margin-bottom: 15px; font-size: 18px;">
-            <a href="/person/@{{ personModel }}">
+            <a href="/person/@{{ form.person }}">
                 {{$transaction->person->cust_id}} - {{$transaction->person->company}}
             </a>
         </label>
 {{--            @endif --}}
-        {!! Form::text('person_id', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
-        {!! Form::text('person_copyid', '@{{personModel}}', ['class'=>'hidden form-control']) !!}
-        {!! Form::text('person_code', '@{{personcodeModel}}', ['class'=>'hidden form-control']) !!}
-        {!! Form::text('name', '@{{nameModel}}', ['class'=>'hidden form-control']) !!}
+        {!! Form::text('person_id', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
+        {!! Form::text('person_copyid', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
+        {!! Form::text('person_code', '@{{form.cust_id}}', ['class'=>'hidden form-control']) !!}
+        {!! Form::text('name', '@{{form.name}}', ['class'=>'hidden form-control']) !!}
 
         <div class="row">
             <div class="col-md-4 form-group">
                 {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
                 {!! Form::textarea('bill_address', null, ['class'=>'form-control',
-                'ng-model'=>'billModel',
+                'ng-model'=>'form.bill_address',
                 'rows'=>'3']) !!}
             </div>
 
@@ -43,7 +43,7 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                     {!! Form::textarea('del_address', null, ['class'=>'form-control',
-                    'ng-model'=>'delModel',
+                    'ng-model'=>'form.del_address',
                     'readonly'=>'readonly',
                     'rows'=>'3']) !!}
                 </div>
@@ -56,14 +56,14 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                     {!! Form::textarea('del_address', null, ['class'=>'form-control',
-                    'ng-model'=>'delModel',
+                    'ng-model'=>'form.del_address',
                     'rows'=>'3']) !!}
                 </div>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
                     {!! Form::textarea('transremark', null, ['class'=>'form-control',
-                    'ng-model'=>'transremarkModel',
+                    'ng-model'=>'form.transremark',
                     'rows'=>'3']) !!}
                 </div>
             @endif
@@ -73,42 +73,80 @@
         <div class="row">
         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
             <div class="col-md-3 col-xs-6 form-group">
-                {!! Form::label('order_date', 'Order On', ['class'=>'control-label']) !!}
-            <div class="input-group date">
-                {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'readonly'=>'readonly']) !!}
-                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-            </div>
+                {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
+                <div class="input-group">
+                    <datepicker>
+                        <input
+                            type = "text"
+                            class = "form-control"
+                            placeholder = "Order Date"
+                            ng-model = "form.order_date"
+                            ng-change = "dateChanged('order_date', form.order_date)"
+                            readonly
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
+                </div>
             </div>
 
             <div class="col-md-3 col-xs-6 form-group">
-                {!! Form::label('delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
-            <div class="input-group date">
-                {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'readonly'=>'readonly']) !!}
-                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-            </div>
+                {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group">
+                    <datepicker>
+                        <input
+                            type = "text"
+                            class = "form-control"
+                            placeholder = "Delivery Date"
+                            ng-model = "form.delivery_date"
+                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
+                            readonly
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
+                </div>
             </div>
         @else
             <div class="col-md-3 col-xs-6 form-group">
-                {!! Form::label('order_date', 'Order On', ['class'=>'control-label']) !!}
-            <div class="input-group date">
-                {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date']) !!}
-                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-            </div>
+                {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
+                <div class="input-group">
+                    <datepicker>
+                        <input
+                            type = "text"
+                            class = "form-control"
+                            placeholder = "Order Date"
+                            ng-model = "form.order_date"
+                            ng-change = "dateChanged('order_date', form.order_date)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
+                </div>
             </div>
 
             <div class="col-md-3 col-xs-6 form-group">
-                {!! Form::label('delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
-            <div class="input-group date">
-                {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date']) !!}
-                <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-            </div>
+                {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group">
+                    <datepicker>
+                        <input
+                            type = "text"
+                            class = "form-control"
+                            placeholder = "Delivery Date"
+                            ng-model = "form.delivery_date"
+                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
+                </div>
             </div>
         @endif
 
             <div class="col-md-3 col-xs-6 form-group">
                 {!! Form::label('payterm', 'Pay Term', ['class'=>'control-label']) !!}
                 {!! Form::textarea('payterm', null, ['class'=>'form-control',
-                'ng-model'=>'paytermModel',
+                'ng-model'=>'form.payterm',
                 'readonly'=>'readonly',
                 'rows'=>'1']) !!}
             </div>
@@ -117,14 +155,14 @@
                 <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
                     {!! Form::text('del_postcode', null, ['class'=>'form-control',
-                    'ng-model'=>'postcodeModel',
+                    'ng-model'=>'form.del_postcode',
                     'readonly'=>'readonly']) !!}
                 </div>
             @else
                 <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
                     {!! Form::text('del_postcode', null, ['class'=>'form-control',
-                    'ng-model'=>'postcodeModel']) !!}
+                    'ng-model'=>'form.del_postcode']) !!}
                 </div>
             @endif
         </div>
@@ -138,12 +176,12 @@
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
-                    {!! Form::text('name', null, ['class'=>'form-control', 'ng-model'=>'attNameModel', 'readonly'=>'readonly']) !!}
+                    {!! Form::text('name', null, ['class'=>'form-control', 'ng-model'=>'form.attn_name', 'readonly'=>'readonly']) !!}
                 </div>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
-                    {!! Form::text('contact', null, ['class'=>'form-control', 'ng-model'=>'contactModel', 'readonly'=>'readonly']) !!}
+                    {!! Form::text('contact', null, ['class'=>'form-control', 'ng-model'=>'form.contact', 'readonly'=>'readonly']) !!}
                 </div>
             @else
                 <div class="col-md-4 form-group">
@@ -154,13 +192,13 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('name', 'Attn. Name', ['class'=>'control-label']) !!}
                     {!! Form::text('name', null, ['class'=>'form-control',
-                    'ng-model'=>'attNameModel']) !!}
+                    'ng-model'=>'form.attn_name']) !!}
                 </div>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('contact', 'Tel No.', ['class'=>'control-label']) !!}
                     {!! Form::text('contact', null, ['class'=>'form-control',
-                    'ng-model'=>'contactModel']) !!}
+                    'ng-model'=>'form.contact']) !!}
                 </div>
             @endif
         </div>
@@ -242,6 +280,4 @@
         @endif
     </div>
 </div>
-
-
 

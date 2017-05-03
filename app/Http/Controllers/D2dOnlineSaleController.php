@@ -112,6 +112,7 @@ class D2dOnlineSaleController extends Controller
             $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jhhappyice@gmail.com'];
             $bcc = '';
         }else{
+            dd('here2');
             $member = Person::findOrFail($avail_postcode->person_id);
             $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : '';
             if($member_manager != null and $member_manager != '') {
@@ -122,7 +123,6 @@ class D2dOnlineSaleController extends Controller
             $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jhhappyice@gmail.com'];
             $dtdtransaction_id = $this->createDtdTransaction($request, $customer_id);
         }
-
         $data = [
             'idArr' => $request->idArr,
             'captionArr' => $request->captionArr,
@@ -211,7 +211,7 @@ class D2dOnlineSaleController extends Controller
                 $customer->custcategory_id = $cust_category->id;
             }
             $customer->save();
-            if($avail_postcode){
+            if($avail_postcode->person_id){
                 $manager = Person::findOrFail($avail_postcode->person_id);
                 $customer->parent_name = $manager->name;
                 $customer->makeChildOf($manager);
@@ -234,11 +234,11 @@ class D2dOnlineSaleController extends Controller
         return $latest_cust;
     }
 
-    // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request, int person_id)
-    private function createTransaction($request, $person_id)
+    // create transaction upon customer submit order [given the postcode is not found or not bind to person_id](FormRequest request, int customer_id)
+    private function createTransaction($request, $customer_id)
     {
         $cutoff_time = Carbon::createFromTime(22, 30, 0, 'Asia/Singapore');
-        $person = Person::findOrFail($person_id);
+        $person = Person::findOrFail($customer_id);
         $transaction = new Transaction();
         $transaction->updated_by = 'D2D System';
         $transaction->delivery_date = Carbon::now() >= $cutoff_time ? Carbon::today()->addDay() : Carbon::today();

@@ -235,13 +235,21 @@
                             <td class="col-xs-7">
                                 {{ $deal->item->name}} {{ $deal->item->remark }}
                             </td>
-                            <td class="col-xs-2 text-right">
-                                @if($deal->divisor)
+
+                            @if($deal->divisor and $deal->item->is_inventory)
+                                <td class="col-xs-2 text-right">
                                     {{ $deal->divisor == 1 ? $deal->qty + 0 : $deal->dividend.'/'.$deal->divisor}} {{ $deal->item->unit }}
-                                @else
+                                </td>
+                            @elseif(!$deal->item->is_inventory)
+                                <td class="col-xs-2 text-left">
+                                    1 Unit
+                                </td>
+                            @else
+                                <td class="col-xs-2 text-right">
                                     {{ $deal->qty + 0 }}
-                                @endif
-                            </td>
+                                </td>
+                            @endif
+
                             @if($deal->unit_price == 0 || $deal->unit_price == null)
                             <td class="col-xs-1 text-right">
                                 {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}

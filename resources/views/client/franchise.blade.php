@@ -84,7 +84,7 @@ Healthier Life
                 <p>
                     <ol>
                         <li>
-                            Low minimum investment - It starts from less than 10K. Most franchise business in the market today requires start up capital of no less than 100K.
+                            Low minimum investment - It starts from less than 20K. Most franchise business in the market today requires start up capital of no less than 100K.
                         </li>
                         <li>
                             Zero overhead cost - no renovation cost or labour cost that is commonly found in traditional franchise business.
@@ -102,7 +102,7 @@ Healthier Life
                             Convenient + sold at premium price - As vending machine provide convenient thus able to sell it at premium price
                         </li>
                         <li>
-                            Short ROI – expected within period of 18 months. Expected 33% p.a return on investment.
+                            Short ROI – expected within period of 18 months.
                         </li>
                         <li>
                             You own, we operate - This franchise model requires zero attention from investor. You invest on machine, Happy Ice operates the machines and profits are shared. We will provide monthly/quarterly sales report and return

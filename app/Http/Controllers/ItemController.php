@@ -27,8 +27,15 @@ class ItemController extends Controller
 
     public function getData()
     {
-        $item =  Item::orderBy('product_id')->get();
-        return $item;
+        $items =  Item::orderBy('product_id')->get();
+        $total_available = Item::sum('qty_now');
+        $total_booked = Item::sum('qty_order');
+        $data = [
+            'items' => $items,
+            'total_available' => $total_available,
+            'total_booked' => $total_booked,
+        ];
+        return $data;
     }
 
     public function index()

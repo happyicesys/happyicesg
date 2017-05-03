@@ -118,35 +118,20 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $this->validate($request, [
-
             'username' => 'required',
-
             'email' => 'required',
-
         ],[
-
             'username.required' => 'Please fill in the Username',
-
             'email.required' => 'Please fill in the Email',
-
         ]);
-
         $user = User::whereUsername($request->username)->whereEmail($request->email)->first();
-
         if($user){
-
             $new_password = str_random(6);
-
             $user->password = $new_password;
-
             $user->save();
-
             $this->sendPasswordResetEmail($user, $new_password);
-
         }else{
-
             Flash::error('The Username or Email are not matched');
-
         }
 
         return view('password.reset');
@@ -155,32 +140,19 @@ class AuthController extends Controller
     // send password reset email
     private function sendPasswordResetEmail($user, $new_password)
     {
-
         $today = Carbon::now()->format('d-m-Y H:i');
-
         $send_to = $user->email;
-
         $sender = 'system@happyice.com.sg';
-
         $data = [
-
             'user_id' => $user->id,
-
             'id_name' => $user->name,
-
             'new_password' => $new_password,
-
         ];
-
         Mail::send('email.reset_password', $data, function ($message) use ($user, $send_to, $today, $sender)
         {
             $message->from($sender);
-
             $message->subject('Email Password Reset for '.$user->id.' - '.$user->name.' ('.$today.')');
-
             $message->setTo($send_to);
         });
-
     }
-
 }

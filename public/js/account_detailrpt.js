@@ -70,6 +70,15 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
+        $scope.onPrevSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
+        $scope.onNextSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
 
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_custdetail').innerHTML], {
@@ -286,6 +295,16 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
+        $scope.onPrevSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
+        $scope.onNextSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_paydetail').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
@@ -402,6 +421,16 @@ var app = angular.module('app', [
             if(date){
                 $scope.search.bankin_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
+            $scope.searchDB();
+        }
+
+        $scope.onPrevSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
+        $scope.onNextSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
             $scope.searchDB();
         }
 

@@ -1,76 +1,67 @@
-var app = angular.module('app', [   'ui.bootstrap',
+var app = angular.module('app', [
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
-                                    'ngSanitize'
+                                    'ngSanitize',
+                                    '720kb.datepicker'
                                 ]);
 
-        var $person = $('.person');
-        var $item = $('.item');
-        var $amount = $('#amount');
-        var $trans_id = $('#transaction_id');
-        var $person_select = $('.person_select');
 
-        $person.select2();
-        $item.select2({
-            placeholder: "Select Item...",
-        });
+    var $person = $('.person');
+    var $item = $('.item');
+    var $amount = $('#amount');
+    var $trans_id = $('#transaction_id');
+    var $person_select = $('.person_select');
 
     function transactionController($scope, $http){
-
         $scope.selection = {};
         $scope.Math = window.Math;
 
-            $(document).ready(function () {
+            angular.element(document).ready(function () {
+                $('.date').datetimepicker({
+                    format: 'YYYY-MM-DD'
+                });
+
+                $person.select2();
+                $item.select2({
+                    placeholder: "Select Item...",
+                });
 
                $(".qtyClass").keyup(multInputs);
                $(".quoteClass").keyup(multInputs);
-
                function multInputs() {
                 "use strict";
                    var mult = 0;
                    // for each row:
                    $("tr.txtMult").each(function () {
-                       // get the values from this row:
                        var $qty = eval($('.qtyClass', this).val());
-
                        var $quote = (+$('.quoteClass', this).val());
-
                        var $retail = (+$('.retailClass', this).val());
-
                        var $price = 0;
-
                        if($quote == null || $quote == '' || $quote == 0){
-
                             $price = 0;
-
                        }else{
-
                             $price = $quote;
-
                        }
-
                        var $total = (+$qty * +$price);
-                       // set total for the row
-                       // $('.amountClass', this).text($total);
                         if(isNaN($total)) {
                             var $total = 0;
                         }
                        $('.amountClass', this).val($total.toFixed(2));
                        mult += (+$total);
                    });
-
                    $('.grandTotal').val(mult.toFixed(2));
                }
             });
 
             $http.get('/person/data').success(function(people){
-            $scope.people = people;
+                $scope.people = people;
             });
 
             $http({
                 url: '/transaction/' + $trans_id.val(),
                 method: "GET",
             }).success(function(transaction){
+
                 $scope.delivery = transaction.delivery_fee
                 $http({
                     url: '/deal/data/' + transaction.id,
@@ -96,91 +87,46 @@ var app = angular.module('app', [   'ui.bootstrap',
                             }else{
                                 $scope.totalModelStore = total;
                             }
-/*
-                            if(! $scope.totalModelStore == transaction.total){
-
-                                $http.put('total', $scope.totalModelStore)
-                                    .success(function(){
-                                });
-
-                            }
-
-
-                            $http.put('totalqty', $scope.totalqtyModel)
-                                .success(function(){
-                            });
-*/
                         });
 
                 $http({
                     url: '/transaction/person/'+ transaction.person_id,
                     method: "GET",
                 }).success(function(person){
-                    $scope.personModel = person.id;
-                    $scope.nameModel = person.name;
-                    $scope.billModel = person.bill_address;
-                    $scope.paytermModel = person.payterm;
-                    $scope.personcodeModel = person.cust_id;
 
-                    // choose which to display
-                    // transremark
-                    if(transaction.transremark){
-                        $scope.transremarkModel = transaction.transremark;
-                    }else{
-                        $scope.transremarkModel = person.remark;
+                    $scope.form = {
+                        person: person.id,
+                        name: person.name,
+                        payterm: person.payterm,
+                        cust_id: person.cust_id,
+                        transremark: transaction.transremark ? transaction.transremark : person.remark,
+                        del_address: transaction.del_address ? transaction.del_address : person.del_address,
+                        bill_address: transaction.bill_address ? transaction.bill_address : person.bill_address,
+                        del_postcode: transaction.del_postcode ? transaction.del_postcode : person.del_postcode,
+                        attn_name: transaction.name ? transaction.name : person.name,
+                        contact: transaction.contact ? transaction.contact : person.contact,
+                        order_date: transaction.order_date ? transaction.order_date : moment().format("YYYY-MM-DD"),
+                        delivery_date: transaction.delivery_date ? transaction.delivery_date : moment().format("YYYY-MM-DD"),
                     }
 
-                    // delivery address
-                    if(transaction.del_address){
-                        $scope.delModel = transaction.del_address;
-                    }else{
-                        // $scope.delModel = person.del_address + ' ' + person.del_postcode;
-                        $scope.delModel = person.del_address;
+                    $scope.onPrevSingleClicked = function(modelName, date) {
+                        $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
                     }
 
-                    // billing address
-                    if(transaction.bill_address){
-                        $scope.billModel = transaction.bill_address;
-                    }else{
-                        $scope.billModel = person.bill_address;
+                    $scope.onNextSingleClicked = function(modelName, date) {
+                        $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
                     }
 
-                    // display default delivery postcode
-                    if(transaction.del_postcode){
-                        $scope.postcodeModel = transaction.del_postcode;
-                    }else{
-                        $scope.postcodeModel = person.del_postcode;
+                    $scope.dateChanged = function(modelName, date) {
+                        $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
                     }
 
-                    // display default delivery name
-                    if(transaction.name){
-                        $scope.attNameModel = transaction.name;
-                    }else{
-                        $scope.attNameModel = person.name;
-                    }
-
-                    // display default delivery contact
-                    if(transaction.contact){
-                        $scope.contactModel = transaction.contact;
-                    }else{
-                        $scope.contactModel = person.contact;
-                    }
-
-                    $('.date').datetimepicker({
-                        format: 'YYYY-MM-DD'
+                    $http({
+                        url: '/transaction/item/'+ person.id,
+                        method: "GET",
+                    }).success(function(items){
+                        $scope.items = items;
                     });
-/*
-                    $('.paid_date').datetimepicker({
-                        format: 'YYYY-MM-DD    LT',
-                        sideBySide: true
-                    });*/
-
-                        $http({
-                            url: '/transaction/item/'+ person.id,
-                            method: "GET",
-                        }).success(function(items){
-                            $scope.items = items;
-                        });
                 });
             });
         });

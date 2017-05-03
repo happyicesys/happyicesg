@@ -1,3 +1,10 @@
+<style>
+    td ._720kb-datepicker-calendar{
+        margin-top:0;
+        z-index: 9999;
+    }
+</style>
+
 <div ng-controller="custPaySummaryController">
 {!! Form::open(['id'=>'export_excel', 'method'=>'POST','action'=>['DetailRptController@getAccountPaysummaryApi']]) !!}
 <div class="col-md-12 col-xs-12" style="padding-bottom:20px;">
@@ -17,31 +24,37 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_from"
-                        placeholder="Payment From"
-                        ng-model="search.payment_from"
-                        ng-change="onPaymentFromChanged(search.payment_from)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Payment From"
+                            ng-model = "search.payment_from"
+                            ng-change = "onPaymentFromChanged(search.payment_from)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('payment_from', search.payment_from)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('payment_from', search.payment_from)"></span>
+                </div>
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="payment_to"
-                        placeholder="Payment To"
-                        ng-model="search.payment_to"
-                        ng-change="onPaymentToChanged(search.payment_to)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Payment To"
+                            ng-model = "search.payment_to"
+                            ng-change = "onPaymentToChanged(search.payment_to)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('payment_to', search.payment_to)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('payment_to', search.payment_to)"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -49,31 +62,37 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('bankin_from', 'Bank In From', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="bankin_from"
-                        placeholder="Bank In From"
-                        ng-model="search.bankin_from"
-                        ng-change="onBankinFromChanged(search.bankin_from)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Bank In From"
+                            ng-model = "search.bankin_from"
+                            ng-change = "onBankinFromChanged(search.bankin_from)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('bankin_from', search.bankin_from)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('bankin_from', search.bankin_from)"></span>
+                </div>
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('bankin_to', 'Bank In To', ['class'=>'control-label search-title']) !!}
-                <datepicker>
-                    <input
-                        type="text"
-                        class="form-control input-sm"
-                        name="bankin_to"
-                        placeholder="Bank In To"
-                        ng-model="search.bankin_to"
-                        ng-change="onBankinToChanged(search.bankin_to)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker selector="form-control">
+                        <input
+                            type = "text"
+                            class = "form-control input-sm"
+                            placeholder = "Bank In To"
+                            ng-model = "search.bankin_to"
+                            ng-change = "onBankinToChanged(search.bankin_to)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('bankin_to', search.bankin_to)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('bankin_to', search.bankin_to)"></span>
+                </div>
             </div>
         </div>
         <div class="col-md-4 col-xs-6 text-right">

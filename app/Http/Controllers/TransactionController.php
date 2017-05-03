@@ -224,7 +224,7 @@ class TransactionController extends Controller
         if($request->input('save')){
             $request->merge(array('status' => 'Pending'));
         }else if($request->input('del_paid')){
-            // $this->vendingMachineValidation($request, $id);
+            $this->vendingMachineValidation($request, $id);
             $request->merge(array('status' => 'Delivered'));
             $request->merge(array('pay_status' => 'Paid'));
             if(! $request->paid_by){
@@ -240,7 +240,7 @@ class TransactionController extends Controller
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
         }elseif($request->input('del_owe')){
-            // $this->vendingMachineValidation($request, $id);
+            $this->vendingMachineValidation($request, $id);
             $request->merge(array('status' => 'Delivered'));
             $request->merge(array('pay_status' => 'Owe'));
             if(! $request->driver){
@@ -476,19 +476,12 @@ class TransactionController extends Controller
     // generate pdf invoice for transaction
     public function generateInvoice($id)
     {
-
         $transaction = Transaction::findOrFail($id);
-
         $person = Person::findOrFail($transaction->person_id);
-
         $deals = Deal::whereTransactionId($transaction->id)->get();
-
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
-
         // $profile = Profile::firstOrFail();
-
         $data = [
             'transaction'   =>  $transaction,
             'person'        =>  $person,
@@ -499,61 +492,34 @@ class TransactionController extends Controller
         ];
 
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
-
         $pdf = PDF::loadView('transaction.invoice', $data);
-
         $pdf->setPaper('a4');
-
         return $pdf->download($name);
     }
 
     public function generateLogs($id)
     {
         $transaction = Transaction::findOrFail($id);
-
         $transHistory = $transaction->revisionHistory;
-
         return view('transaction.log', compact('transaction', 'transHistory'));
-    }
-
-    public function searchDateRange(Request $request)
-    {
-        $request->input('property');
-
-        $request->input('startDate');
-
-        $request->input('endDate');
-
     }
 
     // status changing to verified owe/ paid
     public function changeStatus($id)
     {
         $transaction = Transaction::findOrFail($id);
-
         $status = $transaction->status;
-
         $pay_status = $transaction->pay_status;
-
         if($status == 'Delivered' and $pay_status == 'Owe'){
-
             $transaction->status = 'Verified Owe';
-
             $transaction->updated_by = Auth::user()->name;
-
             $transaction->save();
-
         }else if(($status == 'Verified Owe' or $status == 'Delivered') and $pay_status == 'Paid'){
-
             $transaction->status = 'Verified Paid';
-
             // $transaction->pay_method = 'cash';
-
             $transaction->updated_by = Auth::user()->name;
-
             $transaction->save();
         }
-
         // using redirect back since applied in different views
         return redirect()->back();
     }
@@ -1181,15 +1147,13 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($transaction_id);
         if($transaction->person->is_vending === 1) {
             $this->validate($request, [
-                'digital_clock' => 'required|integer',
+                'digital_clock' => 'integer',
                 'analog_clock' => 'required|integer',
-                'balance_coin' => 'required|numeric'
+                'balance_coin' => 'numeric'
             ], [
-                'digital_clock.required' => 'Please fill in the digital clock',
                 'digital_clock.integer' => 'Digital clock must be in integer',
                 'analog_clock.required' => 'Please fill in the analog clock',
                 'analag_clock.integer' => 'Analog clock must be in integer',
-                'balance_coin.required' => 'Please fill in the balance coin',
                 'balance_coin.numeric' => 'Balance coin must be in numbers'
             ]);
         }

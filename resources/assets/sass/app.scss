@@ -210,13 +210,13 @@ label{
         font-size: 1.2em;
     }
 
-    ._720kb-datepicker-calendar{
+    // ._720kb-datepicker-calendar{
        /*margin-left: -0.5%;*/
-        /*width:101%;*/
+        // width:101%;
         /*width:200px;*/
         /*position: absolute;*/
-        z-index: 9999;
-    }
+        // z-index: 9999;
+    // }
 }
 
 .bgimage {
@@ -333,6 +333,7 @@ margin: 0px auto 15px;
 }
 
 ._720kb-datepicker-calendar{
+    margin-top:30px;
     z-index: 9999;
 }
 

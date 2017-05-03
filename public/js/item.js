@@ -15,9 +15,11 @@ function itemController($scope, $http){
         saveAs(blob, "InventoryRpt"+ now + ".xls");
     };
 
-    $http.get('/item/data').success(function(items){
-        $scope.items = items;
-        $scope.All = items.length;
+    $http.get('/item/data').success(function(data){
+        $scope.items = data.items;
+        $scope.total_available = data.total_available;
+        $scope.total_booked = data.total_booked;
+        $scope.All = data.items.length;
     });
 
     $http.get('/inventory/data').success(function(inventories){

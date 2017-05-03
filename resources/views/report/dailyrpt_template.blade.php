@@ -1,4 +1,12 @@
 @inject('profiles', 'App\Profile')
+
+<style>
+    ._720kb-datepicker-calendar{
+        margin-top:0;
+        z-index: 9999;
+    }
+</style>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
@@ -19,40 +27,40 @@
     {!! Form::hidden('user_id', Auth::user()->id, ['class'=>'form-group', 'id'=>'user_id']) !!}
         {!! Form::open(['id'=>'daily_rpt', 'method'=>'POST','action'=>['RptController@getDailyPdf']]) !!}
         <div class="row col-md-12 col-sm-12 col-xs-12">
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('transaction_id', 'Invoice:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Inv Num']) !!}
             </div>
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('cust_id', 'ID:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Cust ID']) !!}
             </div>
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
             </div>
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Status']) !!}
             </div>
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Payment']) !!}
             </div>
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver'))
-                <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
+                <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
                     {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
                 </div>
             @else
-                <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
+                <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
                     {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
                 </div>
             @endunless
             {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('paid_at', 'Date:', ['class'=>'control-label search-title']) !!}
 {{--
                     <div class="dropdown">
@@ -76,7 +84,7 @@
                     />
                 </datepicker>
             </div>
-            <div class="form-group col-md-2 col-sm-4 col-xs-6 hidden">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
                 {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
 {{--
                     <div class="dropdown">
@@ -104,17 +112,17 @@
         <div class="row col-md-12 col-sm-12 col-xs-12">
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver'))
-                <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                <div class="form-group col-md-2 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'User']) !!}
                 </div>
             @else
-                <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                <div class="form-group col-md-2 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'readonly'=>'readonly']) !!}
                 </div>
             @endunless
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
                     'class'=>'select_profile form-control',
