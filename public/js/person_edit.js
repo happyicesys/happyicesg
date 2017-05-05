@@ -111,8 +111,8 @@ var app = angular.module('app', [
             });*/
 
 
-        $http.get('/item/data').success(function(items){
-            $scope.items = items;
+        $http.get('/item/data').success(function(data){
+            $scope.items = data.items;
         });
 
         $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
