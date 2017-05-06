@@ -134,7 +134,11 @@
                     <td class="col-md-2">@{{ item.name }}</td>
                     <td class="col-md-1 text-center">@{{ item.unit }}</td>
                     <td class="col-md-1 text-right"><strong>@{{ item.qty_now | currency: "": 4 }}</strong></td>
-                    <td class="col-md-1 text-right"><strong>@{{ item.qty_order ? item.qty_order : 0 | currency: "": 4 }}</strong></td>
+                    <td class="col-md-1 text-right">
+                        <strong>
+                            <a href="/item/qtyorder/@{{item.id}}">@{{ item.qty_order ? item.qty_order : 0 | currency: "": 4 }}</a>
+                        </strong>
+                    </td>
                     <td class="col-md-1 text-right">@{{ item.lowest_limit | currency: "": 4 }}</td>
                     <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
                     <td class="col-md-1 text-center">

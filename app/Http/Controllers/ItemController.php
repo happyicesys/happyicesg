@@ -16,6 +16,7 @@ use App\Item;
 use App\Profile;
 use App\Unitcost;
 use App\ImageItem;
+use App\Transaction;
 
 class ItemController extends Controller
 {
@@ -237,6 +238,28 @@ class ItemController extends Controller
         }
 
         return redirect('/item');
+    }
+
+    // show the item's qty on order page (int item_id)
+    public function getItemQtyOrder($item_id)
+    {
+        $item = Item::findOrFail($item_id);
+
+        return view('item.qtyorder', compact('item'));
+    }
+
+    // show the item's qty on order api (int item_id)
+    public function getItemQtyOrderApi($item_id)
+    {
+        $transactions = Transaction::with(['person', 'person.profile', 'person.custcategory'])->whereHas('deals', function($query) use ($item_id) {
+            $query->whereQtyStatus(1)->whereItemId($item_id);
+        })->latest()->get();
+
+        $data = [
+            'transactions' => $transactions,
+        ];
+
+        return $data;
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
