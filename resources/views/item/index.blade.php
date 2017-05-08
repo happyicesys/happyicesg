@@ -10,7 +10,7 @@
         </a>
     </div>
     <div ng-app="app">
-        <div class="panel panel-info">
+        <div class="panel panel-info" ng-cloak>
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">

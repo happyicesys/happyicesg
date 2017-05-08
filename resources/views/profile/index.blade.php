@@ -9,7 +9,7 @@
     </div>
     <div ng-app="app" ng-controller="profileController">
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <div class="panel-title">
 

@@ -9,7 +9,7 @@
     </div>
 
 
-<div class="panel panel-warning" ng-app="app">
+<div class="panel panel-warning" ng-app="app" ng-cloak>
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>

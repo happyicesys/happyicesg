@@ -15,7 +15,7 @@
     <a class="title_hyper pull-left" href="/report"><h1>{{ $REPORT_TITLE }} <i class="fa fa-file-text-o"></i></h1></a>
     </div>
 
-            <div class="panel panel-warning" ng-app="app" ng-controller="rptController">
+            <div class="panel panel-warning" ng-app="app" ng-controller="rptController" ng-cloak>
                 <div class="panel-heading">
                         <ul class="nav nav-pills nav-justified" role="tablist">
                             @cannot('transaction_view')

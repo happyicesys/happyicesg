@@ -13,7 +13,7 @@
         <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
     </div>
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class=" pull-left">

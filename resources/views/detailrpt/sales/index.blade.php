@@ -12,7 +12,7 @@
         <div class="row">
             <a class="title_hyper pull-left" href="/detailrpt/account"><h1>Sales - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>

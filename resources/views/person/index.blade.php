@@ -11,7 +11,7 @@
     </div>
     <div ng-app="app" ng-controller="personController">
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">

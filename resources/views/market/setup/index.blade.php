@@ -13,7 +13,7 @@
     </div>
 
 
-<div class="panel panel-warning" ng-app="app" ng-controller="setupController">
+<div class="panel panel-warning" ng-app="app" ng-controller="setupController" ng-cloak>
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             @if(Auth::user()->hasRole('admin') or $people::where('user_id', Auth::user()->id)->first()->cust_type === 'OM')

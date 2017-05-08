@@ -10,7 +10,7 @@ Deals
         <a class="title_hyper pull-left" href="/market/deal"><h1>Deals <i class="fa fa-wpforms"></i></h1></a>
     </div>
 
-    <div class="panel panel-default" ng-app="app" ng-controller="transController">
+    <div class="panel panel-default" ng-app="app" ng-controller="transController" ng-cloak>
         <div class="panel-heading">
             <div class="panel-title">
 

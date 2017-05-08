@@ -8,7 +8,7 @@ Customers
     <a class="title_hyper pull-left" href="/market/customer"><h1>Customers <i class="fa fa-male"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="customerController">
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#cust_profile" role="tab" data-toggle="tab"> Customer Profile</a></li>

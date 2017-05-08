@@ -103,8 +103,7 @@
     </div>
 
     <div class="panel-body">
-
-            @include('person.transaction_history')
+        @include('person.transaction_history')
     </div>
 </div>
 {{-- divider --}}

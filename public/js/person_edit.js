@@ -176,6 +176,17 @@ app.filter('delDate', [
     }
 ]);
 
+app.filter('capitalize', function() {
+  return function(input, scope) {
+    if (input!=null) {
+        input = input.toLowerCase();
+        return input.substring(0,1).toUpperCase()+input.substring(1);
+    }else {
+        return null;
+    }
+  }
+});
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;

@@ -204,6 +204,13 @@
             </th>
 
             <th class="col-md-1 text-center">
+                <a href="" ng-click="sortType = 'pay_method'; sortReverse = !sortReverse">
+                Pay Method
+                <span ng-if="sortType == 'pay_method' && !sortReverse" class="fa fa-caret-down"></span>
+                <span ng-if="sortType == 'pay_method' && sortReverse" class="fa fa-caret-up"></span>
+            </th>
+
+            <th class="col-md-1 text-center">
                 <a href="" ng-click="sortType = 'updated_by'; sortReverse = !sortReverse">
                 Last Mod By
                 <span ng-if="sortType == 'updated_by' && !sortReverse" class="fa fa-caret-down"></span>
@@ -260,6 +267,7 @@
                 <td class="col-md-1 text-center" style="color: @{{transaction.pay_status == 'Owe' ? 'red' : 'green'}};">
                     @{{ transaction.pay_status }}
                 </td>
+                <td class="col-md-1 text-center">@{{ transaction.pay_method | capitalize }}</td>
                 <td class="col-md-1 text-center">@{{ transaction.updated_by }}</td>
                 <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
                 <td class="col-md-1 text-center">
@@ -273,7 +281,7 @@
             </tr>
 
             <tr ng-if="!alldata || alldata.length == 0">
-                <td colspan="14" class="text-center">No Records Found</td>
+                <td colspan="16" class="text-center">No Records Found</td>
             </tr>
 
         </tbody>

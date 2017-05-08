@@ -10,7 +10,7 @@ Members
     </div>
 
 
-<div class="panel panel-warning" ng-app="app" ng-controller="memberController">
+<div class="panel panel-warning" ng-app="app" ng-controller="memberController" ng-cloak>
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
             <li class="active"><a href="#member" role="tab" data-toggle="tab">Members</a></li>
