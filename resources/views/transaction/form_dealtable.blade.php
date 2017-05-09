@@ -53,7 +53,8 @@
                             <td class="col-md-2 text-right" ng-if="!deal.divisor && deal.item.is_inventory">@{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.item.unit}}</td>
                             <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor != 1 && deal.item.is_inventory">@{{deal.dividend}} / @{{deal.divisor}}</td>
                             <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor == 1 && deal.item.is_inventory">@{{deal.qty}}</td>
-                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory">1 Unit</td>
+                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend==1">1 Unit</td>
+                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend>1">@{{deal.dividend}} Unit</td>
                             {{-- unit price --}}
                             <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
                             <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price }}</td>

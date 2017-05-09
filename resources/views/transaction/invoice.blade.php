@@ -242,7 +242,11 @@
                                 </td>
                             @elseif(!$deal->item->is_inventory)
                                 <td class="col-xs-2 text-left">
-                                    1 Unit
+                                    @if($deal->dividend === 1)
+                                        1 Unit
+                                    @else
+                                        {{$deal->dividend}} Unit
+                                    @endif
                                 </td>
                             @else
                                 <td class="col-xs-2 text-right">
