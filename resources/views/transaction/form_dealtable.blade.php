@@ -55,7 +55,7 @@
                             <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor == 1 && deal.item.is_inventory">@{{deal.qty}}</td>
                             <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend==1">1 Unit</td>
                             <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend>1">@{{deal.dividend}} Unit</td> --}}
-                            <td class="col-md-2 text-left">
+                            <td class="col-md-2 @{{deal.item.is_inventory===1 ? 'text-right' : 'text-left'}}">
                                 <span ng-if="!deal.divisor && deal.item.is_inventory === 1">
                                     @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.item.unit}}
                                 </span>

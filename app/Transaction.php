@@ -104,25 +104,6 @@ class Transaction extends Model
         $this->attributes['transremark'] = $value ?: null;
     }
 
-    public function person()
-    {
-        return $this->belongsTo('App\Person');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User');
-    }
-
-    public function sale()
-    {
-        return $this->hasOne('App\Sale');
-    }
-
-    public function deals()
-    {
-        return $this->hasMany('App\Deal');
-    }
 
     public function getCreatedAtAttribute($date)
     {
@@ -145,6 +126,54 @@ class Transaction extends Model
         }else{
             return null;
         }
+    }
+
+    public function getDigitalClockAttribute($value)
+    {
+        if($value) {
+            return $value;
+        }else {
+            return null;
+        }
+    }
+
+    public function getAnalogClockAttribute($value)
+    {
+        if($value) {
+            return $value;
+        }else {
+            return null;
+        }
+    }
+
+    public function getBalanceCoinAttribute($value)
+    {
+        if($value) {
+            return $value;
+        }else {
+            return null;
+        }
+    }
+
+
+    public function person()
+    {
+        return $this->belongsTo('App\Person');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function sale()
+    {
+        return $this->hasOne('App\Sale');
+    }
+
+    public function deals()
+    {
+        return $this->hasMany('App\Deal');
     }
 
     // searching scopes
