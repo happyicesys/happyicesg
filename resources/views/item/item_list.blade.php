@@ -140,20 +140,20 @@
                     <td class="col-md-2">@{{ item.name }}</td>
                     <td class="col-md-1 text-center">@{{ item.unit }}</td>
                     <td class="col-md-1 text-right">
-                        {{-- <span ng-if="item.is_inventory === 1"> --}}
+                        <span ng-if="item.is_inventory === 1">
                             <strong>@{{item.qty_now | currency: "": 4 }}</strong>
- {{--                        </span>
+                        </span>
                         <span ng-if="item.is_inventory === 0">
                             N/A
-                        </span> --}}
+                        </span>
                     </td>
                     <td class="col-md-1 text-right">
-                        {{-- <span ng-if="item.is_inventory === 1"> --}}
+                        <span ng-if="item.is_inventory === 1">
                             <a href="/item/qtyorder/@{{item.id}}">@{{ item.qty_order ? item.qty_order : 0 | currency: "": 4 }}</a>
-{{--                         </span>
+                        </span>
                         <span ng-if="item.is_inventory === 0">
                             N/A
-                        </span> --}}
+                        </span>
                     </td>
                     <td class="col-md-1 text-right">@{{ item.lowest_limit | currency: "": 4 }}</td>
                     <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
