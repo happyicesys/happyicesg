@@ -130,7 +130,7 @@ class Transaction extends Model
 
     public function getDigitalClockAttribute($value)
     {
-        if($value) {
+        if($value or $value === 0) {
             return $value;
         }else {
             return null;
@@ -139,7 +139,7 @@ class Transaction extends Model
 
     public function getAnalogClockAttribute($value)
     {
-        if($value) {
+        if($value or $value === 0) {
             return $value;
         }else {
             return null;
@@ -148,7 +148,7 @@ class Transaction extends Model
 
     public function getBalanceCoinAttribute($value)
     {
-        if($value) {
+        if($value or $value === 0.00) {
             return $value;
         }else {
             return null;
