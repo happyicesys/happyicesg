@@ -49,12 +49,29 @@
 {{--
                             <td class="col-md-2 text-right" ng-if="deal.qty % 1 == 0 ">@{{ Math.round(deal.qty) }} @{{ deal.item.unit }}</td>
                             <td class="col-md-2 text-right" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit}}</td> --}}
-
+{{--
                             <td class="col-md-2 text-right" ng-if="!deal.divisor && deal.item.is_inventory">@{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.item.unit}}</td>
                             <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor != 1 && deal.item.is_inventory">@{{deal.dividend}} / @{{deal.divisor}}</td>
                             <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor == 1 && deal.item.is_inventory">@{{deal.qty}}</td>
                             <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend==1">1 Unit</td>
-                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend>1">@{{deal.dividend}} Unit</td>
+                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend>1">@{{deal.dividend}} Unit</td> --}}
+                            <td class="col-md-2 text-left">
+                                <span ng-if="!deal.divisor && deal.item.is_inventory === 1">
+                                    @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.item.unit}}
+                                </span>
+                                <span ng-if="deal.divisor !== 1 && deal.item.is_inventory === 1">
+                                    @{{deal.dividend}} / @{{deal.divisor}}
+                                </span>
+                                <span ng-if="deal.divisor === 1 && deal.item.is_inventory === 1">
+                                    @{{deal.qty}}
+                                </span>
+                                <span ng-if="deal.item.is_inventory === 0 && deal.dividend === 1">
+                                    1 Unit
+                                </span>
+                                <span ng-if="deal.item.is_inventory === 0 && deal.dividend !== 1">
+                                    @{{deal.dividend}} Unit
+                                </span>
+                            </td>
                             {{-- unit price --}}
                             <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
                             <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price }}</td>
@@ -62,25 +79,15 @@
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
                             <td class="col-md-1 text-center">
-
-
-                            @unless(Auth::user()->hasRole('admin') or Auth::user()->hasRole('account') or Auth::user()->hasRole('supervisor'))
-
-                                @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed')
-
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-
+                                @unless(Auth::user()->hasRole('admin') or Auth::user()->hasRole('account') or Auth::user()->hasRole('supervisor'))
+                                    @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed')
+                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                    @else
+                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
+                                    @endif
                                 @else
-
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-
-                                @endif
-
-                            @else
-
-                                <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-
-                            @endunless
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                @endunless
                             </td>
                         </tr>
                         @if($person->profile->gst)

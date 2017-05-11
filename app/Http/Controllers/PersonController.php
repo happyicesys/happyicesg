@@ -18,6 +18,7 @@ use App\Accessory;
 use App\Profile;
 use App\AddFreezer;
 use App\AddAccessory;
+use App\Deal;
 use Auth;
 use DB;
 
@@ -241,10 +242,17 @@ class PersonController extends Controller
             $transactions = $transactions->latest('created_at')->paginate($pageNum);
         }
 
+        $profileTransactionsId = [];
+        foreach(Transaction::wherePersonId($person->id)->get() as $transac) {
+            array_push($profileTransactionsId, $transac->id);
+        }
+        $profileDealsGrossProfit = number_format((Deal::whereIn('transaction_id', $profileTransactionsId)->sum('amount') - Deal::whereIn('transaction_id', $profileTransactionsId)->sum(DB::raw('qty * unit_cost'))), 2, '.', '');
+
         $data = [
             'total_amount' => $totals['total_amount'],
             'total_paid' => $totals['total_paid'],
             'total_owe' => $totals['total_owe'],
+            'profileDealsGrossProfit' => $profileDealsGrossProfit,
             'transactions' => $transactions,
         ];
 

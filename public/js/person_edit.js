@@ -100,6 +100,7 @@ var app = angular.module('app', [
                 $scope.total_amount = data.total_amount;
                 $scope.total_paid = data.total_paid;
                 $scope.total_owe = data.total_owe;
+                $scope.profileDealsGrossProfit = data.profileDealsGrossProfit;
                 $scope.spinner = false;
             });
         }

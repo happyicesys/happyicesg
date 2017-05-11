@@ -663,7 +663,7 @@ class TransactionController extends Controller
                         $item = Item::findOrFail($index);
                         $unitcost = Unitcost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
                         // inventory email notification for stock running low
-                        if($item->email_limit and !$item->is_vending){
+                        if($item->email_limit and !$item->is_vending and $item->is_inventory){
                             if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
                                 if(! $item->emailed){
                                     $this->sendEmailAlert($item);
@@ -712,12 +712,12 @@ class TransactionController extends Controller
                                 $deal->amount = $amounts[$index];
                                 $deal->unit_price = $quotes[$index];
                                 $deal->qty_status = $status;
-                                $item->qty_now -= strstr($qty, '/') ? $this->fraction($qty) : $qty;
                                 if($unitcost) {
                                     $deal->unit_cost = $unitcost->unit_cost;
                                 }
                                 if($item->is_inventory) {
                                     $deal->qty = $qty;
+                                    $item->qty_now -= strstr($qty, '/') ? $this->fraction($qty) : $qty;
                                 }
                                 $deal->save();
                                 $item->save();
@@ -793,10 +793,12 @@ class TransactionController extends Controller
 
     private function dealSyncOrder($item_id)
     {
-        $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
         $item = Item::findOrFail($item_id);
-        $item->qty_order = $deals->sum('qty');
-        $item->save();
+        if($item->is_inventory) {
+            $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
+            $item->qty_order = $deals->sum('qty');
+            $item->save();
+        }
     }
 
     // convert order to actual deduction
@@ -806,9 +808,11 @@ class TransactionController extends Controller
         foreach($deals as $deal){
             $item = Item::findOrFail($deal->item_id);
             $deal->qty_status = 2;
-            $item->qty_now -= $deal->qty;
             $deal->save();
-            $item->save();
+            if($item->is_inventory === 1) {
+                $item->qty_now -= $deal->qty;
+                $item->save();
+            }
             $this->dealSyncOrder($item->id);
         }
     }
@@ -822,11 +826,13 @@ class TransactionController extends Controller
                 $deal->qty_status = 3;
                 $deal->save();
             }else if($deal->qty_status == '2'){
-                $item->qty_now += $deal->qty;
+                if($item->is_inventory === 1) {
+                    $item->qty_now += $deal->qty;
+                    $item->save();
+                }
                 $deal->qty_status = 3;
                 $deal->save();
             }
-            $item->save();
             $this->dealSyncOrder($item->id);
         }
     }
@@ -847,17 +853,19 @@ class TransactionController extends Controller
                 $item = Item::findOrFail($deal->item_id);
                 $deal->qty_status = 2;
                 $deal->save();
-                $item->qty_now -= $deal->qty;
-                $item->save();
+                if($item->is_inventory === 1) {
+                    $item->qty_now -= $deal->qty;
+                    $item->save();
+                }
             }
         }
     }
 
     private function calOrderLimit($qty, $item)
     {
-        if(($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
+        if(($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
-        }else{
+        }else {
             return false;
         }
     }
@@ -867,9 +875,9 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
-        if(($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0)){
+        if(($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
-        }else{
+        }else {
             return false;
         }
     }
@@ -879,9 +887,9 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
-        if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($qty > 0)){
+        if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
-        }else{
+        }else {
             return false;
         }
     }
@@ -891,7 +899,7 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
-        if(($item->qty_now - $qty < $item->email_limit) and ($qty > 0)){
+        if(($item->qty_now - $qty < $item->email_limit) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
         }else{
             return false;

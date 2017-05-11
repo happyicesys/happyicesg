@@ -1441,11 +1441,13 @@ class MarketingController extends Controller
                 $deal->qty_status = 3;
                 $deal->save();
             }else if($deal->qty_status == '2'){
-                $item->qty_now += $deal->qty;
                 $deal->qty_status = 3;
                 $deal->save();
+                if($item->is_inventory === 1) {
+                    $item->qty_now += $deal->qty;
+                    $item->save();
+                }
             }
-            $item->save();
             $this->dealSyncOrder($item->id);
         }
     }
@@ -1465,11 +1467,13 @@ class MarketingController extends Controller
             }
         }else if($transaction->cancel_trace === 'Delivered' or $transaction->cancel_trace === 'Verified Owe' or $transaction->cancel_trace === 'Verified Paid'){
             foreach($deals as $deal){
-                $item = Item::findOrFail($deal->item_id);
                 $deal->qty_status = 2;
                 $deal->save();
-                $item->qty_now -= $deal->qty;
-                $item->save();
+                $item = Item::findOrFail($deal->item_id);
+                if($item->is_inventory === 1) {
+                    $item->qty_now -= $deal->qty;
+                    $item->save();
+                }
             }
         }
     }
@@ -1767,10 +1771,9 @@ class MarketingController extends Controller
 
     private function calOrderEmailLimit($qty, $item)
     {
-        if($item->qty_now - $item->qty_order - $qty < $item->email_limit){
+        if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($item->is_inventory === 1)) {
             return true;
         }else{
-
             return false;
         }
     }
@@ -1779,7 +1782,7 @@ class MarketingController extends Controller
     private function calOrderLimit($qty, $item)
     {
         $limit = false;
-        if($item->lowest_limit) {
+        if($item->lowest_limit and $item->is_inventory === 1) {
             if($item->qty_now - $item->qty_order - $qty < $item->lowest_limit) {
                 $limit = true;
             }

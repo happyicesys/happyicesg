@@ -11,7 +11,7 @@
 @stop
 @section('content')
 
-<div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController">
+<div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
     @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
     <div class="panel panel-primary">
         <div class="panel-heading">

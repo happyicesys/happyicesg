@@ -236,11 +236,11 @@
                                 {{ $deal->item->name}} {{ $deal->item->remark }}
                             </td>
 
-                            @if($deal->divisor and $deal->item->is_inventory)
+                            @if($deal->divisor and $deal->item->is_inventory === 1)
                                 <td class="col-xs-2 text-right">
                                     {{ $deal->divisor == 1 ? $deal->qty + 0 : $deal->dividend.'/'.$deal->divisor}} {{ $deal->item->unit }}
                                 </td>
-                            @elseif(!$deal->item->is_inventory)
+                            @elseif($deal->item->is_inventory === 0)
                                 <td class="col-xs-2 text-left">
                                     @if($deal->dividend === 1)
                                         1 Unit

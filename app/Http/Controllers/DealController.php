@@ -74,8 +74,10 @@ class DealController extends Controller
     {
         $deals = Deal::where('qty_status', '1')->where('item_id', $item_id);
         $item = Item::findOrFail($item_id);
-        $item->qty_order = $deals->sum('qty');
-        $item->save();
+        if($item->is_inventory === 1) {
+            $item->qty_order = $deals->sum('qty');
+            $item->save();
+        }
     }
 
     private function dealDeleteSingle($deal)
@@ -85,8 +87,10 @@ class DealController extends Controller
         if($deal->qty_status == '1'){
             $this->dealSyncOrder($item->id);
         }else if($deal->qty_status == '2'){
-            $item->qty_now += $deal->qty;
-            $item->save();
+            if($item->is_inventory === 1) {
+                $item->qty_now += $deal->qty;
+                $item->save();
+            }
         }
     }
 }

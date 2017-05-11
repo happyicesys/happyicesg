@@ -123,6 +123,12 @@
                     <span ng-if="sortType == 'publish' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'is_inventory'; sortReverse = !sortReverse">
+                    Is Inventory?
+                    <span ng-if="sortType == 'is_inventory' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'is_inventory' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     Action
                 </th>
             </tr>
@@ -133,23 +139,29 @@
                     <td class="col-md-1 text-center">@{{ item.product_id }}</td>
                     <td class="col-md-2">@{{ item.name }}</td>
                     <td class="col-md-1 text-center">@{{ item.unit }}</td>
-                    <td class="col-md-1 text-right"><strong>@{{ item.qty_now | currency: "": 4 }}</strong></td>
                     <td class="col-md-1 text-right">
-                        <strong>
+                        {{-- <span ng-if="item.is_inventory === 1"> --}}
+                            <strong>@{{item.qty_now | currency: "": 4 }}</strong>
+ {{--                        </span>
+                        <span ng-if="item.is_inventory === 0">
+                            N/A
+                        </span> --}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        {{-- <span ng-if="item.is_inventory === 1"> --}}
                             <a href="/item/qtyorder/@{{item.id}}">@{{ item.qty_order ? item.qty_order : 0 | currency: "": 4 }}</a>
-                        </strong>
+{{--                         </span>
+                        <span ng-if="item.is_inventory === 0">
+                            N/A
+                        </span> --}}
                     </td>
                     <td class="col-md-1 text-right">@{{ item.lowest_limit | currency: "": 4 }}</td>
                     <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
+                    <td class="col-md-1 text-center">@{{ item.is_inventory == 1 ? 'Yes':'No'  }}</td>
                     <td class="col-md-1 text-center">
                         @cannot('transaction_view')
                         <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                         @endcannot
-                        {{-- disable due to inv implemented --}}
-    {{--
-                        @cannot('accountant_view')
-                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(item.id)">Delete</button>
-                        @endcannot --}}
                     </td>
                 </tr>
                 <tr ng-if="(items | filter:search).length == 0 || ! items.length">

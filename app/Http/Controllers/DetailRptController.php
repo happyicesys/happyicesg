@@ -779,13 +779,7 @@ class DetailRptController extends Controller
         }
 
         $transactions = $transactions->orderBy('created_at', 'desc')->get();
-        // $latest3Transactions = $transactions->take(3)->get();
-        // $latest4Transactions = clone $transactions;
-        // $latest4Transactions = $latest4Transactions->take(4)->get();
-/*
-        foreach($latest3Transactions as $transaction) {
-            array_push($latest3ArrId, $transaction->id);
-        }*/
+
         foreach($transactions as $transaction) {
             array_push($transactionsId, $transaction->id);
             foreach($transaction->deals as $deal) {
@@ -793,9 +787,7 @@ class DetailRptController extends Controller
             }
         }
         $itemsId = array_unique($itemsId);
-        // $items = Item::whereIn('id', $itemsArr)->orderBy('product_id', 'asc')->get();
         $person_id = $request->person_id ? Person::find($request->person_id)->id : null ;
-        // dd(\App\Deal::whereIn('transaction_id', $allTransactionsId)->whereItemId(Item::whereProductId('051')->first()->id)->first()->toArray());
 
         if($request->export_excel) {
             $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
