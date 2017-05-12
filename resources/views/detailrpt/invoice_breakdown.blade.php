@@ -74,7 +74,7 @@
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Revenue:
+                        Total Revenue ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2, '.', '') }}</strong>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Cost:
+                        Total Ice Cream Cost ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2, '.', '') }}</strong>
@@ -90,12 +90,38 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        Gross Earning:
+                        Gross Earning ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2, '.', '')}}</strong>
+                        <strong>
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2, '.', '')}}
+                        </strong>
                     </div>
                 </div>
+                @if($deals::whereIn('transaction_id', $transactionsId)->sum('amount') != 0)
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Gross Earning (%):
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                {{number_format((($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))) / ($deals::whereIn('transaction_id', $transactionsId)->sum('amount'))) * 100 , 2, '.', '')}}
+                            </strong>
+                        </div>
+                    </div>
+                @endif
+                @if(count($transactions::whereIn('id', $transactionsId)->get()) > 0)
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            First Inv Date:
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                {{$transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date}}
+                            </strong>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -218,6 +244,20 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>{{$transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                Average Sales Per Day:
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                                <strong>
+                                    @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
+                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2, '.', '')}}
+                                    @else
+                                        N/A
+                                    @endif
+                                </strong>
                             </div>
                         </div>
                     </div>

@@ -26,17 +26,33 @@
         <tr></tr>
         <tr></tr>
         <tr>
-            <th>Total Revenue</th>
+            <th>Total Revenue ($)</th>
             <td data-format="0.00">{{$deals::whereIn('transaction_id', $transactionsId)->sum('amount')}}</td>
         </tr>
         <tr>
-            <th>Total Cost</th>
+            <th>Total Ice Cream Cost ($)</th>
             <td data-format="0.00">{{$deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))}}</td>
         </tr>
         <tr>
-            <th>Gross Earning</th>
+            <th>Gross Earning ($)</th>
             <td data-format="0.00">{{$deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))}}</td>
         </tr>
+        @if($deals::whereIn('transaction_id', $transactionsId)->sum('amount') != 0)
+            <tr>
+                <th>Gross Earning (%)</th>
+                <td data-format="0.00">
+                    {{(($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))) / ($deals::whereIn('transaction_id', $transactionsId)->sum('amount'))) * 100}}
+                </td>
+            </tr>
+        @endif
+        @if(count($transactions::whereIn('id', $transactionsId)->get()) > 0)
+            <tr>
+                <th>First Inv Date</th>
+                <td align="right">
+                    {{$transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date}}
+                </td>
+            </tr>
+        @endif
         <tr></tr>
         <tr>
             <th>Invoice #</th>
@@ -109,11 +125,11 @@
         <tbody>
             <tr></tr>
             <tr>
-                <th>Price Per Piece</th>
+                <th>Price Per Piece ($)</th>
                 <td data-format="0.00">{{$people::find($person_id)->vending_piece_price}}</td>
             </tr>
             <tr>
-                <th>Monthly Rental</th>
+                <th>Monthly Rental ($)</th>
                 <td data-format="0.00">{{$people::find($person_id)->vending_monthly_rental}}</td>
             </tr>
             <tr>
@@ -123,6 +139,16 @@
             <tr>
                 <th>Total Sales Qty</th>
                 <td data-format="0.00">{{$transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock}}</td>
+            </tr>
+            <tr>
+                <th>Average Sales Per Day</th>
+                <td data-format="0.00">
+                    @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
+                        {{  $transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)}}
+                    @else
+                        N/A
+                    @endif
+                </td>
             </tr>
             <tr></tr>
             <tr>
