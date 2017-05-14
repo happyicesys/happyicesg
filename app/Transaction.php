@@ -104,6 +104,20 @@ class Transaction extends Model
         $this->attributes['transremark'] = $value ?: null;
     }
 
+    public function setDigitalClockAttribute($value)
+    {
+        $this->attributes['digital_clock'] = $value ?: null;
+    }
+
+    public function setAnalogClockAttribute($value)
+    {
+        $this->attributes['analog_clock'] = $value ?: null;
+    }
+
+    public function setBalanceCoinAttribute($value)
+    {
+        $this->attributes['balance_coin'] = $value ?: null;
+    }
 
     public function getCreatedAtAttribute($date)
     {
