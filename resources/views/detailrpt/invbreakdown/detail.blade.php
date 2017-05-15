@@ -2,14 +2,15 @@
 @inject('deals', 'App\Deal')
 @inject('items', 'App\Item')
 @inject('transactions', 'App\Transaction')
+
 @extends('template')
 @section('title')
-{{ $DETAILRPT_TITLE }}
+	{{$DETAILRPT_TITLE}}
 @stop
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/detailrpt/account"><h1>Invoice Breakdown - {{ $DETAILRPT_TITLE }}</h1></a>
+	<a class="title_hyper pull-left" href="/detailrpt/invbreakdown/detail"><h1>Invoice Breakdown - Detail</h1></a>
 </div>
 
 <div class="panel panel-primary">
@@ -22,7 +23,7 @@
 
     <div class="panel-body">
         <div class="row form-group">
-            {!! Form::open(['id'=>'submit_invoicebreakdown', 'method'=>'POST', 'action'=>['DetailRptController@getInvoiceBreakdownIndex']]) !!}
+            {!! Form::open(['id'=>'submit_invoicebreakdown', 'method'=>'POST', 'action'=>['DetailRptController@getInvoiceBreakdownDetail']]) !!}
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}

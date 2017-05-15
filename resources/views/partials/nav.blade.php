@@ -53,7 +53,8 @@
                     <ul class="dropdown-menu">
                         <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
-                        <li class="text-left"><a href="/detailrpt/invoicebreakdown"> Invoice Breakdown</a></li>
+                        <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
+                        <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
                     </ul>
                 </li>
                 @endcannot

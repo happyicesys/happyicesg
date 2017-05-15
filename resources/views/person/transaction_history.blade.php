@@ -97,7 +97,7 @@
     </div>
 </div>
 
-<form id="invbreakdown" method="POST" action="/detailrpt/invoicebreakdown">
+<form id="invbreakdown" method="POST" action="/detailrpt/invbreakdown/detail">
     {!! csrf_field() !!}
     <input type="text" class="hidden" name="person_id" value="{{$person->id}}">
 </form>

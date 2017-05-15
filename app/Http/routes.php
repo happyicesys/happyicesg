@@ -193,8 +193,10 @@ Route::post('/report/transaction', 'RptController@generateTransaction');
 Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
-Route::post('/detailrpt/invoicebreakdown', 'DetailRptController@getInvoiceBreakdownIndex');
-Route::get('/detailrpt/invoicebreakdown', 'DetailRptController@getInvoiceBreakdownIndex');
+Route::match(['get', 'post'], '/detailrpt/invbreakdown/detail', 'DetailRptController@getInvoiceBreakdownDetail');
+// Route::match(['get', 'post'], '/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
+Route::get('/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
+Route::post('/api/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummaryApi');
 Route::get('/detailrpt/account', 'DetailRptController@accountIndex');
 Route::post('/api/detailrpt/account/custdetail', 'DetailRptController@getAccountCustdetailApi');
 Route::post('/api/detailrpt/account/outstanding', 'DetailRptController@getAccountOutstandingApi');

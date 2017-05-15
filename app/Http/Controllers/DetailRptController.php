@@ -747,8 +747,8 @@ class DetailRptController extends Controller
         return $data;
     }
 
-    // retrieve invoice breakdown api (Formrequest $request)
-    public function getInvoiceBreakdownIndex(Request $request)
+    // retrieve invoice breakdown detail (Formrequest $request)
+    public function getInvoiceBreakdownDetail(Request $request)
     {
         $itemsId = [];
         // $latest3ArrId = [];
@@ -793,7 +793,177 @@ class DetailRptController extends Controller
             $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
         }
 
-        return view('detailrpt.invoice_breakdown', compact('request' ,'transactionsId', 'itemsId', 'person_id'));
+        return view('detailrpt.invbreakdown.detail', compact('request' ,'transactionsId', 'itemsId', 'person_id'));
+    }
+
+    // get invoice breakdown page()
+    public function getInvoiceBreakdownSummary()
+    {
+        return view('detailrpt.invbreakdown.summary');
+    }
+
+    // retrieve invoice breakdown summary(formrequest request)
+    public function getInvoiceBreakdownSummaryApi(Request $request)
+    {
+        $total_revenue = 0;
+        $total_gross_money = 0;
+        $total_gross_percent = 0;
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+        if($delivery_from and $delivery_to) {
+            $date_diff = Carbon::parse($delivery_from)->diffInDays(Carbon::parse($delivery_to));
+        }else {
+            $date_diff = 1;
+        }
+
+        $first_date = DB::raw("(SELECT MIN(DATE(transactions.delivery_date)) AS delivery_date, people.id AS person_id FROM transactions
+                                LEFT JOIN people ON people.id=transactions.person_id
+                                GROUP BY people.id) AS first_date");
+        $paid = DB::raw("(SELECT transactions.total AS total, people.id AS person_id, transactions.id AS transaction_id FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE pay_status='Paid'
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS paid");
+        $owe = DB::raw("(SELECT transactions.total AS total, people.id AS person_id, transactions.id AS transaction_id FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE pay_status='Owe'
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS owe");
+        $sales = DB::raw(
+                "(SELECT (MAX(transactions.analog_clock) - MIN(transactions.analog_clock)) AS sales_qty,
+                ((MAX(transactions.analog_clock) - MIN(transactions.analog_clock))/ DATEDIFF(MAX(transactions.delivery_date), MIN(transactions.delivery_date))) AS sales_avg_day,
+                people.id AS person_id,
+                transactions.id AS transaction_id
+                FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS sales"
+            );
+        $latest_coin = DB::raw(
+                "(SELECT transactions.balance_coin, MAX(DATE(transactions.created_at))  FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS latest_coin"
+            );
+
+
+        $deals = DB::table('deals')
+                ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                ->leftJoin($first_date, 'people.id', '=', 'first_date.person_id')
+                ->leftJoin($paid, 'people.id', '=', 'paid.person_id')
+                ->leftJoin($owe, 'people.id', '=', 'owe.person_id')
+                ->leftJoin($sales, 'people.id', '=', 'sales.person_id')
+                ->leftjoin($latest_coin, 'people.id', '=', 'latest_coin.balance_coin')
+                ->select(
+                    'people.cust_id AS cust_id', 'people.company AS company',
+                    'custcategories.name AS custcategory_name',
+                    'first_date.delivery_date AS first_date',
+                    DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN ROUND((SUM(deals.amount) * 107/100), 2) ELSE (SUM(deals.amount)) END, 2) AS total'),
+                    'profiles.gst AS gst',
+                    DB::raw('ROUND((SUM(deals.amount) * 7/100), 2) AS gsttotal'),
+                    DB::raw('(SUM(deals.amount)) AS subtotal'),
+                    DB::raw('ROUND(SUM(deals.unit_cost * deals.qty), 2) AS cost'),
+                    DB::raw('(SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) AS gross_money'),
+                    DB::raw('ROUND(CASE WHEN SUM(deals.amount)>0 THEN ((SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2))/ SUM(deals.amount) * 100) ELSE (SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) END, 2) AS gross_percent'),
+                    DB::raw('paid.total AS paid'),
+                    DB::raw('owe.total AS owe'),
+                    'people.is_vending', 'people.vending_piece_price', 'people.vending_monthly_rental', 'people.vending_profit_sharing',
+                    'sales.sales_qty AS sales_qty', 'sales.sales_avg_day AS sales_avg_day',
+                    'latest_coin.balance_coin AS balance_coin'
+                );
+
+        $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
+        $deals = $deals->orderBy('people.cust_id')->groupBy('people.id');
+
+        if($request->sortName){
+            $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        if($pageNum == 'All'){
+            $deals = $deals->get();
+        }else{
+            $deals = $deals->paginate($pageNum);
+        }
+        $data = [
+            'deals' => $deals
+        ];
+
+        return $data;
+    }
+
+    // filter functions for invoice breakdown summary (formrequest request, query deals)
+    private function invoiceBreakdownSummaryFilter($request, $deals)
+    {
+        $profile_id = $request->profile_id;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+        $status = $request->status;
+        $cust_id = $request->cust_id;
+        $company = $request->company;
+        $person_id = $request->person_id;
+        $custcategory = $request->custcategory;
+
+        if($profile_id) {
+/*            $transactions = $transactions->whereHas('person', function($query) use ($profile_id) {
+                $query->whereHas('profile', function($query) use ($profile_id) {
+                    $query->whereProfileId($profile_id);
+                });
+            });*/
+            $deals = $deals->where('profiles.id', $profile_id);
+        }
+        if($delivery_from) {
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', $delivery_from);
+        }else {
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', Carbon::today()->startOfMonth()->toDateString());
+        }
+        if($delivery_to) {
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', $delivery_to);
+        }else {
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', Carbon::today()->toDateString());
+        }
+        if($status) {
+            if($status === 'Delivered' ) {
+                $deals = $deals->where(function($query) {
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });
+            }else {
+                $deals = $deals->where('transactions.status', $status);
+            }
+        }
+        if($cust_id) {
+/*            $transactions = $transactions->whereHas('person', function($query) use ($cust_id) {
+                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+            });*/
+            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($company) {
+/*            $transactions = $transactions->whereHas('person', function($query) use ($company) {
+                $query->where('company', 'LIKE', '%'.$company.'%');
+            });*/
+            $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
+        }
+        if($person_id) {
+            // $transactions = $transactions->wherePersonId($person_id);
+            $deals = $deals->where('people.id', '=', $person_id);
+        }
+        if($custcategory) {
+/*            $transactions = $transactions->whereHas('person', function($query) use ($custcategory) {
+                $query->whereHas('custcategory', function($query) use ($custcategory) {
+                    $query->where('id', $custcategory);
+                });
+            });*/
+            $deals = $deals->where('custcategories.id', $custcategory);
+        }
+        return $deals;
     }
 
     // export SOA report(Array $data)
