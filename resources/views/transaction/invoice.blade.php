@@ -256,7 +256,11 @@
 
                             @if($deal->unit_price == 0 || $deal->unit_price == null)
                             <td class="col-xs-1 text-right">
-                                {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
+                                @if($deal->qty != 0)
+                                    {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
+                                @else
+                                    {{ number_format(($deal->amount), 2, '.', ',')}}
+                                @endif
                             </td>
                             @else
                             <td class="col-xs-1 text-right">
