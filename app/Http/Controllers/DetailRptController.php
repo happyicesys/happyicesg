@@ -312,37 +312,47 @@ class DetailRptController extends Controller
         $delivery_to = $carbondate->endOfMonth()->toDateString();
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
+        $status = $request->status;
+        if($status) {
+            if($status == 'Delivered') {
+                $statusStr = " (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
+            }else {
+                $statusStr = " transactions.status='".$status."'";
+            }
+        }else {
+            $statusStr = ' 1=1';
+        }
 
-        // $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.profile_id FROM transactions
         $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$delivery_from."'
                                 AND transactions.delivery_date<='".$delivery_to."'
+                                AND ".$statusStr."
                                 GROUP BY people.id) thistotal");
 
-        // $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.profile_id FROM transactions
         $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
+                                AND ".$statusStr."
                                 GROUP BY people.id) prevtotal");
 
-        // $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.profile_id FROM transactions
         $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
+                                AND ".$statusStr."
                                 GROUP BY people.id) prev2total");
 
-        // $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevyeartotal, people.profile_id FROM transactions
         $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
+                                AND ".$statusStr."
                                 GROUP BY people.id) prevyeartotal");
 
         $transactions = DB::table('transactions')
@@ -635,6 +645,14 @@ class DetailRptController extends Controller
         $profile_id = $request->profile_id;
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
+        $status = $request->status;
+        if($status) {
+            if($status == 'Delivered') {
+                $statusStr = " AND (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
+            }else {
+                $statusStr = " AND transactions.status='".$status."'";
+            }
+        }
 
         $thistotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
                             LEFT JOIN people ON transactions.person_id=people.id
@@ -663,6 +681,13 @@ class DetailRptController extends Controller
                                 LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
+
+        if($status) {
+            $thistotal_str .= $statusStr;
+            $prevtotal_str .= $statusStr;
+            $prev2total_str .= $statusStr;
+            $prevyeartotal_str .= $statusStr;
+        }
 
         if($profile_id) {
             $thistotal_str .= " GROUP BY profiles.id, custcategories.id) thistotal";

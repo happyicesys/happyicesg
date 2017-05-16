@@ -259,7 +259,7 @@ var app = angular.module('app', [
                 }
                 $scope.All = data.items.length;
                 $scope.total_amount = data.total_amount;
-                $scope.total_qty = data.total_qty;
+                $scope.total_qty = data.total_qty.toFixed(4);
                 $scope.spinner = false;
             });
         }

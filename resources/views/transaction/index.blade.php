@@ -16,15 +16,6 @@
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class=" pull-left">
-                        <label for="display_num">Display</label>
-                        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-                            <option ng-value="100">100</option>
-                            <option ng-value="200">200</option>
-                            <option ng-value="All">All</option>
-                        </select>
-                        <label for="display_num2" style="padding-right: 20px">per Page</label>
-                    </div>
                     <div class="pull-right">
                         <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
                     </div>
@@ -201,22 +192,32 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4 col-xs-12">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                     </div>
 
-                    <div class="col-md-3 col-xs-12" style="padding-top:5px;">
+                    <div class="col-md-3 col-sm-6 col-xs-12" style="padding-top:5px;">
                         <div class="col-md-5 col-xs-5">
                             Total
                         </div>
-
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                             <strong>@{{ total_amount | currency: "": 2}}</strong>
                         </div>
                     </div>
 
-                    <div class="col-md-5 col-xs-12">
-                        <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                    <div class="col-md-4 col-sm-6 col-xs-12 text-right">
+                        <div class="row">
+                            <label for="display_num">Display</label>
+                            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                                <option ng-value="100">100</option>
+                                <option ng-value="200">200</option>
+                                <option ng-value="All">All</option>
+                            </select>
+                            <label for="display_num2" style="padding-right: 20px">per Page</label>
+                        </div>
+                        <div class="row">
+                            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                        </div>
                     </div>
                 </div>
 

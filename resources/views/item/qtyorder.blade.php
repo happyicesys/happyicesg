@@ -21,10 +21,16 @@
                             #
                         </th>
                         <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('id')">
                             INV #
+                            <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('cust_id')">
                             ID
+                            <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
                             ID Name
@@ -39,7 +45,10 @@
                             Status
                         </th>
                         <th class="col-md-1 text-center">
+                            {{-- <a href="" ng-click="sortTable('delivery_date')"> --}}
                             Delivery Date
+                            {{-- <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span> --}}
+                            {{-- <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span> --}}
                         </th>
                         <th class="col-md-1 text-center">
                             Delivered By
@@ -64,7 +73,7 @@
                         </th>
                     </tr>
                     <tbody>
-                        <tr ng-repeat="transaction in transactions">
+                        <tr ng-repeat="transaction in transactions | orderBy:sortName:sortReverse">
                             <td class="col-md-1 text-center">@{{ $index + 1 }} </td>
                             <td class="col-md-1 text-center">
                                 <a href="/transaction/@{{ transaction.id }}/edit">
