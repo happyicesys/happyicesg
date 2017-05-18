@@ -10,6 +10,7 @@ var app = angular.module('app', [
 
     function rptController($scope, $http){
         $scope.currentPage = 1;
+        $scope.matchTotal = false;
         $scope.indexData = {
             delivery_date: moment().format("YYYY-MM-DD"),
             paid_at: moment().format("YYYY-MM-DD"),
@@ -63,6 +64,11 @@ var app = angular.module('app', [
 
                 $http.post('/report/dailyrec', $scope.indexData).success(function(rptdata){
                     $scope.rptdata = rptdata;
+                    if(rptdata.amt_mod == rptdata.cash_mod + rptdata.cheque_mod + rptdata.tt_mod) {
+                        $scope.matchTotal = true;
+                    }else {
+                        $scope.matchTotal = false;
+                    }
                 });
             }
 
@@ -104,6 +110,17 @@ var app = angular.module('app', [
                 }
                 $scope.syncData();
                 getIndex();
+            }
+
+
+            $scope.onPrevSingleClicked = function(date) {
+                var edited = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+                $scope.dateChange2(edited);
+            }
+
+            $scope.onNextSingleClicked = function(date) {
+                var edited = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+                $scope.dateChange2(edited);
             }
 
             $scope.dbSearch = function(){

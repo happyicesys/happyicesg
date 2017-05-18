@@ -17,6 +17,7 @@ use App\Profile;
 use App\Unitcost;
 use App\ImageItem;
 use App\Transaction;
+use DB;
 
 class ItemController extends Controller
 {
@@ -248,13 +249,19 @@ class ItemController extends Controller
         return view('item.qtyorder', compact('item'));
     }
 
-    // show the item's qty on order api (int item_id)
-    public function getItemQtyOrderApi($item_id)
+    // show the item's qty on order api (int item_id, formrequest request)
+    public function getItemQtyOrderApi($item_id, Request $request)
     {
-        $transactions = Transaction::with(['person', 'person.profile', 'person.custcategory'])->whereHas('deals', function($query) use ($item_id) {
-            $query->whereQtyStatus(1)->whereItemId($item_id);
-        })->latest()->get();
+        $transactions = Transaction::with(['person', 'person.profile', 'person.custcategory'])
+                        ->whereHas('deals', function($query) use ($item_id) {
+                            $query->whereQtyStatus(1)->whereItemId($item_id);
+                        });
 
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        $transactions = $transactions->latest()->get();
         $data = [
             'transactions' => $transactions,
         ];

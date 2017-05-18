@@ -137,7 +137,7 @@ Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
-Route::get('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');
+Route::post('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');
 Route::post('/api/item/unitcost', 'ItemController@getUnitcostIndexApi');
 Route::post('/item/{item_id}/photo', 'ItemController@addImage');
 Route::get('/item/image/{item_id}', 'ItemController@imageItem');

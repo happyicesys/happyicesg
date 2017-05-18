@@ -62,41 +62,24 @@
             {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('paid_at', 'Date:', ['class'=>'control-label search-title']) !!}
-{{--
-                    <div class="dropdown">
-                    <a class="dropdown-toggle" id="dropdown3" role="button" data-toggle="dropdown" data-target="" href="">
-                        <div class="input-group">
-                            {!! Form::text('paid_at', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_at', 'ng-init'=>"paid_at=today", 'placeholder'=>'Date', 'ng-keyup'=>'detectDate(paid_at)']) !!}
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <datetimepicker data-ng-model="paid_at" data-datetimepicker-config="{ dropdownSelector: '#dropdown3', minView: 'day'}" ng-change="dateChange2(paid_at)"/>
-                    </ul>
-                </div> --}}
-                <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
-                    <input
-                        type = "text"
-                        name = "paid_at"
-                        class = "form-control input-sm"
-                        placeholder = "Date"
-                        ng-model = "paid_at"
-                        ng-change = "dateChange2(paid_at)"
-                    />
-                </datepicker>
+                <div class="input-group">
+                    <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
+                        <input
+                            type = "text"
+                            name = "paid_at"
+                            class = "form-control input-sm"
+                            placeholder = "Date"
+                            ng-model = "paid_at"
+                            ng-change = "dateChange2(paid_at)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked(paid_at)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked(paid_at)"></span>
+                </div>
             </div>
             <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
                 {!! Form::label('delivery_date', 'Delivery On:', ['class'=>'control-label search-title']) !!}
-{{--
-                    <div class="dropdown">
-                    <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="" href="">
-                        <div class="input-group">
-                            {!! Form::text('delivery_date', null, ['class'=>'form-control input-sm', 'ng-model'=>'delivery_date', 'ng-init'=>"delivery_date=today", 'placeholder'=>'Delivery Date']) !!}
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <datetimepicker data-ng-model="delivery_date" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'day'}" />
-                    </ul>
-                </div> --}}
+
                 <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
                     <input
                         type = "text"
@@ -143,7 +126,7 @@
                         <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                             Total Amount for 'Delivered'
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
                             @{{rptdata.amt_del | currency: "": 2}}
                         </div>
                     </div>
@@ -171,7 +154,7 @@
                         <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                             Total Amount for 'Paid'
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid">
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid" ng-style="{'background-color': matchTotal ? '#98FB98' : '#FF9999'}">
                             @{{rptdata.amt_mod | currency: "": 2}}
                         </div>
                     </div>
