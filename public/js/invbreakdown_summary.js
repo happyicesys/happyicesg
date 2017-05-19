@@ -16,7 +16,7 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 200;
+        $scope.itemsPerPage = 100;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.headerTemp = '';
@@ -29,7 +29,7 @@ var app = angular.module('app', [
             company: '',
             person_id: '',
             custcategory: '',
-            pageNum: 200,
+            pageNum: 100,
             sortBy: true,
             sortName: ''
         }
@@ -80,6 +80,8 @@ var app = angular.module('app', [
         $scope.sortTable = function(sortName) {
             $scope.search.sortName = sortName;
             $scope.search.sortBy = ! $scope.search.sortBy;
+            console.log($scope.search.sortName);
+            console.log($scope.search.sortBy);
             getPage(1, false);
         }
 
@@ -102,11 +104,38 @@ var app = angular.module('app', [
                 }
                 // get total count
                 $scope.All = data.deals.length;
+                console.log(data);
+                // return fixed total amount
+                $scope.grand_total = data.fixedtotals.grand_total.toFixed(2);
+                $scope.taxtotal = data.fixedtotals.taxtotal.toFixed(2);
+                $scope.subtotal = data.fixedtotals.subtotal.toFixed(2);
+                $scope.total_gross_money = data.fixedtotals.total_gross_money.toFixed(2);
+                $scope.total_gross_percent = data.fixedtotals.total_gross_percent.toFixed(2);
 
-                // return total amount
-                $scope.total_revenue = data.total_revenue;
-                $scope.total_gross_money = data.total_gross_money;
-                $scope.total_gross_percent = data.total_gross_percent;
+                $scope.avg_grand_total = data.dynamictotals.avg_grand_total.toFixed(2);
+                $scope.avg_subtotal = data.dynamictotals.avg_subtotal.toFixed(2);
+                $scope.avg_cost = data.dynamictotals.avg_cost.toFixed(2);
+                $scope.avg_gross_money = data.dynamictotals.avg_gross_money.toFixed(2);
+                $scope.avg_gross_percent = data.dynamictotals.avg_gross_percent.toFixed(2);
+                $scope.avg_vending_piece_price = data.dynamictotals.avg_vending_piece_price.toFixed(2);
+                $scope.avg_vending_monthly_rental = data.dynamictotals.avg_vending_monthly_rental.toFixed(2);
+                $scope.avg_sales_qty = data.dynamictotals.avg_sales_qty.toFixed(2);
+                $scope.avg_sales_avg_day = data.dynamictotals.avg_sales_avg_day.toFixed(2);
+                $scope.avg_difference = data.dynamictotals.avg_difference.toFixed(2);
+                $scope.avg_vm_stock_value = data.dynamictotals.avg_vm_stock_value.toFixed(2);
+
+                $scope.total_grand_total = data.dynamictotals.total_grand_total.toFixed(2);
+                $scope.total_subtotal = data.dynamictotals.total_subtotal.toFixed(2);
+                $scope.total_gsttotal = data.dynamictotals.total_gsttotal.toFixed(2);
+                $scope.total_cost = data.dynamictotals.total_cost.toFixed(2);
+                $scope.total_gross_money = data.dynamictotals.total_gross_money.toFixed(2);
+                $scope.total_gross_percent = data.dynamictotals.total_gross_percent.toFixed(2);
+                $scope.total_owe = data.dynamictotals.total_owe.toFixed(2);
+                $scope.total_paid = data.dynamictotals.total_paid.toFixed(2);
+                $scope.total_vending_monthly_rental = data.dynamictotals.total_vending_monthly_rental.toFixed(2);
+                $scope.total_sales_qty = data.dynamictotals.total_sales_qty.toFixed(2);
+                $scope.total_difference = data.dynamictotals.total_difference.toFixed(2);
+                $scope.total_vm_stock_value = data.dynamictotals.total_vm_stock_value.toFixed(2);
                 $scope.spinner = false;
             });
         }

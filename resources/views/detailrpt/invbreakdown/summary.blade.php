@@ -145,39 +145,66 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-2 col-sm-2 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-12">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Revenue ($):
+            <div class="col-md-7 col-sm-7 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Grand Total:
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{grand_total}}
+                            </strong>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                        </strong>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Tax Total:
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{taxtotal}}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Subtotal
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{subtotal}}
+                            </strong>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Gross Earning ($):
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Gross $
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_money}}
+                            </strong>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                        </strong>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Overall Gross Earning (%):
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                        </strong>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Gross %
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_percent}}
+                            </strong>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-12 text-right">
+            <div class="col-md-3 col-sm-3 col-xs-12 text-right">
                 <div class="row">
                     <label for="display_num">Display</label>
                     <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
@@ -209,63 +236,117 @@
                         #
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('people.cust_id')">
                         Customer
+                        <span ng-if="search.sortName == 'people.cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'people.cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Customer Cat
+                        <a href="" ng-click="sortTable('custcategory_name')">
+                        Cust Cat
+                        <span ng-if="search.sortName == 'custcategory_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'custcategory_name' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                    <th class="col-md-2 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('first_date')">
                         First Inv Date
+                        <span ng-if="search.sortName == 'first_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'first_date' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Total Revenue
+                        <a href="" ng-click="sortTable('total')">
+                        Grand Total
+                        <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('gsttotal')">
                         GST
+                        <span ng-if="search.sortName == 'gsttotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'gsttotal' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Subtotal Revenue
+                        <a href="" ng-click="sortTable('subtotal')">
+                        Total Revenue
+                        <span ng-if="search.sortName == 'subtotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'subtotal' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('cost')">
                         Total Cost $
+                        <span ng-if="search.sortName == 'cost' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'cost' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('gross_money')">
                         Gross Earning $
+                        <span ng-if="search.sortName == 'gross_money' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'gross_money' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('gross_percent')">
                         Gross Earning %
+                        <span ng-if="search.sortName == 'gross_percent' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'gross_percent' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('paid')">
                         Total Paid
+                        <span ng-if="search.sortName == 'paid' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'paid' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('owe')">
                         Total Owe
+                        <span ng-if="search.sortName == 'owe' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'owe' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('vending_piece_price')">
                         Price Per Piece
+                        <span ng-if="search.sortName == 'vending_piece_price' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'vending_piece_price' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('vending_monthly_rental')">
                         Monthly Rental
+                        <span ng-if="search.sortName == 'vending_monthly_rental' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'vending_monthly_rental' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('vending_profit_sharing')">
                         Profit Sharing
+                        <span ng-if="search.sortName == 'vending_profit_sharing' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'vending_profit_sharing' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('sales_qty')">
                         Total Sales Qty
+                        <span ng-if="search.sortName == 'sales_qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'sales_qty' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('sales_avg_day')">
                         Avg Sales/ Day
+                        <span ng-if="search.sortName == 'sales_avg_day' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'sales_avg_day' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('difference')">
                         Difference (Actual - Expected)
+                        <span ng-if="search.sortName == 'difference' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'difference' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
+                        <a href="" ng-click="sortTable('vm_stock_value')">
                         VM Stock Value
+                        <span ng-if="search.sortName == 'vm_stock_value' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'vm_stock_value' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                 </tr>
 
                 <tbody>
-                    <tr dir-paginate="deal in alldata | itemsPerPage:itemsPerPage" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
+                    <tr dir-paginate="deal in alldata | itemsPerPage:itemsPerPage" pagination-id="invbreakdown_summary" total-items="totalCount" current-page="currentPage">
                         <td class="col-md-1 text-center">
                             @{{$index + indexFrom}}
                         </td>
@@ -275,7 +356,7 @@
                         <td class="col-md-1 text-center">
                             @{{deal.custcategory_name}}
                         </td>
-                        <td class="col-md-1 text-center">
+                        <td class="col-md-2 text-center">
                             @{{deal.first_date}}
                         </td>
                         <td class="col-md-1 text-right">
@@ -331,55 +412,105 @@
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.is_vending}}
+                                @{{deal.difference | currency : '' : 2 }}
                             </span>
                         </td>
-{{--                         <td class="col-md-1 text-center">
-                            {{$index + 1}}
+                        <td class="col-md-1 text-right">
+                            <span ng-if="deal.is_vending==1">
+                                @{{deal.vm_stock_value | currency : '' : 2}}
+                            </span>
                         </td>
-                        <td class="col-md-1 text-center">
-                            ({{$person->cust_id}}) {{$person->company}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            {{$person->custcategory->name}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            {{$searchtransactions::wherePersonId($person->id)->oldest()->first()->delivery_date}}
-                        </td>
+                    </tr>
 
-                        <td class="col-md-1 text-right">
-                            {{number_format($peopledeals->sum('amount'), 2, '.', '')}}
-                        </td>
-                        <td class="col-md-1 text-right">
-                            {{number_format($peopledeals->sum('unit_cost'), 2, '.', '')}}
-                        </td>
-                        <td class="col-md-1 text-right">
-                            {{number_format(($peopledeals->sum('amount') -  $peopledeals->sum('unit_cost')), 2, '.', '')}}
-                        </td>
-                        <td class="col-md-1 text-right">
-                            @if($peopledeals->sum('amount') != 0)
-                                {{number_format(($peopledeals->sum('amount') -  $peopledeals->sum('unit_cost'))/ $peopledeals->sum('amount') * 100, '2', '.', '')}}
-                            @else
-                                {{number_format(($peopledeals->sum('amount') -  $peopledeals->sum('unit_cost')), '2', '.', '')}}
-                            @endif
-                        </td>
-                        <td class="col-md-1 text-right">
-                            {{number_format(($peopletransac_paid->wherePayStatus('Paid')->sum('total')), 2, '.', '')}}
-                        </td>
-                        <td class="col-md-1 text-right">
-                            {{number_format(($peopletransac_owe->wherePayStatus('Owe')->sum('total')), 2, '.', '')}}
-                        </td>
-                        @if($person->is_vending === 1)
-                            <td class="col-md-1 text-right">
-                                {{$person->vending_piece_price}}
-                            </td>
-                            <td class="col-md-1 text-right">
-                                {{$person->vending_monthly_rental}}
-                            </td>
-                            <td class="col-md-1 text-right">
-                                {{$person->vending_profit_sharing}}
-                            </td>
-                        @endif --}}
+                    <tr ng-if="alldata || alldata.length > 0">
+                        <th colspan="2">
+                            Average
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_grand_total}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_subtotal}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_cost}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_gross_money}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_gross_percent}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_vending_piece_price}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_vending_monthly_rental}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_sales_qty}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_sales_avg_day}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_difference}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_vm_stock_value}}
+                        </th>
+                    </tr>
+                    <tr ng-if="alldata || alldata.length > 0">
+                        <th colspan="2">
+                            Total
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{total_grand_total}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_gsttotal}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_subtotal}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_cost}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_gross_money}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_gross_percent}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_paid}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_owe}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{total_vending_monthly_rental}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{total_sales_qty}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{total_difference}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{total_vm_stock_value}}
+                        </th>
                     </tr>
 
                     <tr ng-if="!alldata || alldata.length == 0">

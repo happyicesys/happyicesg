@@ -196,7 +196,7 @@
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
                     </div>
 
-                    <div class="col-md-3 col-sm-6 col-xs-12" style="padding-top:5px;">
+                    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
                         <div class="col-md-5 col-xs-5">
                             Total
                         </div>

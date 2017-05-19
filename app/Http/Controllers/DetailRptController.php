@@ -830,9 +830,6 @@ class DetailRptController extends Controller
     // retrieve invoice breakdown summary(formrequest request)
     public function getInvoiceBreakdownSummaryApi(Request $request)
     {
-        $total_revenue = 0;
-        $total_gross_money = 0;
-        $total_gross_percent = 0;
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
         $delivery_from = $request->delivery_from;
@@ -865,16 +862,53 @@ class DetailRptController extends Controller
                 transactions.id AS transaction_id
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
-                AND transactions.delivery_date>='".$delivery_from."'
+                WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
                 GROUP BY people.id) AS sales"
             );
-        $latest_coin = DB::raw(
-                "(SELECT transactions.balance_coin, MAX(DATE(transactions.created_at))  FROM transactions
+        $latest_data = DB::raw(
+                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.balance_coin ORDER BY transactions.created_at DESC), ',' ,1) AS balance_coin, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at DESC), ',' ,1) AS analog_clock, transactions.created_at FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
+                WHERE transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS latest_data"
+            );
+        $oldest_data = DB::raw(
+                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at ASC), ',' ,1) AS analog_clock, transactions.created_at FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS oldest_data"
+            );
+        $total_vending_cash = DB::raw(
+                "(SELECT SUM(deals.amount) AS amount, people.id AS person_id FROM deals
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE items.product_id='051'
                 AND transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
-                GROUP BY people.id) AS latest_coin"
+                GROUP BY people.id) AS total_vending_cash"
+            );
+        $total_vending_float = DB::raw(
+                "(SELECT SUM(deals.amount) AS amount, people.id AS person_id FROM deals
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE items.product_id='052'
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS total_vending_float"
+            );
+        $total_stock_value = DB::raw(
+                "(SELECT SUM(deals.amount) AS amount, people.id AS person_id FROM deals
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE items.product_id='051a'
+                AND transactions.delivery_date>='".$delivery_from."'
+                AND transactions.delivery_date<='".$delivery_to."'
+                GROUP BY people.id) AS total_stock_value"
             );
 
 
@@ -887,7 +921,11 @@ class DetailRptController extends Controller
                 ->leftJoin($paid, 'people.id', '=', 'paid.person_id')
                 ->leftJoin($owe, 'people.id', '=', 'owe.person_id')
                 ->leftJoin($sales, 'people.id', '=', 'sales.person_id')
-                ->leftjoin($latest_coin, 'people.id', '=', 'latest_coin.balance_coin')
+                ->leftjoin($latest_data, 'people.id', '=', 'latest_data.person_id')
+                ->leftjoin($oldest_data, 'people.id', '=', 'oldest_data.person_id')
+                ->leftjoin($total_vending_cash, 'people.id', '=', 'total_vending_cash.person_id')
+                ->leftjoin($total_vending_float, 'people.id', '=', 'total_vending_float.person_id')
+                ->leftjoin($total_stock_value, 'people.id', '=', 'total_stock_value.person_id')
                 ->select(
                     'people.cust_id AS cust_id', 'people.company AS company',
                     'custcategories.name AS custcategory_name',
@@ -903,23 +941,36 @@ class DetailRptController extends Controller
                     DB::raw('owe.total AS owe'),
                     'people.is_vending', 'people.vending_piece_price', 'people.vending_monthly_rental', 'people.vending_profit_sharing',
                     'sales.sales_qty AS sales_qty', 'sales.sales_avg_day AS sales_avg_day',
-                    'latest_coin.balance_coin AS balance_coin'
+                    DB::raw('ROUND(((COALESCE(latest_data.balance_coin, 0) + COALESCE(total_vending_cash.amount, 0) + COALESCE(total_vending_float.amount, 0))-((COALESCE(latest_data.analog_clock, 0) - COALESCE(oldest_data.analog_clock, 0)) * COALESCE(people.vending_piece_price, 0))), 2) AS difference'),
+                    DB::raw('ROUND((COALESCE(total_stock_value.amount, 0) + COALESCE(latest_data.balance_coin, 0)) + (COALESCE(total_vending_cash.amount, 0) + COALESCE(total_vending_float.amount, 0)), 2) AS vm_stock_value')
                 );
 
-        $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
-        $deals = $deals->orderBy('people.cust_id')->groupBy('people.id');
+        if($request->profile_id or $request->delivery_from or $request->delivery_to or $request->status or $request->cust_id or $request->company or $request->person_id or $request->custcategory) {
+            $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
+        }
+
+        $deals = $deals->groupBy('people.id');
 
         if($request->sortName){
             $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }else {
+            $deals = $deals->orderBy('cust_id');
         }
+
+        $fixedtotals = $this->calInvbreakdownSummaryFixedTotals($deals);
 
         if($pageNum == 'All'){
             $deals = $deals->get();
         }else{
             $deals = $deals->paginate($pageNum);
         }
+
+        $dynamictotals = $this->calInvbreakdownSummaryDynamicTotals($deals);
+
         $data = [
-            'deals' => $deals
+            'deals' => $deals,
+            'fixedtotals' => $fixedtotals,
+            'dynamictotals' => $dynamictotals
         ];
 
         return $data;
@@ -938,11 +989,6 @@ class DetailRptController extends Controller
         $custcategory = $request->custcategory;
 
         if($profile_id) {
-/*            $transactions = $transactions->whereHas('person', function($query) use ($profile_id) {
-                $query->whereHas('profile', function($query) use ($profile_id) {
-                    $query->whereProfileId($profile_id);
-                });
-            });*/
             $deals = $deals->where('profiles.id', $profile_id);
         }
         if($delivery_from) {
@@ -965,30 +1011,144 @@ class DetailRptController extends Controller
             }
         }
         if($cust_id) {
-/*            $transactions = $transactions->whereHas('person', function($query) use ($cust_id) {
-                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
-            });*/
             $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
         }
         if($company) {
-/*            $transactions = $transactions->whereHas('person', function($query) use ($company) {
-                $query->where('company', 'LIKE', '%'.$company.'%');
-            });*/
             $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
         }
         if($person_id) {
-            // $transactions = $transactions->wherePersonId($person_id);
             $deals = $deals->where('people.id', '=', $person_id);
         }
         if($custcategory) {
-/*            $transactions = $transactions->whereHas('person', function($query) use ($custcategory) {
-                $query->whereHas('custcategory', function($query) use ($custcategory) {
-                    $query->where('id', $custcategory);
-                });
-            });*/
             $deals = $deals->where('custcategories.id', $custcategory);
         }
         return $deals;
+    }
+
+    // calculate totals for the invoice breakdown summary(collection $deals)
+    private function calInvbreakdownSummaryFixedTotals($deals)
+    {
+        $grand_total = 0;
+        $taxtotal = 0;
+        $subtotal = 0;
+        $total_gross_money = 0;
+        $total_gross_percent = 0;
+
+        foreach($deals->get() as $deal) {
+            $grand_total += $deal->total;
+            if($deal->gst) {
+                $taxtotal += $deal->gsttotal;
+            }
+            $subtotal += $deal->subtotal;
+            $total_gross_money += $deal->gross_money;
+            $total_gross_percent += $deal->gross_percent;
+        }
+
+        $totals = [
+            'grand_total' => $grand_total,
+            'taxtotal' => $taxtotal,
+            'subtotal' => $subtotal,
+            'total_gross_money' => $total_gross_money,
+            'total_gross_percent' => $total_gross_percent
+        ];
+
+        return $totals;
+    }
+
+    // calculate dynamic average and totals for invoice breakdown summary(collection $deals)
+    private function calInvbreakdownSummaryDynamicTotals($deals)
+    {
+        $avg_grand_total = 0;
+        $avg_subtotal = 0;
+        $avg_cost = 0;
+        $avg_gross_money = 0;
+        $avg_gross_percent = 0;
+        $avg_vending_piece_price = 0;
+        $avg_vending_monthly_rental = 0;
+        $avg_sales_qty = 0;
+        $avg_sales_avg_day = 0;
+        $avg_difference = 0;
+        $avg_vm_stock_value = 0;
+
+        $total_grand_total = 0;
+        $total_gsttotal = 0;
+        $total_subtotal = 0;
+        $total_cost = 0;
+        $total_gross_money = 0;
+        $total_gross_percent = 0;
+        $total_owe = 0;
+        $total_paid = 0;
+        $total_vending_monthly_rental = 0;
+        $total_sales_qty = 0;
+        $total_difference = 0;
+        $total_vm_stock_value = 0;
+        // placeholder
+        $total_vending_piece_price = 0;
+        $total_sales_avg_day = 0;
+
+        $dealscount = count($deals);
+
+        foreach($deals as $deal) {
+            $total_grand_total += $deal->total;
+            $total_subtotal += $deal->subtotal;
+            if($deal->gst) {
+                $total_gsttotal += $deal->gsttotal;
+            }
+            $total_cost += $deal->cost;
+            $total_gross_money += $deal->gross_money;
+            $total_gross_percent += $deal->gross_percent;
+            $total_owe += $deal->owe;
+            $total_paid += $deal->paid;
+            $total_vending_monthly_rental += $deal->vending_monthly_rental;
+            $total_sales_qty += $deal->sales_qty;
+            $total_difference += $deal->difference;
+            $total_vm_stock_value += $deal->vm_stock_value;
+            $total_vending_piece_price += $deal->vending_piece_price;
+            $total_sales_avg_day += $deal->sales_avg_day;
+        }
+
+        if($dealscount > 0) {
+            $avg_grand_total = $total_grand_total / $dealscount;
+            $avg_subtotal = $total_subtotal / $dealscount;
+            $avg_cost = $total_cost / $dealscount;
+            $avg_gross_money = $total_gross_money / $dealscount;
+            $avg_gross_percent = $total_gross_percent / $dealscount;
+            $avg_vending_piece_price = $total_vending_piece_price / $dealscount;
+            $avg_vending_monthly_rental = $total_vending_monthly_rental / $dealscount;
+            $avg_sales_qty = $total_sales_qty / $dealscount;
+            $avg_sales_avg_day = $total_sales_avg_day / $dealscount;
+            $avg_difference = $total_difference / $dealscount;
+            $avg_vm_stock_value = $total_vm_stock_value / $dealscount;
+        }
+
+        $totals = [
+            'avg_grand_total' => $avg_grand_total,
+            'avg_subtotal' => $avg_subtotal,
+            'avg_cost' => $avg_cost,
+            'avg_gross_money' => $avg_gross_money,
+            'avg_gross_percent' => $avg_gross_percent,
+            'avg_vending_piece_price' => $avg_vending_piece_price,
+            'avg_vending_monthly_rental' => $avg_vending_monthly_rental,
+            'avg_sales_qty' => $avg_sales_qty,
+            'avg_sales_avg_day' => $avg_sales_avg_day,
+            'avg_difference' => $avg_difference,
+            'avg_vm_stock_value' => $avg_vm_stock_value,
+
+            'total_grand_total' => $total_grand_total,
+            'total_subtotal' => $total_subtotal,
+            'total_gsttotal' => $total_gsttotal,
+            'total_cost' => $total_cost,
+            'total_gross_money' => $total_gross_money,
+            'total_gross_percent' => $total_gross_percent,
+            'total_owe' => $total_owe,
+            'total_paid' => $total_paid,
+            'total_vending_monthly_rental' => $total_vending_monthly_rental,
+            'total_sales_qty' => $total_sales_qty,
+            'total_difference' => $total_difference,
+            'total_vm_stock_value' => $total_vm_stock_value
+        ];
+
+        return $totals;
     }
 
     // export SOA report(Array $data)

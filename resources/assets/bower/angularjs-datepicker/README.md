@@ -86,6 +86,7 @@ date-min-limit="" | String | false | Set a minimum date limit - you can use all 
 date-max-limit="" | String | false | Set a maximum date limit - you can use all the accepted date formats by the javascript `new Date()`
 date-set-hidden="" | String(Boolean) | false | Set the default date to be shown only in calendar and not in the input field
 date-disabled-dates="" | String([Date(), Date(), ...]) | false | Disable specific dates using an _Array_ of dates
+date-disabled-weekdays="" | String(1, 5, ...]) | false | Disable specific weekdays using an _Array_ of weeks number
 date-refocus="" | String(Boolean) | false | Set the datepicker to re-focus the input after selecting a date
 date-typer="" | String(Boolean) | false | Set the datepicker to update calendar date when user is typing a date, see validation [tips](#date-validation)
 date-week-start-day="" | String(Number) | 0 | Set the first day of the week. Must be an integer between 0 (Sunday) and 6 (Saturday). (e.g. 1 for Monday)
@@ -179,7 +180,7 @@ Sometimes you want to (manually/programmatically) show or hide the datepicker, t
 ```
 _tip: you should use this attribute together with `datepicker-toggle="false" , for a better stable behavior of the datepicker_
 
-####Input as grandchild
+#### Input as grandchild
 Sometimes you cannot put date input as a first child of datepicker. In this case you may use `selector=""` to point to the CSS class of the input. Below example with using Twitter Bootstrap and FontAwesome
 
 ```html
@@ -235,7 +236,7 @@ Then your final html:
 
 [Live demo](https://720kb.github.io/angular-datepicker)
 
-##Themes :art:
+## Themes :art:
 You can edit the default Css file `angular-datepicker.css` if you want to make a new theme for the datepicker, then just add it to the ```themes``` dir and PR!
 
 More about it https://github.com/720kb/angular-datepicker/tree/master/themes.
@@ -244,7 +245,7 @@ Here is an example of a [Dark Theme](http://codepen.io/45kb/pen/bjslv) made usin
 
 ***_Please note that the example may not be uptodate with the latest angular and/or module version_
 
-##Contributing
+## Contributing
 
 We will be much grateful if you help us making this project to grow up.
 Feel free to contribute by forking, opening issues, pull requests etc.
