@@ -109,10 +109,9 @@ class D2dOnlineSaleController extends Controller
         $sendto = [$request->email];
         if($generate_trans) {
             $transaction_id = $this->createTransaction($request, $customer_id);
-            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jhhappyice@gmail.com'];
-            $bcc = '';
+            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jhhappyice@gmail.com'];
+            $bcc = ['leehongjie91@gmail.com'];
         }else{
-            dd('here2');
             $member = Person::findOrFail($avail_postcode->person_id);
             $member_manager = $member->parent_id ? Person::find($member->parent_id)->first() : '';
             if($member_manager != null and $member_manager != '') {

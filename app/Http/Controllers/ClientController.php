@@ -136,7 +136,7 @@ class ClientController extends Controller
 
         // email array send to
         $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
-        // $sendto = ['leehongjie91@gmail.com'];
+        $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
@@ -153,6 +153,7 @@ class ClientController extends Controller
             $message->from($sendfrom);
             $message->subject('Contact Form Submission ['.$today.']');
             $message->setTo($sendto);
+            $message->bcc($bcc);
         });
 
         if($mail){
@@ -333,6 +334,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
         $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
@@ -348,6 +350,7 @@ class ClientController extends Controller
             $message->from($sendfrom);
             $message->subject('Vending Machine Propose Location ['.$today.']');
             $message->setTo($sendto);
+            $message->bcc($bcc);
         });
 
         if($mail){
@@ -377,6 +380,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
         $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
         $today = Carbon::now()->format('d-F-Y');
@@ -391,6 +395,7 @@ class ClientController extends Controller
             $message->from($sendfrom);
             $message->subject('HonestV Machine Inquiry ['.$today.']');
             $message->setTo($sendto);
+            $message->bcc($bcc);
         });
 
         if($mail){
@@ -423,7 +428,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
         $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
-        // $sendto = ['leehongjie91@happyice.com.sg'];
+        $bcc = ['leehongjie91@gmail.com'];
 
         $countries = Country::all();
 
@@ -441,6 +446,7 @@ class ClientController extends Controller
             $message->from($sendfrom);
             $message->subject('Franchise Enquiry ['.$today.']');
             $message->setTo($sendto);
+            $message->bcc($bcc);
         });
 
         if($mail){
