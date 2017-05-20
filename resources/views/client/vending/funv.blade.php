@@ -174,6 +174,7 @@ Healthier Life
             <div class="panel panel-default">
                 <div class="panel-body">
                 {!! Form::open(['action'=>'ClientController@funVendingInquiry']) !!}
+                    {!! Honeypot::generate('my_name', 'my_time') !!}
                     <div class="col-md-12 col-xs-12">
                         <div class="form-group">
                             {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}

@@ -127,6 +127,10 @@ class ClientController extends Controller
 
     public function sendContactEmail(ContactFormRequest $request)
     {
+        $this->validate($request, [
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
+        ]);
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
 
@@ -307,6 +311,8 @@ class ClientController extends Controller
             'contact' => 'required',
             'loc' => 'required',
             'email' => 'required',
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
         ], [
             'name.required' => 'Please fill in the name',
             'contact.required' => 'Please fill in the contact number',
@@ -358,7 +364,9 @@ class ClientController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'contact' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
         ], [
             'name.required' => 'Please fill in the name',
             'contact.required' => 'Please fill in the contact number',
@@ -401,6 +409,8 @@ class ClientController extends Controller
             'contact' => 'required',
             'email' => 'email|required',
             'country' => 'required',
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
         ], [
             'name.required' => 'Please fill in the name',
             'contact.required' => 'Please fill in the contact number',

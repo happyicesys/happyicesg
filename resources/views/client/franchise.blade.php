@@ -121,41 +121,42 @@ Healthier Life
         </div>
         <div style="padding-top: 20px; font-size: 16px;">
             {!! Form::open(['action'=>'ClientController@franchiseInquiry']) !!}
-            <div class="form-group">
-                {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
-                <span style="color:red">*</span>
-                {!! Form::text('name', null, ['class'=>'form-control']) !!}
-            </div>
+                {!! Honeypot::generate('my_name', 'my_time') !!}
+                <div class="form-group">
+                    {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+                    <span style="color:red">*</span>
+                    {!! Form::text('name', null, ['class'=>'form-control']) !!}
+                </div>
 
-            <div class="form-group">
-                {!! Form::label('contact', 'Contact', ['class'=>'control-label']) !!}
-                <span style="color:red">*</span>
-                {!! Form::text('contact', null, ['class'=>'form-control']) !!}
-            </div>
+                <div class="form-group">
+                    {!! Form::label('contact', 'Contact', ['class'=>'control-label']) !!}
+                    <span style="color:red">*</span>
+                    {!! Form::text('contact', null, ['class'=>'form-control']) !!}
+                </div>
 
-            <div class="form-group">
-                {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
-                <span style="color:red">*</span>
-                {!! Form::text('email', null, ['class'=>'form-control']) !!}
-            </div>
+                <div class="form-group">
+                    {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
+                    <span style="color:red">*</span>
+                    {!! Form::text('email', null, ['class'=>'form-control']) !!}
+                </div>
 
-            <div class="form-group">
-                {!! Form::label('country', 'Country', ['class'=>'control-label']) !!}
-                <span style="color:red">*</span>
-                <select name="country" class="select">
-                    <option value=""></option>
-                    @foreach($countries::all() as $name => $code)
-                        <option value="{{$code}}">{{$name}}</option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="form-group">
+                    {!! Form::label('country', 'Country', ['class'=>'control-label']) !!}
+                    <span style="color:red">*</span>
+                    <select name="country" class="select">
+                        <option value=""></option>
+                        @foreach($countries::all() as $name => $code)
+                            <option value="{{$code}}">{{$name}}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div class="form-group">
-                {!! Form::label('note', 'Message (Optional)', ['class'=>'control-label']) !!}
-                {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
-            </div>
+                <div class="form-group">
+                    {!! Form::label('note', 'Message (Optional)', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+                </div>
 
-            {!! Form::submit('Submit', ['class'=> 'btn btn-lg btn-success']) !!}
+                {!! Form::submit('Submit', ['class'=> 'btn btn-lg btn-success']) !!}
 
             {!! Form::close() !!}
         </div>
