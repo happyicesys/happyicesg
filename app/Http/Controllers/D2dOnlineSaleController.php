@@ -210,7 +210,7 @@ class D2dOnlineSaleController extends Controller
                 $customer->custcategory_id = $cust_category->id;
             }
             $customer->save();
-            if($avail_postcode->person_id){
+            if($avail_postcode){
                 $manager = Person::findOrFail($avail_postcode->person_id);
                 $customer->parent_name = $manager->name;
                 $customer->makeChildOf($manager);
