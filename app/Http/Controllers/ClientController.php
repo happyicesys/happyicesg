@@ -149,18 +149,13 @@ class ClientController extends Controller
             'bodymessage' => $request->message,
         );
 
-        $mail =  Mail::send('client.email_contact', $data, function ($message) use ($sendfrom, $sendto, $today){
+        $mail =  Mail::send('client.email_contact', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc){
             $message->from($sendfrom);
             $message->subject('Contact Form Submission ['.$today.']');
             $message->setTo($sendto);
             $message->bcc($bcc);
         });
-
-        if($mail){
-            Flash::success('The form has been submitted');
-        }else{
-            Flash::error('Please Try Again');
-        }
+        Flash::success('The form has been submitted');
         return view('client.index');
     }
 
@@ -346,18 +341,13 @@ class ClientController extends Controller
             'loc' => $locArr[$request->loc],
         );
 
-        $mail =  Mail::send('client.email_vendingInq', $data, function ($message) use ($sendfrom, $sendto, $today){
+        $mail =  Mail::send('client.email_vendingInq', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc){
             $message->from($sendfrom);
             $message->subject('Vending Machine Propose Location ['.$today.']');
             $message->setTo($sendto);
             $message->bcc($bcc);
         });
-
-        if($mail){
-            Flash::success('The form has been submitted');
-        }else{
-            Flash::error('Please Try Again');
-        }
+        Flash::success('The form has been submitted');
         return Redirect::action('ClientController@funVendingIndex');
     }
 
@@ -391,18 +381,14 @@ class ClientController extends Controller
             'note' => $request->note,
         );
 
-        $mail =  Mail::send('client.email_honestv', $data, function ($message) use ($sendfrom, $sendto, $today){
+        $mail =  Mail::send('client.email_honestv', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc){
             $message->from($sendfrom);
             $message->subject('HonestV Machine Inquiry ['.$today.']');
             $message->setTo($sendto);
             $message->bcc($bcc);
         });
 
-        if($mail){
-            Flash::success('The form has been submitted');
-        }else{
-            Flash::error('Please Try Again');
-        }
+        Flash::success('The form has been submitted');
         return Redirect::action('ClientController@honestVendingIndex');
     }
 
@@ -442,18 +428,14 @@ class ClientController extends Controller
             'note' => $request->note,
         );
 
-        $mail =  Mail::send('client.email_franchiseInq', $data, function ($message) use ($sendfrom, $sendto, $today){
+        $mail =  Mail::send('client.email_franchiseInq', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc){
             $message->from($sendfrom);
             $message->subject('Franchise Enquiry ['.$today.']');
             $message->setTo($sendto);
             $message->bcc($bcc);
         });
 
-        if($mail){
-            Flash::success('The form has been submitted');
-        }else{
-            Flash::error('Please Try Again');
-        }
+        Flash::success('The form has been submitted');
         return Redirect::action('ClientController@franchiseIndex');
     }
 
