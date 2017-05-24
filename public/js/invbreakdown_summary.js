@@ -49,6 +49,20 @@ var app = angular.module('app', [
             saveAs(blob, "Invoice Breakdown Summary"+ now + ".xls");
         };
 
+        $scope.onDeliveryFromChanged = function(date){
+            if(date){
+                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.onDeliveryToChanged = function(date){
+            if(date){
+                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
         // switching page
         $scope.pageChanged = function(newPage){
             getPage(newPage, false);
