@@ -188,7 +188,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{total_gross_money}}
+                                @{{fixed_total_gross_money}}
                             </strong>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{total_gross_percent}}
+                                @{{fixed_total_gross_percent}}
                             </strong>
                         </div>
                     </div>

@@ -123,8 +123,8 @@ var app = angular.module('app', [
                 $scope.grand_total = data.fixedtotals.grand_total.toFixed(2);
                 $scope.taxtotal = data.fixedtotals.taxtotal.toFixed(2);
                 $scope.subtotal = data.fixedtotals.subtotal.toFixed(2);
-                $scope.total_gross_money = data.fixedtotals.total_gross_money.toFixed(2);
-                $scope.total_gross_percent = data.fixedtotals.total_gross_percent.toFixed(2);
+                $scope.fixed_total_gross_money = data.fixedtotals.total_gross_money.toFixed(2);
+                $scope.fixed_total_gross_percent = data.fixedtotals.total_gross_percent.toFixed(2);
 
                 $scope.avg_grand_total = data.dynamictotals.avg_grand_total.toFixed(2);
                 $scope.avg_subtotal = data.dynamictotals.avg_subtotal.toFixed(2);

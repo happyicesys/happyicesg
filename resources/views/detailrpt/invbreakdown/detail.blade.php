@@ -254,7 +254,7 @@
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
                                     @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
-                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2, '.', '')}}
+                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse(request('delivery_to') ? request('delivery_to') : $transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse(request('delivery_from') ? request('delivery_from') : $transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2, '.', '')}}
                                     @else
                                         N/A
                                     @endif

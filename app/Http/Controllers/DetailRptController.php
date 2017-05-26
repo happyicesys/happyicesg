@@ -497,7 +497,8 @@ class DetailRptController extends Controller
                         'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name', 'profiles.id AS profile_id',
                         'transactions.status',
                         'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty'
-                    );
+                    )
+                ->where('items.is_inventory', 1);
 
         // reading whether search input is filled
         if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory or $request->status) {
@@ -538,7 +539,14 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id FROM deals LEFT JOIN transactions ON transactions.id=deals.transaction_id LEFT JOIN people ON people.id=transactions.person_id LEFT JOIN profiles ON profiles.id=people.profile_id LEFT JOIN custcategories ON custcategories.id=people.custcategory_id WHERE 1=1";
+        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON people.id=transactions.person_id
+                        LEFT JOIN profiles ON profiles.id=people.profile_id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        WHERE items.is_inventory=1";
 
         if($request->delivery_from) {
             $amountstr = $amountstr." AND delivery_date >= '".$request->delivery_from."'";
@@ -572,7 +580,8 @@ class DetailRptController extends Controller
                         ->select(
                                     'items.name AS product_name', 'items.remark', 'items.product_id',
                                     'totals.thisamount AS amount', 'totals.thisqty AS qty'
-                                );
+                                )
+                        ->where('items.is_inventory', 1);
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -1464,7 +1473,7 @@ class DetailRptController extends Controller
     {
         // past year till now months option
         $month_options = array();
-        $oneyear_ago = Carbon::today()->subYear();
+        $oneyear_ago = Carbon::today()->subYears(3);
         $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
         $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
         for($i=1; $i<=$diffmonths; $i++) {
