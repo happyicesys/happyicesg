@@ -194,7 +194,6 @@ Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
 Route::match(['get', 'post'], '/detailrpt/invbreakdown/detail', 'DetailRptController@getInvoiceBreakdownDetail');
-// Route::match(['get', 'post'], '/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
 Route::get('/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
 Route::post('/api/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummaryApi');
 Route::get('/detailrpt/account', 'DetailRptController@accountIndex');
@@ -208,6 +207,8 @@ Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCust
 Route::post('/api/detailrpt/sales/custsummary', 'DetailRptController@getSalesCustSummaryApi');
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
+Route::get('/detailrpt/sales/thismonth/{item_id}', 'DetailRptController@getProductDetailMonthThisMonth');
+Route::post('/api/detailrpt/sales/thismonth/{item_id}', 'DetailRptController@getProductDetailMonthThisMonthApi');
 
 
 Route::get('/freezer/data', 'FreezerController@getData');

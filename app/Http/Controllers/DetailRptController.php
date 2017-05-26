@@ -323,39 +323,62 @@ class DetailRptController extends Controller
             $statusStr = ' 1=1';
         }
 
-        $thistotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id FROM transactions
+        $thistotal = DB::raw("(
+                            SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                WHERE items.is_inventory=1
+                                AND transactions.delivery_date>='".$delivery_from."'
                                 AND transactions.delivery_date<='".$delivery_to."'
                                 AND ".$statusStr."
                                 GROUP BY people.id) thistotal");
 
-        $prevtotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id FROM transactions
+        $prevtotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevtotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                                WHERE items.is_inventory=1
+                                AND transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
                                 GROUP BY people.id) prevtotal");
 
-        $prev2total = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id FROM transactions
+        $prev2total = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prev2total,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                                WHERE items.is_inventory=1
+                                AND transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
                                 GROUP BY people.id) prev2total");
 
-        $prevyeartotal = DB::raw("(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id FROM transactions
+        $prevyeartotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevyeartotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
+                                WHERE items.is_inventory=1
+                                AND transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
                                 GROUP BY people.id) prevyeartotal");
 
-        $transactions = DB::table('transactions')
+        $transactions = DB::table('deals')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
@@ -374,7 +397,9 @@ class DetailRptController extends Controller
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
-        $transactions = $transactions->orderBy('people.cust_id')->groupBy('people.id');
+
+        $transactions = $transactions->where('items.is_inventory', 1)->orderBy('people.cust_id')->groupBy('people.id');
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -663,32 +688,52 @@ class DetailRptController extends Controller
             }
         }
 
-        $thistotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS thistotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+        $thistotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
+                            people.profile_id, custcategories.id AS custcategory_id
+                            FROM deals
+                            LEFT JOIN items ON items.id=deals.item_id
+                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$delivery_from."'
+                            WHERE items.is_inventory=1
+                            AND transactions.delivery_date>='".$delivery_from."'
                             AND transactions.delivery_date<='".$delivery_to."'";
 
-        $prevtotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevtotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+        $prevtotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevtotal,
+                            people.profile_id, custcategories.id AS custcategory_id
+                            FROM deals
+                            LEFT JOIN items ON items.id=deals.item_id
+                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
+                            WHERE items.is_inventory=1
+                            AND transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                             AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
 
-        $prev2total_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prev2total, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+        $prev2total_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prev2total,
+                            people.profile_id, custcategories.id AS custcategory_id
+                            FROM deals
+                            LEFT JOIN items ON items.id=deals.item_id
+                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
+                            WHERE items.is_inventory=1
+                            AND transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                             AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
 
-        $prevyeartotal_str = "(SELECT DISTINCT people.id AS person_id, ROUND(SUM(CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END), 2) AS prevyeartotal, people.profile_id, custcategories.id AS custcategory_id FROM transactions
+        $prevyeartotal_str = "(SELECT people.id AS person_id, ROUND(SUM(total), 2) AS prevyeartotal,
+                                people.profile_id, custcategories.id AS custcategory_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                                WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
+                                WHERE items.is_inventory=1
+                                AND transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
 
         if($status) {
@@ -715,7 +760,9 @@ class DetailRptController extends Controller
         $prev2total = DB::raw($prev2total_str);
         $prevyeartotal = DB::raw($prevyeartotal_str);
 
-        $transactions = DB::table('transactions')
+        $transactions = DB::table('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
@@ -749,7 +796,8 @@ class DetailRptController extends Controller
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
-                                );
+                                )
+                        ->where('items.is_inventory', 1);
 
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
@@ -983,6 +1031,14 @@ class DetailRptController extends Controller
         ];
 
         return $data;
+    }
+
+    // show the total this month sales product detail month(int $item_id)
+    public function getProductDetailMonthThisMonth($item_id)
+    {
+        $item = Item::findOrFail($item_id);
+
+        return view('detailrpt.sales.thismonth_total', compact($item));
     }
 
     // filter functions for invoice breakdown summary (formrequest request, query deals)

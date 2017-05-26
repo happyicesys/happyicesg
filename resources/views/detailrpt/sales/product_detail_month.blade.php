@@ -190,7 +190,8 @@
                         </span>
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ item.amount }}
+                        {{-- <a href="/detailrpt/sales/thismonth/@{{item.id}}">@{{ item.amount }}</a> --}}
+                        @{{item.amount}}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ item.qty | currency: "": 4}}
