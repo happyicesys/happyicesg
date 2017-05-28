@@ -8,7 +8,7 @@
     <div class="panel panel-primary">
 
         <div class="panel-heading">
-            <h3 class="panel-title"><strong>Amount  </strong></h3>
+            <h3 class="panel-title"><strong>Amount : {{$item->product_id}} - {{$item->company}}</strong></h3>
         </div>
 
         <div class="panel-body">
