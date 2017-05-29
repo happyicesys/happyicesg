@@ -66,6 +66,18 @@
                 !!}
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes'], null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.is_commission',
+                        'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -190,8 +202,8 @@
                         </span>
                     </td>
                     <td class="col-md-1 text-right">
-                        {{-- <a href="/detailrpt/sales/@{{item.id}}/thismonth?current=@{{search.current_month}}">@{{ item.amount }}</a> --}}
-                        @{{item.amount}}
+                        <a href="/detailrpt/sales/@{{item.id}}/thismonth?current=@{{search.current_month}}">@{{ item.amount }}</a>
+                        {{-- @{{item.amount}} --}}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ item.qty | currency: "": 4}}

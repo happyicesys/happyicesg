@@ -8,17 +8,19 @@
     <div class="panel panel-primary">
 
         <div class="panel-heading">
-            <h3 class="panel-title"><strong>Amount : {{$item->product_id}} - {{$item->company}}</strong></h3>
+            <h3 class="panel-title"><strong>Total Amount : {{$item->product_id}} - {{$item->name}} ({{\Carbon\Carbon::createFromFormat('m-Y', request('current'))->startOfMonth()->toDateString()}} to {{\Carbon\Carbon::createFromFormat('m-Y', request('current'))->endOfMonth()->toDateString()}})</strong></h3>
         </div>
 
         <div class="panel-body">
             {!! Form::hidden('item_id', $item->id, ['id'=>'item_id']) !!}
+            {!! Form::hidden('current_from', \Carbon\Carbon::createFromFormat('m-Y', request('current'))->startOfMonth()->toDateString(), ['id'=>'current_from']) !!}
+            {!! Form::hidden('current_to', \Carbon\Carbon::createFromFormat('m-Y', request('current'))->endOfMonth()->toDateString(), ['id'=>'current_to']) !!}
             <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
             </div>
             </div>
-            <div class="table-responsive" id="exportable_qtyorder" style="padding-top:20px;">
+            <div class="table-responsive" id="exportable_thismonth_total" style="padding-top:20px;">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">
@@ -145,10 +147,10 @@
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="pull-right">
-            <a href="/item" class="btn btn-default">Cancel</a>
+            <a href="/detailrpt/sales" class="btn btn-default">Cancel</a>
         </div>
     </div>
 </div>
 
-<script src="/js/item_qtyorder.js"></script>
+<script src="/js/thismonth_total.js"></script>
 @stop

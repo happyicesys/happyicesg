@@ -208,7 +208,7 @@ Route::post('/api/detailrpt/sales/custsummary', 'DetailRptController@getSalesCus
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 Route::get('/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonth');
-Route::post('/api/detailrpt/sales/thismonth/{item_id}', 'DetailRptController@getProductDetailMonthThisMonthApi');
+Route::post('/api/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonthApi');
 
 
 Route::get('/freezer/data', 'FreezerController@getData');

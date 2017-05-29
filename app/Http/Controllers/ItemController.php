@@ -54,8 +54,10 @@ class ItemController extends Controller
     {
         $publish = $request->has('publish')? 1 : 0;
         $is_inventory = $request->has('is_inventory')? 1 : 0;
+        $is_commission = $request->has('is_commission')? 1 : 0;
         $request->merge(array('publish' => $publish));
         $request->merge(array('is_inventory' => $is_inventory));
+        $request->merge(array('is_commission' => $is_commission));
         $input = $request->all();
         $item = Item::create($input);
         if($request->file('main_imgpath')){
@@ -84,8 +86,10 @@ class ItemController extends Controller
     {
         $publish = $request->has('publish')? 1 : 0;
         $is_inventory = $request->has('is_inventory')? 1 : 0;
+        $is_commission = $request->has('is_commission')? 1 : 0;
         $request->merge(array('publish' => $publish));
         $request->merge(array('is_inventory' => $is_inventory));
+        $request->merge(array('is_commission' => $is_commission));
         $item = Item::findOrFail($id);
         $input = $request->all();
         $item->update($input);

@@ -65,33 +65,40 @@
     </div>
 
     <div class="row">
-        <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('unit', 'Unit', ['class'=>'control-label']) !!}
                 {!! Form::select('unit', $units::lists('name', 'name'), null, ['id'=>'unit', 'class'=>'select form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-3 col-sm-3 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('unit_cost', 'Cost Price', ['class'=>'control-label']) !!}
                 {!! Form::text('unit_cost', null, ['class'=>'form-control']) !!}
             </div>
         </div>
+    </div>
 
-        <div class="col-md-3 col-sm-3 col-xs-12">
-            <div class="form-group" style="padding:30px 0px 0px 50px;">
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group" style="padding:20px 0px 20px 0px;">
                 {!! Form::checkbox('publish', $item->publish) !!}
-                {!! Form::label('publish', 'Publish Ecommerce', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+                {!! Form::label('publish', 'Publish Ecommerce', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
             </div>
         </div>
-
-        <div class="col-md-3 col-sm-3 col-xs-12">
-            <div class="form-group" style="padding:30px 0px 0px 50px;">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group" style="padding:20px 0px 20px 0px;">
                 {!! Form::checkbox('is_inventory', $item->is_inventory) !!}
-                {!! Form::label('is_inventory', 'Inventory Count', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+                {!! Form::label('is_inventory', 'Inventory Count', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
             </div>
-        </div>        
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group" style="padding:20px 0px 20px 0px;">
+                {!! Form::checkbox('is_commission', $item->is_commission) !!}
+                {!! Form::label('is_commission', 'Is Commission', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+            </div>
+        </div>
     </div>
 
 </div>

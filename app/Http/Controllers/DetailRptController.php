@@ -514,7 +514,7 @@ class DetailRptController extends Controller
                     $join->on('prevyrqty.item_id', '=', 'items.id');
                 })
                 ->select(
-                        'items.name AS product_name', 'items.remark', 'items.product_id', 'items.id', 'items.is_inventory',
+                        'items.name AS product_name', 'items.remark', 'items.product_id', 'items.id', 'items.is_inventory', 'items.is_commission',
                         'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name', 'profiles.id AS profile_id',
                         'transactions.status',
                         'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty'
@@ -524,6 +524,11 @@ class DetailRptController extends Controller
         if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory or $request->status) {
             $items = $this->searchItemDBFilter($items, $request);
         }
+
+        if(request('is_commission') != '') {
+            $items = $items->where('items.is_commission', request('is_commission'));
+        }
+
         if($request->profile_id) {
             $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
         }else {
@@ -1028,24 +1033,26 @@ class DetailRptController extends Controller
     {
         $item = Item::findOrFail($item_id);
 
-        return view('detailrpt.sales.thismonth_total', compact('item'));
+        return view('detailrpt.sales.thismonth_total', compact('item', 'request'));
     }
 
     // show the total this month sales product detail month(int $item_id)
     public function getProductDetailMonthThisMonthApi($item_id)
     {
+        // dd(request()->all(), $item_id);
         $item = Item::findOrFail($item_id);
-        $monthyear = Carbon::createFromFormat('m-Y', request('current'));
+        $current_from = request('current_from');
+        $current_to = request('current_to');
 
         $transactions = Transaction::with(['person', 'person.profile', 'person.custcategory'])
                         ->whereHas('deals', function($query) use ($item_id) {
-                            $query->whereQtyStatus(1)->whereItemId($item_id);
+                            $query->whereItemId($item_id);
                         })
-                        ->whereDate('delivery_date', '>=', $monthyear->startOfMonth())
-                        ->whereDate('delivery_date', '<=', $monthyear->endOfMonth());
+                        ->where('delivery_date', '>=', $current_from)
+                        ->where('delivery_date', '<=', $current_to);
 
-        if($request->sortName){
-            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        if(request('sortName')){
+            $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
 
         $transactions = $transactions->latest()->get();
