@@ -322,6 +322,11 @@ class DetailRptController extends Controller
         }else {
             $statusStr = ' 1=1';
         }
+        if(request('is_commission') != '') {
+            $commissionStr = " items.is_commission='".request('is_commission')."' ";
+        }else {
+            $commissionStr = " 1=1 ";
+        }
 
         $thistotal = DB::raw("(
                             SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
@@ -334,6 +339,7 @@ class DetailRptController extends Controller
                                 WHERE transactions.delivery_date>='".$delivery_from."'
                                 AND transactions.delivery_date<='".$delivery_to."'
                                 AND ".$statusStr."
+                                AND ".$commissionStr."
                                 GROUP BY people.id) thistotal");
 
         $prevtotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevtotal,
@@ -346,6 +352,7 @@ class DetailRptController extends Controller
                                 WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
+                                AND ".$commissionStr."
                                 GROUP BY people.id) prevtotal");
 
         $prev2total = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prev2total,
@@ -358,6 +365,7 @@ class DetailRptController extends Controller
                                 WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
+                                AND ".$commissionStr."
                                 GROUP BY people.id) prev2total");
 
         $prevyeartotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevyeartotal,
@@ -370,6 +378,7 @@ class DetailRptController extends Controller
                                 WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                                 AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'
                                 AND ".$statusStr."
+                                AND ".$commissionStr."
                                 GROUP BY people.id) prevyeartotal");
 
         $transactions = DB::table('deals')
@@ -383,6 +392,7 @@ class DetailRptController extends Controller
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
                         ->leftJoin($prevyeartotal, 'people.id', '=', 'prevyeartotal.person_id')
                         ->select(
+                                    'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
@@ -392,6 +402,10 @@ class DetailRptController extends Controller
 
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
+        }
+
+        if(request('is_commission') != '') {
+            $transactions = $transactions->where('items.is_commission', request('is_commission'));
         }
 
         $transactions = $transactions->orderBy('people.cust_id')->groupBy('people.id');
@@ -564,14 +578,15 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(qty), 2) AS thisqty, item_id, transaction_id
+        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(CASE WHEN items.is_inventory=1 THEN qty END), 4) AS thisqty, item_id, transaction_id
                         FROM deals
                         LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                        WHERE items.is_inventory=1";
+                        WHERE transactions.delivery_date>='".request('delivery_from')."'
+                        AND transactions.delivery_date<='".request('delivery_to')."'";
 
         if($request->delivery_from) {
             $amountstr = $amountstr." AND delivery_date >= '".$request->delivery_from."'";
@@ -598,6 +613,9 @@ class DetailRptController extends Controller
                 $amountstr .=" AND transactions.status='".$request->status."'";
             }
         }
+        if(request('is_commission') != '') {
+            $amountstr .= " AND items.is_commission='".request('is_commission')."'";
+        }
         $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");
 
         $items = DB::table('items')
@@ -605,8 +623,7 @@ class DetailRptController extends Controller
                         ->select(
                                     'items.name AS product_name', 'items.remark', 'items.product_id',
                                     'totals.thisamount AS amount', 'totals.thisqty AS qty'
-                                )
-                        ->where('items.is_inventory', 1);
+                                );
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -680,12 +697,17 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
         $status = $request->status;
+        $is_commission = request('is_commission');
         if($status) {
             if($status == 'Delivered') {
                 $statusStr = " AND (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
             }else {
                 $statusStr = " AND transactions.status='".$status."'";
             }
+        }
+
+        if($is_commission != '') {
+            $commissionStr = " AND items.is_commission='".$is_commission."' ";
         }
 
         $thistotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
@@ -737,6 +759,13 @@ class DetailRptController extends Controller
             $prevtotal_str .= $statusStr;
             $prev2total_str .= $statusStr;
             $prevyeartotal_str .= $statusStr;
+        }
+
+        if($is_commission != '') {
+            $thistotal_str .= $commissionStr;
+            $prevtotal_str .= $commissionStr;
+            $prev2total_str .= $commissionStr;
+            $prevyeartotal_str .= $commissionStr;
         }
 
         if($profile_id) {
@@ -1355,6 +1384,7 @@ class DetailRptController extends Controller
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
+
         return $transactions;
     }
 

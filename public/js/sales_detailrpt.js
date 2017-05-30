@@ -24,6 +24,7 @@ var app = angular.module('app', [
             company: '',
             custcategory: '',
             status: 'Delivered',
+            is_commission: '0',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -107,6 +108,7 @@ var app = angular.module('app', [
             id_prefix: '',
             custcategory: '',
             status: 'Delivered',
+            is_commission: '0',
             pageNum: 100,
             sortBy: true,
             sortName: '',
@@ -286,6 +288,7 @@ var app = angular.module('app', [
             profile_id: '',
             cust_category: '',
             status: 'Delivered',
+            is_commission: '0',
             pageNum: 100,
             sortBy: true,
             sortName: ''
