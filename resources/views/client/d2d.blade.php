@@ -299,8 +299,9 @@ Door To Door
     <td class="hidden">
       <input type="text" class="hidden" name="captionArr[]" v-model="item.caption">
     </td>
-    <td class="col-md-2 col-xs-3 text-center" style="width: 100px;">
-      <select2 name="qtyArr[]" v-model="qty" :options="options" ></select2>
+    <td class="col-md-2 col-xs-3 text-center">
+      <select2 name="qtyArr[]" v-model="qty" :options="options">
+      </select2>
     </td>
     <td class="col-md-2 col-xs-3 text-center">
       <input type="text" name="amountArr[]" v-model="amount" class="input-sm form-control text-right" readonly="readonly" />

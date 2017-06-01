@@ -163,25 +163,29 @@ if (document.querySelector('#d2dorderController')) {
     mounted: function() {
       var vm = this
       $(this.$el)
-        .val(this.value)
+        // init select2
         .select2({
           data: this.options,
+          placeholder: 'Select...'
         })
-        .on('change', function() {
+        .val(this.value)
+        .trigger('change')
+        // emit event on change.
+        .on('change', function () {
           vm.$emit('input', this.value)
         })
     },
     watch: {
-      value: function(value) {
-        $(this.$el).select2('val', value)
+      value: function (value) {
+        // update value
+        $(this.$el).val(value).trigger('change');
       },
-      options: function(options) {
-        $(this.$el).select2({
-          data: options
-        })
+      options: function (options) {
+        // update options
+        $(this.$el).select2({ data: options })
       }
     },
-    destroyed: function() {
+    destroyed: function () {
       $(this.$el).off().select2('destroy')
     }
   })
@@ -227,7 +231,8 @@ if (document.querySelector('#d2dorderController')) {
         }, {
           id: 10,
           text: '10'
-        }, ],
+        },
+        ],
         prev_amount: 0,
         amount: 0,
         after_amount: 0,
