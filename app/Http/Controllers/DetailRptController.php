@@ -11,6 +11,7 @@ use App\Transaction;
 use App\Month;
 use App\Item;
 use App\Person;
+use App\Deal;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -1092,6 +1093,261 @@ class DetailRptController extends Controller
         ];
 
         return $data;
+    }
+
+    // return stock per customer page()
+    public function getStockPerCustomer()
+    {
+        $peopleIdArr = [];
+        $peopleIdAllArr = [];
+        $dealsIdArr = [];
+        $transactionsIdArr = [];
+        $transaction_order = DB::raw('(SELECT transactions.created_at, transactions.id FROM deals
+                                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                        GROUP BY transactions.id) AS transaction_order');
+        $deals = DB::table('deals')
+                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                    ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                    ->leftJoin($transaction_order, 'transaction_order.id', '=', 'transactions.id')
+                    ->select(
+                        'deals.qty', 'deals.amount', 'deals.id AS deal_id',
+                        'items.is_inventory', 'items.id AS item_id', 'items.unit',
+                        'transactions.id', 'transactions.status AS status', 'transactions.delivery_date',
+                        'people.id AS person_id', 'people.cust_id', 'people.company',
+                        'profiles.id AS profile_id', 'profiles.name AS profile_name',
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory_name',
+                        'transaction_order.created_at AS created_at'
+                    );
+
+        $deals = $this->detailrptStockFilters(request(), $deals);
+
+        $deals = $deals->where(function($query) {
+                        $query->where('transactions.status', 'Delivered')
+                                ->orWhere('transactions.status', 'Verified Owe')
+                                ->orWhere('transactions.status', 'Verified Paid');
+                    });
+        $transactions = clone $deals;
+        $itemsPeople = clone $deals;
+
+        $transactions = $transactions
+                        ->groupBy('transactions.id')
+                        ->latest()
+                        ->get();
+        $itemsPeople = $itemsPeople
+                        ->get();
+
+        foreach($transactions as $transaction) {
+            array_push($transactionsIdArr, $transaction->id);
+            if(! in_array($transaction->person_id, $peopleIdAllArr)) {
+                array_push($peopleIdAllArr, $transaction->person_id);
+            }
+        }
+        foreach($itemsPeople as $deal) {
+            array_push($dealsIdArr, $deal->deal_id);
+        }
+        for($x=0; $x<5; $x++) {
+            array_push($peopleIdArr, $peopleIdAllArr[$x]);
+        }
+        $request = request();
+
+        $items = Item::whereNotNull('created_at');
+        $is_inventory = request('is_inventory') === 1 ? 1 : null;
+        if(request()->isMethod('get')) {
+            $is_inventory = 1;
+        }
+        if($is_inventory) {
+            $items = $items->where('is_inventory', $is_inventory);
+        }
+        $items = $items->orderBy('product_id')->get();
+
+        if(request('export_excel')) {
+            $this->exportStockPerCustomerExcel($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr);
+        }
+
+        return view('detailrpt.stock.customer', compact('peopleIdArr', 'dealsIdArr', 'items', 'request'));
+    }
+
+    // get invoice breakdown page()
+    public function getStockBilling()
+    {
+        return view('detailrpt.stock.billing');
+    }
+
+    // return stock billing api()
+    public function getStockBillingApi()
+    {
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        $deals = DB::table('deals')
+                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                ->leftJoin('unitcosts', function($join) {
+                    $join->on('items.id', '=', 'unitcosts.item_id');
+                    $join->on('profiles.id', '=', 'unitcosts.profile_id');
+                })
+                ->select(
+                    'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst',
+                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit',
+                    DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
+                    'unitcosts.unit_cost',
+                    DB::raw('ROUND(SUM(deals.unit_cost * qty), 2) AS total_cost'),
+                    DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
+                    DB::raw('ROUND(SUM(deals.amount) - SUM(deals.unit_cost * qty), 2) AS gross')
+                );
+        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory')) {
+            $deals = $this->stockBillingFilters(request(), $deals);
+        }
+
+        $deals = $deals->groupBy('items.id', 'profiles.id');
+
+        if(request('sortName')){
+            $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $deals = $deals->orderBy('items.id')->orderBy('profiles.id');
+        }
+
+        $totals = $this->calStockBillingTotals($deals);
+
+        if($pageNum == 'All'){
+            $deals = $deals->get();
+        }else{
+            $deals = $deals->paginate($pageNum);
+        }
+
+        $data = [
+            'deals' => $deals,
+            'totals' => $totals
+        ];
+
+        return $data;
+    }
+
+    // filters function for stock (formrequest request(), query deals)
+    private function detailrptStockFilters($request, $deals)
+    {
+        $profile_id = request('profile_id');
+        $delivery_from = request('delivery_from');
+        $delivery_to = request('delivery_to');
+        $stock_status = request('stock_status');
+        $cust_id = request('cust_id');
+        $company = request('company');
+        $person_id = request('person_id');
+        $custcategory_id = request('custcategory_id');
+        $is_inventory = request('is_inventory');
+
+        if(request()->isMethod('get')) {
+            $delivery_from = Carbon::today()->startOfMonth()->toDateString();
+            $delivery_to = Carbon::today()->toDateString();
+            $stock_status = 'Sold';
+            $is_inventory = 1;
+        }
+
+        if($profile_id) {
+            $deals = $deals->where('profiles.id', $profile_id);
+        }
+        if($delivery_from) {
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', $delivery_from);
+        }
+        if($delivery_to) {
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', $delivery_to);
+        }
+        if($cust_id) {
+            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($company) {
+            $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
+        }
+        if($person_id) {
+            $deals = $deals->where('people.id', $person_id);
+        }
+        if($custcategory_id) {
+            $deals = $deals->where('custcategories.id', $custcategory_id);
+        }
+        if($is_inventory !== 'All') {
+            $deals = $deals->where('items.is_inventory', $is_inventory);
+        }
+
+        return $deals;
+    }
+
+    // stock billing filters(formrequest request, query deals)
+    private function stockBillingFilters($request, $deals)
+    {
+        $profile_id = request('profile_id');
+        $delivery_from = request('delivery_from');
+        $delivery_to = request('delivery_to');
+        $cust_id = request('cust_id');
+        $company = request('company');
+        $person_id = request('person_id');
+        $custcategory_id = request('custcategory_id');
+        $is_inventory = request('is_inventory');
+
+        if($profile_id) {
+            $deals = $deals->where('profiles.id', $profile_id);
+        }
+        if($delivery_from) {
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', $delivery_from);
+        }
+        if($delivery_to) {
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', $delivery_to);
+        }
+        if($cust_id) {
+            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($company) {
+            $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
+        }
+        if($person_id) {
+            $deals = $deals->where('people.id', $person_id);
+        }
+        if($custcategory_id) {
+            $deals = $deals->where('custcategories.id', $custcategory_id);
+        }
+        if($is_inventory) {
+            $deals = $deals->where('items.is_inventory', $is_inventory);
+        }
+        return $deals;
+    }
+
+    // calculate stock billing totals(query $deals)
+    private function calStockBillingTotals($deals)
+    {
+        $total_costs = 0;
+        $total_sell_value = 0;
+        $total_gross_profit = 0;
+        $calculateDeals = clone $deals;
+        foreach($calculateDeals->get() as $deal) {
+            $total_costs += $deal->total_cost;
+            $total_sell_value += $deal->amount;
+            $total_gross_profit += $deal->gross;
+        }
+
+        $totals = [
+            'total_costs' => $total_costs,
+            'total_sell_value' => $total_sell_value,
+            'total_gross_profit' => $total_gross_profit,
+        ];
+        return $totals;
+    }
+
+    // export stock per customer excel(formrequest request, array peopleIdAllArr, array dealsIdArr, collection items, array transactionsIdArr)
+    private function exportStockPerCustomerExcel($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr)
+    {
+        $title = 'Stock Per Customer';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.stockpercustomer_excel', compact('request', 'peopleIdAllArr', 'dealsIdArr', 'items', 'transactionsIdArr'));
+            });
+        })->download('xlsx');
     }
 
     // filter functions for invoice breakdown summary (formrequest request, query deals)

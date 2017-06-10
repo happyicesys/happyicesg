@@ -193,6 +193,9 @@ Route::post('/report/transaction', 'RptController@generateTransaction');
 Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
+Route::get('/detailrpt/stock/billing', 'DetailRptController@getStockBilling');
+Route::post('/api/detailrpt/stock/billing', 'DetailRptController@getStockBillingApi');
+Route::match(['get', 'post'], '/detailrpt/stock/customer', 'DetailRptController@getStockPerCustomer');
 Route::match(['get', 'post'], '/detailrpt/invbreakdown/detail', 'DetailRptController@getInvoiceBreakdownDetail');
 Route::get('/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
 Route::post('/api/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummaryApi');
@@ -209,7 +212,6 @@ Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProd
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 Route::get('/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonth');
 Route::post('/api/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonthApi');
-
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

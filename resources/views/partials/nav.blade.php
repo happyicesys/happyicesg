@@ -55,6 +55,8 @@
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
                         <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
                         <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
+                        <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
+                        <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                     </ul>
                 </li>
                 @endcannot
@@ -69,7 +71,7 @@
                     <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
                         <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
                     </li>
-                    <li class="{{ strpos(Request::path(), 'customer') !== false ? 'active' : '' }}">
+                    <li class="{{ strpos(Request::path(), 'market/customer') !== false ? 'active' : '' }}">
                         <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
                     </li>
                     <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
