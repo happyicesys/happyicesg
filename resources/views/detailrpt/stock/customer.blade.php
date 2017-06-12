@@ -40,7 +40,7 @@
                     {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                     <div class="input-group date">
                         {!! Form::text('delivery_from',
-                        request('delivery_from') ? request('delivery_from') : \Carbon\Carbon::today()->toDateString(),
+                        request('delivery_from') ? request('delivery_from') : \Carbon\Carbon::today()->startOfMonth()->toDateString(),
                         ['class'=>'form-control', 'id'=>'delivery_from'])
                         !!}
                         <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -140,7 +140,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
                             {{
-                                $sdeals::whereIn('id', $dealsIdArr)->sum('qty')
+                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum('qty'), 4)
                             }}
                         </strong>
                     </div>
@@ -152,7 +152,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
                             {{
-                                $sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(amount, 2)')) - $sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(unit_cost * qty, 2)'))
+                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(amount, 2)')) - $sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(unit_cost * qty, 2)')), 2)
                             }}
                         </strong>
                     </div>
@@ -179,9 +179,9 @@
                     @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
                         <td class="text-center">
                             {{
-                                $sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
+                                number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
                                     $q->where('person_id', $person->id);
-                                })->sum('qty')
+                                })->sum('qty'), 4)
                             }}
                         </td>
                     @endforeach
@@ -192,9 +192,9 @@
                     @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
                         <td class="text-center">
                              {{
-                                $sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
+                                number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
                                     $q->where('person_id', $person->id);
-                                })->sum('amount')
+                                })->sum('amount'), 2)
                             }}
                         </td>
                     @endforeach
@@ -263,11 +263,11 @@
                         </td>
                         <td class="col-md-1 text-right">
                                 {{
-                                    \DB::table('deals')
+                                    number_format(\DB::table('deals')
                                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                     ->whereIn('deals.id', $dealsIdArr)
                                     ->where('items.id', $item->id)
-                                    ->sum('qty')
+                                    ->sum('qty'), 4)
                                 }}
                         </td>
 
@@ -282,7 +282,7 @@
                                     array_push($loopedperson, $person->id);
                                 @endphp
                                 {{
-                                    (\DB::table('deals')
+                                    number_format((\DB::table('deals')
                                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                     ->whereIn('deals.id', $dealsIdArr)
                                     ->where('items.id', $item->id)
@@ -293,18 +293,18 @@
                                     ->whereIn('deals.id', $dealsIdArr)
                                     ->whereIn('people.id', $loopedperson)
                                     ->where('items.id', $item->id)
-                                    ->sum('qty'))
+                                    ->sum('qty')), 4)
                                 }}
                             @else
                                 {{
-                                    \DB::table('deals')
+                                    number_format(\DB::table('deals')
                                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                                         ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                                         ->whereIn('deals.id', $dealsIdArr)
                                         ->where('people.id', $person->id)
                                         ->where('items.id', $item->id)
-                                        ->sum('qty')
+                                        ->sum('qty'), 4)
                                 }}
                             @endif
                         </td>

@@ -210,10 +210,10 @@
                         </a>
                     </td>
                     <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
-                    <td class="col-md-1 text-center">@{{transaction.thistotal}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prevtotal}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prev2total}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.prevmore3total}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.thistotal | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.prevtotal | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.prev2total | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.prevmore3total | currency: "": 2}}</td>
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">

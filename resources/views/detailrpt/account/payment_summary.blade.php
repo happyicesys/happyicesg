@@ -300,7 +300,7 @@
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.payreceived_date | delDate: "yyyy-MM-dd" }}</td>
                     <td class="col-md-1 text-center">@{{ transaction.pay_method | capitalize }}</td>
-                    <td class="col-md-1 text-right">@{{ transaction.total }} </td>
+                    <td class="col-md-1 text-right">@{{ transaction.total | currency: "": 2 }} </td>
                     <td class="col-md-2 text-left">@{{ transaction.profile }} </td>
                     <td class="col-md-2 text-left" data-tableexport-display="none">
                         <datepicker date-format="yyyy-MM-dd">

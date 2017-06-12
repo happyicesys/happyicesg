@@ -202,8 +202,7 @@
                         </span>
                     </td>
                     <td class="col-md-1 text-right">
-                        <a href="/detailrpt/sales/@{{item.id}}/thismonth?current=@{{search.current_month}}">@{{ item.amount }}</a>
-                        {{-- @{{item.amount}} --}}
+                        <a href="/detailrpt/sales/@{{item.id}}/thismonth?current=@{{search.current_month}}">@{{ item.amount | currency: "": 2 }}</a>
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ item.qty | currency: "": 4}}

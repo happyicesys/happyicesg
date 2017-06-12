@@ -48,7 +48,9 @@
                     </div>
                 </div>
             </div>
-            <? old('delivery_from') ?>
+            @php
+                old('delivery_from');
+            @endphp
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
@@ -78,7 +80,7 @@
                         Total Revenue ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2, '.', '') }}</strong>
+                        <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2) }}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -86,7 +88,7 @@
                         Total Ice Cream Cost ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2, '.', '') }}</strong>
+                        <strong>{{ number_format($deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2) }}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -95,7 +97,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2, '.', '')}}
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost')), 2)}}
                         </strong>
                     </div>
                 </div>
@@ -106,7 +108,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                {{number_format((($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))) / ($deals::whereIn('transaction_id', $transactionsId)->sum('amount'))) * 100 , 2, '.', '')}}
+                                {{number_format((($deals::whereIn('transaction_id', $transactionsId)->sum('amount') - $deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('qty * unit_cost'))) / ($deals::whereIn('transaction_id', $transactionsId)->sum('amount'))) * 100 , 2)}}
                             </strong>
                         </div>
                     </div>
@@ -176,11 +178,19 @@
                 @foreach($items::whereIn('id', $itemsId)->orderBy('product_id', 'asc')->get() as $item)
                 <tr>
                     <td class="col-md-4">{{$item->product_id}} - {{$item->name}}</td>
-                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum('qty')}}</td>
-                    <td class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum('amount')}}</td>
+                    <td class="col-md-1 text-right">
+                        {{number_format($deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum('qty'), 4)}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        {{number_format($deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum('amount'), 2)}}
+                    </td>
                     @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
-                        <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('qty')}}</td>
-                        <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('amount')}}</td>
+                        <td class="col-md-1 text-right">
+                            {{number_format($deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('qty'), 4)}}
+                        </td>
+                        <td class="col-md-1 text-right">
+                            {{number_format($deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('amount'), 2)}}
+                        </td>
                     @endforeach
                 </tr>
                 @endforeach
@@ -188,11 +198,19 @@
                 @if($people::find($person_id) and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
                     <tr>
                         <th class="col-md-4">Total</th>
-                        <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $transactionsId)->sum('qty')}}</th>
-                        <th class="col-md-1 text-right">{{$deals::whereIn('transaction_id', $transactionsId)->sum('amount')}}</th>
+                        <th class="col-md-1 text-right">
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('qty'), 4)}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2)}}
+                        </th>
                         @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
-                            <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->sum('qty')}}</td>
-                            <td class="col-md-1 text-right">{{$deals::whereTransactionId($transaction->id)->sum('amount')}}</td>
+                            <td class="col-md-1 text-right">
+                                {{number_format($deals::whereTransactionId($transaction->id)->sum('qty'), 4)}}
+                            </td>
+                            <td class="col-md-1 text-right">
+                                {{number_format($deals::whereTransactionId($transaction->id)->sum('amount'), 2)}}
+                            </td>
                         @endforeach
                     </tr>
                 @else
@@ -220,7 +238,7 @@
                                 Price Per Piece ($):
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                                <strong>{{$people::find($person_id)->vending_piece_price}}</strong>
+                                <strong>{{number_format($people::find($person_id)->vending_piece_price, 2)}}</strong>
                             </div>
                         </div>
                         <div class="row">
@@ -228,7 +246,7 @@
                                 Monthly Rental ($):
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                                <strong>{{$people::find($person_id)->vending_monthly_rental}}</strong>
+                                <strong>{{number_format($people::find($person_id)->vending_monthly_rental, 2)}}</strong>
                             </div>
                         </div>
                         <div class="row">
@@ -244,7 +262,9 @@
                                 Total Sales Qty:
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                                <strong>{{$transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock}}</strong>
+                                <strong>
+                                    {{number_format($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock, 4)}}
+                                </strong>
                             </div>
                         </div>
                         <div class="row">
@@ -254,7 +274,7 @@
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
                                     @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
-                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse(request('delivery_to') ? request('delivery_to') : $transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse(request('delivery_from') ? request('delivery_from') : $transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2, '.', '')}}
+                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse(request('delivery_to') ? request('delivery_to') : $transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse(request('delivery_from') ? request('delivery_from') : $transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2)}}
                                     @else
                                         N/A
                                     @endif
@@ -330,11 +350,11 @@
                             <tr>
                                 <td class="col-md-2">Expected Payment Received</td>
                                 <td class="col-md-1 text-right">
-                                    {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price , 2, '.', '') }}
+                                    {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price , 2) }}
                                 </td>
                                 @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $index => $transaction)
                                     <td class="col-md-3 text-right">
-                                        {{$index + 1 < count($transactions::whereIn('id', $transactionsId)->latest()->get()) ? number_format(($transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[$index + 1]->analog_clock) * $people::find($person_id)->vending_piece_price, 2, '.', '') : 0.00}}
+                                        {{$index + 1 < count($transactions::whereIn('id', $transactionsId)->latest()->get()) ? number_format(($transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[$index + 1]->analog_clock) * $people::find($person_id)->vending_piece_price, 2) : 0.00}}
                                     </td>
                                 @endforeach
                             </tr>
@@ -343,7 +363,7 @@
                                 <td class="col-md-2">Balance Coin</td>
                                 <td class="col-md-1"></td>
                                 @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
-                                    <td class="col-md-3 text-right">{{$transaction->balance_coin}}</td>
+                                    <td class="col-md-3 text-right">{{number_format($transaction->balance_coin, 2)}}</td>
                                 @endforeach
                             </tr>
                             <tr>
@@ -351,35 +371,35 @@
                                 <td></td>
                                 @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                                     <td class="col-md-3 text-right">
-                                        {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first()->amount : 0.00}}
+                                        {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first() ? number_format($deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first()->amount, 2) : 0.00}}
                                     </td>
                                 @endforeach
                             </tr>
                              <tr>
                                 <td class="col-md-2">Actual Subtotal Received</td>
-                                <td class="col-md-1 text-right">{{number_format($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')), 2, '.', '')}}</td>
+                                <td class="col-md-1 text-right">{{number_format($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')), 2)}}</td>
                             </tr>
                             <tr>
                                 <th class="col-md-2">Difference(Actual - Expected)</th>
-                                <td class="col-md-1 text-right">{{number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))) - (($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price), 2, '.', '')}}</td>
+                                <td class="col-md-1 text-right">{{number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))) - (($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price), 2)}}</td>
                             </tr>
                             <tr>
                                 <td class="col-md-2">
                                     {{$items::whereProductId('051a')->first()->product_id}} - {{$items::whereProductId('051a')->first()->name}}
                                 </td>
                                 <td class="col-md-1 text-right">
-                                    {{$deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')}}
+                                    {{number_format($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount'), 2)}}
                                 </td>
                                 @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                                     <td class="col-md-3 text-right">
-                                        {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first()->amount : 0.00}}
+                                        {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first() ? number_format($deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first()->amount, 2) : 0.00}}
                                     </td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <th class="col-md-2">Stock Value in VM</th>
                                 <td class="col-md-1 text-right">
-                                    {{ number_format(($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))), 2, '.', '')}}
+                                    {{ number_format(($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($transactions::whereIn('id', $transactionsId)->latest()->first()->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))), 2)}}
                                 </td>
                             </tr>
                         </table>

@@ -21,7 +21,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.search = {
-            profile_id: '1',
+            profile_id: '2',
             delivery_from: moment().startOf('month').format('YYYY-MM-DD'),
             delivery_to: moment().format("YYYY-MM-DD"),
             status: 'Delivered',
@@ -30,6 +30,7 @@ var app = angular.module('app', [
             person_id: '',
             custcategory_id: '',
             is_inventory: '1',
+            is_commission: '0',
             pageNum: 100,
             sortBy: true,
             sortName: ''

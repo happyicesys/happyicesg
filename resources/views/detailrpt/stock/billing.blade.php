@@ -145,6 +145,19 @@
                     !!}
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes'], null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.is_commission',
+                            'ng-change'=>'searchDB()'
+                        ])
+                    !!}
+                </div>
+            </div>
+
         </div>
 
         <div class="row">
@@ -158,7 +171,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_costs}}
+                            @{{total_costs | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -168,7 +181,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_sell_value}}
+                            @{{total_sell_value | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -178,7 +191,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_gross_profit}}
+                            @{{total_gross_profit | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -307,19 +320,19 @@
                             @{{deal.is_inventory ? 'Yes' : 'No'}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.qty}}
+                            @{{deal.qty | currency: "": 4}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.unit_cost}}
+                            @{{deal.unit_cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.total_cost}}
+                            @{{deal.total_cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.amount}}
+                            @{{deal.amount | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.gross}}
+                            @{{deal.gross | currency: "": 2}}
                         </td>
                     </tr>
                     <tr ng-if="!alldata || alldata.length == 0">

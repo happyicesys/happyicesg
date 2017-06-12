@@ -171,7 +171,7 @@
                 Total Qty:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_qty }}</strong>
+                <strong>@{{ total_qty | currency: "": 4 }}</strong>
             </div>
         </div>
     </div>
@@ -259,7 +259,7 @@
                         </span>
                     </td>
                     <td class="col-md-2 text-right">
-                        @{{ item.amount }}
+                        @{{ item.amount | currency: "": 2}}
                     </td>
                     <td class="col-md-2 text-right">
                         @{{ item.qty | currency: "": 4}}

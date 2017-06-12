@@ -353,9 +353,9 @@
                     <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     <td class="col-md-1 text-center">@{{transaction.paid_at | delDate: "yyyy-MM-dd"}}</td>
                     <td class="col-md-1 text-center">@{{transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.inv_amount | currency: "": 2}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.gst | currency: "": 2}}</td>
-                    <td class="col-md-1 text-center">@{{transaction.amount | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.inv_amount | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.gst | currency: "": 2}}</td>
+                    <td class="col-md-1 text-right">@{{transaction.amount | currency: "": 2}}</td>
                     <td class="col-md-1 text-center">@{{transaction.pay_status}}</td>
                     <td class="col-md-1 text-center">@{{transaction.pay_method | capitalize}}</td>
                     <td class="col-md-1 text-center">@{{transaction.note}}</td>

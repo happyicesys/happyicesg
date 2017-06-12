@@ -156,7 +156,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{grand_total}}
+                                @{{grand_total | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{taxtotal}}
+                                @{{taxtotal | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{subtotal}}
+                                @{{subtotal | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{fixed_total_gross_money}}
+                                @{{fixed_total_gross_money | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{fixed_total_gross_percent}}
+                                @{{fixed_total_gross_percent | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -360,39 +360,39 @@
                             @{{deal.first_date}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.total}}
+                            @{{deal.total | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.gst==1">
-                                @{{deal.gsttotal}}
+                                @{{deal.gsttotal | currency: "": 2}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.subtotal}}
+                            @{{deal.subtotal | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.cost}}
+                            @{{deal.cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.gross_money}}
+                            @{{deal.gross_money | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.gross_percent}}
+                            @{{deal.gross_percent | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.paid}}
+                            @{{deal.paid | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.owe}}
+                            @{{deal.owe | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.vending_piece_price}}
+                                @{{deal.vending_piece_price | currency: "": 2}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.vending_monthly_rental}}
+                                @{{deal.vending_monthly_rental | currency: "": 2}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
@@ -402,12 +402,12 @@
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.sales_qty}}
+                                @{{deal.sales_qty | currency: "": 4}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.sales_avg_day}}
+                                @{{deal.sales_avg_day | currency: "": 4}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
@@ -429,41 +429,41 @@
                         <th class="col-md-1"></th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{avg_grand_total}}
+                            @{{avg_grand_total | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{avg_subtotal}}
+                            @{{avg_subtotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_cost}}
+                            @{{avg_cost | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_gross_money}}
+                            @{{avg_gross_money | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_gross_percent}}
-                        </th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1 text-right">
-                            @{{avg_vending_piece_price}}
-                        </th>
-                        <th class="col-md-1 text-right">
-                            @{{avg_vending_monthly_rental}}
+                            @{{avg_gross_percent | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
+                        <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{avg_sales_qty}}
+                            @{{avg_vending_piece_price | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_sales_avg_day}}
+                            @{{avg_vending_monthly_rental | currency: "": 2}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_sales_qty | currency: "": 4}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_difference}}
+                            @{{avg_sales_avg_day | currency: "": 4}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_vm_stock_value}}
+                            @{{avg_difference | currency: "": 2}}
+                        </th>
+                        <th class="col-md-1 text-right">
+                            @{{avg_vm_stock_value | currency: "": 2}}
                         </th>
                     </tr>
                     <tr ng-if="alldata || alldata.length > 0">
@@ -473,43 +473,43 @@
                         <th class="col-md-1"></th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{total_grand_total}}
+                            @{{total_grand_total | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gsttotal}}
+                            @{{total_gsttotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_subtotal}}
+                            @{{total_subtotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_cost}}
+                            @{{total_cost | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gross_money}}
+                            @{{total_gross_money | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gross_percent}}
+                            @{{total_gross_percent | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_paid}}
+                            @{{total_paid | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_owe}}
-                        </th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1 text-right">
-                            @{{total_vending_monthly_rental}}
+                            @{{total_owe | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{total_sales_qty}}
+                            @{{total_vending_monthly_rental | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{total_difference}}
+                            @{{total_sales_qty | currency: "": 4}}
+                        </th>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-1 text-right">
+                            @{{total_difference | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_vm_stock_value}}
+                            @{{total_vm_stock_value | currency: "": 2}}
                         </th>
                     </tr>
 

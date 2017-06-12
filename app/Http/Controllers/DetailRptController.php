@@ -1198,18 +1198,24 @@ class DetailRptController extends Controller
                     'unitcosts.unit_cost',
                     DB::raw('ROUND(SUM(deals.unit_cost * qty), 2) AS total_cost'),
                     DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
-                    DB::raw('ROUND(SUM(deals.amount) - SUM(deals.unit_cost * qty), 2) AS gross')
+                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(deals.unit_cost * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
                 );
-        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory')) {
+        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
             $deals = $this->stockBillingFilters(request(), $deals);
         }
+
+        $deals = $deals->where(function($query) {
+                        $query->where('transactions.status', 'Delivered')
+                                ->orWhere('transactions.status', 'Verified Owe')
+                                ->orWhere('transactions.status', 'Verified Paid');
+                    });
 
         $deals = $deals->groupBy('items.id', 'profiles.id');
 
         if(request('sortName')){
             $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }else {
-            $deals = $deals->orderBy('items.id')->orderBy('profiles.id');
+            $deals = $deals->orderBy('items.product_id')->orderBy('profiles.id');
         }
 
         $totals = $this->calStockBillingTotals($deals);
@@ -1287,6 +1293,7 @@ class DetailRptController extends Controller
         $person_id = request('person_id');
         $custcategory_id = request('custcategory_id');
         $is_inventory = request('is_inventory');
+        $is_commission = request('is_commission');
 
         if($profile_id) {
             $deals = $deals->where('profiles.id', $profile_id);
@@ -1311,6 +1318,9 @@ class DetailRptController extends Controller
         }
         if($is_inventory) {
             $deals = $deals->where('items.is_inventory', $is_inventory);
+        }
+        if($is_commission != '') {
+            $deals = $deals->where('items.is_commission', $is_commission);
         }
         return $deals;
     }

@@ -228,16 +228,16 @@
                     </td>
                     <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.thistotal }}
+                        @{{ transaction.thistotal | currency: "": 2 }}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prevtotal }}
+                        @{{ transaction.prevtotal | currency: "": 2}}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prev2total }}
+                        @{{ transaction.prev2total | currency: "": 2}}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prevyeartotal }}
+                        @{{ transaction.prevyeartotal | currency: "": 2}}
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
