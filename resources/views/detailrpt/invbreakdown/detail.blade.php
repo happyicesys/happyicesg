@@ -48,9 +48,6 @@
                     </div>
                 </div>
             </div>
-            @php
-                old('delivery_from');
-            @endphp
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
@@ -120,7 +117,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                {{$transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date}}
+                                {{$transactions::where('person_id', $person_id)->oldest()->first()->delivery_date}}
                             </strong>
                         </div>
                     </div>
@@ -274,7 +271,12 @@
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
                                     @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
-                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse(request('delivery_to') ? request('delivery_to') : $transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse(request('delivery_from') ? request('delivery_from') : $transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date)), 2)}}
+                                        @php
+                                            $delivery_to = request('delivery_to') ? request('delivery_to') : $transactions::whereIn('id', $transactionsId)->latest()->first()->delivery_date;
+                                            $delivery_from = request('delivery_from') ? request('delivery_from') : $transactions::whereIn('id', $transactionsId)->oldest()->first()->delivery_date;
+                                            $day_diff = \Carbon\Carbon::parse($delivery_from)->diffInDays(\Carbon\Carbon::parse($delivery_to));
+                                        @endphp
+                                        {{ number_format(($transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / $day_diff, 2)}}
                                     @else
                                         N/A
                                     @endif

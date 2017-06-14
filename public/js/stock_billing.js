@@ -21,7 +21,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.search = {
-            profile_id: '2',
+            profile_id: '',
             delivery_from: moment().startOf('month').format('YYYY-MM-DD'),
             delivery_to: moment().format("YYYY-MM-DD"),
             status: 'Delivered',
@@ -96,8 +96,6 @@ var app = angular.module('app', [
         $scope.sortTable = function(sortName) {
             $scope.search.sortName = sortName;
             $scope.search.sortBy = ! $scope.search.sortBy;
-            console.log($scope.search.sortName);
-            console.log($scope.search.sortBy);
             getPage(1, false);
         }
 
@@ -121,6 +119,7 @@ var app = angular.module('app', [
                 // get total count
                 $scope.All = data.deals.length;
                 // return fixed total amount
+                $scope.total_qty = data.totals.total_qty.toFixed(4);
                 $scope.total_costs = data.totals.total_costs.toFixed(2);
                 $scope.total_sell_value = data.totals.total_sell_value.toFixed(2);
                 $scope.total_gross_profit = data.totals.total_gross_profit.toFixed(2);

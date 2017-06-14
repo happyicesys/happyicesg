@@ -29,6 +29,7 @@ var app = angular.module('app', [
             company: '',
             person_id: '',
             custcategory: '',
+            is_commission: '0',
             pageNum: 100,
             sortBy: true,
             sortName: ''
@@ -94,8 +95,6 @@ var app = angular.module('app', [
         $scope.sortTable = function(sortName) {
             $scope.search.sortName = sortName;
             $scope.search.sortBy = ! $scope.search.sortBy;
-            console.log($scope.search.sortName);
-            console.log($scope.search.sortBy);
             getPage(1, false);
         }
 
@@ -118,7 +117,6 @@ var app = angular.module('app', [
                 }
                 // get total count
                 $scope.All = data.deals.length;
-                console.log(data);
                 // return fixed total amount
                 $scope.grand_total = data.fixedtotals.grand_total.toFixed(2);
                 $scope.taxtotal = data.fixedtotals.taxtotal.toFixed(2);

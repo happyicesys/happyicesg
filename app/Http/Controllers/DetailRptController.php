@@ -921,45 +921,47 @@ class DetailRptController extends Controller
         }else {
             $date_diff = 1;
         }
+        if(request('is_commission') != '') {
+            $isCommissionStr = " items.is_commission='".request('is_commission')."' ";
+        }else {
+            $isCommissionStr = " 1=1 ";
+        }
 
         $first_date = DB::raw("(SELECT MIN(DATE(transactions.delivery_date)) AS delivery_date, people.id AS person_id FROM transactions
                                 LEFT JOIN people ON people.id=transactions.person_id
                                 GROUP BY people.id) AS first_date");
-        $paid = DB::raw("(SELECT transactions.total AS total, people.id AS person_id, transactions.id AS transaction_id FROM transactions
-                LEFT JOIN people ON people.id=transactions.person_id
-                WHERE pay_status='Paid'
-                AND transactions.delivery_date>='".$delivery_from."'
-                AND transactions.delivery_date<='".$delivery_to."'
-                GROUP BY people.id) AS paid");
-        $owe = DB::raw("(SELECT transactions.total AS total, people.id AS person_id, transactions.id AS transaction_id FROM transactions
-                LEFT JOIN people ON people.id=transactions.person_id
-                WHERE pay_status='Owe'
-                AND transactions.delivery_date>='".$delivery_from."'
-                AND transactions.delivery_date<='".$delivery_to."'
-                GROUP BY people.id) AS owe");
         $sales = DB::raw(
                 "(SELECT (MAX(transactions.analog_clock) - MIN(transactions.analog_clock)) AS sales_qty,
                 ((MAX(transactions.analog_clock) - MIN(transactions.analog_clock))/ DATEDIFF(MAX(transactions.delivery_date), MIN(transactions.delivery_date))) AS sales_avg_day,
                 people.id AS person_id,
                 transactions.id AS transaction_id
-                FROM transactions
+                FROM deals
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND ".$isCommissionStr."
                 GROUP BY people.id) AS sales"
             );
         $latest_data = DB::raw(
-                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.balance_coin ORDER BY transactions.created_at DESC), ',' ,1) AS balance_coin, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at DESC), ',' ,1) AS analog_clock, transactions.created_at FROM transactions
+                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.balance_coin ORDER BY transactions.created_at DESC), ',' ,1) AS balance_coin, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at DESC), ',' ,1) AS analog_clock, transactions.created_at FROM deals
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN transactions ON transactions.id = deals.transaction_id
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND ".$isCommissionStr."
                 GROUP BY people.id) AS latest_data"
             );
         $oldest_data = DB::raw(
-                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at ASC), ',' ,1) AS analog_clock, transactions.created_at FROM transactions
+                "(SELECT people.id AS person_id, SUBSTRING_INDEX(GROUP_CONCAT(transactions.analog_clock ORDER BY transactions.created_at ASC), ',' ,1) AS analog_clock, transactions.created_at FROM deals
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND ".$isCommissionStr."
                 GROUP BY people.id) AS oldest_data"
             );
         $total_vending_cash = DB::raw(
@@ -995,13 +997,12 @@ class DetailRptController extends Controller
 
 
         $deals = DB::table('deals')
+                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                 ->leftJoin($first_date, 'people.id', '=', 'first_date.person_id')
-                ->leftJoin($paid, 'people.id', '=', 'paid.person_id')
-                ->leftJoin($owe, 'people.id', '=', 'owe.person_id')
                 ->leftJoin($sales, 'people.id', '=', 'sales.person_id')
                 ->leftjoin($latest_data, 'people.id', '=', 'latest_data.person_id')
                 ->leftjoin($oldest_data, 'people.id', '=', 'oldest_data.person_id')
@@ -1009,6 +1010,7 @@ class DetailRptController extends Controller
                 ->leftjoin($total_vending_float, 'people.id', '=', 'total_vending_float.person_id')
                 ->leftjoin($total_stock_value, 'people.id', '=', 'total_stock_value.person_id')
                 ->select(
+                    'items.is_commission', 'items.is_inventory',
                     'people.cust_id AS cust_id', 'people.company AS company',
                     'custcategories.name AS custcategory_name',
                     'first_date.delivery_date AS first_date',
@@ -1019,15 +1021,15 @@ class DetailRptController extends Controller
                     DB::raw('ROUND(SUM(deals.unit_cost * deals.qty), 2) AS cost'),
                     DB::raw('(SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) AS gross_money'),
                     DB::raw('ROUND(CASE WHEN SUM(deals.amount)>0 THEN ((SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2))/ SUM(deals.amount) * 100) ELSE (SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) END, 2) AS gross_percent'),
-                    DB::raw('paid.total AS paid'),
-                    DB::raw('owe.total AS owe'),
+                    DB::raw('ROUND(CASE WHEN transactions.pay_status="Paid" THEN SUM(deals.amount) END, 2) AS paid'),
+                    DB::raw('ROUND(CASE WHEN transactions.pay_status="Owe" THEN SUM(deals.amount) END, 2) AS owe'),
                     'people.is_vending', 'people.vending_piece_price', 'people.vending_monthly_rental', 'people.vending_profit_sharing',
                     'sales.sales_qty AS sales_qty', 'sales.sales_avg_day AS sales_avg_day',
                     DB::raw('ROUND(((COALESCE(latest_data.balance_coin, 0) + COALESCE(total_vending_cash.amount, 0) + COALESCE(total_vending_float.amount, 0))-((COALESCE(latest_data.analog_clock, 0) - COALESCE(oldest_data.analog_clock, 0)) * COALESCE(people.vending_piece_price, 0))), 2) AS difference'),
                     DB::raw('ROUND((COALESCE(total_stock_value.amount, 0) + COALESCE(latest_data.balance_coin, 0)) + (COALESCE(total_vending_cash.amount, 0) + COALESCE(total_vending_float.amount, 0)), 2) AS vm_stock_value')
                 );
 
-        if($request->profile_id or $request->delivery_from or $request->delivery_to or $request->status or $request->cust_id or $request->company or $request->person_id or $request->custcategory) {
+        if($request->profile_id or $request->delivery_from or $request->delivery_to or $request->status or $request->cust_id or $request->company or $request->person_id or $request->custcategory or request('is_commission')) {
             $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
         }
 
@@ -1328,17 +1330,20 @@ class DetailRptController extends Controller
     // calculate stock billing totals(query $deals)
     private function calStockBillingTotals($deals)
     {
+        $total_qty = 0;
         $total_costs = 0;
         $total_sell_value = 0;
         $total_gross_profit = 0;
         $calculateDeals = clone $deals;
         foreach($calculateDeals->get() as $deal) {
+            $total_qty += $deal->qty;
             $total_costs += $deal->total_cost;
             $total_sell_value += $deal->amount;
             $total_gross_profit += $deal->gross;
         }
 
         $totals = [
+            'total_qty' => $total_qty,
             'total_costs' => $total_costs,
             'total_sell_value' => $total_sell_value,
             'total_gross_profit' => $total_gross_profit,
@@ -1371,6 +1376,7 @@ class DetailRptController extends Controller
         $company = $request->company;
         $person_id = $request->person_id;
         $custcategory = $request->custcategory;
+        $is_commission = request('is_commission');
 
         if($profile_id) {
             $deals = $deals->where('profiles.id', $profile_id);
@@ -1405,6 +1411,9 @@ class DetailRptController extends Controller
         }
         if($custcategory) {
             $deals = $deals->where('custcategories.id', $custcategory);
+        }
+        if($is_commission != '') {
+            $deals = $deals->where('items.is_commission', $is_commission);
         }
         return $deals;
     }

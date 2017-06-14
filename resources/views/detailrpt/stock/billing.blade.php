@@ -167,6 +167,16 @@
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
+                        Total Qty
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                        <strong>
+                            @{{total_qty | currency: "": 4}}
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
                         Total Cost $
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
