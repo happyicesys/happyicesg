@@ -5,21 +5,21 @@
 
 @extends('template')
 @section('title')
-	{{$DETAILRPT_TITLE}}
+    {{$DETAILRPT_TITLE}}
 @stop
 @section('content')
 
 <div class="row">
-	<a class="title_hyper pull-left" href="/detailrpt/stock/customer"><h1>Stock Per Customer</h1></a>
+    <a class="title_hyper pull-left" href="/detailrpt/stock/date"><h1>Stock Sold (Date)</h1></a>
 </div>
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Stock Per Customer
+        Stock Sold (Date)
     </div>
 
     <div class="panel-body">
-        {!! Form::open(['id'=>'submit_form', 'method'=>'POST', 'action'=>['DetailRptController@getStockPerCustomer']]) !!}
+        {!! Form::open(['id'=>'submit_form', 'method'=>'POST', 'action'=>['DetailRptController@getStockDate']]) !!}
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -127,10 +127,23 @@
                 <i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export All Excel</span>
                 </button>
             </div>
+
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        Overall Sold Qty:
+                        Total Revenue $:
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                        <strong>
+                            {{
+                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(amount, 2)')), 2)
+                            }}
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        Total Qty:
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
@@ -140,39 +153,32 @@
                         </strong>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Gross Profit:
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                            {{
-                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(amount, 2)')) - $sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(unit_cost * qty, 2)')), 2)
-                            }}
-                        </strong>
-                    </div>
-                </div>
             </div>
         </div>
 
         <div class="table-responsive" id="exportable_stockcustomer" style="padding-top: 20px;">
             <table class="table table-list-search table-hover table-bordered">
-                <tr class="hidden">
-                    <td></td>
-                    <td data-tableexport-display="always">Overall Sold Qty</td>
-                    <td data-tableexport-display="always" class="text-right">@{{total_sold_qty | currency: "": 2}}</td>
-                    <td></td>
-                    <td data-tableexport-display="always">Total Gross Profit</td>
-                    <td data-tableexport-display="always" class="text-right">@{{total_gross_profit | currency: "": 2}}</td>
-                </tr>
-                <tr class="hidden" data-tableexport-display="always">
-                    <td></td>
-                </tr>
-                <tr>
-                    <th colspan="5"></th>
-                    <th class="text-center">Total Sold Qty</th>
+                <tr style="background-color: #DDFDF8">
+                    <th class="col-md-1 text-center">
+                        #
+                    </th>
+                    <th class="col-md-1 text-center">
+                        ID
+                    </th>
+                    <th class="col-md-2 text-center">
+                        Product
+                    </th>
+                    <th class="col-md-1 text-center">
+                        Unit
+                    </th>
+                    <th class="col-md-1 text-center">
+                        Inventory Item
+                    </th>
+                    <th class="col-md-1 text-right">
+                        Total Qty
+                    </th>
                     @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                        <td class="text-center">
+                        <td class="col-md-1 text-center">
                             {{
                                 number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
                                     $q->where('person_id', $person->id);

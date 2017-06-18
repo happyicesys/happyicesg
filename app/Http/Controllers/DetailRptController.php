@@ -1236,6 +1236,80 @@ class DetailRptController extends Controller
         return $data;
     }
 
+    // return stock date api()
+    public function getStockDateApi()
+    {
+        $itemsArr = [];
+        $sevenDateTransactionIds = [];
+        $allDateTransactionIds = [];
+        $sevenDatesArr = [];
+
+        $transaction_order = DB::raw('(SELECT transactions.created_at, transactions.id FROM deals
+                                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                        GROUP BY transactions.id) AS transaction_order');
+        $deals = DB::table('deals')
+                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                    ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                    ->leftJoin($transaction_order, 'transaction_order.id', '=', 'transactions.id')
+                    ->select(
+                        'deals.qty', 'deals.amount', 'deals.id AS deal_id',
+                        'items.is_inventory', 'items.id AS item_id', 'items.unit',
+                        'transactions.id', 'transactions.status AS status', 'transactions.delivery_date',
+                        'people.id AS person_id', 'people.cust_id', 'people.company',
+                        'profiles.id AS profile_id', 'profiles.name AS profile_name',
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory_name',
+                        'transaction_order.created_at AS created_at'
+                    );
+
+        $deals = $this->detailrptStockFilters(request(), $deals);
+
+        $deals = $deals->where(function($query) {
+                        $query->where('transactions.status', 'Delivered')
+                                ->orWhere('transactions.status', 'Verified Owe')
+                                ->orWhere('transactions.status', 'Verified Paid');
+                    });
+
+        $transactions = clone $deals;
+
+        $transactions = $transactions
+                        ->groupBy('transactions.delivery_date')
+                        ->latest('transactions.delivery_date')
+                        ->get();
+
+        foreach($transactions as $transaction) {
+            array_push($allDateTransactionIds, $transaction->id);
+            if(! in_array($transaction->delivery_date, $peopleIdAllArr)) {
+                array_push($peopleIdAllArr, $transaction->person_id);
+            }
+        }
+        foreach($itemsPeople as $deal) {
+            array_push($dealsIdArr, $deal->deal_id);
+        }
+        for($x=0; $x<5; $x++) {
+            array_push($peopleIdArr, $peopleIdAllArr[$x]);
+        }
+        $request = request();
+
+        $items = Item::whereNotNull('created_at');
+        $is_inventory = request('is_inventory') === 1 ? 1 : null;
+        if(request()->isMethod('get')) {
+            $is_inventory = 1;
+        }
+        if($is_inventory) {
+            $items = $items->where('is_inventory', $is_inventory);
+        }
+        $items = $items->orderBy('product_id')->get();
+
+        if(request('export_excel')) {
+            $this->exportStockPerCustomerExcel($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr);
+        }
+
+        return view('detailrpt.stock.customer', compact('peopleIdArr', 'dealsIdArr', 'items', 'request'));
+    }
+
     // filters function for stock (formrequest request(), query deals)
     private function detailrptStockFilters($request, $deals)
     {

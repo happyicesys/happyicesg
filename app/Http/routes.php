@@ -193,6 +193,7 @@ Route::post('/report/transaction', 'RptController@generateTransaction');
 Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
+Route::match(['get', 'post'], '/detailrpt/stock/date', 'DetailRptController@getStockDate');
 Route::get('/detailrpt/stock/billing', 'DetailRptController@getStockBilling');
 Route::post('/api/detailrpt/stock/billing', 'DetailRptController@getStockBillingApi');
 Route::match(['get', 'post'], '/detailrpt/stock/customer', 'DetailRptController@getStockPerCustomer');

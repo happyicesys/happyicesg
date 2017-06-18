@@ -65,7 +65,7 @@ Door To Door
                 <p v-if="covered">
                   - To order with more flavor, click <a href="" style="color:blue;" @click.prevent="covered = !covered">HERE</a>. Minimum purchase applied for free delivery
                 </p>
-                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE deliver, valid until 31/1/17</p>
+                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE delivery</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
                 <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">

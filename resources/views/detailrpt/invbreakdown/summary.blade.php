@@ -221,7 +221,7 @@
             <div class="col-md-3 col-sm-3 col-xs-12 text-right">
                 <div class="row">
                     <label for="display_num">Display</label>
-                    <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                    <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
                         <option ng-value="100">100</option>
                         <option ng-value="200">200</option>
                         <option ng-value="All">All</option>
@@ -238,8 +238,28 @@
             <table class="table table-list-search table-hover table-bordered">
                 <tr class="hidden">
                     <td></td>
-                    <td data-tableexport-display="always">Total Amount</td>
-                    <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
+                    <td data-tableexport-display="always">Grand Total</td>
+                    <td data-tableexport-display="always" class="text-right">@{{grand_total | currency: "": 2}}</td>
+                </tr>
+                <tr class="hidden">
+                    <td></td>
+                    <td data-tableexport-display="always">Tax Total</td>
+                    <td data-tableexport-display="always" class="text-right">@{{taxtotal | currency: "": 2}}</td>
+                </tr>
+                <tr class="hidden">
+                    <td></td>
+                    <td data-tableexport-display="always">Subtotal</td>
+                    <td data-tableexport-display="always" class="text-right">@{{subtotal | currency: "": 2}}</td>
+                </tr>
+                <tr class="hidden">
+                    <td></td>
+                    <td data-tableexport-display="always">Total Gross $</td>
+                    <td data-tableexport-display="always" class="text-right">@{{fixed_total_gross_money | currency: "": 2}}</td>
+                </tr>
+                <tr class="hidden">
+                    <td></td>
+                    <td data-tableexport-display="always">Total Gross %</td>
+                    <td data-tableexport-display="always" class="text-right">@{{fixed_total_gross_percent | currency: "": 2}}</td>
                 </tr>
                 <tr class="hidden" data-tableexport-display="always">
                     <td></td>
