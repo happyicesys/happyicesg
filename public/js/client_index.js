@@ -5,11 +5,12 @@ function clientMainController($scope, $http){
     $scope.productText = 'Show All Products';
     $scope.currentPage = 1;
     $scope.itemsPerPage = 3;
+    $scope.modalSrc = '';
 
     $http.get('/client/item').success(function(products){
         $scope.products = products;
         $scope.itemsPerPage = products.length;
-
+/*
         $scope.showAllProduct = function(){
             $scope.productModel = ! $scope.productModel;
             if($scope.productModel){
@@ -24,8 +25,12 @@ function clientMainController($scope, $http){
                 // $scope.itemsPerPage = 3;
             }
 
-        }
+        }*/
     });
+
+    $scope.activateSrc = function(product) {
+        $scope.modalSrc = product.desc_imgpath;
+    }
 }
 
 app.controller('clientMainController', clientMainController);

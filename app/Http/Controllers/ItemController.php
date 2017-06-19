@@ -67,6 +67,14 @@ class ItemController extends Controller
             $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
             $item->save();
         }
+
+        if($desc_file = request()->file('desc_imgpath')) {
+            $name = (Carbon::now()->format('dmYHi')).$desc_file->getClientOriginalName();
+            $file->move('item_asset/desc/'.$item->id.'/', $name);
+            $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+            $item->save();
+        }
+
         return redirect('item');
     }
 
@@ -102,6 +110,15 @@ class ItemController extends Controller
             $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
             $item->save();
         }
+
+        if($desc_file = request()->file('desc_imgpath')) {
+            File::delete(public_path().$item->desc_imgpath);
+            $name = (Carbon::now()->format('dmYHi')).$desc_file->getClientOriginalName();
+            $desc_file->move('item_asset/desc/'.$item->id.'/', $name);
+            $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+            $item->save();
+        }
+
         return Redirect::action('ItemController@edit', $item->id);
     }
 

@@ -44,6 +44,54 @@
     </div>
 
     <div class="row">
+        <hr size="3">
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="$('#desc_img').toggle();">
+                    <i class="fa fa-caret-down"></i> Descriptive Image
+                </button>
+            </div>
+
+            <div id="desc_img">
+                @if($item->desc_imgpath)
+                    <div class="form-group">
+                        <div class="col-md-5 col-md-offset-1">
+                            <img src="{{$item->desc_imgpath}}" height="250" width="250" style="border:2px solid black">
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                {!! Form::label('desc_imgpath', 'Change Photo', ['class'=>'control-label']) !!}
+                                {!! Form::file('desc_imgpath', ['class'=>'field']) !!}
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="form-group">
+                        <div class="col-md-5 col-md-offset-1">
+                            <img src="{{$item->desc_imgpath}}" alt="No photo found" height="250" width="250" style="border:2px solid black">
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                {!! Form::label('desc_imgpath', 'Descriptive Photo', ['class'=>'control-label']) !!}
+                                {!! Form::file('desc_imgpath', ['class'=>'field']) !!}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <hr size="3">
+    </div>
+
+    <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_id', 'ID', ['class'=>'control-label']) !!}
@@ -106,5 +154,6 @@
 @section('footer')
 <script>
     $('.select').select2();
+    $('#desc_img').hide();
 </script>
 @stop

@@ -13,11 +13,23 @@ Healthier Life
     <div ng-app="app" ng-controller="clientMainController">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div dir-paginate="product in products | itemsPerPage:itemsPerPage"  current-page="currentPage" class="col-md-4 col-sm-6 col-xs-12" style="font-size:20px;">
-                    <img class="img-responsive center-block" ng-src="@{{product.main_imgpath}}" ng-alt="@{{product.main_imgcaption}}" style="max-height: 350px;">
+                {{-- <div dir-paginate="product in products | itemsPerPage:itemsPerPage"  current-page="currentPage" class="col-md-4 col-sm-6 col-xs-12" style="font-size:20px;"> --}}
+                <div ng-repeat="product in products" class="col-md-4 col-sm-6 col-xs-12" style="font-size:20px;">
+                    <a href="#" data-toggle="modal" data-target="#product" ng-click="activateSrc(product)">
+                        <img class="img-responsive center-block" ng-src="@{{product.main_imgpath}}" ng-alt="@{{product.main_imgcaption}}" style="max-height: 350px;">
+                    </a>
                     <p class="product-name text-center">@{{product.name}}</p>
                 </div>
+            </div>
+        </div>
 
+        <div id="product" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img ng-src="@{{modalSrc}}" class="img-responsive center-block">
+                    </div>
+                </div>
             </div>
         </div>
 {{--
