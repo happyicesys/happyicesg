@@ -29,7 +29,11 @@ function clientMainController($scope, $http){
     });
 
     $scope.activateSrc = function(product) {
-        $scope.modalSrc = product.desc_imgpath;
+        if(product.desc_imgpath) {
+            $scope.modalSrc = product.desc_imgpath;
+        }else {
+            $scope.modalSrc = product.main_imgpath;
+        }
     }
 }
 
