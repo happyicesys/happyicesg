@@ -33,7 +33,26 @@ a {
 
 a:hover,
 a:focus {
-    color: #eb3812;
+    color: white;
+}
+.nav-stacked>li>a:focus,
+.nav-stacked>li>a:hover {
+    /*background-color: #9f6bb5;*/
+    background-color: lightblue;
+    box-shadow: 0px -2px 2px rgba(34,34,34,0.6);
+    background-image: url("../img/product_navbar_icon/ice_cream.png");
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: right;
+}
+
+.nav-stacked>li.active>a:visited {
+    background-color: #9f6bb5;
+}
+
+.active a,
+.active a:hover {
+    background-color: red;
 }
 
 h1,

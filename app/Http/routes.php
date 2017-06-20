@@ -148,6 +148,9 @@ Route::delete('/item/data/{id}', 'ItemController@destroyAjax');
 Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
 Route::resource('item', 'ItemController');
 
+Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
+Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
+
 Route::resource('price', 'PriceController');
 
 Route::get('/transaction/emailInv/{trans_id}', 'TransactionController@sendEmailInv');

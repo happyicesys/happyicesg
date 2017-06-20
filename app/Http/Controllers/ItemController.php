@@ -27,6 +27,7 @@ class ItemController extends Controller
         $this->middleware('auth');
     }
 
+    // item index page items api
     public function getData()
     {
         $items =  Item::orderBy('product_id')->get();
@@ -40,28 +41,30 @@ class ItemController extends Controller
         return $data;
     }
 
+    // return item index page
     public function index()
     {
         return view('item.index');
     }
 
+    // return item create page
     public function create()
     {
         return view('item.create');
     }
 
+    // store newly create item(Fromrequest request)
     public function store(ItemRequest $request)
     {
-        $publish = $request->has('publish')? 1 : 0;
-        $is_inventory = $request->has('is_inventory')? 1 : 0;
-        $is_commission = $request->has('is_commission')? 1 : 0;
-        $request->merge(array('publish' => $publish));
-        $request->merge(array('is_inventory' => $is_inventory));
-        $request->merge(array('is_commission' => $is_commission));
-        $input = $request->all();
-        $item = Item::create($input);
-        if($request->file('main_imgpath')){
-            $file = $request->file('main_imgpath');
+        request()->merge(array('publish' => request()->has('publish') ? 1 : 0));
+        request()->merge(array('is_inventory' => request()->has('is_inventory') ? 1 : 0));
+        request()->merge(array('is_commission' => request()->has('is_commission') ? 1 : 0));
+        request()->merge(array('is_healthier' => request()->has('is_healthier') ? 1 : 0));
+        request()->merge(array('is_halal' => request()->has('is_halal') ? 1 : 0));
+
+        $item = Item::create(request()->all());
+
+        if($file = request()->file('main_imgpath')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file->move('item_asset/'.$item->id.'/', $name);
             $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
@@ -75,9 +78,17 @@ class ItemController extends Controller
             $item->save();
         }
 
+        if($nutri_file = request()->file('nutri_imgpath')) {
+            $name = (Carbon::now()->format('dmYHi')).$nutri_file->getClientOriginalName();
+            $file->move('item_asset/nutri/'.$item->id.'/', $name);
+            $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
+            $item->save();
+        }
+
         return redirect('item');
     }
 
+    // return single item page
     public function show($id)
     {
         $item = Item::findOrFail($id);
@@ -92,19 +103,17 @@ class ItemController extends Controller
 
     public function update(ItemRequest $request, $id)
     {
-        $publish = $request->has('publish')? 1 : 0;
-        $is_inventory = $request->has('is_inventory')? 1 : 0;
-        $is_commission = $request->has('is_commission')? 1 : 0;
-        $request->merge(array('publish' => $publish));
-        $request->merge(array('is_inventory' => $is_inventory));
-        $request->merge(array('is_commission' => $is_commission));
-        $item = Item::findOrFail($id);
-        $input = $request->all();
-        $item->update($input);
+        request()->merge(array('publish' => request()->has('publish') == 'true' ? 1 : 0));
+        request()->merge(array('is_inventory' => request()->has('is_inventory') == 'true' ? 1 : 0));
+        request()->merge(array('is_commission' => request()->has('is_commission') == 'true' ? 1 : 0));
+        request()->merge(array('is_healthier' => request()->has('is_healthier') == 'true' ? 1 : 0));
+        request()->merge(array('is_halal' => request()->has('is_halal') == 'true' ? 1 : 0));
 
-        if($request->file('main_imgpath')){
+        $item = Item::findOrFail($id);
+        $item->update(request()->all());
+
+        if($file = request()->file('main_imgpath')){
             File::delete(public_path().$item->main_imgpath);
-            $file = $request->file('main_imgpath');
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file->move('item_asset/'.$item->id.'/', $name);
             $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
@@ -116,6 +125,14 @@ class ItemController extends Controller
             $name = (Carbon::now()->format('dmYHi')).$desc_file->getClientOriginalName();
             $desc_file->move('item_asset/desc/'.$item->id.'/', $name);
             $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+            $item->save();
+        }
+
+        if($nutri_file = request()->file('nutri_imgpath')) {
+            File::delete(public_path().$item->nutri_imgpath);
+            $name = (Carbon::now()->format('dmYHi')).$nutri_file->getClientOriginalName();
+            $nutri_file->move('item_asset/nutri/'.$item->id.'/', $name);
+            $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
             $item->save();
         }
 

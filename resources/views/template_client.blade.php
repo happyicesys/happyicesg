@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         @include('partials.header_client')
+        @yield('header')
     </head>
 
     <body id="page-top">
