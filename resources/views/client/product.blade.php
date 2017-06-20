@@ -53,17 +53,17 @@
                                             <img class="img-responsive center-block" :src="product.main_imgpath" :alt="product.main_imgcaption" style="max-height: 350px;">
 
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #f4decb; margin-top: -20px;" v-if="product.is_healthier || product.is_halal">
-                                                <span class="col-md-4 col-sm-4 col-xs-6" v-if="product.is_healthier">
-                                                    <img src="/img/official_icon/Healthier_choice_logo.png" class="img-responsive center-block" height="50" width="50" style="margin-top: -3px;">
+                                                <span class="col-md-6 col-sm-6 col-xs-6" v-if="product.is_healthier">
+                                                    <img src="/img/official_icon/Healthier_choice_logo.png" class="img-responsive pull-right" height="50" width="50" style="margin-top: -3px;">
                                                 </span>
-                                                <span class="col-md-4 col-sm-4 col-xs-6" v-if="product.is_halal">
-                                                    <img src="/img/official_icon/Halal.png" class="img-responsive center-block" height="36" width="36" style="margin-top: 2px;">
+                                                <span class="col-md-6 col-sm-6 col-xs-6" v-if="product.is_halal">
+                                                    <img src="/img/official_icon/Halal.png" class="img-responsive pull-left" height="42" width="42" style="margin-top: 2px;">
                                                 </span>
 
                                             </div>
                                             <div class="caption">
                                                 <div class="col-md-12 col-sm-12 col-xs-12" v-if="product.nutri_imgpath">
-                                                    <img :src="product.nutri_imgpath" class="img-responsive center-block" height="100" width="200">
+                                                    <img :src="product.nutri_imgpath" class="img-responsive center-block" height="300" width="400">
                                                 </div>
                                                     <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">@{{product.name}}</p>
                                             </div>
