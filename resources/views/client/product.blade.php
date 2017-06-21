@@ -64,7 +64,7 @@
                                             {{-- <div class="caption"> --}}
                                             <div class="row">
                                                 <div class="col-md-12 col-sm-12 col-xs-12" v-if="product.nutri_imgpath">
-                                                    <img :src="product.nutri_imgpath" class="img-responsive" height="220" width="320" style="border: thin solid black">
+                                                    <img :src="product.nutri_imgpath" class="img-responsive" max-height="220" max-width="320" style="border: thin solid black">
                                                 </div>
                                                     <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">@{{product.name}}</p>
                                             </div>
