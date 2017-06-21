@@ -25,6 +25,10 @@ if (document.querySelector('#clientProductController')) {
     }
   });
 
+  Vue.filter('chunk', function (value, size) {
+    return _.chunk(value, size); // using lodash
+  });
+
   new Vue({
     el: '#clientProductController',
   });

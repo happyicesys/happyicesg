@@ -48,9 +48,9 @@
                     <div class="panel panel-primary">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div v-for="(product, index) in products" class="col-md-4 col-sm-4 col-sx-12" :class="{'row' : index % 3 == 0}">
-                                    <div  class="thumbnail" style="font-size:20px;">
+                                {{-- <div class="col-md-12 col-sm-12 col-xs-12"> --}}
+                                    <div v-for="(product, index) in products" class="col-md-4 col-sm-4 col-sx-12">
+                                        <div class="thumbnail"  style="font-size:20px;">
                                             <img class="img-responsive center-block" :src="product.main_imgpath" :alt="product.main_imgcaption" style="max-height: 350px;">
 
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #f4decb; margin-top: -20px;" v-if="product.is_healthier || product.is_halal">
@@ -62,17 +62,15 @@
                                                 </span>
 
                                             </div>
-                                            {{-- <div class="caption"> --}}
                                             <div class="row">
                                                 <div class="col-md-12 col-sm-12 col-xs-12" v-if="product.nutri_imgpath">
                                                     <img :src="product.nutri_imgpath" class="img-responsive" max-height="220" max-width="320" style="border: thin solid black">
                                                 </div>
                                                     <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">@{{product.name}}</p>
                                             </div>
-                                            {{-- </div> --}}
+                                        </div>
                                     </div>
-                                    </div>
-                                </div>
+                                {{-- </div> --}}
                             </div>
                         </div>
                     </div>
