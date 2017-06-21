@@ -517,6 +517,6 @@ body {
     white-space: nowrap;
 }
 
-.row.products div:nth-child(2n+1){
+.row.products div:nth-child(3n+1){
     clear:both;
 }
