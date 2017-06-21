@@ -47,7 +47,7 @@
                 <div class="col-md-9 col-sm-9 col-xs-12">
                     <div class="panel panel-primary">
                         <div class="panel-body">
-                            <div class="row">
+                            <div class="row products">
                                 {{-- <div class="col-md-12 col-sm-12 col-xs-12"> --}}
                                     <div v-for="(product, index) in products" class="col-md-4 col-sm-4 col-sx-12">
                                         <div class="thumbnail"  style="font-size:20px;">

@@ -516,3 +516,7 @@ body {
     display: inline-block;
     white-space: nowrap;
 }
+
+.row.products div:nth-child(2n+1){
+    clear:both;
+}
