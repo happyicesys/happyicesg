@@ -49,7 +49,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div v-for="product in products" class="thumbnail col-md-4 col-sm-6 col-xs-12" style="font-size:20px;">
+                                    <div v-for="product in products" class="thumbnail col-md-4 col-sm-4 col-xs-12" style="font-size:20px;">
                                             <img class="img-responsive center-block" :src="product.main_imgpath" :alt="product.main_imgcaption" style="max-height: 350px;">
 
                                             <div class="col-md-12 col-sm-12 col-xs-12" style="background-color: #f4decb; margin-top: -20px;" v-if="product.is_healthier || product.is_halal">
@@ -61,12 +61,14 @@
                                                 </span>
 
                                             </div>
-                                            <div class="caption">
+                                            {{-- <div class="caption"> --}}
+                                            <div class="row">
                                                 <div class="col-md-12 col-sm-12 col-xs-12" v-if="product.nutri_imgpath">
-                                                    <img :src="product.nutri_imgpath" class="img-responsive center-block" height="300" width="400">
+                                                    <img :src="product.nutri_imgpath" class="img-responsive" height="220" width="320">
                                                 </div>
                                                     <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">@{{product.name}}</p>
                                             </div>
+                                            {{-- </div> --}}
                                     </div>
                                 </div>
                             </div>
