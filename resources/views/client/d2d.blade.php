@@ -19,7 +19,7 @@ Door To Door
         <a href="#" class="portfolio-box">
           <img src="img/d2d/general_d2d.jpg" class="img-responsive" alt="HappyIce Door to Door" v-if="step1">
           <img src="img/d2d/a5 menu_final.jpg" class="img-responsive" alt="door to door ice cream delivery menu" v-if="!step1 && covered">
-          <img src="img/d2d/all_item_2016.jpg" class="img-responsive" alt="HappyIce D2d All Item" v-if="!step1 && !covered">
+          <img src="img/d2d/all_item_2017.jpg" class="img-responsive" alt="HappyIce D2d All Item" v-if="!step1 && !covered">
           <div class="portfolio-box-caption-content">
               <div class="project-category text-faded">
               </div>
