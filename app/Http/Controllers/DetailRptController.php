@@ -1183,6 +1183,7 @@ class DetailRptController extends Controller
     {
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
+
         $deals = DB::table('deals')
                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -1198,9 +1199,9 @@ class DetailRptController extends Controller
                     'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit',
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     'unitcosts.unit_cost',
-                    DB::raw('ROUND(SUM(deals.unit_cost * qty), 2) AS total_cost'),
+                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
                     DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
-                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(deals.unit_cost * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
+                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
                 );
         if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
             $deals = $this->stockBillingFilters(request(), $deals);
@@ -1212,7 +1213,11 @@ class DetailRptController extends Controller
                                 ->orWhere('transactions.status', 'Verified Paid');
                     });
 
-        $deals = $deals->groupBy('items.id', 'profiles.id');
+        if(request('profile_id')) {
+            $deals = $deals->groupBy('items.id', 'profiles.id');
+        }else {
+            $deals = $deals->groupBy('items.id');
+        }
 
         if(request('sortName')){
             $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
