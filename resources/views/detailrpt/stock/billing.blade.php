@@ -171,7 +171,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_qty | currency: "": 4}}
+                            @{{total_qty | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -284,10 +284,10 @@
                         <span ng-if="search.sortName == 'qty' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        <a href="" ng-click="sortTable('unit_cost')">
-                        Unit Cost
-                        <span ng-if="search.sortName == 'unit_cost' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'unit_cost' && search.sortBy" class="fa fa-caret-up"></span>
+                        <a href="" ng-click="sortTable('avg_unit_cost')">
+                        Avg Unit Cost
+                        <span ng-if="search.sortName == 'avg_unit_cost' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'avg_unit_cost' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         <a href="" ng-click="sortTable('total_cost')">
@@ -333,7 +333,7 @@
                             @{{deal.qty | currency: "": 4}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.unit_cost | currency: "": 2}}
+                            @{{deal.avg_unit_cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.total_cost | currency: "": 2}}

@@ -46,10 +46,10 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];    
+    protected $dates = ['deleted_at'];
 
     // set default nullable value upon detection
-    public function setEmailAttribute($value) 
+    public function setEmailAttribute($value)
     {
 
         $this->attributes['email'] = $value ?: null;
@@ -70,13 +70,13 @@ class User extends Model implements AuthenticatableContract,
     public function getRoleListAttribute()
     {
         return $this->roles->lists('id')->all();
-    } 
+    }
 
     //relationships
     public function transactions()
     {
         return $this->hasMany('App\Transaction');
-    } 
+    }
 
     /**
      * User Responsible
@@ -86,6 +86,11 @@ class User extends Model implements AuthenticatableContract,
     {
         $user_model = \Config::get('auth.model');
         return $user_model::find($this->user_id);
-    }            
+    }
+
+    public function profiles()
+    {
+        return $this->belongsToMany('App\Profile');
+    }
 
 }

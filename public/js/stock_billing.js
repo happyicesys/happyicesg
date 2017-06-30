@@ -119,7 +119,7 @@ var app = angular.module('app', [
                 // get total count
                 $scope.All = data.deals.length;
                 // return fixed total amount
-                $scope.total_qty = data.totals.total_qty.toFixed(4);
+                $scope.total_qty = data.totals.total_qty.toFixed(2);
                 $scope.total_costs = data.totals.total_costs.toFixed(2);
                 $scope.total_sell_value = data.totals.total_sell_value.toFixed(2);
                 $scope.total_gross_profit = data.totals.total_gross_profit.toFixed(2);

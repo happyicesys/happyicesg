@@ -1197,8 +1197,8 @@ class DetailRptController extends Controller
                 ->select(
                     'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst',
                     'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit',
-                    DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
-                    'unitcosts.unit_cost',
+                    DB::raw('ROUND(SUM(deals.qty), 2) AS qty'),
+                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
                     DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
                     DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')

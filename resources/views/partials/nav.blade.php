@@ -9,6 +9,12 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
+            @if(! auth()->guest())
+                <a href="/transaction/create" class="btn btn-success btn-sm" style="margin: 10px 0px 0px 10px;">
+                    <i class="fa fa-plus"></i>
+                    New Transaction
+                </a>
+            @endif
         </div>
 
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->

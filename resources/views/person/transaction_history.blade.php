@@ -138,7 +138,7 @@
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                 <strong>
-                    @{{profileDealsGrossProfit ? profileDealsGrossProfit : 0.00}}
+                    @{{profileDealsGrossProfit ? profileDealsGrossProfit : 0.00 | currency: "": 2}}
                 </strong>
             </div>
         </div>
@@ -172,6 +172,11 @@
             <td></td>
             <td data-tableexport-display="always">Total Owe</td>
             <td data-tableexport-display="always" class="text-right">@{{total_owe | currency: "": 2}}</td>
+        </tr>
+        <tr class="hidden">
+            <td></td>
+            <td data-tableexport-display="always">Gross Earning</td>
+            <td data-tableexport-display="always" class="text-right">@{{profileDealsGrossProfit | currency: "": 2}}</td>
         </tr>
 
         <tr style="background-color: #DDFDF8">

@@ -18,4 +18,9 @@ class Profile extends Model
     {
         return $this->hasMany('App\Person');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
 }
