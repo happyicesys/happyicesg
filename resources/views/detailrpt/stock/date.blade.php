@@ -136,7 +136,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
                             {{
-                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum(DB::raw('ROUND(amount, 2)')), 2)
+                                number_format($sdeals::whereIn('transaction_id', $allDateTransactionIds)->sum(DB::raw('ROUND(amount, 2)')), 2)
                             }}
                         </strong>
                     </div>
@@ -148,7 +148,7 @@
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
                             {{
-                                number_format($sdeals::whereIn('id', $dealsIdArr)->sum('qty'), 4)
+                                number_format($sdeals::whereIn('transaction_id', $allDateTransactionIds)->sum('qty'), 2)
                             }}
                         </strong>
                     </div>
@@ -177,70 +177,10 @@
                     <th class="col-md-1 text-right">
                         Total Qty
                     </th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($sevenDatesArr as $date)
                         <td class="col-md-1 text-center">
-                            {{
-                                number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
-                                    $q->where('person_id', $person->id);
-                                })->sum('qty'), 4)
-                            }}
+                            {{ $date }}
                         </td>
-                    @endforeach
-                </tr>
-                <tr>
-                    <th colspan="5"></th>
-                    <th class="text-center">Gross Profit</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                        <td class="text-center">
-                             {{
-                                number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
-                                    $q->where('person_id', $person->id);
-                                })->sum('amount'), 2)
-                            }}
-                        </td>
-                    @endforeach
-                </tr>
-                <tr>
-                    <th colspan="5"></th>
-                    <th class="text-center">Customer Cat</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                        <td class="text-center">
-                            {{$speople::where('id', $person->id)->first()->custcategory['name']}}
-                        </td>
-                    @endforeach
-                </tr>
-                <tr>
-                    <th colspan="5"></th>
-                    <th class="text-center">Profile</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                        <td class="text-center">
-                            {{$speople::where('id', $person->id)->first()->profile['name']}}
-                        </td>
-                    @endforeach
-                </tr>
-                <tr>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        #
-                    </th>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Item ID
-                    </th>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Product
-                    </th>
-                    <th class="col-md-2 text-center" style="background-color: #DDFDF8">
-                        Unit
-                    </th>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Inventory Item
-                    </th>
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        Total Qty
-                    </th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        ({{$person->cust_id}}) {{$person->company}}
-                    </th>
                     @endforeach
                 </tr>
 
@@ -263,52 +203,54 @@
                             {{$item->is_inventory ? 'Yes' : 'No'}}
                         </td>
                         <td class="col-md-1 text-right">
-                                {{
-                                    number_format(\DB::table('deals')
-                                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                    ->whereIn('deals.id', $dealsIdArr)
-                                    ->where('items.id', $item->id)
-                                    ->sum('qty'), 4)
-                                }}
+                            {{
+                                number_format(\DB::table('deals')
+                                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                ->whereIn('transactions.id', $allDateTransactionIds)
+                                ->where('items.id', $item->id)
+                                ->sum('qty'), 4)
+                            }}
                         </td>
 
                         @php
-                            $loopedperson = []
+                            $loopeddate = []
                         @endphp
-                        @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
-                        <td class="col-md-1 text-right">
-
-                            @if(request('stock_status') === 'Balance')
-                                @php
-                                    array_push($loopedperson, $person->id);
-                                @endphp
-                                {{
-                                    number_format((\DB::table('deals')
-                                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                    ->whereIn('deals.id', $dealsIdArr)
-                                    ->where('items.id', $item->id)
-                                    ->sum('qty')) - (\DB::table('deals')
-                                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                    ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                                    ->whereIn('deals.id', $dealsIdArr)
-                                    ->whereIn('people.id', $loopedperson)
-                                    ->where('items.id', $item->id)
-                                    ->sum('qty')), 4)
-                                }}
-                            @else
-                                {{
-                                    number_format(\DB::table('deals')
+                        {{-- @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person) --}}
+                        @foreach($sevenDatesArr as $date)
+                            <td class="col-md-1 text-right">
+                                {{$date->delivery_date}}
+{{--                                 @if(request('stock_status') === 'Balance')
+                                    @php
+                                        array_push($loopedperson, $person->id);
+                                    @endphp
+                                    {{
+                                        number_format((\DB::table('deals')
+                                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                        ->whereIn('deals.id', $dealsIdArr)
+                                        ->where('items.id', $item->id)
+                                        ->sum('qty')) - (\DB::table('deals')
                                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                                         ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                                         ->whereIn('deals.id', $dealsIdArr)
-                                        ->where('people.id', $person->id)
+                                        ->whereIn('people.id', $loopedperson)
                                         ->where('items.id', $item->id)
-                                        ->sum('qty'), 4)
-                                }}
-                            @endif
-                        </td>
+                                        ->sum('qty')), 4)
+                                    }}
+                                @else
+                                    {{
+                                        number_format(\DB::table('deals')
+                                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                            ->whereIn('deals.id', $dealsIdArr)
+                                            ->where('people.id', $person->id)
+                                            ->where('items.id', $item->id)
+                                            ->sum('qty'), 4)
+                                    }}
+                                @endif --}}
+                            </td>
                         @endforeach
                     </tr>
                     @endforeach

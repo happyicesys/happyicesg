@@ -1242,11 +1242,12 @@ class DetailRptController extends Controller
     }
 
     // return stock date api()
-    public function getStockDateApi()
+    public function getStockDate()
     {
-        $itemsArr = [];
+        $itemsIdArr = [];
         $sevenDateTransactionIds = [];
         $allDateTransactionIds = [];
+        $allDatesArr = [];
         $sevenDatesArr = [];
 
         $transaction_order = DB::raw('(SELECT transactions.created_at, transactions.id FROM deals
@@ -1269,50 +1270,68 @@ class DetailRptController extends Controller
                         'transaction_order.created_at AS created_at'
                     );
 
-        $deals = $this->detailrptStockFilters(request(), $deals);
-
         $deals = $deals->where(function($query) {
                         $query->where('transactions.status', 'Delivered')
                                 ->orWhere('transactions.status', 'Verified Owe')
                                 ->orWhere('transactions.status', 'Verified Paid');
                     });
 
+        $deals = $this->detailrptStockFilters(request(), $deals);
+
         $transactions = clone $deals;
+        $transactionDates = clone $deals;
+        $sevenTransactionDateId = clone $deals;
 
         $transactions = $transactions
-                        ->groupBy('transactions.delivery_date')
+                        ->groupBy('transactions.id')
                         ->latest('transactions.delivery_date')
                         ->get();
 
-        foreach($transactions as $transaction) {
-            array_push($allDateTransactionIds, $transaction->id);
-            if(! in_array($transaction->delivery_date, $peopleIdAllArr)) {
-                array_push($peopleIdAllArr, $transaction->person_id);
-            }
+        $transactionDates = $transactionDates
+                            ->groupBy('transactions.delivery_date')
+                            ->latest('transactions.delivery_date')
+                            ->get();
+
+        foreach($transactionDates as $transactionDate) {
+            array_push($allDatesArr, $transactionDate->delivery_date);
         }
-        foreach($itemsPeople as $deal) {
-            array_push($dealsIdArr, $deal->deal_id);
+
+        if(count($transactionDates) < 7) {
+            $endcounter = count($transactionDates);
+        }else {
+            $endcounter = 7;
         }
-        for($x=0; $x<5; $x++) {
-            array_push($peopleIdArr, $peopleIdAllArr[$x]);
+        for($x=0; $x<$endcounter; $x++) {
+            array_push($sevenDatesArr, $transactionDates[$x]);
         }
-        $request = request();
+
+        // dd($sevenDatesArr[count($sevenDatesArr) - 1]->delivery_date, $sevenDatesArr[0]->delivery_date);
+
+        $sevenTransactionDateId = $sevenTransactionDateId->whereDate('delivery_date', '>=', $sevenDatesArr[count($sevenDatesArr) - 1]->delivery_date)->whereDate('delivery_date', '<=', $sevenDatesArr[0]->delivery_date)->get();
 
         $items = Item::whereNotNull('created_at');
-        $is_inventory = request('is_inventory') === 1 ? 1 : null;
-        if(request()->isMethod('get')) {
-            $is_inventory = 1;
-        }
-        if($is_inventory) {
-            $items = $items->where('is_inventory', $is_inventory);
-        }
-        $items = $items->orderBy('product_id')->get();
 
-        if(request('export_excel')) {
-            $this->exportStockPerCustomerExcel($request, $peopleIdAllArr, $dealsIdArr, $items, $transactionsIdArr);
+        if(request('is_inventory') !== 'All') {
+            $items = $items->where('is_inventory', request('is_inventory'));
         }
 
-        return view('detailrpt.stock.customer', compact('peopleIdArr', 'dealsIdArr', 'items', 'request'));
+        $items = $items->get();
+
+        foreach($items as $item) {
+            array_push($itemsIdArr, $item->id);
+        }
+
+        foreach($transactions as $transaction) {
+            array_push($allDateTransactionIds, $transaction->id);
+        }
+
+        foreach($sevenTransactionDateId as $sevenDateId) {
+            array_push($sevenDateTransactionIds, $sevenDateId->id);
+        }
+
+        // dd($sevenDatesArr, $itemsIdArr, $sevenDateTransactionIds, $allDateTransactionIds);
+
+        return view('detailrpt.stock.date', compact('sevenDatesArr', 'itemsIdArr', 'allDateTransactionIds', 'sevenDateTransactionIds'));
     }
 
     // filters function for stock (formrequest request(), query deals)

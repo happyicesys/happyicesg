@@ -24,6 +24,7 @@
                     <div class="input-group">
                         <input
                             type = "text"
+                            name = "delivery_from"
                             class = "form-control input-sm"
                             placeholder = "Delivery From"
                             ng-model = "search.delivery_from"
@@ -42,6 +43,7 @@
                     <datepicker selector="form-control">
                         <input
                             type = "text"
+                            name = "payment_from"
                             class = "form-control input-sm"
                             placeholder = "Payment From"
                             ng-model = "search.payment_from"
@@ -76,6 +78,7 @@
                     <datepicker selector="form-control">
                         <input
                             type = "text"
+                            name = "delivery_to"
                             class = "form-control input-sm"
                             placeholder = "Delivery To"
                             ng-model = "search.delivery_to"
@@ -94,6 +97,7 @@
                     <datepicker selector="form-control">
                         <input
                             type = "text"
+                            name = "payment_to"
                             class = "form-control input-sm"
                             placeholder = "Payment To"
                             ng-model = "search.payment_to"
