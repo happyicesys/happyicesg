@@ -2,6 +2,7 @@
 @inject('sdeals', 'App\Deal')
 @inject('speople', 'App\Person')
 @inject('scustcategories', 'App\Custcategory')
+@inject('sitems', 'App\Item')
 
 @extends('template')
 @section('title')
@@ -10,12 +11,12 @@
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/detailrpt/stock/date"><h1>Stock Sold (Date)</h1></a>
+    <a class="title_hyper pull-left" href="/detailrpt/stock/date"><h1>Stock Sold/ Balance (Date)</h1></a>
 </div>
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Stock Sold (Date)
+        Stock Sold/ Balance (Date)
     </div>
 
     <div class="panel-body">
@@ -163,7 +164,7 @@
                         #
                     </th>
                     <th class="col-md-1 text-center">
-                        ID
+                        Item ID
                     </th>
                     <th class="col-md-2 text-center">
                         Product
@@ -178,14 +179,14 @@
                         Total Qty
                     </th>
                     @foreach($sevenDatesArr as $date)
-                        <td class="col-md-1 text-center">
-                            {{ $date }}
-                        </td>
+                        <th class="col-md-1 text-center">
+                            {{ \Carbon\Carbon::parse($date->delivery_date)->toDateString() }}
+                        </th>
                     @endforeach
                 </tr>
 
                 <tbody>
-                    @foreach($items as $index => $item)
+                    @foreach($items = $sitems::whereIn('id', $itemsIdArr)->orderBy('product_id')->get() as $index => $item)
                     <tr>
                         <td class="col-md-1 text-center">
                             {{$index + 1}}
@@ -219,22 +220,21 @@
                         {{-- @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person) --}}
                         @foreach($sevenDatesArr as $date)
                             <td class="col-md-1 text-right">
-                                {{$date->delivery_date}}
-{{--                                 @if(request('stock_status') === 'Balance')
+                                @if(request('stock_status') === 'Balance')
                                     @php
-                                        array_push($loopedperson, $person->id);
+                                        array_push($loopeddate, $date->delivery_date);
                                     @endphp
                                     {{
                                         number_format((\DB::table('deals')
                                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                        ->whereIn('deals.id', $dealsIdArr)
+                                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                        ->whereIn('transactions.id', $sevenDateTransactionIds)
                                         ->where('items.id', $item->id)
                                         ->sum('qty')) - (\DB::table('deals')
                                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                                        ->whereIn('deals.id', $dealsIdArr)
-                                        ->whereIn('people.id', $loopedperson)
+                                        ->whereIn('transactions.id', $sevenDateTransactionIds)
+                                        ->whereIn('transactions.delivery_date', $loopeddate)
                                         ->where('items.id', $item->id)
                                         ->sum('qty')), 4)
                                     }}
@@ -243,21 +243,20 @@
                                         number_format(\DB::table('deals')
                                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                                            ->whereIn('deals.id', $dealsIdArr)
-                                            ->where('people.id', $person->id)
+                                            ->whereIn('transactions.id', $sevenDateTransactionIds)
+                                            ->whereDate('transactions.delivery_date', '=', $date->delivery_date)
                                             ->where('items.id', $item->id)
                                             ->sum('qty'), 4)
                                     }}
-                                @endif --}}
+                                @endif
                             </td>
                         @endforeach
                     </tr>
                     @endforeach
-                    @if(!$items and count($speople::whereIn('id', $peopleIdArr)->get()) == 0)
-                    <tr>
-                        <td colspan="18" class="text-center">No Records Found</td>
-                    </tr>
+                    @if(!$items and count($sevenDateTransactionIds) == 0)
+                        <tr>
+                            <td colspan="18" class="text-center">No Records Found</td>
+                        </tr>
                     @endif
                 </tbody>
             </table>

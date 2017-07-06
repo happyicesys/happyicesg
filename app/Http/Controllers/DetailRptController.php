@@ -1305,14 +1305,18 @@ class DetailRptController extends Controller
             array_push($sevenDatesArr, $transactionDates[$x]);
         }
 
-        // dd($sevenDatesArr[count($sevenDatesArr) - 1]->delivery_date, $sevenDatesArr[0]->delivery_date);
-
-        $sevenTransactionDateId = $sevenTransactionDateId->whereDate('delivery_date', '>=', $sevenDatesArr[count($sevenDatesArr) - 1]->delivery_date)->whereDate('delivery_date', '<=', $sevenDatesArr[0]->delivery_date)->get();
+        if(count($sevenDatesArr) > 0) {
+            $sevenTransactionDateId = $sevenTransactionDateId->whereDate('delivery_date', '>=', $sevenDatesArr[count($sevenDatesArr) - 1]->delivery_date)->whereDate('delivery_date', '<=', $sevenDatesArr[0]->delivery_date)->get();
+        }else {
+            $sevenTransactionDateId = [];
+        }
 
         $items = Item::whereNotNull('created_at');
 
-        if(request('is_inventory') !== 'All') {
+        if(request()->isMethod('post') and request('is_inventory') !== 'All') {
             $items = $items->where('is_inventory', request('is_inventory'));
+        }else if(request()->isMethod('get')) {
+            $items = $items->where('is_inventory', 1);
         }
 
         $items = $items->get();
@@ -1329,7 +1333,9 @@ class DetailRptController extends Controller
             array_push($sevenDateTransactionIds, $sevenDateId->id);
         }
 
-        // dd($sevenDatesArr, $itemsIdArr, $sevenDateTransactionIds, $allDateTransactionIds);
+        if(request('export_excel')) {
+            $this->exportStockDateExcel(request(), $allDatesArr, $itemsIdArr, $allDateTransactionIds);
+        }
 
         return view('detailrpt.stock.date', compact('sevenDatesArr', 'itemsIdArr', 'allDateTransactionIds', 'sevenDateTransactionIds'));
     }
@@ -2023,6 +2029,20 @@ class DetailRptController extends Controller
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
                 $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('request', 'transactionsId', 'itemsId', 'person_id'));
+            });
+        })->download('xlsx');
+    }
+
+    // export excel for stock date balace and sold(formrequest request, array itemsidarr, array alldatetransactionids)
+    private function exportStockDateExcel($request, $allDatesArr, $itemsIdArr, $allDateTransactionIds)
+    {
+        $title = 'Stock Date (Balance/ Sold)';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $allDatesArr, $itemsIdArr, $allDateTransactionIds) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $allDatesArr, $itemsIdArr, $allDateTransactionIds) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.stockdate_excel', compact('request', 'allDatesArr', 'itemsIdArr', 'allDateTransactionIds'));
             });
         })->download('xlsx');
     }

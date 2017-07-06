@@ -61,7 +61,7 @@
                         <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
                         <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
                         <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
-                        {{-- <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li> --}}
+                        <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                     </ul>

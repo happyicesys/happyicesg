@@ -67,60 +67,64 @@ Door To Door
                 </p>
                 <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE delivery</p>
                 <h3 style="color:#323299;">Step 2 / 3</h3>
-                <div class="table-responsive">
-                <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">
-                <tr style="background-color: #f7f9f7">
-                  <th class="col-md-1 text-center">
-                    #
-                  </th>
-                  <th class="col-md-6 text-center">
-                    Item
-                  </th>
-                  <th class="col-md-2 text-center">
-                    Box
-                  </th>
-                  <th class="col-md-2 text-center">
-                    Price
-                  </th>
-                </tr>
-                <tr is="sales-item"
-                    v-for="(item, number) in items"
-                    :number="number + 1"
-                    :item="item"
-                    :items="items"
-                    :subtotal="subtotal"
-                    :finalstep="step3"
-                    @beforeamount="deductTotal"
-                    @afteramount="addTotal"
-                    @beforeqty="deductQty"
-                    @afterqty="addQty"
-                    style="font-size: 16px;"
-                    >
-                  </tr>
-                <tr v-if="!covered">
-                  <td></td>
-                  <td class="text-center">Delivery Fees</td>
-                  <td></td>
-                  <td>
-                      <input type="text" name="delivery" v-model="delivery.toFixed(2)" class="input-sm form-control text-right" readonly="readonly">
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td class="text-center"><strong>Total</strong></td>
-                  <td>
-                    <strong>
-                      <input type="text" name="totalqty" class="input-sm form-control text-center" v-model="totalqty" readonly="readonly">
-                    </strong>
-                  </td>
-                  <td>
-                    <strong>
-                      <input type="text" name="total" class="input-sm form-control text-right" v-model="total" readonly="readonly">
-                    </strong>
-                  </td>
-                </tr>
-              </table>
-              </div>
+                {{-- <div class="table-responsive"> --}}
+                <div>
+                  <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">
+                    <tr style="background-color: #f7f9f7">
+                      <th class="col-md-1 text-center">
+                        #
+                      </th>
+                      <th class="col-md-6 text-center">
+                        Item
+                      </th>
+                      <th class="col-md-2 text-center">
+                        Box
+                      </th>
+                      <th class="col-md-2 text-center">
+                        Price
+                      </th>
+                    </tr>
+                      <tr is="sales-item"
+                        v-for="(item, number) in items"
+                        :number="number + 1"
+                        :item="item"
+                        :items="items"
+                        :subtotal="subtotal"
+                        :finalstep="step3"
+                        @beforeamount="deductTotal"
+                        @afteramount="addTotal"
+                        @beforeqty="deductQty"
+                        @afterqty="addQty"
+                        style="font-size: 16px;"
+                        >
+                      </tr>
+                    <tr v-if="!covered">
+                      <td></td>
+                      <td class="text-center">Delivery Fees</td>
+                      <td></td>
+                      <td>
+                          <input type="text" name="delivery" v-model="delivery.toFixed(2)" class="input-sm form-control text-right" readonly="readonly">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="text-center"><strong>Total</strong></td>
+                      <td>
+                        <strong>
+                          <input type="text" name="totalqty" class="input-sm form-control text-center" v-model="totalqty" readonly="readonly">
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>
+                          <input type="text" name="total" class="input-sm form-control text-right" v-model="total" readonly="readonly">
+                        </strong>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+{{--                 <div class="hidden-md hidden-sm hidden-lg">
+
+                </div> --}}
               <div class="form-group pull-right">
                 <button class="btn btn-lg btn-success" v-bind:disabled="disableNext" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
               </div>
