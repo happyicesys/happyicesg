@@ -12,6 +12,18 @@
                     @yield('content')
         </div>
         @yield('footer')
+        <script>
+            window.Laravel = <?php echo json_encode([
+                'csrfToken' => csrf_token(),
+            ]); ?>
+
+            Vue.http.interceptors.push((request, next) => {
+                // request.headers['X-CSRF-TOKEN'] = Laravel.csrfToken;
+                request.headers.set('X-CSRF-TOKEN', Laravel.csrfToken);
+
+                next();
+            });
+        </script>
     </body>
 </html>
 

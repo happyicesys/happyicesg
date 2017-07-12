@@ -182,6 +182,10 @@ Route::get('/user/data', 'UserController@getData');
 Route::delete('/user/data/{id}', 'UserController@destroyAjax');
 Route::resource('user', 'UserController');
 Route::get('/user/member/{user_id}/{level}', 'UserController@convertInitD');
+Route::get('/api/user/{user_id}/profile', 'UserController@getProfileByUser');
+Route::get('/api/user/{user_id}/nonprofile', 'UserController@getNotProfileByUser');
+Route::post('/user/{user_id}/addprofile', 'UserController@addProfileByUser');
+Route::delete('/user/{user_id}/removeprofile/{profile_id}', 'UserController@removeProfileByUser');
 
 Route::get('/role/data', 'RoleController@getData');
 Route::resource('role', 'RoleController');

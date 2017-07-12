@@ -47,15 +47,27 @@
         </div>
     </div>
 </div>
+
+@if(auth()->user()->hasRole('admin'))
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Profile Access : {{$user->id}} - {{$user->name}}
+        </div>
+        <div class="panel-body">
+            <assignProfile id="assignProfileController" :user_id={{json_encode($user->id)}} inline-template>
+                @include('user._assignProfile')
+            </assignProfile>
+        </div>
+    </div>
+@endif
 </div>
 
 <style>
-
     .dropdown{
         position: absolute;
         z-index : 999;
     }
-
 </style>
+<script src="/js/vue-controller/assignProfileController.js"></script>
 
 @stop

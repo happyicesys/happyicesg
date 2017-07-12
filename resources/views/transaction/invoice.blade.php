@@ -257,19 +257,19 @@
                             @if($deal->unit_price == 0 || $deal->unit_price == null)
                             <td class="col-xs-1 text-right">
                                 @if($deal->qty != 0)
-                                    {{ number_format(($deal->amount / $deal->qty), 2, '.', ',')}}
+                                    {{ number_format(($deal->amount / $deal->qty), 2)}}
                                 @else
-                                    {{ number_format(($deal->amount), 2, '.', ',')}}
+                                    {{ number_format(($deal->amount), 2)}}
                                 @endif
                             </td>
                             @else
                             <td class="col-xs-1 text-right">
-                                {{ $deal->unit_price }}
+                                {{ number_format($deal->unit_price, 2) }}
                             </td>
                             @endif
                             @if($deal->amount != 0)
                             <td class="col-xs-1 text-right">
-                                {{ $deal->amount }}
+                                {{ number_format($deal->amount, 2) }}
                             </td>
                             @else
                             <td class="col-xs-1 text-right">
@@ -285,7 +285,7 @@
                                 <span class="col-xs-offset-7" style="padding-left:33px;"><strong>SubTotal</strong></span>
                             </td>
                             <td class="text-right">
-                                <strong>{{ $totalprice }}</strong>
+                                <strong>{{ number_format($totalprice, 2) }}</strong>
                             </td>
                         </tr>
                         <tr>
@@ -293,7 +293,7 @@
                                 <span style="padding-left:210px;"><strong>GST (7%)</strong></span>
                             </td>
                             <td class="text-right">
-                                {{ number_format(($totalprice * 7/100), 2, '.', ',')}}
+                                {{ number_format(($totalprice * 7/100), 2)}}
                             </td>
                         </tr>
                         @endif
@@ -304,7 +304,7 @@
                                 <span style="padding-left:210px;"><strong>Delivery Fee</strong></span>
                             </td>
                             <td class="text-right">
-                                {{ number_format(($transaction->delivery_fee), 2, '.', ',')}}
+                                {{ number_format(($transaction->delivery_fee), 2)}}
                             </td>
                         </tr>
                         @endif
@@ -317,7 +317,7 @@
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice * 107/100 + $transaction->delivery_fee), 2, '.', ',') : number_format(($totalprice * 107/100), 2, '.', ',') }}</strong>
+                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice * 107/100 + $transaction->delivery_fee), 2, '.', ',') : number_format(($totalprice * 107/100), 2) }}</strong>
                                 </td>
                             @else
                                 <td colspan="3">
@@ -326,7 +326,7 @@
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice + $transaction->delivery_fee), 2, '.', ',') : $totalprice}}</strong>
+                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice + $transaction->delivery_fee), 2) : $totalprice}}</strong>
                                 </td>
                             @endif
                         </tr>

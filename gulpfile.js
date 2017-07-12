@@ -42,6 +42,7 @@ elixir(function(mix) {
             '../bower/angular-datepicker/dist/angular-datepicker.js',
             'vue/vue.js',
             'vue/vue-resource.js',
+            'axios/axios.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });
