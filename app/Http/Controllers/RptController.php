@@ -14,9 +14,11 @@ use App\Transaction;
 use DB;
 use Auth;
 use PDF;
+use App\HasProfileAccess;
 
 class RptController extends Controller
 {
+    use HasProfileAccess;
     /**Auth for all
      *
      */
@@ -82,208 +84,125 @@ class RptController extends Controller
         $option = $request->input('cust_choice');
 
         if($option){
-
             if($option == 'all'){
-
                 $title = 'Customers(ALL)';
-
-                $people = Person::where('cust_id', 'NOT LIKE', 'H%')->get();
+                $people = Person::where('cust_id', 'NOT LIKE', 'H%')
+                            ->whereHas('profile', function($q) {
+                                $q->filterUserProfile();
+                            })
+                            ->get();
 
                 if(count($people)>0){
-
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($people) {
-
                         $excel->sheet('sheet1', function($sheet) use ($people) {
-
                             $sheet->setAutoSize(true);
-
                             $sheet->setColumnFormat(array(
                                 'A:T' => '@'
                             ));
-
                             $sheet->loadView('report.peopleAll_excel', compact('people'));
-
                         });
-
                     })->download('xls');
 
                     Flash::success('Reports successfully generated');
 
-
                 }else{
-
                     Flash::error('There is no records for the selection report');
-
                 }
             }else{
-
                 $person = Person::findOrFail($option);
 
                 if($person){
-
                     $title = $person->cust_id.'('.$person->company.')';
-
                     $transactions = Transaction::wherePersonId($person->id)->latest()->get();
-
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($person, $transactions) {
-
                         $excel->sheet('sheet1', function($sheet) use ($person, $transactions) {
-
                             $sheet->setAutoSize(true);
-
                             $sheet->setColumnFormat(array(
                                 'A:T' => '@'
                             ));
-
                             $sheet->loadView('report.person_excel', compact('person', 'transactions'));
-
                         });
-
                     })->download('xls');
-
                     Flash::success('Reports successfully generated');
-
                 }else{
-
                     Flash::error('There is no records for the selection report');
-
                 }
-
             }
-
         }else{
-
             Flash::error('Please Select One From the List');
         }
-
         return redirect('report');
     }
 
     public function generateTransaction(Request $request)
     {
         $title = 'Transaction';
-
         $radiobtn = $request->input('choice_transac');
-
         $datefrom = $request->input('transaction_datefrom');
-
         $dateto = $request->input('transaction_dateto');
-
         $year = $request->input('transac_year');
-
         $month = $request->input('transac_month');
 
 
         switch($radiobtn){
-
             case 'tran_specific':
-
                 if($datefrom && $dateto){
-
                     $date1 = $datefrom;
-
                     $date2 = $dateto;
-
-                    $transactions = Transaction::with('deals', 'person')->searchDateRange($datefrom, $dateto);
-
+                    $transactions = Transaction::with('deals', 'person')
+                                    ->searchDateRange($datefrom, $dateto)
+                                    ->whereHas('profile', function($q) {
+                                        $q->filterUserProfile();
+                                    });
                     $transactions = $transactions->get();
-/*
-                    $deals = DB::table('deals')
-                                ->leftJoin('transactions', 'deals.transaction_id', '=', 'transactions.id')
-                                ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                                ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                                ->leftJoin('items', 'deals.item_id', '=', 'items.id')
-                                ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount');
-
-                    $deals->searchDateRange($datefrom, $dateto)->get();*/
-
                 }else{
-
                     if($datefrom){
-
                         Flash::error('Please Fill in the Date To');
-
                     }else if($dateto){
-
                         Flash::error('Please Fill in the Date From');
-
                     }else{
-
                         Flash::error('Please Fill in the Searching Dates');
                     }
-
                 }
-
             break;
 
             case 'tran_all':
-
                 $date1 = Carbon::parse('first day of January '.$year)->format('d M y');
-
                 $date2 = Carbon::parse('last day of December '.$year)->format('d M y');
-
-                $transactions = Transaction::with('deals', 'person')->searchYearRange($year);
-
+                $transactions = Transaction::with('deals', 'person')
+                                ->searchYearRange($year)
+                                ->whereHas('profile', function($q) {
+                                    $q->filterUserProfile();
+                                });
                 $transactions = $transactions->get();
-/*                $deals = DB::table('deals')
-                            ->leftJoin('transactions', 'deals.transaction_id', '=', 'transactions.id')
-                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->leftJoin('items', 'deals.item_id', '=', 'items.id')
-                            ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount')
-                            ->whereBetween('transactions.delivery_date', array($date1, $date2))
-                            ->get();*/
-
-
             break;
 
             case 'tran_month':
-
                 $date1 = Carbon::create(Carbon::now()->year, $month)->startOfMonth()->format('d M y');
-
                 $date2 = Carbon::create(Carbon::now()->year, $month)->endOfMonth()->format('d M y');
-
-                $transactions = Transaction::with('deals', 'person')->searchMonthRange($month);
-
+                $transactions = Transaction::with('deals', 'person')
+                                ->searchMonthRange($month)
+                                ->whereHas('profile', function($q) {
+                                    $q->filterUserProfile();
+                                });
                 $transactions = $transactions->get();
-/*                $deals = DB::table('deals')
-                            ->leftJoin('transactions', 'deals.transaction_id', '=', 'transactions.id')
-                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->leftJoin('items', 'deals.item_id', '=', 'items.id')
-                            ->select('profiles.name as profile_name', 'items.product_id', 'people.cust_id', 'people.company', 'transactions.id', 'transactions.delivery_date', 'deals.qty', 'deals.amount');
-
-                $deals->searchDateRange($datefrom, $dateto)->get();*/
-
-
             break;
 
         }
 
         if(isset($transactions)){
-
             if(count($transactions)>0){
-
                 Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($transactions, $date1, $date2) {
-
                     $excel->sheet('sheet1', function($sheet) use ($transactions, $date1, $date2) {
-
                         $sheet->setColumnFormat(array(
                             'A:P' => '@'
                         ));
-
                         $sheet->loadView('report.transaction_excel', compact('transactions', 'date1', 'date2'));
-
                     });
-
                 })->download('xls');
-
                 Flash::success('Reports successfully generated');
-
             }else{
-
                 Flash::error('There is no records for the selection report');
-
             }
         }
 
@@ -293,20 +212,12 @@ class RptController extends Controller
     public function generateByProduct(Request $request)
     {
         $title = 'ByProduct';
-
         $datefrom = $request->input('byproduct_datefrom');
-
         $dateto = $request->input('byproduct_dateto');
 
         if($datefrom && $dateto){
-
             $date1 = Carbon::createFromFormat('d M y', $datefrom)->format('Y-m-d');
-
             $date2 = Carbon::createFromFormat('d M y', $dateto)->format('Y-m-d');
-/*
-            $transactions = Transaction::with('deals', 'person')->searchDateRange($datefrom, $dateto);
-
-            $transactions = $transactions->get();*/
 
             $deals = DB::table('deals')
                         ->leftJoin('transactions', 'deals.transaction_id', '=', 'transactions.id')
@@ -319,32 +230,20 @@ class RptController extends Controller
                         ->get();
 
             if(isset($deals)){
-
                 if(count($deals)>0){
-
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($deals, $datefrom, $dateto) {
-
                         $excel->sheet('sheet1', function($sheet) use ($deals, $datefrom, $dateto) {
-
                             $sheet->setColumnFormat(array(
                                 'A:P' => '@'
                             ));
-
                             $sheet->loadView('report.deal_excel', compact('deals', 'datefrom', 'dateto'));
-
                         });
-
                     })->download('xls');
-
                     Flash::success('Reports successfully generated');
-
                 }else{
-
                     Flash::error('There is no records for the selection report');
-
                 }
             }
-
         }else{
 
             if($datefrom){
@@ -368,29 +267,22 @@ class RptController extends Controller
     {
 
         $datefrom = $request->input('driver_datefrom');
-
         $dateto = $request->input('driver_dateto');
 
         // declaring dates
         if($datefrom){
-
             $date1 = Carbon::createFromFormat('d M y', $request->input('driver_datefrom'))->format('Y-m-d');
         }
 
         if($dateto){
-
             $date2 = Carbon::createFromFormat('d M y', $request->input('driver_dateto'))->format('Y-m-d');
         }
 
 
         if($request->input('driver')){
-
             $driver = $request->input('driver');
-
             $title = 'Driver('.$driver.')_';
-
             if($datefrom == $dateto){
-
                 $transactions = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
@@ -398,11 +290,8 @@ class RptController extends Controller
                             ->where('transactions.delivery_date', $date1)
                             ->where('transactions.driver', $driver)
                             ->get();
-
             }else{
-
                 if($datefrom and $dateto){
-
                     $transactions = DB::table('transactions')
                                 ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
@@ -411,10 +300,8 @@ class RptController extends Controller
                                 ->where('transactions.delivery_date', '<=', $date2)
                                 ->where('transactions.driver', $driver)
                                 ->get();
-
                 }else if(($datefrom and !$dateto)or(!$datefrom and $dateto)){
-
-                Flash::error('Please Fill in the Date From/ To');
+                    Flash::error('Please Fill in the Date From/ To');
 
                 }
             }
@@ -424,29 +311,19 @@ class RptController extends Controller
         }
 
             if(isset($transactions)){
-
                 if(count($transactions)>0){
-
                     Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($transactions, $datefrom, $dateto) {
-
                         $excel->sheet('sheet1', function($sheet) use ($transactions, $datefrom, $dateto) {
-
                             $sheet->setColumnFormat(array(
                                 'A:P' => '@'
                             ));
-
                             $sheet->loadView('report.driver_excel', compact('transactions', 'datefrom', 'dateto'));
-
                         });
-
                     })->download('xls');
-
                     Flash::success('Reports successfully generated');
 
                 }else{
-
                     Flash::error('There is no records for the selection report');
-
                 }
             }
 
@@ -585,6 +462,8 @@ class RptController extends Controller
                 $query = $query->where('driver', 'LIKE', '%'.$driver.'%');
             }
 
+            $query = $this->filterUserDbProfile($query);
+
             $query = $this->extraField($request, $query);
             $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
 
@@ -602,6 +481,8 @@ class RptController extends Controller
             }else if($driver and $paid_by){
                 $query1 = $query1->where('driver', 'LIKE', '%'.$driver.'%');
             }
+
+            $query1 = $this->filterUserDbProfile($query1);
 
             $query1 = $this->extraField($request, $query1);
             $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
@@ -621,13 +502,15 @@ class RptController extends Controller
                 $query2 = $query2->where('paid_by', 'LIKE', '%'.$paid_by.'%');
             }
 
+            $query2 = $this->filterUserDbProfile($query2);
+
             $query2 = $this->extraField($request, $query2);
+            $query2 = $this->filterUserDbProfile($query2);
             $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
 
             $query2 = $query2
                 ->union($query)->union($query1)
                 ->orderBy('id', 'desc')
-                // dd($query2->toSql());
                 ->get();
                 // dd($query2);
 
@@ -656,9 +539,7 @@ class RptController extends Controller
         // check whether delivery_date presence
         if($delivery_date){
             $query1 = $query1->where('delivery_date', '=', $delivery_date);
-        }/*else{
-            $query1 = $query1->where('delivery_date', '=', Carbon::today()->toDateString());
-        }*/
+        }
 
         // if user is driver
         if(Auth::user()->hasRole('driver')){
@@ -666,6 +547,8 @@ class RptController extends Controller
         }else if($driver){
             $query1 = $query1->where('driver', 'like', '%'.$driver.'%');
         }
+
+        $query1 = $this->filterUserDbProfile($query1);
 
         $query1 = $this->extraField($request, $query1);
         $query1 = $query1->orderBy('transactions.id', 'desc');
@@ -677,22 +560,19 @@ class RptController extends Controller
         // check whether paid_at presence
         if($paid_at){
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
-        }/*else{
-            $query2 = $query2->whereDate('paid_at', '=', Carbon::today()->toDateString());
-        }*/
+        }
 
         // if user is driver
         if(Auth::user()->hasRole('driver')){
             $query2 = $query2->where('paid_by', Auth::user()->name);
-        }/*else if($driver){
-            $query2 = $query2->where('driver', 'like', '%'.$paid_by.'%');
-        }*/
+        }
 
         // if paid_by presence
         if($paid_by){
             $query2 = $query2->where('paid_by', 'like', '%'.$paid_by.'%');
         }
 
+        $query2 = $this->filterUserDbProfile($query2);
 
         $query2 = $this->extraField($request, $query2);
         $query2 = $query2->orderBy('transactions.id', 'desc');

@@ -29,8 +29,9 @@ class DatabaseSeeder extends Seeder
         $this->call(D2dOnlineSaleSeeder::class);
         $this->call(MonthSeeder::class);
         $this->call(CustcategorySeeder::class);
-        */
         $this->call(ItemcategorySeeder::class);
+        */
+        $this->call(ProfileUserRelateSeeder::class);
         Model::reguard();
     }
 }

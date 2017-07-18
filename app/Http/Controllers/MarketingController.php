@@ -30,9 +30,11 @@ use App\EmailAlert;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Postcode;
 use App\D2dOnlineSale;
+use App\HasProfileAccess;
 
 class MarketingController extends Controller
 {
+    use HasProfileAccess;
 
     //auth-only login can see
     public function __construct()
@@ -95,7 +97,12 @@ class MarketingController extends Controller
         $member_adminbool = false;
         $memberbool = false;
         $member = Person::where('user_id', Auth::user()->id)->first();
-        $all_members = Person::where('cust_id', 'LIKE', 'D%')->with('manager')->orderBy('id', 'desc')->get();
+        $all_members = Person::where('cust_id', 'LIKE', 'D%')
+                                ->with('manager')
+                                ->whereHas('profile', function($q) {
+                                    $q->filterUserProfile();
+                                })
+                                ->orderBy('id', 'desc')->get();
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -114,7 +121,15 @@ class MarketingController extends Controller
         }
 
         if($memberbool){
-            return $member->descendants()->where('cust_id', 'LIKE', 'D%')->with('manager')->reOrderBy('id', 'desc')->get();
+            return $member
+                    ->descendants()
+                    ->where('cust_id', 'LIKE', 'D%')
+                    ->with('manager')
+                    ->whereHas('profile', function($q) {
+                        $q->filterUserProfile();
+                    })
+                    ->reOrderBy('id', 'desc')
+                    ->get();
         }else if($adminbool or $member_adminbool){
             return $all_members;
         }else{
@@ -326,7 +341,7 @@ class MarketingController extends Controller
         $member_adminbool = false;
         $memberbool = false;
         $member = Person::where('user_id', Auth::user()->id)->first();
-        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('id', 'desc')->get();
+        $all_customers = Person::where('cust_id', 'LIKE', 'H%')->with('manager')->orderBy('id', 'desc');
 
         // find out is whether OM or normal d2d member
         if($member){
@@ -346,9 +361,21 @@ class MarketingController extends Controller
 
         // show results based on condition
         if($memberbool){
-            return $member->descendants()->where('cust_id', 'LIKE', 'H%')->with('manager')->reOrderBy('id', 'desc')->get();
+            return $member
+                    ->descendants()
+                    ->where('cust_id', 'LIKE', 'H%')
+                    ->with('manager')
+                    ->whereHas('profile', function($q) {
+                        $q->filterUserProfile();
+                    })
+                    ->reOrderBy('id', 'desc')
+                    ->get();
         }else if($adminbool or $member_adminbool){
-            return $all_customers;
+            return $all_customers
+                    ->whereHas('profile', function($q) {
+                        $q->filterUserProfile();
+                    })
+                    ->get();
         }else{
             return '';
         }
@@ -647,6 +674,11 @@ class MarketingController extends Controller
                 $query->whereIn('id', $personid_arr);
             });
         }
+        // add user profile filters
+        $query = $query->whereHas('person.profile', function($q) {
+            $q->filterUserProfile();
+        });
+
         $caldeal = $this->calDealTotal($query);
         $calcomm = $this->calCommTotal($query);
         $query = $query->orderBy('id', 'desc')->get();
@@ -677,22 +709,38 @@ class MarketingController extends Controller
     public function showDtdTransaction($person_id)
     {
         // return DtdTransaction::with('person')->wherePersonId($person_id)->latest()->take(5)->get();
-        $dtdtransactions = DtdTransaction::with(['person', 'person.profile', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
-            $query->wherehas('item', function($query){
-                $query->whereNotIn('product_id', [301, 302]);
-            });
-        })->latest()->take(5)->get();
+        $dtdtransactions = DtdTransaction::with(['person', 'person.profile', 'dtddeals', 'dtddeals.item'])
+                            ->wherePersonId($person_id)
+                            ->whereHas('dtddeals', function($query){
+                                $query->wherehas('item', function($query){
+                                    $query->whereNotIn('product_id', [301, 302]);
+                                });
+                            })
+                            ->whereHas('person.profile', function($q) {
+                                $q->filterUserProfile();
+                            })
+                            ->latest()
+                            ->take(5)
+                            ->get();
         return $dtdtransactions;
     }
 
     public function showDtdCommision($person_id)
     {
         // return DtdTransaction::with('person')->wherePersonId($person_id)->where('total', '>', '0')->latest()->take(5)->get();
-        $dtdtransactions = DtdTransaction::with(['person', 'dtddeals', 'dtddeals.item'])->wherePersonId($person_id)->wherehas('dtddeals', function($query){
-            $query->wherehas('item', function($query){
-                $query->whereIn('product_id', [301, 302]);
-            });
-        })->latest()->take(5)->get();
+        $dtdtransactions = DtdTransaction::with(['person', 'dtddeals', 'dtddeals.item'])
+                            ->wherePersonId($person_id)
+                            ->wherehas('dtddeals', function($query){
+                                $query->wherehas('item', function($query){
+                                    $query->whereIn('product_id', [301, 302]);
+                                });
+                            })
+                            ->whereHas('person.profile', function($q) {
+                                $q->filterUserProfile();
+                            })
+                            ->latest()
+                            ->take(5)
+                            ->get();
         return $dtdtransactions;
     }
 
@@ -1163,9 +1211,20 @@ class MarketingController extends Controller
             $dtdrole = '';
         }
         if(Auth::user()->hasRole('admin') or $dtdrole === 'OM' or $dtdrole === 'OE'){
-            $people = Person::where('cust_id', 'LIKE', 'D%')->get();
+            $people = Person::where('cust_id', 'LIKE', 'D%')
+                    ->whereHas('profile', function($q) {
+                        $q->filterUserProfile();
+                    })
+                    ->get();
         }else{
-            $people = Person::whereUserId(Auth::user()->id)->first()->descendantsAndSelf()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_id')->get();
+            $people = Person::whereUserId(Auth::user()->id)->first()
+                    ->descendantsAndSelf()
+                    ->where('cust_id', 'LIKE', 'D%')
+                    ->whereHas('profile', function($q) {
+                        $q->filterUserProfile();
+                    })
+                    ->reOrderBy('cust_id')
+                    ->get();
         }
         return $people;
     }
@@ -1410,6 +1469,12 @@ class MarketingController extends Controller
                 $adminaccess_bool = false;
             }
         }
+
+        // add user profile filters
+        $query = $query->whereHas('person.profile', function($q) {
+            $q->filterUserProfile();
+        });
+
         // auth only admin can see all or else own creation
         if(! $adminaccess_bool){
             $personid_arr = array();

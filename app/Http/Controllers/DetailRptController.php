@@ -15,9 +15,12 @@ use App\Deal;
 use Carbon\Carbon;
 use Auth;
 use DB;
+use App\HasProfileAccess;
 
 class DetailRptController extends Controller
 {
+    use HasProfileAccess;
+
     // detect authed
     public function __construct()
     {
@@ -66,6 +69,9 @@ class DetailRptController extends Controller
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
 
         $total_amount = $this->calDBOriginalTotal($transactions);
 
@@ -164,10 +170,16 @@ class DetailRptController extends Controller
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->driver or $request->profile){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
         $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
+
         $total_amount = $this->calCustoutstandingTotal($transactions);
 
         if($pageNum == 'All'){
@@ -212,6 +224,9 @@ class DetailRptController extends Controller
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
 
         $caldata = $this->calPayDetailTotal($transactions);
 
@@ -263,6 +278,10 @@ class DetailRptController extends Controller
         }
         // paid conditions
         $transactions = $transactions->where('transactions.pay_status', 'Paid')->whereNotNull('transactions.pay_method');
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
         $caldata = $this->calAccPaySummary($transactions);
 
         $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
@@ -405,6 +424,9 @@ class DetailRptController extends Controller
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
 
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
         if(request('is_commission') != '') {
             $transactions = $transactions->where('items.is_commission', request('is_commission'));
         }
@@ -540,6 +562,9 @@ class DetailRptController extends Controller
             $items = $this->searchItemDBFilter($items, $request);
         }
 
+        // add user profile filters
+        $items = $this->filterUserDbProfile($items);
+
         if(request('is_commission') != '') {
             $items = $items->where('items.is_commission', request('is_commission'));
         }
@@ -614,6 +639,7 @@ class DetailRptController extends Controller
                 $amountstr .=" AND transactions.status='".$request->status."'";
             }
         }
+
         if(request('is_commission') != '') {
             $amountstr .= " AND items.is_commission='".request('is_commission')."'";
         }
@@ -828,6 +854,9 @@ class DetailRptController extends Controller
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
 
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
         if($profile_id) {
             $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
         }else {
@@ -1033,6 +1062,9 @@ class DetailRptController extends Controller
             $deals = $this->invoiceBreakdownSummaryFilter($request, $deals);
         }
 
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
+
         $deals = $deals->groupBy('people.id');
 
         if($request->sortName){
@@ -1081,7 +1113,10 @@ class DetailRptController extends Controller
                             $query->whereItemId($item_id);
                         })
                         ->where('delivery_date', '>=', $current_from)
-                        ->where('delivery_date', '<=', $current_to);
+                        ->where('delivery_date', '<=', $current_to)
+                        ->whereHas('profile', function($query) {
+                            $query->filterUserProfile();
+                        });
 
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
@@ -1131,6 +1166,10 @@ class DetailRptController extends Controller
                                 ->orWhere('transactions.status', 'Verified Owe')
                                 ->orWhere('transactions.status', 'Verified Paid');
                     });
+
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
+
         $transactions = clone $deals;
         $itemsPeople = clone $deals;
 
@@ -1219,6 +1258,9 @@ class DetailRptController extends Controller
             $deals = $deals->groupBy('items.id');
         }
 
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
+
         if(request('sortName')){
             $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }else {
@@ -1277,6 +1319,9 @@ class DetailRptController extends Controller
                     });
 
         $deals = $this->detailrptStockFilters(request(), $deals);
+
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
 
         $transactions = clone $deals;
         $transactionDates = clone $deals;

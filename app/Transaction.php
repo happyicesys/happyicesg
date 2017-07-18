@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Transaction extends Model
 {
-    use \Venturecraft\Revisionable\RevisionableTrait;
+    use \Venturecraft\Revisionable\RevisionableTrait, HasProfileAccess;
 
     public static function boot()
     {
@@ -286,4 +286,5 @@ class Transaction extends Model
             return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
         }
     }
+
 }

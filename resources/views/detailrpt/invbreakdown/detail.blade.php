@@ -27,7 +27,17 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('person_id', [''=>null]+$people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(), $request->person_id ? $request->person_id : null,
+                    {!! Form::select('person_id', [''=>null]+
+                        $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                            ->whereActive('Yes')
+                            ->where('cust_id', 'NOT LIKE', 'H%')
+                            ->whereHas('profile', function($q) {
+                                $q->filterUserProfile();
+                            })
+                            ->orderBy('cust_id')
+                            ->pluck('full', 'id')
+                            ->all(),
+                        $request->person_id ? $request->person_id : null,
                         ['class'=>'select form-control'])
                     !!}
                 </div>

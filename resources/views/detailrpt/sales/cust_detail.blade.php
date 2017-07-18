@@ -4,7 +4,10 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null,
+                {!! Form::select('profile_id', [''=>'All']+
+                    $profiles::filterUserProfile()
+                        ->pluck('name', 'id')
+                        ->all(), null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.profile_id',

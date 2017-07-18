@@ -138,7 +138,7 @@
                     </div>
                     <div class="form-group col-md-2 col-sm-6 col-xs-12">
                         {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('profile_id', [''=>'All']+$profiles::lists('name', 'id')->all(), null, ['id'=>'profile_id',
+                        {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->lists('name', 'id')->all(), null, ['id'=>'profile_id',
                             'class'=>'select form-control',
                             'ng-model'=>'search.profile_id',
                             'ng-change' => 'searchDB()'

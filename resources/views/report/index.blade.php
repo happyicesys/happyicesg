@@ -40,7 +40,14 @@
                                         <div class="form-group">
                                         {!! Form::label('cust_choice', 'Select Customer', ['class'=>'control-label']) !!}
                                         {!! Form::open(['id'=>'person_form', 'method'=>'POST','action'=>['RptController@generatePerson']]) !!}
-                                        {!! Form::select('cust_choice', [''=>null, 'all'=>'ALL (Info Only)']+$people::where('cust_id', 'NOT LIKE', 'H%')->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->lists('full', 'id')->all(),
+                                        {!! Form::select('cust_choice', [''=>null, 'all'=>'ALL (Info Only)']+
+                                            $people::where('cust_id', 'NOT LIKE', 'H%')
+                                                    ->whereHas('profile', function($q) {
+                                                        $q->filterUserProfile();
+                                                    })
+                                                    ->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                                                    ->pluck('full', 'id')
+                                                    ->all(),
                                             null, ['class'=>'select form-control', 'id'=>'cust_choice']) !!}
                                         {!! Form::close() !!}
                                         </div>

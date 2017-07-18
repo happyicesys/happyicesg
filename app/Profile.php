@@ -23,4 +23,37 @@ class Profile extends Model
     {
         return $this->belongsToMany('App\User');
     }
+
+    // scopes
+    // normal builder
+    public function scopeFilterUserProfile($query)
+    {
+        $profileIdArr = $this->searchUserProfileId();
+
+        return $query->whereIn('id', $profileIdArr);
+    }
+
+    // db query builder
+    public function scopeFilterUserDbProfile($query)
+    {
+        $profileIdArr = $this->searchUserProfileId();
+
+        return $query->whereIn('profiles.id', $profileIdArr);
+    }
+
+    // get the current auth user and return profiles id
+    private function searchUserProfileId()
+    {
+        $profileIdArr = [];
+
+        $user_profiles = auth()->user()->profiles;
+
+        if($user_profiles) {
+            foreach($user_profiles as $user_profile) {
+                array_push($profileIdArr, $user_profile->id);
+            }
+        }
+
+        return $profileIdArr;
+    }
 }

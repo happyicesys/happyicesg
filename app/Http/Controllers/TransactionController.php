@@ -30,9 +30,11 @@ use App\DtdPrice;
 use App\DtdTransaction;
 use App\DtdDeal;
 use App\GeneralSetting;
+use App\HasProfileAccess;
 
 class TransactionController extends Controller
 {
+    use HasProfileAccess;
     //qty status condition
     /*
         qty_status = 1 (Stock Order/ Confirmed)
@@ -66,12 +68,15 @@ class TransactionController extends Controller
                                     'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
                                     'profiles.gst', 'transactions.delivery_fee', 'custcategories.name as custcategory'
                                 );
-        // dd($input);
+
         // reading whether search input is filled
         if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile_id or $request->custcategory){
             $transactions = $this->searchDBFilter($transactions, $request);
         }
-        // dd($request->all());
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
         $total_amount = $this->calDBTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
 

@@ -21,7 +21,9 @@
                     <div class="form-group">
                         {!! Form::label('person_id', 'Customer', ['class'=>'control-label']) !!}
                         {!! Form::select('person_id',
-                            [''=>null] + $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
+                            [''=>null] + $people::whereHas('profile', function($q){
+                                $q->filterUserProfile();
+                            })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
                             null,
                             [
                             'id'=>'person_id',
