@@ -145,7 +145,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('custcategory', [''=>'All'] + $custcategories::pluck('name', 'id')->all(),
+                    {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
                         null,
                         [
                             'class'=>'select form-control',

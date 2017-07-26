@@ -118,102 +118,141 @@
 {!! Form::close() !!}
 
 <div class="row" style="padding-left: 15px; padding-top: 20px;">
-    <div class="col-md-2 col-xs-12">
+    <div class="col-md-12 col-sm-12 col-xs-12">
         {{-- <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button> --}}
         <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
         <button class="btn btn-success" type="submit" form="submit_form"><i class="fa fa-pencil-square-o"></i><span class="hidden-xs"> Batch Update</span></button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
-    <div class="col-md-3 col-xs-12">
-        <div class="row">
-            <div class="col-md-12 col-xs-12 text-center">
-                <strong>HappyIce P/L</strong>
+</div>
+
+<div class="row" style="padding-top: 15px;">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-3 col-md-3 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                    <strong>HappyIce P/L</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cash:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cash_happyice ? total_cash_happyice : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cheque_happyice ? total_cheque_happyice : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    TT:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_tt_happyice ? total_tt_happyice : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cash:
+
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                    <strong>HappyIce Logistics P/L</strong>
+                </div>
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cash_happyice ? total_cash_happyice : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cash:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cash_logistic ? total_cash_logistic : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cheque:
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cheque_logistic ? total_cheque_logistic : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cheque_happyice ? total_cheque_happyice : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                TT:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_tt_happyice ? total_tt_happyice : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-xs-12">
-        <div class="row">
-            <div class="col-md-12 col-xs-12 text-center">
-                <strong>HappyIce Logistics P/L</strong>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cash:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cash_logistic ? total_cash_logistic : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    TT:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_tt_logistic ? total_tt_logistic : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cheque:
+
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                    <strong>Ice Drop P/L</strong>
+                </div>
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cheque_logistic ? total_cheque_logistic : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cash:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cash_icedrop ? total_cash_icedrop : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                TT:
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cheque_icedrop ? total_cheque_icedrop : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_tt_logistic ? total_tt_logistic : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-xs-12">
-        <div class="row">
-            <div class="col-md-12 col-xs-12 text-center">
-                <strong>All Profile</strong>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cash:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cash_all ? total_cash_all : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                Cheque:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_cheque_all ? total_cheque_all : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    TT:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_tt_icedrop ? total_tt_icedrop : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-xs-6 text-right">
-                TT:
+
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                    <strong>All Profile</strong>
+                </div>
             </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_tt_all ? total_tt_all : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cash:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cash_all ? total_cash_all : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_cheque_all ? total_cheque_all : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    TT:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_tt_all ? total_tt_all : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
     </div>

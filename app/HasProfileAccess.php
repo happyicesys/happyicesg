@@ -20,6 +20,14 @@ trait HasProfileAccess{
         return $query->whereIn('profiles.id', $profileIdArr);
     }
 
+    // return profile ids only()
+    public function getUserProfileIdArray()
+    {
+        $profileIdArr = $this->searchUserProfileId();
+
+        return $profileIdArr;
+    }
+
     // get the current auth user and return profiles id
     private function searchUserProfileId()
     {

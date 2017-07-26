@@ -66,7 +66,7 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('custcategory', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->lists('name', 'id')->all(), null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.custcategory',
@@ -146,6 +146,12 @@
                     <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                <a href="" ng-click="sortTable('custcategory_desc')">
+                    Category Desc
+                    <span ng-if="search.sortName == 'custcategory_desc' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'custcategory_desc' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('thistotal')">
                     Total<br>
                     (This Month)
@@ -185,6 +191,9 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ transaction.custcategory }}
+                    </td>
+                    <td class="col-md-1 text-left">
+                        @{{ transaction.custcategory_desc }}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.thistotal | currency: "": 2 }}
