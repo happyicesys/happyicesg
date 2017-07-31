@@ -181,6 +181,7 @@ class TransactionController extends Controller
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                         ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                        ->where('items.is_active', 1)
                         ->orderBy('product_id')
                         ->get();
         }else if($transaction->person->cust_id[0] === 'H'){
@@ -194,6 +195,7 @@ class TransactionController extends Controller
                             ->select(
                                 'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id'
                                 )
+                            ->where('items.is_active', 1)
                             ->orderBy('product_id')
                             ->get();
         }else{
@@ -201,8 +203,13 @@ class TransactionController extends Controller
                         ->leftJoin('items', 'prices.item_id', '=', 'items.id')
                         ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
                         ->where('prices.person_id', '=', $transaction->person_id)
+                        ->where('items.is_active', 1)
                         ->orderBy('product_id')
                         ->get();
+/*            $prices = Price::with('item')
+                            ->where('person_id', $transaction->person_id)
+                            ->orderBy('product_id')
+                            ->get();*/
         }
 
         return view('transaction.edit', compact('transaction', 'person', 'prices'));

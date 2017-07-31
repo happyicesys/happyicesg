@@ -94,7 +94,7 @@
                                 <td class="text-center" colspan="12">No Records Found</td>
                             @else
 
-                                @foreach($items::orderBy('product_id')->get() as $item)
+                                @foreach($items::withoutGlobalScopes()->orderBy('product_id')->get() as $item)
                                 <tr class="form-group">
                                     <td class="col-md-5">
                                         {{$item->product_id}} - {{$item->name}} - {{$item->remark}}

@@ -17,9 +17,12 @@ class DealController extends Controller
 
     public function getData($transaction_id)
     {
-        $deals =  Deal::with(['item.prices'])->whereHas('transaction', function($query) use ($transaction_id){
-            $query->where('transaction_id', $transaction_id);
-        })->get();
+        $deals =  Deal::with(['item.prices', 'item' => function($query) {
+                            $query->withoutGlobalScopes();
+                        }])
+                        ->whereHas('transaction', function($query) use ($transaction_id){
+                            $query->where('transaction_id', $transaction_id);
+                        })->get();
         return $deals;
     }
 

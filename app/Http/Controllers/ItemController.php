@@ -30,7 +30,7 @@ class ItemController extends Controller
     // item index page items api
     public function getData()
     {
-        $items =  Item::orderBy('product_id')->get();
+        $items =  Item::withoutGlobalScopes()->orderBy('product_id')->get();
         $total_available = Item::sum('qty_now');
         $total_booked = Item::sum('qty_order');
         $data = [
@@ -97,7 +97,7 @@ class ItemController extends Controller
 
     public function edit($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::withoutGlobalScopes()->findOrFail($id);
         return view('item.edit', compact('item'));
     }
 
@@ -109,7 +109,7 @@ class ItemController extends Controller
         request()->merge(array('is_healthier' => request()->has('is_healthier') == 'true' ? 1 : 0));
         request()->merge(array('is_halal' => request()->has('is_halal') == 'true' ? 1 : 0));
 
-        $item = Item::findOrFail($id);
+        $item = Item::withoutGlobalScopes()->findOrFail($id);
         $item->update(request()->all());
 
         if($file = request()->file('main_imgpath')){
@@ -141,14 +141,14 @@ class ItemController extends Controller
 
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::withoutGlobalScopes()->findOrFail($id);
         $item->delete();
         return redirect('item');
     }
 
     public function destroyAjax($id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::withoutGlobalScopes()->findOrFail($id);
         $item->delete();
         return $item->name . 'has been successfully deleted';
     }
@@ -163,7 +163,7 @@ class ItemController extends Controller
     // adding new photos
     public function addImage(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
+        $item = Item::withoutGlobalScopes()->findOrFail($id);
         $file = $request->file('file');
         $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
         $file->move('item_asset/'.$item->id.'/', $name);
@@ -282,7 +282,7 @@ class ItemController extends Controller
     // show the item's qty on order page (int item_id)
     public function getItemQtyOrder($item_id)
     {
-        $item = Item::findOrFail($item_id);
+        $item = Item::withoutGlobalScopes()->findOrFail($item_id);
 
         return view('item.qtyorder', compact('item'));
     }
@@ -292,7 +292,7 @@ class ItemController extends Controller
     {
         $transactions = Transaction::with(['person', 'person.profile', 'person.custcategory'])
                         ->whereHas('deals', function($query) use ($item_id) {
-                            $query->whereQtyStatus(1)->whereItemId($item_id);
+                            $query->withoutGlobalScopes()->whereQtyStatus(1)->whereItemId($item_id);
                         });
 
         if($request->sortName){
@@ -305,6 +305,16 @@ class ItemController extends Controller
         ];
 
         return $data;
+    }
+
+    // retrieve item by id and reverse the activation status(integer $item_id)
+    public function setActiveState($item_id)
+    {
+        $item = Item::withoutGlobalScopes()->findOrFail($item_id);
+        $item->is_active = $item->is_active == 1 ? 0 : 1;
+        $item->save();
+
+        return Redirect::action('ItemController@edit', $item->id);
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)

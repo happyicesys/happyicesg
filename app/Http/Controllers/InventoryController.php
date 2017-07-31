@@ -38,7 +38,11 @@ class InventoryController extends Controller
 
     public function itemInventory($inventory_id)
     {
-        $inventory = InvRecord::where('inventory_id', $inventory_id)->with('item')->get();
+        $inventory = InvRecord::where('inventory_id', $inventory_id)
+                    ->with(['item' => function($query) {
+                            $query->withoutGlobalScopes();
+                        }])
+                    ->get();
 
         return $inventory;
     }
@@ -138,7 +142,11 @@ class InventoryController extends Controller
     {
         $inventory = Inventory::findOrFail($id);
 
-        $invrecs = InvRecord::where('inventory_id', $inventory->id)->with('item')->get();
+        $invrecs = InvRecord::where('inventory_id', $inventory->id)
+                    ->with(['item' => function($query) {
+                            $query->withoutGlobalScopes();
+                        }])
+                    ->get();
 
         return view('inventory.edit', compact('inventory', 'invrecs'));
     }

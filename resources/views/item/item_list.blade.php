@@ -129,6 +129,12 @@
                     <span ng-if="sortType == 'is_inventory' && sortReverse" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortType = 'is_active'; sortReverse = !sortReverse">
+                    Is Active?
+                    <span ng-if="sortType == 'is_active' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-if="sortType == 'is_active' && sortReverse" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     Action
                 </th>
             </tr>
@@ -158,6 +164,7 @@
                     <td class="col-md-1 text-right">@{{ item.lowest_limit | currency: "": 4 }}</td>
                     <td class="col-md-1 text-center">@{{ item.publish == 1 ? 'Yes':'No'  }}</td>
                     <td class="col-md-1 text-center">@{{ item.is_inventory == 1 ? 'Yes':'No'  }}</td>
+                    <td class="col-md-1 text-center">@{{ item.is_active == 1 ? 'Yes':'No'  }}</td>
                     <td class="col-md-1 text-center">
                         @cannot('transaction_view')
                         <a href="/item/@{{ item.id }}/edit" class="btn btn-sm btn-primary">Edit</a>

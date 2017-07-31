@@ -82,10 +82,10 @@ Route::resource('market', 'MarketingController');
 
 Route::resource('onlineprice', 'OnlinePriceController');
 
-Route::post('inventory/email', 'InventoryController@invEmailUpdate');
-Route::get('inventory/email', 'InventoryController@invEmail');
-Route::post('inventory/setting', 'InventoryController@invLowest');
-Route::get('inventory/setting', 'InventoryController@invIndex');
+Route::post('/inventory/email', 'InventoryController@invEmailUpdate');
+Route::get('/inventory/email', 'InventoryController@invEmail');
+Route::post('/inventory/setting', 'InventoryController@invLowest');
+Route::get('/inventory/setting', 'InventoryController@invIndex');
 Route::get('/inventory/item/{inventory_id}', 'InventoryController@itemInventory');
 Route::delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 Route::get('/inventory/data', 'InventoryController@getData');
@@ -136,6 +136,7 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
+Route::post('/item/active/{item_id}', 'ItemController@setActiveState');
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
 Route::post('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');
 Route::post('/api/item/unitcost', 'ItemController@getUnitcostIndexApi');

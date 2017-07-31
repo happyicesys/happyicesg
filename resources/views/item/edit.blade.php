@@ -26,13 +26,22 @@
                         <a href="/item" class="btn btn-default">Cancel</a>
                     </div>
                     <div class="pull-left">
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['ItemController@destroy', $item->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
-                        {!! Form::close() !!}
+                        @if($item->is_active == '0')
+                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_form']) !!}
+                            {!! Form::submit('Activate', ['class'=> 'btn btn-success', 'form'=>'active_form']) !!}
+                        @else
+                            {!! Form::submit('Deactivate', ['class'=> 'btn btn-warning', 'form'=>'active_form']) !!}
+                        @endif
                     </div>
                 </div>
         </div>
     </div>
+
+    {!! Form::open(['id'=>'delete_form', 'method'=>'DELETE', 'action'=>['ItemController@destroy', $item->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+    {!! Form::close() !!}
+
+    {!! Form::open(['id'=>'active_form', 'method'=>'POST', 'action'=>['ItemController@setActiveState', $item->id], 'onsubmit'=>'return confirm("Are you sure you want to activate/deactivate the item?")']) !!}
+    {!! Form::close() !!}
 
     {{-- divider --}}
     <div class="panel panel-primary">

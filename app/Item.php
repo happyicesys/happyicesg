@@ -2,15 +2,22 @@
 
 namespace App;
 
+use App\Scopes\ItemScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new ItemScope);
+    }
+
     protected $fillable=[
         'name', 'remark', 'unit', 'product_id', 'main_imgpath', 'sub_imgpath',
         'img_remain', 'main_imgcaption', 'publish', 'qty_now', 'qty_last', 'lowest_limit',
         'email_limit', 'qty_order', 'is_inventory', 'is_commission', 'desc_imgpath',
-        'itemcategory_id', 'nutri_imgpath', 'is_healthier', 'is_halal'
+        'itemcategory_id', 'nutri_imgpath', 'is_healthier', 'is_halal', 'is_active',
     ];
 
     public function transactions()
