@@ -111,7 +111,7 @@
                     {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('person_id',
                         [''=>'All'] +
-                        $people::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
+                        $speople::select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))
                             ->whereActive('Yes')
                             ->where('cust_id', 'NOT LIKE', 'H%')
                             ->whereHas('profile', function($q) {
