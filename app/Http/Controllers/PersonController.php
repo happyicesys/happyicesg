@@ -21,9 +21,12 @@ use App\AddAccessory;
 use App\Deal;
 use Auth;
 use DB;
+use App\HasProfileAccess;
 
 class PersonController extends Controller
 {
+    use HasProfileAccess;
+
     //auth-only login can see
     public function __construct()
     {
@@ -55,6 +58,7 @@ class PersonController extends Controller
 
         $people = DB::table('people')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+                        ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                         ->select(
                                     'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact',
                                     'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active',
@@ -70,6 +74,9 @@ class PersonController extends Controller
                 $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
+
+        // add user profile filters
+        $people = $this->filterUserDbProfile($people);
 
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
