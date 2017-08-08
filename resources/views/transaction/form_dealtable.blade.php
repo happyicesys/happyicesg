@@ -79,15 +79,42 @@
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
                             <td class="col-md-1 text-center">
-                                @unless(Auth::user()->hasRole('admin') or Auth::user()->hasRole('account') or Auth::user()->hasRole('supervisor'))
-                                    @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed')
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                    @else
-                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
-                                    @endif
-                                @else
+                                @php
+                                    $valid = false;
+                                    $status = $transaction->status;
+
+                                    if($transaction->is_freeze !== 1) {
+                                        foreach(Auth::user()->roles as $role) {
+                                            $access = $role->name;
+                                            switch($access) {
+                                                case 'admin':
+                                                case 'account':
+                                                case 'supervisor':
+                                                    $valid = true;
+                                                    break;
+                                                default:
+                                                    switch($status) {
+                                                        case 'Draft':
+                                                        case 'Pending':
+                                                        case 'Confirmed':
+                                                            $valid = true;
+                                                            break;
+                                                        default:
+                                                            $valid = false;
+                                                    }
+                                            }
+                                        }
+                                    }else {
+                                        $valid = false;
+                                    }
+                                @endphp
+
+                                @if($valid)
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
-                                @endunless
+                                @else
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
+                                @endif
+
                             </td>
                         </tr>
                         @if($person->profile->gst)

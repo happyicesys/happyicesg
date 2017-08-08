@@ -85,102 +85,145 @@
                 </div>
             </div>
 
-                @if($transaction->status == 'Pending' and $transaction->pay_status == 'Owe')
-                <div class="row">
-                    <div class="col-md-12" >
-                        <div class="pull-left">
+            @php
+                //state 1 = cancel inv - confirm - cancel (pending)
+                //state 2 = cancel inv - del paid - del owe - update - print - send inv - cancel (confirmed)
+                //state 3 = cancel inv - paid - update - print - send inv - cancel (delivered unpaid)
+                //state 4 = delete inv - undo - cancel (cancelled)
+                //state 5 = cancel inv - unpaid - update - print - send inv - cancel (delivered paid)
+                //state 6 = LOCKED label - cancel (is freeze true)
+
+                $state = '';
+                $status = $transaction->status;
+                $pay_status = $transaction->pay_status;
+
+                if($transaction->is_freeze) {
+                    $state = 6;
+                }else {
+                    switch($status) {
+                        case 'Pending':
+                            $state = 1;
+                            break;
+                        case 'Confirmed':
+                            $state = 2;
+                            break;
+                        case 'Delivered':
+                        case 'Verified Owe':
+                        case 'Verified Paid':
+                            if($pay_status === 'Paid') {
+                                $state = 5;
+                            }else {
+                                $state = 3;
+                            }
+                            break;
+                        case 'Cancelled':
+                            $state = 4;
+                            break;
+                        default:
+                            $state = 6;
+                    }
+                }
+            @endphp
+
+            @if($state === 1)
+            <div class="row">
+                <div class="col-md-12" >
+                    <div class="pull-left">
+                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                    </div>
+                    <div class="pull-right">
+
+                        {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
+                        {{-- {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} --}}
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                    </div>
+                </div>
+            </div>
+            @elseif($state === 2)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-left">
+                        @if(Auth::user()->hasRole('admin'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                        </div>
-                        <div class="pull-right">
+                        @endif
+                    </div>
 
-                            {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                            {{-- {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} --}}
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
-                        </div>
+                    <div class="pull-right">
+                        {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
+                        {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
+
                     </div>
                 </div>
-                @elseif($transaction->status == 'Confirmed' and $transaction->pay_status == 'Owe')
+            </div>
+            @elseif($state === 3)
+            <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="pull-left">
-
-                            @if(Auth::user()->hasRole('admin'))
-
-                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-
-                            @endif
-
-                        </div>
-
-                        <div class="pull-right">
-
-                            {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
-                            {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                            <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                            <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
-
-                        </div>
+                    <div class="pull-left">
+                        @can('transaction_deleteitem')
+                        @cannot('supervisor_view')
+                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                        @endcannot
+                        @endcan
+                    </div>
+                    <div class="pull-right">
+                        {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
-                @elseif(($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') and $transaction->pay_status == 'Owe')
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="pull-left">
-                            @can('transaction_deleteitem')
-                            @cannot('supervisor_view')
+            </div>
+            @elseif($state === 4)
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="pull-right">
+                        @cannot('transaction_view')
+                            {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
+                            {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
+                        @endcan
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                    </div>
+                </div>
+            </div>
+            @elseif($state === 5)
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="pull-left">
+                        {{-- @can('transaction_deleteitem') --}}
+                        @cannot('transaction_view')
+                        @cannot('supervisor_view')
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @endcannot
-                            @endcan
-                        </div>
-                        <div class="pull-right">
-
-                            {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                            <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                            <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
-
-                        </div>
+                            {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                        @endcannot
+                        @endcannot
+                        {{-- @endcan --}}
+                    </div>
+                    <div class="pull-right">
+                            {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
-                @elseif($transaction->status == 'Cancelled')
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="pull-right">
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
-                            @cannot('transaction_view')
-                                {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
-                                {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
-                            @endcan
-                        </div>
+            </div>
+            @elseif($state === 6)
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="pull-right">
+                        <span class="bg-info" style="margin-right: 15px;">
+                            <i class="fa fa-lock"></i>
+                            This invoice has been locked
+                        </span>
+                        <a href="/transaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
-                @else
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="pull-left">
-                            {{-- @can('transaction_deleteitem') --}}
-                            @cannot('transaction_view')
-                            @cannot('supervisor_view')
-                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                                {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
-                            @endcannot
-                            @endcannot
-                            {{-- @endcan --}}
-                        </div>
-                        <div class="pull-right">
-                                {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
-                            <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                            <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                            <a href="/transaction" class="btn btn-default">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-
+            </div>
+            @endif
     </div>
 </div>
 </div>

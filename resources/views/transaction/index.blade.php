@@ -15,9 +15,20 @@
 
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="pull-right">
-                        <a href="/transaction/create" class="btn btn-success">+ New {{ $TRANS_TITLE }}</a>
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="pull-right">
+                            <a href="/transaction/create" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                            </a>
+                            @if(Auth::user()->hasRole('admin'))
+                            <a href="/transaction/freeze/date" class="btn btn-primary">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="hidden-xs">Freeze Transaction Invoice </span>
+                            </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

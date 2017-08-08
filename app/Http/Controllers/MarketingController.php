@@ -1536,8 +1536,11 @@ class MarketingController extends Controller
                 $deal->save();
                 $item = Item::findOrFail($deal->item_id);
                 if($item->is_inventory === 1) {
+                    $deal->qty_before = $item->qty_now;
                     $item->qty_now -= $deal->qty;
                     $item->save();
+                    $deal->qty_after = $item->qty_now;
+                    $deal->save();
                 }
             }
         }

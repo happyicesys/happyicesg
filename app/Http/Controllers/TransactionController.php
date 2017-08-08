@@ -628,6 +628,40 @@ class TransactionController extends Controller
         return Redirect::action('TransactionController@edit', $id);
     }
 
+    // return invoice date freeze page()
+    public function getFreezeInvoiceDate()
+    {
+        return view('transaction.freezedate');
+    }
+
+    // return invoice date freeze page api()
+    public function getFreezeInvoiceDateApi()
+    {
+        $general_setting = GeneralSetting::firstOrFail();
+
+        return $general_setting;
+    }
+
+    // store invoice freeze date()
+    public function freezeInvoiceDate()
+    {
+        $general_setting = GeneralSetting::firstOrFail();
+
+        $general_setting->INVOICE_FREEZE_DATE = request('freeze_date');
+
+        $general_setting->save();
+
+        DB::table('transactions')
+            ->whereDate('delivery_date', '<=', $general_setting->INVOICE_FREEZE_DATE)
+            ->update(['is_freeze' => 1]);
+
+        DB::table('dtdtransactions')
+            ->whereDate('delivery_date', '<=', $general_setting->INVOICE_FREEZE_DATE)
+            ->update(['is_freeze' => 1]);
+
+        return Redirect::action('TransactionController@freezeInvoiceDate');
+    }
+
     private function syncTransaction(Request $request)
     {
 
@@ -729,10 +763,12 @@ class TransactionController extends Controller
                                 }
                                 if($item->is_inventory) {
                                     $deal->qty = $qty;
+                                    $deal->qty_before = $item->qty_now;
                                     $item->qty_now -= strstr($qty, '/') ? $this->fraction($qty) : $qty;
+                                    $item->save();
+                                    $deal->qty_after = $item->qty_now;
                                 }
                                 $deal->save();
-                                $item->save();
                                 $this->dealSyncOrder($index);
                             }
                         }
@@ -822,8 +858,11 @@ class TransactionController extends Controller
             $deal->qty_status = 2;
             $deal->save();
             if($item->is_inventory === 1) {
+                $deal->qty_before = $item->qty_now;
                 $item->qty_now -= $deal->qty;
                 $item->save();
+                $deal->qty_after = $item->qty_now;
+                $deal->save();
             }
             $this->dealSyncOrder($item->id);
         }
@@ -866,8 +905,11 @@ class TransactionController extends Controller
                 $deal->qty_status = 2;
                 $deal->save();
                 if($item->is_inventory === 1) {
+                    $deal->qty_before = $item->qty_now;
                     $item->qty_now -= $deal->qty;
                     $item->save();
+                    $deal->qty_after = $item->qty_after;
+                    $deal->save();
                 }
             }
         }

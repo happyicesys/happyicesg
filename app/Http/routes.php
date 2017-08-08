@@ -154,6 +154,9 @@ Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@
 
 Route::resource('price', 'PriceController');
 
+Route::get('/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDate');
+Route::get('/api/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDateApi');
+Route::post('/transaction/freeze/date', 'TransactionController@freezeInvoiceDate');
 Route::get('/transaction/emailInv/{trans_id}', 'TransactionController@sendEmailInv');
 Route::post('/transaction/rpt/{trans_id}', 'TransactionController@rptDetail');
 Route::post('/transaction/reverse/{trans_id}', 'TransactionController@reverse');

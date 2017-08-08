@@ -57,7 +57,8 @@ class DtdTransaction extends Model
         'note' => 'Note',
         'contact' => 'Contact',
         'del_postcode' => 'PostCode',
-        'transaction_id' => 'Confirmed Inv#'
+        'transaction_id' => 'Confirmed Inv#',
+        'is_freeze' => 'Date Freeze'
     );
 
     protected $table = 'dtdtransactions';
@@ -71,7 +72,7 @@ class DtdTransaction extends Model
         'pay_method', 'note', 'paid_at',
         'updated_by', 'paid_by', 'transaction_id',
         'contact', 'del_postcode', 'type',
-        'delivery_fee', 'bill_address'
+        'delivery_fee', 'bill_address', 'is_freeze'
     ];
 
     protected $dates =[
