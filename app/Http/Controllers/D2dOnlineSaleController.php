@@ -19,6 +19,7 @@ use App\Custcategory;
 use App\DtdDeal;
 use App\Price;
 use App\Item;
+use App\Unitcost;
 use DB;
 
 class D2dOnlineSaleController extends Controller
@@ -270,6 +271,7 @@ class D2dOnlineSaleController extends Controller
                 if($qty != null and $qty != '' and $qty != 0) {
                     $onlinesaleitem = D2dOnlineSale::findOrFail($idArr[$index]);
                     $item = Item::findOrFail($onlinesaleitem->item_id);
+                    $unitcost = Unitcost::whereItemId($item->id)->whereProfileId(Person::find(1643)->profile->id)->first();
                     $price = Price::wherePersonId(1643)->whereItemId($item->id)->first();
                     $deal = new Deal();
                     $deal->transaction_id = $transaction_id;
@@ -280,6 +282,9 @@ class D2dOnlineSaleController extends Controller
                     $deal->amount = $amountArr[$index];
                     $deal->unit_price = $price->quote_price;
                     $deal->qty_status = 1;
+                    if($unitcost) {
+                        $deal->unit_cost = $unitcost->unit_cost;
+                    }
                     $deal->save();
                     $this->dealSyncOrder($item->id);
                 }
@@ -370,6 +375,7 @@ class D2dOnlineSaleController extends Controller
                     $onlinesaleitem = D2dOnlineSale::findOrFail($idArr[$index]);
                     $item = Item::findOrFail($onlinesaleitem->item_id);
                     $price = Price::wherePersonId(1643)->whereItemId($item->id)->first();
+                    $unitcost = Unitcost::whereProfileId(Person::find(1643)->profile->id)->whereItemId($item->id)->first();
                     $deal = new DtdDeal();
                     $deal->transaction_id = $dtdtransaction_id;
                     $deal->item_id = $item->id;
@@ -379,6 +385,9 @@ class D2dOnlineSaleController extends Controller
                     $deal->amount = $amountArr[$index];
                     $deal->unit_price = $price->quote_price;
                     $deal->qty_status = 1;
+                    if($unitcost) {
+                        $deal->unit_cost = $unitcost->unit_cost;
+                    }
                     $deal->save();
                 }
             }

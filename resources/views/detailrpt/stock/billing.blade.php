@@ -308,6 +308,12 @@
                         <span ng-if="search.sortName == 'total_cost' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('avg_sell_value')">
+                        Avg Unit Sell Price
+                        <span ng-if="search.sortName == 'avg_sell_value' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'avg_sell_value' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         <a href="" ng-click="sortTable('amount')">
                         Total Selling Value
                         <span ng-if="search.sortName == 'amount' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -349,6 +355,9 @@
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.total_cost | currency: "": 2}}
+                        </td>
+                        <td class="col-md-1 text-right">
+                            @{{deal.avg_sell_value | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.amount | currency: "": 2}}

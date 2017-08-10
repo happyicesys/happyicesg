@@ -1264,6 +1264,7 @@ class DetailRptController extends Controller
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
                     DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
+                    DB::raw('ROUND(SUM(deals.amount) / SUM(deals.qty), 2) AS avg_sell_value'),
                     DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
                 );
         if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
