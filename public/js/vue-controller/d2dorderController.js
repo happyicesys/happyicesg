@@ -3,8 +3,8 @@ if (document.querySelector('#d2dorderController')) {
     template: '#order-template',
     data() {
       return {
-        step1: true,
-        step2: false,
+        step1: false,
+        step2: true,
         step3: false,
         form: {
           postcode: '',
@@ -57,11 +57,13 @@ if (document.querySelector('#d2dorderController')) {
       }
     },
     mounted() {
+      // temporary
+      this.showItemList()
+
       var el = this.$el
       setTimeout(function() {
         $(el).find('input').trigger('change')
       }, 20)
-
       this.pushDeltimeOptions()
       this.pushDeldateOptions()
     },
@@ -93,6 +95,12 @@ if (document.querySelector('#d2dorderController')) {
             this.formErrors = result
           })
         this.loading = false
+      },
+      showItemList() {
+        this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
+          const result = JSON.parse(JSON.stringify(response.body))
+          this.items = result
+        })
       },
       deductTotal(value) {
         this.subtotal = (parseFloat(this.subtotal) - parseFloat(value)).toFixed(2)

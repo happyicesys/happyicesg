@@ -30,6 +30,7 @@ Door To Door
 
       <div class="panel panel-primary">
         <div class="panel-body">
+{{--
           <fieldset v-if="step1">
             <div class="form-top">
               <div class="form-top-left">
@@ -52,21 +53,23 @@ Door To Door
                   </div>
                 </div>
               </div>
-          </fieldset>
+          </fieldset> --}}
 
           {!! Form::open(['action'=>'D2dOnlineSaleController@submitOrder']) !!}
             {!! Honeypot::generate('my_name', 'my_time') !!}
           <div v-if="step2">
             <div class="row">
             <div class="col-md-12 col-xs-12">
+{{--
                 <p style="color:red;" v-if="covered">
                   **Congrats, you are within the Door to door coverage area, will be entitled free delivery service.**
                 </p>
                 <p v-if="covered">
                   - To order with more flavor, click <a href="" style="color:blue;" @click.prevent="covered = !covered">HERE</a>. Minimum purchase applied for free delivery
                 </p>
-                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE delivery</p>
-                <h3 style="color:#323299;">Step 2 / 3</h3>
+                <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE delivery</p> --}}
+                <p style="color:red;">**Promotion: buy any 3 boxes and above for FREE delivery</p>
+                {{-- <h3 style="color:#323299;">Step 2 / 3</h3> --}}
                 {{-- <div class="table-responsive"> --}}
                 <div>
                   <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">
@@ -134,7 +137,7 @@ Door To Door
 
           <div v-if="step3">
             <div class="col-md-12 col-xs-12">
-              <h3 style="color:#323299;">Step 3 / 3</h3>
+              {{-- <h3 style="color:#323299;">Step 3 / 3</h3> --}}
                 <div class="row">
                 <div class="col-md-4 col-xs-12">
                   <div class="form-group" :class="{ 'has-error' : formErrors['name'] }">
