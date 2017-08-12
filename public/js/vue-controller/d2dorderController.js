@@ -76,7 +76,7 @@ if (document.querySelector('#d2dorderController')) {
         this.$http.post('/postcode/verify', {
             postcode: this.form.postcode
           })
-          .then((response) => {
+          .then(function(response) {
             var verified = response.body
             this.covered = verified.covered
             if (verified.postcode) {
@@ -84,20 +84,20 @@ if (document.querySelector('#d2dorderController')) {
               this.form.street = verified.postcode.street
               this.form.block = verified.postcode.block
             }
-            this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
+            this.$http.get('/api/d2ditems/' + this.covered).then(function(response) {
               var result = JSON.parse(JSON.stringify(response.body))
               this.items = result
             })
             this.step1 = false
             this.step2 = true
-          }, (response) => {
+          }, function(response) {
             var result = response.body
             this.formErrors = result
           })
         this.loading = false
       },
       showItemList() {
-        this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
+        this.$http.get('/api/d2ditems/' + this.covered).then(function(response) {
           var result = JSON.parse(JSON.stringify(response.body))
           this.items = result
         })
@@ -119,9 +119,9 @@ if (document.querySelector('#d2dorderController')) {
       },
       validateOrder: _.debounce(function() {
         this.formErrors = ''
-        this.$http.post('/api/validateOrder', this.form).then((response) => {
+        this.$http.post('/api/validateOrder', this.form).then(function(response) {
           this.submitable = true
-        }, (response) => {
+        }, function(response) {
           this.submitable = false
           this.formErrors = response.body
         });
