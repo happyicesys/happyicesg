@@ -148,14 +148,34 @@
                         foreach($currentDateTransactions as $currentDateTransaction) {
                             array_push($currentDateTransactionIds, $currentDateTransaction->id);
                         }
-                        $cfdeduct -= \DB::table('deals')
+/*                        $cfdeduct -= \DB::table('deals')
                                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                         ->whereIn('deals.transaction_id', $currentDateTransactionIds)
                                         ->where('items.id', $item->id)
-                                        ->sum('qty');
+                                        ->sum('qty');*/
+                        $balance = 0;
+
+                        $balance = \DB::table('deals')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->whereIn('transactions.id', $currentDateTransactionIds)
+                            ->where('items.id', $item->id)
+                            ->latest('deals.created_at')
+                            ->first()
+                            ?
+                            \DB::table('deals')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->whereIn('transactions.id', $currentDateTransactionIds)
+                            ->where('items.id', $item->id)
+                            ->latest('deals.created_at')
+                            ->first()
+                            ->qty_before
+                            :
+                            0;
                     @endphp
                     <td align="right" data-format="0.0000">
-                        {{$cfdeduct}}
+                        {{$balance}}
                     </td>
                     @endforeach
                 @else

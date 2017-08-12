@@ -235,21 +235,31 @@
                                 @if(request('stock_status') === 'Balance')
                                     @php
                                         array_push($loopeddate, $date->delivery_date);
+
+                                        $balance = 0;
+
+                                        $balance = \DB::table('deals')
+                                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                            ->whereIn('transactions.id', $sevenDateTransactionIds)
+                                            ->whereDate('transactions.delivery_date', '=', $loopeddate)
+                                            ->where('items.id', $item->id)
+                                            ->latest('deals.created_at')
+                                            ->first()
+                                            ?
+                                            \DB::table('deals')
+                                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                            ->whereIn('transactions.id', $sevenDateTransactionIds)
+                                            ->whereDate('transactions.delivery_date', '=', $loopeddate)
+                                            ->where('items.id', $item->id)
+                                            ->latest('deals.created_at')
+                                            ->first()
+                                            ->qty_before
+                                            :
+                                            0;
                                     @endphp
-                                    {{
-                                        number_format((\DB::table('deals')
-                                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                        ->whereIn('transactions.id', $sevenDateTransactionIds)
-                                        ->where('items.id', $item->id)
-                                        ->sum('qty')) - (\DB::table('deals')
-                                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                        ->whereIn('transactions.id', $sevenDateTransactionIds)
-                                        ->whereIn('transactions.delivery_date', $loopeddate)
-                                        ->where('items.id', $item->id)
-                                        ->sum('qty')), 4)
-                                    }}
+                                    {{number_format($balance, 4)}}
                                 @else
                                     {{
                                         number_format(\DB::table('deals')

@@ -77,7 +77,7 @@ if (document.querySelector('#d2dorderController')) {
             postcode: this.form.postcode
           })
           .then((response) => {
-            const verified = response.body
+            var verified = response.body
             this.covered = verified.covered
             if (verified.postcode) {
               this.form.postcode = verified.postcode.value
@@ -85,20 +85,20 @@ if (document.querySelector('#d2dorderController')) {
               this.form.block = verified.postcode.block
             }
             this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
-              const result = JSON.parse(JSON.stringify(response.body))
+              var result = JSON.parse(JSON.stringify(response.body))
               this.items = result
             })
             this.step1 = false
             this.step2 = true
           }, (response) => {
-            const result = response.body
+            var result = response.body
             this.formErrors = result
           })
         this.loading = false
       },
       showItemList() {
         this.$http.get('/api/d2ditems/' + this.covered).then((response) => {
-          const result = JSON.parse(JSON.stringify(response.body))
+          var result = JSON.parse(JSON.stringify(response.body))
           this.items = result
         })
       },
