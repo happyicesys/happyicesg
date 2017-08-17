@@ -242,7 +242,7 @@
                                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                                             ->whereIn('transactions.id', $sevenDateTransactionIds)
-                                            ->whereDate('transactions.delivery_date', '=', $loopeddate)
+                                            ->whereDate('transactions.delivery_date', '=', $date->delivery_date)
                                             ->where('items.id', $item->id)
                                             ->latest('deals.created_at')
                                             ->first()
@@ -251,15 +251,22 @@
                                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                                             ->whereIn('transactions.id', $sevenDateTransactionIds)
-                                            ->whereDate('transactions.delivery_date', '=', $loopeddate)
+                                            ->whereDate('transactions.delivery_date', '=', $date->delivery_date)
                                             ->where('items.id', $item->id)
                                             ->latest('deals.created_at')
                                             ->first()
-                                            ->qty_before
+                                            ->qty_after
                                             :
-                                            0;
+                                            \DB::table('deals')
+                                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                            ->where('items.id', $item->id)
+                                            ->latest('deals.created_at')
+                                            ->first()
+                                            ->qty_after
+                                            ;
                                     @endphp
-                                    {{number_format($balance, 4)}}
+                                    {{$balance ? number_format($balance, 4) : '-'}}
                                 @else
                                     {{
                                         number_format(\DB::table('deals')

@@ -24,7 +24,6 @@
             <div class="form-group">
                 {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
                 <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
-                    <option value="">All</option>
                     @foreach($month_options as $key => $value)
                         <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
                     @endforeach

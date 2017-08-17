@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
-                            {!! Form::select('custcategory', [''=>'All']+$custcategories::lists('name', 'id')->all(), null,
+                            {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
                                 [
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.custcategory',

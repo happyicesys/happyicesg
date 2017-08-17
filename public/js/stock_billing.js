@@ -36,6 +36,7 @@ var app = angular.module('app', [
             sortName: ''
         }
         $scope.updated_at = '';
+        $scope.internal_billing_div = false;
         // init page load
         getPage(1, true);
 
@@ -50,6 +51,10 @@ var app = angular.module('app', [
             var now = Date.now();
             saveAs(blob, "Stock Billing"+ now + ".xls");
         };
+
+        $scope.enableInternalBilling = function() {
+            $scope.internal_billing_div = !$scope.internal_billing_div;
+        }
 
         $scope.onDeliveryFromChanged = function(date){
             if(date){

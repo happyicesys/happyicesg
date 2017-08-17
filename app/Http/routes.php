@@ -7,6 +7,13 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('welcome');
 });
+/*
+Route::group(['domain' => '{username}.happyice.dev'], function () {
+    Route::get('foo', function($username) {
+    	dd($username ? : 'hello');
+    });
+});*/
+
 Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
 Route::get('/api/d2ditems/{covered}', 'D2dOnlineSaleController@allItems');
 Route::post('/api/validateOrder', 'D2dOnlineSaleController@validateOrder');

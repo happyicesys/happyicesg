@@ -19,6 +19,7 @@
     </div>
 
     <div class="panel-body">
+        {!! Form::open(['id'=>'submit_form', 'method'=>'POST', 'action'=>['DetailRptController@getStockBillingApi']]) !!}
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -175,6 +176,7 @@
         <div class="row">
             <div class="col-md-3 col-sm-3 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                <button class="btn btn-default" ng-click="enableInternalBilling()"><i class="fa fa-caret-down"></i><span class="hidden-xs"></span> Internal Billing</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
@@ -233,6 +235,36 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" ng-show="internal_billing_div">
+            <hr class="row">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                {!! Form::label('bill_profile', 'Profile to issue bill', ['class'=>'control-label search-title']) !!}
+                                {!! Form::select('bill_profile',
+                                    $sprofiles::filterUserProfile()
+                                        ->pluck('name', 'id'),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model' => 'form.bill_profile'
+                                    ])
+                                !!}
+                                <p class="text-muted">Make sure to select the "Profile" at stock billing filter (Cannot be "All")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="btn-group">
+                                {{-- <button type="submit" class="btn btn-primary" form="submit_form" value="issue_bill">Issue Bill</button> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <hr class="row">
+        </div>
+        {!! Form::close() !!}
 
         <div class="table-responsive" id="exportable_stockbilling" style="padding-top: 20px;">
             <table class="table table-list-search table-hover table-bordered">
@@ -333,7 +365,7 @@
                             @{{$index + indexFrom}}
                         </td>
                         <td class="col-md-2 text-left">
-                            @{{deal.profile_name}}
+                            @{{search.profile_id === '' ? '-' : deal.profile_name}}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{deal.product_id}}

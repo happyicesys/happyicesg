@@ -137,6 +137,14 @@ class TransactionController extends Controller
         $request->merge(['order_date' => Carbon::today()]);
         $input = $request->all();
 
+        // filter delivery date if the invoice lock date is before request delivery date
+        if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {
+            if($freeze_date->min(Carbon::parse($request->delivery_date)) != $freeze_date) {
+                Flash::error('The delivery date is locked, alter the invoice lock date to after '.Carbon::parse($freeze_date)->format('Y-m-d'));
+                return back();
+            }
+        }
+
         $transaction = Transaction::create($input);
         // create dtd transaction once detect person code is D
         if($transaction->person->cust_id[0] === 'D'){
@@ -299,6 +307,14 @@ class TransactionController extends Controller
             }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
                 $request->merge(array('paid_by' => null));
                 $request->merge(array('paid_at' => null));
+            }
+        }
+
+        // filter delivery date if the invoice lock date is before request delivery date
+        if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {
+            if($freeze_date->min(Carbon::parse($request->delivery_date)) != $freeze_date) {
+                Flash::error('The delivery date is locked, please choose the date after '.Carbon::parse($freeze_date)->format('Y-m-d'));
+                return back();
             }
         }
 
