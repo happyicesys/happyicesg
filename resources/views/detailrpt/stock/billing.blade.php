@@ -176,7 +176,6 @@
         <div class="row">
             <div class="col-md-3 col-sm-3 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-                <button class="btn btn-default" ng-click="enableInternalBilling()"><i class="fa fa-caret-down"></i><span class="hidden-xs"></span> Internal Billing</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
@@ -236,34 +235,42 @@
             </div>
         </div>
 
-        <div class="row" ng-show="internal_billing_div">
+        {{-- <div class="row" ng-show="internal_billing_div"> --}}
             <hr class="row">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                                {!! Form::label('bill_profile', 'Profile to issue bill', ['class'=>'control-label search-title']) !!}
+                                {!! Form::label('bill_profile', 'Profile in Action ', ['class'=>'control-label search-title']) !!}
+{{--                                 <select class="select form-control" name="bill_profile">
+                                    @foreach($sprofiles::filterUserProfile()->get() as $index => $profile)
+                                        <option value="{{$profile->id}}">{{$profile->name}}</option>
+                                    @endforeach
+                                </select> --}}
                                 {!! Form::select('bill_profile',
                                     $sprofiles::filterUserProfile()
                                         ->pluck('name', 'id'),
                                     null,
                                     [
-                                        'class'=>'select form-control',
-                                        'ng-model' => 'form.bill_profile'
+                                        'class'=>'select form-control'
                                     ])
                                 !!}
-                                <p class="text-muted">Make sure to select the "Profile" at stock billing filter (Cannot be "All")</p>
+                                <p class="text-muted">*For issue bill, must select "Profile" at stock billing filter (Cannot be "All")</p>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <div class="btn-group">
-                                {{-- <button type="submit" class="btn btn-primary" form="submit_form" value="issue_bill">Issue Bill</button> --}}
+                            <div class="form-group">
+                            <label class="control-label"></label>
+                            <div class="btn-group-control">
+                                <button type="submit" class="btn btn-default" form="submit_form" name="issue_bill" value="issue_bill"><i class="fa fa-usd"></i> Issue Bill</button>
+                                <button type="submit" class="btn btn-default" form="submit_form" name="consolidate_rpt" value="consolidate_rpt"><i class="fa fa-book"></i> Consolidate Report</button>
+                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
             <hr class="row">
-        </div>
+        {{-- </div> --}}
         {!! Form::close() !!}
 
         <div class="table-responsive" id="exportable_stockbilling" style="padding-top: 20px;">

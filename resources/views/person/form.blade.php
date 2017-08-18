@@ -98,14 +98,14 @@
         <div class="form-group">
             {!! Form::label('profile_id', 'Company Profile', ['class'=>'control-label']) !!}
             {!! Form::select('profile_id',
-                            $profiles::select(DB::raw("CONCAT(name,' - ',roc_no) AS full, id"))->lists('full', 'id'),
+                            $profiles::filterUserProfile()->select(DB::raw("CONCAT(name,' - ',roc_no) AS full, id"))->pluck('full', 'id'),
                             null, ['id'=>'profile_id', 'class'=>'select form-control']) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-8">
         <div class="form-group">
             {!! Form::label('custcategory_id', 'Customer Category', ['class'=>'control-label']) !!}
-            {!! Form::select('custcategory_id', [null=>''] + $custcategories::lists('name', 'id')->all(), null, ['class'=>'select form-control']) !!}
+            {!! Form::select('custcategory_id', [null=>''] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null, ['class'=>'select form-control']) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-4">

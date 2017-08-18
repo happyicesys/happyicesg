@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use Auth;
 use DB;
 use App\HasProfileAccess;
+use PDF;
+use App\Profile;
 
 class DetailRptController extends Controller
 {
@@ -1297,6 +1299,14 @@ class DetailRptController extends Controller
 
         $totals = $this->calStockBillingTotals($deals);
 
+        if(request('issue_bill')) {
+            $this->exportBillPdf($deals, $totals);
+        }
+
+        if(request('consolidate_rpt')) {
+            $this->exportConsolidateRpt($deals, $totals, request('bill_profile'));
+        }
+
         if($pageNum == 'All'){
             $deals = $deals->get();
         }else{
@@ -2133,5 +2143,32 @@ class DetailRptController extends Controller
                 $sheet->loadView('detailrpt.stockdate_excel', compact('request', 'allDatesArr', 'itemsIdArr', 'allDateTransactionIds'));
             });
         })->download('xlsx');
+    }
+
+    // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
+    private function exportBillPdf($query, $totals)
+    {
+        $deals = clone $query;
+        $deals = $deals->get();
+
+        $profile = Profile::findOrFail(request('profile_id'));
+        $issuebillprofile = Profile::findOrFail(request('bill_profile'));
+
+        $person = Person::findOrFail($transaction->person_id);
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
+        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+        // $profile = Profile::firstOrFail();
+        $data = [
+            'deals' =>  $deals,
+            'profile'   =>  $profile,
+            'issuebillprofile' =>  $issuebillprofile,
+            'totals'    =>  $totals,
+        ];
+
+        $name = 'Internal_Billing('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
+        $pdf = PDF::loadView('transaction.invoice', $data);
+        $pdf->setPaper('a4');
+        return $pdf->download($name);
     }
 }
