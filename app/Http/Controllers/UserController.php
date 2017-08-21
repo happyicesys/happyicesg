@@ -56,6 +56,7 @@ class UserController extends Controller
             'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ]);
+        $request->merge(array('can_access_inv' => request()->has('can_access_inv') ? 1 : 0));
         $input = $request->all();
         $user = User::create($input);
         $this->syncRole($user, $request->input('role_list'));
@@ -74,6 +75,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $request->merge(array('can_access_inv' => request()->has('can_access_inv') ? 1 : 0));
+
         if($request->has('password')){
             $input = $request->all();
         }else{
@@ -81,10 +84,10 @@ class UserController extends Controller
         }
 
         $user->update($input);
+
         $person = Person::where('user_id', $user->id)->first();
 
         if($person){
-
             $person->company = $user->username;
             $person->name = $user->name;
             $person->email = $user->email;

@@ -19,7 +19,7 @@
     </div>
 
     <div class="panel-body">
-        {!! Form::open(['id'=>'submit_form', 'method'=>'POST', 'action'=>['DetailRptController@getStockBillingApi']]) !!}
+        {!! Form::open(['id'=>'submit_form', 'method'=>'POST', 'action'=>['DetailRptController@exportBillingPdf']]) !!}
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -262,8 +262,8 @@
                             <div class="form-group">
                             <label class="control-label"></label>
                             <div class="btn-group-control">
-                                <button type="submit" class="btn btn-default" form="submit_form" name="issue_bill" value="issue_bill"><i class="fa fa-usd"></i> Issue Bill</button>
-                                <button type="submit" class="btn btn-default" form="submit_form" name="consolidate_rpt" value="consolidate_rpt"><i class="fa fa-book"></i> Consolidate Report</button>
+                                <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="bill" ng-disabled="!search.profile_id"><i class="fa fa-usd"></i> Issue Bill</button>
+                                <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="consolidate"><i class="fa fa-book"></i> Consolidate Report</button>
                             </div>
                             </div>
                         </div>

@@ -30,8 +30,9 @@ class DatabaseSeeder extends Seeder
         $this->call(MonthSeeder::class);
         $this->call(CustcategorySeeder::class);
         $this->call(ItemcategorySeeder::class);
-        */
         $this->call(ProfileUserRelateSeeder::class);
+        */
+        $this->call(InternalBillingSeeder::class);
         Model::reguard();
     }
 }

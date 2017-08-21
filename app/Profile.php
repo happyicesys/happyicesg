@@ -10,8 +10,10 @@ class Profile extends Model
     protected $fillable =[
         'name', 'address', 'email',
         'contact', 'alt_contact', 'roc_no',
-        'header', 'logo', 'footer' ,
-        'gst'
+        'header', 'logo', 'footer',
+        'gst', 'acronym',
+
+        'payterm_id'
     ];
 
     public function people()
@@ -22,6 +24,11 @@ class Profile extends Model
     public function users()
     {
         return $this->belongsToMany('App\User');
+    }
+
+    public function payterm()
+    {
+        return $this->belongsTo('App\Payterm');
     }
 
     // scopes

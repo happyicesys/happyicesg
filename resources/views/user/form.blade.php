@@ -35,6 +35,11 @@
     {!! Form::select('role_list[]', $roles::lists('label', 'id'), null, ['id'=>'role', 'class'=>'select form-control']) !!}
 </div>
 
+<div class="form-group">
+    {!! Form::checkbox('can_access_inv', $user->can_access_inv) !!}
+    {!! Form::label('can_access_inv', 'Can Access Inventory', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+</div>
+
 @section('footer')
 <script>
     $('#role').select2({

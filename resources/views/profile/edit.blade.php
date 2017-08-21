@@ -12,7 +12,7 @@ Company Profile
     </div>
 
     <div class="panel-body">
-        {!! Form::model($profile,['method'=>'PATCH','action'=>['ProfileController@update', $profile->id]]) !!}            
+        {!! Form::model($profile,['method'=>'PATCH','action'=>['ProfileController@update', $profile->id]]) !!}
 
             @include('profile.form')
 
@@ -21,18 +21,21 @@ Company Profile
                     {!! Form::submit('Edit', ['class'=> 'btn btn-primary']) !!}
         {!! Form::close() !!}
 
-                    <a href="/profile" class="btn btn-default">Cancel</a>            
+                    <a href="/profile" class="btn btn-default">Cancel</a>
                 </div>
                 <div class="pull-left form_button_left">
                     @can('delete_user')
-                    {!! Form::open(['method'=>'DELETE', 'action'=>['ProfileController@destroy', $profile->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}                
+                    {!! Form::open(['method'=>'DELETE', 'action'=>['ProfileController@destroy', $profile->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
                         {!! Form::submit('Delete', ['class'=> 'btn btn-danger']) !!}
                     {!! Form::close() !!}
                     @endcan
-                </div>                
+                </div>
             </div>
     </div>
 </div>
 </div>
 
+<script>
+    $('.select').select2();
+</script>
 @stop

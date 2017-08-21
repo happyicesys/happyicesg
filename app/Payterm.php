@@ -15,4 +15,8 @@ class Payterm extends Model
         return $this->hasMany('App\Person');
     }
 
+    public function profiles()
+    {
+        return $this->hasMany('App\Profile');
+    }
 }

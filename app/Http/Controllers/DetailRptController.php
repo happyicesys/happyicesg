@@ -18,6 +18,8 @@ use DB;
 use App\HasProfileAccess;
 use PDF;
 use App\Profile;
+use Laracasts\Flash\Flash;
+use App\GeneralSetting;
 
 class DetailRptController extends Controller
 {
@@ -1252,56 +1254,9 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $deals = DB::table('deals')
-                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                ->leftJoin('unitcosts', function($join) {
-                    $join->on('items.id', '=', 'unitcosts.item_id');
-                    $join->on('profiles.id', '=', 'unitcosts.profile_id');
-                })
-                ->select(
-                    'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst',
-                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit',
-                    DB::raw('ROUND(SUM(deals.qty), 2) AS qty'),
-                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
-                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
-                    DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
-                    DB::raw('ROUND(SUM(deals.amount) / SUM(deals.qty), 2) AS avg_sell_value'),
-                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
-                );
-        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
-            $deals = $this->stockBillingFilters(request(), $deals);
-        }
-
-        $deals = $deals->where(function($query) {
-                        $query->where('transactions.status', 'Delivered')
-                                ->orWhere('transactions.status', 'Verified Owe')
-                                ->orWhere('transactions.status', 'Verified Paid');
-                    });
-
-        if(request('profile_id')) {
-            $deals = $deals->groupBy('items.id', 'profiles.id');
-        }else {
-            $deals = $deals->groupBy('items.id');
-        }
-
-        // add user profile filters
-        $deals = $this->filterUserDbProfile($deals);
-
-        if(request('sortName')){
-            $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
-        }else {
-            $deals = $deals->orderBy('items.product_id')->orderBy('profiles.id');
-        }
+        $deals = $this->stockBillingSql();
 
         $totals = $this->calStockBillingTotals($deals);
-
-        if(request('issue_bill')) {
-            $this->exportBillPdf($deals, $totals);
-        }
 
         if(request('consolidate_rpt')) {
             $this->exportConsolidateRpt($deals, $totals, request('bill_profile'));
@@ -2145,30 +2100,103 @@ class DetailRptController extends Controller
         })->download('xlsx');
     }
 
-    // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
-    private function exportBillPdf($query, $totals)
+    // running stock billing queries
+    private function stockBillingSql()
     {
-        $deals = clone $query;
+        $deals = DB::table('deals')
+                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                ->leftJoin('unitcosts', function($join) {
+                    $join->on('items.id', '=', 'unitcosts.item_id');
+                    $join->on('profiles.id', '=', 'unitcosts.profile_id');
+                })
+                ->select(
+                    'deals.divisor', 'deals.dividend',
+                    'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst',
+                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark',
+                    DB::raw('ROUND(SUM(deals.qty), 2) AS qty'),
+                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
+                    DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
+                    DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
+                    DB::raw('ROUND(SUM(deals.amount) / SUM(deals.qty), 2) AS avg_sell_value'),
+                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
+                );
+        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
+            $deals = $this->stockBillingFilters(request(), $deals);
+        }
+
+        $deals = $deals->where(function($query) {
+                        $query->where('transactions.status', 'Delivered')
+                                ->orWhere('transactions.status', 'Verified Owe')
+                                ->orWhere('transactions.status', 'Verified Paid');
+                    });
+
+        if(request('profile_id')) {
+            $deals = $deals->groupBy('items.id', 'profiles.id');
+        }else {
+            $deals = $deals->groupBy('items.id');
+        }
+
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
+
+        if(request('sortName')){
+            $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $deals = $deals->orderBy('items.product_id')->orderBy('profiles.id');
+        }
+
+        return $deals;
+    }
+
+    // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
+    public function exportBillingPdf()
+    {
+        if(request('issue_bill')) {
+            $type = request('issue_bill');
+        }else if(request('consolidate_rpt')) {
+            $type = request('consolidate_rpt');
+        }
+        $deals = $this->stockBillingSql();
         $deals = $deals->get();
+        $profile = Profile::find(request('profile_id'));
+        $issuebillprofile = Profile::find(request('bill_profile'));
+        $running_no = Carbon::today()->format('ymd');
+        $delivery_from = request('delivery_from');
+        $delivery_to = request('delivery_to');
 
-        $profile = Profile::findOrFail(request('profile_id'));
-        $issuebillprofile = Profile::findOrFail(request('bill_profile'));
+        if($type = request('exportpdf')) {
+            switch($type) {
+                case 'bill':
+                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.$running_no;
+                    $name = 'Internal_Billing('.$running_no.')_'.$issuebillprofile->name.'-'.$profile->name.'.pdf';
+                    break;
+                case 'consolidate':
+                    $running_no = $issuebillprofile->acronym.$running_no;
+                    $name = 'Consolidate_Rpt('.$running_no.')_'.$issuebillprofile->name.'.pdf';
+                    break;
+            }
+        }
 
-        $person = Person::findOrFail($transaction->person_id);
-        $deals = Deal::whereTransactionId($transaction->id)->get();
-        $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
-        // $profile = Profile::firstOrFail();
         $data = [
-            'deals' =>  $deals,
-            'profile'   =>  $profile,
-            'issuebillprofile' =>  $issuebillprofile,
-            'totals'    =>  $totals,
+            'deals' => $deals,
+            'profile' => $profile,
+            'issuebillprofile' => $issuebillprofile,
+            'running_no' => $running_no,
+            'type' => $type,
+            'delivery_from' => $delivery_from,
+            'delivery_to' => $delivery_to,
         ];
 
-        $name = 'Internal_Billing('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
-        $pdf = PDF::loadView('transaction.invoice', $data);
+        $pdf = PDF::loadView('detailrpt.stock.pdf.internalpdf', $data);
         $pdf->setPaper('a4');
-        return $pdf->download($name);
+        $pdf->setOption('margin-top', 5);
+        $pdf->setOption('margin-bottom', 5);
+        $pdf->setOption('margin-left', 0);
+        $pdf->setOption('margin-right', 0);
+        return $pdf->stream($name);
     }
 }

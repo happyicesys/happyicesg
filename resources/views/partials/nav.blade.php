@@ -42,9 +42,11 @@
                 <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
                     <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                 </li>
+                @if(auth()->user()->can_access_inv)
                 <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
                     <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
                 </li>
+                @endif
                 @cannot('transaction_view')
                 @cannot('accountant_view')
                     <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
