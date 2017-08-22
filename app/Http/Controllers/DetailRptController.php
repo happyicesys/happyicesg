@@ -1254,9 +1254,9 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $deals = $this->stockBillingSql();
+        $deals = $this->stockBillingSql()['deals'];
 
-        $totals = $this->calStockBillingTotals($deals);
+        $totals = $this->stockBillingSql()['totals'];
 
         if(request('consolidate_rpt')) {
             $this->exportConsolidateRpt($deals, $totals, request('bill_profile'));
@@ -2117,7 +2117,7 @@ class DetailRptController extends Controller
                     'deals.divisor', 'deals.dividend',
                     'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst',
                     'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark',
-                    DB::raw('ROUND(SUM(deals.qty), 2) AS qty'),
+                    DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
                     DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
@@ -2149,7 +2149,14 @@ class DetailRptController extends Controller
             $deals = $deals->orderBy('items.product_id')->orderBy('profiles.id');
         }
 
-        return $deals;
+        $totals = $this->calStockBillingTotals($deals);
+
+        $data = [
+            'deals' => $deals,
+            'totals' => $totals
+        ];
+
+        return $data;
     }
 
     // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
@@ -2160,8 +2167,9 @@ class DetailRptController extends Controller
         }else if(request('consolidate_rpt')) {
             $type = request('consolidate_rpt');
         }
-        $deals = $this->stockBillingSql();
+        $deals = $this->stockBillingSql()['deals'];
         $deals = $deals->get();
+        $totals = $this->stockBillingSql()['totals'];
         $profile = Profile::find(request('profile_id'));
         $issuebillprofile = Profile::find(request('bill_profile'));
         $running_no = Carbon::today()->format('ymd');
@@ -2189,14 +2197,16 @@ class DetailRptController extends Controller
             'type' => $type,
             'delivery_from' => $delivery_from,
             'delivery_to' => $delivery_to,
+            'totals' => $totals,
         ];
 
         $pdf = PDF::loadView('detailrpt.stock.pdf.internalpdf', $data);
         $pdf->setPaper('a4');
         $pdf->setOption('margin-top', 5);
         $pdf->setOption('margin-bottom', 5);
-        $pdf->setOption('margin-left', 0);
-        $pdf->setOption('margin-right', 0);
-        return $pdf->stream($name);
+        $pdf->setOption('margin-left', 2);
+        $pdf->setOption('margin-right', 2);
+        $pdf->setOption('footer-right', 'Page [page]');
+        return $pdf->download($name);
     }
 }

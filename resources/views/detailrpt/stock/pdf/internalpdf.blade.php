@@ -37,14 +37,17 @@
         tr {
             page-break-inside: avoid;
         }
-
+        .page-break {
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
 
     </style>
     </head>
 
     <body>
         <div class="container">
-            <div class="col-xs-10 col-xs-offset-1" style="font-size:15px">
+            <div class="col-xs-10 col-xs-offset-1" style="font-size:14px">
                 <h3 class="text-center"><strong>{{$issuebillprofile->name}}</strong></h3>
                 <h5 class="text-center" style="margin-bottom: -5px">{{$issuebillprofile->address}}</h5>
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$issuebillprofile->contact}}</h5>
@@ -55,12 +58,23 @@
                 <div class="row no-gutter">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
-                            <div style="font-size:14px"><strong>Bill To:</strong></div>
+                            <div style="font-size:14px">
+                                @if($type === 'bill')
+                                    <strong>Bill To:</strong>
+                                @endif
+                            </div>
                             <div style="border: solid thin; height:70px; padding-top:10px; padding-bottom: 10px;">
-                                <span class="col-xs-12">
-                                    <strong>{{$profile->name}}</strong>
-                                </span>
-                                <span class="col-xs-12">{{$profile->address}}</span>
+                                @if($type === 'bill')
+                                    <span class="col-xs-12">
+                                        <strong>{{$profile->name}}</strong>
+                                    </span>
+                                    <span class="col-xs-12">{{$profile->address}}</span>
+                                @elseif($type === 'consolidate')
+                                    <span class="col-xs-12">
+                                        <strong>{{$issuebillprofile->name}}</strong>
+                                    </span>
+                                    <span class="col-xs-12">Monthly Consolidate Sales</span>
+                                @endif
                             </div>
                         </div>
 
@@ -124,7 +138,9 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$issuebillprofile->payterm->name}}</span>
+                                        <small>
+                                            <span class="inline">{{$issuebillprofile->payterm->name}}</span>
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +163,7 @@
 
             <div class="avoid">
             <div class="row">
-                <div class="col-xs-12" style="padding-top: 10px">
+                <div class="col-xs-12" style="padding-top: 5px">
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
                         <tr>
                             <th class="col-xs-1 text-center">
@@ -156,7 +172,7 @@
                             <th class="col-xs-7 text-center">
                                 Description
                             </th>
-                            <th class="col-xs-2 text-center">
+                            <th class="col-xs-1 text-center">
                                 Quantity
                             </th>
                             <th class="col-xs-1 text-center">
@@ -165,107 +181,126 @@
                             <th class="col-xs-1 text-center">
                                 Price(S$)
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-2 text-center">
                                 Amount (S$)
                             </th>
                         </tr>
 
-                        @php
-                            $counter = 0;
-                        @endphp
+                        <tr>
+                            <td class="text-center" colspan="12">
+                                <strong>Date range: {{$delivery_from}} - {{$delivery_to}}</strong>
+                            </td>
+                        </tr>
 
                         @unless(count($deals)>0)
-                            <td class="text-center" colspan="8">No Records Found</td>
+                            <tr>
+                                <td class="text-center" colspan="12">No Records Found</td>
+                            </tr>
                         @else
                             @foreach($deals as $index => $deal)
-                                @php
-                                    $counter++;
-                                @endphp
-                            @if( $counter >= 16)
-                            <tr style="page-break-inside: always">
-                            @else
+                                <tr>
+                                    <td class="col-xs-1 text-center">
+                                        {{ $deal->product_id }}
+                                    </td>
+                                    <td class="col-xs-7">
+                                        {{ $deal->item_name}} {{ $deal->item_remark }}
+                                    </td>
+
+                                    <td class="col-xs-1 text-right">
+                                        {{ number_format($deal->qty, 4) }}
+                                    </td>
+
+                                    <td class="col-xs-1 text-center">
+                                        {{ $deal->unit }}
+                                    </td>
+
+                                    <td class="col-xs-1 text-right">
+                                        {{ $deal->avg_unit_cost }}
+                                    </td>
+
+                                    <td class="col-xs-2 text-right">
+                                        {{ number_format($deal->total_cost, 2) }}
+                                    </td>
+                                </tr>
+                            @endforeach
+
                             <tr>
-                            @endif
-                                <td class="col-xs-1 text-center">
-                                    {{ $deal->product_id }}
+                                <td colspan="5" class="text-right">
+                                    <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-7">
-                                    {{ $deal->item_name}} {{ $deal->item_remark }}
-                                </td>
-
-                                <td class="col-xs-2 text-right">
-                                    {{ $deal->qty }}
-                                </td>
-
-                                <td class="col-xs-1 text-center">
-                                    {{ $deal->unit }}
-                                </td>
-
-                                <td class="col-xs-1 text-right">
-                                    {{ $deal->avg_unit_cost }}
-                                </td>
-
-                                <td class="col-xs-1 text-right">
-                                    {{ $deal->total_cost }}
+                                <td class="text-right">
+                                    <strong>{{ number_format($totals['total_costs'], 2) }}</strong>
                                 </td>
                             </tr>
-                            @endforeach
-{{--
-                        @if($issuebillprofile->gst)
-                        <tr class="noBorder">
-                            <td colspan="4">
-                                <span class="col-xs-offset-7" style="padding-left:33px;"><strong>SubTotal</strong></span>
-                            </td>
-                            <td class="text-right">
-                                <strong>{{ number_format($totalprice, 2) }}</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="col-xs-3 text-center">
-                                <span style="padding-left:210px;"><strong>GST (7%)</strong></span>
-                            </td>
-                            <td class="text-right">
-                                {{ number_format(($totalprice * 7/100), 2)}}
-                            </td>
-                        </tr>
-                        @endif
 
-                        @if($transaction->delivery_fee != 0)
-                        <tr>
-                            <td colspan="4" class="col-xs-3 text-center">
-                                <span style="padding-left:210px;"><strong>Delivery Fee</strong></span>
-                            </td>
-                            <td class="text-right">
-                                {{ number_format(($transaction->delivery_fee), 2)}}
-                            </td>
-                        </tr>
-                        @endif
-
-                        <tr>
-                            @if($person->profile->gst)
-                                <td colspan="3">
-                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
-                                    <span class="pull-right">{{$totalqty}}</span>
+                            @if($issuebillprofile->gst)
+                            <tr>
+                                <td colspan="5" class="text-right">
+                                    <strong>GST (7%)</strong>
                                 </td>
-                                <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice * 107/100 + $transaction->delivery_fee), 2, '.', ',') : number_format(($totalprice * 107/100), 2) }}</strong>
+                                    {{ number_format($totals['total_costs'] * 7/100, 2) }}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-right">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td class="text-right">
+                                    {{ number_format($totals['total_costs'] * 93/100, 2) }}
+                                </td>
+                            </tr>
                             @else
-                                <td colspan="3">
-                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
-                                    <span class="pull-right">{{$totalqty}}</span>
+                            <tr>
+                                <td colspan="5" class="text-right">
+                                    <strong>Subtotal</strong>
                                 </td>
-                                <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice + $transaction->delivery_fee), 2) : $totalprice}}</strong>
+                                    {{ $totals['total_costs'] }}
                                 </td>
+                            </tr>
                             @endif
-                        </tr> --}}
                         @endunless
                     </table>
                 </div>
             </div>
+            </div>
+
+            <div class="col-xs-12">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">Remarks:</label>
+                    </div>
+                </div>
+
+                <div class="col-xs-12" style="padding-top: 10px">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <span class="text-center col-xs-12">
+                                <strong>Goods Received in Good Conditions</strong>
+                            </span>
+                            <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
+                                _______________________________
+                            </span>
+                            <span class="text-center col-xs-12" style="margin-top:0px">
+                                <strong>Customer Sign & Co. Stamp</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <span class="text-center col-xs-12">
+                                <strong>{{$issuebillprofile->name}}</strong>
+                            </span>
+                            <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
+                                _______________________________
+                            </span>
+                            <span class="text-center col-xs-12" style="margin-top:0px">
+                                <strong>Payment Collected By</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
