@@ -177,7 +177,7 @@
 
         <div class="row">
             <div class="col-md-3 col-sm-3 col-xs-12">
-                <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">

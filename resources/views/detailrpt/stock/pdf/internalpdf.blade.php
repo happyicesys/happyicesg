@@ -9,16 +9,15 @@
             display:inline;
         }
         body{
-            font-family: "Helvetica";
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1.2;
         }
         table{
-            font-size: 12px;
+            font-size: 10px;
             font-family: 'Times New Roman';
         }
         th{
-            font-size: 12px;
+            font-size: 10px;
         }
         footer{
             position: absolute;
@@ -47,23 +46,31 @@
 
     <body>
         <div class="container">
-            <div class="col-xs-10 col-xs-offset-1" style="font-size:14px">
-                <h3 class="text-center"><strong>{{$issuebillprofile->name}}</strong></h3>
-                <h5 class="text-center" style="margin-bottom: -5px">{{$issuebillprofile->address}}</h5>
-                <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$issuebillprofile->contact}}</h5>
-                <h5 class="text-center">Co Reg No: {{$issuebillprofile->roc_no}}</h5>
+            <div class="row">
+                <span class="col-xs-12 text-center" style="font-size:14px">
+                    <strong>{{$issuebillprofile->name}}</strong>
+                </span>
+                <span class="col-xs-12 text-center">
+                    {{$issuebillprofile->address}}
+                </span>
+                <span class="col-xs-12 text-center">
+                    Tel: {{$issuebillprofile->contact}}
+                </span>
+                <span class="col-xs-12 text-center">
+                    Co Reg No: {{$issuebillprofile->roc_no}}
+                </span>
             </div>
 
             <div class="col-xs-12" style="padding-top: 5px">
                 <div class="row no-gutter">
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
-                            <div style="font-size:14px">
+                            <div style="font-size: 10px">
                                 @if($type === 'bill')
                                     <strong>Bill To:</strong>
                                 @endif
                             </div>
-                            <div style="border: solid thin; height:70px; padding-top:10px; padding-bottom: 10px;">
+                            <div style="border: solid thin; height:60px; padding-top:10px; padding-bottom: 5px;">
                                 @if($type === 'bill')
                                     <span class="col-xs-12">
                                         <strong>{{$profile->name}}</strong>
@@ -72,13 +79,12 @@
                                 @elseif($type === 'consolidate')
                                     <span class="col-xs-12">
                                         <strong>{{$issuebillprofile->name}}</strong>
-                                    </span>
-                                    <span class="col-xs-12">Monthly Consolidate Sales</span>
+                                    </span></span>
                                 @endif
                             </div>
                         </div>
 
-                        <div style="padding-top:15px">
+                        <div style="padding-top:5px">
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
@@ -182,13 +188,13 @@
                                 Price(S$)
                             </th>
                             <th class="col-xs-2 text-center">
-                                Amount (S$)
+                                Amount(S$)
                             </th>
                         </tr>
 
                         <tr>
                             <td class="text-center" colspan="12">
-                                <strong>Date range: {{$delivery_from}} - {{$delivery_to}}</strong>
+                                <strong>Date range: {{$delivery_from}} till {{\Carbon\Carbon::today()->min(\Carbon\Carbon::parse($delivery_to))->format('Y-m-d')}}</strong>
                             </td>
                         </tr>
 
@@ -234,12 +240,16 @@
                             </tr>
 
                             @if($issuebillprofile->gst)
+                                @php
+                                    $gst = $totals['total_costs'] - $totals['total_costs']/1.07;
+                                    $subtotal = $totals['total_costs'] - $gst;
+                                @endphp
                             <tr>
                                 <td colspan="5" class="text-right">
                                     <strong>GST (7%)</strong>
                                 </td>
                                 <td class="text-right">
-                                    {{ number_format($totals['total_costs'] * 7/100, 2) }}
+                                    {{ number_format($gst, 2) }}
                                 </td>
                             </tr>
                             <tr>
@@ -247,7 +257,7 @@
                                     <strong>Subtotal</strong>
                                 </td>
                                 <td class="text-right">
-                                    {{ number_format($totals['total_costs'] * 93/100, 2) }}
+                                    {{ number_format($subtotal, 2) }}
                                 </td>
                             </tr>
                             @else

@@ -44,7 +44,8 @@ var app = angular.module('app', [
             $('.select').select2();
         });
 
-        $scope.exportData = function () {
+        $scope.exportData = function ($event) {
+            $event.preventDefault();
             var blob = new Blob(["\ufeff", document.getElementById('exportable_stockbilling').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
