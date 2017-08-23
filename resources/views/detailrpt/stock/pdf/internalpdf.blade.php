@@ -40,6 +40,9 @@
             page-break-after: always;
             page-break-inside: avoid;
         }
+        .avoid-break {
+            page-break-inside: avoid;
+        }
 
     </style>
     </head>
@@ -283,7 +286,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12" style="padding-top: 10px">
+                <div class="col-xs-12 avoid-break" style="padding-top: 10px">
                     <div class="col-xs-6">
                         <div class="form-group">
                             <span class="text-center col-xs-12">
