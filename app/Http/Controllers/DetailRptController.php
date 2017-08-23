@@ -2207,8 +2207,9 @@ class DetailRptController extends Controller
         $pdf->setOption('margin-left', 2);
         $pdf->setOption('margin-right', 2);
         $pdf->setOption('footer-right', 'Page [page]/[topage]');
-        $pdf->setOption('disable-smart-shrinking', true);
-        $pdf->setOption('dpi', 80);
+        // $pdf->setOption('disable-smart-shrinking', true);
+        // $pdf->setOption('dpi', 80);
+        $pdf->setOption('zoom', 1.33);
         $pdf->setOption('page-width', '210mm');
         $pdf->setOption('page-height', '297mm');
         return $pdf->download($name);
