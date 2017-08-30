@@ -1,9 +1,19 @@
 @inject('payterms', 'App\Payterm')
 
 <div class="col-md-8 col-md-offset-2">
-    <div class="form-group">
-        {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
-        {!! Form::text('name', null, ['class'=>'form-control']) !!}
+    <div class="row">
+        <div class="col-md-7 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+                {!! Form::text('name', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('acronym', 'Alias', ['class'=>'control-label']) !!}
+                {!! Form::text('acronym', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -28,21 +38,28 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('attn', 'Attn', ['class'=>'control-label']) !!}
+                {!! Form::text('attn', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('contact', 'Contact', ['class'=>'control-label']) !!}
                 {!! Form::text('contact', null, ['class'=>'form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('alt_contact', 'Alt. Contact', ['class'=>'control-label']) !!}
                 {!! Form::text('alt_contact', null, ['class'=>'form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
                 {!! Form::email('email', null, ['class'=>'form-control']) !!}

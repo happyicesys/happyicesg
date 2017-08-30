@@ -143,6 +143,7 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
+Route::match(['get', 'post'], '/api/pricematrix/items', 'ItemController@getPriceMatrixItems');
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
 Route::post('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Laracasts\Flash\Flash;
 
 class Handler extends ExceptionHandler
 {
@@ -48,8 +49,9 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        if($e instanceof TokenMismatchException){
-            return redirect('/auth/login');
+        if($e instanceof \Illuminate\Session\TokenMismatchException){
+            Flash::error('Your session has expired');
+            return redirect('/');
         }
 
         return parent::render($request, $e);

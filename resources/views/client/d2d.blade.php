@@ -125,9 +125,6 @@ Door To Door
                     </tr>
                   </table>
                 </div>
-{{--                 <div class="hidden-md hidden-sm hidden-lg">
-
-                </div> --}}
               <div class="form-group pull-right">
                 <button class="btn btn-lg btn-success" v-bind:disabled="disableNext" style="border-radius: 5px;" v-if="!step3" @click="fillForm">Next <i class="fa fa-spinner fa-spin" v-if="loading"></i></button>
               </div>
@@ -181,13 +178,6 @@ Door To Door
 
                 <div class="row">
                 <div class="col-md-6 col-xs-6">
-                  <div class="form-group">
-                    <label for="street" class="control-label">Street</label>
-                    <input type="text" name="street" class="form-control" v-model="form.street">
-                  </div>
-                </div>
-
-                <div class="col-md-6 col-xs-6">
                   <div class="form-group" :class="{ 'has-error' : formErrors['postcode'] }">
                     <label for="postcode" class="control-label">Postcode</label>
                     <label for="required" class="control-label" style="color:red;" v-if="!form.postcode">*</label>
@@ -197,6 +187,13 @@ Door To Door
                           <li style="color:red;">@{{ formErrors['postcode'][0] }}</li>
                       </ul>
                     </span>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-xs-6">
+                  <div class="form-group">
+                    <label for="street" class="control-label">Street</label>
+                    <input type="text" name="street" class="form-control" v-model="form.street">
                   </div>
                 </div>
                 </div>

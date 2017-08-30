@@ -178,6 +178,7 @@
         <div class="row">
             <div class="col-md-3 col-sm-3 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="consolidate" ng-disabled="!search.profile_id"><i class="fa fa-book"></i> Consolidate Sales Report</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
@@ -265,7 +266,6 @@
                             <label class="control-label"></label>
                             <div class="btn-group-control">
                                 <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="bill" ng-disabled="!search.profile_id"><i class="fa fa-usd"></i> Issue Bill</button>
-                                <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="consolidate"><i class="fa fa-book"></i> Consolidate Report</button>
                             </div>
                             </div>
                         </div>

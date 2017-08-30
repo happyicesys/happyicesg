@@ -317,6 +317,76 @@ class ItemController extends Controller
         return Redirect::action('ItemController@edit', $item->id);
     }
 
+    // return items horizontal th for price matrix
+    public function getPriceMatrixItems()
+    {
+        $items = $this->filterPriceMatrixItems();
+
+        return $items;
+    }
+
+    // return items horizontal th for price matrix
+    public function getPriceMatrixPeople()
+    {
+        $builderArr = [];
+
+        $people = $this->filterPriceMatrixPeople();
+
+        $items = $this->filterPriceMatrixItems();
+
+        foreach($items as $item) {
+            foreach($people as $person) {
+
+            }
+        }
+
+        return $people;
+    }
+
+    // return price matrix items filter api()
+    private function filterPriceMatrixItems()
+    {
+        $product_id = request('product_id');
+        $name = request('name');
+
+        $items = new Item();
+
+        if($product_id) {
+            $items = $items->where('product_id', 'LIKE', '%'.$product_id.'%');
+        }
+        if($name) {
+            $items = $items->where('name', 'LIKE', '%'.$name.'%');
+        }
+
+        $items = $items->orderBy('product_id')->get();
+
+        return $items;
+    }
+
+    // return price matrix customers filter api()
+    private function filterPriceMatrixPeople()
+    {
+        $cust_id = request('cust_id');
+        $custcategory_id = request('custcategory_id');
+        $company = request('company');
+
+        $people = new Person();
+
+        if($cust_id) {
+            $people = $people->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($custcategory_id) {
+            $people = $people->where('custcategory_id', $custcategory_id);
+        }
+        if($company) {
+            $people = $people->where('company', 'LIKE', '%'.$company.'%');
+        }
+
+        $people = $people->orderBy('cust_id')->get();
+
+        return $people;
+    }
+
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
     private function exportUnitcostExcel($profiles, $items)
     {

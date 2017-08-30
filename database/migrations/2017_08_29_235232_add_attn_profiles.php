@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAcronymPaytermProfiles extends Migration
+class AddAttnProfiles extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddAcronymPaytermProfiles extends Migration
     {
         Schema::table('profiles', function ($table)
         {
-            $table->string('acronym')->nullable();
-            $table->integer('payterm_id')->nullable();
+            $table->string('attn')->nullable();
         });
     }
 
@@ -28,8 +27,7 @@ class AddAcronymPaytermProfiles extends Migration
     {
         Schema::table('profiles', function($table)
         {
-            $table->dropColumn('acronym');
-            $table->dropColumn('payterm_id');
+            $table->dropColumn('attn');
         });
     }
 }

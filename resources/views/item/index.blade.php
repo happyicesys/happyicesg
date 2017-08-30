@@ -33,6 +33,7 @@
                                 <li><a href="#stock" role="tab" data-toggle="tab">Stock Movement</a></li>
                                 @if(Auth::user()->hasRole('admin'))
                                     <li><a href="#unit_cost" role="tab" data-toggle="tab">Unit Cost</a></li>
+                                    {{-- <li><a href="#price_matrix" role="tab" data-toggle="tab">Price Matrix</a></li> --}}
                                 @endif
                             @endcannot
                         </ul>
@@ -48,6 +49,9 @@
                             </div>
                             <div class="tab-pane" id="unit_cost">
                                 @include('item.unit_cost')
+                            </div>
+                            <div class="tab-pane" id="price_matrix">
+                                @include('item.price_matrix')
                             </div>
                         </div>
                     </div>

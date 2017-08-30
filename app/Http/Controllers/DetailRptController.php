@@ -1257,10 +1257,10 @@ class DetailRptController extends Controller
         $deals = $this->stockBillingSql()['deals'];
 
         $totals = $this->stockBillingSql()['totals'];
-
+/*
         if(request('consolidate_rpt')) {
             $this->exportConsolidateRpt($deals, $totals, request('bill_profile'));
-        }
+        }*/
 
         if($pageNum == 'All'){
             $deals = $deals->get();
@@ -2170,8 +2170,6 @@ class DetailRptController extends Controller
         $deals = $this->stockBillingSql()['deals'];
         $deals = $deals->get();
         $totals = $this->stockBillingSql()['totals'];
-        $profile = Profile::find(request('profile_id'));
-        $issuebillprofile = Profile::find(request('bill_profile'));
         $running_no = Carbon::today()->format('ymd');
         $delivery_from = request('delivery_from');
         $delivery_to = request('delivery_to');
@@ -2179,10 +2177,14 @@ class DetailRptController extends Controller
         if($type = request('exportpdf')) {
             switch($type) {
                 case 'bill':
-                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.$running_no;
+                    $profile = Profile::find(request('profile_id'));
+                    $issuebillprofile = Profile::find(request('bill_profile'));
+                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.Carbon::parse($delivery_to)->format('ymd').'-'.$issuebillprofile->acronym;
                     $name = 'Internal_Billing('.$running_no.')_'.$issuebillprofile->name.'-'.$profile->name.'.pdf';
                     break;
                 case 'consolidate':
+                    $profile = Profile::find(request('profile_id'));
+                    $issuebillprofile = Profile::find(request('profile_id'));
                     $running_no = $issuebillprofile->acronym.$running_no;
                     $name = 'Consolidate_Rpt('.$running_no.')_'.$issuebillprofile->name.'.pdf';
                     break;

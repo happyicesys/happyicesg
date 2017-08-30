@@ -72,4 +72,10 @@ Healthier Life
         <a href="/" class="btn btn-success">Return to Main Page</a>
     </div>
 </div>
+
+@php
+    if(auth()->guest()) {
+        request()->session()->flush();
+    }
+@endphp
 @stop

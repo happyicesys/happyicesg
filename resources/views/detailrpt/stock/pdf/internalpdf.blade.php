@@ -91,11 +91,13 @@
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
+                                    {{$issuebillprofile->attn}}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="inline"><strong>Tel:</strong></div>
                                 <div class="inline" style="padding-left: 20px">
+                                    {{$issuebillprofile->contact}}
                                 </div>
                             </div>
                         </div>
@@ -134,8 +136,20 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
+                                    @php
+                                        $date = '';
+
+                                        switch($type) {
+                                            case 'bill':
+                                                $date = \Carbon\Carbon::parse($delivery_to)->format('d M y');
+                                                break;
+                                            case 'consolidate':
+                                                $date = \Carbon\Carbon::today()->format('d M y');
+                                                break;
+                                        }
+                                    @endphp
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{Carbon\Carbon::today()->format('d M y')}}</span>
+                                        <span class="inline">{{$date}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +211,7 @@
 
                         <tr>
                             <td class="text-center" colspan="12">
-                                <strong>Date range: {{$delivery_from}} till {{\Carbon\Carbon::today()->min(\Carbon\Carbon::parse($delivery_to))->format('Y-m-d')}}</strong>
+                                <strong>Date range: {{$delivery_from}} till {{$delivery_to}}</strong>
                             </td>
                         </tr>
 
@@ -223,55 +237,86 @@
                                         {{ $deal->unit }}
                                     </td>
 
+                                    @php
+                                        $avg_number = 0;
+                                        $total_number = 0;
+
+                                        switch($type) {
+                                            case 'bill':
+                                                $avg_number = $deal->avg_unit_cost;
+                                                $total_number = $deal->total_cost;
+                                                break;
+                                            case 'consolidate':
+                                                $avg_number = $deal->avg_sell_value;
+                                                $total_number = $deal->amount;
+                                                break;
+                                        }
+                                    @endphp
                                     <td class="col-xs-1 text-right">
-                                        {{ $deal->avg_unit_cost }}
+                                        {{ number_format($avg_number, 2) }}
                                     </td>
 
                                     <td class="col-xs-2 text-right">
-                                        {{ number_format($deal->total_cost, 2) }}
+                                        {{ number_format($total_number, 2) }}
                                     </td>
                                 </tr>
                             @endforeach
+
+                            @php
+                                $totalvar = 0;
+                                $subtotalvar = 0;
+                                $gstvar = 0;
+
+                                switch($type) {
+                                    case 'bill':
+                                        $totalvar = $totals['total_sell_value'];
+                                        break;
+                                    case 'consolidate':
+                                        $totalvar = $totals['total_costs'];
+                                        break;
+                                }
+
+                                if($issuebillprofile->gst) {
+                                    $gstvar = $totalvar - $totalvar/1.07;
+                                    $subtotalvar = $totalvar - $gstvar;
+                                }
+                            @endphp
 
                             <tr>
                                 <td colspan="5" class="text-right">
                                     <strong>Total</strong>
                                 </td>
                                 <td class="text-right">
-                                    <strong>{{ number_format($totals['total_costs'], 2) }}</strong>
+                                    <strong>{{ number_format($totalvar, 2) }}</strong>
                                 </td>
                             </tr>
 
                             @if($issuebillprofile->gst)
-                                @php
-                                    $gst = $totals['total_costs'] - $totals['total_costs']/1.07;
-                                    $subtotal = $totals['total_costs'] - $gst;
-                                @endphp
-                            <tr>
-                                <td colspan="5" class="text-right">
-                                    <strong>GST (7%)</strong>
-                                </td>
-                                <td class="text-right">
-                                    {{ number_format($gst, 2) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="text-right">
-                                    <strong>Subtotal</strong>
-                                </td>
-                                <td class="text-right">
-                                    {{ number_format($subtotal, 2) }}
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="5" class="text-right">
+                                        <strong>GST (7%)</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        {{ number_format($gstvar, 2) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-right">
+                                        <strong>Subtotal</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        {{ number_format($subtotalvar, 2) }}
+                                    </td>
+                                </tr>
                             @else
-                            <tr>
-                                <td colspan="5" class="text-right">
-                                    <strong>Subtotal</strong>
-                                </td>
-                                <td class="text-right">
-                                    {{ $totals['total_costs'] }}
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="5" class="text-right">
+                                        <strong>Subtotal</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        {{ $totalvar }}
+                                    </td>
+                                </tr>
                             @endif
                         @endunless
                     </table>
