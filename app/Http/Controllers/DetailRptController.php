@@ -2179,7 +2179,7 @@ class DetailRptController extends Controller
                 case 'bill':
                     $profile = Profile::find(request('profile_id'));
                     $issuebillprofile = Profile::find(request('bill_profile'));
-                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.Carbon::parse($delivery_to)->format('ymd').'-'.$issuebillprofile->acronym;
+                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.Carbon::parse($delivery_to)->format('ymd').'-'.$profile->acronym;
                     $name = 'Internal_Billing('.$running_no.')_'.$issuebillprofile->name.'-'.$profile->name.'.pdf';
                     break;
                 case 'consolidate':
