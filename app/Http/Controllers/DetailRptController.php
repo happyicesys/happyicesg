@@ -2170,7 +2170,7 @@ class DetailRptController extends Controller
         $deals = $this->stockBillingSql()['deals'];
         $deals = $deals->get();
         $totals = $this->stockBillingSql()['totals'];
-        $running_no = Carbon::today()->format('ymd');
+        // $running_no = Carbon::today()->format('ymd');
         $delivery_from = request('delivery_from');
         $delivery_to = request('delivery_to');
 
@@ -2185,7 +2185,7 @@ class DetailRptController extends Controller
                 case 'consolidate':
                     $profile = Profile::find(request('profile_id'));
                     $issuebillprofile = Profile::find(request('profile_id'));
-                    $running_no = $issuebillprofile->acronym.$running_no;
+                    $running_no = $issuebillprofile->acronym.Carbon::parse($delivery_to)->format('ymd');
                     $name = 'Consolidate_Rpt('.$running_no.')_'.$issuebillprofile->name.'.pdf';
                     break;
             }

@@ -137,8 +137,8 @@
                                 </div>
                                 <div class="col-xs-6">
                                     @php
-                                        $date = '';
-
+                                        $date = \Carbon\Carbon::parse($delivery_to)->format('d M y');
+/*
                                         switch($type) {
                                             case 'bill':
                                                 $date = \Carbon\Carbon::parse($delivery_to)->format('d M y');
@@ -146,7 +146,7 @@
                                             case 'consolidate':
                                                 $date = \Carbon\Carbon::today()->format('d M y');
                                                 break;
-                                        }
+                                        }*/
                                     @endphp
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$date}}</span>
