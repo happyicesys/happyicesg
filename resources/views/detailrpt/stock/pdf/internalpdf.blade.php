@@ -269,10 +269,10 @@
 
                                 switch($type) {
                                     case 'bill':
-                                        $totalvar = $totals['total_sell_value'];
+                                        $totalvar = $totals['total_costs'];
                                         break;
                                     case 'consolidate':
-                                        $totalvar = $totals['total_costs'];
+                                        $totalvar = $totals['total_sell_value'];
                                         break;
                                 }
 
