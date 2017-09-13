@@ -281,6 +281,9 @@
                         <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(file.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
                     </td>
                 </tr>
+                <tr ng-if="files.length == 0">
+                    <td class="text-center" colspan="7">No Records Found</td>
+                </tr>
 {{--                 @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
