@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Laracasts\Flash\Flash;
 use App\Person;
 use Carbon\Carbon;
 use App\StoreFile;
@@ -132,11 +133,45 @@ class PersonController extends Controller
     public function edit($id)
     {
         $person = Person::findOrFail($id);
-        $files = StoreFile::wherePersonId($id)->oldest()->get();
+        // $files = StoreFile::wherePersonId($id)->oldest()->get();
         $prices = Price::wherePersonId($id)->orderBy('item_id')->paginate(50);
         $addfreezers = AddFreezer::wherePersonId($id)->oldest()->paginate(3);
         $addaccessories = AddAccessory::wherePersonId($id)->oldest()->paginate(3);
-        return view('person.edit', compact('person', 'files', 'prices', 'addfreezers', 'addaccessories'));
+        return view('person.edit', compact('person', 'prices', 'addfreezers', 'addaccessories'));
+    }
+
+    // return files api by given person id(int $person_id)
+    public function getFilesApi($person_id)
+    {
+        $files = StoreFile::wherePersonId($person_id)->oldest()->get();
+
+        return $files;
+    }
+
+    // batch update files name (int $person_id)
+    public function updateFilesName($person_id)
+    {
+        $filesname = request('file_name');
+
+        foreach($filesname as $index => $filename) {
+            if($filename) {
+                $file = StoreFile::findOrFail($index);
+                $file->name = $filename;
+                $file->save();
+            }
+        }
+
+        Flash::success('Entries updated');
+
+        return redirect()->action('PersonController@edit', $person_id);
+    }
+
+    // remove file api()
+    public function removeFileApi()
+    {
+        $file = StoreFile::findOrFail(request('file_id'));
+
+        $file->delete();
     }
 
     public function update(PersonRequest $request, $id)

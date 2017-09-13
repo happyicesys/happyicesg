@@ -60,7 +60,7 @@ class Person extends Baum\Node
     'payterm', 'cost_rate', 'active', 'site_name', 'profile_id',
     'note', 'salutation', 'dob', 'cust_type', 'user_id', 'parent_name',
     'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
-    'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing'
+    'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
     ];
 
     protected $dates = ['deleted_at'];

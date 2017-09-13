@@ -10,13 +10,13 @@ class StoreFile extends Model
     protected $table = 'file_person';
 
     protected $fillable = [
-        'path'
+        'path', 'name'
     ];
 
     public function getCreatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d-M-Y');
-    }        
+    }
 
     public function person()
     {

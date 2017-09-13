@@ -119,6 +119,9 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::post('/api/person/file/remove', 'PersonController@removeFileApi');
+Route::post('/person/files/update/{person_id}', 'PersonController@updateFilesName');
+Route::get('/api/person/files/{person_id}', 'PersonController@getFilesApi');
 Route::get('/person/replicate/{person_id}', 'PersonController@replicatePerson');
 Route::get('/person/user/{user_id}', 'PersonController@getPersonUserId');
 Route::post('/person/{person_id}/note', 'PersonController@storeNote');
@@ -143,7 +146,9 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
-Route::match(['get', 'post'], '/api/pricematrix/items', 'ItemController@getPriceMatrixItems');
+Route::match(['get', 'post'], '/api/pricematrix', 'ItemController@getPriceMatrix');
+// Route::match(['get', 'post'], '/api/pricematrix/items', 'ItemController@getPriceMatrixItems');
+// Route::match(['get', 'post'], '/api/pricematrix/people', 'ItemController@getPriceMatrixPeople');
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
 Route::post('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');
@@ -160,6 +165,7 @@ Route::resource('item', 'ItemController');
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
 
+Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
 Route::get('/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDate');

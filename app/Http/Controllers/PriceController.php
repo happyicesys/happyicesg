@@ -178,6 +178,14 @@ class PriceController extends Controller
         return Redirect::action('PersonController@edit', $person_id);
     }
 
+    // return prices for specific item and person (int $item_id, int $person_id)
+    public function lookupPrices($item_id, $person_id)
+    {
+        $prices = Price::where('item_id', $item_id)->where('person_id', $person_id)->get();
+
+        return $prices;
+    }
+
     private function calquote($id, $retail_price)
     {
 

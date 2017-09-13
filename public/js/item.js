@@ -162,8 +162,10 @@ function priceMatrixController($scope, $http){
         saveAs(blob, "InventoryRpt"+ now + ".xls");
     };
 
-    $http.get('/api/pricematrix/items').success(function(data){
-        $scope.items = data;
+    $http.get('/api/pricematrix').success(function(data){
+        // console.log(data);
+        $scope.items = data.items;
+        $scope.people = data.people;
     });
 
     $http.get('/inventory/data').success(function(inventories){
@@ -203,11 +205,20 @@ function priceMatrixController($scope, $http){
         getPage();
     }
 
+    // lookup pricematrix
+/*    $scope.lookupPriceMatrixPrice = function(item_id, person_id) {
+        $http.get('/api/prices/' + item_id + '/' + person_id).success(function(data) {
+            console.log(data);
+            return data;
+        });
+    }*/
+
     // retrieve page w/wo search
     function getPage(pageNumber){
         $scope.spinner = true;
-        $http.post('/api/pricematrix/items', $scope.search).success(function(data){
-            $scope.items = data;
+        $http.post('/api/pricematrix', $scope.search).success(function(data){
+            $scope.items = data.items;
+            $scope.people = data.people;
         });
     }
 }

@@ -17,6 +17,8 @@ use App\Profile;
 use App\Unitcost;
 use App\ImageItem;
 use App\Transaction;
+use App\Price;
+use App\Person;
 use DB;
 
 class ItemController extends Controller
@@ -316,7 +318,7 @@ class ItemController extends Controller
 
         return Redirect::action('ItemController@edit', $item->id);
     }
-
+/*
     // return items horizontal th for price matrix
     public function getPriceMatrixItems()
     {
@@ -328,19 +330,24 @@ class ItemController extends Controller
     // return items horizontal th for price matrix
     public function getPriceMatrixPeople()
     {
-        $builderArr = [];
+        $people = $this->filterPriceMatrixPeople();
 
+        return $people;
+    }*/
+
+    // return items horizontal th for price matrix
+    public function getPriceMatrix()
+    {
         $people = $this->filterPriceMatrixPeople();
 
         $items = $this->filterPriceMatrixItems();
 
-        foreach($items as $item) {
-            foreach($people as $person) {
+        $data = [
+            'people' => $people,
+            'items' => $items
+        ];
 
-            }
-        }
-
-        return $people;
+        return $data;
     }
 
     // return price matrix items filter api()
@@ -356,6 +363,11 @@ class ItemController extends Controller
         }
         if($name) {
             $items = $items->where('name', 'LIKE', '%'.$name.'%');
+        }
+
+        // init
+        if(request()->isMethod('get')) {
+            $items = $items->where('is_inventory', 1);
         }
 
         $items = $items->orderBy('product_id')->get();
@@ -380,6 +392,11 @@ class ItemController extends Controller
         }
         if($company) {
             $people = $people->where('company', 'LIKE', '%'.$company.'%');
+        }
+
+        // init
+        if(request()->isMethod('get')) {
+            $people = $people->where('custcategory_id', 2);
         }
 
         $people = $people->orderBy('cust_id')->get();

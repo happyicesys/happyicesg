@@ -188,7 +188,7 @@
                         Inventory Item
                     </th>
                     <th class="col-md-1 text-right">
-                        Total Qty
+                        Total Sold Qty
                     </th>
                     @foreach($sevenDatesArr as $date)
                         <th class="col-md-1 text-center">

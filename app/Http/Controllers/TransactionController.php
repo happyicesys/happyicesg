@@ -30,11 +30,13 @@ use App\DtdPrice;
 use App\DtdTransaction;
 use App\DtdDeal;
 use App\GeneralSetting;
+
 use App\HasProfileAccess;
+use App\CreateRemoveDealLogic;
 
 class TransactionController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, CreateRemoveDealLogic;
     //qty status condition
     /*
         qty_status = 1 (Stock Order/ Confirmed)
@@ -927,6 +929,7 @@ class TransactionController extends Controller
                     $deal->qty_after = $item->qty_after;
                     $deal->save();
                 }
+                $this->newDealFilter($deal->id);
             }
         }
     }

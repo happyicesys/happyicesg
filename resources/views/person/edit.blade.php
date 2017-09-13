@@ -241,25 +241,47 @@
     </div>
 
     <div class="panel-body">
+        {!! Form::open(['id'=>'update_names', 'action'=>['PersonController@updateFilesName', $person->id]]) !!}
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     #
                 </th>
-                <th class="col-md-7 text-center">
+                <th class="col-md-4 text-center">
                     Path
+                </th>
+                <th class="col-md-4 text-center">
+                    Name
                 </th>
                 <th class="col-md-2 text-center">
                     Upload On
                 </th>
-                <th class="col-md-2 text-center">
+                <th class="col-md-1 text-center">
                     Action
                 </th>
             </tr>
 
             <tbody>
-
-                @unless(count($files)>0)
+                <tr ng-repeat="file in files">
+                    <td class="col-md-1 text-center">
+                        @{{$index + 1}}
+                    </td>
+                    <td class="col-md-4">
+                        <a href="@{{file.path}}">
+                            <img src="@{{file.path}}" alt="@{{file.name}}" style="width:200px; height:200px;">
+                        </a>
+                    </td>
+                    <td class="col-md-4">
+                        <input type="text" class="form-control" name="file_name[@{{file.id}}]" ng-model="file.name">
+                    </td>
+                    <td class="col-md-2 text-center">
+                        @{{file.created_at}}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(file.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
+                    </td>
+                </tr>
+{{--                 @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
                     @foreach($files as $index => $file)
@@ -279,17 +301,21 @@
                         </td>
                     </tr>
                     @endforeach
-                @endunless
+                @endunless --}}
 
             </tbody>
         </table>
+        {!! Form::close() !!}
+
+        <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Update All Files Name</span></button>
     </div>
 
     <div class="panel-footer">
         {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
         {!! Form::close() !!}
         <label class="pull-right totalnum" for="totalnum">
-            Total of {{count($files)}} entries
+            Total of @{{files.length}} entries
+            {{-- Total of {{count($files)}} entries --}}
         </label>
     </div>
 </div>

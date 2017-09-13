@@ -36,6 +36,8 @@ var app = angular.module('app', [
         // init page load
         getPage(1, true);
 
+        loadFiles();
+
         angular.element(document).ready(function () {
             $('.select').select2();
         });
@@ -116,6 +118,8 @@ var app = angular.module('app', [
             $scope.items = data.items;
         });
 
+        // $scope.loadFiles();
+
         $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
             $scope.prices = prices;
             $scope.getRetailInit = function(item_id){
@@ -167,6 +171,20 @@ var app = angular.module('app', [
 
         });
 
+        // loading files from person
+        function loadFiles() {
+            $http.get('/api/person/files/' + $('#person_id').val()).success(function(data) {
+                $scope.files = data;
+            });
+        }
+
+          // removing file
+        $scope.removeFile = function(file_id){
+            $http.post('/api/person/file/remove', {'file_id': file_id}).success(function(data) {
+                loadFiles();
+            });
+        }
+
     }
 
 app.filter('delDate', [
@@ -187,6 +205,21 @@ app.filter('capitalize', function() {
     }
   }
 });
+
+app.directive('ngConfirmClick', [
+    function(){
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click',function (event) {
+                    if ( window.confirm(msg) ) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+}])
 
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
