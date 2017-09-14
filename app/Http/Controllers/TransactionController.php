@@ -301,14 +301,16 @@ class TransactionController extends Controller
             $request->merge(array('paid_by' => null));
             $request->merge(array('paid_at' => null));
         }elseif($request->input('update')){
-
             if($transaction->status === 'Confirmed'){
                 $request->merge(array('driver' => null));
                 $request->merge(array('paid_by' => null));
                 $request->merge(array('paid_at' => null));
             }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
+                $this->vendingMachineValidation($request, $id);
                 $request->merge(array('paid_by' => null));
                 $request->merge(array('paid_at' => null));
+            }else {
+                $this->vendingMachineValidation($request, $id);
             }
         }
 
@@ -320,6 +322,7 @@ class TransactionController extends Controller
             }
         }
 
+        $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));
         $request->merge(array('person_id' => $request->input('person_copyid')));
         $request->merge(array('updated_by' => Auth::user()->name));
         $transaction->update($request->all());
@@ -1228,14 +1231,19 @@ class TransactionController extends Controller
         if($transaction->person->is_vending === 1) {
             $this->validate($request, [
                 'digital_clock' => 'integer',
-                'analog_clock' => 'required|integer',
                 'balance_coin' => 'numeric'
             ], [
                 'digital_clock.integer' => 'Digital clock must be in integer',
-                'analog_clock.required' => 'Please fill in the analog clock',
-                'analag_clock.integer' => 'Analog clock must be in integer',
                 'balance_coin.numeric' => 'Balance coin must be in numbers'
             ]);
+            if($request->has('is_required_analog')) {
+                $this->validate($request, [
+                    'analog_clock' => 'required|integer',
+                ], [
+                    'analog_clock.required' => 'Please fill in the analog clock',
+                    'analag_clock.integer' => 'Analog clock must be in integer',
+                ]);
+            }
         }
     }
 }

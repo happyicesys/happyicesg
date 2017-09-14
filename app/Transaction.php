@@ -21,7 +21,7 @@ class Transaction extends Model
 
     protected $dontKeepRevisionOf = array(
         'person_id', 'name', 'cancel_trace',
-        'dtdtransaction_id', 'delivery_fee'
+        'dtdtransaction_id', 'delivery_fee', 'is_required_analog'
     );
 
     protected $revisionEnabled = true;
@@ -66,7 +66,8 @@ class Transaction extends Model
         'pay_status', 'person_code', 'person_id', 'order_date', 'driver', 'paid_by',
         'del_address', 'name', 'po_no', 'total_qty', 'pay_method', 'note',
         'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
-        'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze'
+        'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
+        'is_required_analog'
     ];
 
     protected $dates =[
