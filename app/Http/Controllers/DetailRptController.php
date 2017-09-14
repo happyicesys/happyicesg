@@ -1001,6 +1001,7 @@ class DetailRptController extends Controller
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND transactions.is_required_analog=1
                 AND ".$isCommissionStr."
                 GROUP BY people.id) AS sales"
             );
@@ -1011,6 +1012,7 @@ class DetailRptController extends Controller
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND transactions.is_required_analog=1
                 AND ".$isCommissionStr."
                 GROUP BY people.id) AS latest_data"
             );
@@ -1021,6 +1023,7 @@ class DetailRptController extends Controller
                 LEFT JOIN people ON people.id=transactions.person_id
                 WHERE transactions.delivery_date>='".$delivery_from."'
                 AND transactions.delivery_date<='".$delivery_to."'
+                AND transactions.is_required_analog=1
                 AND ".$isCommissionStr."
                 GROUP BY people.id) AS oldest_data"
             );
