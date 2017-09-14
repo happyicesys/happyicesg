@@ -180,6 +180,28 @@
                             <td colspan="4" class="text-center">No Records Found!</td>
                         </tr>
                     @else
+                        @unless(count($items)>0)
+                            <td class="text-center" colspan="7">No Records Found</td>
+                        @else
+                            @foreach($items::orderBy('product_id')->get() as $item)
+                            <tr class="form-group">
+                                <td class="col-md-8">
+                                    {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
+                                </td>
+                                <td class="col-md-2">
+                                    <strong>
+                                        <input type="text" name="retail[{{$item->id}}]" value="{{$prices::whereItemId($item->id)->wherePersonId($person->id)->first() ? $prices::whereItemId($item->id)->wherePersonId($person->id)->first()->retail_price : ''}}" class="text-right form-control"/>
+                                    </strong>
+                                </td>
+                                <td class="col-md-2">
+                                    <strong>
+                                        <input type="text" name="quote[{{$item->id}}]" value="{{$prices::whereItemId($item->id)->wherePersonId($person->id)->first() ? $prices::whereItemId($item->id)->wherePersonId($person->id)->first()->quote_price : ''}}" class="text-right form-control"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endunless
+{{--
                     <tr ng-repeat="item in items" class="form-group">
                         <td class="col-md-8">
                             @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
@@ -197,7 +219,7 @@
                     </tr>
                     <tr ng-if="items.length == 0 || ! items.length">
                         <td colspan="4" class="text-center">No Records Found!</td>
-                    </tr>
+                    </tr> --}}
                     @endif
                     </tbody>
                 </table>

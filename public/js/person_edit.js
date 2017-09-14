@@ -115,6 +115,7 @@ var app = angular.module('app', [
 
 
         $http.get('/item/data').success(function(data){
+            // console.log(data);
             $scope.items = data.items;
         });
 
@@ -122,6 +123,7 @@ var app = angular.module('app', [
 
         $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
             $scope.prices = prices;
+
             $scope.getRetailInit = function(item_id){
                 var retailNum = 0;
                 for(var i = 0; i < $scope.prices.length; i ++){
@@ -131,6 +133,7 @@ var app = angular.module('app', [
                         return retailNum;
                     }
                 }
+                // console.log(retailNum);
             }
 
             $scope.getQuoteInit = function(item_id){
