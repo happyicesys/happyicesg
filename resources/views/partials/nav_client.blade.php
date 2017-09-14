@@ -31,6 +31,7 @@
                   <ul class="dropdown-menu">
                     <li><a href="/vending/funv">Fun Vending Machine</a></li>
                     <li><a href="/vending/honestv">HonestV</a></li>
+                    <li><a href="/vending/directv">Direct Vending Machine</a></li>
                   </ul>
                 </li>
                 <li>

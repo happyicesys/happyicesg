@@ -90,6 +90,13 @@ class ClientController extends Controller
         return view('client.vending.honestv');
     }
 
+    // return direct vending page
+    public function directVendingIndex()
+    {
+        return view('client.vending.directv');
+    }
+
+
     // return recruitment page
     public function recruitmentIndex()
     {
@@ -390,6 +397,48 @@ class ClientController extends Controller
 
         Flash::success('The form has been submitted');
         return Redirect::action('ClientController@honestVendingIndex');
+    }
+
+    // direct vending inquiry
+    public function directVendingInquiry(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'contact' => 'required',
+            'email' => 'required',
+            'my_name'   => 'honeypot',
+            'my_time'   => 'required|honeytime:10'
+        ], [
+            'name.required' => 'Please fill in the name',
+            'contact.required' => 'Please fill in the contact number',
+            'email.required' => 'Please fill in the email'
+        ]);
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+        // email array send to
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $bcc = ['leehongjie91@gmail.com'];
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+        $data = array(
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'note' => $request->note,
+        );
+
+        $mail =  Mail::send('client.email_directv', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc){
+            $message->from($sendfrom);
+            $message->subject('Direct Vending Machine Inquiry ['.$today.']');
+            $message->setTo($sendto);
+            $message->bcc($bcc);
+        });
+
+        Flash::success('The form has been submitted');
+
+        return Redirect::action('ClientController@directVendingIndex');
     }
 
     // submit franchise inquiry (FormRequest $request)

@@ -103,8 +103,10 @@ Route::post('/franchise', 'ClientController@franchiseInquiry');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');
 Route::get('/vending/funv', 'ClientController@funVendingIndex');
 Route::get('/vending/honestv', 'ClientController@honestVendingIndex');
+Route::get('/vending/directv', 'ClientController@directVendingIndex');
 Route::post('/vending/funv', 'ClientController@funVendingInquiry');
 Route::post('/vending/honestv', 'ClientController@honestVendingInquiry');
+Route::post('/vending/directv', 'ClientController@directVendingInquiry');
 Route::get('/d2d', 'ClientController@d2dIndex');
 Route::post('/d2d/email', 'ClientController@emailOrder');
 Route::get('/client/item', 'ClientController@clientProduct');
@@ -146,9 +148,6 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');
 
-Route::match(['get', 'post'], '/api/pricematrix', 'ItemController@getPriceMatrix');
-// Route::match(['get', 'post'], '/api/pricematrix/items', 'ItemController@getPriceMatrixItems');
-// Route::match(['get', 'post'], '/api/pricematrix/people', 'ItemController@getPriceMatrixPeople');
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
 Route::post('/api/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrderApi');
@@ -165,6 +164,7 @@ Route::resource('item', 'ItemController');
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
 
+Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Laracasts\Flash\Flash;
 
 use App\Profile;
 
@@ -58,11 +59,18 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        $gst = $request->has('gst')? 1 : 0;
-        $request->merge(array('gst' => $gst));
-        $input = $request->all();
+        if(!request()->has('gst') and request()->has('is_gst_inclusive')) {
+            Flash::error('GST tickbox is required for GST inclusive');
+            return redirect()->action('ProfileController@edit', $profile->id);
+        }
+        $gst = request()->has('gst') ? 1 : 0;
+        $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
+        request()->merge(array('gst' => $gst));
+        request()->merge(array('is_gst_inclusive' => $is_gst_inclusive));
+
+        $input = request()->all();
         $profile = Profile::create($input);
         if($request->hasFile('logo')){
         }
@@ -84,14 +92,20 @@ class ProfileController extends Controller
     public function update(Request $request, $id)
     {
         $profile = Profile::findOrFail($id);
-        $gst = $request->has('gst')? 1 : 0;
-        $request->merge(array('gst' => $gst));
-        $input = $request->all();
-/*        if($request->hasFile('logo')){
-            dd('yeah');
-        }*/
+
+        if(!request()->has('gst') and request()->has('is_gst_inclusive')) {
+            Flash::error('GST tickbox is required for GST inclusive');
+            return redirect()->action('ProfileController@edit', $profile->id);
+        }
+        $gst = request()->has('gst') ? 1 : 0;
+        $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
+        request()->merge(array('gst' => $gst));
+        request()->merge(array('is_gst_inclusive' => $is_gst_inclusive));
+
+        $input = request()->all();
         $profile->update($input);
-        return redirect('profile');
+
+        return redirect()->action('ProfileController@edit', $profile->id);
     }
 
     public function destroy($id)

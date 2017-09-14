@@ -11,7 +11,7 @@ class Profile extends Model
         'name', 'address', 'email',
         'contact', 'alt_contact', 'roc_no',
         'header', 'logo', 'footer',
-        'gst', 'acronym', 'attn',
+        'gst', 'acronym', 'attn', 'is_gst_inclusive',
 
         'payterm_id'
     ];

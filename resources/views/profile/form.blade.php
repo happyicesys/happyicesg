@@ -17,17 +17,25 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('roc_no', 'ROC No.', ['class'=>'control-label']) !!}
                 {!! Form::text('roc_no', null, ['class'=>'form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="form-group" style="padding:30px 0px 0px 50px;">
-                {!! Form::checkbox('gst', $profile->gst) !!}
-                {!! Form::label('gst', 'GST (7%)', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+        <div class="col-md-8 col-sm-6 col-xs-12" style="padding:30px 0px 0px 50px;">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="form-group">
+                    {!! Form::checkbox('gst', $profile->gst) !!}
+                    {!! Form::label('gst', 'GST (7%)', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="form-group">
+                    {!! Form::checkbox('is_gst_inclusive', $profile->is_gst_inclusive) !!}
+                    {!! Form::label('is_gst_inclusive', 'GST Inclusive', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+                </div>
             </div>
         </div>
     </div>
