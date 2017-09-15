@@ -63,12 +63,13 @@ class TransactionController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->select(
-                                    'transactions.id', 'people.cust_id', 'people.company',
+                                    'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total', 'transactions.total_qty', 'transactions.pay_status',
-                                    'transactions.updated_by', 'transactions.updated_at', 'profiles.id as profile_id',
-                                    'profiles.gst', 'transactions.delivery_fee', 'custcategories.name as custcategory'
+                                    'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                    'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive',
+                                     'custcategories.name as custcategory'
                                 );
 
         // reading whether search input is filled
