@@ -117,25 +117,48 @@
 
                             </td>
                         </tr>
-                        @if($person->profile->gst)
-                        <tr ng-if="deals.length">
-                            <td></td>
-                            <td colspan="3" class="col-md-2 text-center">
-                                <strong>Subtotal</strong>
-                            </td>
-                            <td class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel">@{{totalModel | currency: ""}}</td>
-                            </td>
-                        </tr>
-                        <tr ng-if="deals.length">
-                            <td></td>
-                            <td colspan="3" class="col-md-2 text-center">
-                                <strong>GST (7%)</strong>
-                            </td>
-                            <td class="col-md-3 text-right">
-                                <td class="text-right" ng-model="totalModel">@{{(totalModel * 7/100) | currency: ""}}</td>
-                            </td>
-                        </tr>
+                        @if($person->profile->gst and $person->profile->is_gst_inclusive)
+                            <tr ng-if="deals.length">
+                                <td></td>
+                                <td colspan="3" class="col-md-2 text-center">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right" ng-model="totalModel">
+                                        @{{(totalModel - (totalModel - totalModel/1.07)) | currency: ""}}
+                                    </td>
+                                </td>
+                            </tr>
+                            <tr ng-if="deals.length">
+                                <td></td>
+                                <td colspan="3" class="col-md-2 text-center">
+                                    <strong>GST (7%)</strong>
+                                </td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right" ng-model="totalModel">
+                                        @{{(totalModel - totalModel/1.07) | currency: ""}}
+                                    </td>
+                                </td>
+                            </tr>
+                        @elseif($person->profile->gst and !$person->profile->is_gst_inclusive)
+                            <tr ng-if="deals.length">
+                                <td></td>
+                                <td colspan="3" class="col-md-2 text-center">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right" ng-model="totalModel">@{{totalModel | currency: ""}}</td>
+                                </td>
+                            </tr>
+                            <tr ng-if="deals.length">
+                                <td></td>
+                                <td colspan="3" class="col-md-2 text-center">
+                                    <strong>GST (7%)</strong>
+                                </td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right" ng-model="totalModel">@{{(totalModel * 7/100) | currency: ""}}</td>
+                                </td>
+                            </tr>
                         @endif
                         <tr ng-if="delivery != 0">
                             <td></td>
@@ -147,19 +170,18 @@
                             </td>
                         </tr>
                         <tr ng-if="deals.length">
-                            @if($person->profile->gst)
-                            <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
-                            <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
-                            <td class="col-md-3 text-right">
-                                {{-- <td class="text-right" ng-model="totalModel"><strong>@{{ (+(totalModel * 7/100) + totalModel) | currency: ""}}</strong></td> --}}
-                                <td class="text-right"><strong>@{{ delivery ? (+(totalModel * 7/100) + totalModel + delivery/1).toFixed(2) : (+(totalModel * 7/100) + totalModel).toFixed(2)}}</strong></td>
-                            </td>
+                            @if($person->profile->gst and !$person->profile->is_gst_inclusive)
+                                <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
+                                <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right"><strong>@{{ delivery ? (+(totalModel * 7/100) + totalModel + delivery/1).toFixed(2) : (+(totalModel * 7/100) + totalModel).toFixed(2)}}</strong></td>
+                                </td>
                             @else
-                            <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
-                            <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
-                            <td class="col-md-3 text-right">
-                                <td class="text-right"><strong>@{{ delivery != 0 ? (+totalModel+delivery/1).toFixed(2) : totalModel.toFixed(2) }}</strong></td>
-                            </td>
+                                <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
+                                <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
+                                <td class="col-md-3 text-right">
+                                    <td class="text-right"><strong>@{{ delivery != 0 ? (+totalModel+delivery/1).toFixed(2) : totalModel.toFixed(2) }}</strong></td>
+                                </td>
                             @endif
                         </tr>
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
