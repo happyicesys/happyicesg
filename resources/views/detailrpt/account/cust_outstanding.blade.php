@@ -215,7 +215,7 @@
             <tbody>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="cust_outstanding" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
-                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                    <td class="col-md-1 text-left">@{{ transaction.cust_id }} </td>
 
                     <td class="col-md-1 text-center">
                         <a href="/person/@{{ transaction.person_id }}">

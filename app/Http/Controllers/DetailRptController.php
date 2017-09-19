@@ -120,7 +120,7 @@ class DetailRptController extends Controller
         $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
         $prev3Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(3);
 
-        $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
+        $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*107/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$carbondate->startOfMonth()->toDateString()."'
@@ -129,7 +129,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) thistotal");
 
-        $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
+        $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*107/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
@@ -138,7 +138,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prevtotal");
 
-        $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
+        $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*107/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
@@ -147,7 +147,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prev2total");
 
-        $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN delivery_fee>0 THEN total*107/100 + delivery_fee ELSE total*107/100 END) ELSE (CASE WHEN delivery_fee>0 THEN total + delivery_fee ELSE total END) END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
+        $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*107/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date<='".$prev3Months->endOfMonth()->toDateString()."'
@@ -166,6 +166,7 @@ class DetailRptController extends Controller
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
+                                    'profiles.is_gst_inclusive',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevmore3total.prevmore3total AS prevmore3total'
@@ -217,9 +218,10 @@ class DetailRptController extends Controller
                                     'profiles.name as profile_name', 'profiles.id as profile_id',
                                     'transactions.id', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.order_date', 'transactions.note', 'transactions.pay_method',
                                     'custcategories.name as custcategory',
-                                    DB::raw('(CASE WHEN transactions.delivery_fee>0 THEN (transactions.total + transactions.delivery_fee) ELSE transactions.total END) AS inv_amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END) AS amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (transactions.total * 7/100) ELSE null END) AS gst')
+                                    // DB::raw('(CASE WHEN transactions.delivery_fee>0 THEN (transactions.total + transactions.delivery_fee) ELSE transactions.total END) AS inv_amount'),
+                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/1.07)) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS inv_amount'),
+                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS amount'),
+                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total - transactions.total/1.07) ELSE transactions.total * 7/100 END) ELSE null END) AS gst')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->delivery_from or $request->cust_id or $request->payment_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method or $request->custcategory) {
@@ -274,7 +276,7 @@ class DetailRptController extends Controller
                                     'users.name',
                                     'paysummaryinfos.remark',
                                     DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
-                                    DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)) AS total')
+                                    DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to or $request->bankin_from or $request->bankin_to){
@@ -1079,8 +1081,8 @@ class DetailRptController extends Controller
                     'first_date.delivery_date AS first_date',
                     DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN ROUND((SUM(deals.amount) * 107/100), 2) ELSE (SUM(deals.amount)) END, 2) AS total'),
                     'profiles.gst AS gst',
-                    DB::raw('ROUND((SUM(deals.amount) * 7/100), 2) AS gsttotal'),
-                    DB::raw('(SUM(deals.amount)) AS subtotal'),
+                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount) * 7/100, 2) ELSE (deals.amount - deals.amount/1.07) END) ELSE NULL END) AS gsttotal'),
+                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN ROUND(SUM(deals.amount)- (SUM(deals.amount)- SUM(deals.amount)/1.07)) ELSE SUM(deals.amount) END) ELSE SUM(deals.amount) END) AS subtotal'),
                     DB::raw('ROUND(SUM(deals.unit_cost * deals.qty), 2) AS cost'),
                     DB::raw('(SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) AS gross_money'),
                     DB::raw('ROUND(CASE WHEN SUM(deals.amount)>0 THEN ((SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2))/ SUM(deals.amount) * 100) ELSE (SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) END, 2) AS gross_percent'),
@@ -1873,9 +1875,9 @@ class DetailRptController extends Controller
         $query2 = clone $query;
         $query3 = clone $query;
 
-        $total_inv_amount = $query1->sum(DB::raw('(CASE WHEN transactions.delivery_fee>0 THEN (transactions.total + transactions.delivery_fee) ELSE transactions.total END)'));
-        $total_gst = $query2->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (transactions.total * 7/100) ELSE 0 END)'));
-        $total_amount = $query3->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END)'));
+        $total_inv_amount = $query1->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/1.07)) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_gst = $query2->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total - transactions.total/1.07) ELSE transactions.total * 7/100 END) ELSE null END)'));
+        $total_amount = $query3->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
 
         $caldata = [
             'total_inv_amount' => $total_inv_amount,
@@ -1962,21 +1964,22 @@ class DetailRptController extends Controller
         $total_cheque_all = 0;
         $total_tt_all = 0;
 
-        $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        // $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
-        $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
-        $total_cash_icedrop = $cash_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_cheque_icedrop = $cheque_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_tt_icedrop = $tt_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_icedrop = $cash_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_cheque_icedrop = $cheque_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_tt_icedrop = $tt_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
-        $total_cash_all = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_cheque_all = $cheque_all->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
-        $total_tt_all = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
+        $total_cash_all = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_cheque_all = $cheque_all->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_tt_all = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $data = [
            'total_cash_happyice' =>  $total_cash_happyice,

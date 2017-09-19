@@ -1184,19 +1184,25 @@ class TransactionController extends Controller
     {
         $total_amount = 0;
         $nonGst_amount = 0;
-        $gst_amount = 0;
+        $gst_exclusive = 0;
+        $gst_inclusive = 0;
         $query1 = clone $query;
         $query2 = clone $query;
+        $query3 = clone $query;
 
         $nonGst_amount = $query1->whereHas('person.profile', function($query1){
                             $query1->where('gst', 0);
                         })->sum(DB::raw('ROUND(total, 2)'));
 
-        $gst_amount = $query2->whereHas('person.profile', function($query2){
-                        $query2->where('gst', 1);
+        $gst_exclusive = $query2->whereHas('person.profile', function($query2){
+                        $query2->where('gst', 1)->where('is_gst_inclusive', 0);
                     })->sum(DB::raw('ROUND((total * 107/100), 2)'));
 
-        $total_amount = $nonGst_amount + $gst_amount;
+        $gst_inclusive = $query3->whereHas('person.profile', function($query3){
+                        $query3->where('gst', 1)->where('is_gst_inclusive', 1);
+                    })->sum(DB::raw('ROUND(total, 2)'));
+
+        $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
         return $total_amount;
     }
 
@@ -1205,14 +1211,17 @@ class TransactionController extends Controller
     {
         $total_amount = 0;
         $nonGst_amount = 0;
-        $gst_amount = 0;
+        $gst_exclusive = 0;
+        $gst_inclusive = 0;
         $query1 = clone $query;
         $query2 = clone $query;
+        $query3= clone $query;
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_amount = $query2->where('profiles.gst', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $gst_exclusive = $query2->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $gst_inclusive = $query3->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
 
-        $total_amount = $nonGst_amount + $gst_amount;
+        $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
 
         return $total_amount;
     }

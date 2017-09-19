@@ -394,8 +394,15 @@ class RptController extends Controller
     {
         $total_amount = 0;
         foreach($arr as $transaction){
-            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
-            $total_amount += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+            $profile = Person::findOrFail($transaction->person_id)->profile;
+            $person_gst = $profile->gst;
+            $person_gst_inclusive = $profile->is_gst_inclusive;
+
+            if($person_gst == 1 and $person_gst_inclusive == 0) {
+                $total_amount += round(($transaction->total * 107/100), 2);
+            }else {
+                $total_amount += $transaction->total;
+            }
         }
         return $total_amount;
     }
@@ -405,13 +412,16 @@ class RptController extends Controller
     {
         $total_amount = 0;
         $nonGst_amount = 0;
-        $gst_amount = 0;
+        $gst_inclusive = 0;
+        $gst_exclusive = 0;
         $query1 = clone $query;
         $query2 = clone $query;
+        $query3 = clone $query;
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND((transactions.total), 2)'));
-        $gst_amount = $query2->where('profiles.gst', 1)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
-        $total_amount = $nonGst_amount + $gst_amount;
+        $gst_inclusive = $query2->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 1)->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $gst_exclusive = $query3->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $total_amount = $nonGst_amount + $gst_inclusive + $gst_exclusive;
         return $total_amount;
     }
 
@@ -465,7 +475,7 @@ class RptController extends Controller
             $query = $this->filterUserDbProfile($query);
 
             $query = $this->extraField($request, $query);
-            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
+            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
 
         $query1 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -485,7 +495,7 @@ class RptController extends Controller
             $query1 = $this->filterUserDbProfile($query1);
 
             $query1 = $this->extraField($request, $query1);
-            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
 
         $query2 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -506,7 +516,7 @@ class RptController extends Controller
 
             $query2 = $this->extraField($request, $query2);
             $query2 = $this->filterUserDbProfile($query2);
-            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
 
             $query2 = $query2
                 ->union($query)->union($query1)
