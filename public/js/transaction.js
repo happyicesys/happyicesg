@@ -57,7 +57,44 @@ var app = angular.module('app', [
                 $scope.people = people;
             });
 
-            $http({
+            $http.get('/api/transaction/edit/' + $trans_id.val()).success(function(data) {
+                $scope.delivery = data.transaction.delivery_fee;
+                $scope.deals = data.deals;
+                $scope.totalModel = data.total;
+                $scope.subtotalModel = data.subtotal;
+                $scope.taxModel = data.tax;
+                $scope.totalqtyModel = data.transaction.total_qty;
+
+                $scope.form = {
+                    person: data.transaction.person.id,
+                    name: data.transaction.person.name,
+                    payterm: data.transaction.person.payterm,
+                    cust_id: data.transaction.person.cust_id,
+                    transremark: data.transaction.transremark ? data.transaction.transremark : data.transaction.person.remark,
+                    del_address: data.transaction.del_address ? data.transaction.del_address : data.transaction.person.del_address,
+                    bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
+                    del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
+                    attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
+                    contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
+                    order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
+                    delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
+                }
+
+                $scope.onPrevSingleClicked = function(modelName, date) {
+                    $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
+                }
+
+                $scope.onNextSingleClicked = function(modelName, date) {
+                    $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
+                }
+
+                $scope.dateChanged = function(modelName, date) {
+                    $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
+                }
+
+            });
+
+/*            $http({
                 url: '/transaction/' + $trans_id.val(),
                 method: "GET",
             }).success(function(transaction){
@@ -109,17 +146,7 @@ var app = angular.module('app', [
                         delivery_date: transaction.delivery_date ? transaction.delivery_date : moment().format("YYYY-MM-DD"),
                     }
 
-                    $scope.onPrevSingleClicked = function(modelName, date) {
-                        $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
-                    }
 
-                    $scope.onNextSingleClicked = function(modelName, date) {
-                        $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
-                    }
-
-                    $scope.dateChanged = function(modelName, date) {
-                        $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
-                    }
 
                     $http({
                         url: '/transaction/item/'+ person.id,
@@ -128,88 +155,16 @@ var app = angular.module('app', [
                         $scope.items = items;
                     });
                 });
-            });
-        });
-
-        // previous on select real time select cust function
-/*
-        $scope.onPersonSelected = function (person){
-
-            $http({
-                url: '/transaction/person/'+ person,
-                method: "GET",
-
-            }).success(function(person){
-                $scope.billModel = person.bill_address + ' ' + person.bill_postcode;
-                $scope.delModel = person.del_address + ' ' + person.del_postcode;
-                $scope.paytermModel = person.payterm;
-                $scope.personcodeModel = person.cust_id;
-                $('.date').datetimepicker({
-                format: 'DD MMM YY'
-                });
-                $('.date').val('');
-
-                $http({
-                    url: '/transaction/item/'+ person.id,
-                    method: "GET",
-
-                }).success(function(items){
-                    console.log(items);
-                    $scope.items = items;
-                    $scope.qtyModel = [];
-                    $scope.amountModel = [];
-                    $scope.unitModel = [];
-
-                    $http.put('editperson', $scope.personModel)
-                                .success(function(){
-                                });
-
-                    $http({
-                        url: '/transaction/' + $trans_id.val() + '/editpersoncode' ,
-                        method: "POST",
-                        data: {person_code: $scope.personcodeModel},
-                        }).success(function(response){
-                        });
-
-
-                    $scope.onItemSelected = function (item_id){
-
-                        $http({
-                            url: '/transaction/person/'+ person.id + '/item/' + item_id,
-                            method: "GET",
-
-                        }).success(function(prices){
-                            $scope.prices = prices;
-                            $scope.qtyModel = 1;
-                            $scope.unitModel = prices.item.unit;
-                            $scope.amountModel = prices.quote_price;
-
-                            $scope.onQtyChange = function(){
-                                $scope.amountModel = prices.quote_price * eval($scope.qtyModel);
-                            }
-                        });
-
-                    }
-
-                });
-            });
-        }  */
+            });*/
+        // });
 
         //delete deals
-        $scope.confirmDelete = function(id){
-            console.log(id);
+        $scope.confirmDelete = function(deal_id){
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
-                $http({
-                    method: 'DELETE',
-                    url: '/deal/data/' + id ,
-                })
-                .success(function(data){
+                $http.delete('/api/deal/delete/' + deal_id).success(function(data) {
                     location.reload();
-                })
-                .error(function(data){
-                    alert('Unable to delete');
-                })
+                });
             }else{
                 return false;
             }

@@ -47,9 +47,11 @@ class DealController extends Controller
      * @param  int  $id
      * @return json
      */
-    public function destroyAjax($id)
+    public function destroyAjax($deal_id)
     {
-        $deal = Deal::findOrFail($id);
+
+        $deal = Deal::findOrFail($deal_id);
+
 /*
         $item = Item::findOrFail($deal->item_id);
         // revert back the inventory once inv was added

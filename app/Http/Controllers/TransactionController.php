@@ -226,6 +226,52 @@ class TransactionController extends Controller
         return view('transaction.edit', compact('transaction', 'person', 'prices'));
     }
 
+    // return transaction related components, deals (int transaction_id)
+    public function editApi($transaction_id)
+    {
+        $total = 0;
+        $subtotal = 0;
+        $tax = 0;
+
+        $transaction = Transaction::with('person')->findOrFail($transaction_id);
+
+        $deals = DB::table('deals')
+                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                    ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                    ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                    ->select(
+                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id',
+                                'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
+                                'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver','transactions.total', 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive'
+                            )
+                    ->where('deals.transaction_id', $transaction->id)
+                    ->get();
+
+        if($transaction->person->profile->gst and $transaction->person->profile->is_gst_inclusive) {
+            $total = number_format($transaction->total, 2);
+            $tax = number_format($transaction->total - $transaction->total/1.07, 2);
+            $subtotal = number_format($transaction->total - $tax, 2);
+        }else if($transaction->person->profile->gst and !$transaction->person->profile->is_gst_inclusive) {
+            $subtotal = number_format($transaction->total, 2);
+            $tax = number_format($transaction->total * 7/100, 2);
+            $total = number_format($transaction->total + $tax, 2);
+        }else {
+            $total = number_format($transaction->total, 2);
+        }
+
+        return $data = [
+            'transaction' => $transaction,
+            'deals' => $deals,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total
+        ];
+
+    }
+
     /**
      * Update the specified resource in storage.
      *

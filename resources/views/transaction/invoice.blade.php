@@ -279,46 +279,28 @@
                         </tr>
                         @endforeach
 
-                        @if($person->profile->gst and !$person->profile->is_gst_inclusive)
-                            <tr class="noBorder">
-                                <td colspan="4">
-                                    <span class="col-xs-offset-7" style="padding-left:33px;"><strong>SubTotal</strong></span>
-                                </td>
-                                <td class="text-right">
-                                    <strong>{{ number_format($totalprice, 2) }}</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="col-xs-3 text-center">
-                                    <span style="padding-left:210px;"><strong>GST (7%)</strong></span>
-                                </td>
-                                <td class="text-right">
-                                    {{ number_format(($totalprice * 7/100), 2)}}
-                                </td>
-                            </tr>
-                        @elseif($person->profile->gst and $person->profile->is_gst_inclusive)
-                            <tr class="noBorder">
-                                <td colspan="4">
-                                    <span class="col-xs-offset-7" style="padding-left:33px;"><strong>SubTotal</strong></span>
-                                </td>
-                                <td class="text-right">
-                                    <strong>{{ number_format($totalprice - ($totalprice - $totalprice/1.07), 2) }}</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="col-xs-3 text-center">
-                                    <span style="padding-left:210px;"><strong>GST (7%)</strong></span>
-                                </td>
-                                <td class="text-right">
-                                    {{ number_format(($totalprice - $totalprice/1.07), 2)}}
-                                </td>
-                            </tr>
-                        @endif
+                        @php
+                            $subtotal = 0;
+                            $gst = 0;
+                            $total = 0;
+
+                            if($person->profile->gst and $person->profile->is_gst_inclusive) {
+                                $subtotal = number_format($totalprice - ($totalprice - $totalprice/1.07), 2);
+                                $gst = number_format(($totalprice - $totalprice/1.07), 2);
+                                $total = number_format($totalprice, 2);
+                            }else if($person->profile->gst and !$person->profile->is_gst_inclusive) {
+                                $subtotal = number_format($totalprice, 2);
+                                $gst = number_format($totalprice * 7/100, 2);
+                                $total = number_format($totalprice + ($totalprice * 7/100), 2);
+                            }else {
+                                $total = number_format($totalprice, 2);
+                            }
+                        @endphp
 
                         @if($transaction->delivery_fee != 0)
                         <tr>
-                            <td colspan="4" class="col-xs-3 text-center">
-                                <span style="padding-left:210px;"><strong>Delivery Fee</strong></span>
+                            <td colspan="2" class="text-right">
+                                <strong>Delivery Fee</strong>
                             </td>
                             <td class="text-right">
                                 {{ number_format(($transaction->delivery_fee), 2)}}
@@ -326,27 +308,82 @@
                         </tr>
                         @endif
 
-                        <tr>
-                            @if($person->profile->gst and !$person->profile->is_gst_inclusive)
-                                <td colspan="3">
-                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
-                                    <span class="pull-right">{{$totalqty}}</span>
+                        @if($person->profile->gst and $person->profile->is_gst_inclusive)
+                            <tr class="noBorder">
+                                <td colspan="2" class="text-right">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="col-xs-2 text-right">
+                                    {{$totalqty}}
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice * 107/100 + $transaction->delivery_fee), 2, '.', ',') : number_format(($totalprice * 107/100), 2) }}</strong>
+                                    <strong>{{$total}}</strong>
                                 </td>
-                            @else
-                                <td colspan="3">
-                                    <span class="col-xs-offset-8" style="padding-left:0px;"><strong>Total</strong></span>
-                                    <span class="pull-right">{{$totalqty}}</span>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-right">
+                                    <strong>GST (7%)</strong>
+                                </td>
+                                <td colspan="2"></td>
+                                <td class="text-right">
+                                    {{$gst}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-right">
+                                    <strong>Exclude GST</strong>
+                                </td>
+                                <td colspan="2"></td>
+                                <td class="text-right">
+                                    {{$subtotal}}
+                                </td>
+                            </tr>
+                        @elseif($person->profile->gst and !$person->profile->is_gst_inclusive)
+                            <tr class="noBorder">
+                                <td colspan="2" class="text-right">
+                                    <strong>SubTotal</strong>
+                                </td>
+                                <td colspan="2"></td>
+                                <td class="text-right">
+                                    {{$subtotal}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-right">
+                                    <strong>GST (7%)</strong>
+                                </td>
+                                <td colspan="2"></td>
+                                <td class="text-right">
+                                    {{$gst}}
+                                </td>
+                            </tr>
+                            <tr class="noBorder">
+                                <td colspan="2" class="text-right">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="col-xs-2 text-right">
+                                    {{$totalqty}}
                                 </td>
                                 <td></td>
                                 <td class="text-right">
-                                    <strong>{{ $transaction->delivery_fee != 0 ? number_format(($totalprice + $transaction->delivery_fee), 2) : $totalprice}}</strong>
+                                    <strong>{{$total}}</strong>
                                 </td>
-                            @endif
-                        </tr>
+                            </tr>
+                        @else
+                            <tr class="noBorder">
+                                <td colspan="2" class="text-right">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="col-xs-2 text-right">
+                                    {{$totalqty}}
+                                </td>
+                                <td></td>
+                                <td class="text-right">
+                                    <strong>{{$total}}</strong>
+                                </td>
+                            </tr>
+                        @endif
                         @endunless
                     </table>
                 </div>

@@ -168,6 +168,7 @@ Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::get('/api/transaction/edit/{id}', 'TransactionController@editApi');
 Route::get('/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDate');
 Route::get('/api/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDateApi');
 Route::post('/transaction/freeze/date', 'TransactionController@freezeInvoiceDate');
@@ -191,7 +192,7 @@ Route::get('/transaction/item/{person_id}', 'TransactionController@getItem');
 Route::get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');
 Route::resource('transaction', 'TransactionController');
 
-Route::delete('/deal/data/{id}', 'DealController@destroyAjax');
+Route::delete('/api/deal/delete/{deal_id}', 'DealController@destroyAjax');
 Route::get('/deal/data/{transaction_id}', 'DealController@getData');
 Route::resource('deal', 'DealController');
 
