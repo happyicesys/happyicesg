@@ -1,4 +1,5 @@
 @inject('custcategories', 'App\Custcategory')
+@inject('profiles', 'App\Profile')
 
 @extends('template')
 @section('title')
@@ -87,6 +88,15 @@
                                                                 'ng-model-options'=>'{ debounce: 500 }',
                                                                 'ng-init'=>'search.active = "Yes"'
                                                             ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.profile_id',
+                                'ng-change' => 'searchDB()'
+                                ])
                             !!}
                         </div>
                     </div>

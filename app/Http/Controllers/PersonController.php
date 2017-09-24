@@ -64,7 +64,8 @@ class PersonController extends Controller
                                     'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact',
                                     'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active',
                                     'people.payterm',
-                                    'custcategories.name as custcategory'
+                                    'custcategories.name as custcategory',
+                                    'profiles.id AS profile_id', 'profiles.name AS profile_name'
                                 );
 
         // reading whether search input is filled
@@ -278,8 +279,18 @@ class PersonController extends Controller
             $transactions = DB::table('transactions')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->select(
+/*                            ->select(
                                 DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                    'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
+                                    'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
+                                    'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
+                                    'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at',
+                                    'transactions.created_at AS created_at', 'transactions.pay_method',
+                                    'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
+                                    'profiles.name', 'profiles.gst'
+                                )*/
+                            ->select(
+                                DB::raw('(ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total*107/100) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END)) AS total'),
                                     'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
                                     'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
                                     'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
@@ -438,6 +449,7 @@ class PersonController extends Controller
         $company = $request->company;
         $contact = $request->contact;
         $active = $request->active;
+        $profile_id = $request->profile_id;
 
         if($cust_id){
             $people = $people->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
@@ -456,6 +468,10 @@ class PersonController extends Controller
         if($active){
             $people = $people->where('people.active', 'LIKE', '%'.$active.'%');
         }
+        if($profile_id) {
+            $people = $people->where('profiles.id', $profile_id);
+        }
+
         return $people;
     }
 
@@ -500,38 +516,11 @@ class PersonController extends Controller
         $query1 = clone $query;
         $query2 = clone $query;
         $query3 = clone $query;
-/*
-        $transactions = $query1->get();
 
-        foreach($transactions as $transaction) {
-            $amount = 0;
-
-            if($transaction->gst === 1) {
-                $amount += ($transaction->total * 107/100);
-            }else {
-                $amount += $transaction->total;
-            }
-
-            if($transaction->delivery_fee > 0) {
-                $amount += $transaction->delivery_fee;
-            }
-
-            switch($transaction->pay_status) {
-                case 'Paid':
-                    $total_paid += $amount;
-                    break;
-                case 'Owe':
-                    $total_owe += $amount;
-                    break;
-            }
-        }
-
-        $total_amount = $total_paid + $total_owe;*/
-
-
-        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
-        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
-        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        // $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        $total_amount = $query1->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*107/100 ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*107/100 ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*107/100 ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $totals = [
             'total_amount' => $total_amount,
             'total_paid' => $total_paid,

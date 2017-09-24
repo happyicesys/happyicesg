@@ -22,6 +22,7 @@ function personController($scope, $http){
         contact: '',
         active: '',
         pageNum: 100,
+        profile_id: '',
     }
     // init page load
     getPage(1, true);
