@@ -127,8 +127,7 @@ Healthier Life
                             </td>
                             <td class="col-md-3 text-right">
                                 $100/day<br>
-                                $200/week<br>
-                                $350/month
+                                $200/week
                             </td>
                         </tr>
                         <tr>
