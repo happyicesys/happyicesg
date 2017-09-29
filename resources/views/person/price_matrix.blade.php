@@ -6,7 +6,7 @@
 
 @inject('custcategories', 'App\Custcategory')
 
-<div class="create_edit">
+<div class="create_edit" ng-app="app" ng-controller="priceMatrixController">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title">
@@ -49,7 +49,7 @@
                             !!}
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                            {!! Form::label('product_id', 'Product ID:', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('product_id', 'Product ID', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('product_id',
                                 request('product_id') ? request('product_id') : null,
                                 [
@@ -59,7 +59,7 @@
                             !!}
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                            {!! Form::label('name', 'Product Name:', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('name', 'Product Name', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('name',
                                 request('name') ? request('name') : null,
                                 [
@@ -103,7 +103,7 @@
                                 #
                             </th>
                             <th class="col-md-1 text-center">
-                                Cost Rate
+                                Cost Rate (%)
                             </th>
                             @foreach($items as $item)
                             <td class="col-md-1 text-left">
@@ -120,7 +120,7 @@
                             </td>
                             <td>(<strong>{{$person->cust_id}}</strong>) {{$person->company}}</td>
                             <td class="col-md-1">
-                                <input type="text" name="cost_rate[{{$person->id}}]" class="text-right" value="{{$person->cost_rate}}" style="width: 55px;">
+                                <input type="text" name="cost_rate[{{$person->id}}]" class="text-right" ng-value="{{$person->cost_rate}}" ng-model="costrate[{{$person->id}}]" style="width: 55px;">
                             </td>
                             @foreach($items as $item)
                                 @php
@@ -128,9 +128,9 @@
                                 @endphp
                             <td class="col-md-1">
                                 Retail Price
-                                <input type="text" name="retail_price[{{$item->id}}-{{$person->id}}]" class="text-right" value="{{$price ? $price->retail_price : ''}}">
+                                <input type="text" name="retail_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->retail_price : ''}}" ng-model="retailprice[{{$item->id}}-{{$person->id}}]" ng-change="changeRetailPrice({{$item->id}}, {{$person->id}}, {{$price ? $price->retail_price : 0}})">
                                 Quote Price
-                                <input type="text" name="quote_price[{{$item->id}}-{{$person->id}}]" class="text-right" value="{{$price ? $price->quote_price : ''}}">
+                                <input type="text" name="quote_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->quote_price : ''}}" ng-model="quoteprice[$index]">
                             </td>
                             @endforeach
                         </tr>
@@ -180,9 +180,7 @@
                 </div> --}}
         </div>
     </div>
+</div>
 
-{{-- <script src="/js/price_matrix.js"></script> --}}
-<script>
-    $('.select').select2();
-</script>
+<script src="/js/price_matrix.js"></script>
 @stop

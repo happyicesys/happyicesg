@@ -979,7 +979,7 @@ class TransactionController extends Controller
                     $deal->qty_after = $item->qty_after;
                     $deal->save();
                 }
-                $this->newDealFilter($deal->id);
+                // $this->newDealFilter($deal->id);
             }
         }
     }
