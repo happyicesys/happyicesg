@@ -6,7 +6,8 @@
 
 @inject('custcategories', 'App\Custcategory')
 
-<div class="create_edit" ng-app="app" ng-controller="priceMatrixController">
+{{-- <div class="create_edit" ng-app="app" ng-controller="priceMatrixController"> --}}
+<div class="create_edit">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title">
@@ -87,11 +88,12 @@
                         <div class="btn-input-group">
                             <button type="submit" form="search_form" class="btn btn-default"><i class="fa fa-search"></i> <span class="hidden-xs">Search</span></button>
                             <button type="submit" form="submit_batch" class="btn btn-success"><i class="fa fa-check"></i> Batch Confirm</button>
-                            <button type="submit" form="search_form" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> <span class="hidden-xs"> Export Excel</span></button>
+                            {{-- <button type="submit" form="search_form" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> <span class="hidden-xs"> Export Excel</span></button> --}}
                         </div>
                     </div>
                 </div>
 
+                {!! Form::open(['id'=>'submit_batch', 'method'=>'POST', 'action'=>['PriceController@batchConfirmPriceMatrix']]) !!}
                 <div class="table-responsive" id="exportable" style="padding-top:15px;">
                     <table class="table table-fixed table-list-search table-hover table-bordered" style="font-size: 12px;">
                         <thead>
@@ -116,11 +118,12 @@
                         @foreach($people as $person)
                         <tr>
                             <td class="col-md-1 text-center">
-                                {!! Form::checkbox('checkbox[{{$item->id}} - {{$person->id}}]') !!}
+                                <input type="checkbox" name="checkbox[{{$person->id}}]">
                             </td>
                             <td>(<strong>{{$person->cust_id}}</strong>) {{$person->company}}</td>
                             <td class="col-md-1">
-                                <input type="text" name="cost_rate[{{$person->id}}]" class="text-right" ng-value="{{$person->cost_rate}}" ng-model="costrate[{{$person->id}}]" style="width: 55px;">
+                                {{-- <input type="text" name="cost_rate[{{$person->id}}]" class="text-right" ng-value="{{$person->cost_rate}}" ng-model="costrate[{{$person->id}}]" style="width: 55px;"> --}}
+                                <input type="text" name="cost_rate[{{$person->id}}]" class="text-right" value="{{$person->cost_rate}}" style="width: 55px;">
                             </td>
                             @foreach($items as $item)
                                 @php
@@ -128,9 +131,11 @@
                                 @endphp
                             <td class="col-md-1">
                                 Retail Price
-                                <input type="text" name="retail_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->retail_price : ''}}" ng-model="retailprice[{{$item->id}}-{{$person->id}}]" ng-change="changeRetailPrice({{$item->id}}, {{$person->id}}, {{$price ? $price->retail_price : 0}})">
+                                {{-- <input type="text" name="retail_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->retail_price : ''}}" ng-model="retailprice[{{$item->id}}-{{$person->id}}]" ng-change="changeRetailPrice({{$item->id}}, {{$person->id}}, {{$price ? $price->retail_price : 0}})"> --}}
+                                <input type="text" name="retail_price[{{$item->id}}-{{$person->id}}]" class="text-right" value="{{$price ? $price->retail_price : ''}}">
                                 Quote Price
-                                <input type="text" name="quote_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->quote_price : ''}}" ng-model="quoteprice[$index]">
+                                {{-- <input type="text" name="quote_price[{{$item->id}}-{{$person->id}}]" class="text-right" ng-value="{{$price ? $price->quote_price : ''}}" ng-model="quoteprice[$index]"> --}}
+                                <input type="text" name="quote_price[{{$item->id}}-{{$person->id}}]" class="text-right" value="{{$price ? $price->quote_price : ''}}">
                             </td>
                             @endforeach
                         </tr>
@@ -173,6 +178,7 @@
 
                     </table>
                 </div>
+                {!! Form::close() !!}
             {{--
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" pagination-id="item"> </dir-pagination-controls>
@@ -181,6 +187,13 @@
         </div>
     </div>
 </div>
+<script>
+    $('.select').select2();
 
-<script src="/js/price_matrix.js"></script>
+    $('#checkAll').change(function(){
+        var all = this;
+        $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
+    });
+</script>
+{{-- <script src="/js/price_matrix.js"></script> --}}
 @stop

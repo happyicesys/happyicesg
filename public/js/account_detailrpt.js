@@ -487,16 +487,20 @@ var app = angular.module('app', [
                 $scope.All = data.transactions.length;
                 // return total amount
                 $scope.total_cash_happyice = data.total_cash_happyice;
-                $scope.total_cheque_happyice = data.total_cheque_happyice;
+                $scope.total_chequein_happyice = data.total_chequein_happyice;
+                $scope.total_chequeout_happyice = data.total_chequeout_happyice;
                 $scope.total_tt_happyice = data.total_tt_happyice;
                 $scope.total_cash_logistic = data.total_cash_logistic;
-                $scope.total_cheque_logistic = data.total_cheque_logistic;
+                $scope.total_chequein_logistic = data.total_chequein_logistic;
+                $scope.total_chequeout_logistic = data.total_chequeout_logistic;
                 $scope.total_tt_logistic = data.total_tt_logistic;
                 $scope.total_cash_icedrop = data.total_cash_icedrop;
-                $scope.total_cheque_icedrop = data.total_cheque_icedrop;
+                $scope.total_chequein_icedrop = data.total_chequein_icedrop;
+                $scope.total_chequeout_icedrop = data.total_chequeout_icedrop;
                 $scope.total_tt_icedrop = data.total_tt_icedrop;
                 $scope.total_cash_all = data.total_cash_all;
-                $scope.total_cheque_all = data.total_cheque_all;
+                $scope.total_chequein_all = data.total_chequein_all;
+                $scope.total_chequeout_all = data.total_chequeout_all;
                 $scope.total_tt_all = data.total_tt_all;
                 $scope.spinner = false;
             });

@@ -164,6 +164,7 @@ Route::resource('item', 'ItemController');
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
 
+Route::post('/pricematrix/batchconfirm', 'PriceController@batchConfirmPriceMatrix');
 Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');

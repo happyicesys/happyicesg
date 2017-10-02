@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Person;
 use App\Price;
 use App\Item;
+use Laracasts\Flash\Flash;
 
 class PriceController extends Controller
 {
@@ -184,11 +185,59 @@ class PriceController extends Controller
         return view('person.price_matrix', compact('people', 'items'));
     }
 
+    // processing batch confirm for price matrix()
+    public function batchConfirmPriceMatrix()
+    {
+        $checkboxes = request('checkbox');
+        $costrates = request('cost_rate');
+        $retailprices = request('retail_price');
+        $quoteprices = request('quote_price');
+
+        if($checkboxes) {
+            foreach($checkboxes as $index => $checkbox) {
+                $person = Person::findOrFail($index);
+                $person->cost_rate = $costrates[$index];
+                $person->save();
+
+                foreach($retailprices as $retailindex => $retailprice) {
+                    if(explode('-', $retailindex)[1] == $index) {
+                        $price = Price::where('person_id', $index)->where('item_id', explode('-', $retailindex)[0])->first();
+                        if($price) {
+                            if(($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
+                                $price->retail_price = $retailprice;
+                                $price->quote_price = $quoteprices[$retailindex];
+                                $price->save();
+                            }else {
+                                $price->delete();
+                            }
+                        }else {
+                            if(($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
+                                $price = new Price();
+                                $price->person_id = $person->id;
+                                $price->item_id = explode('-', $retailindex)[0];
+                                $price->retail_price = $retailprice;
+                                $price->quote_price = $quoteprices[$retailindex];
+                                $price->save();
+                            }
+                        }
+                        // dd($price->quote_price, $retailprice, $quoteprices[$retailindex]);
+
+                    }
+                }
+            }
+
+        }else {
+            Flash::error('Please select at least one checkbox');
+        }
+        return redirect()->action('PriceController@getPriceMatrix');
+    }
+
     // return price matrix items filter api()
     private function filterPriceMatrixItems()
     {
         $product_id = request('product_id');
         $name = request('name');
+        $is_inventory = request('is_inventory');
 
         $items = new Item();
 
@@ -201,7 +250,12 @@ class PriceController extends Controller
 
         // init
         if(request()->isMethod('get')) {
+
             $items = $items->where('is_inventory', 1);
+
+        }else if(request()->isMethod('post')) {
+
+            $items = $items->where('is_inventory', $is_inventory);
         }
 
         $items = $items->orderBy('product_id')->get();

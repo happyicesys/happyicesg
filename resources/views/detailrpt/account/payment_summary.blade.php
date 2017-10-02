@@ -144,10 +144,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque:
+                    Cheque In:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cheque_happyice ? total_cheque_happyice : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total_chequein_happyice ? total_chequein_happyice : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque Out:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_chequeout_happyice ? total_chequeout_happyice : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -176,10 +184,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque:
+                    Cheque In:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cheque_logistic ? total_cheque_logistic : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total_chequein_logistic ? total_chequein_logistic : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque Out:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_chequeout_logistic ? total_chequeout_logistic : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -208,10 +224,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque:
+                    Cheque In:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cheque_icedrop ? total_cheque_icedrop : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total_chequein_icedrop ? total_chequein_icedrop : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque Out:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_chequeout_icedrop ? total_chequeout_icedrop : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -240,10 +264,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque:
+                    Cheque In:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cheque_all ? total_cheque_all : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total_chequein_all ? total_chequein_all : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Cheque Out:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ total_chequeout_all ? total_chequeout_all : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">

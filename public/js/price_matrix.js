@@ -10,7 +10,7 @@ var app = angular.module('app', [
         $scope.retailprice = {};
         $scope.quoteprice = {};
         $scope.changeRetailPrice = function(item_id, person_id, retailprice) {
-            console.log('start');
+/*            console.log('start');
             console.log(item_id);
             console.log(person_id);
             console.log(retailprice);
@@ -19,7 +19,7 @@ var app = angular.module('app', [
             console.log($scope.retailprice);
             console.log($scope.quoteprice);
             console.log($scope.costrate);
-            console.log('end');
+            console.log('end');*/
             $scope.quoteprice[item_id + '-' + person_id] = retailprice * $scope.costrate[person_id]/ 100;
             // console.log($scope.quoteprice[item_id + '-' + person_id]);
         }

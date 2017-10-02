@@ -302,16 +302,20 @@ class DetailRptController extends Controller
 
         $data = [
             'total_cash_happyice' => $caldata['total_cash_happyice'],
-            'total_cheque_happyice' => $caldata['total_cheque_happyice'],
+            'total_chequein_happyice' => $caldata['total_chequein_happyice'],
+            'total_chequeout_happyice' => $caldata['total_chequeout_happyice'],
             'total_tt_happyice' => $caldata['total_tt_happyice'],
             'total_cash_logistic' => $caldata['total_cash_logistic'],
-            'total_cheque_logistic' => $caldata['total_cheque_logistic'],
+            'total_chequein_logistic' => $caldata['total_chequein_logistic'],
+            'total_chequeout_logistic' => $caldata['total_chequeout_logistic'],
             'total_tt_logistic' => $caldata['total_tt_logistic'],
             'total_cash_icedrop' => $caldata['total_cash_icedrop'],
-            'total_cheque_icedrop' => $caldata['total_cheque_icedrop'],
+            'total_chequein_icedrop' => $caldata['total_chequein_icedrop'],
+            'total_chequeout_icedrop' => $caldata['total_chequeout_icedrop'],
             'total_tt_icedrop' => $caldata['total_tt_icedrop'],
             'total_cash_all' => $caldata['total_cash_all'],
-            'total_cheque_all' => $caldata['total_cheque_all'],
+            'total_chequein_all' => $caldata['total_chequein_all'],
+            'total_chequeout_all' => $caldata['total_chequeout_all'],
             'total_tt_all' => $caldata['total_tt_all'],
             'transactions' => $transactions,
         ];
@@ -1940,59 +1944,75 @@ class DetailRptController extends Controller
     private function calAccPaySummary($transactions)
     {
         $cash_happyice = clone $transactions;
-        $cheque_happyice = clone $transactions;
+        $chequein_happyice = clone $transactions;
+        $chequeout_happyice = clone $transactions;
         $tt_happyice = clone $transactions;
         $cash_logistic = clone $transactions;
-        $cheque_logistic = clone $transactions;
+        $chequein_logistic = clone $transactions;
+        $chequeout_logistic = clone $transactions;
         $tt_logistic = clone $transactions;
         $cash_icedrop = clone $transactions;
-        $cheque_icedrop = clone $transactions;
+        $chequein_icedrop = clone $transactions;
+        $chequeout_icedrop = clone $transactions;
         $tt_icedrop = clone $transactions;
         $cash_all = clone $transactions;
-        $cheque_all = clone $transactions;
+        $chequein_all = clone $transactions;
+        $chequeout_all = clone $transactions;
         $tt_all = clone $transactions;
         $total_cash_happyice = 0;
-        $total_cheque_happyice = 0;
+        $total_chequein_happyice = 0;
+        $total_chequeout_happyice = 0;
         $total_tt_happyice = 0;
         $total_cash_logistic = 0;
-        $total_cheque_logistic = 0;
+        $total_chequein_logistic = 0;
+        $total_chequeout_logistic = 0;
         $total_tt_logistic = 0;
         $total_cash_icedrop = 0;
-        $total_cheque_icedrop = 0;
+        $total_chequein_icedrop = 0;
+        $total_chequeout_icedrop = 0;
         $total_tt_icedrop = 0;
         $total_cash_all = 0;
-        $total_cheque_all = 0;
+        $total_chequein_all = 0;
+        $total_chequeout_all = 0;
         $total_tt_all = 0;
 
         // $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN (transactions.total * 107/100 + transactions.delivery_fee) ELSE (transactions.total * 107/100) END) ELSE transactions.total END), 2)'));
         $total_cash_happyice = $cash_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $total_cheque_happyice = $cheque_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequein_happyice = $chequein_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequeout_happyice = $chequeout_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $total_tt_happyice = $tt_happyice->where('profiles.name', '=', 'HAPPY ICE PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $total_cash_logistic = $cash_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $total_cheque_logistic = $cheque_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequein_logistic = $chequein_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequeout_logistic = $chequeout_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $total_tt_logistic = $tt_logistic->where('profiles.name', '=', 'HAPPY ICE LOGISTIC PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $total_cash_icedrop = $cash_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $total_cheque_icedrop = $cheque_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequein_icedrop = $chequein_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequeout_icedrop = $chequeout_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $total_tt_icedrop = $tt_icedrop->where('profiles.name', '=', 'ICE DROP PTE LTD')->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $total_cash_all = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
-        $total_cheque_all = $cheque_all->where('transactions.pay_method', '=', 'cheque')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequein_all = $chequein_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $total_chequeout_all = $chequeout_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $total_tt_all = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN (transactions.total * 107/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $data = [
            'total_cash_happyice' =>  $total_cash_happyice,
-           'total_cheque_happyice' => $total_cheque_happyice,
+           'total_chequein_happyice' => $total_chequein_happyice,
+           'total_chequeout_happyice' => $total_chequeout_happyice,
            'total_tt_happyice' => $total_tt_happyice,
            'total_cash_logistic' => $total_cash_logistic,
-           'total_cheque_logistic' => $total_cheque_logistic,
+           'total_chequein_logistic' => $total_chequein_logistic,
+           'total_chequeout_logistic' => $total_chequeout_logistic,
            'total_tt_logistic' => $total_tt_logistic,
            'total_cash_icedrop' => $total_cash_icedrop,
-           'total_cheque_icedrop' => $total_cheque_icedrop,
+           'total_chequein_icedrop' => $total_chequein_icedrop,
+           'total_chequeout_icedrop' => $total_chequeout_icedrop,
            'total_tt_icedrop' => $total_tt_icedrop,
            'total_cash_all' => $total_cash_all,
-           'total_cheque_all' => $total_cheque_all,
+           'total_chequein_all' => $total_chequein_all,
+           'total_chequeout_all' => $total_chequeout_all,
            'total_tt_all' => $total_tt_all
         ];
 
