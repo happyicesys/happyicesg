@@ -307,7 +307,7 @@
                     <td class="text-center" colspan="7">No Records Found</td>
                 </tr> --}}
                 @unless(count($files)>0)
-                <td class="text-center" colspan="7">No Records Found</td>
+                    <td class="text-center" colspan="7">No Records Found</td>
                 @else
                     @foreach($files as $index => $file)
                     <tr>
@@ -332,13 +332,14 @@
                     </tr>
                     @endforeach
                 @endunless
-
             </tbody>
         </table>
         {!! Form::close() !!}
 
-        {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
-        {!! Form::close() !!}
+        @if(count($files) > 0)
+            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+            {!! Form::close() !!}
+        @endif
 
         <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Update All Files Name</span></button>
     </div>
