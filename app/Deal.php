@@ -70,6 +70,13 @@ class Deal extends Model
         }
     }
 
+    public function scopeIsTransactionAnalog($query)
+    {
+        return $query->whereHas('transaction', function($query) {
+            $query->where('is_required_analog', 1);
+        });
+    }
+
     private function fraction($frac)
     {
         $fraction = explode("/",$frac);

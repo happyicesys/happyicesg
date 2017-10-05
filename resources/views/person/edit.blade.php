@@ -284,14 +284,13 @@
             </tr>
 
             <tbody>
-                <tr ng-repeat="file in files">
+{{--                 <tr ng-repeat="file in files">
                     <td class="col-md-1 text-center">
                         @{{$index + 1}}
                     </td>
                     <td class="col-md-4">
-                        <a href="@{{file.path}}">
                             <img src="@{{file.path}}" alt="@{{file.name}}" style="width:200px; height:200px;">
-                        </a>
+                            <embed src="@{{file.path}}" width="200" height="200" type='application/pdf' >
                     </td>
                     <td class="col-md-4">
                         <input type="text" class="form-control" name="file_name[@{{file.id}}]" ng-model="file.name">
@@ -301,35 +300,44 @@
                     </td>
                     <td class="col-md-1 text-center">
                         <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(file.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
+                        <a href="@{{file.path}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                     </td>
                 </tr>
                 <tr ng-if="files.length == 0">
                     <td class="text-center" colspan="7">No Records Found</td>
-                </tr>
-{{--                 @unless(count($files)>0)
+                </tr> --}}
+                @unless(count($files)>0)
                 <td class="text-center" colspan="7">No Records Found</td>
                 @else
                     @foreach($files as $index => $file)
                     <tr>
-                        <td class="col-md-1 text-center">{{ $index+1 }} </td>
-                        <td class="col-md-7">
-                        {!! Html::image($file->path, 'person asset', array( 'width' => 200, 'height' => 200 )) !!}
-                            <a href="{{$file->path}}">
-                            {!! str_replace("/person_asset/file/", "", "$file->path"); !!}
-                            </a>
+                        <td class="col-md-1 text-center">
+                            {{ $index + 1 }}
+                        </td>
+                        <td class="col-md-4">
+                            @if(pathinfo($file->path)['extension'] == 'pdf')
+                                <embed src="{{$file->path}}" width="200" height="200" type='application/pdf' >
+                            @else
+                                <img src="{{$file->path}}" alt="{{$file->name}}" style="width:200px; height:200px;">
+                            @endif
+                        </td>
+                        <td class="col-md-4">
+                            <input type="text" class="form-control" name="file_name[{{$file->id}}]" value="{{$file->name}}">
                         </td>
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
-                            {!! Form::open(['method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
-                                {!! Form::submit('Delete', ['class'=> 'btn btn-danger btn-sm']) !!}
-                            {!! Form::close() !!}
+                            <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                            <a href="{{$file->path}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                         </td>
                     </tr>
                     @endforeach
-                @endunless --}}
+                @endunless
 
             </tbody>
         </table>
+        {!! Form::close() !!}
+
+        {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
         {!! Form::close() !!}
 
         <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Update All Files Name</span></button>

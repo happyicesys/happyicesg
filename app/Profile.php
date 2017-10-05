@@ -11,7 +11,7 @@ class Profile extends Model
         'name', 'address', 'email',
         'contact', 'alt_contact', 'roc_no',
         'header', 'logo', 'footer',
-        'gst', 'acronym', 'attn', 'is_gst_inclusive',
+        'gst', 'acronym', 'attn', 'is_gst_inclusive', 'gst_rate',
 
         'payterm_id'
     ];
@@ -29,6 +29,16 @@ class Profile extends Model
     public function payterm()
     {
         return $this->belongsTo('App\Payterm');
+    }
+
+    // getter and setter
+    public function setGstRateAttribute($value)
+    {
+        if($value){
+            $this->attributes['gst_rate'] = $value;
+        }else{
+            $this->attributes['gst_rate'] = null;
+        }
     }
 
     // scopes

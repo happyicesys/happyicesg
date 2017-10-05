@@ -172,10 +172,18 @@
                     </div>
                     <div class="row">
                         <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
-                            Total Paid 'Cheque'
+                            Total Paid 'Cheque In'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.cheque_mod | currency: "": 2}}
+                            @{{rptdata.chequein_mod | currency: "": 2}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
+                            Total Paid 'Cheque Out'
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
+                            @{{rptdata.chequeout_mod | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -277,8 +285,24 @@
                         <td data-tableexport-display="always">Total Amount for 'Paid'</td>
                         <td data-tableexport-display="always" class="text-right">@{{rptdata.amt_mod | currency: "": 2}}</td>
                         <td></td>
-                        <td ng-if="!getdriver()">Total Paid 'Cheque/TT'</td>
-                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.cheque_mod | currency: "": 2}}</td>
+                        <td ng-if="!getdriver()">Total Paid 'Cheque In'</td>
+                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.chequein_mod | currency: "": 2}}</td>
+                    </tr>
+                    <tr class="hidden">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-if="!getdriver()">Total Paid 'Cheque Out'</td>
+                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.chequeout_mod | currency: "": 2}}</td>
+                    </tr>
+                    <tr class="hidden">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-if="!getdriver()">Total Paid 'TT'</td>
+                        <td ng-if="!getdriver()" class="text-right">@{{rptdata.tt_mod | currency: "": 2}}</td>
                     </tr>
                     <tr class="hidden" data-tableexport-display="always">
                         <td></td>

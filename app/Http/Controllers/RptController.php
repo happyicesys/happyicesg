@@ -535,7 +535,8 @@ class RptController extends Controller
         $paid_del = 0;
         $amt_mod = 0;
         $cash_mod = 0;
-        $cheque_mod = 0;
+        $chequein_mod = 0;
+        $chequeout_mod = 0;
         $delivery_date = $request->delivery_date;
         $paid_at = $request->paid_at;
         $paid_by = $request->paid_by;
@@ -591,7 +592,8 @@ class RptController extends Controller
         $paid_del = $this->calDBTransactionTotal($query1->where('pay_status', '=', 'Paid'));
         $amt_mod = $this->calDBTransactionTotal($query2);
         $cash_mod = $this->payMethodConDB($query2, 'cash');
-        $cheque_mod = $this->payMethodConDB($query2, 'cheque');
+        $chequein_mod = $this->payMethodConDB($query2, 'cheque', 'in');
+        $chequeout_mod = $this->payMethodConDB($query2, 'cheque', 'out');
         $tt_mod = $this->payMethodConDB($query2, 'tt');
         $del_cashmod = $this->payMethodConDBDelivery($query2, 'cash');
         $del_chequemod = $this->payMethodConDBDelivery($query2, 'cheque');
@@ -605,7 +607,8 @@ class RptController extends Controller
             'paid_del' => $paid_del /*+ $delivery_paid*/,
             'amt_mod' => $amt_mod /*+ $delivery_total2*/,
             'cash_mod' => $cash_mod /*+ $del_cashmod*/,
-            'cheque_mod' => $cheque_mod /*+ $del_chequemod*/,
+            'chequein_mod' => $chequein_mod /*+ $del_chequemod*/,
+            'chequeout_mod' => $chequeout_mod,
             'tt_mod' => $tt_mod
         ];
         return $data;
@@ -628,11 +631,19 @@ class RptController extends Controller
         }
         return $total;
     }
-    private function payMethodConDB($query, $con)
+    private function payMethodConDB($query, $con, $chequetype = null)
     {
         $total = 0;
         $query1 = clone $query;
-        $total = $this->calDBTransactionTotal($query1->where('transactions.pay_method', $con));
+        if($chequetype) {
+            if($chequetype === 'in') {
+                $total = $this->calDBTransactionTotal($query1->where('transactions.pay_method', $con)->where('transactions.total', '>', 0));
+            } else if($chequetype === 'out') {
+                $total = $this->calDBTransactionTotal($query1->where('transactions.pay_method', $con)->where('transactions.total', '<', 0));
+            }
+        }else {
+            $total = $this->calDBTransactionTotal($query1->where('transactions.pay_method', $con));
+        }
         return $total;
     }
 

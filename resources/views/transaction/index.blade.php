@@ -320,10 +320,10 @@
                                     <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_at')">
+                                    <a href="" ng-click="sortTable('transactions.updated_at')">
                                     Last Modified Time
-                                    <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Action

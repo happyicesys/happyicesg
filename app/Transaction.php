@@ -171,7 +171,6 @@ class Transaction extends Model
         }
     }
 
-
     public function person()
     {
         return $this->belongsTo('App\Person');
@@ -287,6 +286,11 @@ class Transaction extends Model
         }else{
             return $query->where('delivery_date', '>=', Carbon::now()->startOfYear()->format('Y-m-d'))->where('delivery_date', '<=', Carbon::now()->endOfYear()->format('Y-m-d'));
         }
+    }
+
+    public function scopeIsAnalog($query)
+    {
+        return $query->where('is_required_analog', 1);
     }
 
 }

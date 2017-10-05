@@ -134,11 +134,11 @@ class PersonController extends Controller
     public function edit($id)
     {
         $person = Person::findOrFail($id);
-        // $files = StoreFile::wherePersonId($id)->oldest()->get();
+        $files = StoreFile::wherePersonId($id)->oldest()->get();
         $prices = Price::wherePersonId($id)->orderBy('item_id')->paginate(50);
         $addfreezers = AddFreezer::wherePersonId($id)->oldest()->paginate(3);
         $addaccessories = AddAccessory::wherePersonId($id)->oldest()->paginate(3);
-        return view('person.edit', compact('person', 'prices', 'addfreezers', 'addaccessories'));
+        return view('person.edit', compact('person', 'files', 'prices', 'addfreezers', 'addaccessories'));
     }
 
     // return files api by given person id(int $person_id)

@@ -87,6 +87,14 @@
             @endforeach
         </tr>
         <tr>
+            <th>Analog Required</th>
+            <th></th>
+            <th></th>
+            @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $transaction)
+                <td colspan="2" align="center">{{$transaction->is_required_analog ? 'Yes' : 'No'}}</td>
+            @endforeach
+        </tr>
+        <tr>
             <th align="center">Item</th>
             <th align="center">Total Qty</th>
             <th align="center">Total $</th>
@@ -138,47 +146,64 @@
             </tr>
             <tr>
                 <th>Total Sales Qty</th>
-                <td data-format="0.00">{{$transactions::whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->oldest()->first()->analog_clock}}</td>
+                <td data-format="0.00">{{$transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock}}</td>
             </tr>
             <tr>
                 <th>Average Sales Per Day</th>
                 <td data-format="0.00">
                     @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
-                        {{  $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->first()->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->oldest()->first()->delivery_date)}}
+                        {{  ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))}}
                     @else
                         N/A
                     @endif
                 </td>
             </tr>
             <tr></tr>
+
+            // start from here need verify is required analog logic
             <tr>
                 <th colspan="2">Sale Quatity (Based on Analog)</th>
                 <th></th>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $index => $transaction)
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $index => $transaction)
                     <td data-format="0" colspan="2" align="center">
-                        {{($index + 1) < count($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()) ? $transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[$index + 1]->analog_clock : $transaction->digital_clock }}
+                        @if($transaction->is_required_analog)
+                        {{($index + 1) < count($transactions::whereIn('id', $transactionsId)->latest()->get()) ? $transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[$index + 1]->analog_clock : $transaction->digital_clock }}
+                        @endif
                     </td>
                 @endforeach
             </tr>
             <tr>
                 <th colspan="2">Digital Clocker</th>
                 <th></th>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $index => $transaction)
-                    <td data-format="0" colspan="2" align="center">{{$transaction->digital_clock}}</td>
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $index => $transaction)
+                    <td data-format="0" colspan="2" align="center">
+                        @if($transaction->is_required_analog)
+                            {{$transaction->digital_clock}}
+                        @endif
+                    </td>
+
                 @endforeach
             </tr>
             <tr>
                 <th colspan="2">Analog Clocker</th>
                 <th></th>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $index => $transaction)
-                    <td data-format="0" colspan="2" align="center">{{$transaction->analog_clock}}</td>
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $index => $transaction)
+                    <td data-format="0" colspan="2" align="center">
+                        @if($transaction->is_required_analog)
+                            {{$transaction->analog_clock}}
+                        @endif
+                    </td>
                 @endforeach
             </tr>
             <tr>
                 <th colspan="2">Balance Coin</th>
                 <th></th>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $index => $transaction)
-                    <td data-format="0.00" colspan="2" align="center">{{$transaction->balance_coin}}</td>
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $index => $transaction)
+                    <td data-format="0.00" colspan="2" align="center">
+                        @if($transaction->is_required_analog)
+                            {{$transaction->balance_coin}}
+                        @endif
+                    </td>
                 @endforeach
             </tr>
         </tbody>
@@ -193,41 +218,51 @@
         <tr>
             <td colspan="2">Expected Payment Received</td>
             <td data-format="0.00">
-                {{ ($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[0]->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price }}
+                {{ ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[0]->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[count($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price }}
             </td>
-            @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $index => $transaction)
+            @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $index => $transaction)
                 <td colspan="2" data-format="0.00" align="center">
-                    {{$index + 1 < count($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()) ? ($transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[$index + 1]->analog_clock) * $people::find($person_id)->vending_piece_price : 0.00}}
+                    @if($transaction->is_required_analog)
+                        {{$index + 1 < count($transactions::whereIn('id', $transactionsId)->latest()->get()) ? ($transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[$index + 1]->analog_clock) * $people::find($person_id)->vending_piece_price : 0.00}}
+                    @endif
                 </td>
             @endforeach
         </tr>
         <tr>
             <td colspan="2">Balance Coin</td>
             <td></td>
-            @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $transaction)
-                <td colspan="2" data-format="0.00" align="center">{{$transaction->balance_coin}}</td>
+            @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $transaction)
+                <td colspan="2" data-format="0.00" align="center">
+                    @if($transaction->is_required_analog)
+                        {{$transaction->balance_coin}}
+                    @endif
+                </td>
             @endforeach
         </tr>
         </table>
 
-        @if($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first() and $deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first() and $deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first())
+        @if($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->first() or $deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->first() or $deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->first())
             <tr>
                 <td colspan="2">{{$items::whereProductId('051')->first()->product_id}} - {{$items::whereProductId('051')->first()->name}}</td>
                 <td></td>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $transaction)
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $transaction)
                     <td colspan="2" data-format="0.00" align="center">
-                        {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first()->amount : 0.00}}
+                        @if($transaction->is_required_analog)
+                            {{$deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first()->amount : 0.00}}
+                        @endif
                     </td>
                 @endforeach
             </tr>
             <tr>
                 <td colspan="2">Actual Subtotal Received</td>
-                <td data-format="0.00">{{$transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[0]->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount'))}}</td>
+                <td data-format="0.00">
+                    {{$transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[0]->balance_coin + ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))}}
+                </td>
             </tr>
             <tr>
                 <th colspan="2">Difference(Actual - Expected)</th>
                 <th data-format="0.00">
-                    {{ $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[0]->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount')) - ($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[0]->analog_clock - $transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[count($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get())-1]->analog_clock) * $people::find($person_id)->vending_piece_price}}
+                    {{ $transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[0]->balance_coin + ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) - ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[0]->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[count($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get())-1]->analog_clock) * $people::find($person_id)->vending_piece_price}}
                 </th>
             </tr>
             <tr>
@@ -235,18 +270,20 @@
                     {{$items::whereProductId('051a')->first()->product_id}} - {{$items::whereProductId('051a')->first()->name}}
                 </td>
                 <td  data-format="0.00">
-                    {{$deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount')}}
+                    {{$deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')}}
                 </td>
-                @foreach($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get() as $transaction)
+                @foreach($transactions::whereIn('id', $transactionsId)->latest()->get() as $transaction)
                     <td data-format="0.00" colspan="2" align="center">
-                        {{ $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->first()->amount : 0.00 }}
+                        @if($transaction->is_required_analog)
+                            {{ $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first() ? $deals::whereTransactionId($transaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first()->amount : 0.00 }}
+                        @endif
                     </td>
                 @endforeach
             </tr>
             <tr>
                 <th colspan="2">Stock Value in VM</th>
                 <th data-format="0.00">
-                    {{ ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount')) + ($transactions::whereIn('id', $transactionsId)->where('is_required_analog', 1)->latest()->get()[0]->balance_coin + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->whereHas('transaction', function($q) { $q->where('is_required_analog', 1); })->sum('amount')) + ($deals::whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')))}}
+                    {{ ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->get()[0]->balance_coin + ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($deals::isTransactionAnalog()->whereIn('transaction_id', $transactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')))}}
                 </th>
             </tr>
         @endif

@@ -208,10 +208,26 @@
 
                         <div class="row">
                             <div class="col-xs-8">
-                                <strong>Total Paid 'Cheque/ TT':</strong>
+                                <strong>Total Paid 'Cheque In':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($cheque_mod, 2, '.', ',') }}
+                                {{ number_format($chequein_mod, 2, '.', ',') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <strong>Total Paid 'Cheque Out':</strong>
+                            </div>
+                            <div class="col-xs-4 text-right">
+                                {{ number_format($chequeout_mod, 2, '.', ',') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <strong>Total Paid 'TT':</strong>
+                            </div>
+                            <div class="col-xs-4 text-right">
+                                {{ number_format($tt_mod, 2, '.', ',') }}
                             </div>
                         </div>
                     </div>

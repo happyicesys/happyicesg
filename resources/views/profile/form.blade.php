@@ -41,6 +41,11 @@
     </div>
 
     <div class="form-group">
+        {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label']) !!}
+        {!! Form::text('gst_rate', null, ['class'=>'form-control']) !!}
+    </div>
+
+    <div class="form-group">
         {!! Form::label('address', 'Address', ['class'=>'control-label']) !!}
         {!! Form::textarea('address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
     </div>

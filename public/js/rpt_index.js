@@ -64,7 +64,7 @@ var app = angular.module('app', [
 
                 $http.post('/report/dailyrec', $scope.indexData).success(function(rptdata){
                     $scope.rptdata = rptdata;
-                    if(rptdata.amt_mod == rptdata.cash_mod + rptdata.cheque_mod + rptdata.tt_mod) {
+                    if(rptdata.amt_mod == rptdata.cash_mod + rptdata.chequein_mod + rptdata.chequeout_mod + rptdata.tt_mod) {
                         $scope.matchTotal = true;
                     }else {
                         $scope.matchTotal = false;

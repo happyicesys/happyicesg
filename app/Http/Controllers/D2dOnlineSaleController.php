@@ -110,7 +110,7 @@ class D2dOnlineSaleController extends Controller
         $sendto = [$request->email];
         if($generate_trans) {
             $transaction_id = $this->createTransaction($request, $customer_id);
-            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jhhappyice@gmail.com'];
+            $cc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@gmail.com'];
             $bcc = ['leehongjie91@gmail.com'];
         }else{
             $member = Person::findOrFail($avail_postcode->person_id);
@@ -120,7 +120,7 @@ class D2dOnlineSaleController extends Controller
             }else{
                 $cc = [$member->email];
             }
-            $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jhhappyice@gmail.com'];
+            $bcc = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'leehongjie91@gmail.com', 'jiahaur@gmail.com'];
             $dtdtransaction_id = $this->createDtdTransaction($request, $customer_id);
         }
         $data = [
