@@ -13,13 +13,13 @@ class AddDivisorDividentDealsTable extends Migration
     public function up()
     {
         Schema::table('deals', function($table) {
-            $table->integer('dividend')->nullable();
-            $table->integer('divisor')->nullable();
+            $table->decimal('dividend', 10, 2)->nullable();
+            $table->decimal('divisor', 10, 2)->nullable();
         });
 
         Schema::table('dtddeals', function($table) {
-            $table->integer('dividend')->nullable();
-            $table->integer('divisor')->nullable();
+            $table->decimal('dividend', 10, 2)->nullable();
+            $table->decimal('divisor', 10, 2)->nullable();
         });
     }
 

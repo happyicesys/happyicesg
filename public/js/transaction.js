@@ -171,5 +171,15 @@ var app = angular.module('app', [
         }
     }
 
+
+
+app.filter('removeZero', ['$filter', function($filter) {
+    return function(input) {
+        input = parseFloat(input);
+        input = input.toFixed(input % 1 === 0 ? 0 : 2);
+        return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+}]);
+
 app.controller('transactionController', transactionController);
 

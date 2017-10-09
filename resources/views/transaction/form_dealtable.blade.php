@@ -60,7 +60,7 @@
                                     @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
                                 </span>
                                 <span ng-if="deal.divisor !== 1 && deal.is_inventory === 1">
-                                    @{{deal.dividend}} / @{{deal.divisor}}
+                                    @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
                                 </span>
                                 <span ng-if="deal.divisor === 1 && deal.is_inventory === 1">
                                     @{{deal.qty}}
@@ -69,7 +69,7 @@
                                     1 Unit
                                 </span>
                                 <span ng-if="deal.is_inventory === 0 && deal.dividend !== 1">
-                                    @{{deal.dividend}} Unit
+                                    @{{deal.dividend | removeZero}} Unit
                                 </span>
                             </td>
                             {{-- unit price --}}
