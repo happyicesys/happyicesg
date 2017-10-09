@@ -166,6 +166,14 @@
                     <strong>@{{ total_tt_happyice ? total_tt_happyice : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Subtotal:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ subtotal_happyice ? subtotal_happyice : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-3 col-sm-3 col-xs-12">
@@ -204,6 +212,14 @@
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                     <strong>@{{ total_tt_logistic ? total_tt_logistic : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Subtotal:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ subtotal_logistic ? subtotal_logistic : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
         </div>
@@ -246,6 +262,14 @@
                     <strong>@{{ total_tt_icedrop ? total_tt_icedrop : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Subtotal:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ subtotal_icedrop ? subtotal_icedrop : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-3 col-sm-3 col-xs-12">
@@ -284,6 +308,14 @@
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                     <strong>@{{ total_tt_all ? total_tt_all : 0.00 | currency: "": 2}}</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    Subtotal:
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ subtotal_all ? subtotal_all : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
         </div>

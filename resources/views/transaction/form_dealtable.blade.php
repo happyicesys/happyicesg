@@ -59,16 +59,16 @@
                                 <span ng-if="!deal.divisor && deal.is_inventory === 1">
                                     @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
                                 </span>
-                                <span ng-if="deal.divisor !== 1 && deal.is_inventory === 1">
+                                <span ng-if="deal.divisor != 1.00 && deal.is_inventory == 1.00">
                                     @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
                                 </span>
-                                <span ng-if="deal.divisor === 1 && deal.is_inventory === 1">
+                                <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1.00">
                                     @{{deal.qty}}
                                 </span>
-                                <span ng-if="deal.is_inventory === 0 && deal.dividend === 1">
+                                <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
                                     1 Unit
                                 </span>
-                                <span ng-if="deal.is_inventory === 0 && deal.dividend !== 1">
+                                <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
                                     @{{deal.dividend | removeZero}} Unit
                                 </span>
                             </td>
