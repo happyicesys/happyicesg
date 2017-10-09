@@ -19,7 +19,13 @@
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('roc_no', 'ROC No.', ['class'=>'control-label']) !!}
+                <label>
+                    @if($profile->gst)
+                        Co. Reg & GST Reg No
+                    @else
+                        Co. Reg No
+                    @endif
+                </label>
                 {!! Form::text('roc_no', null, ['class'=>'form-control']) !!}
             </div>
         </div>

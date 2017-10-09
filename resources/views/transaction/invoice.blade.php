@@ -46,7 +46,14 @@
                 <h3 class="text-center"><strong>{{$person->profile->name}}</strong></h3>
                 <h5 class="text-center" style="margin-bottom: -5px">{{$person->profile->address}}</h5>
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$person->profile->contact}}</h5>
-                <h5 class="text-center">Co Reg No: {{$person->profile->roc_no}}</h5>
+                <h5 class="text-center">
+                    @if($person->profile->gst)
+                        Co. Reg & GST Reg No:
+                    @else
+                        Co. Reg No:
+                    @endif
+                    {{$person->profile->roc_no}}
+                </h5>
             </div>
 
             <div class="col-xs-12" style="padding-top: 5px">
