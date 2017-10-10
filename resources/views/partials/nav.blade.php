@@ -66,6 +66,7 @@
                         <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
+                        {{-- <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li> --}}
                     </ul>
                 </li>
                 @endcannot

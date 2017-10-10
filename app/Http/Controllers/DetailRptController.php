@@ -1391,6 +1391,69 @@ class DetailRptController extends Controller
         return view('detailrpt.stock.date', compact('sevenDatesArr', 'itemsIdArr', 'allDateTransactionIds', 'sevenDateTransactionIds'));
     }
 
+    // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
+    public function exportBillingPdf()
+    {
+        if(request('issue_bill')) {
+            $type = request('issue_bill');
+        }else if(request('consolidate_rpt')) {
+            $type = request('consolidate_rpt');
+        }
+        $deals = $this->stockBillingSql()['deals'];
+        $deals = $deals->get();
+        $totals = $this->stockBillingSql()['totals'];
+        // $running_no = Carbon::today()->format('ymd');
+        $delivery_from = request('delivery_from');
+        $delivery_to = request('delivery_to');
+
+        if($type = request('exportpdf')) {
+            switch($type) {
+                case 'bill':
+                    $profile = Profile::find(request('profile_id'));
+                    $issuebillprofile = Profile::find(request('bill_profile'));
+                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.Carbon::parse($delivery_to)->format('ymd').'-'.$profile->acronym;
+                    $name = 'Internal_Billing('.$running_no.')_'.$issuebillprofile->name.'-'.$profile->name.'.pdf';
+                    break;
+                case 'consolidate':
+                    $profile = Profile::find(request('profile_id'));
+                    $issuebillprofile = Profile::find(request('profile_id'));
+                    $running_no = $issuebillprofile->acronym.Carbon::parse($delivery_to)->format('ymd');
+                    $name = 'Consolidate_Rpt('.$running_no.')_'.$issuebillprofile->name.'.pdf';
+                    break;
+            }
+        }
+
+        $data = [
+            'deals' => $deals,
+            'profile' => $profile,
+            'issuebillprofile' => $issuebillprofile,
+            'running_no' => $running_no,
+            'type' => $type,
+            'delivery_from' => $delivery_from,
+            'delivery_to' => $delivery_to,
+            'totals' => $totals,
+        ];
+
+        $pdf = PDF::loadView('detailrpt.stock.pdf.internalpdf', $data);
+        $pdf->setPaper('a4');
+        $pdf->setOption('margin-top', 5);
+        $pdf->setOption('margin-bottom', 5);
+        $pdf->setOption('margin-left', 2);
+        $pdf->setOption('margin-right', 2);
+        $pdf->setOption('footer-right', 'Page [page]/[topage]');
+        // $pdf->setOption('disable-smart-shrinking', true);
+        $pdf->setOption('dpi', 70);
+        $pdf->setOption('page-width', '210mm');
+        $pdf->setOption('page-height', '297mm');
+        return $pdf->download($name);
+    }
+
+    // return vending machine page()
+    public function getVendingIndex()
+    {
+        return view('detailrpt.vending.index');
+    }
+
     // filters function for stock (formrequest request(), query deals)
     private function detailrptStockFilters($request, $deals)
     {
@@ -2206,62 +2269,5 @@ class DetailRptController extends Controller
         ];
 
         return $data;
-    }
-
-    // export pdf for issue bill to another profile in billing (Query $query, Array $totals, int $bill_profile)
-    public function exportBillingPdf()
-    {
-        if(request('issue_bill')) {
-            $type = request('issue_bill');
-        }else if(request('consolidate_rpt')) {
-            $type = request('consolidate_rpt');
-        }
-        $deals = $this->stockBillingSql()['deals'];
-        $deals = $deals->get();
-        $totals = $this->stockBillingSql()['totals'];
-        // $running_no = Carbon::today()->format('ymd');
-        $delivery_from = request('delivery_from');
-        $delivery_to = request('delivery_to');
-
-        if($type = request('exportpdf')) {
-            switch($type) {
-                case 'bill':
-                    $profile = Profile::find(request('profile_id'));
-                    $issuebillprofile = Profile::find(request('bill_profile'));
-                    $running_no = GeneralSetting::firstOrFail()->internal_billing_prefix.Carbon::parse($delivery_to)->format('ymd').'-'.$profile->acronym;
-                    $name = 'Internal_Billing('.$running_no.')_'.$issuebillprofile->name.'-'.$profile->name.'.pdf';
-                    break;
-                case 'consolidate':
-                    $profile = Profile::find(request('profile_id'));
-                    $issuebillprofile = Profile::find(request('profile_id'));
-                    $running_no = $issuebillprofile->acronym.Carbon::parse($delivery_to)->format('ymd');
-                    $name = 'Consolidate_Rpt('.$running_no.')_'.$issuebillprofile->name.'.pdf';
-                    break;
-            }
-        }
-
-        $data = [
-            'deals' => $deals,
-            'profile' => $profile,
-            'issuebillprofile' => $issuebillprofile,
-            'running_no' => $running_no,
-            'type' => $type,
-            'delivery_from' => $delivery_from,
-            'delivery_to' => $delivery_to,
-            'totals' => $totals,
-        ];
-
-        $pdf = PDF::loadView('detailrpt.stock.pdf.internalpdf', $data);
-        $pdf->setPaper('a4');
-        $pdf->setOption('margin-top', 5);
-        $pdf->setOption('margin-bottom', 5);
-        $pdf->setOption('margin-left', 2);
-        $pdf->setOption('margin-right', 2);
-        $pdf->setOption('footer-right', 'Page [page]/[topage]');
-        // $pdf->setOption('disable-smart-shrinking', true);
-        $pdf->setOption('dpi', 70);
-        $pdf->setOption('page-width', '210mm');
-        $pdf->setOption('page-height', '297mm');
-        return $pdf->download($name);
     }
 }
