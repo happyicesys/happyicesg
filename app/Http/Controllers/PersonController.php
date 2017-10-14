@@ -117,6 +117,7 @@ class PersonController extends Controller
         $input = $request->all();
         $person = Person::create($input);
         $person->is_vending = $request->has('is_vending')? 1 : 0;
+        $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
         $person->save();
         return Redirect::action('PersonController@edit', $person->id);
     }
@@ -188,11 +189,15 @@ class PersonController extends Controller
         $input = $request->all();
         $person->update($input);
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
+        $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
         if(! $person->is_vending) {
             $person->vending_piece_price = 0.00;
             $person->vending_monthly_rental = 0.00;
             $person->vending_profit_sharing = 0.00;
+            $person->vending_monthly_utilities = 0.00;
+            $person->vending_clocker_adjustment = 0.00;
+            $person->is_profit_sharing_report = 0;
             $person->save();
         }
         return Redirect::action('PersonController@edit', $person->id);

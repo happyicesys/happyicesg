@@ -191,6 +191,11 @@ class Transaction extends Model
         return $this->hasMany('App\Deal');
     }
 
+    public function invattachments()
+    {
+        return $this->hasMany('App\Invattachment');
+    }
+
     // searching scopes
     // (query, integer) [query]
     public function scopeSearchId($query, $id)

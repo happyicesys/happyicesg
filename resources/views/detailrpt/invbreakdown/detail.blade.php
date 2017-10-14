@@ -286,7 +286,7 @@
                                             $delivery_from = request('delivery_from') ? request('delivery_from') : $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date;
                                             $day_diff = \Carbon\Carbon::parse($delivery_from)->diffInDays(\Carbon\Carbon::parse($delivery_to));
                                         @endphp
-                                        {{ number_format(($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / $day_diff, 2)}}
+                                        {{ $day_diff ? number_format(($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / $day_diff, 2) : ''}}
                                     @else
                                         N/A
                                     @endif

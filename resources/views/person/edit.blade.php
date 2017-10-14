@@ -49,15 +49,17 @@
             {!! Form::open(['id'=>'person_transaction', 'method'=>'POST', 'action'=>['TransactionController@store']]) !!}
                 {!! Form::hidden('person_id', $person->id) !!}
             {!! Form::close() !!}
-            </h3>
         </div>
 
         <div class="panel-body">
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
-                    @include('person.form')
+                @include('person.form')
+                @if($person->is_vending === 1)
+                    @include('person.vending')
+                @endif
 
-            <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">
                             @cannot('transaction_view')
@@ -81,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
             {!! Form::close() !!}
 
             {!! Form::open(['id'=>'delete_person', 'method'=>'DELETE', 'action'=>['PersonController@destroy', $person->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
@@ -92,7 +94,6 @@
 
 {{-- divider --}}
 <div class="panel panel-primary">
-
     <div class="panel-heading">
         <h3 class="panel-title">
             <strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong>
@@ -396,5 +397,6 @@ $('.select').select2({
 
 </script>
 <script src="/js/person_edit.js"></script>
+<script src="/js/vue-controller/assignVendingController.js"></script>
 
 @stop

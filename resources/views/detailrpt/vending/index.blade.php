@@ -16,13 +16,13 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#generate_invoice" role="tab" data-toggle="tab">Generate Invoice</a></li>
-                    <li><a href="#monthly_summary" role="tab" data-toggle="tab">Monthly Summary</a></li>
+                    {{-- <li><a href="#monthly_summary" role="tab" data-toggle="tab">Monthly Summary</a></li> --}}
                 </ul>
             </div>
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="generate_invoice">
-                        {{-- @include('detailrpt.vending.generate_invoice') --}}
+                        @include('detailrpt.vending.generate_invoice')
                     </div>
                     <div class="tab-pane" id="monthly_summary">
                         {{-- @include('detailrpt.vending.monthly_summary') --}}

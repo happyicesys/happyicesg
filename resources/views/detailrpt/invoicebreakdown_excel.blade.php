@@ -152,7 +152,13 @@
                 <th>Average Sales Per Day</th>
                 <td data-format="0.00">
                     @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
-                        {{  ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))}}
+                        {{
+                            \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))
+                            ?
+                            ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))
+                            :
+                            ''
+                        }}
                     @else
                         N/A
                     @endif

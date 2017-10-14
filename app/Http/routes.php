@@ -14,6 +14,14 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     });
 });*/
 
+Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
+Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');
+Route::get('/detailrpt/vending', 'VendingController@getVendingIndex');
+Route::delete('/vending/remove/{vending_id}/person/{person_id}', 'VendingController@removeVendingPerson');
+Route::post('/vending/add/{person_id}/person', 'VendingController@addVendingPerson');
+Route::get('/api/vending/{person_id}/person', 'VendingController@getPersonVendingApi');
+Route::get('/api/vending/avail/{person_id}/person', 'VendingController@getPersonAvailableVendingApi');
+
 Route::get('/api/d2donlinesales', 'D2dOnlineSaleController@allApi');
 Route::get('/api/d2ditems/{covered}', 'D2dOnlineSaleController@allItems');
 Route::post('/api/validateOrder', 'D2dOnlineSaleController@validateOrder');
@@ -169,6 +177,8 @@ Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::delete('/transaction/invoice/attach/{atttachment_id}/remove', 'TransactionController@removeAttachment');
+Route::post('/transaction/invoice/attach/{transaction_id}', 'TransactionController@addInvoiceAttachment');
 Route::get('/api/transaction/edit/{id}', 'TransactionController@editApi');
 Route::get('/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDate');
 Route::get('/api/transaction/freeze/date', 'TransactionController@getFreezeInvoiceDateApi');
@@ -220,7 +230,6 @@ Route::post('/report/transaction', 'RptController@generateTransaction');
 Route::post('/report/deal', 'RptController@generateByProduct');
 Route::post('/report/driver', 'RptController@generateDriver');
 
-Route::get('/detailrpt/vending', 'DetailRptController@getVendingIndex');
 Route::post('/pdf/detailrpt/stock/billing', 'DetailRptController@exportBillingPdf');
 Route::match(['get', 'post'], '/detailrpt/stock/date', 'DetailRptController@getStockDate');
 Route::get('/detailrpt/stock/billing', 'DetailRptController@getStockBilling');

@@ -13,7 +13,7 @@ class Profile extends Model
         'header', 'logo', 'footer',
         'gst', 'acronym', 'attn', 'is_gst_inclusive', 'gst_rate',
 
-        'payterm_id'
+        'payterm_id', 'currency_id'
     ];
 
     public function people()

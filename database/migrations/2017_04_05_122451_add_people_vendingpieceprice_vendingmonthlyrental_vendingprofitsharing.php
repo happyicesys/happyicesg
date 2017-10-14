@@ -16,7 +16,7 @@ class AddPeopleVendingpiecepriceVendingmonthlyrentalVendingprofitsharing extends
         {
             $table->decimal('vending_piece_price', 10, 2)->nullable();
             $table->decimal('vending_monthly_rental', 10, 2)->nullable();
-            $table->string('vending_profit_sharing')->nullable();
+            $table->decimal('vending_profit_sharing', 10, 2)->nullable();
         });
     }
 

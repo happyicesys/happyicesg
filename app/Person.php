@@ -61,6 +61,7 @@ class Person extends Baum\Node
     'note', 'salutation', 'dob', 'cust_type', 'user_id', 'parent_name',
     'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
+    'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report'
     ];
 
     protected $dates = ['deleted_at'];
@@ -138,6 +139,11 @@ class Person extends Baum\Node
     public function postcodes()
     {
         return $this->hasMany('App\Postcode');
+    }
+
+    public function vendings()
+    {
+        return $this->belongsToMany('App\Vending');
     }
 
     // getter and setter

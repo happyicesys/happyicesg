@@ -56,7 +56,7 @@
                 </h5>
             </div>
 
-            <div class="col-xs-12" style="padding-top: 5px">
+            <div class="row" style="padding-top: 5px">
                 <div class="row no-gutter">
                     <div class="col-xs-4">
                         @if($person->cust_id[0] == 'H')
@@ -144,7 +144,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</span>
+                                        <span class="inline">{{\Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y')}}</span>
+                                        <span class="inline">{{\Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y')}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -204,8 +204,7 @@
             </div>
 
             <div class="avoid">
-            <div class="row">
-                <div class="col-xs-12" style="padding-top: 10px">
+                <div class="row">
                     <table class="table table-bordered table-condensed" style="border:thin solid black;">
                         <tr>
                             <th class="col-xs-1 text-center">
@@ -395,10 +394,9 @@
                     </table>
                 </div>
             </div>
-            </div>
 
         {{-- <footer class="footer"> --}}
-                <div class="col-xs-12">
+                <div class="row">
                     <div class="col-xs-12">
                         @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D')
                             Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
@@ -412,6 +410,13 @@
                             @endif
                         </div>
                     </div>
+                    @if($transaction->invattachments)
+                    <div class="col-xs-12" style="padding-bottom: 30px;">
+                        @foreach($transaction->invattachments()->oldest()->get() as $invattachment)
+                            <img src="{{public_path().$invattachment->path}}" style="width: 300px; height: 200px;">
+                        @endforeach
+                    </div>
+                    @endif
 
                     <div class="col-xs-12" style="padding-top: 10px">
                         <div class="col-xs-6">

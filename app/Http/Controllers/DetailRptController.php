@@ -1448,12 +1448,6 @@ class DetailRptController extends Controller
         return $pdf->download($name);
     }
 
-    // return vending machine page()
-    public function getVendingIndex()
-    {
-        return view('detailrpt.vending.index');
-    }
-
     // filters function for stock (formrequest request(), query deals)
     private function detailrptStockFilters($request, $deals)
     {

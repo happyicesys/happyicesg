@@ -33,9 +33,9 @@ var app = angular.module('app', [
         $scope.total_amount = 0.00;
         $scope.total_paid = 0.00;
         $scope.total_owe = 0.00;
+
         // init page load
         getPage(1, true);
-
         loadFiles();
 
         angular.element(document).ready(function () {
@@ -187,7 +187,6 @@ var app = angular.module('app', [
                 loadFiles();
             });
         }
-
     }
 
 app.filter('delDate', [

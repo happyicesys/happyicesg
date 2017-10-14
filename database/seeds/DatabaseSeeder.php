@@ -31,8 +31,11 @@ class DatabaseSeeder extends Seeder
         $this->call(CustcategorySeeder::class);
         $this->call(ItemcategorySeeder::class);
         $this->call(ProfileUserRelateSeeder::class);
-        */
         $this->call(InternalBillingSeeder::class);
+        */
+        $this->call(CurrencySeeder::class);
+        $this->call(VendingSeeder::class);
+
         Model::reguard();
     }
 }

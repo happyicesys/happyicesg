@@ -6,6 +6,7 @@ use App\Http\Requests\TransactionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\File;
 
 use Venturecraft\Revisionable\Revision;
 use Response;
@@ -30,6 +31,7 @@ use App\DtdPrice;
 use App\DtdTransaction;
 use App\DtdDeal;
 use App\GeneralSetting;
+use App\Invattachment;
 
 use App\HasProfileAccess;
 use App\CreateRemoveDealLogic;
@@ -185,6 +187,8 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
 
+        $invattachments = $transaction->invattachments;
+
         $person = Person::findOrFail($transaction->person_id);
 
         // retrieve manually to order product id asc
@@ -223,7 +227,7 @@ class TransactionController extends Controller
                             ->get();*/
         }
 
-        return view('transaction.edit', compact('transaction', 'person', 'prices'));
+        return view('transaction.edit', compact('transaction', 'person', 'prices', 'invattachments'));
     }
 
     // return transaction related components, deals (int transaction_id)
@@ -573,6 +577,7 @@ class TransactionController extends Controller
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
         $pdf = PDF::loadView('transaction.invoice', $data);
         $pdf->setPaper('a4');
+        $pdf->setOption('dpi', 85);
         return $pdf->download($name);
     }
 
@@ -728,6 +733,32 @@ class TransactionController extends Controller
             ->update(['is_freeze' => 1]);
 
         return Redirect::action('TransactionController@freezeInvoiceDate');
+    }
+
+    // attach file on the invoice(int transaction_id)
+    public function addInvoiceAttachment($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        $file = request()->file('file');
+        $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+        $file->move('inv_attachments/'.$transaction->person->cust_id.'/', $name);
+        $transaction->invattachments()->create(['path' => "/inv_attachments/".$transaction->person->cust_id."/{$name}"]);
+    }
+
+    // remove attachment from the transaction invoice(int attachment_id)
+    public function removeAttachment($attachment_id)
+    {
+        $invattachment = Invattachment::findOrFail($attachment_id);
+        $filename = $invattachment->path;
+        $path = public_path();
+        if (!File::delete($path.$filename))
+        {
+            $invattachment->delete();
+            return redirect()->action('TransactionController@edit', $invattachment->transaction->id);
+        }else {
+            $invattachment->delete();
+            return redirect()->action('TransactionController@edit', $invattachment->transaction->id);
+        }
     }
 
     private function syncTransaction(Request $request)

@@ -161,7 +161,7 @@
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
-    <div class="col-md-4 col-xs-12">
+    <div class="col-md-5 col-xs-12">
         <div class="row">
             <div class="col-md-6 col-xs-6">
                 Total Amount:
@@ -179,7 +179,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-xs-12 text-right">
+    <div class="col-md-3 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>
             <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">

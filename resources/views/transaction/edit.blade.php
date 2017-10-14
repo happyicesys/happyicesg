@@ -225,6 +225,66 @@
             </div>
             @endif
     </div>
+
+    <div class="panel-footer">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Printable Attachment(s)
+            </div>
+            <div class="panel-body">
+                <table class="table table-list-search table-hover table-bordered">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-10 text-center">
+                            Image
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Action
+                        </th>
+                    </tr>
+
+                    <tbody>
+                        @unless(count($invattachments)>0)
+                            <td class="text-center" colspan="12">No Records Found</td>
+                        @else
+                            @foreach($invattachments as $index => $invattachment)
+                            <tr>
+                                <td class="col-md-1 text-center">
+                                    {{ $index + 1 }}
+                                </td>
+                                <td class="col-md-10">
+                                    <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="width:250; height:250;">
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endunless
+                    </tbody>
+                </table>
+
+                @if(count($invattachments) > 0)
+                    {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['TransactionController@removeAttachment', $invattachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+                    {!! Form::close() !!}
+                @endif
+
+
+                {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
+{{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
+                    {{csrf_field()}}
+                    <input type="file" name="img_file[]" multiple>
+                    <button type="submit" class="pull-right btn btn-success">Upload</button>
+                </form> --}}
+                {!! Form::close() !!}
+                <label class="pull-right totalnum" for="totalnum">
+                    Total of {{count($invattachments)}} entries
+                </label>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 @stop
@@ -237,6 +297,22 @@
     }
     $('.select').select2({
         placeholder: 'Please Select'
+    });
+
+    $(document).ready(function() {
+        Dropzone.autoDiscover = false;
+        $('.dropzone').dropzone({
+            init: function()
+            {
+                this.on("complete", function()
+                {
+                  if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    location.reload();
+                  }
+                });
+            }
+
+        });
     });
 </script>
 @stop
