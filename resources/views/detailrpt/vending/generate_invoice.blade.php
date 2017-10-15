@@ -325,34 +325,34 @@
                     <td class="col-md-1 text-center">
                         @{{ transaction.begin_date | delDate: "yyyy-MM-dd"}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.begin_analog}}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ transaction.end_date | delDate: "yyyy-MM-dd"}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.end_analog}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.clocker_delta}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.clocker_adjustment}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.sales}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.profit_sharing | currency: "": 2}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_profit_sharing | currency: "": 2}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.utility_subsidy | currency: "": 2}}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_payout | currency: "": 2}}
                     </td>
                 </tr>

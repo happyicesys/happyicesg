@@ -63,6 +63,9 @@ class VendingController extends Controller
     // generate batch vending invoices by creating transactions
     public function batchGenerateVendingInvoice()
     {
+        // indicate the month and year
+        $this_month = Carbon::createFromFormat('m-Y', request('current_month'));
+
         $people = $this->getGenerateVendingInvoicePerson();
 
         $totals = $this->calVendingGenerateInvoiceIndex($people);
@@ -86,7 +89,7 @@ class VendingController extends Controller
                 $transaction->name = $person->name;
                 $transaction->status = 'Confirmed';
                 $transaction->pay_status = 'Owe';
-                $transaction->delivery_date = Carbon::today();
+                $transaction->delivery_date = $this_month->endOfMonth()->toDateString();
                 $transaction->order_date = Carbon::today();
                 $transaction->del_address = $person->del_address;
                 $transaction->updated_by = auth()->user()->name;
@@ -356,15 +359,17 @@ class VendingController extends Controller
         $deal_comm->amount = -$person->subtotal_profit_sharing;
         $deal_comm->save();
 
-        $deal_util = new Deal();
-        $deal_util->item_id = $utility_subsidy->id;
-        $deal_util->transaction_id = $transaction_id;
-        $deal_util->dividend = 1;
-        $deal_util->divisor = 1;
-        $deal_util->qty_status = 2;
-        $deal_util->unit_price = -$person->utility_subsidy;
-        $deal_util->amount = -$person->utility_subsidy;
-        $deal_util->save();
+        if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility != '') {
+            $deal_util = new Deal();
+            $deal_util->item_id = $utility_subsidy->id;
+            $deal_util->transaction_id = $transaction_id;
+            $deal_util->dividend = 1;
+            $deal_util->divisor = 1;
+            $deal_util->qty_status = 2;
+            $deal_util->unit_price = -$person->utility_subsidy;
+            $deal_util->amount = -$person->utility_subsidy;
+            $deal_util->save();
+        }
 
     }
 }

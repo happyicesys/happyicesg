@@ -226,6 +226,7 @@
             @endif
     </div>
 
+    @cannot('transaction_view')
     <div class="panel-footer">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -285,6 +286,7 @@
             </div>
         </div>
     </div>
+    @endcannot
 </div>
 </div>
 @stop

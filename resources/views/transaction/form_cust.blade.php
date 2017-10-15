@@ -267,20 +267,20 @@
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                    @if(auth()->user()->hasRole('admin'))
+                    @cannot('transaction_view')
                     <div class="col-md-8 col-sm-8 col-xs-8">
-                    @endif
+                    @endcannot
                         <div class="form-group">
                             {!! Form::label('analog_clock', 'Analog Clocker', ['class'=>'control-label']) !!}
                             {!! Form::text('analog_clock', null, ['class'=>'form-control']) !!}
                         </div>
-                    @if(auth()->user()->hasRole('admin'))
+                    @cannot('transaction_view')
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4" style="padding-top: 25px;">
                             {!! Form::checkbox('is_required_analog', $transaction->is_required_analog) !!}
                             <small>{!! Form::label('is_required_analog', 'Required', ['class'=>'control-label']) !!}</small>
                     </div>
-                    @endif
+                    @endcannot
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">

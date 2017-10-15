@@ -161,6 +161,12 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
+        // check profile is vending then analog required
+        if($transaction->person->is_vending) {
+            $transaction->is_required_analog = 1;
+            $transaction->save();
+        }
+
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
@@ -373,7 +379,13 @@ class TransactionController extends Controller
             }
         }
 
-        $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));
+        // analog required validate by roles
+        if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account')) {
+            $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));
+        }else {
+            $request->merge(array('is_required_analog' => $transaction->is_required_analog));
+        }
+
         $request->merge(array('person_id' => $request->input('person_copyid')));
         $request->merge(array('updated_by' => Auth::user()->name));
         $transaction->update($request->all());
