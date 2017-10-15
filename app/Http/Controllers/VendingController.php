@@ -39,10 +39,7 @@ class VendingController extends Controller
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
         $transactions = $this->getGenerateVendingInvoicePerson();
-
-        if(request('sortName')) {
-            $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
-        }
+        // dd($transactions->get());
 
         $totals = $this->calVendingGenerateInvoiceIndex($transactions);
 
@@ -266,7 +263,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)<'".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_end");
@@ -304,9 +301,15 @@ class VendingController extends Controller
 
         $transactions = $transactions
                         ->where('transactions.is_required_analog', 1)
-                        ->where('people.is_profit_sharing_report', 1)
-                        ->orderBy('people.cust_id')
-                        ->groupBy('people.id');
+                        ->where('people.is_profit_sharing_report', 1);
+
+        if(request('sortName')) {
+            $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $transactions = $transactions->orderBy('people.cust_id');
+        }
+
+        $transactions = $transactions->groupBy('people.id');
 
         return $transactions;
     }

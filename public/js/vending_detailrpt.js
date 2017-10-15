@@ -41,7 +41,8 @@ var app = angular.module('app', [
             });
         });
 
-        $scope.exportData = function () {
+        $scope.exportData = function (event) {
+            event.preventDefault();
             var blob = new Blob(["\ufeff", document.getElementById('exportable_generate_invoice').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
@@ -61,6 +62,7 @@ var app = angular.module('app', [
         };
 
         $scope.sortTable = function(sortName) {
+            console.log(sortName);
             $scope.search.sortName = sortName;
             $scope.search.sortBy = ! $scope.search.sortBy;
             getPage(1, false);

@@ -24,7 +24,7 @@ class AddCurrencyIdProfiles extends Migration
      */
     public function down()
     {
-        Schema::table('items', function($table) {
+        Schema::table('profiles', function($table) {
             $table->dropColumn('currency_id');
         });
     }
