@@ -212,7 +212,7 @@
                             Total
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{ total_amount | currency: "": 2}}</strong>
+                            <strong>@{{total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
                         </div>
                     </div>
 
@@ -367,10 +367,9 @@
                                     {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
-
-                                    <td class="col-md-1 text-center" ng-if="transaction.gst && transaction.is_gst_inclusive==0 && transaction.delivery_fee <= 0">@{{ (+(transaction.total * 7/100) + transaction.total * 1) | currency: ""}} </td>
-                                    <td class="col-md-1 text-center" ng-if="(!transaction.gst || (transaction.gst && transaction.is_gst_inclusive==1)) && transaction.delivery_fee <= 0">@{{ transaction.total | currency: "" }}</td>
-                                    <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">@{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}</td>
+                                    <td class="col-md-1 text-center">
+                                        @{{ transaction.total }}
+                                    </td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">

@@ -14,26 +14,25 @@
 
     <div class="panel-body">
         <div class="table-responsive">
-            <table class="table table-list-search table-hover table-bordered table-condensed">
-                <tr style="background-color: #DDFDF8">
-                    <th class="col-md-7 text-center">
-                        Item
-                    </th>
-                    <th class="col-md-1 text-center">
-                        Qty
-                    </th>
-                    <th class="col-md-2 text-center">
-                        Retail Price ($)
-                    </th>
-                    <th class="col-md-2 text-center">
-                        Quote Price ($)
-                    </th>
-                     <th class="col-md-2 text-center">
-                        Amount ($)
-                    </th>
-                </tr>
-
-                <tbody>
+            <div>
+                <table class="table table-list-search table-hover table-bordered table-condensed">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-7 text-center">
+                            Item
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Qty
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Retail Price ($)
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Quote Price ($)
+                        </th>
+                         <th class="col-md-2 text-center">
+                            Amount ($)
+                        </th>
+                    </tr>
 
                     @unless(count($prices)>0)
                     <td class="text-center" colspan="7">No Records Found</td>
@@ -92,9 +91,33 @@
                             </td>
                         </td>
                     </tr>
+                </table>
+            </div>
+{{--             <div class="hidden-lg hidden-md hidden-sm">
+                <table class="table table-list-search table-hover table-bordered table-condensed">
+                    <tr style="background-color: #DDFDF8">
+                        <th>Item</th>
+                    </tr>
+                    @foreach($prices as $index => $price)
+                    <tr class="txtMult form-group">
+                        <span class="row">
+                            <strong>({{$price->product_id}}) {{$price->name}}</strong>
+                            @if($price->remark)
+                                <br>
+                                {{$price->remark}}
+                            @endif
+                            <br>
+                            Qty:
+                            <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
+                            <br>
+                            Retail
+                            <input type="text" retail[{{$price->item_id}}]" value="{{$price->retail_price}}" class="text-right retailClass form-control" style="width: 80px" />
+                        </span>
 
-                </tbody>
-            </table>
+                    </tr>
+                    @endforeach
+                </table>
+            </div> --}}
         </div>
     </div>
 </div>

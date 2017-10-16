@@ -30,5 +30,17 @@ function repeatController($scope) {
     })
 }
 
+app.filter('delDate', [
+    '$filter', function($filter) {
+        return function(input, format) {
+            if(input) {
+                return $filter('date')(new Date(input), format);
+            }else {
+                return '';
+            }
+        };
+    }
+]);
+
 app.controller('transController', transController);
 app.controller('repeatController', repeatController);

@@ -1,6 +1,6 @@
 @inject('people', 'App\Person')
 
-<div class="col-md-12">
+<div class="col-md-12" ng-cloak>
     <div class="panel panel-success row">
         <div class="panel-heading">
             <div class="panel-title">
@@ -46,15 +46,6 @@
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }} @{{ deal.item_remark }}</td>
-{{--
-                            <td class="col-md-2 text-right" ng-if="deal.qty % 1 == 0 ">@{{ Math.round(deal.qty) }} @{{ deal.item.unit }}</td>
-                            <td class="col-md-2 text-right" ng-if="deal.qty % 1 != 0">@{{ deal.qty }} @{{ deal.item.unit}}</td> --}}
-{{--
-                            <td class="col-md-2 text-right" ng-if="!deal.divisor && deal.item.is_inventory">@{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.item.unit}}</td>
-                            <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor != 1 && deal.item.is_inventory">@{{deal.dividend}} / @{{deal.divisor}}</td>
-                            <td class="col-md-2 text-right" ng-if="deal.divisor && deal.divisor == 1 && deal.item.is_inventory">@{{deal.qty}}</td>
-                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend==1">1 Unit</td>
-                            <td class="col-md-2 text-left" ng-if="!deal.item.is_inventory && deal.dividend>1">@{{deal.dividend}} Unit</td> --}}
                             <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}">
                                 <span ng-if="!deal.divisor && deal.is_inventory === 1">
                                     @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
@@ -117,7 +108,7 @@
                             </td>
                         </tr>
 
-                        <tr ng-if="delivery>0">
+                        <tr ng-if="delivery">
                             <td colspan="3" class="text-right">
                                 <strong>Delivery Fee</strong>
                             </td>
@@ -141,7 +132,7 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST (7%)</strong>
+                                    <strong>GST ({{number_format($person->profile->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
@@ -169,7 +160,7 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST (7%)</strong>
+                                    <strong>GST ({{number_format($person->profile->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">

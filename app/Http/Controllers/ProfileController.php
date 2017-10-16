@@ -97,6 +97,15 @@ class ProfileController extends Controller
             Flash::error('GST tickbox is required for GST inclusive');
             return redirect()->action('ProfileController@edit', $profile->id);
         }
+
+        // validate is gst rate filled
+        if(request()->has('gst')) {
+            if(! request('gst_rate')) {
+                Flash::error('Please fill in the GST rate');
+                return redirect()->action('ProfileController@edit', $profile->id);
+            }
+        }
+
         $gst = request()->has('gst') ? 1 : 0;
         $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
         request()->merge(array('gst' => $gst));

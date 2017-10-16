@@ -34,7 +34,7 @@
             <div class="col-md-6 col-sm-6 col-xs-6">
                 <div class="form-group">
                     {!! Form::checkbox('gst', $profile->gst) !!}
-                    {!! Form::label('gst', 'GST (7%)', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
+                    {!! Form::label('gst', 'GST', ['class'=>'control-label', 'style'=>'padding-left:20px;']) !!}
                 </div>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6">

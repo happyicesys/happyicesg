@@ -142,7 +142,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
 
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -293,7 +293,7 @@ class ClientController extends Controller
             }else{
                 $sendto = ['daniel.ma@happyice.com.sg'];
             }
-            array_push($sendto, 'jiahaur91@hotmail.com');
+            array_push($sendto, 'jiahaur@happyice.com.sg');
             //create transaction
         }
 
@@ -335,7 +335,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -376,7 +376,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -417,7 +417,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -462,7 +462,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         $countries = Country::all();

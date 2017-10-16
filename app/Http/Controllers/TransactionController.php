@@ -68,9 +68,10 @@ class TransactionController extends Controller
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
-                                    'transactions.total', 'transactions.total_qty', 'transactions.pay_status',
+                                    'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                    'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive',
+                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                    'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive', 'profiles.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
 
@@ -254,22 +255,30 @@ class TransactionController extends Controller
                                 'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id',
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
                                 'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver','transactions.total', 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive'
+                                'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                                DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive', 'profiles.gst_rate'
                             )
                     ->where('deals.transaction_id', $transaction->id)
                     ->get();
 
         if($transaction->person->profile->gst and $transaction->person->profile->is_gst_inclusive) {
             $total = number_format($transaction->total, 2);
-            $tax = number_format($transaction->total - $transaction->total/1.07, 2);
+            $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->profile->gst_rate)/ 100), 2);
             $subtotal = number_format($transaction->total - $tax, 2);
         }else if($transaction->person->profile->gst and !$transaction->person->profile->is_gst_inclusive) {
             $subtotal = number_format($transaction->total, 2);
-            $tax = number_format($transaction->total * 7/100, 2);
+            $tax = number_format($transaction->total * ($transaction->person->profile->gst_rate)/100, 2);
             $total = number_format($transaction->total + $tax, 2);
         }else {
             $total = number_format($transaction->total, 2);
+        }
+
+        $delivery_fee = $transaction->delivery_fee;
+
+        if($delivery_fee) {
+            $total += number_format($delivery_fee, 2);
         }
 
         return $data = [
@@ -277,7 +286,8 @@ class TransactionController extends Controller
             'deals' => $deals,
             'subtotal' => $subtotal,
             'tax' => $tax,
-            'total' => $total
+            'total' => $total,
+            'delivery_fee' => $delivery_fee
         ];
 
     }
@@ -622,7 +632,26 @@ class TransactionController extends Controller
 
     public function showPersonTransac($person_id)
     {
-        return Transaction::with(['person', 'person.profile'])->wherePersonId($person_id)->latest()->take(5)->get();
+        $transactions = DB::table('transactions')
+                ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+                ->select(
+                            'people.cust_id', 'people.company',
+                            'people.name', 'people.id as person_id', 'transactions.del_postcode',
+                            'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                            'transactions.total_qty', 'transactions.pay_status',
+                            'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                            DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                            'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive', 'profiles.gst_rate',
+                             'custcategories.name as custcategory'
+                        )
+                ->where('people.id', $person_id)
+                ->orderBy('transactions.created_at', 'desc')
+                ->take(5)
+                ->get();
+        return $transactions;
+        // Transaction::with(['person', 'person.profile'])->wherePersonId($person_id)->latest()->take(5)->get();
     }
 
     // undo the cancelled transaction
@@ -1279,17 +1308,17 @@ class TransactionController extends Controller
         $query2 = clone $query;
         $query3 = clone $query;
 
-        $nonGst_amount = $query1->whereHas('person.profile', function($query1){
+        $nonGst_amount = $query1->with('person.profile')->whereHas('person.profile', function($query1){
                             $query1->where('gst', 0);
                         })->sum(DB::raw('ROUND(total, 2)'));
 
-        $gst_exclusive = $query2->whereHas('person.profile', function($query2){
-                        $query2->where('gst', 1)->where('is_gst_inclusive', 0);
-                    })->sum(DB::raw('ROUND((total * 107/100), 2)'));
+        $gst_exclusive = $query2->with('person.profile')->whereHas('person.profile', function($query2){
+                            $query2->where('gst', 1)->where('is_gst_inclusive', 0);
+                        })->sum(DB::raw('ROUND((total * person.profile.gst_rate/100), 2)'));
 
-        $gst_inclusive = $query3->whereHas('person.profile', function($query3){
-                        $query3->where('gst', 1)->where('is_gst_inclusive', 1);
-                    })->sum(DB::raw('ROUND(total, 2)'));
+        $gst_inclusive = $query3->with('person.profile')->whereHas('person.profile', function($query3){
+                            $query3->where('gst', 1)->where('is_gst_inclusive', 1);
+                        })->sum(DB::raw('ROUND(total, 2)'));
 
         $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
         return $total_amount;
@@ -1307,7 +1336,7 @@ class TransactionController extends Controller
         $query3= clone $query;
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_exclusive = $query2->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $gst_exclusive = $query2->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + profiles.gst_rate)/100), 2)'));
         $gst_inclusive = $query3->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
 
         $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
@@ -1328,6 +1357,9 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($transaction_id);
         if($transaction->person->is_vending === 1) {
+            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->latest()->first()->analog_clock;
+            $current_analog = (int)$request->analog_clock;
+
             $this->validate($request, [
                 'digital_clock' => 'integer',
                 'balance_coin' => 'numeric'
@@ -1335,13 +1367,22 @@ class TransactionController extends Controller
                 'digital_clock.integer' => 'Digital clock must be in integer',
                 'balance_coin.numeric' => 'Balance coin must be in numbers'
             ]);
-            if($request->has('is_required_analog')) {
+
+            // if($request->has('is_required_analog') and $transaction->total > 0) {
+            if($request->has('is_required_analog') and $transaction->total > 0) {
                 $this->validate($request, [
                     'analog_clock' => 'required|integer',
                 ], [
                     'analog_clock.required' => 'Please fill in the analog clock',
                     'analag_clock.integer' => 'Analog clock must be in integer',
                 ]);
+/*
+                if($current_analog < $prev_analog) {
+
+                    Flash::error('Analog Clock value must be bigger than previous invoice');
+
+                    return redirect()->action('TransactionController@edit', $transaction->id);
+                }*/
             }
         }
     }

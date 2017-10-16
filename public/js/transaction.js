@@ -58,7 +58,7 @@ var app = angular.module('app', [
             });
 
             $http.get('/api/transaction/edit/' + $trans_id.val()).success(function(data) {
-                $scope.delivery = data.transaction.delivery_fee;
+                $scope.delivery = data.delivery_fee;
                 $scope.deals = data.deals;
                 $scope.totalModel = data.total;
                 $scope.subtotalModel = data.subtotal;
