@@ -38,16 +38,21 @@
                     @else
                     @foreach($prices as $price)
                     <tr class="txtMult form-group">
-                        <td class="col-md-7">
-                            {{$price->item->product_id}} - {{$price->item->name}} - {{$price->item->remark}}
+                        <td class="col-md-5 col-xs-4 hidden-xs">
+                                <strong>{{$price->item->product_id}}</strong></span>
+                                - {{$price->item->name}}
+                                <small>{{$price->item->remark}}</small>
+                        </td>
+                        <td class="col-md-5 col-xs-4 hidden-lg hidden-md hidden-sm">
+                                <strong>{{$price->item->product_id}}</strong><br>
+                                {{$price->item->name}}<br>
+                                <small>{{$price->item->remark}}</small>
                         </td>
                         <td class="col-md-1 text-right">
-                            {{-- original with delviery date less than 24 hours disable form --}}
-                            {{-- @if($transaction->status === 'Pending' or ($transaction->person->cust_id[0] === 'D' and $people::where('user_id', Auth::user()->id)->first() ? $people::where('user_id', Auth::user()->id)->first()->cust_type !== 'AB' : true and $transaction->status === 'Confirmed' and \Carbon\Carbon::today() > \Carbon\Carbon::parse($transaction->delivery_date)->subDay()) or $transaction->status === 'Draft' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H') --}}
                             @if($transaction->status === 'Draft' or $transaction->status === 'Pending' or $transaction->status === 'Confirmed' or Auth::user()->hasRole('admin') or $transaction->person->cust_id[0] === 'H')
-                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" />
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass form-control" style="min-width: 70px"/>
                             @else
-                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                <input type="text" name="qty[{{$price->item->id}}]" class="qtyClass form-control" style="min-width: 70px" readonly="readonly" />
                             @endif
                         </td>
                         <td class="col-md-2">
@@ -67,7 +72,7 @@
                         </td>
                         <td class="col-md-2">
                             <input type="text" name="amount[{{$price->item->id}}]"
-                            class="text-right form-control amountClass" readonly="readonly" />
+                            class="text-right form-control amountClass" style="min-width: 100px;" readonly="readonly" />
                         </td>
                     </tr>
                     @endforeach

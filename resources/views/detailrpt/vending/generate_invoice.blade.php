@@ -20,11 +20,11 @@
         </div>
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
-                {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('current_month', 'Month', ['class'=>'control-label search-title']) !!}
                 <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
                     <option value="">All</option>
                     @foreach($month_options as $key => $value)
-                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
+                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->subMonth()->month.'-'.Carbon\Carbon::today()->subMonth()->year ? 'selected' : ''}}">{{$value}}</option>
                     @endforeach
                 </select>
             </div>

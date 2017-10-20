@@ -333,49 +333,33 @@ class RptController extends Controller
     public function getVerifyPaid(Request $request, $id = null)
     {
         $checkboxes = $request->checkbox;
-
         $pay_methods = $request->pay_method;
-
         $notes = $request->note;
 
         if($checkboxes){
-
             foreach($checkboxes as $index => $checkbox){
-
                 $transaction = Transaction::findOrFail($index);
 
                 if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe'){
-
                     if($transaction->pay_status === 'Owe'){
-
                         $transaction->status = 'Verified Owe';
-
                         $transaction->updated_by = Auth::user()->name;
-
                         $transaction->save();
-
                     }else if($transaction->pay_status === 'Paid'){
-
                         $transaction->status = 'Verified Paid';
-
                         if(isset($pay_methods)){
-
                             if(array_key_exists($index, $pay_methods)){
-
                                 $transaction->pay_method = $pay_methods[$index];
                             }
                         }
 
                         if(isset($pay_methods)){
-
                             if(array_key_exists($index, $notes)){
-
                                 $transaction->note = $notes[$index];
                             }
                         }
 
                         $transaction->updated_by = Auth::user()->name;
-
                         $transaction->save();
                     }
                 }
@@ -399,7 +383,7 @@ class RptController extends Controller
             $person_gst_inclusive = $profile->is_gst_inclusive;
 
             if($person_gst == 1 and $person_gst_inclusive == 0) {
-                $total_amount += round(($transaction->total * 107/100), 2);
+                $total_amount += round(($transaction->total * (100+$proifle->gst_rate)/100), 2);
             }else {
                 $total_amount += $transaction->total;
             }
@@ -420,7 +404,7 @@ class RptController extends Controller
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND((transactions.total), 2)'));
         $gst_inclusive = $query2->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 1)->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_exclusive = $query3->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->sum(DB::raw('ROUND((transactions.total * 107/100), 2)'));
+        $gst_exclusive = $query3->where('profiles.gst', 1)->where('profiles.is_gst_inclusive', 0)->sum(DB::raw('ROUND((transactions.total * (100+profiles.gst_rate)/100), 2)'));
         $total_amount = $nonGst_amount + $gst_inclusive + $gst_exclusive;
         return $total_amount;
     }
@@ -475,7 +459,7 @@ class RptController extends Controller
             $query = $this->filterUserDbProfile($query);
 
             $query = $this->extraField($request, $query);
-            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
+            $query = $query->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'profiles.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
 
         $query1 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -495,7 +479,7 @@ class RptController extends Controller
             $query1 = $this->filterUserDbProfile($query1);
 
             $query1 = $this->extraField($request, $query1);
-            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'profiles.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
 
         $query2 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -516,7 +500,7 @@ class RptController extends Controller
 
             $query2 = $this->extraField($request, $query2);
             $query2 = $this->filterUserDbProfile($query2);
-            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'profiles.is_gst_inclusive', 'profiles.gst_rate');
 
             $query2 = $query2
                 ->union($query)->union($query1)
@@ -618,14 +602,14 @@ class RptController extends Controller
     {
         $total = 0;
         foreach($transactions as $transaction){
-            $person_gst = Person::findOrFail($transaction->person_id)->profile->gst;
+            $profile = Person::findOrFail($transaction->person_id)->profile;
             if($con === 'cash'){
                 if($transaction->pay_method == 'cash'){
-                    $total += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                    $total += $profile->gst == '1' ? round(($transaction->total * (100+$profile->gst_rate)/100), 2) : $transaction->total;
                 }
             }else if($con === 'cheque'){
                 if($transaction->pay_method == 'cheque'){
-                    $total += $person_gst == '1' ? round(($transaction->total * 107/100), 2) : $transaction->total;
+                    $total += $profile->gst == '1' ? round(($transaction->total * (100+$profile->gst_rate)/100), 2) : $transaction->total;
                 }
             }
         }

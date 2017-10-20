@@ -358,17 +358,19 @@ class VendingController extends Controller
         $deal_comm->dividend = $person->sales;
         $deal_comm->divisor = 1;
         $deal_comm->qty_status = 2;
+        $deal_comm->qty = 0;
         $deal_comm->unit_price = -$person->profit_sharing;
         $deal_comm->amount = -$person->subtotal_profit_sharing;
         $deal_comm->save();
 
-        if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility != '') {
+        if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility_subsidy != '') {
             $deal_util = new Deal();
             $deal_util->item_id = $utility_subsidy->id;
             $deal_util->transaction_id = $transaction_id;
             $deal_util->dividend = 1;
             $deal_util->divisor = 1;
             $deal_util->qty_status = 2;
+            $deal_util->qty_status = 0;
             $deal_util->unit_price = -$person->utility_subsidy;
             $deal_util->amount = -$person->utility_subsidy;
             $deal_util->save();

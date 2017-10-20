@@ -13,23 +13,23 @@
     </div>
 
     <div class="panel-body">
-        <div class="table-responsive">
-            <div>
+        <div>
+            <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered table-condensed">
-                    <tr style="background-color: #DDFDF8">
-                        <th class="col-md-7 text-center">
+                    <tr style="background-color: #DDFDF8;">
+                        <th class="text-center">
                             Item
                         </th>
-                        <th class="col-md-1 text-center">
+                        <th class="text-center">
                             Qty
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="text-center">
                             Retail Price ($)
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="text-center">
                             Quote Price ($)
                         </th>
-                         <th class="col-md-2 text-center">
+                         <th class="text-center">
                             Amount ($)
                         </th>
                     </tr>
@@ -38,29 +38,36 @@
                     <td class="text-center" colspan="7">No Records Found</td>
                     @else
                     @foreach($prices as $price)
-                    <tr class="txtMult form-group">
-                        <td class="col-md-7">
-                            {{$price->product_id}} - {{$price->name}} - {{$price->remark}}
+                    <tr class="txtMult">
+                        <td class="col-md-5 col-xs-4 hidden-xs">
+                                <strong>{{$price->product_id}}</strong></span>
+                                - {{$price->name}}
+                                <small>{{$price->remark}}</small>
                         </td>
-                        <td class="col-md-1 text-right">
+                        <td class="col-md-5 col-xs-4 hidden-lg hidden-md hidden-sm">
+                                <strong>{{$price->product_id}}</strong><br>
+                                {{$price->name}}<br>
+                                <small>{{$price->remark}}</small>
+                        </td>
+                        <td class="col-md-1 col-xs-2">
                             @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" />
+                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control"/>
                             @else
                                 @can('transaction_view')
-                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px" readonly="readonly" />
+                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
                                 @else
-                                <input type="text" name="qty[{{$price->item_id}}]" class="qtyClass" style="width: 80px"/>
+                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control"/>
                                 @endcan
                             @endif
                         </td>
-                        <td class="col-md-1">
+                        <td class="col-md-2 col-xs-2">
                             <strong>
                             <input type="text" name="retail[{{$price->item_id}}]"
                              value="{{$price->retail_price}}"
                             class="text-right retailClass form-control" readonly="readonly"/>
                             </strong>
                         </td>
-                        <td class="col-md-1">
+                        <td class="col-md-2 col-xs-2">
                             <strong>
                             @if($transaction->status == 'Cancelled')
                                 <input type="text" name="quote[{{$price->item_id}}]"
@@ -74,15 +81,15 @@
                             </strong>
                             {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                         </td>
-                        <td class="col-md-2">
+                        <td class="col-md-2 col-xs-2">
                             <input type="text" name="amount[{{$price->item_id}}]"
-                            class="text-right form-control amountClass" readonly="readonly" style="width: 140px" />
+                            class="text-right form-control amountClass" style="min-width: 100px;" readonly="readonly"/>
                         </td>
                     </tr>
                     @endforeach
                     @endunless
                     <tr>
-                        <td class="col-md-1 text-center"><strong>Total</strong></td>
+                        <td class="col-md-1 col-xs-2 text-center"><strong>Total</strong></td>
                         <td colspan="3" class="col-md-3 text-right">
                             <td class="text-right" id="grandTotal" >
                                 <strong>

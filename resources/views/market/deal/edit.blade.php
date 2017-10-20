@@ -39,7 +39,7 @@ Deals
                         @include('market.deal.form_cust')
                     <div class="row">
                         <div class="col-md-12" style="padding-top:15px;">
-                            @include('transaction.form_dealtable')
+                            @include('market.deal.form_dealtable')
                         </div>
                     </div>
                     @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')

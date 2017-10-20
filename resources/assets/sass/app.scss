@@ -332,6 +332,11 @@ margin: 0px auto 15px;
     white-space: nowrap;
 }
 
+// table input
+table input.form-control {
+  width: 100%;
+}
+
 ._720kb-datepicker-calendar{
     margin-top:30px;
     z-index: 9999;

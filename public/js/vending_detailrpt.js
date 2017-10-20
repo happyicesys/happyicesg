@@ -19,7 +19,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.search = {
             profile_id: '',
-            current_month: moment().month()+1 + '-' + moment().year(),
+            current_month: moment().month() + '-' + moment().year(),
             cust_id: '',
             id_prefix: '',
             company: '',

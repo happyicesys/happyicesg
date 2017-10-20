@@ -72,7 +72,7 @@
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                 <div style="font-size:14px"><strong>Bill To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                <span class="col-xs-12"> {{$person->cust_id}}, {{$person->com_remark}}</span>
+                                <span class="col-xs-12"> {{$person->cust_id}}</span>
                                 <span class="col-xs-12">{{$person->company}}</span>
                                 <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
                                 {{-- <span class="col-xs-offset-1">{{$person->bill_postcode}}</span> --}}

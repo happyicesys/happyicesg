@@ -389,6 +389,16 @@ class TransactionController extends Controller
             }
         }
 
+        if($transaction->person->is_vending and request('analog_clock') > 0) {
+            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->latest()->first()->analog_clock;
+            $current_analog = (int)request('analog_clock');
+
+            if($current_analog < $prev_analog) {
+                Flash::error('Analog Clock value must be equals or greater than previous invoice ('.$prev_analog.')');
+                return redirect()->action('TransactionController@edit', $transaction->id);
+            }
+        }
+
         // analog required validate by roles
         if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account')) {
             $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));
@@ -1357,9 +1367,6 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($transaction_id);
         if($transaction->person->is_vending === 1) {
-            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->latest()->first()->analog_clock;
-            $current_analog = (int)$request->analog_clock;
-
             $this->validate($request, [
                 'digital_clock' => 'integer',
                 'balance_coin' => 'numeric'
@@ -1369,21 +1376,14 @@ class TransactionController extends Controller
             ]);
 
             // if($request->has('is_required_analog') and $transaction->total > 0) {
-            if($request->has('is_required_analog') and $transaction->total > 0) {
+/*            if($request->has('is_required_analog') and $current_analog > 0) {
                 $this->validate($request, [
                     'analog_clock' => 'required|integer',
                 ], [
                     'analog_clock.required' => 'Please fill in the analog clock',
                     'analag_clock.integer' => 'Analog clock must be in integer',
                 ]);
-/*
-                if($current_analog < $prev_analog) {
-
-                    Flash::error('Analog Clock value must be bigger than previous invoice');
-
-                    return redirect()->action('TransactionController@edit', $transaction->id);
-                }*/
-            }
+            }*/
         }
     }
 }
