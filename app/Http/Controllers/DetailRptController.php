@@ -15,15 +15,18 @@ use App\Deal;
 use Carbon\Carbon;
 use Auth;
 use DB;
-use App\HasProfileAccess;
 use PDF;
 use App\Profile;
 use Laracasts\Flash\Flash;
 use App\GeneralSetting;
 
+// traits
+use App\HasProfileAccess;
+use App\HasMonthOptions;
+
 class DetailRptController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasMonthOptions;
 
     // detect authed
     public function __construct()
@@ -2117,21 +2120,6 @@ class DetailRptController extends Controller
             'total_amount' => $total_amount,
             'total_qty' => $total_qty
         ];
-    }
-
-    // generate month options for a past year from this month()
-    private function getMonthOptions()
-    {
-        // past year till now months option
-        $month_options = array();
-        $oneyear_ago = Carbon::today()->subYears(3);
-        $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
-        $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
-        for($i=1; $i<=$diffmonths; $i++) {
-            $oneyear_ago = $oneyear_ago->addMonth();
-            $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
-        }
-        return $month_options;
     }
 
     // export excel for account pay summary (Collection $data)

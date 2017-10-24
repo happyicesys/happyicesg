@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">{{ $APP_NAME }}</a>
+            <a class="navbar-brand" href="/">{{ config('app.name', 'Happyice') }}</a>
             @if(! auth()->guest())
                 <a href="/transaction/create" class="btn btn-success btn-sm" style="margin: 10px 0px 0px 10px;">
                     <i class="fa fa-plus"></i>
@@ -67,6 +67,7 @@
                         <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                         <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
+                        {{-- <li class="text-left"><a href="/detailrpt/operation"> Operation Worksheet</a></li> --}}
                     </ul>
                 </li>
                 @endcannot
