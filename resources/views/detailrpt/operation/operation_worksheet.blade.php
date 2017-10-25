@@ -1,5 +1,4 @@
-<div ng-controller="generateInvoiceController">
-{!! Form::open(['id'=>'submit_generate', 'method'=>'POST', 'action'=>['VendingController@batchGenerateVendingInvoice'], 'onsubmit'=>'return verifySubmit()']) !!}
+<div ng-controller="operationWorksheetController">
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-6">
@@ -16,17 +15,6 @@
                     'ng-change'=>'searchDB()'
                     ])
                 !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('current_month', 'Month', ['class'=>'control-label search-title']) !!}
-                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
-                    <option value="">All</option>
-                    @foreach($month_options as $key => $value)
-                        <option value="{{$key}}" selected="{{Carbon\Carbon::today()->subMonth()->month.'-'.Carbon\Carbon::today()->subMonth()->year ? 'selected' : ''}}">{{$value}}</option>
-                    @endforeach
-                </select>
             </div>
         </div>
         <div class="col-md-4 col-sm-6 col-xs-12">
@@ -368,7 +356,6 @@
               <dir-pagination-controls max-size="5" pagination-id="generate_invoice" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
-    {!! Form::close() !!}
 </div>
 
 <script>

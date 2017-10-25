@@ -389,7 +389,7 @@ class TransactionController extends Controller
             }
         }
 
-        if($transaction->person->is_vending and request('analog_clock') > 0) {
+        if($transaction->person->is_vending and request('analog_clock') > 0 and $transaction->is_required_analog) {
             $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->latest()->first()->analog_clock;
             $current_analog = (int)request('analog_clock');
 

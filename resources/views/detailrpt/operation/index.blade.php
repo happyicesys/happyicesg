@@ -10,7 +10,7 @@
 
     <div ng-app="app">
         <div class="row">
-            <a class="title_hyper pull-left" href="/detailrpt/vending"><h1>Vending - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+            <a class="title_hyper pull-left" href="/detailrpt/operation"><h1>Operation Worksheet - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
         </div>
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
@@ -21,5 +21,5 @@
             </div>
         </div>
     </div>
-    <script src="/js/operation_detailrpt.js"></script>
+    <script src="/js/operation_worksheet.js"></script>
 @stop
