@@ -14,7 +14,7 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     });
 });*/
 
-Route::get('/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
+Route::match(['get', 'post'], '/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');

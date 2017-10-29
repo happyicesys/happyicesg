@@ -390,7 +390,7 @@ class TransactionController extends Controller
         }
 
         if($transaction->person->is_vending and request('analog_clock') > 0 and $transaction->is_required_analog) {
-            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->latest()->first()->analog_clock;
+            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
             $current_analog = (int)request('analog_clock');
 
             if($current_analog < $prev_analog) {
@@ -453,12 +453,14 @@ class TransactionController extends Controller
             $transaction = Transaction::findOrFail($id);
             $transaction->cancel_trace = $transaction->status;
             $transaction->status = 'Cancelled';
+            $transaction->updated_by = auth()->user()->name;
             $transaction->save();
 
             if($transaction->dtdtransaction_id){
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
                 $dtdtransaction->cancel_trace = $dtdtransaction->status;
                 $dtdtransaction->status = 'Cancelled';
+                $dtdtransaction->updated_by = auth()->user()->name;
                 $dtdtransaction->save();
             }
 

@@ -143,9 +143,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-left">
-                        @if(Auth::user()->hasRole('admin'))
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                        @endif
+                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                     </div>
 
                     <div class="pull-right">
