@@ -40,7 +40,7 @@ class OperationWorksheetController extends Controller
         switch($previous) {
             case 'Last 7 days':
                 $earliest = clone $today;
-                $earliest = $earliest->$today->subDays(7);
+                $earliest = $earliest->subDays(7);
                 break;
             case 'Last 14 days':
                 $earliest = clone $today;
@@ -60,7 +60,7 @@ class OperationWorksheetController extends Controller
             default:
                 $latest = clone $today;
         }
-        dd($earliest, $latest, $today);
+
         $todayStr = clone $today;
         $todayStr = $todayStr->toDateString();
         $earliestStr = clone $today;
@@ -71,7 +71,7 @@ class OperationWorksheetController extends Controller
         $datesVar = [
             'today' => $todayStr,
             'earliest' => $earliestStr,
-            'latest' => $latestStr()
+            'latest' => $latestStr
         ];
         // dd($latest, $datesVar['latest']);
         $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
