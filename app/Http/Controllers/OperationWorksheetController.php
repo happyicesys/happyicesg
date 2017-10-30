@@ -29,43 +29,40 @@ class OperationWorksheetController extends Controller
         $earliest = '';
         $latest = '';
         if(request()->isMethod('get')) {
-            $today = Carbon::today();
+            $today = Carbon::today()->toDateString();
             request()->merge(array('previous' => 'Last 7 days'));
         }else {
-            $today = Carbon::parse(request('choosen_date'));
+            $today = request('choosen_date');
         }
 
         // get previous logic
         $previous = request('previous');
         switch($previous) {
             case 'Last 7 days':
-                $earliest = clone $today;
-                $earliest = $earliest->subDays(7);
+                $earliest = Carbon::parse($today)->subDays(7);
                 break;
             case 'Last 14 days':
-                $earliest = clone $today;
-                $earliest = $earliest->subDays(14);
+                $earliest = Carbon::parse($today)->subDays(14);
                 break;
             default:
-                $earliest = clone $today;
+                $earliest = Carbon::parse($today);
         }
 
         // get future logic
         $future = request('future');
         switch($future) {
             case '2 days' :
-                $latest = clone $today;
-                $latest = $latest->addDays(2);
+                $latest = Carbon::parse($today)->addDays(2);
                 break;
             default:
-                $latest = clone $today;
+                $latest = Carbon::parse($today);
         }
 
-        $todayStr = clone $today;
+        $todayStr = Carbon::parse($today);
         $todayStr = $todayStr->toDateString();
-        $earliestStr = clone $today;
+        $earliestStr = clone $earliest;
         $earliestStr = $earliestStr->toDateString();
-        $latestStr = clone $today;
+        $latestStr = clone $latest;
         $latestStr = $latestStr->toDateString();
 
         $datesVar = [
