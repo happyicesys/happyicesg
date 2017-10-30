@@ -254,6 +254,7 @@ class OperationWorksheetController extends Controller
         $custcategory = request('custcategory');
         $cust_id = request('cust_id');
         $company = request('company');
+        $color = request('color');
 
         if($profile_id) {
             $people = $people->where('id', $profile_id);
@@ -275,6 +276,12 @@ class OperationWorksheetController extends Controller
 
         if($company) {
             $people = $people->where('company', 'LIKE', '%'.$company.'%');
+        }
+
+        if($color) {
+            $people = $people->whereHas('operationdates', function($q) use ($color) {
+                $q->where('color', $color);
+            });
         }
 
         return $people;
