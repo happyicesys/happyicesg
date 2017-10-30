@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Transaction;
 use App\Person;
+use App\Operationdate;
 use App\Http\Requests;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 use Datetime;
 use DateInterval;
 use DatePeriod;
@@ -21,20 +23,20 @@ class OperationWorksheetController extends Controller
     }
 
     // return vending machine page()
-    public function getOperationWorksheetIndex(Request $request)
+    public function getOperationWorksheetIndex()
     {
         $dates = [];
         $earliest = '';
         $latest = '';
-        if($request->isMethod('get')) {
+        if(request()->isMethod('get')) {
             $today = Carbon::today();
-            $request->merge(['previous' => 'Last 7 days']);
+            request()->merge(['previous' => 'Last 7 days']);
         }else {
-            $today = Carbon::parse($request->choosen_date);
+            $today = Carbon::parse(request('choosen_date'));
         }
 
         // get previous logic
-        $previous = $request->previous;
+        $previous = request('previous');
         switch($previous) {
             case 'Last 7 days':
                 $earliest = (clone $today)->subDays(7);
@@ -47,10 +49,11 @@ class OperationWorksheetController extends Controller
         }
 
         // get future logic
-        $future = $request->future;
+        $future = request('future');
         switch($future) {
             case '2 days' :
                 $latest = (clone $today)->addDays(2);
+                break;
             default:
                 $latest = (clone $today);
         }
@@ -60,12 +63,18 @@ class OperationWorksheetController extends Controller
             'earliest' => (clone $earliest)->toDateString(),
             'latest' => (clone $latest)->toDateString()
         ];
-
+        // dd($latest, $datesVar['latest']);
         $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
 
         $transactions = Transaction::with(['person', 'person.profile']);
-        $transactions = $this->operationWorksheetFilter($request, $datesVar, $transactions);
-        $transactions = $transactions->get();
+        $transactions = $this->operationWorksheetFilter($datesVar, $transactions);
+        $transactions = $transactions
+                        ->whereHas('deals', function($q) {
+                            $q->whereHas('item', function($q) {
+                                $q->where('is_inventory', 1);
+                            });
+                        })
+                        ->get();
 
         $transactionsId = [];
         foreach($transactions as $transaction) {
@@ -73,33 +82,73 @@ class OperationWorksheetController extends Controller
         }
 
         $people = new Person;
-        $people = $this->peopleOperationWorksheetFilter($request, $people);
+        $people = $this->peopleOperationWorksheetFilter($people);
         $people = $people
                         ->whereHas('transactions', function($q) use ($datesVar) {
                             $q->whereDate('delivery_date', '>=', $datesVar['earliest']);
                             $q->whereDate('delivery_date', '<=', $datesVar['latest']);
+                            $q->whereHas('deals', function($q) {
+                                $q->whereHas('item', function($q) {
+                                    $q->where('is_inventory', 1);
+                                });
+                            });
                         })
                         ->orderBy('cust_id')
                         ->get();
-                        // dd($datesVar['earliest'], $datesVar['latest'], $customers->toArray());
-
-        // $allTransactions = $allTransactions->latest()->get();
 /*
-        $transactions = $transactions->orderBy('created_at', 'desc')->get();
-
-        foreach($transactions as $transaction) {
-            array_push($transactionsId, $transaction->id);
-            foreach($transaction->deals as $deal) {
-                array_push($itemsId, $deal->item_id);
-            }
-        }
-        $itemsId = array_unique($itemsId);
-        $person_id = $request->person_id ? Person::find($request->person_id)->id : null ;
-
-        if($request->export_excel) {
-            $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
+        if(request('export_excel')) {
+            $this->exportInvoiceBreakdownExcel($transactionsId, $itemsId, $person_id);
         }*/
-        return view('detailrpt.operation.index', compact('request', 'dates', 'transactionsId', 'people'));
+        return view('detailrpt.operation.index', compact('dates', 'transactionsId', 'people'));
+    }
+
+    // batch confirm operation worksheet()
+    public function batchConfirmOperationWorksheet()
+    {
+        $checkboxes = request('checkboxes');
+        $selectcolors = request('selectcolors');
+        $operation_notes = request('operation_notes');
+
+        if($checkboxes) {
+            foreach($checkboxes as $index => $checkbox) {
+                $person = Person::findOrFail($index);
+                $person->operation_note = $operation_notes[$index];
+                $person->save();
+
+                foreach($selectcolors as $index2 => $selectcolor) {
+                    $person_id = explode('=', $index2)[0];
+                    if($person_id == $index) {
+                        $year = explode('=', $index2)[1];
+                        $month = explode('=', $index2)[2];
+                        $day = explode('=', $index2)[3];
+                        $date = $year.'-'.$month.'-'.$day;
+
+                        $prevopdate = Operationdate::where('person_id', $index)->whereDate('delivery_date', '=', $date)->first();
+
+                        if($prevopdate) {
+                            if($prevopdate->color != $selectcolor) {
+
+                                if($selectcolor == '') {
+                                    $prevopdate->delete();
+                                }else {
+                                    $prevopdate->color = $selectcolor;
+                                    $prevopdate->save();
+                                }
+                            }
+                        }else if(!$prevopdate and $selectcolor != '') {
+                            $operationdate = new Operationdate;
+                            $operationdate->person_id = $index;
+                            $operationdate->delivery_date = $date;
+                            $operationdate->color = $selectcolor;
+                            $operationdate->save();
+                        }
+                    }
+                }
+            }
+        }else {
+            Flash::error('Please select at least one checkbox');
+        }
+        return redirect()->action('OperationWorksheetController@getOperationWorksheetIndex');
     }
 
     // return each of the dates in array given start and end (String $startDate, String $endDate)
@@ -107,6 +156,7 @@ class OperationWorksheetController extends Controller
     {
         $begin = new DateTime($startDate);
 
+        $endDate = Carbon::parse($endDate)->addDay()->toDateString();
         $end = new DateTime($endDate);
 
         $interval = new DateInterval('P1D'); // 1 Day
@@ -120,22 +170,22 @@ class OperationWorksheetController extends Controller
         return $range;
     }
 
-    // filters for operation worksheet(Request $request, Array $datesVar, Collection $transactions)
-    private function operationWorksheetFilter($request, $datesVar, $transactions)
+    // filters for operation worksheet(Array $datesVar, Collection $transactions)
+    private function operationWorksheetFilter($datesVar, $transactions)
     {
-        $profile_id = $request->profile_id;
-        $id_prefix = $request->id_prefix;
-        $custcategory = $request->custcategory;
-        $cust_id = $request->cust_id;
-        $company = $request->company;
-        $status = $request->status;
+        $profile_id = request('profile_id');
+        $id_prefix = request('id_prefix');
+        $custcategory = request('custcategory');
+        $cust_id = request('cust_id');
+        $company = request('company');
+        $status = request('status');
         $today = $datesVar['today'];
         $earliest = $datesVar['earliest'];
         $latest = $datesVar['latest'];
 
 
         if($profile_id) {
-            $transactions = $transactions->whereHas('people', function($q) use ($profile_id) {
+            $transactions = $transactions->whereHas('person', function($q) use ($profile_id) {
                 $q->whereHas('profile', function($q) use ($profile_id) {
                     $q->where('id', $profile_id);
                 });
@@ -143,13 +193,13 @@ class OperationWorksheetController extends Controller
         }
 
         if($id_prefix) {
-            $transactions = $transactions->whereHas('people', function($q) use ($id_prefix) {
+            $transactions = $transactions->whereHas('person', function($q) use ($id_prefix) {
                 $q->where('cust_id', 'LIKE', $id_prefix.'%');
             });
         }
 
         if($custcategory) {
-            $transactions = $transactions->whereHas('people', function($q) use ($custcategory) {
+            $transactions = $transactions->whereHas('person', function($q) use ($custcategory) {
                 $q->whereHas('custcategory', function($q) use ($custcategory) {
                     $q->where('id', $custcategory);
                 });
@@ -157,13 +207,13 @@ class OperationWorksheetController extends Controller
         }
 
         if($cust_id) {
-            $transactions = $transactions->whereHas('people', function($q) use ($cust_id) {
+            $transactions = $transactions->whereHas('person', function($q) use ($cust_id) {
                 $q->where('cust_id', 'LIKE', '%'.$cust_id.'%');
             });
         }
 
         if($company) {
-            $transactions = $transactions->whereHas('people', function($q) use ($company) {
+            $transactions = $transactions->whereHas('person', function($q) use ($company) {
                 $q->where('company', 'LIKE', '%'.$company.'%');
             });
         }
@@ -189,14 +239,14 @@ class OperationWorksheetController extends Controller
         return $transactions;
     }
 
-    // filter customers search result (Request $request, Query $customers)
-    private function peopleOperationWorksheetFilter($request, $people)
+    // filter customers search result (Query $customers)
+    private function peopleOperationWorksheetFilter($people)
     {
-        $profile_id = $request->profile_id;
-        $id_prefix = $request->id_prefix;
-        $custcategory = $request->custcategory;
-        $cust_id = $request->cust_id;
-        $company = $request->company;
+        $profile_id = request('profile_id');
+        $id_prefix = request('id_prefix');
+        $custcategory = request('custcategory');
+        $cust_id = request('cust_id');
+        $company = request('company');
 
         if($profile_id) {
             $people = $people->where('id', $profile_id);

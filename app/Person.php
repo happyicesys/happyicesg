@@ -23,7 +23,7 @@ class Person extends Baum\Node
     protected $dontKeepRevisionOf = array(
         'cust_id', 'profile_id', 'salutation',
         'user_id', 'parent_name', 'parent_id',
-        'block', 'floor', 'unit'
+        'block', 'floor', 'unit', 'operation_note'
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
@@ -61,7 +61,7 @@ class Person extends Baum\Node
     'note', 'salutation', 'dob', 'cust_type', 'user_id', 'parent_name',
     'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
-    'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report'
+    'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note'
     ];
 
     protected $dates = ['deleted_at'];
