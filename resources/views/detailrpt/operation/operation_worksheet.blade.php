@@ -135,7 +135,7 @@
 </div>
 
     {!! Form::open(['id'=>'update', 'method'=>'POST', 'action'=>['OperationWorksheetController@batchConfirmOperationWorksheet']]) !!}
-    <div class="table-responsive" id="exportable_worksheet" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             <tr style="background-color: #DDFDF8">
