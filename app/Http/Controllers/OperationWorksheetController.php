@@ -61,10 +61,17 @@ class OperationWorksheetController extends Controller
                 $latest = clone $today;
         }
 
+        $todayStr = clone $today;
+        $todayStr = $todayStr->toDateString();
+        $earliestStr = clone $today;
+        $earliestStr = $earliestStr->toDateString();
+        $latestStr = clone $today;
+        $latestStr = $latestStr->toDateString();
+
         $datesVar = [
-            'today' => clone $today->toDateString(),
-            'earliest' => clone $earliest->toDateString(),
-            'latest' => clone $latest->toDateString()
+            'today' => $todayStr,
+            'earliest' => $earliestStr,
+            'latest' => $latestStr()
         ];
         // dd($latest, $datesVar['latest']);
         $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
