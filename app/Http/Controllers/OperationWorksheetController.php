@@ -30,7 +30,7 @@ class OperationWorksheetController extends Controller
         $latest = '';
         if(request()->isMethod('get')) {
             $today = Carbon::today();
-            request()->merge(['previous' => 'Last 7 days']);
+            request()->merge(array('previous' => 'Last 7 days'));
         }else {
             $today = Carbon::parse(request('choosen_date'));
         }
