@@ -60,7 +60,7 @@ class OperationWorksheetController extends Controller
             default:
                 $latest = clone $today;
         }
-
+        dd($earliest, $latest, $today);
         $todayStr = clone $today;
         $todayStr = $todayStr->toDateString();
         $earliestStr = clone $today;
