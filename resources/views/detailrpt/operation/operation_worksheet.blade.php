@@ -173,6 +173,7 @@
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         <button type="submit" class="btn btn-success" form="update" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Update Notes</button>
+        <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
     <div class="col-md-4 col-sm-4 col-xs-12 text-right">
