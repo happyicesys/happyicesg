@@ -13,9 +13,10 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     	dd($username ? : 'hello');
     });
 });*/
-
-Route::post('detail/operation/batchupdate', 'OperationWorksheetController@batchConfirmOperationWorksheet');
-Route::match(['get', 'post'], '/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
+Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');
+Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');
+Route::post('/detailrpt/operation/batchupdate', 'OperationWorksheetController@batchConfirmOperationWorksheet');
+Route::get('/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');

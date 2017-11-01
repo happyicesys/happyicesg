@@ -1,9 +1,4 @@
 <div ng-app="app" ng-controller="operationWorksheetController" ng-cloak>
-{!! Form::open([
-    'id'=>'search',
-    'method'=>'POST',
-    'action'=>['OperationWorksheetController@getOperationWorksheetIndex']
-]) !!}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-6">
@@ -13,33 +8,53 @@
                     $profiles::filterUserProfile()
                         ->pluck('name', 'id')
                         ->all(),
-                    request('profile_id') ? request('profile_id') : '',
-                    ['class'=>'select form-control'])
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.profile_id',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
-                <select class="select form-group" name="id_prefix">
-                    <option value="">All</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="G">G</option>
-                    <option value="H">H</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="V">V</option>
-                    <option value="W">W</option>
-                </select>
+                {!! Form::select('id_prefix',
+                    [
+                        '' => 'All',
+                        'C' => 'C',
+                        'D' => 'D',
+                        'E' => 'E',
+                        'F' => 'F',
+                        'G' => 'G',
+                        'S' => 'S',
+                        'R' => 'R',
+                        'H' => 'H',
+                        'V' => 'V',
+                        'W' => 'W',
+                    ],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.id_prefix',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
+                !!}
             </div>
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), request('custcategory') ? request('custcategory') : '', ['class'=>'select form-control'])
+                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.custcategory',
+                        'ng-change'=>'searchDB()'
+                    ])
                 !!}
             </div>
         </div>
@@ -48,14 +63,30 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('cust_id', request('cust_id') ? request('cust_id') : '', ['class'=>'form-control input-sm'])
+                {!! Form::text('cust_id',
+                    null,
+                    [
+                        'class'=>'form-control',
+                        'ng-model'=>'search.cust_id',
+                        'placeholder'=>'Cust ID',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('company', request('company') ? request('company') : '', ['class'=>'form-control input-sm'])
+                {!! Form::text('company',
+                    null,
+                    [
+                        'class'=>'form-control',
+                        'ng-model'=>'search.company',
+                        'placeholder'=>'ID Name',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
@@ -63,19 +94,17 @@
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
-                {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], request('status') ? request('status') : 'Delivered',
-                    ['class'=>'select form-control'])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('choosen_date', 'Today Date', ['class'=>'control-label search-title']) !!}
-                <div class="input-group date">
-                    {!! Form::text('choosen_date', request('choosen_date') ? request('choosen_date') : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'choosen_date']) !!}
-                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                </div>
+                {!! Form::label('chosen_date', 'Today Date', ['class'=>'control-label search-title']) !!}
+                <datepicker selector="form-control">
+                    <input
+                        type = "text"
+                        name="chosen_date"
+                        class = "form-control input-sm"
+                        placeholder = "Today Date"
+                        ng-model = "search.chosen_date"
+                        ng-change = "onChosenDateChanged(search.chosen_date)"
+                    />
+                </datepicker>
             </div>
         </div>
     </div>
@@ -83,24 +112,56 @@
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('previous', 'Previous', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('previous', ['Last 7 days'=>'Last 7 days', ''=>'Nil', 'Last 14 days'=>'Last 14 days'], request('previous') ? request('previous') : 'Last 7 days',
-                    ['class'=>'select form-control'])
+                {!! Form::select('previous',
+                    [
+                        'Last 7 days' => 'Last 7 days',
+                        '' => 'Nil',
+                        'Last 14 days' => 'Last 14 days',
+                    ],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.previous',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('future', 'Future', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('future', [''=>'Nil', '2 days'=>'2 days'], request('future') ? request('future') : 'Last 7 days',
-                    ['class'=>'select form-control'])
+                {!! Form::select('future',
+                    [
+                        '' => 'Nil',
+                        '2 days' => '2 days',
+                    ],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.future',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('color', 'Show Color', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('color', [''=>'All', 'Yellow'=>'Yellow', 'Red'=>'Red'], request('color') ? request('color') : '',
-                    ['class'=>'select form-control'])
+                {!! Form::select('color',
+                    [
+                        '' => 'All',
+                        'Yellow' => 'Yellow',
+                        'Red' => 'Red',
+                    ],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.color',
+                        'ng-change'=>'searchDB()',
+                        'ng-model-options'=>'{ debounce: 500 }'
+                    ])
                 !!}
             </div>
         </div>
@@ -110,34 +171,30 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <button type="submit" class="btn btn-default" form="search"><i class="fa fa-search"></i><span class="hidden-xs"></span> Search</button>
         <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-success" form="update" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Update</button>
+        <button type="submit" class="btn btn-success" form="update" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Update Notes</button>
     </div>
-{{--
-    <div class="col-md-4 col-sm-12 col-xs-12 text-right">
+
+    <div class="col-md-4 col-sm-4 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>
-            <select name="pageNum">
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="All">All</option>
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
             </select>
             <label for="display_num2" style="padding-right: 20px">per Page</label>
         </div>
         <div class="row">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing  of  entries</label>
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{people.length}} of @{{totalCount}} entries</label>
         </div>
-    </div> --}}
-        <div class="row pull-right">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing {{count($people)}} entries</label>
-        </div>
+    </div>
 </div>
 
     {!! Form::open(['id'=>'update', 'method'=>'POST', 'action'=>['OperationWorksheetController@batchConfirmOperationWorksheet']]) !!}
     <div class="table-responsive" id="exportable" style="padding-top: 20px;">
-        <table class="table table-list-search table-hover table-bordered">
-
+        <table class="table table-list-search table-bordered">
+            <thead>
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
                     <input type="checkbox" id="checkAll" />
@@ -146,139 +203,79 @@
                     #
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('del_postcode')">
                     Postcode
+                    <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('cust_id')">
                     Cust ID
+                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('company')">
                     ID Name
+                    <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('custcategory')">
                     Category
+                    <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
                     Note
                 </th>
-                @foreach($dates as $date)
-                <th class="col-md-1 text-center">
-                    {{$date}}
+                <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
+                    @{{date}}
+                    <br>
+                    @{{date | date : "EEEE"}}
                 </th>
-                @endforeach
             </tr>
-            @php
-                // dd($customers->toArray());
-            @endphp
+            </thead>
 
             <tbody>
-                @foreach($people as $index => $person)
-                <tr>
-                    <td class="col-md-1 text-center" rowspan="2">
-                        {!! Form::checkbox('checkboxes['.$person->id.']') !!}
+                <tr dir-paginate="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
+                        {!! Form::checkbox('checkboxes[@{{person.person_id}}]') !!}
                     </td>
-                    <td class="col-md-1 text-center" rowspan="2">
-                        {{$index + 1}}
+                    <td class="col-md-1 text-center">
+                        @{{$index + indexFrom}}
                     </td>
-                    <td class="col-md-1 text-center" rowspan="2">
-                        {{$person->del_postcode}}
+                    <td class="col-md-1 text-center">
+                        @{{person.del_postcode}}
                     </td>
-                    <td class="col-md-1 text-center" rowspan="2">
-                        {{$person->cust_id}}
+                    <td class="col-md-1 text-center">
+                        @{{person.cust_id}}
                     </td>
-                    <td class="col-md-1 text-left" rowspan="2">
-                        <a href="/person/{{ $person->id }}">
-                            {{ $person->cust_id[0] == 'D' || $person->cust_id[0] == 'H' ? $person->name : $person->company }}
+                    <td class="col-md-1 text-left">
+                        <a href="/person/@{{ person.person_id }}">
+                            @{{ person.cust_id[0] == 'D' || person.cust_id[0] == 'H' ? person.name : person.company }}
                         </a>
                     </td>
-                    <td class="col-md-1 text-center" rowspan="2">
-                        {{ $person->custcategory->name }}
+                    <td class="col-md-1 text-center">
+                        @{{ person.custcategory }}
                     </td>
-                    <td class="col-md-2" rowspan="2">
-                        {!! Form::textarea('operation_notes['.$person->id.']', $person->operation_note, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 150px; align-content: left;']) !!}
+                    <td class="col-md-2">
+                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'2', 'style'=>'min-width: 150px; align-content: left;', 'ng-model'=>'person.operation_note']) !!}
                     </td>
-                    @foreach($dates as $date)
-                        <td class="text-center
-                            {{
-                                \DB::table('operationdates')
-                                    ->where('person_id', $person->id)
-                                    ->whereDate('delivery_date', '=', $date)
-                                    ->first()
-                                ?
-                                \DB::table('operationdates')
-                                    ->where('person_id', $person->id)
-                                    ->whereDate('delivery_date', '=', $date)
-                                    ->first()
-                                    ->color
-                                :
-                                ''
-                            }}
-                        " style="border-bottom: none">
-                            &nbsp;
-                                {{
-                                    \DB::table('deals')
-                                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                                        ->whereIn('transaction_id', $transactionsId)
-                                        ->where('transactions.person_id', $person->id)
-                                        ->where('transactions.delivery_date', $date)
-                                        ->sum('deals.qty')
-                                }}
-                        </td>
-                    @endforeach
+                    <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata.id, $parent.$index, $index)" ng-style="{'background-color': alldata.color}">
+                        &nbsp;@{{alldata.qty}}
+                    </td>
                 </tr>
-                <tr>
-                    @foreach($dates as $date)
-                        <td class="text-center
-                            {{
-                                \DB::table('operationdates')
-                                    ->where('person_id', $person->id)
-                                    ->whereDate('delivery_date', '=', $date)
-                                    ->first()
-                                ?
-                                \DB::table('operationdates')
-                                    ->where('person_id', $person->id)
-                                    ->whereDate('delivery_date', '=', $date)
-                                    ->first()
-                                    ->color
-                                :
-                                ''
-                            }}"
-                        style="border-top: none">
-                            {!! Form::select('selectcolors['.$person->id.'='.str_replace('-', '=', $date).']',
-                                    [
-                                        '' => 'None',
-                                        'Yellow' => 'Yellow',
-                                        'Red' => 'Red'
-                                    ],
-                                    \DB::table('operationdates')
-                                        ->where('person_id', $person->id)
-                                        ->whereDate('delivery_date', '=', $date)
-                                        ->first()
 
-                                    ?
-                                    \DB::table('operationdates')
-                                        ->where('person_id', $person->id)
-                                        ->whereDate('delivery_date', '=', $date)
-                                        ->first()
-                                        ->color
-                                    :
-                                    ''
-                                    ,
-                                    ['class'=>'select form-control'])
-                            !!}
-                        </td>
-                    @endforeach
-                </tr>
-                @endforeach
-
-                @if(!count($people) > 0)
-                <tr>
+                <tr ng-if="!people.length > 0">
                     <td colspan="18" class="text-center">No Records Found</td>
                 </tr>
-                @endif
-
             </tbody>
-
         </table>
+
+        <div>
+              <dir-pagination-controls max-size="5" pagination-id="operation_worksheet" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+        </div>
     </div>
     {!! Form::close() !!}
 </div>
