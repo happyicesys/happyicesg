@@ -67,7 +67,9 @@
                         <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                         <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
-                        <li class="text-left"><a href="/detailrpt/operation"> Operation Worksheet</a></li>
+                        @if(auth()->user()->hasRole('admin'))
+                            <li class="text-left"><a href="/detailrpt/operation"> Operation Worksheet</a></li>
+                        @endif
                     </ul>
                 </li>
                 @endcannot

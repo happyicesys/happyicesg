@@ -162,6 +162,7 @@ class VendingController extends Controller
     	$company = request('company');
     	$custcategory = request('custcategory');
     	$status = request('status');
+        $is_profit_sharing_report = request('is_profit_sharing_report');
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -196,6 +197,17 @@ class VendingController extends Controller
                 });
             }else {
                 $transactions = $transactions->where('transactions.status', $status);
+            }
+        }
+
+        if($is_profit_sharing_report != 'All') {
+            switch($is_profit_sharing_report) {
+                case 1:
+                    $transactions = $transactions->where('is_profit_sharing_report', 1);
+                    break;
+                case 0:
+                    $transactions = $transactions->where('is_profit_sharing_report', 0);
+                    break;
             }
         }
 
@@ -282,7 +294,8 @@ class VendingController extends Controller
                                     'people.vending_profit_sharing AS profit_sharing',
                                     DB::raw('(FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) AS subtotal_profit_sharing'),
                                     'people.vending_monthly_utilities AS utility_subsidy',
-                                    DB::raw('((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) AS subtotal_payout')
+                                    DB::raw('((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) AS subtotal_payout'),
+                                    'people.vending_monthly_rental AS rental'
                                 );
 
         if(request('profile_id') or request('current_month') or request('cust_id') or request('id_prefix') or request('company') or $request('custcategory') or request('status')){
@@ -291,7 +304,8 @@ class VendingController extends Controller
 
         $transactions = $transactions
                         ->where('transactions.is_required_analog', 1)
-                        ->where('people.is_profit_sharing_report', 1);
+                        ->where('people.is_vending', 1);
+                        // ->where('people.is_profit_sharing_report', 1);
 
         if(request('sortName')) {
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');

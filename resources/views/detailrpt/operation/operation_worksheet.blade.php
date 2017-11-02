@@ -135,6 +135,7 @@
                     [
                         '' => 'Nil',
                         '2 days' => '2 days',
+                        '5 days' => '5 days',
                     ],
                     null,
                     [
@@ -167,12 +168,10 @@
         </div>
     </div>
 </div>
-{!! Form::close() !!}
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-success" form="update" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Update Notes</button>
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
@@ -192,14 +191,10 @@
     </div>
 </div>
 
-    {!! Form::open(['id'=>'update', 'method'=>'POST', 'action'=>['OperationWorksheetController@batchConfirmOperationWorksheet']]) !!}
     <div class="table-responsive" id="exportable" style="padding-top: 20px;">
-        <table class="table table-list-search table-bordered">
-            <thead>
+        <table id="datatable" class="table table-list-search table-bordered">
+            <thead style="font-size: 12px;">
             <tr style="background-color: #DDFDF8">
-                <th class="col-md-1 text-center">
-                    <input type="checkbox" id="checkAll" />
-                </th>
                 <th class="col-md-1 text-center">
                     #
                 </th>
@@ -231,18 +226,15 @@
                     Note
                 </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
-                    @{{date}}
+                    @{{date | date : "yy-MM-dd"}}
                     <br>
-                    @{{date | date : "EEEE"}}
+                    @{{date | date : "EEE"}}
                 </th>
             </tr>
             </thead>
 
             <tbody>
                 <tr dir-paginate="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
-                    <td class="col-md-1 text-center">
-                        {!! Form::checkbox('checkboxes[@{{person.person_id}}]') !!}
-                    </td>
                     <td class="col-md-1 text-center">
                         @{{$index + indexFrom}}
                     </td>
@@ -261,7 +253,7 @@
                         @{{ person.custcategory }}
                     </td>
                     <td class="col-md-2">
-                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'2', 'style'=>'min-width: 150px; align-content: left;', 'ng-model'=>'person.operation_note']) !!}
+                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'2', 'style'=>'min-width: 150px; align-content: left;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                     </td>
                     <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata.id, $parent.$index, $index)" ng-style="{'background-color': alldata.color}">
                         &nbsp;@{{alldata.qty}}
@@ -278,19 +270,6 @@
               <dir-pagination-controls max-size="5" pagination-id="operation_worksheet" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
-    {!! Form::close() !!}
 </div>
 
 <script src="/js/operation_worksheet.js"></script>
-{{-- <script>
-    $('.select').select2();
-
-    $('.date').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-
-    $('#checkAll').change(function(){
-        var all = this;
-        $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
-    });
-</script> --}}

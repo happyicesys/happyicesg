@@ -114,6 +114,9 @@ class OperationWorksheetController extends Controller
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
+        // only active customers
+        $people = $people->where('active', 'Yes');
+
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
@@ -170,23 +173,13 @@ class OperationWorksheetController extends Controller
         ];
     }
 
-    // batch confirm note operation worksheet()
-    public function batchConfirmOperationWorksheet()
+    // batch confirm note operation worksheet(int person_id)
+    public function updateOperationNoteApi($person_id)
     {
-        $checkboxes = request('checkboxes');
-        $selectcolors = request('selectcolors');
-        $operation_notes = request('operation_notes');
-
-        if($checkboxes) {
-            foreach($checkboxes as $index => $checkbox) {
-                $person = Person::findOrFail($index);
-                $person->operation_note = $operation_notes[$index];
-                $person->save();
-            }
-        }else {
-            Flash::error('Please select at least one checkbox');
-        }
-        return redirect()->action('OperationWorksheetController@getOperationWorksheetIndex');
+        $operation_note = request('operation_note');
+        $person = Person::findOrFail($person_id);
+        $person->operation_note = $operation_note;
+        $person->save();
     }
 
     // change operation worksheet color()
@@ -440,8 +433,7 @@ class OperationWorksheetController extends Controller
                 $q->select('*')
                     ->from('operationdates')
                     ->whereRaw('operationdates.person_id = people.id')
-                    ->whereDate('operationdates.delivery_date', '>=', $datesvar['earliest'])
-                    ->whereDate('operationdates.delivery_date', '<=', $datesvar['latest'])
+                    ->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
                     ->where('operationdates.color', $color);
             });
         }

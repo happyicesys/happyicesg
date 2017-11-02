@@ -2,7 +2,7 @@
 {!! Form::open(['id'=>'submit_generate', 'method'=>'POST', 'action'=>['VendingController@batchGenerateVendingInvoice'], 'onsubmit'=>'return verifySubmit()']) !!}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
@@ -18,7 +18,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('current_month', 'Month', ['class'=>'control-label search-title']) !!}
                 <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
@@ -45,7 +45,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
                 <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
@@ -77,7 +77,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
@@ -91,13 +91,25 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.status',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_profit_sharing_report', 'Commission', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_profit_sharing_report', ['All'=>'All', '1'=>'Profit Sharing', '0'=>'Non Profit Sharing'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.is_profit_sharing_report',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}
@@ -275,6 +287,12 @@
                     <span ng-if="search.sortName == 'utility_subsidy' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'utility_subsidy' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <th class="col-md-1 text-center" ng-if="search.is_profit_sharing_report != 1">
+                    <a href="" ng-click="sortTable('rental')">
+                    Rental ($)
+                    <span ng-if="search.sortName == 'rental' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'rental' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('subtotal_payout')">
                     Total Payout ($)
@@ -302,26 +320,6 @@
                     <td class="col-md-1 text-center">
                         @{{ transaction.custcategory }}
                     </td>
-                    {{-- status by color --}}
-{{--                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
-                        @{{ transaction.status }}
-                    </td>
-                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
-                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
-                    </td> --}}
-                    {{-- status by color ended --}}
                     <td class="col-md-1 text-center">
                         @{{ transaction.begin_date | delDate: "yyyy-MM-dd"}}
                     </td>
@@ -351,6 +349,9 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.utility_subsidy | currency: "": 2}}
+                    </td>
+                    <td class="col-md-1 text-right" ng-if="search.is_profit_sharing_report != 1">
+                        @{{ transaction.rental | currency: "": 2}}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_payout | currency: "": 2}}

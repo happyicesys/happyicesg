@@ -28,7 +28,7 @@ var app = angular.module('app', [
             company: '',
             chosen_date: moment().format('YYYY-MM-DD'),
             previous: 'Last 7 days',
-            future: '',
+            future: '2 days',
             color: '',
             pageNum: 100,
             sortBy: true,
@@ -48,7 +48,7 @@ var app = angular.module('app', [
         $scope.exportData = function ($event) {
             $event.preventDefault();
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
-                type: "application/vnd.ms-excel;charset=charset=utf-8"
+                type: "application/vnd.ms-excel;charset=utf-8"
             });
             var now = Date.now();
             saveAs(blob, "Operation Worksheet"+ now + ".xls");
@@ -95,6 +95,11 @@ var app = angular.module('app', [
             if(date === moment().format('YYYY-MM-DD')) {
                 return 'Lightpurple';
             }
+        }
+
+        $scope.updateOpsNotes = function(person_id, operation_note) {
+            $http.post('/api/detailrpt/operation/note/' + person_id, {'operation_note': operation_note}).success(function(date) {
+            });
         }
 
         // retrieve page w/wo search

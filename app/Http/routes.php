@@ -15,7 +15,7 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
 });*/
 Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');
 Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');
-Route::post('/detailrpt/operation/batchupdate', 'OperationWorksheetController@batchConfirmOperationWorksheet');
+Route::post('/api/detailrpt/operation/note/{person_id}', 'OperationWorksheetController@updateOperationNoteApi');
 Route::get('/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
