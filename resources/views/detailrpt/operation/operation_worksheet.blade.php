@@ -1,4 +1,5 @@
 <div ng-app="app" ng-controller="operationWorksheetController" ng-cloak>
+{!! Form::open(['id'=>'export_excel', 'method'=>'POST', 'action'=>['OperationWorksheetController@exportOperationExcel']]) !!}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-6">
@@ -171,7 +172,8 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+        <button type="submit" class="btn btn-primary" form="export_excel" name="all" value="all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
+        <button type="submit" form="export_excel" class="btn btn-default" name="single" value="single"><i class="fa fa-file-excel-o"></i> Export Single Excel</button>
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
@@ -190,6 +192,7 @@
         </div>
     </div>
 </div>
+{!! Form::close() !!}
 
     <div class="table-responsive" id="exportable" style="padding-top: 20px;">
         <table id="datatable" class="table table-list-search table-bordered">

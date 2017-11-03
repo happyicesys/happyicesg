@@ -76,7 +76,7 @@
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('email', 'Email', ['class'=>'control-label']) !!}
-            {!! Form::email('email', null, ['class'=>'form-control']) !!}
+            {!! Form::textarea('email', null, ['class'=>'form-control', 'rows'=>'3']) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">

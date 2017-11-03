@@ -709,11 +709,18 @@ class TransactionController extends Controller
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
         $person = Person::findOrFail($transaction->person_id);
-        if(! $person->email){
+
+        $email = $person->email;
+
+        if(! $email){
             Flash::error('Please set the email before sending');
             return Redirect::action('TransactionController@edit', $id);
+        }else {
+            if(strpos($email, ';') !== FALSE) {
+                $email = explode(';', $email);
+            }
         }
-        $email = $person->email;
+
         $now = Carbon::now()->format('dmyhis');
         // $profile = Profile::firstOrFail();
         $data = [

@@ -10,6 +10,7 @@ use App\Operationdate;
 use App\Http\Requests;
 use Carbon\Carbon;
 use Laracasts\Flash\Flash;
+use Maatwebsite\Excel\Facades\Excel;
 use Datetime;
 use DateInterval;
 use DatePeriod;
@@ -32,7 +33,17 @@ class OperationWorksheetController extends Controller
     // get operation worksheet api()
     public function getOperationWorksheetIndexApi()
     {
-        $dataArr = $this->generateOperationWorksheetQuery();
+
+        $datesArr = $this->operationWorksheetDateFilter();
+
+        $datesVar = [
+            'today' => $datesArr['today'],
+            'earliest' => $datesArr['earliest'],
+            'latest' => $datesArr['latest']
+        ];
+
+        $dataArr = $this->generateOperationWorksheetQuery($datesVar);
+
         return [
             'people' => $dataArr['people'],
             'dates' => $dataArr['dates'],
@@ -89,6 +100,46 @@ class OperationWorksheetController extends Controller
         }
 
         return $operationdate;
+    }
+
+    // export excel for operation worksheet ()
+    public function exportOperationExcel()
+    {
+        // dd((bool)request('single'), (bool)request('all'));
+        if(request('single')) {
+            $today = request('chosen_date');
+
+            $datesVar = [
+                'today' => $today,
+                'earliest' => $today,
+                'latest' => $today
+            ];
+
+        } else if (request('all')) {
+            $datesArr = $this->operationWorksheetDateFilter();
+
+            $datesVar = [
+                'today' => $datesArr['today'],
+                'earliest' => $datesArr['earliest'],
+                'latest' => $datesArr['latest']
+            ];
+        }
+
+        $dataArr = $this->generateOperationWorksheetQuery($datesVar);
+
+        $people = $dataArr['people'];
+        $dates = $dataArr['dates'];
+        $alldata = $dataArr['alldata'];
+
+        $title = 'Operation Worksheet';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($people, $dates, $alldata) {
+            $excel->sheet('sheet1', function($sheet) use ($people, $dates, $alldata) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.operation.operation_worksheet_excel', compact('people', 'dates', 'alldata'));
+            });
+        })->download('xlsx');
     }
 
     // return each of the dates in array given start and end (String $startDate, String $endDate)
@@ -265,6 +316,57 @@ class OperationWorksheetController extends Controller
         return $people;
     }
 
+    // request form date filter original()
+    private function operationWorksheetDateFilter()
+    {
+
+        $dates = [];
+        $earliest = '';
+        $latest = '';
+        if(request()->isMethod('get')) {
+            $today = Carbon::today()->toDateString();
+            request()->merge(array('previous' => 'Last 7 days'));
+        }else {
+            $today = request('chosen_date');
+        }
+
+        // get previous logic
+        $previous = request('previous');
+        switch($previous) {
+            case 'Last 7 days':
+                $earliest = Carbon::parse($today)->subDays(7);
+                break;
+            case 'Last 14 days':
+                $earliest = Carbon::parse($today)->subDays(14);
+                break;
+            default:
+                $earliest = Carbon::parse($today);
+        }
+
+        // get future logic
+        $future = request('future');
+        switch($future) {
+            case '2 days' :
+                $latest = Carbon::parse($today)->addDays(2);
+                break;
+            default:
+                $latest = Carbon::parse($today);
+        }
+
+        $todayStr = Carbon::parse($today);
+        $todayStr = $todayStr->toDateString();
+        $earliestStr = clone $earliest;
+        $earliestStr = $earliestStr->toDateString();
+        $latestStr = clone $latest;
+        $latestStr = $latestStr->toDateString();
+
+        return [
+            'today' => $todayStr,
+            'earliest' => $earliestStr,
+            'latest' => $latestStr
+        ];
+    }
+
     // filter customers search result (Query $customers, array datesvar)
     private function peopleOperationWorksheetDBFilter($people, $datesvar)
     {
@@ -308,56 +410,10 @@ class OperationWorksheetController extends Controller
         return $people;
     }
 
-    // generate operation worksheet report()
-    private function generateOperationWorksheetQuery()
+    // generate operation worksheet report(Array $datesVar)
+    private function generateOperationWorksheetQuery($datesVar)
     {
-        $dates = [];
-        $earliest = '';
-        $latest = '';
-        if(request()->isMethod('get')) {
-            $today = Carbon::today()->toDateString();
-            request()->merge(array('previous' => 'Last 7 days'));
-        }else {
-            $today = request('chosen_date');
-        }
-
-        // get previous logic
-        $previous = request('previous');
-        switch($previous) {
-            case 'Last 7 days':
-                $earliest = Carbon::parse($today)->subDays(7);
-                break;
-            case 'Last 14 days':
-                $earliest = Carbon::parse($today)->subDays(14);
-                break;
-            default:
-                $earliest = Carbon::parse($today);
-        }
-
-        // get future logic
-        $future = request('future');
-        switch($future) {
-            case '2 days' :
-                $latest = Carbon::parse($today)->addDays(2);
-                break;
-            default:
-                $latest = Carbon::parse($today);
-        }
-
-        $todayStr = Carbon::parse($today);
-        $todayStr = $todayStr->toDateString();
-        $earliestStr = clone $earliest;
-        $earliestStr = $earliestStr->toDateString();
-        $latestStr = clone $latest;
-        $latestStr = $latestStr->toDateString();
-
-        $datesVar = [
-            'today' => $todayStr,
-            'earliest' => $earliestStr,
-            'latest' => $latestStr
-        ];
-        // dd($latest, $datesVar['latest']);
-        $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
+        $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
         $transactions = DB::table('deals')
                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')

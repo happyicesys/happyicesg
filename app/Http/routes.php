@@ -13,6 +13,7 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     	dd($username ? : 'hello');
     });
 });*/
+Route::post('/detailrpt/operation/excel', 'OperationWorksheetController@exportOperationExcel');
 Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');
 Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');
 Route::post('/api/detailrpt/operation/note/{person_id}', 'OperationWorksheetController@updateOperationNoteApi');
