@@ -32,144 +32,11 @@ class OperationWorksheetController extends Controller
     // get operation worksheet api()
     public function getOperationWorksheetIndexApi()
     {
-        $dates = [];
-        $earliest = '';
-        $latest = '';
-        if(request()->isMethod('get')) {
-            $today = Carbon::today()->toDateString();
-            request()->merge(array('previous' => 'Last 7 days'));
-        }else {
-            $today = request('chosen_date');
-        }
-
-        // get previous logic
-        $previous = request('previous');
-        switch($previous) {
-            case 'Last 7 days':
-                $earliest = Carbon::parse($today)->subDays(7);
-                break;
-            case 'Last 14 days':
-                $earliest = Carbon::parse($today)->subDays(14);
-                break;
-            default:
-                $earliest = Carbon::parse($today);
-        }
-
-        // get future logic
-        $future = request('future');
-        switch($future) {
-            case '2 days' :
-                $latest = Carbon::parse($today)->addDays(2);
-                break;
-            default:
-                $latest = Carbon::parse($today);
-        }
-
-        $todayStr = Carbon::parse($today);
-        $todayStr = $todayStr->toDateString();
-        $earliestStr = clone $earliest;
-        $earliestStr = $earliestStr->toDateString();
-        $latestStr = clone $latest;
-        $latestStr = $latestStr->toDateString();
-
-        $datesVar = [
-            'today' => $todayStr,
-            'earliest' => $earliestStr,
-            'latest' => $latestStr
-        ];
-        // dd($latest, $datesVar['latest']);
-        $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
-
-        $transactions = DB::table('deals')
-                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                            ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                            ->select(
-                                'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
-                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note',
-                                'profiles.id AS profile_id',
-                                'custcategories.id AS custcategory_id',
-                                'items.id AS item_id', 'items.is_inventory'
-                            );
-        $transactions = $this->operationWorksheetDBFilter($datesVar, $transactions);
-        $transactions = $transactions
-                            ->where('items.is_inventory', 1)
-                            ->groupBy('transactions.id')
-                            ->get();
-
-        $transactionsId = [];
-        foreach($transactions as $transaction) {
-            array_push($transactionsId, $transaction->transaction_id);
-        }
-
-        $people = DB::table('people')
-                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                    ->select(
-                        'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note',
-                        'profiles.id AS profile_id',
-                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
-                    );
-        $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
-
-        // only active customers
-        $people = $people->where('active', 'Yes');
-
-        if(request('sortName')){
-            $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
-        }
-
-        $people = $people->orderBy('cust_id');
-
-        $pageNum = request('pageNum') ? request('pageNum') : 100;
-
-        if($pageNum == 'All'){
-            $people = $people->get();
-        }else{
-            $people = $people->paginate($pageNum);
-        }
-
-        $alldata = array();
-
-        foreach($people as $index1 => $person) {
-            foreach($dates as $index2 => $date) {
-
-                $id = $person->person_id.','.$date;
-
-                $qty =  DB::table('deals')
-                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->whereIn('transaction_id', $transactionsId)
-                        ->where('transactions.person_id', $person->person_id)
-                        ->where('transactions.delivery_date', $date)
-                        ->sum('deals.qty');
-
-                $color =  DB::table('operationdates')
-                            ->where('person_id', $person->person_id)
-                            ->whereDate('delivery_date', '=', $date)
-                            ->first()
-                            ?
-                            DB::table('operationdates')
-                            ->where('person_id', $person->person_id)
-                            ->whereDate('delivery_date', '=', $date)
-                            ->first()
-                            ->color
-                            :
-                            '';
-
-
-                $alldata[$index1][$index2] = [
-                    'id' => $id,
-                    'qty' => $qty,
-                    'color' => $color
-                ];
-            }
-        }
+        $dataArr = $this->generateOperationWorksheetQuery();
         return [
-            'people' => $people,
-            'dates' => $dates,
-            'alldata' => $alldata
+            'people' => $dataArr['people'],
+            'dates' => $dataArr['dates'],
+            'alldata' => $dataArr['alldata']
         ];
     }
 
@@ -439,5 +306,150 @@ class OperationWorksheetController extends Controller
         }
 
         return $people;
+    }
+
+    // generate operation worksheet report()
+    private function generateOperationWorksheetQuery()
+    {
+        $dates = [];
+        $earliest = '';
+        $latest = '';
+        if(request()->isMethod('get')) {
+            $today = Carbon::today()->toDateString();
+            request()->merge(array('previous' => 'Last 7 days'));
+        }else {
+            $today = request('chosen_date');
+        }
+
+        // get previous logic
+        $previous = request('previous');
+        switch($previous) {
+            case 'Last 7 days':
+                $earliest = Carbon::parse($today)->subDays(7);
+                break;
+            case 'Last 14 days':
+                $earliest = Carbon::parse($today)->subDays(14);
+                break;
+            default:
+                $earliest = Carbon::parse($today);
+        }
+
+        // get future logic
+        $future = request('future');
+        switch($future) {
+            case '2 days' :
+                $latest = Carbon::parse($today)->addDays(2);
+                break;
+            default:
+                $latest = Carbon::parse($today);
+        }
+
+        $todayStr = Carbon::parse($today);
+        $todayStr = $todayStr->toDateString();
+        $earliestStr = clone $earliest;
+        $earliestStr = $earliestStr->toDateString();
+        $latestStr = clone $latest;
+        $latestStr = $latestStr->toDateString();
+
+        $datesVar = [
+            'today' => $todayStr,
+            'earliest' => $earliestStr,
+            'latest' => $latestStr
+        ];
+        // dd($latest, $datesVar['latest']);
+        $dates = $this->generateDateRange($earliest->toDateString(), $latest->toDateString());
+
+        $transactions = DB::table('deals')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                            ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->select(
+                                'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
+                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note',
+                                'profiles.id AS profile_id',
+                                'custcategories.id AS custcategory_id',
+                                'items.id AS item_id', 'items.is_inventory'
+                            );
+        $transactions = $this->operationWorksheetDBFilter($datesVar, $transactions);
+        $transactions = $transactions
+                            ->where('items.is_inventory', 1)
+                            ->groupBy('transactions.id')
+                            ->get();
+
+        $transactionsId = [];
+        foreach($transactions as $transaction) {
+            array_push($transactionsId, $transaction->transaction_id);
+        }
+
+        $people = DB::table('people')
+                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                    ->select(
+                        'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note',
+                        'profiles.id AS profile_id',
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
+                    );
+        $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
+
+        // only active customers
+        $people = $people->where('active', 'Yes');
+
+        if(request('sortName')){
+            $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        $people = $people->orderBy('cust_id');
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        if($pageNum == 'All'){
+            $people = $people->get();
+        }else{
+            $people = $people->paginate($pageNum);
+        }
+
+        $alldata = array();
+
+        foreach($people as $index1 => $person) {
+            foreach($dates as $index2 => $date) {
+
+                $id = $person->person_id.','.$date;
+
+                $qty =  DB::table('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->whereIn('transaction_id', $transactionsId)
+                        ->where('transactions.person_id', $person->person_id)
+                        ->where('transactions.delivery_date', $date)
+                        ->sum('deals.qty');
+
+                $color =  DB::table('operationdates')
+                            ->where('person_id', $person->person_id)
+                            ->whereDate('delivery_date', '=', $date)
+                            ->first()
+                            ?
+                            DB::table('operationdates')
+                            ->where('person_id', $person->person_id)
+                            ->whereDate('delivery_date', '=', $date)
+                            ->first()
+                            ->color
+                            :
+                            '';
+
+
+                $alldata[$index1][$index2] = [
+                    'id' => $id,
+                    'qty' => $qty,
+                    'color' => $color
+                ];
+            }
+        }
+
+        return [
+            'people' => $people,
+            'dates' => $dates,
+            'alldata' => $alldata
+        ];
     }
 }
