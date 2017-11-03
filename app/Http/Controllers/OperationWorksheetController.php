@@ -394,7 +394,7 @@ class OperationWorksheetController extends Controller
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
-        $people = $people->where('active', 'Yes');
+        $people = $people->where('active', 'Yes')->where('cust_id', 'NOT LIKE', 'H%');
 
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
