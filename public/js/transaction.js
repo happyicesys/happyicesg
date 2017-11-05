@@ -159,7 +159,8 @@ var app = angular.module('app', [
         // });
 
         //delete deals
-        $scope.confirmDelete = function(deal_id){
+        $scope.confirmDelete = function($event, deal_id){
+            $event.preventDefault();
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
                 $http.delete('/api/deal/delete/' + deal_id).success(function(data) {

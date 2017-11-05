@@ -195,7 +195,8 @@ var app = angular.module('app', [   'ui.bootstrap', 'angularUtils.directives.dir
         });
 
         //delete deals
-        $scope.confirmDelete = function(id){
+        $scope.confirmDelete = function($event, id){
+            $event.preventDefault();
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
                 $http({

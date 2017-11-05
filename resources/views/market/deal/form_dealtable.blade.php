@@ -110,9 +110,9 @@
                                 @endphp
 
                                 @if($valid)
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)">Delete</button>
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.id)">Delete</button>
                                 @else
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(deal.id)" disabled>Delete</button>
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.id)" disabled>Delete</button>
                                 @endif
 
                             </td>
