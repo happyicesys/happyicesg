@@ -67,15 +67,17 @@
                         <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
                         <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                         <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
-                        @if(auth()->user()->hasRole('admin'))
-                            <li class="text-left"><a href="/detailrpt/operation"> Operation Worksheet</a></li>
-                        @endif
                     </ul>
                 </li>
                 @endcannot
                 <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
                     <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                 </li>
+                @if(auth()->user()->hasRole('admin'))
+                    <li class="{{ strpos(Request::path(), 'operation') !== false ? 'active' : '' }}">
+                        <a href="/operation"><i class="fa fa-sticky-note-o"></i> Ops Worksheet</a>
+                    </li>
+                @endif
             @endunless
                 @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer' or $people::where('user_id', Auth::user()->id)->first())
                     <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">

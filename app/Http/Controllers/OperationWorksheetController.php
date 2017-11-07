@@ -308,9 +308,17 @@ class OperationWorksheetController extends Controller
         }
 
         if($color) {
-            $people = $people->whereHas('operationdates', function($q) use ($color) {
-                $q->where('color', $color);
-            });
+            if($color != 'Yellow & Green') {
+/*                $people = $people->whereHas('operationdates', function($q) {
+                    $q->where('color', 'Yellow');
+                });
+                $people = $people->whereHas('transactions')*/
+            }else {
+                $people = $people->whereHas('operationdates', function($q) use ($color) {
+                    $q->where('color', $color);
+                });
+            }
+
         }
 
         return $people;
@@ -398,13 +406,31 @@ class OperationWorksheetController extends Controller
         }
 
         if($color) {
-            $people = $people->whereExists(function ($q) use ($datesvar, $color) {
-                $q->select('*')
-                    ->from('operationdates')
-                    ->whereRaw('operationdates.person_id = people.id')
-                    ->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
-                    ->where('operationdates.color', $color);
-            });
+            if($color == 'Yellow & Green') {
+                $people = $people->whereExists(function ($q) use ($datesvar) {
+                    $q->select('*')
+                        ->from('operationdates')
+                        ->whereRaw('operationdates.person_id = people.id')
+                        ->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
+                        ->where('operationdates.color', 'Yellow');
+                });
+                $people = $people->orWhereExists(function($q) use ($datesvar) {
+                    $q->select('*')
+                        ->from('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->whereRaw('transactions.person_id = people.id')
+                        ->whereDate('transactions.delivery_date', '=', $datesvar['today'])
+                        ->where('deals.qty', '>', '0');
+                });
+            }else {
+                $people = $people->whereExists(function ($q) use ($datesvar, $color) {
+                    $q->select('*')
+                        ->from('operationdates')
+                        ->whereRaw('operationdates.person_id = people.id')
+                        ->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
+                        ->where('operationdates.color', $color);
+                });
+            }
         }
 
         return $people;
@@ -458,7 +484,7 @@ class OperationWorksheetController extends Controller
 
         $people = $people->orderBy('cust_id');
 
-        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        $pageNum = request('pageNum') ? request('pageNum') : 'All';
 
         if($pageNum == 'All'){
             $people = $people->get();

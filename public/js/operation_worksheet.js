@@ -17,7 +17,7 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
+        $scope.itemsPerPage = 'All';
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.search = {
@@ -30,7 +30,7 @@ var app = angular.module('app', [
             previous: 'Last 7 days',
             future: '2 days',
             color: '',
-            pageNum: 100,
+            pageNum: 'All',
             sortBy: true,
             sortName: ''
         }
@@ -85,14 +85,16 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
-        $scope.changeColor = function(id, parent_index, index) {
-            $http.post('/api/detailrpt/operation/color', {'id': id}).success(function(data) {
-                $scope.alldata[parent_index][index]['color'] = data.color;
-            });
+        $scope.changeColor = function(alldata, parent_index, index) {
+            if(!alldata.qty) {
+                $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
+                    $scope.alldata[parent_index][index]['color'] = data.color;
+                });
+            }
         }
 
         $scope.todayDateChecker = function(date) {
-            if(date === moment().format('YYYY-MM-DD')) {
+            if(date === $scope.search.chosen_date) {
                 return 'Lightpurple';
             }
         }
@@ -100,6 +102,16 @@ var app = angular.module('app', [
         $scope.updateOpsNotes = function(person_id, operation_note) {
             $http.post('/api/detailrpt/operation/note/' + person_id, {'operation_note': operation_note}).success(function(date) {
             });
+        }
+
+        $scope.getBackgroundColor = function(alldata) {
+            if(alldata.qty) {
+                return '#77d867';
+            }else if(!alldata.qty && alldata.color) {
+                return alldata.color;
+            }else {
+                return '';
+            }
         }
 
         // retrieve page w/wo search

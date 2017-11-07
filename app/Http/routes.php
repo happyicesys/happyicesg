@@ -17,7 +17,7 @@ Route::post('/detailrpt/operation/excel', 'OperationWorksheetController@exportOp
 Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');
 Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');
 Route::post('/api/detailrpt/operation/note/{person_id}', 'OperationWorksheetController@updateOperationNoteApi');
-Route::get('/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
+Route::get('/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');

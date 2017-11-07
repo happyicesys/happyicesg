@@ -366,3 +366,61 @@ table input.form-control {
 .td_edit {
     cursor: pointer;
 }
+
+
+// table setting for fix header
+// working1 css
+/* table.table-fixedheader>tbody {
+    display: block;
+}
+
+table.table-fixedheader>tbody {
+    overflow-y: auto;
+    height: 800px;
+}
+
+table.table-fixedheader>thead>tr>th, table.table-fixedheader>tbody>tr>td {
+    float: left;
+} */
+
+// working2 flexbox
+/*
+.table-fixedheader {
+    table-layout: fixed;
+    display: flex;
+    flex-flow: column;
+}
+
+.table-fixedheader thead {
+  display: block;
+  > tr {
+    display: flex;
+    >th {
+      flex: 1;
+    }
+    >th:nth-child(2) {
+      flex: 0 0 20px;
+    }
+  }
+}
+
+.table-fixedheader tbody {
+  height: 700px;
+  overflow-y: auto;
+}
+
+.table-fixedheader tbody {
+  display: block;
+  > tr {
+    display: flex;
+    // flex-wrap:nowrap;
+    >td {
+      flex: 1;
+      // display:flex;
+      // justify-content:flex-start;
+    }
+    >td:nth-child(2){
+      flex: 0 0 20px;
+    }
+  }
+} */

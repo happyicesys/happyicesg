@@ -389,13 +389,33 @@ class TransactionController extends Controller
             }
         }
 
-        if($transaction->person->is_vending and request('analog_clock') > 0 and $transaction->is_required_analog) {
-            $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
-            $current_analog = (int)request('analog_clock');
+        $analog_clock = request('analog_clock');
 
-            if($current_analog < $prev_analog) {
-                Flash::error('Analog Clock value must be equals or greater than previous invoice ('.$prev_analog.')');
-                return redirect()->action('TransactionController@edit', $transaction->id);
+        if($transaction->person->is_vending and $transaction->is_required_analog) {
+            $vendcash_check = Transaction::whereHas('deals', function($q) {
+                                    $q->whereHas('item', function($q) {
+                                        $q->where('product_id', '051');
+                                    });
+                                })
+                                ->where('id', $transaction->id)
+                                ->get();
+
+            if(count($vendcash_check) > 0) {
+                if($analog_clock > 0) {
+                    $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
+                    $current_analog = (int)request('analog_clock');
+
+                    if($current_analog < $prev_analog) {
+                        Flash::error('Analog Clock value must be equals or greater than previous invoice ('.$prev_analog.')');
+                        return redirect()->action('TransactionController@edit', $transaction->id);
+                    }
+
+                }else {
+                    if($analog_clock == 0 or $analog_clock == null) {
+                        Flash::error('Analog Clock must be filled and cannot be 0');
+                        return redirect()->action('TransactionController@edit', $transaction->id);
+                    }
+                }
             }
         }
 
