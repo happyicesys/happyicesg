@@ -137,7 +137,11 @@ class OperationWorksheetController extends Controller
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                $sheet->loadView('detailrpt.operation.operation_worksheet_excel', compact('people', 'dates', 'alldata'));
+                if(request('single')) {
+                    $sheet->loadView('detailrpt.operation.opsworksheet_filtered_excel', compact('people', 'dates', 'alldata'));
+                }else {
+                    $sheet->loadView('detailrpt.operation.operation_worksheet_excel', compact('people', 'dates', 'alldata'));
+                }
             });
         })->download('xlsx');
     }

@@ -174,7 +174,7 @@
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <button type="submit" class="btn btn-default" form="export_excel" name="all" value="all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
-        <button type="submit" form="export_excel" class="btn btn-default" name="single" value="single"><i class="fa fa-file-excel-o"></i> Export Single Excel</button>
+        <button type="submit" form="export_excel" class="btn btn-default" name="single" value="single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
         {{-- <button ng-if="people.length > 0" form="generate_map" class="btn btn-primary"><i class="fa fa-map-o"></i> Generate Map</button> --}}
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
@@ -228,7 +228,7 @@
                     <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
-                    Note
+                    Ops Note
                 </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
                     @{{date | date : "yy-MM-dd"}}

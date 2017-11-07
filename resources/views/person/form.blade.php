@@ -117,10 +117,16 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('remark', 'Remark', ['class'=>'control-label']) !!}
-            {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+            {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('operation_note', 'Ops Note', ['class'=>'control-label']) !!}
+            {!! Form::textarea('operation_note', null, ['class'=>'form-control', 'rows'=>'3']) !!}
         </div>
     </div>
 </div>
