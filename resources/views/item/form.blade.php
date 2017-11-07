@@ -9,7 +9,9 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-3 col-sm-6 col-xs-12">
-                        <img src="{{$item->main_imgpath}}" height="250" width="250" style="border:2px solid black">
+                        <a href="{{$item->main_imgpath}}">
+                            <img src="{{$item->main_imgpath}}" height="250" width="250" style="border:2px solid black">
+                        </a>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
