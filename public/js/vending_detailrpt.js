@@ -76,6 +76,18 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.getRowColor = function(transaction) {
+            if(transaction.begin_date == transaction.end_date) {
+                return 'yellow';
+            }
+
+            if(transaction.clocker_delta > (transaction.last_clocker_delta * 170/100)) {
+                console.log(transaction.clocker_delta);
+                console.log(transaction.last_clocker_delta * 170/100);
+                return 'red';
+            }
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;

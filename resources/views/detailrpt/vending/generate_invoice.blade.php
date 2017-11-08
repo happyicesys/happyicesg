@@ -302,7 +302,7 @@
             </tr>
 
             <tbody>
-                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="transaction.begin_date == transaction.end_date ? {'background-color': 'yellow'} : ''">
+                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">
                     <td class="col-md-1 text-center">
                         {!! Form::checkbox('checkbox[@{{transaction.person_id}}]') !!}
                     </td>

@@ -138,90 +138,38 @@
                     </tr>
 
                     <tbody>
-                    @if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB')
 
-                        @unless(count($items)>0)
-                            <td class="text-center" colspan="7">No Records Found</td>
-                        @else
-                            @foreach($items::orderBy('product_id')->get() as $item)
-                            <tr class="form-group">
-                                <td class="col-md-8">
-                                    {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
-                                </td>
-                                <td class="col-md-2">
-                                    <strong>
-                                        <input type="text" name="retail[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->retail_price : '0'}}" class="text-right form-control" readonly/>
-                                    </strong>
-                                </td>
-                                <td class="col-md-2">
-                                    <strong>
-                                        <input type="text" name="quote[{{$item->id}}]" value="{{$dtdprice::whereItemId($item->id)->first() ? $dtdprice::whereItemId($item->id)->first()->quote_price : '0'}}" class="text-right form-control" readonly/>
-                                    </strong>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endunless
-                    @elseif($person->cust_id[0] === 'H')
-                        <tr ng-repeat="item in items" class="form-group">
-                            <td class="col-md-8">
-                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" readonly/>
-                                </strong>
-                            </td>
-                            <td class="col-md-2">
-                                <strong>
-                                    <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)" readonly/>
-                                </strong>
-                            </td>
-                        </tr>
-                        <tr ng-if="items.length == 0 || ! items.length">
-                            <td colspan="4" class="text-center">No Records Found!</td>
-                        </tr>
-                    @else
-                        @unless(count($items)>0)
-                            <td class="text-center" colspan="7">No Records Found</td>
-                        @else
-                            @foreach($items::orderBy('product_id')->get() as $item)
-                            <tr class="form-group">
-                                <td class="col-md-8">
-                                    {{$item->product_id}} - {{$item->name}} - {{$item->remark}}
-                                </td>
-                                <td class="col-md-2">
-                                    <strong>
-                                        <input type="text" name="retail[{{$item->id}}]" value="{{$prices::whereItemId($item->id)->wherePersonId($person->id)->first() ? $prices::whereItemId($item->id)->wherePersonId($person->id)->first()->retail_price : ''}}" class="text-right form-control"/>
-                                    </strong>
-                                </td>
-                                <td class="col-md-2">
-                                    <strong>
-                                        <input type="text" name="quote[{{$item->id}}]" value="{{$prices::whereItemId($item->id)->wherePersonId($person->id)->first() ? $prices::whereItemId($item->id)->wherePersonId($person->id)->first()->quote_price : ''}}" class="text-right form-control"/>
-                                    </strong>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endunless
-{{--
+                    @php
+                        $disable = false;
+
+                        if($person->cust_id[0] === 'H') {
+                            $disable = true;
+                        }
+
+                        if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB') {
+                            $disable = true;
+                        }
+                    @endphp
+
                     <tr ng-repeat="item in items" class="form-group">
                         <td class="col-md-8">
                             @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
                         </td>
                         <td class="col-md-2">
                             <strong>
-                                <input type="text" name="retail[@{{item.id}}]" class="text-right form-control" ng-init="retailModel = getRetailInit(item.id)" ng-model="retailModel" />
+                                <input type="text" name="retail[@{{item.item_id}}]" class="text-right form-control" ng-model="item.retail_price" ng-change="calQuotePrice($index, item)" {{$disable == true ? 'readonly' : ''}}/>
                             </strong>
                         </td>
                         <td class="col-md-2">
                             <strong>
-                                <input type="text" name="quote[@{{item.id}}]" class="text-right form-control" ng-init="quoteModel = getQuoteInit(item.id)" ng-model="quoteModel" ng-value="(+retailModel * personData.cost_rate/100).toFixed(2)"/>
+                                <input type="text" name="quote[@{{item.item_id}}]" class="text-right form-control" ng-model="item.quote_price" {{$disable == true ? 'readonly' : ''}}/>
                             </strong>
                         </td>
                     </tr>
                     <tr ng-if="items.length == 0 || ! items.length">
                         <td colspan="4" class="text-center">No Records Found!</td>
-                    </tr> --}}
-                    @endif
+                    </tr>
+                    {{-- @endif --}}
                     </tbody>
                 </table>
                 <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
@@ -397,6 +345,6 @@ $('.select').select2({
 
 </script>
 <script src="/js/person_edit.js"></script>
-<script src="/js/vue-controller/assignVendingController.js"></script>
+{{-- <script src="/js/vue-controller/assignVendingController.js"></script> --}}
 
 @stop

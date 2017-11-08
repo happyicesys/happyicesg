@@ -9,8 +9,6 @@ var app = angular.module('app', [
     function personEditController($scope, $http){
         // init the variables
         $scope.alldata = [];
-        $scope.datasetTemp = {};
-        $scope.totalCountTemp = {};
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -19,7 +17,6 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.sortBy = true;
         $scope.sortName = '';
-        $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             id: '',
@@ -107,46 +104,22 @@ var app = angular.module('app', [
             });
         }
 
-/*
-            $http.get('/person/transac/'+ $('#person_id').val()).success(function(transactions){
-                $scope.transactions = transactions;
-                $scope.All = transactions.length;
-            });*/
+        // price management
+        initPrice();
 
+        function initPrice() {
+            $http.get('/person/price/'+ $('#person_id').val()).success(function(items){
+                $scope.items = items;
+            });
+        }
 
-        $http.get('/item/data').success(function(data){
-            // console.log(data);
-            $scope.items = data.items;
-        });
-
-        // $scope.loadFiles();
-
-        $http.get('/person/price/'+ $('#person_id').val()).success(function(prices){
-            $scope.prices = prices;
-
-            $scope.getRetailInit = function(item_id){
-                var retailNum = 0;
-                for(var i = 0; i < $scope.prices.length; i ++){
-                    var price = $scope.prices[i];
-                    if(item_id == price.item_id){
-                        retailNum = price.retail_price;
-                        return retailNum;
-                    }
-                }
-                // console.log(retailNum);
+        $scope.calQuotePrice = function(index, item) {
+            if(!isNaN(item.retail_price)) {
+                $scope.items[index]['quote_price'] = item.retail_price * item.cost_rate/ 100;
+            }else {
+                initPrice();
             }
-
-            $scope.getQuoteInit = function(item_id){
-                var quoteNum = 0;
-                for(var i = 0; i < $scope.prices.length; i ++){
-                    var price = $scope.prices[i];
-                    if(item_id == price.item_id){
-                        quoteNum = price.quote_price;
-                        return quoteNum;
-                    }
-                }
-            }
-        });
+        }
 
         $http.get('/person/specific/data/'+ $('#person_id').val()).success(function(person){
             $scope.personData = person;

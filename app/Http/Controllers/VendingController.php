@@ -219,6 +219,7 @@ class VendingController extends Controller
     {
         // indicate the month and year
         $this_month = Carbon::createFromFormat('m-Y', request('current_month'));
+        $last_month = Carbon::createFromFormat('m-Y', request('current_month'))->subMonth();
 
         if(request()->isMethod('get')) {
             $status = 'Delivered';
@@ -270,6 +271,40 @@ class VendingController extends Controller
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_end");
 
+        $analog_lastmonth_start = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
+                                FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND transactions.is_required_analog=1
+                                AND DATE(transactions.delivery_date)<'".$last_month->startOfMonth()->toDateString()."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) analog_lastmonth_start");
+
+        $analog_lastmonth_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, MIN(transactions.analog_clock) AS analog_clock, people.id AS person_id
+                                FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND transactions.is_required_analog=1
+                                AND DATE(transactions.delivery_date)>='".$last_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$last_month->endOfMonth()->toDateString()."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) analog_lastmonth_first");
+
+        $analog_lastmonth_end = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
+                                FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND transactions.is_required_analog=1
+                                AND DATE(transactions.delivery_date)<='".$last_month->endOfMonth()->toDateString()."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) analog_lastmonth_end");
+
         $transactions = DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -279,6 +314,9 @@ class VendingController extends Controller
                         ->leftJoin($analog_start, 'people.id', '=', 'analog_start.person_id')
                         ->leftJoin($analog_first, 'people.id', '=', 'analog_first.person_id')
                         ->leftJoin($analog_end, 'people.id', '=', 'analog_end.person_id')
+                        ->leftJoin($analog_lastmonth_start, 'people.id', '=', 'analog_lastmonth_start.person_id')
+                        ->leftJoin($analog_lastmonth_first, 'people.id', '=', 'analog_lastmonth_first.person_id')
+                        ->leftJoin($analog_lastmonth_end, 'people.id', '=', 'analog_lastmonth_end.person_id')
                         ->select(
                                     'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address',
@@ -289,6 +327,7 @@ class VendingController extends Controller
                                     DB::raw('(CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END) AS begin_analog'),
                                     'analog_end.delivery_date AS end_date', 'analog_end.analog_clock AS end_analog',
                                     DB::raw('(analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) AS clocker_delta'),
+                                    DB::raw('(analog_lastmonth_end.analog_clock - (CASE WHEN analog_lastmonth_start.analog_clock THEN analog_lastmonth_start.analog_clock ELSE analog_lastmonth_first.analog_clock END)) AS last_clocker_delta'),
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
                                     DB::raw('FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) AS sales'),
                                     // DB::raw('FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) AS sales'),

@@ -480,7 +480,46 @@ class OperationWorksheetController extends Controller
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
-        $people = $people->where('active', 'Yes')->where('cust_id', 'NOT LIKE', 'H%');
+        $people = $people->where('active', 'Yes');
+
+        $dtdpeople = clone $people;
+        $dtdmember = clone $people;
+
+        // rules for normal exclude D and H code
+        $people = $people->where('cust_id', 'NOT LIKE', 'H%')
+                        ->where('cust_id', 'NOT LIKE', 'D%');
+
+        // filter H codes who has transactions within the dates
+        $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
+                                ->whereExists(function($q) use ($datesVar) {
+                                    $q->select('*')
+                                    ->from('deals')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                    ->whereRaw('transactions.person_id = people.id')
+                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+                                    ->where('deals.qty', '>', '0');
+                                });
+
+        // filter H codes who has transactions within the dates
+        $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
+                                ->whereExists(function($q) use ($datesVar) {
+                                    $q->select('*')
+                                    ->from('deals')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                    ->whereRaw('transactions.person_id = people.id')
+                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+                                    ->where('deals.qty', '>', '0');
+                                });
+
+        // union
+        $people = $people->union($dtdpeople)->union($dtdmember);
+
+/*
+                $people = $people->where(function($query) {
+                    $query->where('people.cust_id', '')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });*/
 
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');

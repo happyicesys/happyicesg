@@ -390,12 +390,31 @@ class PersonController extends Controller
     public function personPrice($person_id)
     {
         $person = Person::findOrFail($person_id);
+
         if($person->cust_id[0] === 'H') {
-            $prices = Price::wherePersonId(1643)->get();
-        }else{
-            $prices = Price::wherePersonId($person_id)->get();
+            $person_id = 1643;
         }
-        return $prices;
+
+        $personprice = DB::raw(
+                            "(
+                                SELECT prices.retail_price, prices.quote_price, prices.item_id, people.cost_rate FROM prices
+                                LEFT JOIN people ON people.id = prices.person_id
+                                WHERE people.id = ".$person_id."
+                                ) personprice"
+                        );
+
+        $items = DB::table('items')
+                    ->leftJoin($personprice, 'personprice.item_id', '=', 'items.id')
+                    ->select(
+                        'items.id AS item_id', 'items.product_id', 'items.name', 'items.remark',
+                        'personprice.retail_price', 'personprice.quote_price', 'personprice.cost_rate'
+                    );
+
+        $items = $items->where('items.is_active', 1)
+                        ->orderBy('items.product_id', 'asc')
+                        ->get();
+
+        return $items;
     }
 
     public function storeNote($person_id, Request $request)
