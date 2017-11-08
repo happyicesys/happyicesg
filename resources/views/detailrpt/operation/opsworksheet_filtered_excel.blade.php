@@ -6,8 +6,8 @@
     <tr>
         <th>#</th>
         <th>Postcode + Cust ID + ID Name</th>
-        <th>Ops Note</th>
         <th>Inv#</th>
+        <th>Ops Note</th>
         @foreach($dates as $date)
         <th>
             {{\Carbon\Carbon::parse($date)->format('y-m-d')}} ({{\Carbon\Carbon::parse($date)->format('D')}})
@@ -21,14 +21,12 @@
         <tr>
             <td>{{$indexpeople + 1}}</td>
             <td>{{$person->del_postcode}} {{$person->cust_id}} {{$person->company}}</td>
-            <td>{{$person->operation_note}}</td>
-            @foreach($alldata[$indexpeople] as $data)
             @php
                 $transactionsStr = '';
                 $transArr = [];
 
-                $transactions = $transaction::where('person_id', explode(",", $data['id'])[0])
-                                ->whereDate('delivery_date', '=', explode(",", $data['id'])[1])
+                $transactions = $transaction::where('person_id', $person->person_id)
+                                ->whereDate('delivery_date', '=', request('chosen_date'))
                                 ->get();
 
                 if(count($transactions) > 0) {
@@ -37,7 +35,11 @@
                     }
                     $transactionsStr = implode(",", $transArr);
                 }
-
+            @endphp
+            <td>{{$transactionsStr}}</td>
+            <td>{{$person->operation_note}}</td>
+            @foreach($alldata[$indexpeople] as $data)
+            @php
                 $color = $data['color'];
 
                 switch($color) {
@@ -57,7 +59,6 @@
                     }
                 }
             @endphp
-                <td>{{$transactionsStr}}</td>
                 <td style="background-color: {{$color}}; border: thin solid #000000;">
                     {{$data['qty']}}
                 </td>
