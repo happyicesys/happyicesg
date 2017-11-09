@@ -70,12 +70,6 @@
                                     <th class="col-md-1">
                                         #
                                     </th>
-                                    <th class="col-md-1">
-                                        <a href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
-                                        ID
-                                        <span ng-show="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                                        <span ng-show="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
-                                    </th>
                                     <th class="col-md-2">
                                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                         Name
@@ -105,7 +99,6 @@
 
                                      <tr dir-paginate="user in users | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" pagination-id="user" current-page="currentPage" ng-controller="repeatController">
                                         <td class="col-md-1">@{{ number }} </td>
-                                        <td class="col-md-1">{{ $USER_PREFIX }}@{{ user.id }}</td>
                                         <td class="col-md-2">@{{ user.name }}</td>
                                         <td class="col-md-2">@{{ user.username }}</td>
                                         <td class="col-md-2">@{{ user.contact }}</td>
