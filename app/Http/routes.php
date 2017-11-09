@@ -1,7 +1,7 @@
 <?php
 
 Route::get('/', function () {
-    return view('client.index');
+    return view('auth.login');
 });
 
 Route::get('/admin', function () {
