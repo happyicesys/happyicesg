@@ -106,7 +106,7 @@ class OperationWorksheetController extends Controller
     public function exportOperationExcel()
     {
         // dd((bool)request('single'), (bool)request('all'));
-        if(request('single')) {
+        if(request('excel_single')) {
             $today = request('chosen_date');
 
             $datesVar = [
@@ -115,7 +115,7 @@ class OperationWorksheetController extends Controller
                 'latest' => $today
             ];
 
-        } else if (request('all')) {
+        } else if (request('excel_all')) {
             $datesArr = $this->operationWorksheetDateFilter();
 
             $datesVar = [
@@ -137,7 +137,7 @@ class OperationWorksheetController extends Controller
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                if(request('single')) {
+                if(request('excel_single')) {
                     $sheet->loadView('detailrpt.operation.opsworksheet_filtered_excel', compact('people', 'dates', 'alldata'));
                 }else {
                     $sheet->loadView('detailrpt.operation.operation_worksheet_excel', compact('people', 'dates', 'alldata'));
@@ -361,6 +361,9 @@ class OperationWorksheetController extends Controller
             case '2 days' :
                 $latest = Carbon::parse($today)->addDays(2);
                 break;
+            case '5 days' :
+                $latest = Carbon::parse($today)->addDays(5);
+                break;
             default:
                 $latest = Carbon::parse($today);
         }
@@ -460,7 +463,6 @@ class OperationWorksheetController extends Controller
                             );
         $transactions = $this->operationWorksheetDBFilter($datesVar, $transactions);
         $transactions = $transactions
-                            ->where('items.is_inventory', 1)
                             ->groupBy('transactions.id')
                             ->get();
 
@@ -529,7 +531,7 @@ class OperationWorksheetController extends Controller
 
         $pageNum = request('pageNum') ? request('pageNum') : 'All';
 
-        if($pageNum == 'All'){
+        if($pageNum == 'All' or request('excel_all') or request('excel_single')){
             $people = $people->get();
         }else{
             $people = $people->paginate($pageNum);
@@ -546,8 +548,15 @@ class OperationWorksheetController extends Controller
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->whereIn('transaction_id', $transactionsId)
                         ->where('transactions.person_id', $person->person_id)
-                        ->where('transactions.delivery_date', $date)
+                        ->whereDate('transactions.delivery_date', '=', $date)
                         ->sum('deals.qty');
+
+                $transactions =  DB::table('transactions')
+                        ->where('transactions.person_id', $person->person_id)
+                        ->whereDate('transactions.delivery_date', '=', $date)
+                        ->get();
+
+                $bool_transaction = count($transactions) > 0 ? true : false;
 
                 $color =  DB::table('operationdates')
                             ->where('person_id', $person->person_id)
@@ -566,7 +575,8 @@ class OperationWorksheetController extends Controller
                 $alldata[$index1][$index2] = [
                     'id' => $id,
                     'qty' => $qty,
-                    'color' => $color
+                    'color' => $color,
+                    'bool_transaction' => $bool_transaction,
                 ];
             }
         }

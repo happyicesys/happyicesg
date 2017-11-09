@@ -173,8 +173,8 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <button type="submit" class="btn btn-default" form="export_excel" name="all" value="all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
-        <button type="submit" form="export_excel" class="btn btn-default" name="single" value="single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
+        <button type="submit" class="btn btn-default" form="export_excel" name="excel_all" value="excel_all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
+        <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
         {{-- <button ng-if="people.length > 0" form="generate_map" class="btn btn-primary"><i class="fa fa-map-o"></i> Generate Map</button> --}}
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
@@ -260,7 +260,7 @@
                     <td class="col-md-2">
                         {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'2', 'style'=>'min-width: 150px; align-content: left;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                     </td>
-                    <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata)}">
+                    <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
                         &nbsp;@{{alldata.qty}}
                     </td>
                 </tr>

@@ -55,11 +55,11 @@
                         $color = 'ffffff';
                 }
 
-                if($color == 'ffffff') {
-                    if($data['qty']) {
-                        $color = '#77d867';
-                    }
+                if($data['bool_transaction']) {
+                    $color = '#77d867';
+                    $data['qty'] = 0;
                 }
+
             @endphp
                 <td style="background-color: {{$color}}; border: thin solid #000000;">
                     {{$data['qty']}}

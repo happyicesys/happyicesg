@@ -104,13 +104,19 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.getBackgroundColor = function(alldata) {
-            if(alldata.qty) {
+        $scope.getBackgroundColor = function(alldata, parent_index, index) {
+
+            if(alldata.bool_transaction) {
+                if(!alldata.qty) {
+                    $scope.alldata[parent_index][index]['qty'] = 0;
+                }
                 return '#77d867';
-            }else if(!alldata.qty && alldata.color) {
-                return alldata.color;
             }else {
-                return '';
+                if(alldata.color) {
+                    return alldata.color;
+                }else {
+                    return '';
+                }
             }
         }
 
