@@ -28,6 +28,6 @@
 </div>
 
 <script>
-    $('.select').select2();
+    $('.select').select2({placeholder : 'Select..'});
 </script>
 @stop

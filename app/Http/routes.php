@@ -1,12 +1,12 @@
 <?php
-/*
-Route::get('/', function () {
-    return view('client.index');
-});*/
-
 
 Route::get('/', function () {
-    return view('auth.login');
+	$url = request()->url();
+	if (strpos($url, 'my') !== false) {
+		return view('auth.login');
+	}else {
+		return view('client.index');
+	}
 });
 
 Route::get('/admin', function () {

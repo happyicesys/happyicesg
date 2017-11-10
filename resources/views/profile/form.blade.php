@@ -1,4 +1,5 @@
 @inject('payterms', 'App\Payterm')
+@inject('currencies', 'App\Currency')
 
 <div class="col-md-8 col-md-offset-2">
     <div class="row">
@@ -84,6 +85,11 @@
                 {!! Form::email('email', null, ['class'=>'form-control']) !!}
             </div>
         </div>
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('currency_id', 'Base Currency', ['class'=>'control-label']) !!}
+        {!! Form::select('currency_id', ['' => null] + $currencies::select(DB::raw("CONCAT(name,' (',symbol,')') AS full, id"))->pluck('full', 'id')->all(), null, ['class'=>'select form-control']) !!}
     </div>
 
     <div class="form-group">
