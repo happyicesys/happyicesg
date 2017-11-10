@@ -147,6 +147,7 @@ Route::get('/person/user/{user_id}', 'PersonController@getPersonUserId');
 Route::post('/person/{person_id}/note', 'PersonController@storeNote');
 Route::get('/person/specific/data/{person_id}', 'PersonController@getPersonData');
 Route::get('/person/price/{person_id}', 'PersonController@personPrice');
+Route::get('/person/costrate/{person_id}', 'PersonController@getPersonCostRate');
 Route::post('person/addaccessory/{person_id}', 'PersonController@addAccessory');
 Route::delete('person/addaccessory/{addaccessory_id}', 'PersonController@removeAccessory');
 Route::post('person/addfreezer/{person_id}', 'PersonController@addFreezer');

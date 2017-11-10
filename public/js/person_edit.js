@@ -111,11 +111,14 @@ var app = angular.module('app', [
             $http.get('/person/price/'+ $('#person_id').val()).success(function(items){
                 $scope.items = items;
             });
+            $http.get('/person/costrate/'+ $('#person_id').val()).success(function(data){
+                $scope.costrate = data;
+            });
         }
 
         $scope.calQuotePrice = function(index, item) {
             if(!isNaN(item.retail_price)) {
-                $scope.items[index]['quote_price'] = item.retail_price * item.cost_rate/ 100;
+                $scope.items[index]['quote_price'] = item.retail_price * $scope.costrate/ 100;
             }else {
                 initPrice();
             }

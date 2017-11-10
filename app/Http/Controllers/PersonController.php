@@ -417,6 +417,12 @@ class PersonController extends Controller
         return $items;
     }
 
+    public function getPersonCostRate($person_id) {
+        $person = Person::findOrFail($person_id);
+
+        return $person->cost_rate;
+    }
+
     public function storeNote($person_id, Request $request)
     {
         $person = Person::findOrFail($person_id);
