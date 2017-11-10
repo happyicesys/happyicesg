@@ -273,7 +273,7 @@
                         </td>
                         <td class="col-md-4">
                             {{-- <input type="text" class="form-control" name="file_name[{{$file->id}}]" value="{{$file->name}}" style="min-width: 300px;"> --}}
-                            <textarea class="form-control" name="file_name[{{$file->id}}]" rows="3" style="min-width: 300px;">{{$file->name}}</textarea>
+                            <textarea class="form-control" name="file_name[{{$file->id}}]" rows="5" style="min-width: 300px;">{{$file->name}}</textarea>
                         </td>
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
