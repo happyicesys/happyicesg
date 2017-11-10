@@ -213,6 +213,7 @@
 
     <div class="panel-body">
         {!! Form::open(['id'=>'update_names', 'action'=>['PersonController@updateFilesName', $person->id]]) !!}
+        <div class="table-responsive">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
@@ -271,7 +272,8 @@
                             @endif
                         </td>
                         <td class="col-md-4">
-                            <input type="text" class="form-control" name="file_name[{{$file->id}}]" value="{{$file->name}}">
+                            {{-- <input type="text" class="form-control" name="file_name[{{$file->id}}]" value="{{$file->name}}" style="min-width: 300px;"> --}}
+                            <textarea class="form-control" name="file_name[{{$file->id}}]" rows="3" style="min-width: 300px;">{{$file->name}}</textarea>
                         </td>
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
@@ -283,6 +285,7 @@
                 @endunless
             </tbody>
         </table>
+        </div>
         {!! Form::close() !!}
 
         @if(count($files) > 0)
