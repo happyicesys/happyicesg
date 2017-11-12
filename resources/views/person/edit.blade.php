@@ -63,7 +63,7 @@
                     <div class="input-group-btn">
                         <div class="pull-right">
                             @cannot('transaction_view')
-                            {!! Form::submit('Edit Profile', ['class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
+                            {!! Form::submit('Save Profile', ['class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                             @endcannot
                             <a href="/person" class="btn btn-default">Cancel</a>
                         </div>
@@ -130,10 +130,10 @@
                             Item
                         </th>
                         <th class="col-md-2 text-center">
-                            Retail Price ($)
+                            Retail Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
                         </th>
                         <th class="col-md-2 text-center">
-                            Quote Price ($)
+                            Quote Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
                         </th>
                     </tr>
 
@@ -173,7 +173,7 @@
                     </tbody>
                 </table>
                 <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-                {!! Form::submit('Done', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
             </div>
             {!! Form::close() !!}
 
@@ -293,7 +293,7 @@
             {!! Form::close() !!}
         @endif
 
-        <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Update All Files Name</span></button>
+        <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
     </div>
 
     <div class="panel-footer">
@@ -318,7 +318,7 @@
             {!! Form::model($person, ['action'=>['PersonController@storeNote', $person->id]]) !!}
                 {!! Form::label('note', 'Notes', ['class'=>'control-label']) !!}
                 {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel']) !!}
-                {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                {!! Form::submit('Save Note', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
             {!! Form::close() !!}
         </div>
     </div>

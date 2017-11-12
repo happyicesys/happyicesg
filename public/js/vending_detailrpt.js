@@ -82,9 +82,7 @@ var app = angular.module('app', [
             }
 
             if(transaction.clocker_delta > (transaction.last_clocker_delta * 170/100)) {
-                console.log(transaction.clocker_delta);
-                console.log(transaction.last_clocker_delta * 170/100);
-                return 'red';
+                return '#f68080';
             }
         }
 

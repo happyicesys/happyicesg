@@ -217,10 +217,10 @@
                                 Quantity
                             </th>
                             <th class="col-xs-1 text-center">
-                                Price/Unit (S$)
+                                Price/Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                             </th>
                             <th class="col-xs-1 text-center">
-                                Amount (S$)
+                                Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                             </th>
                         </tr>
 

@@ -24,13 +24,13 @@
                             Qty
                         </th>
                         <th class="text-center">
-                            Retail Price ($)
+                            Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                         </th>
                         <th class="text-center">
-                            Quote Price ($)
+                            Quote Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                         </th>
                          <th class="text-center">
-                            Amount ($)
+                            Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                         </th>
                     </tr>
 

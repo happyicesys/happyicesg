@@ -31,6 +31,11 @@ class Profile extends Model
         return $this->belongsTo('App\Payterm');
     }
 
+    public function currency()
+    {
+        return $this->belongsTo('App\Currency');
+    }
+
     // getter and setter
     public function setGstRateAttribute($value)
     {
