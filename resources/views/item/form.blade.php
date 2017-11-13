@@ -119,9 +119,19 @@
         </div>
     </div>
 
-    <div class="form-group">
-        {!! Form::label('remark', 'Description', ['class'=>'control-label']) !!}
-        {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('remark', 'Description', ['class'=>'control-label']) !!}
+                {!! Form::textarea('remark', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('productpage_desc', 'Product Page Desc', ['class'=>'control-label']) !!}
+                {!! Form::textarea('productpage_desc', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+            </div>
+        </div>
     </div>
 
     <div class="row">

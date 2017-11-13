@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\Inspire::class,
+        \App\Console\Commands\SendTransactionNotificationEmail::class,
     ];
 
     /**
@@ -26,8 +27,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function(){
+/*        $schedule->call(function(){
             DB::command("ALTER TABLE transactions AUTO_INCREMENT = 100000");
         })->everyMinute();
+
+        $schedule->call(function () {
+
+        })->weekly()->mondays()->at('13:00');   */
     }
 }

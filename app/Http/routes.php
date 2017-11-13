@@ -188,6 +188,11 @@ Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::get('/transaction/email/subscription', 'TransactionController@subscibeTransactionEmail');
+Route::get('/api/transaction/email/subscription', 'TransactionController@subscibeTransactionEmailApi');
+Route::get('/api/transaction/email/nonsubscription', 'TransactionController@nonSubscibeTransactionEmailApi');
+Route::post('/api/transaction/email/addsubscriber', 'TransactionController@addSubscriberTransactionEmailApi');
+Route::delete('/api/transaction/email/removesubscriber/{user_id}', 'TransactionController@removeSubscriberTransactionEmailApi');
 Route::delete('/transaction/invoice/attach/{atttachment_id}/remove', 'TransactionController@removeAttachment');
 Route::post('/transaction/invoice/attach/{transaction_id}', 'TransactionController@addInvoiceAttachment');
 Route::get('/api/transaction/edit/{id}', 'TransactionController@editApi');

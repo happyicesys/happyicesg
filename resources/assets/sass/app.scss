@@ -317,6 +317,7 @@ margin: 0px auto 15px;
 .carousel-inner{
   width:100%;
   max-height: 500px !important;
+  min-height: 400px;
 }
 
 .table-order
@@ -367,6 +368,8 @@ table input.form-control {
     cursor: pointer;
 }
 
+// vue cloak
+[v-cloak] { display:none; }
 
 // table setting for fix header
 // working1 css
@@ -424,3 +427,4 @@ table.table-fixedheader>thead>tr>th, table.table-fixedheader>tbody>tr>td {
     }
   }
 } */
+

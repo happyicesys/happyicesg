@@ -27,6 +27,10 @@
                                 <i class="fa fa-clock-o"></i>
                                 <span class="hidden-xs">Freeze Transaction Invoice </span>
                             </a>
+                            <a href="/transaction/email/subscription/" class="btn btn-default">
+                                <i class="fa fa-calendar"></i>
+                                <span class="hidden-xs">Weekly Email Subscription </span>
+                            </a>
                             @endif
                         </div>
                     </div>

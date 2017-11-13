@@ -18,6 +18,7 @@ class Item extends Model
         'img_remain', 'main_imgcaption', 'publish', 'qty_now', 'qty_last', 'lowest_limit',
         'email_limit', 'qty_order', 'is_inventory', 'is_commission', 'desc_imgpath',
         'itemcategory_id', 'nutri_imgpath', 'is_healthier', 'is_halal', 'is_active',
+        'productpage_desc'
     ];
 
     public function transactions()

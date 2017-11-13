@@ -4,7 +4,7 @@
 @stop
 @section('content')
     <div id="clientProductController" style=" padding-top: 20px; background-color: #f8eee7;" >
-        <productpage inline-template>
+        <productpage inline-template v-cloak>
         <div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class=" text-center" style="padding: 20px 0px 0px 0px;">
@@ -12,16 +12,10 @@
                         <img src="/img/Happy-Ice-Logo.png" class="img-responsive center-block">
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-sm-4 col-xs-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <img src="/img/official_icon/Healthier_choice_logo.png" class="img-responsive pull-right" height="80" width="80">
                         </div>
-                        <div class="col-md-2 col-sm-2 hidden-xs" style="padding-top: 20px; color: #fe7ecc;">
-                            <i class="fa fa-arrow-left fa-2x" style="vertical-align: bottom;"></i>
-                        </div>
-                        <div class="col-md-2 col-sm-2 hidden-xs" style="padding-top: 20px; color: #fe7ecc;">
-                            <i class="fa fa-arrow-right fa-2x" style="vertical-align: bottom;"></i>
-                        </div>
-                        <div class="col-md-4 col-sm-4 col-xs-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <img src="/img/official_icon/Halal.png" class="img-responsive pull-left" style="padding-top: 6px;" height="70" width="70">
                         </div>
                     </div>
@@ -66,7 +60,12 @@
                                                 <div class="col-md-12 col-sm-12 col-xs-12" v-if="product.nutri_imgpath">
                                                     <img :src="product.nutri_imgpath" class="img-responsive" max-height="220" max-width="320" style="border: thin solid black">
                                                 </div>
-                                                    <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">@{{product.name}}</p>
+                                                    <p class="product-name text-center" style="font-size: 17px;" v-if="product.main_imgpath">
+                                                        @{{product.name}}
+                                                    </p>
+                                                    <p class="text-left" style="font-size: 13px; padding: 0px 8px 0px 12px;" v-if="product.main_imgpath">
+                                                        @{{product.productpage_desc}}
+                                                    </p>
                                             </div>
                                         </div>
                                     </div>

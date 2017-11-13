@@ -32,6 +32,8 @@ use App\DtdTransaction;
 use App\DtdDeal;
 use App\GeneralSetting;
 use App\Invattachment;
+use App\TransSubscription;
+use App\User;
 
 use App\HasProfileAccess;
 use App\CreateRemoveDealLogic;
@@ -70,7 +72,11 @@ class TransactionController extends Controller
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                     'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive', 'profiles.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
@@ -841,13 +847,51 @@ class TransactionController extends Controller
         }
     }
 
+    // return email subscription page index()
+    public function subscibeTransactionEmail()
+    {
+        return view('transaction.trans_subscription');
+    }
+
+    // return subscribed transaction email users()
+    public function subscibeTransactionEmailApi()
+    {
+        $users = User::with(['roles', 'transSubscription'])->has('transSubscription')->get();
+
+        return $users;
+    }
+
+    // return non subscribed transaction email users()
+    public function nonSubscibeTransactionEmailApi()
+    {
+        $users = User::with(['roles'])->whereDoesntHave('transSubscription')->get();
+
+        return $users;
+    }
+
+    // add user subscribed list ($user_id)
+    public function addSubscriberTransactionEmailApi()
+    {
+        $trans_subs = new TransSubscription;
+
+        $user = User::findOrFail(request('user_id'));
+
+        $user->transSubscription()->save($trans_subs);
+    }
+
+    // remove user subscribed list(int $user_id)
+    public function removeSubscriberTransactionEmailApi($user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        $user->transSubscription()->delete();
+    }
+
     private function syncTransaction(Request $request)
     {
-
         $transaction = Auth::user()->transactions()->create($request->all());
 
         $this->syncItems($transaction, $request);
-
     }
 
     private function syncItems($transaction, $request)

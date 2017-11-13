@@ -7,11 +7,12 @@ Healthier Life
 <section id="services" style="padding-top: 15px;">
     <div class="container">
         <h2 class="text-center">Happy Ice Fun Vending Machine</h2>
+        <p class="text-center"><small>First Ice Cream Vending Machine</small></p>
         <img class="center-block" src="/img/vending/3D_Fun_Vending_Machine.png" class="img-responsive" alt="First Ice Cream Vending Machine">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-xs-12">
 
-                <p class="text-muted" style="font-size: 18px; padding-bottom: 20px;">Happy Ice designed its own vending machine - Ice Cream Fun-Vending machine that injects elements of fun into an otherwise boring vending process. We turn a traditional claw crane machine into a fully functional ice cream vending machine. The machine allows customers to buy the ice cream and play games at the same time. There are currently 20 over of this fun vending machines across the island.</p>
+                <p class="text-muted" style="font-size: 18px; padding-bottom: 20px;">Happy Ice designed its own vending machine - Ice Cream Fun-Vending machine that injects elements of fun into an otherwise boring vending process. We turn a traditional claw crane machine into a fully functional ice cream vending machine. The machine allows customers to buy the ice cream and play games at the same time. There are currently 100 over of this fun vending machines across the island.</p>
             </div>
         </div>
 

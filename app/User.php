@@ -78,6 +78,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\Transaction');
     }
 
+    public function transSubscription()
+    {
+        return $this->hasOne('App\TransSubscription');
+    }
+
     /**
      * User Responsible
      * @return User user responsible for the change
