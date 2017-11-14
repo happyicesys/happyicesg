@@ -18,7 +18,7 @@
 				            <select2 name="user_id" class="select form-control" v-model="form.user_id">
 				                <option value=""></option>
 								<option v-for="user in userselection" :value="user.id">
-									@{{user.name}}  <span v-if="user.email">(@{{user.email}})</span> @{{user.roles.map( function (el) {
+									@{{user.name}} @{{user.id}} <span v-if="user.email">(@{{user.email}})</span> @{{user.roles.map( function (el) {
 										return el.name;
 									})}}
 								</option>

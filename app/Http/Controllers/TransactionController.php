@@ -873,10 +873,10 @@ class TransactionController extends Controller
     public function addSubscriberTransactionEmailApi()
     {
         $trans_subs = new TransSubscription;
-
         $user = User::findOrFail(request('user_id'));
-
-        $user->transSubscription()->save($trans_subs);
+        $trans_subs->user_id = $user->id;
+        $trans_subs->save();
+        // $user->transSubscription()->save($trans_subs);
     }
 
     // remove user subscribed list(int $user_id)
