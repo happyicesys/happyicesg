@@ -94,7 +94,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-3 col-sm-3 col-xs-8">
         <div class="form-group">
             {!! Form::label('profile_id', 'Company Profile', ['class'=>'control-label']) !!}
             {!! Form::select('profile_id',
@@ -102,13 +102,19 @@
                             null, ['id'=>'profile_id', 'class'=>'select form-control']) !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-8">
+    <div class="col-md-3 col-sm-3 col-xs-4">
+        <div class="form-group" style="padding-top: 25px;">
+            {!! Form::checkbox('is_gst_inclusive', $person->is_gst_inclusive) !!}
+            {!! Form::label('is_gst_inclusive', 'GST Inclusive (Profile:'.($person->profile->is_gst_inclusive ? 'Yes)' : 'No)'), ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-3 col-xs-8">
         <div class="form-group">
             {!! Form::label('custcategory_id', 'Customer Category', ['class'=>'control-label']) !!}
             {!! Form::select('custcategory_id', [null=>''] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null, ['class'=>'select form-control']) !!}
         </div>
     </div>
-    <div class="col-md-4 col-sm-4 col-xs-4">
+    <div class="col-md-3 col-sm-3 col-xs-4">
         <div class="form-group" style="padding-top: 25px;">
             {!! Form::checkbox('is_vending', $person->is_vending) !!}
             {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}

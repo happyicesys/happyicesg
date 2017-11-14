@@ -119,6 +119,10 @@ class PersonController extends Controller
         $person->is_vending = $request->has('is_vending')? 1 : 0;
         $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
         $person->save();
+
+        // copying is gst inclusive to individual person
+        $this->personGstInclusiveOverride($person);
+
         return Redirect::action('PersonController@edit', $person->id);
     }
 
@@ -200,6 +204,10 @@ class PersonController extends Controller
             $person->is_profit_sharing_report = 0;
             $person->save();
         }
+
+        // copying is gst inclusive to individual person
+        $this->personGstInclusiveOverride($person);
+
         return Redirect::action('PersonController@edit', $person->id);
     }
 
@@ -558,5 +566,18 @@ class PersonController extends Controller
         ];
         return $totals;
     }
+
+    // gst inclusive override function(Collection $person)
+    private function personGstInclusiveOverride($person)
+    {
+        $is_gst_inclusive = request()->has('is_gst_inclusive');
+        if($is_gst_inclusive) {
+            $person->is_gst_inclusive = 1;
+        }else {
+            $person->profile->is_gst_inclusive = $person->is_gst_inclusive;
+        }
+        $person->save();
+    }
+
 
 }

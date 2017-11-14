@@ -927,6 +927,16 @@ class TransactionController extends Controller
                 // create array of errors to fetch errors from loop if any
                 $errors = array();
                 foreach($quantities as $index => $qty){
+
+                    $dividend = 0;
+                    $divisor = 1;
+
+                    if(strpos($qty, '/') !== false) {
+                        $dividend = explode('/', $qty)[0];
+                        $divisor = explode('/', $qty)[1];
+                        $qty = explode('/', $qty)[0]/ explode('/', $qty)[1];
+                    }
+
                     if($qty != NULL or $qty != 0 ){
                         // inventory lookup before saving to deals
                         $item = Item::findOrFail($index);
@@ -955,8 +965,8 @@ class TransactionController extends Controller
                                 $deal = new Deal();
                                 $deal->transaction_id = $transaction->id;
                                 $deal->item_id = $index;
-                                $deal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
-                                $deal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
+                                $deal->dividend = $dividend ? $dividend : $qty;
+                                $deal->divisor = $divisor;
                                 $deal->amount = $amounts[$index];
                                 $deal->unit_price = $quotes[$index];
                                 $deal->qty_status = $status;
@@ -976,8 +986,8 @@ class TransactionController extends Controller
                                 $deal = new Deal();
                                 $deal->transaction_id = $transaction->id;
                                 $deal->item_id = $index;
-                                $deal->dividend = strstr($qty, '/') ? strstr($qty, '/', true) : $qty;
-                                $deal->divisor = strstr($qty, '/') ? substr($qty, strpos($qty, '/') + 1) : 1;
+                                $deal->dividend = $dividend ? $dividend : $qty;
+                                $deal->divisor = $divisor;
                                 $deal->amount = $amounts[$index];
                                 $deal->unit_price = $quotes[$index];
                                 $deal->qty_status = $status;

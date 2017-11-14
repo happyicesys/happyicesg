@@ -51,7 +51,12 @@ class Person extends Baum\Node
         'is_vending' => 'Vending?',
         'vending_piece_price' => 'Piece/ Price',
         'vending_monthly_rental' => 'Monthly Rental',
-        'vending_profit_sharing' => 'Profit Sharing'
+        'vending_profit_sharing' => 'Profit Sharing',
+        'vending_monthly_utilities' => 'Utility Fee',
+        'vending_clocker_adjustment' => 'Clocker Adjustment',
+        'is_profit_sharing_report' => 'Profit Sharing',
+        'operation_note' => 'Operation Note',
+        'is_gst_inclusive' => 'GST inclusive'
     );
 
     protected $fillable = [
@@ -61,7 +66,8 @@ class Person extends Baum\Node
     'note', 'salutation', 'dob', 'cust_type', 'user_id', 'parent_name',
     'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
-    'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note'
+    'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
+    'is_gst_inclusive'
     ];
 
     protected $dates = ['deleted_at'];
