@@ -117,7 +117,7 @@
                                 <strong>@{{delivery | currency: ""}}</strong>
                             </td>
                         </tr>
-                        @if($person->profile->gst and $person->profile->is_gst_inclusive)
+                        @if($person->profile->gst and $person->is_gst_inclusive)
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
@@ -148,7 +148,7 @@
                                     @{{subtotalModel | currency: ""}}
                                 </td>
                             </tr>
-                        @elseif($person->profile->gst and !$person->profile->is_gst_inclusive)
+                        @elseif($person->profile->gst and !$person->is_gst_inclusive)
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>

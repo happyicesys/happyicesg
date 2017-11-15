@@ -117,7 +117,7 @@
 
                             </td>
                         </tr>
-                        @if($person->profile->gst and $person->profile->is_gst_inclusive)
+                        @if($person->profile->gst and $person->is_gst_inclusive)
                             <tr ng-if="deals.length">
                                 <td></td>
                                 <td colspan="3" class="col-md-2 text-center">
@@ -140,7 +140,7 @@
                                     </td>
                                 </td>
                             </tr>
-                        @elseif($person->profile->gst and !$person->profile->is_gst_inclusive)
+                        @elseif($person->profile->gst and !$person->is_gst_inclusive)
                             <tr ng-if="deals.length">
                                 <td></td>
                                 <td colspan="3" class="col-md-2 text-center">
@@ -170,7 +170,7 @@
                             </td>
                         </tr>
                         <tr ng-if="deals.length">
-                            @if($person->profile->gst and !$person->profile->is_gst_inclusive)
+                            @if($person->profile->gst and !$person->is_gst_inclusive)
                                 <td colspan="1" class="col-md-1 text-center"><strong>Total</strong></td>
                                 <td colspan="3" class="text-right" ng-model="totalqtyModel"> <strong>@{{totalqtyModel.toFixed(4)}}</strong></td>
                                 <td class="col-md-3 text-right">

@@ -102,12 +102,14 @@
                             null, ['id'=>'profile_id', 'class'=>'select form-control']) !!}
         </div>
     </div>
+    @if($person->profile)
     <div class="col-md-3 col-sm-3 col-xs-4">
         <div class="form-group" style="padding-top: 25px;">
             {!! Form::checkbox('is_gst_inclusive', $person->is_gst_inclusive) !!}
             {!! Form::label('is_gst_inclusive', 'GST Inclusive (Profile:'.($person->profile->is_gst_inclusive ? 'Yes)' : 'No)'), ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
         </div>
     </div>
+    @endif
     <div class="col-md-3 col-sm-3 col-xs-8">
         <div class="form-group">
             {!! Form::label('custcategory_id', 'Customer Category', ['class'=>'control-label']) !!}

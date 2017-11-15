@@ -290,11 +290,11 @@
                             $gst = 0;
                             $total = 0;
 
-                            if($person->profile->gst and $person->profile->is_gst_inclusive) {
+                            if($person->profile->gst and $person->is_gst_inclusive) {
                                 $subtotal = number_format($totalprice - ($totalprice - $totalprice/1.07), 2);
                                 $gst = number_format(($totalprice - $totalprice/1.07), 2);
                                 $total = number_format($totalprice, 2);
-                            }else if($person->profile->gst and !$person->profile->is_gst_inclusive) {
+                            }else if($person->profile->gst and !$person->is_gst_inclusive) {
                                 $subtotal = number_format($totalprice, 2);
                                 $gst = number_format($totalprice * 7/100, 2);
                                 $total = number_format($totalprice + ($totalprice * 7/100), 2);
@@ -314,7 +314,7 @@
                         </tr>
                         @endif
 
-                        @if($person->profile->gst and $person->profile->is_gst_inclusive)
+                        @if($person->profile->gst and $person->is_gst_inclusive)
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
@@ -345,7 +345,7 @@
                                     {{$subtotal}}
                                 </td>
                             </tr>
-                        @elseif($person->profile->gst and !$person->profile->is_gst_inclusive)
+                        @elseif($person->profile->gst and !$person->is_gst_inclusive)
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>

@@ -121,7 +121,8 @@ class PersonController extends Controller
         $person->save();
 
         // copying is gst inclusive to individual person
-        $this->personGstInclusiveOverride($person);
+        $person->is_gst_inclusive = $person->profile->is_gst_inclusive;
+        $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
     }
@@ -183,6 +184,15 @@ class PersonController extends Controller
     public function update(PersonRequest $request, $id)
     {
         $person = Person::findOrFail($id);
+
+        // detect if changing profile, will copy the original is gst inclusive
+        if($person->profile_id != $request->profile_id) {
+            $newprofile = Profile::findOrFail($request->profile_id);
+            $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive));
+        }else {
+            $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive')? 1 : 0));
+        }
+
         if($request->input('active')){
             if($person->active == 'Yes'){
                 $request->merge(array('active' => 'No'));
@@ -192,6 +202,7 @@ class PersonController extends Controller
         }
         $input = $request->all();
         $person->update($input);
+
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
         $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
@@ -204,9 +215,6 @@ class PersonController extends Controller
             $person->is_profit_sharing_report = 0;
             $person->save();
         }
-
-        // copying is gst inclusive to individual person
-        $this->personGstInclusiveOverride($person);
 
         return Redirect::action('PersonController@edit', $person->id);
     }
@@ -303,7 +311,7 @@ class PersonController extends Controller
                                     'profiles.name', 'profiles.gst'
                                 )*/
                             ->select(
-                                DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + profiles.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
+                                DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + profiles.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                                     'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
                                     'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
                                     'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
@@ -556,9 +564,9 @@ class PersonController extends Controller
         $query3 = clone $query;
 
         // $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
-        $total_amount = $query1->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
-        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
-        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN profiles.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_amount = $query1->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+profiles.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
         $totals = [
             'total_amount' => $total_amount,
             'total_paid' => $total_paid,
@@ -566,18 +574,4 @@ class PersonController extends Controller
         ];
         return $totals;
     }
-
-    // gst inclusive override function(Collection $person)
-    private function personGstInclusiveOverride($person)
-    {
-        $is_gst_inclusive = request()->has('is_gst_inclusive');
-        if($is_gst_inclusive) {
-            $person->is_gst_inclusive = 1;
-        }else {
-            $person->profile->is_gst_inclusive = $person->is_gst_inclusive;
-        }
-        $person->save();
-    }
-
-
 }
