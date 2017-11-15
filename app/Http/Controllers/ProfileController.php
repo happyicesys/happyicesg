@@ -10,7 +10,6 @@ use Laracasts\Flash\Flash;
 
 use App\Profile;
 
-
 class ProfileController extends Controller
 {
     //auth-only login can see
@@ -110,6 +109,15 @@ class ProfileController extends Controller
         $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
         request()->merge(array('gst' => $gst));
         request()->merge(array('is_gst_inclusive' => $is_gst_inclusive));
+
+        if($profile->is_gst_inclusive != $is_gst_inclusive ){
+            $people = $profile->people;
+
+            foreach($people as $person) {
+                $person->is_gst_inclusive = $is_gst_inclusive;
+                $person->save();
+            }
+        }
 
         $input = request()->all();
         $profile->update($input);

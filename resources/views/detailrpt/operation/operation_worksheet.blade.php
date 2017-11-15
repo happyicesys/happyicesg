@@ -175,7 +175,8 @@
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <button type="submit" class="btn btn-default" form="export_excel" name="excel_all" value="excel_all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
         <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
-        {{-- <button ng-if="people.length > 0" form="generate_map" class="btn btn-primary"><i class="fa fa-map-o"></i> Generate Map</button> --}}
+
+        {{-- <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()"><i class="fa fa-map-o"></i> Generate Map</button> --}}
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
@@ -258,7 +259,7 @@
                         @{{ person.custcategory }}
                     </td>
                     <td class="col-md-2">
-                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'2', 'style'=>'min-width: 150px; align-content: left;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
+                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 160px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                     </td>
                     <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
                         &nbsp;@{{alldata.qty}}
@@ -276,5 +277,27 @@
         </div>
     </div>
 </div>
+{{--
+<div id="mapModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Plotted Map</h4>
+      </div>
+      <div class="modal-body">
+        <ng-map default-style="true" center="current-location" zoom="6">
+            <info-window position="current-location">
+                <span>Location found using HTML5.</span>
+            </info-window>
+        </ng-map>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div> --}}
 
 <script src="/js/operation_worksheet.js"></script>

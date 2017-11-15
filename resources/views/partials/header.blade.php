@@ -10,4 +10,5 @@
 {{-- CSS & Javascript versioning gulpfile --}}
 <link rel="stylesheet" href="{{ elixir('css/all.css') }}">
 <script src="{{ elixir('js/all.js') }}"></script>
+<script src="http://maps.google.com/maps/api/js"></script>
 

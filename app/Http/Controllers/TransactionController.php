@@ -1168,6 +1168,7 @@ class TransactionController extends Controller
 
     private function calOrderLimit($qty, $item)
     {
+        $qty = bcdiv($qty, 1, 4);
         if(($item->qty_now - $item->qty_order - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
         }else {
@@ -1180,6 +1181,7 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
+        $qty = bcdiv($qty, 1, 4);
         if(($item->qty_now - $qty < $item->lowest_limit ? $item->lowest_limit : 0) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
         }else {
@@ -1192,6 +1194,7 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
+        $qty = bcdiv($qty, 1, 4);
         if(($item->qty_now - $item->qty_order - $qty < $item->email_limit) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
         }else {
@@ -1204,6 +1207,7 @@ class TransactionController extends Controller
         if(strstr($qty, '/')) {
             $qty = $this->fraction($qty);
         }
+        $qty = bcdiv($qty, 1, 4);
         if(($item->qty_now - $qty < $item->email_limit) and ($qty > 0) and ($item->is_inventory === 1)) {
             return true;
         }else{

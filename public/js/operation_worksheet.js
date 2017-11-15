@@ -2,15 +2,13 @@ var app = angular.module('app', [
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
-                                    '720kb.datepicker'
+                                    '720kb.datepicker',
+                                    'ngMap'
                                 ]);
 
     function operationWorksheetController($scope, $http){
-
-        $('#checkAll').change(function(){
-            var all = this;
-            $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
-        });
+        // map inits
+        $scope.googleMapsUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSegGsLqW4GNNPPg2NbjlJ1uXMCoN4s1c";
 
         // init the variables
         $scope.alldata = [];
@@ -43,6 +41,22 @@ var app = angular.module('app', [
             $('.date').datetimepicker({
                 format: 'YYYY-MM-DD'
             });
+
+        $scope.onMapClicked = function() {
+            var uluru = {lat: -25.363, lng: 131.044};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: uluru,
+                zoom: 4
+            });
+            var marker = new google.maps.Marker({
+              position: uluru,
+              map: map
+            });
+        }
+
+        $('#mapModal').on('shown.bs.modal', function () {
+            google.maps.event.trigger(map, "resize");
+        });
         });
 
         $scope.exportData = function ($event) {
