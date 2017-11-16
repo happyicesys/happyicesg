@@ -358,7 +358,7 @@ $('.select').select2({
         };
         retrieveLatLng(dataObj);
 
-        return false;
+        return true;
     }
 
     function retrieveLatLng(dataObj) {

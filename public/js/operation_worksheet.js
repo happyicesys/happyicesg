@@ -126,6 +126,12 @@ var app = angular.module('app', [
                 location = 'Singapore';
                 locationLatLng = {lat: 1.3521, lng: 103.8198};
             }
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: locationLatLng,
+                zoom: 12
+            });
+
             var geocoder = new google.maps.Geocoder();
 
             $scope.people.forEach(function (person) {
@@ -143,13 +149,16 @@ var app = angular.module('app', [
                         content: contentString
                     });
 
+                    var markers = [];
+
                     if(person.del_lat && person.del_lng) {
-                        pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                        var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
                             title: person.cust_id + ' - ' + person.company
                         });
+                        markers.push(marker);
                         // marker.addListener('click', function() {
                             infowindow.open(map, marker);
                         // });
@@ -164,6 +173,7 @@ var app = angular.module('app', [
                                     map: map,
                                     title: person.cust_id + ' - ' + person.company
                                 });
+                                markers.push(marker);
                                 // marker.addListener('click', function() {
                                     infowindow.open(map, marker);
                                 // });
@@ -180,16 +190,17 @@ var app = angular.module('app', [
                 }
             });
 
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: locationLatLng,
-                zoom: 12
-            });
-
             $("#mapModal").on("shown.bs.modal", function () {
-                var currentCenter = map.getCenter();  // Get current center before resizing
                 google.maps.event.trigger(map, "resize");
-                map.setCenter(currentCenter);
+                map.setCenter(locationLatLng);
             });
+            $('#mapModal').on('hidden.bs.modal', function () {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                }
+                markers = [];
+                google.maps.event.trigger(map, "resize");
+            })
         }
 
         // retrieve page w/wo search
