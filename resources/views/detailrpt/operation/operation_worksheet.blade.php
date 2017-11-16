@@ -176,7 +176,7 @@
         <button type="submit" class="btn btn-default" form="export_excel" name="excel_all" value="excel_all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
         <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
 
-        {{-- <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()"><i class="fa fa-map-o"></i> Generate Map</button> --}}
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()"><i class="fa fa-map-o"></i> Generate Map</button>
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
@@ -277,7 +277,7 @@
         </div>
     </div>
 </div>
-{{--
+
 <div id="mapModal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -286,11 +286,7 @@
         <h4 class="modal-title">Plotted Map</h4>
       </div>
       <div class="modal-body">
-        <ng-map default-style="true" center="current-location" zoom="6">
-            <info-window position="current-location">
-                <span>Location found using HTML5.</span>
-            </info-window>
-        </ng-map>
+        <div id="map"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -298,6 +294,6 @@
     </div>
 
   </div>
-</div> --}}
+</div>
 
 <script src="/js/operation_worksheet.js"></script>

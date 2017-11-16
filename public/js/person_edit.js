@@ -7,6 +7,7 @@ var app = angular.module('app', [
                                 ]);
 
     function personEditController($scope, $http){
+
         // init the variables
         $scope.alldata = [];
         $scope.totalCount = 0;

@@ -163,6 +163,8 @@ Route::resource('person', 'PersonController');
 Route::post('person/{id}/file', 'PersonController@addFile');
 Route::delete('person/{id}/file', 'PersonController@removeFile');
 Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
+Route::get('/api/person/getLatLng/{person_id}', 'PersonController@getDeliveryLatLng');
+Route::post('/api/person/storelatlng/{person_id}', 'PersonController@storeDeliveryLatLng');
 
 Route::get('/profile/data', 'ProfileController@getData');
 Route::resource('profile', 'ProfileController');

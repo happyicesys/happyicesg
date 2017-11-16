@@ -464,6 +464,26 @@ class PersonController extends Controller
         return $members;
     }
 
+    // retrieve Lat and Lng by person (int person_id)
+    public function getDeliveryLatLng($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+        $latlng = [
+            'lat' => $person->del_lat,
+            'lng' => $person->del_lng
+        ];
+        return $latlng;
+    }
+
+    // store delivery latlng whenever has chance(int person_id)
+    public function storeDeliveryLatLng($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+        $person->del_lat = request('lat');
+        $person->del_lng = request('lng');
+        $person->save();
+    }
+
     // replicate the person particulars(int $person_id)
     public function replicatePerson($person_id)
     {

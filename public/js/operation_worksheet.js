@@ -2,14 +2,10 @@ var app = angular.module('app', [
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
-                                    '720kb.datepicker',
-                                    'ngMap'
+                                    '720kb.datepicker'
                                 ]);
 
     function operationWorksheetController($scope, $http){
-        // map inits
-        $scope.googleMapsUrl="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSegGsLqW4GNNPPg2NbjlJ1uXMCoN4s1c";
-
         // init the variables
         $scope.alldata = [];
         $scope.totalCount = 0;
@@ -41,22 +37,6 @@ var app = angular.module('app', [
             $('.date').datetimepicker({
                 format: 'YYYY-MM-DD'
             });
-
-        $scope.onMapClicked = function() {
-            var uluru = {lat: -25.363, lng: 131.044};
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: uluru,
-                zoom: 4
-            });
-            var marker = new google.maps.Marker({
-              position: uluru,
-              map: map
-            });
-        }
-
-        $('#mapModal').on('shown.bs.modal', function () {
-            google.maps.event.trigger(map, "resize");
-        });
         });
 
         $scope.exportData = function ($event) {
@@ -132,6 +112,84 @@ var app = angular.module('app', [
                     return '';
                 }
             }
+        }
+
+        $scope.onMapClicked = function() {
+            var url = window.location.href;
+            var location = '';
+            var locationLatLng = {};
+
+            if(url.includes("my")) {
+                location = 'Malaysia';
+                locationLatLng = {lat: 1.4927, lng: 103.7414};
+            }else if(url.includes("sg")) {
+                location = 'Singapore';
+                locationLatLng = {lat: 1.3521, lng: 103.8198};
+            }
+            var geocoder = new google.maps.Geocoder();
+
+            $scope.people.forEach(function (person) {
+                if(person.del_postcode) {
+                    // var address = person.del_address.replace(/ /g, '+');
+                    var contentString = '<span style=font-size:10px;>' +
+                                        '<b>' +
+                                        person.cust_id + ' - ' + person.company +
+                                        '</b>' +
+                                        '<br>'+
+                                        person.del_address +
+                                        '</span>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    if(person.del_lat && person.del_lng) {
+                        pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: person.cust_id + ' - ' + person.company
+                        });
+                        // marker.addListener('click', function() {
+                            infowindow.open(map, marker);
+                        // });
+                    }else {
+                        geocoder.geocode(
+                                        {componentRestrictions: {country: location, postalCode: person.del_postcode},
+                                        address: person.del_address
+                                        }, function(results, status) {
+                            if(results[0]) {
+                                var marker = new google.maps.Marker({
+                                    position: results[0].geometry.location,
+                                    map: map,
+                                    title: person.cust_id + ' - ' + person.company
+                                });
+                                // marker.addListener('click', function() {
+                                    infowindow.open(map, marker);
+                                // });
+                                var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
+                                var coord = {
+                                    lat: jsondata.lat,
+                                    lng: jsondata.lng
+                                };
+
+                                $http.post('/api/person/storelatlng/' + person.person_id, coord).success(function (data) {});
+                            }
+                        });
+                    }
+                }
+            });
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: locationLatLng,
+                zoom: 12
+            });
+
+            $("#mapModal").on("shown.bs.modal", function () {
+                var currentCenter = map.getCenter();  // Get current center before resizing
+                google.maps.event.trigger(map, "resize");
+                map.setCenter(currentCenter);
+            });
         }
 
         // retrieve page w/wo search

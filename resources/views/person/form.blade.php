@@ -41,12 +41,12 @@
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-            {!! Form::text('del_postcode', null, ['class'=>'form-control']) !!}
+            {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode']) !!}
         </div>
 
         <div class="form-group">
             {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
-            {!! Form::textarea('del_address', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+            {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2']) !!}
         </div>
     </div>
 </div>

@@ -52,7 +52,7 @@
         </div>
 
         <div class="panel-body">
-            {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id]]) !!}
+            {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id], 'onsubmit'=>'return storeDeliveryLatLng()']) !!}
                 @include('person.form')
                 @if($person->is_vending === 1)
                     @include('person.vending')
@@ -345,9 +345,40 @@ $(document).ready(function() {
 $('.select').select2({
     placeholder:'Select...'
 });
-
 </script>
 <script src="/js/person_edit.js"></script>
-{{-- <script src="/js/vue-controller/assignVendingController.js"></script> --}}
+<script>
+    function storeDeliveryLatLng() {
+
+        var dataObj = {
+            del_postcode: $('#del_postcode').val(),
+            del_address: $('#del_address').val(),
+            country: 'Singapore',
+            person_id: $('#person_id').val()
+        };
+        retrieveLatLng(dataObj);
+
+        return false;
+    }
+
+    function retrieveLatLng(dataObj) {
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode(
+                        {componentRestrictions: {country: dataObj.country, postalCode: dataObj.del_postcode},
+                        address: dataObj.del_address
+                        }, function(results, status) {
+            if(results[0]) {
+                var data = JSON.parse(JSON.stringify(results[0].geometry.location));
+                var coordObj = {
+                    lat: data.lat,
+                    lng: data.lng
+                };
+                axios.post('/api/person/storelatlng/' + dataObj.person_id, coordObj).then(function(response) {});
+            }
+        });
+    }
+
+</script>
 
 @stop
