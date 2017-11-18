@@ -349,16 +349,26 @@ $('.select').select2({
 <script src="/js/person_edit.js"></script>
 <script>
     function storeDeliveryLatLng() {
+        var url = window.location.href;
+        var location = '';
+
+        if(url.includes("my")) {
+            location = 'Malaysia';
+        }else if(url.includes("sg")) {
+            location = 'Singapore';
+        }
 
         var dataObj = {
             del_postcode: $('#del_postcode').val(),
             del_address: $('#del_address').val(),
-            country: 'Singapore',
+            country: location,
             person_id: $('#person_id').val()
         };
-        retrieveLatLng(dataObj);
-
-        return true;
+        if(dataObj.del_postcode || dataObj.del_address) {
+            return retrieveLatLng(dataObj);
+        }else {
+            return true;
+        }
     }
 
     function retrieveLatLng(dataObj) {
@@ -374,7 +384,11 @@ $('.select').select2({
                     lat: data.lat,
                     lng: data.lng
                 };
-                axios.post('/api/person/storelatlng/' + dataObj.person_id, coordObj).then(function(response) {});
+                axios.post('/api/person/storelatlng/' + dataObj.person_id, coordObj).then(function(response) {
+                    return true;
+                });
+            }else {
+                return true;
             }
         });
     }

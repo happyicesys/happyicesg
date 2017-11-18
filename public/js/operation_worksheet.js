@@ -159,24 +159,27 @@ var app = angular.module('app', [
                             title: person.cust_id + ' - ' + person.company
                         });
                         markers.push(marker);
-                        // marker.addListener('click', function() {
+                        marker.addListener('click', function() {
                             infowindow.open(map, marker);
-                        // });
+                        });
                     }else {
                         geocoder.geocode(
                                         {componentRestrictions: {country: location, postalCode: person.del_postcode},
                                         address: person.del_address
                                         }, function(results, status) {
                             if(results[0]) {
+                                if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                    setTimeout(3000);
+                                }
                                 var marker = new google.maps.Marker({
                                     position: results[0].geometry.location,
                                     map: map,
                                     title: person.cust_id + ' - ' + person.company
                                 });
                                 markers.push(marker);
-                                // marker.addListener('click', function() {
+                                marker.addListener('click', function() {
                                     infowindow.open(map, marker);
-                                // });
+                                });
                                 var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
                                 var coord = {
                                     lat: jsondata.lat,
@@ -200,7 +203,7 @@ var app = angular.module('app', [
                 }
                 markers = [];
                 google.maps.event.trigger(map, "resize");
-            })
+            });
         }
 
         // retrieve page w/wo search

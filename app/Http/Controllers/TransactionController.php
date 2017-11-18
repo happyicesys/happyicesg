@@ -419,14 +419,22 @@ class TransactionController extends Controller
 
             if(count($vendcash_check) > 0) {
                 if($analog_clock > 0) {
-                    $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
-                    $current_analog = (int)request('analog_clock');
+                    $prev_inv = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
 
-                    if($current_analog < $prev_analog) {
-                        Flash::error('Analog Clock value must be equals or greater than previous invoice ('.$prev_analog.')');
+                    if($prev_inv) {
+                        $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
+
+
+                        $current_analog = (int)request('analog_clock');
+
+                        if($current_analog < $prev_analog) {
+                            Flash::error('Analog Clock value must be equals or greater than previous invoice ('.$prev_analog.')');
+                            return redirect()->action('TransactionController@edit', $transaction->id);
+                        }
+                    }else {
+                        Flash::error('Vend cash shouldnt be received when the previous invoice is not detected');
                         return redirect()->action('TransactionController@edit', $transaction->id);
                     }
-
                 }else {
                     if($analog_clock == 0 or $analog_clock == null) {
                         Flash::error('Analog Clock must be filled and cannot be 0');

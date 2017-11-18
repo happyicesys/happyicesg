@@ -45,8 +45,8 @@ class SendTransactionNotificationEmail extends Command
      */
     public function handle()
     {
-        $date_start = Carbon::today()->toDateString();
-        $date_end = Carbon::today()->addDays(7)->toDateString();
+        $date_start = Carbon::today()->addDays(2)->toDateString();
+        $date_end = Carbon::today()->addDays(8)->toDateString();
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
