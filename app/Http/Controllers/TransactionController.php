@@ -419,7 +419,7 @@ class TransactionController extends Controller
 
             if(count($vendcash_check) > 0) {
                 if($analog_clock > 0) {
-                    $prev_inv = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
+                    $prev_inv = Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
 
                     if($prev_inv) {
                         $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
