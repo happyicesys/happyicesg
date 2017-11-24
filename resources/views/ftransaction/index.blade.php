@@ -1,16 +1,15 @@
 @inject('profiles', 'App\Profile')
-@inject('custcategories', 'App\Custcategory')
 
 @extends('template')
 @section('title')
-{{ $TRANS_TITLE }}
+{{ $FRANCHISE_TRANS }}
 @stop
 @section('content')
 
-    <div ng-app="app" ng-controller="transController">
+    <div ng-app="app" ng-controller="fTransactionController">
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/transaction"><h1>{{ $TRANS_TITLE }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+        <a class="title_hyper pull-left" href="/ftransaction"><h1>{{ $FRANCHISE_TRANS }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
     </div>
 
         <div class="panel panel-default" ng-cloak>
@@ -18,20 +17,10 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            <a href="/transaction/create" class="btn btn-success">
+                            <a href="/ftransaction/create" class="btn btn-success">
                                 <i class="fa fa-plus"></i>
-                                <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                                <span class="hidden-xs"> New {{ $FRANCHISE_TRANS }} </span>
                             </a>
-                            @if(Auth::user()->hasRole('admin'))
-                            <a href="/transaction/freeze/date" class="btn btn-primary">
-                                <i class="fa fa-clock-o"></i>
-                                <span class="hidden-xs">Freeze Transaction Invoice </span>
-                            </a>
-                            <a href="/transaction/email/subscription/" class="btn btn-default">
-                                <i class="fa fa-calendar"></i>
-                                <span class="hidden-xs">Weekly Email Subscription </span>
-                            </a>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -140,16 +129,6 @@
                                                             'placeholder'=>'Delivered By',
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
-                            [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.custcategory',
-                            'ng-change'=>'searchDB()'
-                            ])
-                        !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
@@ -270,12 +249,6 @@
                                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('custcategory_id')">
-                                    Cust Cat
-                                    <span ng-if="search.sortName == 'custcategory_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'custcategory_id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('del_postcode')">
                                     Del Postcode
                                     <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -324,80 +297,74 @@
                                     <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('transactions.updated_at')">
+                                    <a href="" ng-click="sortTable('ftransactions.updated_at')">
                                     Last Modified Time
-                                    <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'ftransactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'ftransactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Action
                                 </th>
                             </tr>
                             <tbody>
-                                <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                                <tr dir-paginate="ftransaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
-                                        <a href="/transaction/@{{ transaction.id }}/edit">
-                                            @{{ transaction.id }}
+                                        <a href="/transaction/@{{ ftransaction.transaction_id }}/edit" ng-if="ftransaction.transaction_id">
+                                            @{{ ftransaction.transaction_id }}
+                                        </a>
+                                        <a href="/ftransaction/@{{ ftransaction.trans_id }}/edit" ng-if="!ftransaction.transaction_id">
+                                            @{{ ftransaction.trans_id }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.cust_id }} </td>
                                     <td class="col-md-1 text-center">
-                                        <a href="/person/@{{ transaction.person_id }}">
-                                            @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
+                                        <a href="/person/@{{ ftransaction.person_id }}">
+                                            @{{ ftransaction.cust_id[0] == 'D' || ftransaction.cust_id[0] == 'H' ? ftransaction.name : ftransaction.company }}
                                         </a>
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.del_postcode }}</td>
                                     {{-- status by color --}}
-                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
-                                        @{{ transaction.status }}
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="ftransaction.status == 'Pending'">
+                                        @{{ ftransaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: orange;" ng-if="transaction.status == 'Confirmed'">
-                                        @{{ transaction.status }}
+                                    <td class="col-md-1 text-center" style="color: orange;" ng-if="ftransaction.status == 'Confirmed'">
+                                        @{{ ftransaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.status == 'Delivered'">
-                                        @{{ transaction.status }}
+                                    <td class="col-md-1 text-center" style="color: green;" ng-if="ftransaction.status == 'Delivered'">
+                                        @{{ ftransaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="transaction.status == 'Verified Owe'">
-                                        @{{ transaction.status }}
+                                    <td class="col-md-1 text-center" style="color: black; background-color:orange;" ng-if="ftransaction.status == 'Verified Owe'">
+                                        @{{ ftransaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="transaction.status == 'Verified Paid'">
-                                        @{{ transaction.status }}
+                                    <td class="col-md-1 text-center" style="color: black; background-color:green;" ng-if="ftransaction.status == 'Verified Paid'">
+                                        @{{ ftransaction.status }}
                                     </td>
-                                    <td class="col-md-1 text-center" ng-if="transaction.status == 'Cancelled'">
-                                        <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
+                                    <td class="col-md-1 text-center" ng-if="ftransaction.status == 'Cancelled'">
+                                        <span style="color: white; background-color: red;" > @{{ ftransaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.driver }}</td>
                                     <td class="col-md-1 text-center">
-                                        @{{ transaction.total }}
+                                        @{{ ftransaction.total }}
                                     </td>
-                                    <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.total_qty }}</td>
                                     {{-- pay status --}}
-                                    <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
-                                        @{{ transaction.pay_status }}
+                                    <td class="col-md-1 text-center" style="color: red;" ng-if="ftransaction.pay_status == 'Owe'">
+                                        @{{ ftransaction.pay_status }}
                                     </td>
-                                    <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
-                                        @{{ transaction.pay_status }}
+                                    <td class="col-md-1 text-center" style="color: green;" ng-if="ftransaction.pay_status == 'Paid'">
+                                        @{{ ftransaction.pay_status }}
                                     </td>
                                     {{-- pay status ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.updated_by}}</td>
+                                    <td class="col-md-1 text-center">@{{ ftransaction.updated_at }}</td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
-                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        <a href="/ftransaction/download/@{{ ftransaction.id }}" class="btn btn-primary btn-sm" ng-if="ftransaction.status != 'Pending' && ftransaction.status != 'Cancelled'">Print</a>
                                         {{-- button view shown when cancelled --}}
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-
-                                        {{-- Payment Verification --}}
-{{--                                         @cannot('supervisor_view')
-                                        @cannot('transaction_view')
-                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
-                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
-                                        @endcannot
-                                        @endcannot --}}
+                                        <a href="/ftransaction/@{{ ftransaction.id }}/edit" class="btn btn-sm btn-default" ng-if="ftransaction.status == 'Cancelled'">View</a>
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
@@ -412,7 +379,7 @@
         </div>
     </div>
 
-    <script src="/js/transaction_index.js"></script>
+    <script src="/js/ftransaction_index.js"></script>
     <script>
         $('#delfrom').datetimepicker({
             format: 'DD-MMMM-YYYY'

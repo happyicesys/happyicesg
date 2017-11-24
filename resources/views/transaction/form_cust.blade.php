@@ -253,7 +253,7 @@
             @endif
         </div>
 
-        @if($transaction->person->is_vending === 1)
+        @if($transaction->person->is_vending === 1 or $transaction->person->is_dvm === 1)
             <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
               <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                 Vending Machine
@@ -289,6 +289,22 @@
                     </div>
                 </div>
             </div>
+            @if($transaction->person->is_dvm)
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('sales_count', 'Sales Count (pcs)', ['class'=>'control-label']) !!}
+                        {!! Form::text('sales_count', null, ['class'=>'form-control']) !!}
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('sales_amount', 'Sales Amount ($)', ['class'=>'control-label']) !!}
+                        {!! Form::text('sales_amount', null, ['class'=>'form-control']) !!}
+                    </div>
+                </div>
+            </div>
+            @endif
         @endif
     </div>
 </div>

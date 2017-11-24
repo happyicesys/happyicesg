@@ -291,13 +291,13 @@
                             $total = 0;
 
                             if($person->profile->gst and $person->is_gst_inclusive) {
-                                $subtotal = number_format($totalprice - ($totalprice - $totalprice/1.07), 2);
-                                $gst = number_format(($totalprice - $totalprice/1.07), 2);
+                                $subtotal = number_format($totalprice - ($totalprice - $totalprice/(1 + $person->gst_rate/100)), 2);
+                                $gst = number_format(($totalprice - $totalprice/(1 + $person->gst_rate/100)), 2);
                                 $total = number_format($totalprice, 2);
                             }else if($person->profile->gst and !$person->is_gst_inclusive) {
                                 $subtotal = number_format($totalprice, 2);
-                                $gst = number_format($totalprice * 7/100, 2);
-                                $total = number_format($totalprice + ($totalprice * 7/100), 2);
+                                $gst = number_format($totalprice * $person->gst_rate/100, 2);
+                                $total = number_format($totalprice + ($totalprice * $person->gst_rate/100), 2);
                             }else {
                                 $total = number_format($totalprice, 2);
                             }
@@ -329,7 +329,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="text-right">
-                                    <strong>GST (7%)</strong>
+                                    <strong>GST ({{$person->gst_rate}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="text-right">
@@ -357,7 +357,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="text-right">
-                                    <strong>GST (7%)</strong>
+                                    <strong>GST ({{$person->gst_rate}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="text-right">

@@ -54,7 +54,7 @@
         <div class="panel-body">
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id], 'onsubmit'=>'return storeDeliveryLatLng()']) !!}
                 @include('person.form')
-                @if($person->is_vending === 1)
+                @if($person->is_vending === 1 or $person->is_dvm)
                     @include('person.vending')
                 @endif
 
@@ -325,7 +325,9 @@
 </div>
 {{-- divider --}}
 </div>
+<script src="/js/person_edit.js"></script>
 <script>
+
 $(document).ready(function() {
     Dropzone.autoDiscover = false;
     $('.dropzone').dropzone({
@@ -342,12 +344,6 @@ $(document).ready(function() {
     });
 });
 
-$('.select').select2({
-    placeholder:'Select...'
-});
-</script>
-<script src="/js/person_edit.js"></script>
-<script>
     function storeDeliveryLatLng() {
         var url = window.location.href;
         var location = '';

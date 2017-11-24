@@ -19,12 +19,18 @@
             <div class="col-md-12">
                 <div class="form-group pull-right">
                     {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                    <a href="/person" class="btn btn-default">Cancel</a>            
+                    <a href="/person" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         {!! Form::close() !!}
     </div>
 </div>
 </div>
+
+<script>
+    $('.select').select2({
+        placeholder: 'Select..'
+    });
+</script>
 
 @stop

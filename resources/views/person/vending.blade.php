@@ -10,22 +10,31 @@
                     @include('person._assignVending')
                 </assignVending>
             </div> --}}
-
+            @if(!$person->is_dvm)
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('vending_piece_price', 'Price Per Piece ($)', ['class'=>'control-label']) !!}
                     {!! Form::text('vending_piece_price', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            @endif
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('vending_monthly_rental', 'Monthly Rental ($)', ['class'=>'control-label']) !!}
                     {!! Form::text('vending_monthly_rental', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            @php
+                $profit_sharing_unit = '';
+                if($person->is_vending) {
+                    $profit_sharing_unit = '$';
+                }else {
+                    $profit_sharing_unit = '%';
+                }
+            @endphp
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('vending_profit_sharing', 'Profit Sharing ($)', ['class'=>'control-label']) !!}
+                    {!! Form::label('vending_profit_sharing', 'Profit Sharing ('.$profit_sharing_unit.')', ['class'=>'control-label']) !!}
                     {!! Form::text('vending_profit_sharing', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
@@ -37,12 +46,14 @@
                     {!! Form::text('vending_monthly_utilities', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            @if(!$person->is_dvm)
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('vending_clocker_adjustment', 'Clocker Adjustment (%)', ['class'=>'control-label']) !!}
                     {!! Form::text('vending_clocker_adjustment', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            @endif
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="form-group" style="padding-top: 25px;">
                     {!! Form::checkbox('is_profit_sharing_report', $person->is_profit_sharing_report) !!}

@@ -20,6 +20,7 @@ use App\Profile;
 use App\AddFreezer;
 use App\AddAccessory;
 use App\Deal;
+use App\User;
 use Auth;
 use DB;
 use App\HasProfileAccess;
@@ -83,6 +84,11 @@ class PersonController extends Controller
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
 
+        // add in franchisee checker
+        if(auth()->user()->hasRole('franchisee')) {
+            $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
+        }
+
         if($pageNum == 'All'){
             $people = $people->latest('people.created_at')->get();
         }else{
@@ -117,11 +123,19 @@ class PersonController extends Controller
         $input = $request->all();
         $person = Person::create($input);
         $person->is_vending = $request->has('is_vending')? 1 : 0;
+        $person->is_dvm = $request->has('is_dvm')? 1 : 0;
+        // default setting is dvm based on custcategory
+        if($person->custcategory) {
+            if($person->custcategory->name == 'V-Dir') {
+                $person->is_dvm = 1;
+            }
+        }
         $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
         $person->save();
 
         // copying is gst inclusive to individual person
         $person->is_gst_inclusive = $person->profile->is_gst_inclusive;
+        $person->gst_rate = $person->profile->gst_rate;
         $person->save();
 
         return Redirect::action('PersonController@edit', $person->id);
@@ -189,6 +203,7 @@ class PersonController extends Controller
         if($person->profile_id != $request->profile_id) {
             $newprofile = Profile::findOrFail($request->profile_id);
             $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive));
+            $request->merge(array('gst_rate' => $newprofile->gst_rate ? $newprofile->gst_rate : 0));
         }else {
             $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive')? 1 : 0));
         }
@@ -204,9 +219,17 @@ class PersonController extends Controller
         $person->update($input);
 
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
+        $person->is_dvm = $request->has('is_dvm')? 1 : 0;
+        // default setting is dvm based on custcategory
+        if($person->custcategory) {
+            if($person->custcategory->name == 'V-Dir') {
+                $person->is_dvm = 1;
+                $person->is_vending = 0;
+            }
+        }
         $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
-        if(! $person->is_vending) {
+        if(!$person->is_vending and !$person->is_dvm) {
             $person->vending_piece_price = 0.00;
             $person->vending_monthly_rental = 0.00;
             $person->vending_profit_sharing = 0.00;

@@ -37,7 +37,9 @@ var app = angular.module('app', [
         loadFiles();
 
         angular.element(document).ready(function () {
-            $('.select').select2();
+            $('.select').select2({
+                placeholder: 'Select..'
+            });
         });
         $scope.onDeliveryFromChanged = function(date){
             if(date){

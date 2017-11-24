@@ -32,54 +32,129 @@
                     </li>
                 @endif
             </ul>
-            @unless (Auth::guest())
-            <ul class="nav navbar-nav side-nav">
 
-            @unless(Auth::user()->type == 'marketer')
-                <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
-                    <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
-                </li>
-                <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
-                    <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
-                </li>
-                @if(auth()->user()->can_access_inv)
-                <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
-                    <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
-                </li>
+            @php
+                $access = false;
+                $transaction_access = false;
+                $person_access = false;
+                $item_access = false;
+                $profile_access = false;
+                $user_access = false;
+                $detailrpt_access = false;
+                $report_access = false;
+                $operation_access = false;
+                $dtd_access = false;
+                $franchisee_access = false;
+
+                if(auth()->guest()) {
+                    $access = false;
+                }else {
+                    if(auth()->user()->type == 'marketer') {
+                        $access = true;
+                        $dtd_access = true;
+                    }
+
+                    if(auth()->user()->hasRole('franchisee')) {
+                        $access = true;
+                        $person_access = true;
+                        $franchisee_access = true;
+                    }
+
+                    if(auth()->user()->hasRole('driver')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $report_access = true;
+                        $dtd_access = true;
+                    }
+
+                    if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $report_access = true;
+                        $detailrpt_access = true;
+                        $dtd_access = true;
+                    }
+
+                    if(auth()->user()->can_access_inv) {
+                        $item_access = true;
+                    }else {
+                        $item_access = false;
+                    }
+
+                    if(auth()->user()->hasRole('admin')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $profile_access = true;
+                        $user_access = true;
+                        $detailrpt_access = true;
+                        $report_access = true;
+                        $operation_access = true;
+                        $dtd_access = true;
+                        $franchisee_access = true;
+                    }
+                }
+            @endphp
+
+            @if($access)
+            <ul class="nav navbar-nav side-nav">
+                @if($transaction_access)
+                    <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
+                        <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
+                    </li>
                 @endif
-                @cannot('transaction_view')
-                @cannot('accountant_view')
+                @if($person_access)
+                    <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
+                        <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
+                    </li>
+                @endif
+                @if($item_access)
+                    <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
+                        <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
+                    </li>
+                @endif
+                @if($profile_access)
                     <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
+                @endif
+                @if($user_access)
                     <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
-                @endcannot
-                <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }}</a>
-                    <ul class="dropdown-menu">
-                        <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
-                        <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
-                        <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
-                        <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
-                        <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
-                        <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
-                        <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
-                        <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
-                    </ul>
-                </li>
-                @endcannot
-                <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
-                    <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
-                </li>
-                @if(auth()->user()->hasRole('admin'))
+                @endif
+                @if($detailrpt_access)
+                    <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }}</a>
+                        <ul class="dropdown-menu">
+                            <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
+                            <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
+                            <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
+                            <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
+                            <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
+                            <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
+                            <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
+                            <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
+                        </ul>
+                    </li>
+                @endif
+                @if($report_access)
+                    <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
+                        <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
+                    </li>
+                @endif
+                @if($operation_access)
                     <li class="{{ strpos(Request::path(), 'operation') !== false ? 'active' : '' }}">
                         <a href="/operation"><i class="fa fa-sticky-note-o"></i> Ops Worksheet</a>
                     </li>
                 @endif
-            @endunless
-                @if(Auth::user()->hasRole('admin') or Auth::user()->type == 'marketer' or $people::where('user_id', Auth::user()->id)->first())
+
+                @if($dtd_access)
                     <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
                         <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
                     </li>
@@ -93,10 +168,15 @@
                         <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Deals</a>
                     </li>
                 @endif
-{{--                 <li class="{{ strpos(Request::path(), 'docs') !== false ? 'active' : '' }}">
-                    <a href="/market/docs"><i class="fa fa-fw fa-file-o"></i> DtD Report</a>
-                </li> --}}
+                @if($franchisee_access)
+                    <li class="{{ strpos(Request::path(), 'ftransaction') !== false ? 'active' : '' }}">
+                        <a href="/ftransaction"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
+                    </li>
+{{--                     <li class="{{ strpos(Request::path(), 'freport') !== false ? 'active' : '' }}">
+                        <a href="/freport"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
+                    </li> --}}
+                @endif
             </ul>
+            @endif
         </div>
-        @endunless
     </nav>

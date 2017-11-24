@@ -34,13 +34,16 @@ use App\GeneralSetting;
 use App\Invattachment;
 use App\TransSubscription;
 use App\User;
+use App\Ftransaction;
 
+// traits
 use App\HasProfileAccess;
 use App\CreateRemoveDealLogic;
+use App\GetIncrement;
 
 class TransactionController extends Controller
 {
-    use HasProfileAccess, CreateRemoveDealLogic;
+    use HasProfileAccess, CreateRemoveDealLogic, GetIncrement;
     //qty status condition
     /*
         qty_status = 1 (Stock Order/ Confirmed)
@@ -75,10 +78,10 @@ class TransactionController extends Controller
                                     DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                 CASE
                                                 WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+profiles.gst_rate)/100)
+                                                THEN total*((100+people.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate',
+                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
 
@@ -266,12 +269,12 @@ class TransactionController extends Controller
                                 DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                     CASE
                                                     WHEN people.is_gst_inclusive=0
-                                                    THEN total*((100+profiles.gst_rate)/100)
+                                                    THEN total*((100+people.gst_rate)/100)
                                                     ELSE transactions.total
                                                     END)
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate'
+                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
                             )
                     ->where('deals.transaction_id', $transaction->id)
                     ->get();
@@ -283,11 +286,11 @@ class TransactionController extends Controller
         if($transaction->person->profile->gst) {
             if($transaction->person->is_gst_inclusive) {
                 $total = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->profile->gst_rate)/ 100), 2);
+                $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->gst_rate)/ 100), 2);
                 $subtotal = number_format($transaction->total - $tax, 2);
             }else {
                 $subtotal = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total * ($transaction->person->profile->gst_rate)/100, 2);
+                $tax = number_format($transaction->total * ($transaction->person->gst_rate)/100, 2);
                 $total = number_format($transaction->total + $tax, 2);
             }
         }
@@ -419,7 +422,7 @@ class TransactionController extends Controller
 
             if(count($vendcash_check) > 0) {
                 if($analog_clock > 0) {
-                    $prev_inv = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
+                    $prev_inv = Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
 
                     if($prev_inv) {
                         $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
@@ -479,6 +482,11 @@ class TransactionController extends Controller
                 $transaction->delivery_fee = 0;
                 $transaction->save();
             }
+        }
+
+        // record the transactions to ftransaction when franchisee id is detected
+        if($transaction->person->franchisee_id) {
+            $this->syncFtransactionsAndTransactions($transaction);
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
@@ -702,11 +710,11 @@ class TransactionController extends Controller
                             DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                 CASE
                                                 WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+profiles.gst_rate)/100)
+                                                THEN total*((100+people.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END)
                                             ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate',
+                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
                              'custcategories.name as custcategory'
                         )
                 ->where('people.id', $person_id)
@@ -1437,7 +1445,7 @@ class TransactionController extends Controller
         $gst_exclusive = $query2->whereHas('person', function($query2) {
                                     $query2->where('is_gst_inclusive', 0);
                                 })
-                                ->sum(DB::raw('ROUND((total * person.profile.gst_rate/100), 2)'));
+                                ->sum(DB::raw('ROUND((total * person.gst_rate/100), 2)'));
 
         $gst_inclusive = $query3->whereHas('person', function($query3) {
                                     $query3->where('is_gst_inclusive', 1);
@@ -1460,7 +1468,7 @@ class TransactionController extends Controller
         $query3= clone $query;
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_exclusive = $query2->where('profiles.gst', 1)->where('people.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + profiles.gst_rate)/100), 2)'));
+        $gst_exclusive = $query2->where('profiles.gst', 1)->where('people.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + people.gst_rate)/100), 2)'));
         $gst_inclusive = $query3->where('profiles.gst', 1)->where('people.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
 
         $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
@@ -1499,5 +1507,55 @@ class TransactionController extends Controller
                 ]);
             }*/
         }
+
+        // sales count and sales amount figure must be filled
+        if($transaction->person->is_dvm) {
+            $this->validate($request, [
+                'sales_count' => 'required',
+                'sales_amount' => 'required'
+            ], [
+                'sales_count.required' => 'Sales Count (pcs) must be filled',
+                'sales_amount.required' => 'Sales Amount ($) must be filled'
+            ]);
+        }
+    }
+
+    // lookup and sync ftransaction if applicable(collection transaction)
+    private function syncFtransactionsAndTransactions($transaction)
+    {
+        $ftransaction = Ftransaction::updateOrCreate([
+            'transaction_id' => $transaction->id
+        ], [
+            'ftransaction_id' => $transaction->ftransaction_id ? $transaction->ftransaction_id : $this->getFtransactionIncrement($transaction->person->franchisee_id),
+            'total' => $transaction->total ? $transaction->total : 0,
+            'delivery_date' => $transaction->delivery_date,
+            'status' => $transaction->status,
+            'transremark' => $transaction->transremark,
+            'updated_by' => $transaction->updated_by,
+            'pay_status' => $transaction->pay_status,
+            'person_code' => $transaction->person_code,
+            'person_id' => $transaction->person_id,
+            'order_date' => $transaction->order_date,
+            'driver' => $transaction->driver,
+            'paid_by' => $transaction->paid_by,
+            'del_address' => $transaction->del_address,
+            'name' => $transaction->name,
+            'po_no' => $transaction->po_no,
+            'total_qty' => $transaction->total_qty,
+            'pay_method' => $transaction->pay_method,
+            'note' => $transaction->note,
+            'paid_at' => $transaction->paid_at,
+            'cancel_trace' => $transaction->cancel_trace,
+            'contact' => $transaction->contact,
+            'del_postcode' => $transaction->del_postcode,
+            'delivery_fee' => $transaction->delivery_fee,
+            'bill_address' => $transaction->bill_address,
+            'digital_clock' => $transaction->digital_clock,
+            'analog_clock' => $transaction->analog_clock,
+            'balance_coin' => $transaction->balance_coin,
+            'is_freeze' => $transaction->is_freeze,
+            'is_required_analog' => $transaction->is_required_analog,
+            'franchisee_id' => $transaction->person->franchisee_id,
+        ]);
     }
 }

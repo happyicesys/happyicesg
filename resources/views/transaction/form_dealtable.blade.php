@@ -132,7 +132,7 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST ({{number_format($person->profile->gst_rate)}}%)</strong>
+                                    <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
@@ -160,7 +160,7 @@
                             </tr>
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST ({{number_format($person->profile->gst_rate)}}%)</strong>
+                                    <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">

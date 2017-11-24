@@ -143,6 +143,14 @@
         </div>
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Total Rental Paid ($):
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_rental ? total_rental : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                 Total Utility ($):
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
@@ -287,11 +295,11 @@
                     <span ng-if="search.sortName == 'utility_subsidy' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'utility_subsidy' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-1 text-center" ng-if="search.is_profit_sharing_report != 1">
-                    <a href="" ng-click="sortTable('rental')">
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('vending_monthly_rental')">
                     Rental ($)
-                    <span ng-if="search.sortName == 'rental' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'rental' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'vending_monthly_rental' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'vending_monthly_rental' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('subtotal_payout')">
@@ -350,8 +358,8 @@
                     <td class="col-md-1 text-right">
                         @{{ transaction.utility_subsidy | currency: "": 2}}
                     </td>
-                    <td class="col-md-1 text-right" ng-if="search.is_profit_sharing_report != 1">
-                        @{{ transaction.rental | currency: "": 2}}
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.vending_monthly_rental | currency: "": 2}}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_payout | currency: "": 2}}

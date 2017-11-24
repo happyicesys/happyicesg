@@ -50,8 +50,11 @@ class AuthController extends Controller
     {
         // Logic that determines where to send the user
         if (\Auth::user()->type == 'marketer') {
-
             return '/market/deal';
+        }
+
+        if(auth()->user()->hasRole('franchisee')) {
+            return '/ftransaction';
         }
 
         return '/transaction';

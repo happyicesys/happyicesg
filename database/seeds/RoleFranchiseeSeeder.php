@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Role;
 
-class RoleSeeder extends Seeder
+class RoleFranchiseeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,14 +13,8 @@ class RoleSeeder extends Seeder
     public function run()
     {
         Role::create([
-            'name' => 'admin',
-            'label' => 'Administrator',
-            'remark' => '',
-        ]);
-
-        Role::create([
-            'name' => 'user',
-            'label' => 'User',
+            'name' => 'franchisee',
+            'label' => 'Franchisee/Leasse',
             'remark' => '',
         ]);
     }

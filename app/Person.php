@@ -24,7 +24,7 @@ class Person extends Baum\Node
         'cust_id', 'profile_id', 'salutation',
         'user_id', 'parent_name', 'parent_id',
         'block', 'floor', 'unit', 'operation_note', 'del_lat',
-        'del_lng'
+        'del_lng', 'franchisee_id'
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
@@ -49,7 +49,8 @@ class Person extends Baum\Node
         'time_range' => 'Available Time Range',
         'block_coverage' => 'Block Coverage',
         'custcategory_id' => 'Customer Category',
-        'is_vending' => 'Vending?',
+        'is_vending' => 'Fun Vending',
+        'is_dvm' => 'Direct Vending',
         'vending_piece_price' => 'Piece/ Price',
         'vending_monthly_rental' => 'Monthly Rental',
         'vending_profit_sharing' => 'Profit Sharing',
@@ -57,7 +58,8 @@ class Person extends Baum\Node
         'vending_clocker_adjustment' => 'Clocker Adjustment',
         'is_profit_sharing_report' => 'Profit Sharing',
         'operation_note' => 'Operation Note',
-        'is_gst_inclusive' => 'GST inclusive'
+        'is_gst_inclusive' => 'GST inclusive',
+        'gst_rate' => 'GST Rate'
     );
 
     protected $fillable = [
@@ -68,7 +70,7 @@ class Person extends Baum\Node
     'parent_id', 'block', 'floor', 'unit', 'time_range', 'block_coverage',
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
-    'is_gst_inclusive', 'del_lat', 'del_lng'
+    'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm'
     ];
 
     protected $dates = ['deleted_at'];
@@ -158,6 +160,11 @@ class Person extends Baum\Node
         return $this->hasMany('App\Operationdate');
     }
 
+    public function franchisee()
+    {
+        return $this->belongsTo('App\User', 'franchisee_id');
+    }
+
     // getter and setter
 
     public function setDobAttribute($date)
@@ -239,6 +246,25 @@ class Person extends Baum\Node
     public function scopeSearchArea($query, $area)
     {
         return $query->where('area','=', $area);
+    }
+
+    public function scopeFilterFranchiseePeople($query)
+    {
+        $peopleIdArr = [];
+
+        if(auth()->user()->hasRole('franchisee')) {
+            $people = Person::where('franchisee_id', auth()->user()->id)->latest()->get();
+        }else {
+            $people = Person::all();
+        }
+
+        if(count($people) > 0) {
+            foreach($people as $person) {
+                array_push($peopleIdArr, $person->id);
+            }
+        }
+
+        return $query->whereIn('id', $peopleIdArr);
     }
 
 }

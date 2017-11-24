@@ -98,4 +98,44 @@ class User extends Model implements AuthenticatableContract,
         return $this->belongsToMany('App\Profile');
     }
 
+    public function franchises()
+    {
+        return $this->hasMany('App\Person', 'franchisee_id');
+    }
+
+    // scopes
+    // db query builder
+    public function scopeFilterUserFranchise($query)
+    {
+        $userIdArr = $this->searchUserFranchiseId();
+
+        return $query->whereIn('id', $userIdArr);
+    }
+
+    public function scopeFilterUserDbFranchise($query)
+    {
+        $userIdArr = $this->searchUserFranchiseId();
+
+        return $query->whereIn('users.id', $userIdArr);
+    }
+
+    // get the current auth user and return it ownself expect admin
+    private function searchUserFranchiseId()
+    {
+        $userIdArr = [];
+
+        if(auth()->user()->hasRole('franchisee')) {
+            array_push($userIdArr, auth()->user()->id);
+        }else {
+            $users = User::all();
+            foreach($users as $user) {
+                if($user->hasRole('franchisee')) {
+                    array_push($userIdArr, $user->id);
+                }
+            }
+        }
+
+        return $userIdArr;
+    }
+
 }

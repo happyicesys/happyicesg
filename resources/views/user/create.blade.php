@@ -17,9 +17,9 @@
             @include('user.form', ['pass_text'=>''])
 
             <div class="col-md-12">
-                <div class="form-group pull-right" style="padding: 30px 190px 0px 0px;">
+                <div class="form-group pull-right">
                     {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                    <a href="/user" class="btn btn-default">Cancel</a>            
+                    <a href="/user" class="btn btn-default">Cancel</a>
                 </div>
             </div>
         {!! Form::close() !!}

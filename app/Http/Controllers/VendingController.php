@@ -67,18 +67,14 @@ class VendingController extends Controller
     {
         // indicate the month and year
         $this_month = Carbon::createFromFormat('m-Y', request('current_month'));
-
         $people = $this->getGenerateVendingInvoicePerson();
-
         $totals = $this->calVendingGenerateInvoiceIndex($people);
-
         $checkboxes = request('checkbox');
 
         $transactionsid = [];
 
         if(!$checkboxes) {
             Flash::error('Please choose at least one of the entries');
-
             return redirect()->action('VendingController@getVendingIndex');
         }
 
@@ -99,7 +95,13 @@ class VendingController extends Controller
                 $transaction->del_postcode = $person->del_postcode;
                 $transaction->bill_address = $person->bill_address;
                 $transaction->total = -$person->subtotal_payout;
-                $transaction->transremark = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
+                $remarkStr = '';
+                if($person->is_vending) {
+                    $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
+                }else if($person->is_dvm) {
+                    $remarkStr = "Vending Machine Commission Report:\n Month: ".Carbon::parse($person->end_date)->format('m-Y')."\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", Total Revenue: $".number_format(($person->vend_received * $person->profit_sharing/ 100) + $person->utility_subsidy + $person->vending_monthly_rental, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                }
+                $transaction->transremark = $remarkStr;
                 $transaction->is_required_analog = 0;
                 $transaction->save();
 
@@ -305,6 +307,35 @@ class VendingController extends Controller
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_end");
 
+        $melted = DB::raw("(SELECT SUM(ABS(deals.amount)) AS melted_amount, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051b'
+                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) melted");
+
+        $vend_received = DB::raw("(SELECT SUM(deals.amount) AS vend_received, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051'
+                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND deals.amount > 0
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) vend_received");
+
         $transactions = DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -317,6 +348,8 @@ class VendingController extends Controller
                         ->leftJoin($analog_lastmonth_start, 'people.id', '=', 'analog_lastmonth_start.person_id')
                         ->leftJoin($analog_lastmonth_first, 'people.id', '=', 'analog_lastmonth_first.person_id')
                         ->leftJoin($analog_lastmonth_end, 'people.id', '=', 'analog_lastmonth_end.person_id')
+                        ->leftJoin($melted, 'people.id', '=', 'melted.person_id')
+                        ->leftJoin($vend_received, 'people.id', '=', 'vend_received.person_id')
                         ->select(
                                     'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address',
@@ -332,10 +365,12 @@ class VendingController extends Controller
                                     DB::raw('FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) AS sales'),
                                     // DB::raw('FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) AS sales'),
                                     'people.vending_profit_sharing AS profit_sharing',
+                                    'people.vending_monthly_rental AS vending_monthly_rental',
                                     DB::raw('(FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) AS subtotal_profit_sharing'),
                                     'people.vending_monthly_utilities AS utility_subsidy',
                                     DB::raw('((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) AS subtotal_payout'),
-                                    'people.vending_monthly_rental AS rental'
+                                    'melted.melted_amount AS melted_amount',
+                                    'vend_received.vend_received AS vend_received'
                                 );
 
         if(request('profile_id') or request('current_month') or request('cust_id') or request('id_prefix') or request('company') or $request('custcategory') or request('status')){
@@ -344,8 +379,10 @@ class VendingController extends Controller
 
         $transactions = $transactions
                         ->where('transactions.is_required_analog', 1)
-                        ->where('people.is_vending', 1);
-                        // ->where('people.is_profit_sharing_report', 1);
+                        ->where(function($query) {
+                            $query->where('people.is_vending', 1)
+                                    ->orWhere('people.is_dvm', 1);
+                        });
 
         if(request('sortName')) {
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
@@ -363,6 +400,7 @@ class VendingController extends Controller
     {
         $total_sales = 0;
         $total_profit_sharing = 0;
+        $total_rental = 0;
         $total_utility = 0;
         $total_payout = 0;
 
@@ -371,6 +409,7 @@ class VendingController extends Controller
         foreach($people as $person) {
             $total_sales += $person->sales;
             $total_profit_sharing += $person->subtotal_profit_sharing;
+            $total_rental += $person->vending_monthly_rental;
             $total_utility += $person->utility_subsidy;
             $total_payout += $person->subtotal_payout;
         }
@@ -378,6 +417,7 @@ class VendingController extends Controller
         $totals = [
         	'total_sales' => $total_sales,
         	'total_profit_sharing' => $total_profit_sharing,
+            'total_rental' => $total_rental,
         	'total_utility' => $total_utility,
         	'total_payout' => $total_payout,
         ];

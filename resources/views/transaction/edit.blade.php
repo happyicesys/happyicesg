@@ -134,8 +134,11 @@
                     <div class="pull-right">
 
                         {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                        {{-- {!! Form::submit('Save', ['name'=>'save', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!} --}}
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        @if(auth()->user()->hasRole('franchisee'))
+                            <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        @else
+                            <a href="/transaction" class="btn btn-default">Cancel</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -152,8 +155,11 @@
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
-
+                        @if(auth()->user()->hasRole('franchisee'))
+                            <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        @else
+                            <a href="/transaction" class="btn btn-default">Cancel</a>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -81,7 +81,11 @@ var app = angular.module('app', [
                 return 'yellow';
             }
 
-            if(transaction.clocker_delta > (transaction.last_clocker_delta * 170/100)) {
+            if(transaction.clocker_delta > (transaction.last_clocker_delta * 150/100)) {
+                return '#f68080';
+            }
+
+            if(transaction.melted_amount > 100) {
                 return '#f68080';
             }
         }
@@ -109,6 +113,7 @@ var app = angular.module('app', [
                 // return total amount
                 $scope.total_sales = data.totals.total_sales;
                 $scope.total_profit_sharing = data.totals.total_profit_sharing;
+                $scope.total_rental = data.totals.total_rental;
                 $scope.total_utility = data.totals.total_utility;
                 $scope.total_payout = data.totals.total_payout;
                 $scope.spinner = false;
