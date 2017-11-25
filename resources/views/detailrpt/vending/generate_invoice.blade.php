@@ -279,7 +279,7 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('profit_sharing')">
-                    Profit Sharing ($/piece)
+                    Profit Sharing (per piece)
                     <span ng-if="search.sortName == 'profit_sharing' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'profit_sharing' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
@@ -350,7 +350,7 @@
                         @{{ transaction.sales}}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.profit_sharing | currency: "": 2}}
+                        @{{ transaction.profit_sharing | currency: "": 2}} <small>(@{{transaction.profit_sharing_format}})</small>
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_profit_sharing | currency: "": 2}}
