@@ -315,7 +315,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND items.product_id='051b'
-                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>= (SELECT x.delivery_date FROM transactions x WHERE DATE(x.delivery_date)<'".$this_month->startOfMonth()->toDateString()."' ORDER BY x.delivery_date DESC LIMIT 1)
                                 AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
@@ -329,7 +329,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND items.product_id='051'
-                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>= (SELECT x.delivery_date FROM transactions x WHERE DATE(x.delivery_date)<'".$this_month->startOfMonth()->toDateString()."' ORDER BY x.delivery_date DESC LIMIT 1)
                                 AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
                                 AND deals.amount > 0
                                 GROUP BY people.id
@@ -368,7 +368,7 @@ class VendingController extends Controller
                                     'people.vending_monthly_rental AS vending_monthly_rental',
                                     DB::raw('(FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) AS subtotal_profit_sharing'),
                                     'people.vending_monthly_utilities AS utility_subsidy',
-                                    DB::raw('((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) AS subtotal_payout'),
+                                    DB::raw('(CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END) AS subtotal_payout'),
                                     'melted.melted_amount AS melted_amount',
                                     'vend_received.vend_received AS vend_received'
                                 );
