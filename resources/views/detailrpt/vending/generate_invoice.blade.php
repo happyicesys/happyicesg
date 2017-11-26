@@ -231,7 +231,7 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('custcategories.id')">
-                    Category
+                    Cat
                     <span ng-if="search.sortName == 'custcategories.id' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'custcategories.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
@@ -267,21 +267,27 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('clocker_adjustment')">
-                    Clocker Adjustment (%)
+                    Adjustment Rate (%)
                     <span ng-if="search.sortName == 'clocker_adjustment' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'clocker_adjustment' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('sales')">
-                    Sales # Ice Cream
+                    # Ice Cream
                     <span ng-if="search.sortName == 'sales' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'sales' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('profit_sharing')">
-                    Profit Sharing (per piece)
+                    Commission (per pcs)
                     <span ng-if="search.sortName == 'profit_sharing' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'profit_sharing' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('subtotal_sales')">
+                    Sales ($)
+                    <span ng-if="search.sortName == 'subtotal_sales' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'subtotal_sales' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('subtotal_profit_sharing')">
@@ -291,7 +297,7 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('utility_subsidy')">
-                    Utility Subsidy ($)
+                    Utility Fees ($)
                     <span ng-if="search.sortName == 'utility_subsidy' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'utility_subsidy' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
@@ -351,6 +357,9 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.profit_sharing | currency: "": 2}} <small>(@{{transaction.profit_sharing_format}})</small>
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.subtotal_sales}}
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_profit_sharing | currency: "": 2}}
