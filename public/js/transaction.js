@@ -64,6 +64,7 @@ var app = angular.module('app', [
                 $scope.subtotalModel = data.subtotal;
                 $scope.taxModel = data.tax;
                 $scope.totalqtyModel = data.transaction.total_qty;
+                console.log(data);
 
                 $scope.form = {
                     person: data.transaction.person.id,

@@ -291,7 +291,7 @@ class TransactionController extends Controller
             }else {
                 $subtotal = number_format($transaction->total, 2);
                 $tax = number_format($transaction->total * ($transaction->person->gst_rate)/100, 2);
-                $total = number_format($transaction->total + $tax, 2);
+                $total = number_format(((float)$transaction->total + (float) $tax), 2);
             }
         }
 

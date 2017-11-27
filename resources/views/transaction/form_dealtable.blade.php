@@ -155,7 +155,7 @@
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
-                                    @{{subtotalModel | currency: ""}}
+                                    @{{subtotalModel}}
                                 </td>
                             </tr>
                             <tr ng-if="deals.length>0">
@@ -164,7 +164,7 @@
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
-                                    @{{taxModel | currency: ""}}
+                                    @{{taxModel}}
                                 </td>
                             </tr>
                             <tr ng-if="deals.length>0">
@@ -176,7 +176,7 @@
                                 </td>
                                 <td colspan="1"></td>
                                 <td class="col-md-1 text-right">
-                                    <strong>@{{totalModel | currency: ""}}</strong>
+                                    <strong>@{{totalModel}}</strong>
                                 </td>
                             </tr>
                         @else
