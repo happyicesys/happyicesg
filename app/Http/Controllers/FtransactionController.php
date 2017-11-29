@@ -7,15 +7,17 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Ftransaction;
 use App\Person;
+use Carbon\Carbon;
 use DB;
 
 // traits
 use App\HasMonthOptions;
 use App\HasProfileAccess;
+use App\GetIncrement;
 
 class FtransactionController extends Controller
 {
-	use HasMonthOptions, HasProfileAccess;
+	use HasMonthOptions, HasProfileAccess, GetIncrement;
 
     //auth-only login can see
     public function __construct()
@@ -26,7 +28,7 @@ class FtransactionController extends Controller
     // return index page()
 	public function index()
 	{
-		return view('ftransaction.index');
+		return view('franchisee.index');
 	}
 
 	// return ftransaction index page api()
@@ -85,6 +87,78 @@ class FtransactionController extends Controller
         ];
         return $data;
 	}
+
+    // return ftransaction create page()
+    public function create()
+    {
+        return view('franchisee.create');
+    }
+
+    // store ftarnsactions ()
+    public function store()
+    {
+        $this->validate(request(), [
+            'person_id' => 'required',
+        ],[
+            'person_id.required' => 'Please choose an option',
+        ]);
+
+        request()->merge(array('updated_by' => auth()->user()->name));
+        request()->merge(array('delivery_date' => Carbon::today()));
+        request()->merge(array('order_date' => Carbon::today()));
+        request()->merge(array('franchisee_id' => auth()->user()->id));
+        request()->merge(array('ftransaction_id' => $this->getFtransactionIncrement(request('franchisee_id'))));
+        $input = request()->all();
+        $ftransaction = Ftransaction::create($input);
+
+        return redirect()->action('FtransactionController@edit', $ftransaction->id);
+    }
+
+    // show latest 5 ftransaction when person was selected(int person_id)
+    public function showPersonTransac($person_id)
+    {
+        $ftransactions = DB::table('ftransactions')
+                ->leftJoin('people', 'ftransactions.person_id', '=', 'people.id')
+                ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                ->select(
+                            'people.cust_id', 'people.company',
+                            'people.name', 'people.id as person_id', 'ftransactions.del_postcode',
+                            'ftransactions.status', 'ftransactions.delivery_date', 'ftransactions.driver',
+                            'ftransactions.total_qty', 'ftransactions.pay_status',
+                            'ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.id',
+                            DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE ftransactions.total
+                                                END)
+                                            ELSE ftransactions.total END) + (CASE WHEN ftransactions.delivery_fee>0 THEN ftransactions.delivery_fee ELSE 0 END), 2) AS total'),
+                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
+                        )
+                ->where('people.id', $person_id)
+                ->orderBy('ftransactions.created_at', 'desc')
+                ->take(5)
+                ->get();
+        return $ftransactions;
+    }
+
+    // return the edit page for the ftransaction(int ftransaction_id)
+    public function edit($ftransaction_id)
+    {
+        $ftransaction = Ftransaction::findOrFail($ftransaction_id);
+        $person = Person::findOrFail($ftransaction->person_id);
+
+        $prices = DB::table('prices')
+                    ->leftJoin('items', 'prices.item_id', '=', 'items.id')
+                    ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                    ->where('prices.person_id', '=', $ftransaction->person_id)
+                    ->where('items.is_active', 1)
+                    ->orderBy('product_id')
+                    ->get();
+
+        return view('franchisee.edit', compact('ftransaction', 'person', 'prices'));
+    }
+
 
     // pass value into filter search for DB (collection) [query]
     private function searchDBFilter($ftransactions)
@@ -167,6 +241,12 @@ class FtransactionController extends Controller
         $query3 = clone $query;
         $delivery_fee = $query3->where('ftransactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(ftransactions.delivery_fee, 2)'));
         return $delivery_fee;
+    }
+
+    // create deals when there is input and update when deal exist(int ftransaction_id)
+    private function syncFdeals($ftransaction_id)
+    {
+
     }
 
 }

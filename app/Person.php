@@ -264,7 +264,7 @@ class Person extends Baum\Node
             }
         }
 
-        return $query->whereIn('id', $peopleIdArr);
+        return $query->whereIn('people.id', $peopleIdArr);
     }
 
 }

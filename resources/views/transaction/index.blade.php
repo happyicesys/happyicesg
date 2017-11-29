@@ -18,10 +18,12 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            <a href="/transaction/create" class="btn btn-success">
-                                <i class="fa fa-plus"></i>
-                                <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
-                            </a>
+                            @if(!auth()->user()->hasRole('franchisee'))
+                                <a href="/transaction/create" class="btn btn-success">
+                                    <i class="fa fa-plus"></i>
+                                    <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                                </a>
+                            @endif
                             @if(Auth::user()->hasRole('admin'))
                             <a href="/transaction/freeze/date" class="btn btn-primary">
                                 <i class="fa fa-clock-o"></i>

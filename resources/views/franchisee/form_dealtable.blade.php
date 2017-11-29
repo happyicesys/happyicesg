@@ -5,7 +5,7 @@
         <div class="panel-heading">
             <div class="panel-title">
                 <div class="pull-left display_panel_title">
-                    @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
+                    @unless($ftransaction->status == 'Cancelled' or $ftransaction->status == 'Deleted')
                     <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</strong></h3>
                     @else
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
@@ -72,9 +72,9 @@
                             <td class="col-md-1 text-center">
                                 @php
                                     $valid = false;
-                                    $status = $transaction->status;
+                                    $status = $ftransaction->status;
 
-                                    if($transaction->is_freeze !== 1) {
+                                    if($ftransaction->is_freeze !== 1) {
                                         foreach(Auth::user()->roles as $role) {
                                             $access = $role->name;
                                             switch($access) {

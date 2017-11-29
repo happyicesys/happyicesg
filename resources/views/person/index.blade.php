@@ -18,7 +18,9 @@
                     <div class="pull-right">
                         @cannot('transaction_view')
                             <a href="/person/create" class="btn btn-sm btn-success">+ New {{ $PERSON_TITLE }}</a>
+                            @if(!auth()->user()->hasRole('franchisee'))
                             <a href="/onlineprice/create" class="btn btn-sm btn-default">+ Ecommerce Price Setup</a>
+                            @endif
                             @if(auth()->user()->hasRole('admin'))
                                 <a href="/pricematrix" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Price Matrix</a>
                             @endif

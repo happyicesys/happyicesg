@@ -135,21 +135,28 @@
     </div>
 
     <div class="row">
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('base_unit', 'Pieces', ['class'=>'control-label']) !!}
+                {!! Form::text('base_unit', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('unit', 'Unit', ['class'=>'control-label']) !!}
                 {!! Form::select('unit', $units::lists('name', 'name'), null, ['id'=>'unit', 'class'=>'select form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('unit_cost', 'Cost Price', ['class'=>'control-label']) !!}
                 {!! Form::text('unit_cost', null, ['class'=>'form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('itemcategory_id', 'Item Category', ['class'=>'control-label']) !!}
                 {!! Form::select('itemcategory_id', [''=>null] + $itemcategories::pluck('name', 'id')->all(), null, ['id'=>'unit', 'class'=>'select form-control']) !!}

@@ -336,6 +336,17 @@ class VendingController extends Controller
                                 ORDER BY transactions.delivery_date DESC
                                 ) vend_received");
 
+        $sales_count = DB::raw("(SELECT SUM(transactions.sales_count) AS sales_count, people.id AS person_id
+                                FROM transactions
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) sales_count");
+
         $transactions = DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -350,6 +361,7 @@ class VendingController extends Controller
                         ->leftJoin($analog_lastmonth_end, 'people.id', '=', 'analog_lastmonth_end.person_id')
                         ->leftJoin($melted, 'people.id', '=', 'melted.person_id')
                         ->leftJoin($vend_received, 'people.id', '=', 'vend_received.person_id')
+                        ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm',
@@ -363,7 +375,7 @@ class VendingController extends Controller
                                     DB::raw('(analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) AS clocker_delta'),
                                     DB::raw('(analog_lastmonth_end.analog_clock - (CASE WHEN analog_lastmonth_start.analog_clock THEN analog_lastmonth_start.analog_clock ELSE analog_lastmonth_first.analog_clock END)) AS last_clocker_delta'),
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
-                                    DB::raw('FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) AS sales'),
+                                    DB::raw('CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END AS sales'),
                                     DB::raw('CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END AS subtotal_sales'),
                                     'people.vending_profit_sharing AS profit_sharing',
                                     DB::raw('(CASE WHEN people.is_vending THEN "$" ELSE "%" END) AS profit_sharing_format'),

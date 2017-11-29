@@ -9,7 +9,7 @@
     <div ng-app="app" ng-controller="fTransactionController">
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/ftransaction"><h1>{{ $FRANCHISE_TRANS }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+        <a class="title_hyper pull-left" href="/franchisee"><h1>{{ $FRANCHISE_TRANS }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
     </div>
 
         <div class="panel panel-default" ng-cloak>
@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            <a href="/ftransaction/create" class="btn btn-success">
+                            <a href="/franchisee/create" class="btn btn-success">
                                 <i class="fa fa-plus"></i>
                                 <span class="hidden-xs"> New {{ $FRANCHISE_TRANS }} </span>
                             </a>
@@ -379,7 +379,7 @@
         </div>
     </div>
 
-    <script src="/js/ftransaction_index.js"></script>
+    <script src="/js/franchisee_index.js"></script>
     <script>
         $('#delfrom').datetimepicker({
             format: 'DD-MMMM-YYYY'

@@ -34,16 +34,17 @@ use App\GeneralSetting;
 use App\Invattachment;
 use App\TransSubscription;
 use App\User;
-use App\Ftransaction;
+// use App\Ftransaction;
 
 // traits
 use App\HasProfileAccess;
 use App\CreateRemoveDealLogic;
 use App\GetIncrement;
+use App\HasFranchiseeAccess;
 
 class TransactionController extends Controller
 {
-    use HasProfileAccess, CreateRemoveDealLogic, GetIncrement;
+    use HasProfileAccess, CreateRemoveDealLogic, HasFranchiseeAccess;
     //qty status condition
     /*
         qty_status = 1 (Stock Order/ Confirmed)
@@ -92,6 +93,9 @@ class TransactionController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+
+        // toll to check is franchisee or not
+        $transactions = $this->filterFranchiseeTransactionDB($transactions);
 
         $total_amount = $this->calDBTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
@@ -485,9 +489,9 @@ class TransactionController extends Controller
         }
 
         // record the transactions to ftransaction when franchisee id is detected
-        if($transaction->person->franchisee_id) {
+/*        if($transaction->person->franchisee_id) {
             $this->syncFtransactionsAndTransactions($transaction);
-        }
+        }*/
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -1521,7 +1525,7 @@ class TransactionController extends Controller
     }
 
     // lookup and sync ftransaction if applicable(collection transaction)
-    private function syncFtransactionsAndTransactions($transaction)
+/*    private function syncFtransactionsAndTransactions($transaction)
     {
         $ftransaction = Ftransaction::updateOrCreate([
             'transaction_id' => $transaction->id
@@ -1557,5 +1561,5 @@ class TransactionController extends Controller
             'is_required_analog' => $transaction->is_required_analog,
             'franchisee_id' => $transaction->person->franchisee_id,
         ]);
-    }
+    }*/
 }

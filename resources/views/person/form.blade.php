@@ -94,13 +94,21 @@
     </div>
 </div>
 
+@php
+    $franchisee = null;
+    if(auth()->user()->hasRole('franchisee')) {
+        $franchisee = auth()->user()->id;
+    }
+@endphp
+
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="form-group">
             {!! Form::label('franchisee_id', 'Franchisee/ Leasee', ['class'=>'control-label']) !!}
             {!! Form::select('franchisee_id',
                             [''=> null] + $franchisees::filterUserFranchise()->pluck('name', 'id')->all(),
-                            null, ['id'=>'franchisee_id', 'class'=>'select form-control']) !!}
+                            $franchisee,
+                            ['id'=>'franchisee_id', 'class'=>'select form-control']) !!}
         </div>
     </div>
 </div>

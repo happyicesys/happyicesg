@@ -20,8 +20,12 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
 });*/
 Route::match(['get', 'post'], '/freport', 'FreportController@getInvoiceBreakdownDetail');
 
-Route::post('/api/ftransaction', 'FtransactionController@indexApi');
-Route::get('/ftransaction', 'FtransactionController@index');
+Route::get('/franchisee/{ftransaction_id}/edit', 'FtransactionController@edit');
+Route::get('/franchisee/person/latest/{person_id}', 'FtransactionController@showPersonTransac');
+Route::post('/franchisee', 'FtransactionController@store');
+Route::get('/franchisee/create', 'FtransactionController@create');
+Route::post('/api/franchisee', 'FtransactionController@indexApi');
+Route::get('/franchisee', 'FtransactionController@index');
 
 Route::post('/detailrpt/operation/excel', 'OperationWorksheetController@exportOperationExcel');
 Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');

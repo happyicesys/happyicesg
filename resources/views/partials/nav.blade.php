@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">{{ config('app.name', 'Happyice') }}</a>
-            @if(! auth()->guest())
+            @if(!auth()->guest() and !auth()->user()->hasRole('franchisee'))
                 <a href="/transaction/create" class="btn btn-success btn-sm" style="margin: 10px 0px 0px 10px;">
                     <i class="fa fa-plus"></i>
                     New Transaction
@@ -56,6 +56,7 @@
 
                     if(auth()->user()->hasRole('franchisee')) {
                         $access = true;
+                        $transaction_access = true;
                         $person_access = true;
                         $franchisee_access = true;
                     }
@@ -169,8 +170,8 @@
                     </li>
                 @endif
                 @if($franchisee_access)
-                    <li class="{{ strpos(Request::path(), 'ftransaction') !== false ? 'active' : '' }}">
-                        <a href="/ftransaction"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
+                    <li class="{{ strpos(Request::path(), 'franchise') !== false ? 'active' : '' }}">
+                        <a href="/franchisee"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
                     </li>
 {{--                     <li class="{{ strpos(Request::path(), 'freport') !== false ? 'active' : '' }}">
                         <a href="/freport"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>

@@ -45,7 +45,6 @@ class CreateFtransactionsTable extends Migration
             $table->boolean('is_freeze')->default(0);
             $table->boolean('is_required_analog')->default(1);
             $table->integer('franchisee_id')->unsigned()->nullable();
-            $table->integer('transaction_id')->unsigned();
 
             $table->timestamps();
             $table->softDeletes();

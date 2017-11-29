@@ -122,7 +122,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber){
             $scope.spinner = true;
-            $http.post('/api/ftransaction?page=' + pageNumber, $scope.search).success(function(data){
+            $http.post('/api/franchisee?page=' + pageNumber, $scope.search).success(function(data){
                 if(data.ftransactions.data){
                     $scope.alldata = data.ftransactions.data;
                     $scope.totalCount = data.ftransactions.total;

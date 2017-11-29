@@ -4,14 +4,6 @@ namespace App;
 
 trait HasFranchiseeAccess{
 
-    // get the person id of franchisee()
-    public function getFranchiseeId()
-    {
-        if(auth()->user->hasRole('franchisee')) {
-            return auth()->user->id;
-        }
-    }
-
     // normal builder
     public function filterFranchiseeProfile($query)
     {
@@ -20,36 +12,31 @@ trait HasFranchiseeAccess{
         });
     }
 
-    // db query builder
-    public function filterUserDbProfile($query)
+    public function filterFranchiseeTransactionDB($query)
     {
-        $profileIdArr = $this->searchUserProfileId();
+        if($this->isFranchisee()) {
+            $franchisee_id = $this->getFranchiseeId();
+            return $query->where('people.franchisee_id', $franchisee_id);
+        }else {
+            return $query;
+        }
 
-        return $query->whereIn('profiles.id', $profileIdArr);
     }
 
     // return profile ids only()
-    public function getUserProfileIdArray()
+    public function getFranchiseeId()
     {
-        $profileIdArr = $this->searchUserProfileId();
+        $franchisee_id = auth()->user()->id;
 
-        return $profileIdArr;
+        return $franchisee_id;
     }
 
-    // get the current auth user and return profiles id
-    private function searchUserProfileId()
+    private function isFranchisee()
     {
-        $profileIdArr = [];
+        $is_franchisee = auth()->user()->hasRole('franchisee');
 
-        $user_profiles = auth()->user()->profiles;
-
-        if($user_profiles) {
-            foreach($user_profiles as $user_profile) {
-                array_push($profileIdArr, $user_profile->id);
-            }
-        }
-
-        return $profileIdArr;
+        return $is_franchisee;
     }
+
 
 }

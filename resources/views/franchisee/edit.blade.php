@@ -1,45 +1,45 @@
 @extends('template')
 @section('title')
-{{ $TRANS_TITLE }}
+{{ $FRANCHISE_TRANS }}
 @stop
 @section('content')
 
 <div class="create_edit">
-<div class="panel panel-primary" ng-app="app" ng-controller="transactionController">
+<div class="panel panel-primary" ng-app="app" ng-controller="ftransactionController">
 
     <div class="panel-heading">
         <div class="col-md-4">
         <h4>
-            @if($transaction->status == 'Cancelled')
-            <del><strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}</del>
+            @if($ftransaction->status == 'Cancelled')
+            <del><strong>Invoice : {{$ftransaction->ftransaction_id}}</strong> ({{$ftransaction->status}}) - {{$ftransaction->pay_status}}</del>
             @else
-            <strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}
+            <strong>Invoice : {{$ftransaction->ftransaction_id}}</strong> ({{$ftransaction->status}}) - {{$ftransaction->pay_status}}
             @endif
-            {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
+            {!! Form::text('transaction_id', $ftransaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
         <div class="col-md-8">
-            @if($transaction->paid_by)
+            @if($ftransaction->paid_by)
             <div class="col-md-4">
-                <label style="padding-top: 10px" class="pull-right">Paid by : {{ $transaction->paid_by }}</label>
+                <label style="padding-top: 10px" class="pull-right">Paid by : {{ $ftransaction->paid_by }}</label>
             </div>
             @else
             <div class="col-md-4"></div>
             @endif
-            @if($transaction->driver)
+            @if($ftransaction->driver)
             <div class="col-md-4">
-                <label style="padding-top: 10px" class="pull-right">Delivered by : {{ $transaction->driver }}</label>
+                <label style="padding-top: 10px" class="pull-right">Delivered by : {{ $ftransaction->driver }}</label>
             </div>
             @else
             <div class="col-md-4"></div>
             @endif
             <div class="col-md-4">
-                <label style="padding-top: 10px" class="pull-right">Last Modified: {{ $transaction->updated_by }}</label>
+                <label style="padding-top: 10px" class="pull-right">Last Modified: {{ $ftransaction->updated_by }}</label>
             </div>
         </div>
     </div>
 
-    {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
+    {!! Form::model($ftransaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $ftransaction->id]]) !!}
     {!! Form::close() !!}
 
     <div class="panel-body">
@@ -50,19 +50,19 @@
         </div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id]]) !!}
-                        @include('transaction.form_cust')
+                    {!! Form::model($ftransaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $ftransaction->id]]) !!}
+                        @include('franchisee.form_cust')
 
                     <div class="row">
                         <div class="col-md-12" style="padding-top:15px;">
-                            @include('transaction.form_dealtable')
+                            @include('franchisee.form_dealtable')
                         </div>
                     </div>
 
-                    @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
+                    @unless($ftransaction->status == 'Delivered' and $ftransaction->pay_status == 'Paid')
                         <div class="row">
                             <div class="col-md-12" style="padding-top:15px;">
-                                @include('transaction.form_table')
+                                @include('franchisee.form_table')
                             </div>
                         </div>
                     @else
@@ -70,7 +70,7 @@
                         @cannot('supervisor_view')
                         <div class="row">
                             <div class="col-md-12" style="padding-top:15px;">
-                                @include('transaction.form_table')
+                                @include('franchisee.form_table')
                             </div>
                         </div>
                         @endcannot
@@ -78,9 +78,9 @@
                     @endunless
                     {!! Form::close() !!}
 
-                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
+                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
                     {!! Form::close() !!}
-                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
+                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
                     {!! Form::close() !!}
                 </div>
             </div>
@@ -94,10 +94,10 @@
                 //state 6 = LOCKED label - cancel (is freeze true)
 
                 $state = '';
-                $status = $transaction->status;
-                $pay_status = $transaction->pay_status;
+                $status = $ftransaction->status;
+                $pay_status = $ftransaction->pay_status;
 
-                if($transaction->is_freeze) {
+                if($ftransaction->is_freeze) {
                     $state = 6;
                 }else {
                     switch($status) {
@@ -136,7 +136,7 @@
                     <div class="pull-right">
 
                         {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -155,9 +155,9 @@
                         {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -178,9 +178,9 @@
                         {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -194,7 +194,7 @@
                             {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
                         @endif
                         @endcan
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -217,9 +217,9 @@
                         @if(!auth()->user()->hasRole('franchisee'))
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                         @endif
-                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -231,80 +231,18 @@
                             <i class="fa fa-lock"></i>
                             This invoice has been locked
                         </span>
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
             @endif
     </div>
-
-    @cannot('transaction_view')
-    <div class="panel-footer">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                Printable Attachment(s)
-            </div>
-            <div class="panel-body">
-                <table class="table table-list-search table-hover table-bordered">
-                    <tr style="background-color: #DDFDF8">
-                        <th class="col-md-1 text-center">
-                            #
-                        </th>
-                        <th class="col-md-10 text-center">
-                            Image
-                        </th>
-                        <th class="col-md-1 text-center">
-                            Action
-                        </th>
-                    </tr>
-
-                    <tbody>
-                        @unless(count($invattachments)>0)
-                            <td class="text-center" colspan="12">No Records Found</td>
-                        @else
-                            @foreach($invattachments as $index => $invattachment)
-                            <tr>
-                                <td class="col-md-1 text-center">
-                                    {{ $index + 1 }}
-                                </td>
-                                <td class="col-md-10">
-                                    <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="width:250; height:250;">
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        @endunless
-                    </tbody>
-                </table>
-
-                @if(count($invattachments) > 0)
-                    {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['TransactionController@removeAttachment', $invattachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
-                    {!! Form::close() !!}
-                @endif
-
-
-                {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
-{{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
-                    {{csrf_field()}}
-                    <input type="file" name="img_file[]" multiple>
-                    <button type="submit" class="pull-right btn btn-success">Upload</button>
-                </form> --}}
-                {!! Form::close() !!}
-                <label class="pull-right totalnum" for="totalnum">
-                    Total of {{count($invattachments)}} entries
-                </label>
-            </div>
-        </div>
-    </div>
-    @endcannot
 </div>
 </div>
 @stop
 
 @section('footer')
-<script src="/js/transaction.js"></script>
+<script src="/js/franchisee_edit.js"></script>
 <script>
     function clicked(e){
         if(!confirm('Are you sure?'))e.preventDefault();

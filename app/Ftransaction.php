@@ -15,7 +15,7 @@ class Ftransaction extends Model
         'del_address', 'name', 'po_no', 'total_qty', 'pay_method', 'note',
         'paid_at', 'cancel_trace', 'contact', 'del_postcode', 'delivery_fee',
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
-        'is_required_analog', 'franchisee_id', 'transaction_id'
+        'is_required_analog', 'franchisee_id'
     ];
 
     protected $dates =[
@@ -129,29 +129,14 @@ class Ftransaction extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function sale()
+    public function fdeals()
     {
-        return $this->hasOne('App\Sale');
-    }
-
-    public function deals()
-    {
-        return $this->hasMany('App\Deal');
-    }
-
-    public function invattachments()
-    {
-        return $this->hasMany('App\Invattachment');
+        return $this->hasMany('App\Fdeal');
     }
 
     public function franchisee()
     {
         return $this->belongsTo('App\User', 'franchisee_id');
-    }
-
-    public function transaction()
-    {
-        return $this->belongsTo('App\Transaction');
     }
 
     // searching scopes
