@@ -99,7 +99,7 @@ class VendingController extends Controller
                 if($person->is_vending) {
                     $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
                 }else if($person->is_dvm) {
-                    $remarkStr = "Vending Machine Commission Report:\n Month: ".Carbon::parse($person->end_date)->format('M-Y')." \n Total Revenue: $".number_format(($person->vend_received * $person->profit_sharing/ 100) + $person->utility_subsidy + $person->vending_monthly_rental, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                    $remarkStr = "Vending Machine Commission Report:\n Month: ".Carbon::parse($person->end_date)->format('M-Y')." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
                 }
                 $transaction->transremark = $remarkStr;
                 $transaction->is_required_analog = 0;
@@ -447,19 +447,30 @@ class VendingController extends Controller
         // 2 compulsory items 055, U01
         $sales_commission = Item::where('product_id', '055')->firstOrFail();
         $utility_subsidy = Item::where('product_id', 'U01')->firstOrFail();
-/*        $quote_sales_commission = Price::where('item_id', $sales_commission->id)->where('person_id', $person->person_id)->first();
-        $quote_utility_subsidy = Price::where('item_id', $utility_subsidy->id)->where('person_id', $person->person_id)->first();*/
 
-        $deal_comm = new Deal();
-        $deal_comm->item_id = $sales_commission->id;
-        $deal_comm->transaction_id = $transaction_id;
-        $deal_comm->dividend = $person->sales;
-        $deal_comm->divisor = 1;
-        $deal_comm->qty_status = 2;
-        $deal_comm->qty = 0;
-        $deal_comm->unit_price = -$person->profit_sharing;
-        $deal_comm->amount = -$person->subtotal_profit_sharing;
-        $deal_comm->save();
+        if($person->is_vending) {
+            $deal_comm = new Deal();
+            $deal_comm->item_id = $sales_commission->id;
+            $deal_comm->transaction_id = $transaction_id;
+            $deal_comm->dividend = $person->sales;
+            $deal_comm->divisor = 1;
+            $deal_comm->qty_status = 2;
+            $deal_comm->qty = 0;
+            $deal_comm->unit_price = -$person->profit_sharing;
+            $deal_comm->amount = -$person->subtotal_profit_sharing;
+            $deal_comm->save();
+        }else if($person->is_dvm) {
+            $deal_comm = new Deal();
+            $deal_comm->item_id = $sales_commission->id;
+            $deal_comm->transaction_id = $transaction_id;
+            $deal_comm->dividend = $person->subtotal_sales;
+            $deal_comm->divisor = 1;
+            $deal_comm->qty_status = 2;
+            $deal_comm->qty = 0;
+            $deal_comm->unit_price = -$person->profit_sharing/100;
+            $deal_comm->amount = $person->subtotal_sales * (-$person->profit_sharing/100);
+            $deal_comm->save();
+        }
 
         if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility_subsidy != '') {
             $deal_util = new Deal();
@@ -473,6 +484,5 @@ class VendingController extends Controller
             $deal_util->amount = -$person->utility_subsidy;
             $deal_util->save();
         }
-
     }
 }
