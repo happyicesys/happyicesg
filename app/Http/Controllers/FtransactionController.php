@@ -42,22 +42,20 @@ class FtransactionController extends Controller
                         ->leftJoin('people', 'ftransactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('users', 'users.id', '=', 'ftransactions.franchisee_id')
-                        ->leftJoin('transactions', 'transactions.id', '=', 'ftransactions.transaction_id')
                         ->select(
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'ftransactions.del_postcode',
+                                    'people.name', 'people.id as person_id',
+                                    'ftransactions.del_postcode', 'ftransactions.id',
                                     'ftransactions.status', 'ftransactions.delivery_date', 'ftransactions.driver',
                                     'ftransactions.total_qty', 'ftransactions.pay_status',
-                                    'ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.ftransaction_id AS ftransaction_id', 'users.name',
+                                    'ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.ftransaction_id', 'users.name', 'users.user_code',
                                     DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                 CASE
                                                 WHEN people.is_gst_inclusive=0
                                                 THEN ftransactions.total*((100+profiles.gst_rate)/100)
                                                 ELSE ftransactions.total
                                                 END) ELSE ftransactions.total END) + (CASE WHEN ftransactions.delivery_fee>0 THEN ftransactions.delivery_fee ELSE 0 END), 2) AS total'),
-                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate',
-                                    'transactions.id AS transaction_id',
-                                    DB::raw('(CASE WHEN transactions.id <> null THEN transactions.id ELSE ftransactions.ftransaction_id END) AS trans_id')
+                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate'
                                 );
 
         // reading whether search input is filled
@@ -145,7 +143,7 @@ class FtransactionController extends Controller
     // return the edit page for the ftransaction(int ftransaction_id)
     public function edit($ftransaction_id)
     {
-        $ftransaction = Ftransaction::findOrFail($ftransaction_id);
+        $ftransaction = Ftransaction::where('ftransaction_id', $ftransaction_id)->first();
         $person = Person::findOrFail($ftransaction->person_id);
 
         $prices = DB::table('prices')
@@ -159,6 +157,71 @@ class FtransactionController extends Controller
         return view('franchisee.edit', compact('ftransaction', 'person', 'prices'));
     }
 
+
+    // return ftransaction related components, fdeals (int ftransaction_id)
+    public function editApi($ftransaction_id)
+    {
+        $total = 0;
+        $subtotal = 0;
+        $tax = 0;
+
+        $ftransaction = Ftransaction::with('person')->where('ftransaction_id', $ftransaction_id)->first();
+
+        $fdeals = DB::table('fdeals')
+                    ->leftJoin('ftransactions', 'ftransactions.id', '=', 'fdeals.ftransaction_id')
+                    ->leftJoin('people', 'people.id', '=', 'ftransactions.person_id')
+                    ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                    ->leftJoin('items', 'items.id', '=', 'fdeals.item_id')
+                    ->select(
+                                'fdeals.ftransaction_id', 'fdeals.dividend', 'fdeals.divisor', 'fdeals.qty', 'fdeals.unit_price', 'fdeals.amount', 'fdeals.id AS deal_id',
+                                'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
+                                'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                'ftransactions.del_postcode', 'ftransactions.status', 'ftransactions.delivery_date', 'ftransactions.driver',
+                                DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                    CASE
+                                                    WHEN people.is_gst_inclusive=0
+                                                    THEN total*((100+people.gst_rate)/100)
+                                                    ELSE ftransactions.total
+                                                    END)
+                                                ELSE ftransactions.total END) + (CASE WHEN ftransactions.delivery_fee>0 THEN ftransactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                'ftransactions.total_qty', 'ftransactions.pay_status','ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.id',
+                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
+                            )
+                    ->where('fdeals.ftransaction_id', $ftransaction->id)
+                    ->get();
+
+        $subtotal = 0;
+        $tax = 0;
+        $total = number_format($ftransaction->total, 2);
+
+        if($ftransaction->person->profile->gst) {
+            if($ftransaction->person->is_gst_inclusive) {
+                $total = number_format($ftransaction->total, 2);
+                $tax = number_format($ftransaction->total - $ftransaction->total/((100 + $ftransaction->person->gst_rate)/ 100), 2);
+                $subtotal = number_format($ftransaction->total - $tax, 2);
+            }else {
+                $subtotal = number_format($ftransaction->total, 2);
+                $tax = number_format($ftransaction->total * ($ftransaction->person->gst_rate)/100, 2);
+                $total = number_format(((float)$ftransaction->total + (float) $tax), 2);
+            }
+        }
+
+        $delivery_fee = $ftransaction->delivery_fee;
+
+        if($delivery_fee) {
+            $total += number_format($delivery_fee, 2);
+        }
+
+        return $data = [
+            'ftransaction' => $ftransaction,
+            'fdeals' => $fdeals,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total,
+            'delivery_fee' => $delivery_fee
+        ];
+
+    }
 
     // pass value into filter search for DB (collection) [query]
     private function searchDBFilter($ftransactions)

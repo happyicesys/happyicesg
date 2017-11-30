@@ -9,10 +9,10 @@ var app = angular.module('app', [
     var $person = $('.person');
     var $item = $('.item');
     var $amount = $('#amount');
-    var $trans_id = $('#transaction_id');
+    var $trans_id = $('#ftransaction_id');
     var $person_select = $('.person_select');
 
-    function transactionController($scope, $http){
+    function ftransactionController($scope, $http){
         $scope.selection = {};
         $scope.Math = window.Math;
 
@@ -57,27 +57,27 @@ var app = angular.module('app', [
                 $scope.people = people;
             });
 
-            $http.get('/api/transaction/edit/' + $trans_id.val()).success(function(data) {
+            $http.get('/api/franchisee/edit/' + $trans_id.val()).success(function(data) {
                 $scope.delivery = data.delivery_fee;
                 $scope.deals = data.deals;
                 $scope.totalModel = data.total;
                 $scope.subtotalModel = data.subtotal;
                 $scope.taxModel = data.tax;
-                $scope.totalqtyModel = data.transaction.total_qty;
+                $scope.totalqtyModel = data.ftransaction.total_qty;
 
                 $scope.form = {
-                    person: data.transaction.person.id,
-                    name: data.transaction.person.name,
-                    payterm: data.transaction.person.payterm,
-                    cust_id: data.transaction.person.cust_id,
-                    transremark: data.transaction.transremark ? data.transaction.transremark : data.transaction.person.remark,
-                    del_address: data.transaction.del_address ? data.transaction.del_address : data.transaction.person.del_address,
-                    bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
-                    del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
-                    attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
-                    contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
-                    order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
-                    delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
+                    person: data.ftransaction.person.id,
+                    name: data.ftransaction.person.name,
+                    payterm: data.ftransaction.person.payterm,
+                    cust_id: data.ftransaction.person.cust_id,
+                    transremark: data.ftransaction.transremark ? data.ftransaction.transremark : data.ftransaction.person.remark,
+                    del_address: data.ftransaction.del_address ? data.ftransaction.del_address : data.ftransaction.person.del_address,
+                    bill_address: data.ftransaction.bill_address ? data.ftransaction.bill_address : data.ftransaction.person.bill_address,
+                    del_postcode: data.ftransaction.del_postcode ? data.ftransaction.del_postcode : data.ftransaction.person.del_postcode,
+                    attn_name: data.ftransaction.name ? data.ftransaction.name : data.ftransaction.person.name,
+                    contact: data.ftransaction.contact ? data.ftransaction.contact : data.ftransaction.person.contact,
+                    order_date: data.ftransaction.order_date ? data.ftransaction.order_date : moment().format("YYYY-MM-DD"),
+                    delivery_date: data.ftransaction.delivery_date ? data.ftransaction.delivery_date : moment().format("YYYY-MM-DD"),
                 }
 
                 $scope.onPrevSingleClicked = function(modelName, date) {
@@ -95,13 +95,13 @@ var app = angular.module('app', [
             });
 
 /*            $http({
-                url: '/transaction/' + $trans_id.val(),
+                url: '/ftransaction/' + $trans_id.val(),
                 method: "GET",
-            }).success(function(transaction){
+            }).success(function(ftransaction){
 
-                $scope.delivery = transaction.delivery_fee
+                $scope.delivery = ftransaction.delivery_fee
                 $http({
-                    url: '/deal/data/' + transaction.id,
+                    url: '/deal/data/' + ftransaction.id,
                     method: "GET",
                 }).success(function(deals){
                     $scope.deals = deals;
@@ -114,7 +114,7 @@ var app = angular.module('app', [
                     }
 
                         $http({
-                            url: '/person/profile/' + transaction.person_id,
+                            url: '/person/profile/' + ftransaction.person_id,
                             method: "GET",
                         }).success(function(profile){
                             $scope.totalModel = total;
@@ -127,7 +127,7 @@ var app = angular.module('app', [
                         });
 
                 $http({
-                    url: '/transaction/person/'+ transaction.person_id,
+                    url: '/ftransaction/person/'+ ftransaction.person_id,
                     method: "GET",
                 }).success(function(person){
 
@@ -136,20 +136,20 @@ var app = angular.module('app', [
                         name: person.name,
                         payterm: person.payterm,
                         cust_id: person.cust_id,
-                        transremark: transaction.transremark ? transaction.transremark : person.remark,
-                        del_address: transaction.del_address ? transaction.del_address : person.del_address,
-                        bill_address: transaction.bill_address ? transaction.bill_address : person.bill_address,
-                        del_postcode: transaction.del_postcode ? transaction.del_postcode : person.del_postcode,
-                        attn_name: transaction.name ? transaction.name : person.name,
-                        contact: transaction.contact ? transaction.contact : person.contact,
-                        order_date: transaction.order_date ? transaction.order_date : moment().format("YYYY-MM-DD"),
-                        delivery_date: transaction.delivery_date ? transaction.delivery_date : moment().format("YYYY-MM-DD"),
+                        transremark: ftransaction.transremark ? ftransaction.transremark : person.remark,
+                        del_address: ftransaction.del_address ? ftransaction.del_address : person.del_address,
+                        bill_address: ftransaction.bill_address ? ftransaction.bill_address : person.bill_address,
+                        del_postcode: ftransaction.del_postcode ? ftransaction.del_postcode : person.del_postcode,
+                        attn_name: ftransaction.name ? ftransaction.name : person.name,
+                        contact: ftransaction.contact ? ftransaction.contact : person.contact,
+                        order_date: ftransaction.order_date ? ftransaction.order_date : moment().format("YYYY-MM-DD"),
+                        delivery_date: ftransaction.delivery_date ? ftransaction.delivery_date : moment().format("YYYY-MM-DD"),
                     }
 
 
 
                     $http({
-                        url: '/transaction/item/'+ person.id,
+                        url: '/ftransaction/item/'+ person.id,
                         method: "GET",
                     }).success(function(items){
                         $scope.items = items;
@@ -182,5 +182,5 @@ app.filter('removeZero', ['$filter', function($filter) {
     };
 }]);
 
-app.controller('transactionController', transactionController);
+app.controller('ftransactionController', ftransactionController);
 

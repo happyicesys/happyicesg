@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function getData()
     {
-        $user =  User::whereIn('type', ['admin', 'staff'])->get();
+        $user =  User::with('roles')->whereIn('type', ['admin', 'staff'])->get();
         // $user = User::all();
 
         return $user;
@@ -67,14 +67,12 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-
         return view('user.edit', compact('user'));
     }
 
     public function update(UserRequest $request, $id)
     {
         $user = User::findOrFail($id);
-
         $request->merge(array('can_access_inv' => request()->has('can_access_inv') ? 1 : 0));
 
         if($request->has('password')){
@@ -82,9 +80,7 @@ class UserController extends Controller
         }else{
             $input = $request->except('password');
         }
-
         $user->update($input);
-
         $person = Person::where('user_id', $user->id)->first();
 
         if($person){

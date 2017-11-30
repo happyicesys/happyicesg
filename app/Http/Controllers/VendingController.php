@@ -190,7 +190,7 @@ class VendingController extends Controller
                 });
         }
         if($custcategory) {
-            $transactions = $transactions->where('custcategories.id', $custcategory);
+            $transactions = $transactions->whereIn('custcategories.id', $custcategory);
         }
         if($status) {
             if($status == 'Delivered') {

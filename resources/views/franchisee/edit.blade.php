@@ -15,7 +15,7 @@
             @else
             <strong>Invoice : {{$ftransaction->ftransaction_id}}</strong> ({{$ftransaction->status}}) - {{$ftransaction->pay_status}}
             @endif
-            {!! Form::text('transaction_id', $ftransaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
+            {!! Form::text('ftransaction_id', $ftransaction->ftransaction_id, ['id'=>'ftransaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
         <div class="col-md-8">

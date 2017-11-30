@@ -85,6 +85,9 @@
                                         </a>
                                     </th>
                                     <th class="col-md-2">
+                                        Roles
+                                    </th>
+                                    <th class="col-md-1">
                                         Contact
                                     </th>
                                     <th class="col-md-2">
@@ -101,6 +104,13 @@
                                         <td class="col-md-1">@{{ number }} </td>
                                         <td class="col-md-2">@{{ user.name }}</td>
                                         <td class="col-md-2">@{{ user.username }}</td>
+                                        <td class="col-md-2">
+                                            <ul>
+                                                <li ng-repeat='(key, value) in user.roles'>
+                                                    <span>@{{value.name}}</span>
+                                                </li>
+                                            </ul>
+                                        </td>
                                         <td class="col-md-2">@{{ user.contact }}</td>
                                         <td class="col-md-2">@{{ user.email }}</td>
                                         <td class="col-md-2 text-center">

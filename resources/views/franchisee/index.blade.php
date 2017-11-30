@@ -310,11 +310,9 @@
                                 <tr dir-paginate="ftransaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
-                                        <a href="/transaction/@{{ ftransaction.transaction_id }}/edit" ng-if="ftransaction.transaction_id">
-                                            @{{ ftransaction.transaction_id }}
-                                        </a>
-                                        <a href="/ftransaction/@{{ ftransaction.trans_id }}/edit" ng-if="!ftransaction.transaction_id">
-                                            @{{ ftransaction.trans_id }}
+                                        <a href="/franchisee/@{{ ftransaction.ftransaction_id }}/edit">
+                                            @{{ftransaction.user_code}}
+                                            @{{ftransaction.ftransaction_id}}
                                         </a>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ ftransaction.cust_id }} </td>

@@ -15,7 +15,7 @@ class Fdeal extends Model
     protected $table = 'fdeals';
 
     protected $fillable = [
-        'qty', 'amount', 'unit_price', 'qty_status', 'item_id', 'transaction_id',
+        'qty', 'amount', 'unit_price', 'qty_status', 'item_id', 'ftransaction_id',
         'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after'
     ];
 

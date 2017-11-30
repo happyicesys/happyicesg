@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(InternalBillingSeeder::class);
         $this->call(CurrencySeeder::class);
         $this->call(VendingSeeder::class);
-        */
         $this->call(RoleFranchiseeSeeder::class);
+        */
         Model::reguard();
     }
 }

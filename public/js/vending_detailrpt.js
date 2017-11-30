@@ -34,7 +34,9 @@ var app = angular.module('app', [
         getPage(1, true);
 
         angular.element(document).ready(function () {
-            $('.select').select2();
+            $('.select').select2({
+                placeholder: 'Select...'
+            });
 
             $('#checkAll').change(function(){
                 var all = this;
@@ -77,16 +79,18 @@ var app = angular.module('app', [
         }
 
         $scope.getRowColor = function(transaction) {
-            if(transaction.begin_date == transaction.end_date) {
-                return 'yellow';
-            }
+            if(transaction) {
+                if(transaction.begin_date == transaction.end_date) {
+                    return 'yellow';
+                }
 
-            if(transaction.clocker_delta > (transaction.last_clocker_delta * 150/100)) {
-                return '#f68080';
-            }
+                if(transaction.clocker_delta > (transaction.last_clocker_delta * 150/100)) {
+                    return '#f68080';
+                }
 
-            if(transaction.melted_amount > 100) {
-                return '#f68080';
+                if(transaction.melted_amount > 100) {
+                    return '#f68080';
+                }
             }
         }
 
