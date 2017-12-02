@@ -65,6 +65,15 @@ var app = angular.module('app', [
                 $scope.taxModel = data.tax;
                 $scope.totalqtyModel = data.transaction.total_qty;
 
+                $scope.getTotalPieces = function(){
+                    var total = 0;
+                    for(var i = 0; i < data.deals.length; i++){
+                        var deal = data.deals[i];
+                        total += (+deal.pieces);
+                    }
+                    return total;
+                }
+
                 $scope.form = {
                     person: data.transaction.person.id,
                     name: data.transaction.person.name,
