@@ -129,6 +129,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                <td></td>
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
@@ -178,6 +179,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                <td></td>
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
@@ -191,6 +193,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                <td></td>
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
