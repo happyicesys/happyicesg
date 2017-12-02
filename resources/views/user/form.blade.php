@@ -30,7 +30,7 @@
             {!! Form::text('username', null, ['class'=>'form-control']) !!}
         </div>
     </div>
-    <div class="col-md-8 col-sm-8 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('user_code', 'User ID', ['class'=>'control-label']) !!}
             {!! Form::text('user_code', null, ['class'=>'form-control']) !!}

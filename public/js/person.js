@@ -23,6 +23,7 @@ function personController($scope, $http){
         active: '',
         pageNum: 100,
         profile_id: '',
+        franchisee_id: ''
     }
     // init page load
     getPage(1, true);
@@ -55,6 +56,13 @@ function personController($scope, $http){
         $scope.sortName = '';
         $scope.sortBy = '';
         getPage(1, false);
+    }
+
+    // retrieve franchisee id
+    $scope.getFranchiseeId = function() {
+        $http.get('/api/franchisee/auth').success(function(data) {
+            return data;
+        });
     }
 
     // retrieve page w/wo search

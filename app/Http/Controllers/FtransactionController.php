@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 use App\Http\Requests;
 use App\Ftransaction;
+use App\Fdeal;
 use App\Person;
+use App\Item;
+use App\GeneralSetting;
 use Carbon\Carbon;
+use Laracasts\Flash\Flash;
 use DB;
+use PDF;
 
 // traits
 use App\HasMonthOptions;
@@ -140,32 +146,32 @@ class FtransactionController extends Controller
         return $ftransactions;
     }
 
-    // return the edit page for the ftransaction(int ftransaction_id)
-    public function edit($ftransaction_id)
+    // return the edit page for the ftransaction(int id)
+    public function edit($id)
     {
-        $ftransaction = Ftransaction::where('ftransaction_id', $ftransaction_id)->first();
+        $ftransaction = Ftransaction::findOrFail($id);
         $person = Person::findOrFail($ftransaction->person_id);
 
-        $prices = DB::table('prices')
-                    ->leftJoin('items', 'prices.item_id', '=', 'items.id')
-                    ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
-                    ->where('prices.person_id', '=', $ftransaction->person_id)
+        $fprices = DB::table('fprices')
+                    ->leftJoin('items', 'fprices.item_id', '=', 'items.id')
+                    ->select('fprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                    ->where('fprices.person_id', '=', $ftransaction->person_id)
                     ->where('items.is_active', 1)
                     ->orderBy('product_id')
                     ->get();
 
-        return view('franchisee.edit', compact('ftransaction', 'person', 'prices'));
+        return view('franchisee.edit', compact('ftransaction', 'person', 'fprices'));
     }
 
 
-    // return ftransaction related components, fdeals (int ftransaction_id)
-    public function editApi($ftransaction_id)
+    // return ftransaction related components, fdeals (int id)
+    public function editApi($id)
     {
         $total = 0;
         $subtotal = 0;
         $tax = 0;
 
-        $ftransaction = Ftransaction::with('person')->where('ftransaction_id', $ftransaction_id)->first();
+        $ftransaction = Ftransaction::with('person')->findOrFail($id);
 
         $fdeals = DB::table('fdeals')
                     ->leftJoin('ftransactions', 'ftransactions.id', '=', 'fdeals.ftransaction_id')
@@ -185,7 +191,13 @@ class FtransactionController extends Controller
                                                     END)
                                                 ELSE ftransactions.total END) + (CASE WHEN ftransactions.delivery_fee>0 THEN ftransactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 'ftransactions.total_qty', 'ftransactions.pay_status','ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.id',
-                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
+                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                                DB::raw('
+                                    (CASE WHEN fdeals.divisor > 1
+                                    THEN (items.base_unit * fdeals.dividend/fdeals.divisor)
+                                    ELSE (items.base_unit * fdeals.qty)
+                                    END) AS pieces
+                                ')
                             )
                     ->where('fdeals.ftransaction_id', $ftransaction->id)
                     ->get();
@@ -221,6 +233,130 @@ class FtransactionController extends Controller
             'delivery_fee' => $delivery_fee
         ];
 
+    }
+
+    // update franchisee edit page(int id)
+    public function update($id)
+    {
+        // dynamic form arrays
+        $quantities = request('qty');
+        $amounts = request('amount');
+        $quotes = request('quote');
+        $ftransaction = Ftransaction::findOrFail($id);
+        // find out deals created
+        $fdeals = Fdeal::where('ftransaction_id', $ftransaction->id)->get();
+
+        // retrieve different button press
+        $button = request('submit_btn');
+        switch($button) {
+            case 'Save':
+                request()->merge(array('status' => 'Pending'));
+                break;
+            case 'Delivered & Paid':
+                request()->merge(array('status' => 'Delivered'));
+                request()->merge(array('pay_status' => 'Paid'));
+                request()->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
+                if(!request('paid_by')){
+                    request()->merge(array('paid_by' => auth()->user()->name));
+                }
+                if(! request('driver')){
+                    request()->merge(array('driver'=> auth()->user()->name));
+                }
+                if(count($fdeals) == 0){
+                    Flash::error('Please entry the list');
+                    return redirect()->action('FtransactionController@edit', $ftransaction->id);
+                }
+                break;
+            case 'Delivered & Owe':
+                request()->merge(array('status' => 'Delivered'));
+                request()->merge(array('pay_status' => 'Owe'));
+                if(!request('paid_by')){
+                    request()->merge(array('paid_by' => null));
+                }
+                if(! request('driver')){
+                    request()->merge(array('driver'=> auth()->user()->name));
+                }
+                if(count($fdeals) == 0){
+                    Flash::error('Please entry the list');
+                    return redirect()->action('FtransactionController@edit', $ftransaction->id);
+                }
+                break;
+            case 'Paid':
+                request()->merge(array('pay_status' => 'Paid'));
+                request()->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
+                if(!request('paid_by')){
+                    request()->merge(array('paid_by' => auth()->user()->name));
+                }
+                if(count($fdeals) == 0){
+                    Flash::error('Please entry the list');
+                    return redirect()->action('FtransactionController@edit', $ftransaction->id);
+                }
+                break;
+            case 'Confirm':
+                if(array_filter($quantities) != null and array_filter($amounts) != null) {
+                    request()->merge(array('status' => 'Confirmed'));
+                }else{
+                    Flash::error('The list cannot be empty upon confirmation');
+                    return redirect()->action('FtransactionController@edit', $ftransaction->id);
+                }
+                break;
+            case 'Unpaid':
+                request()->merge(array('pay_status' => 'Owe'));
+                request()->merge(array('paid_at' => null));
+                request()->merge(array('paid_by' => null));
+                break;
+            case 'Update':
+                if($ftransaction->status === 'Confirmed'){
+                    request()->merge(array('driver' => null));
+                    request()->merge(array('paid_by' => null));
+                    request()->merge(array('paid_at' => null));
+                }else if(($ftransaction->status === 'Delivered' or $ftransaction->status === 'Verified Owe') and $ftransaction->pay_status === 'Owe'){
+                    request()->merge(array('paid_by' => null));
+                    request()->merge(array('paid_at' => null));
+                }
+                break;
+        }
+
+        request()->merge(array('person_id' => request()->input('person_copyid')));
+        request()->merge(array('updated_by' => auth()->user()->name));
+        $ftransaction->update(request()->all());
+
+        $this->syncFdeal($ftransaction, $quantities, $amounts, $quotes);
+
+        return redirect()->action('FtransactionController@edit', $ftransaction->id);
+    }
+
+    // delete ftransaction(int id)
+    public function destroy($id)
+    {
+        $button = request('submit_btn');
+        $ftransaction = Ftransaction::findOrFail($id);
+        switch($button) {
+            case 'Cancel Invoice':
+                $ftransaction->cancel_trace = $ftransaction->status;
+                $ftransaction->status = 'Cancelled';
+                $ftransaction->updated_by = auth()->user()->name;
+                $ftransaction->save();
+                return redirect()->action('FtransactionController@edit', $ftransaction->id);
+                break;
+            case 'Delete Invoice':
+                $transaction->delete();
+                return redirect('franchisee');
+        }
+    }
+
+    // undo cancelled ftransaction(int id)
+    public function reverse($id)
+    {
+        $ftransaction = FTransaction::findOrFail($id);
+        if($ftransaction->cancel_trace){
+            $ftransaction->status = $ftransaction->cancel_trace;
+            $ftransaction->cancel_trace = '';
+            $ftransaction->updated_by = auth()->user()->name;
+        }
+
+        $ftransaction->save();
+        return redirect()->action('FtransactionController@edit', $ftransaction->id);
     }
 
     // pass value into filter search for DB (collection) [query]
@@ -278,6 +414,121 @@ class FtransactionController extends Controller
         return $ftransactions;
     }
 
+    // delete single fdeal api (int fdeal_id)
+    public function destroyFdealApi($fdeal_id)
+    {
+
+        $fdeal = FDeal::findOrFail($fdeal_id);
+        $fdeal->delete();
+        $ftransaction = Ftransaction::findOrFail($fdeal->ftransaction_id);
+        $fdeals = Fdeal::where('ftransaction_id', $fdeal->ftransaction_id)->get();
+        $deal_total = $fdeals->sum('amount');
+        $deal_totalqty = $fdeals->sum('qty');
+        $ftransaction->total = $deal_total;
+        $ftransaction->total_qty = $deal_totalqty;
+        $ftransaction->save();
+        return $fdeal->id . 'has been successfully deleted';
+    }
+
+    // generate pdf invoice for ftransaction
+    public function generateInvoice($id)
+    {
+        $ftransaction = Ftransaction::findOrFail($id);
+        $person = Person::findOrFail($ftransaction->person_id);
+        $fdeals = Fdeal::where('ftransaction_id', $ftransaction->id)->get();
+        $totalprice = DB::table('fdeals')->where('ftransaction_id', $ftransaction->id)->sum('amount');
+        $totalqty = DB::table('fdeals')->where('ftransaction_id', $ftransaction->id)->sum('qty');
+
+        $data = [
+            'inv_id' => $ftransaction->franchisee->user_code.'-'.$ftransaction->ftransaction_id,
+            'transaction'   =>  $ftransaction,
+            'person'        =>  $person,
+            'deals'         =>  $fdeals,
+            'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
+        ];
+
+        $name = $ftransaction->franchisee->user_code.'- Inv('.$ftransaction->ftransaction_id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
+        $pdf = PDF::loadView('transaction.invoice', $data);
+        $pdf->setPaper('a4');
+        $pdf->setOption('dpi', 85);
+        return $pdf->download($name);
+    }
+
+    // send invoice email upon button clicked
+    public function sendEmailInv($id)
+    {
+        $email_draft = GeneralSetting::firstOrFail()->DTDCUST_EMAIL_CONTENT;
+        $ftransaction = Ftransaction::findOrFail($id);
+        $self = auth()->user()->name;
+        $fdeals = Fdeal::where('ftransaction_id', $ftransaction->id)->get();
+        $totalprice = DB::table('fdeals')->where('ftransaction_id', $ftransaction->id)->sum('amount');
+        $totalqty = DB::table('fdeals')->where('ftransaction_id', $ftransaction->id)->sum('qty');
+        $person = Person::findOrFail($ftransaction->person_id);
+
+        $email = $person->email;
+
+        if(! $email){
+            Flash::error('Please set the email before sending');
+            return Redirect::action('FTransactionController@edit', $id);
+        }else {
+            if(strpos($email, ';') !== FALSE) {
+                $email = explode(';', $email);
+            }
+        }
+
+        $now = Carbon::now()->format('dmyhis');
+        // $profile = Profile::firstOrFail();
+        $data = [
+            'inv_id' => $ftransaction->franchisee->user_code.'-'.$ftransaction->ftransaction_id,
+            'transaction'   =>  $ftransaction,
+            'person'        =>  $person,
+            'deals'         =>  $fdeals,
+            'totalprice'    =>  $totalprice,
+            'totalqty'      =>  $totalqty,
+        ];
+        $name = $ftransaction->franchisee->user_code.'- Inv('.$ftransaction->ftransaction_id.')_'.$person->cust_id.'_'.$person->company.'('.$now.').pdf';
+        $pdf = PDF::loadView('transaction.invoice', $data);
+        $pdf->setPaper('a4');
+        $sent = $pdf->save(storage_path('/invoice/'.$name));
+        $store_path = storage_path('/invoice/'.$name);
+        $sender = 'system@happyice.com.sg';
+        $datamail = [
+            'person' => $person,
+            'transaction' => $ftransaction,
+            'email_draft' => $email_draft,
+            'self' => $self,
+            'url' => 'http://www.happyice.com.sg',
+        ];
+
+        Mail::send('email.send_invoice', $datamail, function ($message) use ($email, $sender, $store_path, $ftransaction) {
+            $message->from($sender);
+            $message->subject('[Invoice ('.$ftransaction->franchisee->user_code.') '.$ftransaction->ftransaction_id.'] Happy Ice - Thanks for Your Support');
+            $message->setTo($email);
+            $message->attach($store_path);
+        });
+
+        if($sent){
+            Flash::success('Successfully Sent');
+        }else{
+            Flash::error('Please Try Again');
+        }
+
+        return redirect()->action('FtransactionController@edit', $id);
+    }
+
+    // retrieve franchisee id if current user is franchisee or return null()
+    public function getFranchiseeIdApi()
+    {
+        if(auth()->user()->hasRole('franchisee')) {
+            $user = auth()->user()->id;
+        }else {
+            $user = null;
+        }
+
+        return $user;
+    }
+
     // calculating gst and non for delivered total
     private function calDBTransactionTotal($query)
     {
@@ -306,10 +557,50 @@ class FtransactionController extends Controller
         return $delivery_fee;
     }
 
-    // create deals when there is input and update when deal exist(int ftransaction_id)
-    private function syncFdeals($ftransaction_id)
+    // create deals when there is input and update when deal exist(Collection ftransaction, Arr quantities, Arr amounts, Arr quotes)
+    private function syncFdeal($ftransaction, $quantities, $amounts, $quotes)
     {
+        if($quantities and $amounts){
+            if(array_filter($quantities) != null and array_filter($amounts) != null){
+                $errors = array();
+                foreach($quantities as $index => $qty){
 
+                    $dividend = 0;
+                    $divisor = 1;
+
+                    if(strpos($qty, '/') !== false) {
+                        $dividend = explode('/', $qty)[0];
+                        $divisor = explode('/', $qty)[1];
+                        $qty = explode('/', $qty)[0]/ explode('/', $qty)[1];
+                    }
+
+                    if($qty != NULL or $qty != 0 ){
+                        // inventory lookup before saving to deals
+                        $item = Item::findOrFail($index);
+                        $fdeal = new Fdeal();
+                        $fdeal->ftransaction_id = $ftransaction->id;
+                        $fdeal->item_id = $index;
+                        $fdeal->dividend = $dividend ? $dividend : $qty;
+                        $fdeal->divisor = $divisor;
+                        $fdeal->amount = $amounts[$index];
+                        $fdeal->unit_price = $quotes[$index];
+                        if($item->is_inventory) {
+                            $fdeal->qty = $qty;
+                        }
+                        $fdeal->save();
+                    }
+                }
+            }
+        }
+
+        $fdeals = Fdeal::where('ftransaction_id', $ftransaction->id)->get();
+        $deal_total = $fdeals->sum('amount');
+        $deal_totalqty = $fdeals->sum('qty');
+        $ftransaction->total = $deal_total;
+        $ftransaction->total_qty = $deal_totalqty;
+        $ftransaction->save();
+
+        Flash::success('Successfully Added');
     }
 
 }

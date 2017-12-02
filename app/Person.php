@@ -165,6 +165,11 @@ class Person extends Baum\Node
         return $this->belongsTo('App\User', 'franchisee_id');
     }
 
+    public function fprices()
+    {
+        return $this->hasMany('App\Fprices');
+    }
+
     // getter and setter
 
     public function setDobAttribute($date)

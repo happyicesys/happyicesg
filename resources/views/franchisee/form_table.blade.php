@@ -34,10 +34,10 @@
                         </th>
                     </tr>
 
-                    @unless(count($prices)>0)
+                    @unless(count($fprices)>0)
                     <td class="text-center" colspan="7">No Records Found</td>
                     @else
-                    @foreach($prices as $price)
+                    @foreach($fprices as $price)
                     <tr class="txtMult">
                         <td class="col-md-5 col-xs-4 hidden-xs">
                                 <strong>{{$price->product_id}}</strong></span>

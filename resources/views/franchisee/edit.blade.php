@@ -15,7 +15,7 @@
             @else
             <strong>Invoice : {{$ftransaction->ftransaction_id}}</strong> ({{$ftransaction->status}}) - {{$ftransaction->pay_status}}
             @endif
-            {!! Form::text('ftransaction_id', $ftransaction->ftransaction_id, ['id'=>'ftransaction_id','class'=>'hidden form-control']) !!}
+            {!! Form::text('ftransaction_id', $ftransaction->id, ['id'=>'ftransaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
         <div class="col-md-8">
@@ -39,51 +39,43 @@
         </div>
     </div>
 
-    {!! Form::model($ftransaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $ftransaction->id]]) !!}
-    {!! Form::close() !!}
-
     <div class="panel-body">
         <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                {!! Form::submit('Log History', ['class'=> 'btn btn-warning pull-right', 'form'=>'log']) !!}
-            </div>
-        </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::model($ftransaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $ftransaction->id]]) !!}
-                        @include('franchisee.form_cust')
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                {!! Form::model($ftransaction, ['id'=>'form_cust', 'method'=>'PATCH','action'=>['FtransactionController@update', $ftransaction->id]]) !!}
+                    @include('franchisee.form_cust')
 
+                <div class="row">
+                    <div class="col-md-12" style="padding-top:15px;">
+                        @include('franchisee.form_dealtable')
+                    </div>
+                </div>
+
+                @unless($ftransaction->status == 'Delivered' and $ftransaction->pay_status == 'Paid')
                     <div class="row">
                         <div class="col-md-12" style="padding-top:15px;">
-                            @include('franchisee.form_dealtable')
+                            @include('franchisee.form_table')
                         </div>
                     </div>
-
-                    @unless($ftransaction->status == 'Delivered' and $ftransaction->pay_status == 'Paid')
-                        <div class="row">
-                            <div class="col-md-12" style="padding-top:15px;">
-                                @include('franchisee.form_table')
-                            </div>
+                @else
+                    @cannot('transaction_view')
+                    @cannot('supervisor_view')
+                    <div class="row">
+                        <div class="col-md-12" style="padding-top:15px;">
+                            @include('franchisee.form_table')
                         </div>
-                    @else
-                        @cannot('transaction_view')
-                        @cannot('supervisor_view')
-                        <div class="row">
-                            <div class="col-md-12" style="padding-top:15px;">
-                                @include('franchisee.form_table')
-                            </div>
-                        </div>
-                        @endcannot
-                        @endcannot
-                    @endunless
-                    {!! Form::close() !!}
+                    </div>
+                    @endcannot
+                    @endcannot
+                @endunless
+                {!! Form::close() !!}
 
-                    {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
-                    {!! Form::close() !!}
-                    {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
-                    {!! Form::close() !!}
-                </div>
+                {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['FtransactionController@destroy', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
+                {!! Form::close() !!}
+                {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['FtransactionController@reverse', $ftransaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
+                {!! Form::close() !!}
             </div>
+        </div>
 
             @php
                 //state 1 = cancel inv - confirm - cancel (pending)
@@ -129,14 +121,12 @@
             <div class="row">
                 <div class="col-md-12" >
                     <div class="pull-left">
-                        @if(!auth()->user()->hasRole('franchisee'))
                         {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                        @endif
                     </div>
                     <div class="pull-right">
 
-                        {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        {!! Form::submit('Confirm', ['name'=>'submit_btn', 'value'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -144,20 +134,16 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-left">
-                        @if(!auth()->user()->hasRole('franchisee'))
-                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                        @endif
+                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'submit_btn', 'value'=>'form_delete']) !!}
                     </div>
 
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee'))
-                        {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
-                        {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                        @endif
-                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        {!! Form::submit('Delivered & Paid', ['name'=>'submit_btn', 'value'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
+                        {!! Form::submit('Delivered & Owe', ['name'=>'submit_btn', 'value'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                        {!! Form::submit('Update', ['name'=>'submit_btn', 'value'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                        <a href="/franchisee/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/franchisee/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -167,20 +153,16 @@
                     <div class="pull-left">
                         @can('transaction_deleteitem')
                         @cannot('supervisor_view')
-                        @if(!auth()->user()->hasRole('franchisee'))
-                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                        @endif
+                        {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'submit_btn', 'value'=>'form_delete']) !!}
                         @endcannot
                         @endcan
                     </div>
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee'))
-                        {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                        @endif
-                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        {!! Form::submit('Paid', ['name'=>'submit_btn', 'value'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                        {!! Form::submit('Update', ['name'=>'submit_btn', 'value'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                        <a href="/franchisee/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/franchisee/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -189,12 +171,10 @@
                 <div class="row">
                     <div class="pull-right">
                         @cannot('transaction_view')
-                        @if(!auth()->user()->hasRole('franchisee'))
-                            {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
-                            {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
-                        @endif
+                            {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'submit_btn', 'value'=>'form_wipe']) !!}
+                            {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'submit_btn', 'value'=>'form_reverse']) !!}
                         @endcan
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -205,21 +185,17 @@
                         {{-- @can('transaction_deleteitem') --}}
                         @cannot('transaction_view')
                         @cannot('supervisor_view')
-                        @if(!auth()->user()->hasRole('franchisee'))
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
-                        @endif
+                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'submit_btn', 'value'=>'form_delete']) !!}
+                            {!! Form::submit('Unpaid', ['name'=>'submit_btn', 'value'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                         @endcannot
                         @endcannot
                         {{-- @endcan --}}
                     </div>
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee'))
-                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
-                        @endif
-                        <a href="/ftransaction/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/ftransaction/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        {!! Form::submit('Update', ['name'=>'submit_btn', 'value'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                        <a href="/franchisee/emailInv/{{$ftransaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        <a href="/franchisee/download/{{$ftransaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -231,7 +207,7 @@
                             <i class="fa fa-lock"></i>
                             This invoice has been locked
                         </span>
-                        <a href="/ftransaction" class="btn btn-default">Cancel</a>
+                        <a href="/franchisee" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
             </div>

@@ -107,16 +107,14 @@
                                         <td class="col-md-2">
                                             <ul>
                                                 <li ng-repeat='(key, value) in user.roles'>
-                                                    <span>@{{value.name}}</span>
+                                                    <span>@{{value.label}}</span>
                                                 </li>
                                             </ul>
                                         </td>
                                         <td class="col-md-2">@{{ user.contact }}</td>
                                         <td class="col-md-2">@{{ user.email }}</td>
                                         <td class="col-md-2 text-center">
-
                                             <a href="/user/@{{ user.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-
                                             @can('delete_user')
                                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete(user.id)">Delete</button>
                                             @endcan

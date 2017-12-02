@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->id}}</span>
+                                        <span class="inline">{{$inv_id}}</span>
                                     </div>
                                 </div>
                             </div>

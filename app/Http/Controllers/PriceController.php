@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Person;
 use App\Price;
+use App\Fprice;
 use App\Item;
 use Laracasts\Flash\Flash;
 
@@ -38,14 +39,22 @@ class PriceController extends Controller
 
         foreach($quote_price as $index => $quote){
             if($quote != 0 and $quote != null){
-                $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+                if(auth()->user()->hasRole('franchisee')) {
+                    $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
+                }else {
+                    $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+                }
 
                 if($price){
                     $price->retail_price = $retail_price[$index];
                     $price->quote_price = $quote_price[$index];
                     $price->save();
                 }else{
-                    $price = new Price();
+                    if(auth()->user()->hasRole('franchisee')) {
+                        $price = new Fprice();
+                    }else {
+                        $price = new Price();
+                    }
                     $price->retail_price = $retail_price[$index];
                     $price->quote_price = $quote_price[$index];
                     $price->person_id = $person_id;
@@ -53,7 +62,11 @@ class PriceController extends Controller
                     $price->save();
                 }
             }else{
-                $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+                if(auth()->user()->hasRole('franchisee')) {
+                    $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
+                }else {
+                    $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
+                }
 
                 if($retail_price[$index] == 0 or $retail_price[$index] == null){
                     if($price){

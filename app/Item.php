@@ -26,7 +26,7 @@ class Item extends Model
         return $this->belongsToMany('App\Transaction');
     }
 
-    public function prices()
+    public function price()
     {
         return $this->hasOne('App\Price');
     }
@@ -59,6 +59,11 @@ class Item extends Model
     public function itemcategory()
     {
         return $this->belongsTo('App\Itemcategory');
+    }
+
+    public function fprice()
+    {
+        return $this->hasOne('App\Fprice');
     }
 
 }

@@ -18,10 +18,17 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     	dd($username ? : 'hello');
     });
 });*/
-Route::match(['get', 'post'], '/freport', 'FreportController@getInvoiceBreakdownDetail');
+Route::match(['get', 'post'], '/franchiseerpt', 'FreportController@getInvoiceBreakdownDetail');
 
+Route::get('/api/franchisee/auth', 'FtransactionController@getFranchiseeIdApi');
+Route::get('/franchisee/download/{id}', 'FtransactionController@generateInvoice');
+Route::get('/franchisee/emailInv/{id}', 'FtransactionController@sendEmailInv');
+Route::delete('/api/franchise/fdeal/delete/{deal_id}', 'FtransactionController@destroyFdealApi');
+Route::post('/franchisee/reverse/{id}', 'FtransactionController@reverse');
+Route::delete('/franchisee/{id}', 'FtransactionController@destroy');
+Route::patch('/franchisee/{id}', 'FtransactionController@update');
 Route::get('/api/franchisee/edit/{id}', 'FtransactionController@editApi');
-Route::get('/franchisee/{ftransaction_id}/edit', 'FtransactionController@edit');
+Route::get('/franchisee/{id}/edit', 'FtransactionController@edit');
 Route::get('/franchisee/person/latest/{person_id}', 'FtransactionController@showPersonTransac');
 Route::post('/franchisee', 'FtransactionController@store');
 Route::get('/franchisee/create', 'FtransactionController@create');

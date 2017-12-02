@@ -57,42 +57,45 @@ var app = angular.module('app', [
                 $scope.people = people;
             });
 
-            $http.get('/api/franchisee/edit/' + $trans_id.val()).success(function(data) {
-                $scope.delivery = data.delivery_fee;
-                $scope.deals = data.deals;
-                $scope.totalModel = data.total;
-                $scope.subtotalModel = data.subtotal;
-                $scope.taxModel = data.tax;
-                $scope.totalqtyModel = data.ftransaction.total_qty;
+            function loadDealTable() {
+                $http.get('/api/franchisee/edit/' + $trans_id.val()).success(function(data) {
+                    $scope.delivery = data.delivery_fee;
+                    $scope.fdeals = data.fdeals;
+                    $scope.totalModel = data.total;
+                    $scope.subtotalModel = data.subtotal;
+                    $scope.taxModel = data.tax;
+                    $scope.totalqtyModel = data.ftransaction.total_qty;
 
-                $scope.form = {
-                    person: data.ftransaction.person.id,
-                    name: data.ftransaction.person.name,
-                    payterm: data.ftransaction.person.payterm,
-                    cust_id: data.ftransaction.person.cust_id,
-                    transremark: data.ftransaction.transremark ? data.ftransaction.transremark : data.ftransaction.person.remark,
-                    del_address: data.ftransaction.del_address ? data.ftransaction.del_address : data.ftransaction.person.del_address,
-                    bill_address: data.ftransaction.bill_address ? data.ftransaction.bill_address : data.ftransaction.person.bill_address,
-                    del_postcode: data.ftransaction.del_postcode ? data.ftransaction.del_postcode : data.ftransaction.person.del_postcode,
-                    attn_name: data.ftransaction.name ? data.ftransaction.name : data.ftransaction.person.name,
-                    contact: data.ftransaction.contact ? data.ftransaction.contact : data.ftransaction.person.contact,
-                    order_date: data.ftransaction.order_date ? data.ftransaction.order_date : moment().format("YYYY-MM-DD"),
-                    delivery_date: data.ftransaction.delivery_date ? data.ftransaction.delivery_date : moment().format("YYYY-MM-DD"),
-                }
+                    $scope.form = {
+                        person: data.ftransaction.person.id,
+                        name: data.ftransaction.person.name,
+                        payterm: data.ftransaction.person.payterm,
+                        cust_id: data.ftransaction.person.cust_id,
+                        transremark: data.ftransaction.transremark ? data.ftransaction.transremark : data.ftransaction.person.remark,
+                        del_address: data.ftransaction.del_address ? data.ftransaction.del_address : data.ftransaction.person.del_address,
+                        bill_address: data.ftransaction.bill_address ? data.ftransaction.bill_address : data.ftransaction.person.bill_address,
+                        del_postcode: data.ftransaction.del_postcode ? data.ftransaction.del_postcode : data.ftransaction.person.del_postcode,
+                        attn_name: data.ftransaction.name ? data.ftransaction.name : data.ftransaction.person.name,
+                        contact: data.ftransaction.contact ? data.ftransaction.contact : data.ftransaction.person.contact,
+                        order_date: data.ftransaction.order_date ? data.ftransaction.order_date : moment().format("YYYY-MM-DD"),
+                        delivery_date: data.ftransaction.delivery_date ? data.ftransaction.delivery_date : moment().format("YYYY-MM-DD"),
+                    }
+                });
+            }
 
-                $scope.onPrevSingleClicked = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
-                }
+            loadDealTable();
 
-                $scope.onNextSingleClicked = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
-                }
+            $scope.onPrevSingleClicked = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
+            }
 
-                $scope.dateChanged = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
-                }
+            $scope.onNextSingleClicked = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
+            }
 
-            });
+            $scope.dateChanged = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
+            }
 
 /*            $http({
                 url: '/ftransaction/' + $trans_id.val(),
@@ -163,8 +166,8 @@ var app = angular.module('app', [
             $event.preventDefault();
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
-                $http.delete('/api/deal/delete/' + deal_id).success(function(data) {
-                    location.reload();
+                $http.delete('/api/franchise/fdeal/delete/' + deal_id).success(function(data) {
+                    loadDealTable();
                 });
             }else{
                 return false;

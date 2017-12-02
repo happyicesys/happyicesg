@@ -334,14 +334,14 @@ class PersonController extends Controller
                                     'profiles.name', 'profiles.gst'
                                 )*/
                             ->select(
-                                DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + profiles.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
+                                DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + people.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                                     'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
                                     'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
                                     'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
                                     'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at',
                                     'transactions.created_at AS created_at', 'transactions.pay_method',
                                     'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                                    'profiles.name', 'profiles.gst', 'profiles.gst_rate'
+                                    'profiles.name', 'profiles.gst', 'people.gst_rate'
                                 )
                             ->where('people.id', '=', $person_id);
         // }
@@ -441,6 +441,16 @@ class PersonController extends Controller
                                 WHERE people.id = ".$person_id."
                                 ) personprice"
                         );
+
+        if(auth()->user()->hasRole('franchisee')) {
+            $personprice = DB::raw(
+                                "(
+                                    SELECT fprices.retail_price, fprices.quote_price, fprices.item_id, people.cost_rate FROM fprices
+                                    LEFT JOIN people ON people.id = fprices.person_id
+                                    WHERE people.id = ".$person_id."
+                                    ) personprice"
+                            );
+        }
 
         $items = DB::table('items')
                     ->leftJoin($personprice, 'personprice.item_id', '=', 'items.id')

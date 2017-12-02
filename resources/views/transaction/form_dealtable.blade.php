@@ -27,7 +27,10 @@
                         <th class="col-md-4 text-center">
                             Description
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-1 text-center">
+                            Pieces
+                        </th>
+                        <th class="col-md-1 text-center">
                             Quantity
                         </th>
                         <th class="col-md-1 text-center">
@@ -46,6 +49,7 @@
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
+                            <td class="col-md-1 text-right">@{{ deal.pieces }}</td>
                             <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}">
                                 <span ng-if="!deal.divisor && deal.is_inventory === 1">
                                     @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}

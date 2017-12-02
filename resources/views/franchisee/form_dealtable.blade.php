@@ -42,7 +42,7 @@
                     </tr>
 
                     <tbody>
-                        <tr ng-repeat="deal in deals">
+                        <tr ng-repeat="deal in fdeals">
                             <td class="col-md-1 text-center">@{{ $index + 1 }}</td>
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
@@ -83,9 +83,6 @@
                                                 case 'supervisor':
                                                     $valid = true;
                                                     break;
-                                                case 'franchisee':
-                                                    $valid = false;
-                                                    break;
                                                 default:
                                                     switch($status) {
                                                         case 'Draft':
@@ -121,7 +118,7 @@
                             </td>
                         </tr>
                         @if($person->profile->gst and $person->is_gst_inclusive)
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
@@ -133,7 +130,7 @@
                                     <strong>@{{totalModel | currency: ""}}</strong>
                                 </td>
                             </tr>
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
@@ -142,7 +139,7 @@
                                     @{{taxModel | currency: ""}}
                                 </td>
                             </tr>
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
@@ -152,7 +149,7 @@
                                 </td>
                             </tr>
                         @elseif($person->profile->gst and !$person->is_gst_inclusive)
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
                                 </td>
@@ -161,7 +158,7 @@
                                     @{{subtotalModel}}
                                 </td>
                             </tr>
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
@@ -170,7 +167,7 @@
                                     @{{taxModel}}
                                 </td>
                             </tr>
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
@@ -183,7 +180,7 @@
                                 </td>
                             </tr>
                         @else
-                            <tr ng-if="deals.length>0">
+                            <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
                                 </td>
@@ -196,7 +193,7 @@
                                 </td>
                             </tr>
                         @endif
-                        <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
+                        <tr ng-show="(fdeals | filter:search).fdeals == 0 || ! fdeals.length">
                             <td colspan="7" class="text-center">No Records Found!</td>
                         </tr>
 

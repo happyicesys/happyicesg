@@ -941,6 +941,7 @@ class MarketingController extends Controller
         $totalprice = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('amount');
         $totalqty = DB::table('dtddeals')->whereTransactionId($transaction->id)->sum('qty');
         $data = [
+            'inv_id' => $transaction->id,
             'transaction'   =>  $transaction,
             'person'        =>  $person,
             'deals'         =>  $deals,

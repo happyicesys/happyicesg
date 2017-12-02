@@ -216,7 +216,8 @@ class TransactionController extends Controller
         if($transaction->person->cust_id[0] === 'D'){
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
-                        ->select('dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                        ->select(
+                            'dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces')
                         ->where('items.is_active', 1)
                         ->orderBy('product_id')
                         ->get();
@@ -229,7 +230,7 @@ class TransactionController extends Controller
                                         ->on('prices.item_id', '=', 'items.id');
                             })
                             ->select(
-                                'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id'
+                                'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces'
                                 )
                             ->where('items.is_active', 1)
                             ->orderBy('product_id')
@@ -237,7 +238,9 @@ class TransactionController extends Controller
         }else{
             $prices = DB::table('prices')
                         ->leftJoin('items', 'prices.item_id', '=', 'items.id')
-                        ->select('prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id')
+                        ->select(
+                            'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces'
+                        )
                         ->where('prices.person_id', '=', $transaction->person_id)
                         ->where('items.is_active', 1)
                         ->orderBy('product_id')
@@ -278,7 +281,13 @@ class TransactionController extends Controller
                                                     END)
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
+                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                                DB::raw('
+                                    ROUND(CASE WHEN deals.divisor > 1
+                                    THEN (items.base_unit * deals.dividend/deals.divisor)
+                                    ELSE (items.base_unit * deals.qty)
+                                    END, 0) AS pieces
+                                ')
                             )
                     ->where('deals.transaction_id', $transaction->id)
                     ->get();
@@ -657,6 +666,7 @@ class TransactionController extends Controller
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
         // $profile = Profile::firstOrFail();
         $data = [
+            'inv_id' => $transaction->id,
             'transaction'   =>  $transaction,
             'person'        =>  $person,
             'deals'         =>  $deals,
@@ -787,6 +797,7 @@ class TransactionController extends Controller
         $now = Carbon::now()->format('dmyhis');
         // $profile = Profile::firstOrFail();
         $data = [
+            'inv_id' => $transaction->id,
             'transaction'   =>  $transaction,
             'person'        =>  $person,
             'deals'         =>  $deals,

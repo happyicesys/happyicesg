@@ -1,5 +1,6 @@
 @inject('custcategories', 'App\Custcategory')
 @inject('profiles', 'App\Profile')
+@inject('franchisees', 'App\User')
 
 @extends('template')
 @section('title')
@@ -97,6 +98,15 @@
                             {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.profile_id',
+                                'ng-change' => 'searchDB()'
+                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('franchisee_id', [''=>'All']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.franchisee_id',
                                 'ng-change' => 'searchDB()'
                                 ])
                             !!}
