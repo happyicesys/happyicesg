@@ -27,7 +27,7 @@ class FreportController extends Controller
         $delivery_from = $request->delivery_from;
         $delivery_to = $request->delivery_to;
 
-        $transactions = FTransaction::with(['deals', 'deals.item'])->wherePersonId($request->person_id);
+        $transactions = FTransaction::with(['fdeals', 'fdeals.item'])->wherePersonId($request->person_id);
         // $allTransactions = clone $transactions;
 
         if($status) {

@@ -142,6 +142,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel | currency: ""}}
@@ -151,6 +152,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel | currency: ""}}
@@ -161,6 +163,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -170,6 +173,7 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
                                 </td>
+                                <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
