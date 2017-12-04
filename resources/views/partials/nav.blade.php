@@ -173,8 +173,8 @@
                     <li class="{{ strpos(Request::path(), 'franchise') !== false ? 'active' : '' }}">
                         <a href="/franchisee"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
                     </li>
-                    <li class="{{ strpos(Request::path(), 'freport') !== false ? 'active' : '' }}">
-                        <a href="/franchiseerpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
+                    <li class="{{ strpos(Request::path(), 'franrpt') !== false ? 'active' : '' }}">
+                        <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
             </ul>

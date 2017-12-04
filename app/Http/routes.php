@@ -18,7 +18,7 @@ Route::group(['domain' => '{username}.happyice.dev'], function () {
     	dd($username ? : 'hello');
     });
 });*/
-Route::match(['get', 'post'], '/franchiseerpt', 'FreportController@getInvoiceBreakdownDetail');
+Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
 Route::get('/api/franchisee/auth', 'FtransactionController@getFranchiseeIdApi');
 Route::get('/franchisee/download/{id}', 'FtransactionController@generateInvoice');

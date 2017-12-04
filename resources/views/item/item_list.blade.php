@@ -53,7 +53,7 @@
                     Total Available
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-7 text-right" style="border: thin black solid">
-                    <strong>@{{ total_available | currency: "": 4}}</strong>
+                    <strong>@{{ total_available ? total_available : 0.00 | currency: "": 4}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -61,7 +61,7 @@
                     Total Booked
                 </div>
                 <div class="col-md-7 col-sm-7 col-xs-7 text-right" style="border: thin black solid">
-                    <strong>@{{ total_booked | currency: "": 4}}</strong>
+                    <strong>@{{ total_booked ? total_booked : 0.00 | currency: "": 4}}</strong>
                 </div>
             </div>
         </div>
