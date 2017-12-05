@@ -12,12 +12,7 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     return view('welcome');
 });
-/*
-Route::group(['domain' => '{username}.happyice.dev'], function () {
-    Route::get('foo', function($username) {
-    	dd($username ? : 'hello');
-    });
-});*/
+
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
 Route::get('/api/franchisee/auth', 'FtransactionController@getFranchiseeIdApi');

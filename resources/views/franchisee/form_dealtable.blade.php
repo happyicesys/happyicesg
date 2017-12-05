@@ -81,6 +81,7 @@
                                                 case 'admin':
                                                 case 'account':
                                                 case 'supervisor':
+                                                case 'franchisee':
                                                     $valid = true;
                                                     break;
                                                 default:
@@ -91,7 +92,7 @@
                                                             $valid = true;
                                                             break;
                                                         default:
-                                                            $valid = false;
+                                                            $valid = true;
                                                     }
                                             }
                                         }

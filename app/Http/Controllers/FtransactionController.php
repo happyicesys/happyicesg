@@ -440,7 +440,7 @@ class FtransactionController extends Controller
         $totalqty = DB::table('fdeals')->where('ftransaction_id', $ftransaction->id)->sum('qty');
 
         $data = [
-            'inv_id' => $ftransaction->franchisee->user_code.'-'.$ftransaction->ftransaction_id,
+            'inv_id' => $ftransaction->franchisee->user_code.$ftransaction->ftransaction_id,
             'transaction'   =>  $ftransaction,
             'person'        =>  $person,
             'deals'         =>  $fdeals,

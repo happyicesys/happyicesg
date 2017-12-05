@@ -53,10 +53,10 @@ class TransactionController extends Controller
     */
 
     //auth-only login can see
-    public function __construct()
+/*    public function __construct()
     {
         $this->middleware('auth');
-    }
+    }*/
 
     // get transactions api data based on delivery date
     public function getData(Request $request)

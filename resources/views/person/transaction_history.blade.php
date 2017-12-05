@@ -132,6 +132,7 @@
                 <strong>@{{ total_owe ? total_owe : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
+        @if(!auth()->user()->hasRole('franchisee'))
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Gross Earning:
@@ -142,6 +143,7 @@
                 </strong>
             </div>
         </div>
+        @endif
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12 text-right">
         <label for="display_num">Display</label>
