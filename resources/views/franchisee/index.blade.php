@@ -359,9 +359,9 @@
                                     <td class="col-md-1 text-center">@{{ ftransaction.updated_at }}</td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
-                                        <a href="/ftransaction/download/@{{ ftransaction.id }}" class="btn btn-primary btn-sm" ng-if="ftransaction.status != 'Pending' && ftransaction.status != 'Cancelled'">Print</a>
+                                        <a href="/franchisee/download/@{{ ftransaction.id }}" class="btn btn-primary btn-sm" ng-if="ftransaction.status != 'Pending' && ftransaction.status != 'Cancelled'">Print</a>
                                         {{-- button view shown when cancelled --}}
-                                        <a href="/ftransaction/@{{ ftransaction.id }}/edit" class="btn btn-sm btn-default" ng-if="ftransaction.status == 'Cancelled'">View</a>
+                                        <a href="/franchisee/@{{ ftransaction.id }}/edit" class="btn btn-sm btn-default" ng-if="ftransaction.status == 'Cancelled'">View</a>
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
