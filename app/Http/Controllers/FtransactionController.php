@@ -124,6 +124,7 @@ class FtransactionController extends Controller
         $ftransactions = DB::table('ftransactions')
                 ->leftJoin('people', 'ftransactions.person_id', '=', 'people.id')
                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                ->leftJoin('users', 'people.franchisee_id', '=', 'users.id')
                 ->select(
                             'people.cust_id', 'people.company',
                             'people.name', 'people.id as person_id', 'ftransactions.del_postcode',
@@ -137,7 +138,8 @@ class FtransactionController extends Controller
                                                 ELSE ftransactions.total
                                                 END)
                                             ELSE ftransactions.total END) + (CASE WHEN ftransactions.delivery_fee>0 THEN ftransactions.delivery_fee ELSE 0 END), 2) AS total'),
-                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate'
+                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                            'users.user_code'
                         )
                 ->where('people.id', $person_id)
                 ->orderBy('ftransactions.created_at', 'desc')

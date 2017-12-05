@@ -80,8 +80,9 @@
                                 <tr dir-paginate="ftransaction in ftransactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage"  current-page="currentPage" ng-controller="repeatController">
                                     <td class="col-md-1 text-center">@{{ number }} </td>
                                     <td class="col-md-1 text-center">
-                                        <a href="/ftransaction/@{{ ftransaction.id }}/edit">
-                                            @{{ ftransaction.id }}
+                                        <a href="/franchisee/@{{ ftransaction.ftransaction_id }}/edit">
+                                            @{{ ftransaction.user_code }}
+                                            @{{ ftransaction.ftransaction_id }}
                                         </a>
                                     </td>
                                     {{-- status by color --}}
