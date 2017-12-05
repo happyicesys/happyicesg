@@ -127,7 +127,8 @@ class FtransactionController extends Controller
                 ->leftJoin('users', 'people.franchisee_id', '=', 'users.id')
                 ->select(
                             'people.cust_id', 'people.company',
-                            'people.name', 'people.id as person_id', 'ftransactions.del_postcode',
+                            'people.name', 'people.id as person_id',
+                            'ftransactions.del_postcode', 'ftransactions.ftransaction_id',
                             'ftransactions.status', 'ftransactions.delivery_date', 'ftransactions.driver',
                             'ftransactions.total_qty', 'ftransactions.pay_status',
                             'ftransactions.updated_by', 'ftransactions.updated_at', 'ftransactions.delivery_fee', 'ftransactions.id',
