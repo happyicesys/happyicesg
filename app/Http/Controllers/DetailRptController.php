@@ -1909,9 +1909,9 @@ class DetailRptController extends Controller
                                     DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                 CASE
                                                 WHEN people.is_gst_inclusive=0
-                                                THEN deals.amount*((100+people.gst_rate)/100)
-                                                ELSE deals.amount
-                                                END) ELSE deals.amount END), 2)')
+                                                THEN ROUND(ROUND(deals.amount,2)*((100+people.gst_rate)/100),2)
+                                                ELSE ROUND(deals.amount,2)
+                                                END) ELSE ROUND(deals.amount,2) END), 2)')
                                     );
         return $total_amount;
     }
