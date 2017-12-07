@@ -1905,7 +1905,7 @@ class DetailRptController extends Controller
     {
         $total_amount = 0;
         $query1 = clone $query;
-        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*(100+people.gst_rate)/100 + transactions.delivery_fee ELSE transactions.total*(100+people.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
+        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN deals.amount*(100+people.gst_rate)/100 + transactions.delivery_fee ELSE deals.amount*(100+people.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN deals.amount + transactions.delivery_fee ELSE deals.amount END) END, 2)'));
         return $total_amount;
     }
 
