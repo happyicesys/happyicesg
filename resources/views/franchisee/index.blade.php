@@ -12,16 +12,11 @@
         <a class="title_hyper pull-left" href="/franchisee"><h1>{{ $FRANCHISE_TRANS }} <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
     </div>
 
-        <div class="panel panel-default" ng-cloak>
+        <div class="panel panel-primary" ng-cloak>
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="pull-right">
-                            <a href="/franchisee/create" class="btn btn-success">
-                                <i class="fa fa-plus"></i>
-                                <span class="hidden-xs"> New {{ $FRANCHISE_TRANS }} </span>
-                            </a>
-                        </div>
+                        {{$FRANCHISE_TRANS}}
                     </div>
                 </div>
             </div>
@@ -63,73 +58,6 @@
                                                         ])
                         !!}
                     </div>
-
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('status', null,
-                                                        [
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.status',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Status',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                        ])
-                        !!}
-                    </div>
-
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('pay_status', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.pay_status',
-                                                                'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Payment',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
-                                                            ])
-                        !!}
-                    </div>
-
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('updated_by', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.updated_by',
-                                                                'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Last Modified By',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
-                                                            ])
-                        !!}
-                    </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
-                        <div class="input-group">
-                            <datepicker>
-                                <input
-                                    type = "text"
-                                    class = "form-control input-sm"
-                                    placeholder = "Last Modify Date"
-                                    ng-model = "search.updated_at"
-                                    ng-change = "dateChange2(search.updated_at)"
-                                />
-                            </datepicker>
-                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
-                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('driver', null,
-                                                        [
-                                                            'id'=>'updated_at',
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.driver',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Delivered By',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                        ]) !!}
-                    </div>
                     <div class="form-group col-md-2 col-sm-6 col-xs-12">
                         {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
@@ -142,7 +70,7 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('delivery_from', 'Date From', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
                                 <input
@@ -158,7 +86,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                        {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('delivery_to', 'Date To', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
                                 <input
@@ -188,6 +116,7 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                        <button class="btn btn-success" ng-click="addEntry()"><i class="fa fa-plus"></i> New Entry</button>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">

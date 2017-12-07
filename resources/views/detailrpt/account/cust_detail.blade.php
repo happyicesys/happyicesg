@@ -283,6 +283,13 @@
                 </th>
 
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('pieces')">
+                    Pieces
+                    <span ng-if="search.sortName == 'pieces' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'pieces' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('total')">
                     Total Amount
                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -342,7 +349,7 @@
                     </td>
                     {{-- status by color ended --}}
                     <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
-
+                    <td class="col-md-1 text-center">@{{ transaction.pieces }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.total | currency: ""}} </td>
                     {{-- pay status --}}
                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">

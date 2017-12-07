@@ -22,6 +22,7 @@
     <th>Customer ID</th>
     <th>ID Name</th>
     <th>Date</th>
+    <th>Pieces</th>
     <th>Charges($)</th>
     </tr>
         @foreach($data as $index => $transaction)
@@ -37,12 +38,16 @@
                 {{-- <td>{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</td> --}}
                 <td>{{Carbon\Carbon::parse($transaction->delivery_date)->format('Y-m-d')}}</td>
                 <td>
+                    {{$transaction->pieces}}
+                </td>
+                <td>
                     {{$transaction->total}}
                 </td>
             </tr>
         @endforeach
         <tr>
             <th>Total Due</th>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>

@@ -57,12 +57,15 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $transactions = DB::table('transactions')
+        $transactions = DB::table('deals')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->select(
                                     DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*(100+people.gst_rate)/100 + transactions.delivery_fee ELSE transactions.total*(100+people.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                    DB::raw('ROUND(SUM(CASE WHEN deals.divisor > 1 THEN (items.base_unit * deals.dividend/ deals.divisor) ELSE (items.base_unit * deals.qty) END)) AS pieces'),
                                     'transactions.id', 'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
@@ -90,10 +93,12 @@ class DetailRptController extends Controller
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
+        $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
+
         if($pageNum == 'All'){
-            $transactions = $transactions->latest('transactions.created_at')->get();
+            $transactions = $transactions->get();
         }else{
-            $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
+            $transactions = $transactions->paginate($pageNum);
         }
 
         if($request->exportExcel) {
@@ -1770,8 +1775,8 @@ class DetailRptController extends Controller
             $excel->sheet('sheet1', function($sheet) use ($data, $total) {
                 $sheet->setAutoSize(true);
                 $sheet->setColumnFormat(array(
-                    'A:D' => '@',
-                    'E' => '0.00'
+                    'A:E' => '@',
+                    'F' => '0.00'
                 ));
                 $sheet->loadView('detailrpt.account.custdetail_soa_excel', compact('data', 'total'));
             });

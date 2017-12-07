@@ -222,6 +222,8 @@ class ItemController extends Controller
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }else {
+            $items = $items->orderBy('product_id', 'asc');
         }
         if($request->profile_id) {
             $profiles = $profiles->where('id', '=', $request->profile_id);
