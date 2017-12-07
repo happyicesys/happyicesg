@@ -71,7 +71,7 @@ class DetailRptController extends Controller
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
                                     'transactions.pay_status',
                                     'profiles.id as profile_id', 'transactions.order_date',
-                                    'profiles.gst', 'people.gst_rate', 'transactions.delivery_fee', 'transactions.paid_at',
+                                    'profiles.gst', 'people.gst_rate', 'people.is_gst_inclusive', 'transactions.delivery_fee', 'transactions.paid_at',
                                     'custcategories.name as custcategory'
                                 );
 
@@ -1912,14 +1912,14 @@ class DetailRptController extends Controller
         foreach($transactions as $transaction) {
             $total = number_format($transaction->total, 2);
 
-            if($transaction->person->profile->gst) {
-                if($transaction->person->is_gst_inclusive) {
+            if($transaction->gst) {
+                if($transaction->is_gst_inclusive) {
                     $total = number_format($transaction->total, 2);
-                    $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->gst_rate)/ 100), 2);
+                    $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->gst_rate)/ 100), 2);
                     $subtotal = number_format($transaction->total - $tax, 2);
                 }else {
                     $subtotal = number_format($transaction->total, 2);
-                    $tax = number_format($transaction->total * ($transaction->person->gst_rate)/100, 2);
+                    $tax = number_format($transaction->total * ($transaction->gst_rate)/100, 2);
                     $total = number_format(((float)$transaction->total + (float) $tax), 2);
                 }
             }
