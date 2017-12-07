@@ -83,8 +83,6 @@ class DetailRptController extends Controller
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
 
-        $total_amount = $this->calDBOriginalTotal($transactions);
-
         if($request->exportSOA) {
             $this->convertSoaExcel($transactions, $total_amount);
         }
@@ -94,6 +92,8 @@ class DetailRptController extends Controller
         }
 
         $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
+
+        $total_amount = $this->calDBOriginalTotal($transactions);
 
         if($pageNum == 'All'){
             $transactions = $transactions->get();
@@ -1768,7 +1768,7 @@ class DetailRptController extends Controller
     private function convertSoaExcel($transactions, $total)
     {
         $soa_query = clone $transactions;
-        $data = $soa_query->orderBy('people.cust_id')->orderBy('transactions.id')->get();
+        $data = $soa_query->orderBy('people.cust_id')->orderBy('transactions.id')->groupBy('transactions.id')->get();
         $title = 'Account SOA';
 
         Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($data, $total) {
@@ -1903,10 +1903,35 @@ class DetailRptController extends Controller
     // calculate original total
     private function calDBOriginalTotal($query)
     {
-        $total_amount = 0;
         $query1 = clone $query;
-        $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN deals.amount*(100+people.gst_rate)/100 + transactions.delivery_fee ELSE deals.amount*(100+people.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN deals.amount + transactions.delivery_fee ELSE deals.amount END) END, 2)'));
-        return $total_amount;
+        $transactions = $query1->get();
+
+        $subtotal = 0;
+        $tax = 0;
+        $total = 0;
+        foreach($transactions as $transaction) {
+            $total = number_format($transaction->total, 2);
+
+            if($transaction->person->profile->gst) {
+                if($transaction->person->is_gst_inclusive) {
+                    $total = number_format($transaction->total, 2);
+                    $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->gst_rate)/ 100), 2);
+                    $subtotal = number_format($transaction->total - $tax, 2);
+                }else {
+                    $subtotal = number_format($transaction->total, 2);
+                    $tax = number_format($transaction->total * ($transaction->person->gst_rate)/100, 2);
+                    $total = number_format(((float)$transaction->total + (float) $tax), 2);
+                }
+            }
+
+            $delivery_fee = $transaction->delivery_fee;
+
+            if($delivery_fee) {
+                $total += number_format($delivery_fee, 2);
+            }
+        }
+
+        return $total;
     }
 
     // calculate delivery fees total
