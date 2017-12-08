@@ -126,9 +126,25 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
-        <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
+        <div class="row">
+            <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+            <button type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
+            <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
+        </div>
+        <div class="row" style="padding-top: 10px;">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span class="badge" style="background-color: #f68080;">&nbsp;</span>
+                <span>Total Profit Sharing jump more than 50% to last month</span>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span class="badge" style="background-color: yellow;">&nbsp;</span>
+                <span>More than $100 ice cream melted</span>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span class="badge" style="background-color: #98fb98;">&nbsp;</span>
+                <span>New customer, data previous mth data</span>
+            </div>
+        </div>
     </div>
     <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <div class="row">

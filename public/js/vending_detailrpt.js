@@ -81,7 +81,7 @@ var app = angular.module('app', [
         $scope.getRowColor = function(transaction) {
             if(transaction) {
                 if(transaction.begin_date == transaction.end_date) {
-                    return 'yellow';
+                    return '#98fb98';
                 }
 
                 if(transaction.clocker_delta > (transaction.last_clocker_delta * 150/100)) {
@@ -89,7 +89,7 @@ var app = angular.module('app', [
                 }
 
                 if(transaction.melted_amount > 100) {
-                    return '#f68080';
+                    return 'yellow';
                 }
             }
         }

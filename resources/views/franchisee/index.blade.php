@@ -149,7 +149,7 @@
                             {{-- hidden table for excel export --}}
                             <tr class="hidden">
                                 <td></td>
-                                <td data-tableexport-display="always">Total Amount</td>
+                                <td data-tableexport-display="always">Total $ Collected</td>
                                 <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
                             </tr>
                             <tr class="hidden" data-tableexport-display="always">
@@ -160,76 +160,46 @@
                                     #
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('id')">
-                                    INV #
-                                    <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('cust_id')">
-                                    ID
-                                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('company')">
-                                    ID Name
-                                    <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('del_postcode')">
-                                    Del Postcode
-                                    <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('status')">
-                                    Status
-                                    <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <a href="" ng-click="sortTable('ftransaction_id')">
+                                    Ref #
+                                    <span ng-if="search.sortName == 'ftransaction_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'ftransaction_id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('delivery_date')">
-                                    Delivery Date
+                                    Date
                                     <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('driver')">
-                                    Delivered By
-                                    <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <a href="" ng-click="sortTable('delivery_time')">
+                                    Time
+                                    <span ng-if="search.sortName == 'delivery_time' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'delivery_time' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('digital_clock')">
+                                    Resettable Clock
+                                    <span ng-if="search.sortName == 'digital_clock' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'digital_clock' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('analog_clock')">
+                                    Accumulative Clock
+                                    <span ng-if="search.sortName == 'analog_clock' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'analog_clock' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('sales')">
+                                    Sales
+                                    <span ng-if="search.sortName == 'sales' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'sales' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('total')">
-                                    Total Amount
+                                    $ Collected
                                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('total_qty')">
-                                    Total Qty
-                                    <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('pay_status')">
-                                    Payment
-                                    <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_by')">
-                                    Last Modified By
-                                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('ftransactions.updated_at')">
-                                    Last Modified Time
-                                    <span ng-if="search.sortName == 'ftransactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'ftransactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Action
@@ -237,7 +207,9 @@
                             </tr>
                             <tbody>
                                 <tr dir-paginate="ftransaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
-                                    <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
+                                    <td class="col-md-1 text-center">
+                                        @{{ $index + indexFrom }}
+                                    </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/franchisee/@{{ ftransaction.id }}/edit">
                                             @{{ftransaction.user_code}} @{{ftransaction.ftransaction_id}}
