@@ -45,6 +45,7 @@ class CreateDtdtransactionsDtddealsTable extends Migration
             $table->string('type')->nullable();
             $table->decimal('delivery_fee', 10, 2)->nullable;
             $table->text('bill_address')->nullable();
+            $table->boolean('is_freeze')->default(0);
         });
 
         Schema::create('dtddeals', function (Blueprint $table) {
@@ -65,7 +66,6 @@ class CreateDtdtransactionsDtddealsTable extends Migration
             $table->decimal('dividend', 10, 2)->nullable();
             $table->decimal('divisor', 10, 2)->nullable();
             $table->decimal('unit_cost', 10, 2)->nullable();
-            $table->boolean('is_freeze')->default(0);
             $table->decimal('qty_before', 12, 4)->nullable();
             $table->decimal('qty_after', 12, 4)->nullable();
         });
