@@ -25,6 +25,12 @@ class CreateDealTable extends Migration
 
             $table->integer('transaction_id')->unsigned()->nullable();
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+
+            $table->decimal('dividend', 10, 2)->nullable();
+            $table->decimal('divisor', 10, 2)->nullable();
+            $table->decimal('unit_cost', 10, 2)->nullable();
+            $table->decimal('qty_before', 12, 4)->nullable();
+            $table->decimal('qty_after', 12, 4)->nullable();
         });
     }
 

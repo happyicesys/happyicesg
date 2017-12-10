@@ -13,7 +13,7 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
+        $scope.itemsPerPage = 50;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.sortBy = true;
@@ -26,8 +26,25 @@ var app = angular.module('app', [
             delivery_from: '',
             delivery_to: '',
             driver: '',
-            pageNum: 100,
+            pageNum: 50,
         }
+
+        $scope.allVendData = [];
+        $scope.totalVendCount = 0;
+        $scope.totalVendPages = 0;
+        $scope.currentVendPage = 1;
+        $scope.indexVendFrom = 0;
+        $scope.indexVendTo = 0;
+        $scope.vendItemsPerPage = 50;
+        $scope.searchvend = {
+            id: '',
+            collection_from: $scope.today,
+            collection_to: $scope.today,
+            itemsPerPage: 100,
+            sortName: '',
+            sortBy: true
+        }
+
         $scope.total_amount = 0.00;
         $scope.total_paid = 0.00;
         $scope.total_owe = 0.00;
@@ -60,6 +77,7 @@ var app = angular.module('app', [
             var now = Date.now();
             saveAs(blob, "TransactionRpt"+ now + ".xls");
         };
+
         // switching page
         $scope.pageChanged = function(newPage){
             getPage(newPage, false);
@@ -166,6 +184,111 @@ var app = angular.module('app', [
                 loadFiles();
             });
         }
+
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportableVend').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "FVendCash"+ now + ".xls");
+        };
+
+        $scope.collectionFromChanged = function(date){
+            if(date){
+                $scope.searchvend.collection_from = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchVendDB();
+        }
+
+        $scope.collectionToChanged = function(date){
+            if(date){
+                $scope.searchvend.collection_to = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchVendDB();
+        }
+
+        $scope.onPrevDateClicked = function() {
+            $scope.searchvend.collection_from = moment(new Date($scope.searchvend.collection_from)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.searchvend.collection_to = moment(new Date($scope.searchvend.collection_to)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.searchVendDB();
+        }
+
+        $scope.onTodayDateClicked = function() {
+            $scope.searchvend.collection_from = moment().format('YYYY-MM-DD');
+            $scope.searchvend.collection_to = moment().format('YYYY-MM-DD');
+            $scope.searchVendDB();
+        }
+
+        $scope.onNextDateClicked = function() {
+            $scope.searchvend.collection_from = moment(new Date($scope.searchvend.collection_from)).add(1, 'days').format('YYYY-MM-DD');
+            $scope.searchvend.collection_to = moment(new Date($scope.searchvend.collection_to)).add(1, 'days').format('YYYY-MM-DD');
+            $scope.searchVendDB();
+        }
+
+        $scope.onPrevSingleClicked = function(scope_name, date) {
+            $scope.searchvend[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchVendDB();
+        }
+
+        $scope.onNextSingleClicked = function(scope_name, date) {
+            $scope.searchvend[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchVendDB();
+        }
+
+        // switching page
+        $scope.vendPageChanged = function(newPage){
+            getVendPage(newPage);
+        };
+
+        $scope.vendPageNumChanged = function(){
+            $scope.searchvend['pageNum'] = $scope.vendItemsPerPage
+            $scope.currentVendPage = 1
+            getVendPage(1);
+        };
+
+        $scope.sortVendTable = function(sortName) {
+            $scope.searchvend.sortName = sortName;
+            $scope.searchvend.sortBy = ! $scope.searchvend.sortBy;
+            getVendPage(1);
+        }
+
+          // when hitting search button
+        $scope.searchVendDB = function(){
+            $scope.searchvend.sortName = '';
+            $scope.searchvend.sortBy = true;
+            getVendPage(1);
+        }
+
+        getVendPage(1);
+
+        // retrieve page w/wo search
+        function getVendPage(pageNumber){
+            $scope.spinner = true;
+            $http.post('/api/franchisee?page=' + pageNumber, $scope.searchvend).success(function(data){
+                if(data.ftransactions.data){
+                    $scope.allVendData = data.ftransactions.data;
+                    $scope.totalVendCount = data.ftransactions.total;
+                    $scope.currentVendPage = data.ftransactions.current_page;
+                    $scope.indexVendFrom = data.ftransactions.from;
+                    $scope.indexVendTo = data.ftransactions.to;
+                }else{
+                    $scope.allVendData = data.ftransactions;
+                    $scope.totalVendCount = data.ftransactions.length;
+                    $scope.currentVendPage = 1;
+                    $scope.indexVendFrom = 1;
+                    $scope.indexVendTo = data.ftransactions.length;
+                }
+                // get total count
+                $scope.VendAll = data.ftransactions.length;
+
+                // return total amount
+                $scope.total_vend_amount = data.total_vend_amount;
+                $scope.spinner = false;
+            }).error(function(data){
+
+            });
+        }
+
     }
 
 app.filter('delDate', [

@@ -22,6 +22,8 @@ class CreatePaysummaryinfosTable extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
+
+            $table->datetime('bankin_date')->nullable();
         });
     }
 

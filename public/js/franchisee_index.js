@@ -2,7 +2,8 @@ var app = angular.module('app', [
                                     'angularUtils.directives.dirPagination',
                                     'ui.select',
                                     'ngSanitize',
-                                    '720kb.datepicker'
+                                    '720kb.datepicker',
+                                    'ae-datetimepicker'
                                 ]);
 
     function fTransactionController($scope, $http){
@@ -13,7 +14,6 @@ var app = angular.module('app', [
         $scope.currentPage = 1;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
-        $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             id: '',
@@ -23,19 +23,29 @@ var app = angular.module('app', [
             pay_status: '',
             updated_by: '',
             updated_at: '',
-            delivery_from: $scope.today,
-            delivery_to: $scope.today,
-            driver: '',
+            collection_from: $scope.today,
+            collection_to: $scope.today,
             itemsPerPage: 100,
             sortName: '',
             sortBy: true
         }
-        $scope.updated_at = '';
+        $scope.form = {
+            person_id: '',
+            digital_clock: '',
+            analog_clock: '',
+            collection_date: '',
+            collection_time: '',
+            total: ''
+        }
+        $scope.formErrors = [];
         // init page load
         getPage(1);
 
         angular.element(document).ready(function () {
-            $('.select').select2();
+            $('.select').select2({
+                placeholder: 'Select..'
+            });
+            $('.selectall').select2();
         });
 
         $scope.exportData = function () {
@@ -43,19 +53,19 @@ var app = angular.module('app', [
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "TransactionRpt"+ now + ".xls");
+            saveAs(blob, "FVendCash"+ now + ".xls");
         };
 
-        $scope.delFromChange = function(date){
+        $scope.collectionFromChanged = function(date){
             if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.search.collection_from = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
 
-        $scope.delToChange = function(date){
+        $scope.collectionToChanged = function(date){
             if(date){
-                $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.search.collection_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
@@ -68,20 +78,20 @@ var app = angular.module('app', [
         }
 
         $scope.onPrevDateClicked = function() {
-            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).subtract(1, 'days').format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.search.collection_from = moment(new Date($scope.search.collection_from)).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.search.collection_to = moment(new Date($scope.search.collection_to)).subtract(1, 'days').format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
         $scope.onTodayDateClicked = function() {
-            $scope.search.delivery_from = moment().format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment().format('YYYY-MM-DD');
+            $scope.search.collection_from = moment().format('YYYY-MM-DD');
+            $scope.search.collection_to = moment().format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
         $scope.onNextDateClicked = function() {
-            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).add(1, 'days').format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).add(1, 'days').format('YYYY-MM-DD');
+            $scope.search.collection_from = moment(new Date($scope.search.collection_from)).add(1, 'days').format('YYYY-MM-DD');
+            $scope.search.collection_to = moment(new Date($scope.search.collection_to)).add(1, 'days').format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
@@ -116,7 +126,50 @@ var app = angular.module('app', [
         $scope.searchDB = function(){
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
+            $scope.formErrors = [];
             getPage(1);
+        }
+
+        $scope.addEntry = function() {
+            let inputData = {
+                'person_id': $scope.form.person_id,
+                'digital_clock': $scope.form.digital_clock,
+                'analog_clock': $scope.form.analog_clock,
+                'collection_date': $scope.form.collection_date ? moment(new Date($scope.form.collection_date)).format('YYYY-MM-DD') : null,
+                'collection_time': $scope.form.collection_time ?  moment(new Date($scope.form.collection_time)).format('HH:mm') : null,
+                'total': $scope.form.total,
+                'franchisee_id': $scope.search.franchisee_id ? $scope.search.franchisee_id : null
+            }
+            $http.post('/api/franchisee/submitEntry', inputData). success(function(data) {
+                getPage(1);
+
+                $scope.form = {
+                    digital_clock: '',
+                    analog_clock: '',
+                    collection_date: '',
+                    collection_time: '',
+                    total: ''
+                }
+
+                $('.select').val('').trigger('change')
+            }).error(function(data, status) {
+                $scope.formErrors = data;
+            });
+        }
+
+        $scope.removeEntry = function(id) {
+            console.log(id);
+            $http.delete('/api/franchisee/entry/' + id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }
+
+        $scope.isFormValid = function() {
+            let invalid = true;
+            if($scope.form.person_id && $scope.form.total) {
+                invalid = false;
+            }
+            return invalid;
         }
 
         // retrieve page w/wo search
@@ -140,7 +193,7 @@ var app = angular.module('app', [
                 $scope.All = data.ftransactions.length;
 
                 // return total amount
-                $scope.total_amount = data.total_amount;
+                $scope.total_vend_amount = data.total_vend_amount;
                 $scope.spinner = false;
             }).error(function(data){
 

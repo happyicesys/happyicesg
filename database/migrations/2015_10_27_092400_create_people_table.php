@@ -56,6 +56,23 @@ class CreatePeopleTable extends Migration
             $table->integer('custcategory_id')->unsigned()->nullable();
             $table->foreign('custcategory_id')->references('id')->on('custcategories')->onDelete('set null');
 
+            $table->string('block')->nullable();
+            $table->string('floor')->nullable();
+            $table->string('unit')->nullable();
+            $table->boolean('is_vending')->default(0);
+            $table->decimal('vending_piece_price', 10, 2)->nullable();
+            $table->decimal('vending_monthly_rental', 10, 2)->nullable();
+            $table->decimal('vending_profit_sharing', 10, 2)->nullable();
+            $table->decimal('vending_monthly_utilities', 10, 2)->nullable();
+            $table->decimal('vending_clocker_adjustment', 10, 2)->nullable();
+            $table->boolean('is_profit_sharing_report')->default(0);
+            $table->text('operation_note')->nullable();
+            $table->boolean('is_gst_inclusive');
+            $table->decimal('del_lat', 8, 6)->nullable();
+            $table->decimal('del_lng', 9, 6)->nullable();
+            $table->integer('franchisee_id')->unsigned()->nullable();
+            $table->decimal('gst_rate', 5, 2)->nullable();
+            $table->boolean('is_dvm')->nullable();
         });
     }
 

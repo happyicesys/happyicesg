@@ -15,6 +15,8 @@ Route::get('/admin', function () {
 
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
+Route::delete('/api/franchisee/entry/{id}/delete', 'FtransactionController@destroyApi');
+Route::post('/api/franchisee/submitEntry', 'FtransactionController@submitEntry');
 Route::get('/api/franchisee/auth', 'FtransactionController@getFranchiseeIdApi');
 Route::get('/franchisee/download/{id}', 'FtransactionController@generateInvoice');
 Route::get('/franchisee/emailInv/{id}', 'FtransactionController@sendEmailInv');

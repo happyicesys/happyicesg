@@ -39,6 +39,20 @@ class CreateTransactionsTable extends Migration
             //record who paid and updated
             $table->string('updated_by');
             $table->string('paid_by');
+
+            $table->integer('dtdtransaction_id')->unsigned()->nullable();
+            $table->string('contact')->nullable();
+            $table->string('del_postcode')->nullable();
+            $table->decimal('delivery_fee', 10, 2)->nullable();
+            $table->text('bill_address')->nullable();
+            $table->integer('digital_clock')->nullable();
+            $table->integer('analog_clock')->nullable();
+            $table->decimal('balance_coin', 10, 2)->nullable();
+            $table->boolean('is_freeze')->default(0);
+            $table->boolean('is_required_analog')->default(1);
+            $table->integer('ftransaction_id')->nullable();
+            $table->integer('sales_count')->nullable();
+            $table->decimal('sales_amount', 10, 2)->nullable();
         });
 
         $statement = "ALTER TABLE transactions AUTO_INCREMENT = 160001;";

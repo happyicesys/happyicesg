@@ -28,6 +28,16 @@ class CreateItemsTable extends Migration
             $table->boolean('emailed');
             $table->boolean('is_inventory')->default(1);
             $table->timestamps();
+
+            $table->boolean('is_commission')->default(0);
+            $table->string('desc_imgpath')->nullable();
+            $table->integer('itemcategory_id')->nullable();
+            $table->string('nutri_imgpath')->nullable();
+            $table->boolean('is_healthier')->default(0);
+            $table->boolean('is_halal')->default(0);
+            $table->boolean('is_active')->default(1);
+            $table->text('productpage_desc')->nullable();
+            $table->integer('base_unit')->default(0);
         });
 
         Schema::create('image_item', function (Blueprint $table){

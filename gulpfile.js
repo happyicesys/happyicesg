@@ -13,6 +13,7 @@ elixir(function(mix) {
             'animate.min.css',
             '../bower/angularjs-datepicker/src/css/angular-datepicker.css',
             '../bower/angular-datepicker/dist/angular-datepicker.css',
+            '../bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
             'app.css',
             ])
         .scripts([
@@ -42,7 +43,8 @@ elixir(function(mix) {
             '../bower/angular-datepicker/dist/angular-datepicker.js',
             'vue/vue.js',
             'vue/vue-resource.js',
-            'axios/axios.js'
+            'axios/axios.js',
+            '../bower/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
             ])
         .version(['public/css/all.css', 'public/js/all.js']);
 });

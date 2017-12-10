@@ -107,6 +107,22 @@
         @include('person.transaction_history')
     </div>
 </div>
+
+{{-- divider --}}
+@if($person->franchisee_id)
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <strong>F VendCash for {{$person->cust_id}} : {{$person->company}} </strong>
+        </h3>
+    </div>
+
+    <div class="panel-body">
+        @include('person.vendcash')
+    </div>
+</div>
+@endif
+
 {{-- divider --}}
 @unless(Auth::user()->type === 'marketer')
 

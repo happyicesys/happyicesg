@@ -24,6 +24,9 @@ class CreateUsersTable extends Migration
             $table->string('type');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->boolean('can_access_inv')->default(1);
+            $table->string('user_code')->nullable();
         });
 
         $statement = "ALTER TABLE users AUTO_INCREMENT = 100001;";

@@ -25,6 +25,13 @@ class CreateProfileTable extends Migration
             $table->string('logo')->nullable();
             $table->string('footer')->nullable();
             $table->timestamps();
+
+            $table->string('acronym')->nullable();
+            $table->integer('payterm_id')->nullable();
+            $table->string('attn')->nullable();
+            $table->boolean('is_gst_inclusive')->default(0);
+            $table->decimal('gst_rate', 5, 2)->nullable();
+            $table->integer('currency_id')->nullable();
         });
     }
 

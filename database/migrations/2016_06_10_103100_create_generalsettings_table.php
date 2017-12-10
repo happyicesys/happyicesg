@@ -17,6 +17,9 @@ class CreateGeneralsettingsTable extends Migration
             $table->increments('id');
             $table->text('DTDCUST_EMAIL_CONTENT')->nullable();
             $table->timestamps();
+
+            $table->datetime('INVOICE_FREEZE_DATE')->nullable();
+            $table->string('internal_billing_prefix')->default('IN');
         });
     }
 

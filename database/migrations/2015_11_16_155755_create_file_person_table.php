@@ -18,6 +18,8 @@ class CreateFilePersonTable extends Migration
             $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
             $table->string('path');
             $table->timestamps();
+
+            $table->string('name')->nullable();
         });
     }
 
