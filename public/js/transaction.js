@@ -57,51 +57,54 @@ var app = angular.module('app', [
                 $scope.people = people;
             });
 
-            $http.get('/api/transaction/edit/' + $trans_id.val()).success(function(data) {
-                $scope.delivery = data.delivery_fee;
-                $scope.deals = data.deals;
-                $scope.totalModel = data.total;
-                $scope.subtotalModel = data.subtotal;
-                $scope.taxModel = data.tax;
-                $scope.totalqtyModel = data.transaction.total_qty;
+            loadDealTable();
 
-                $scope.getTotalPieces = function(){
-                    var total = 0;
-                    for(var i = 0; i < data.deals.length; i++){
-                        var deal = data.deals[i];
-                        total += (+deal.pieces);
+            function loadDealTable() {
+                $http.get('/api/transaction/edit/' + $trans_id.val()).success(function(data) {
+                    $scope.delivery = data.delivery_fee;
+                    $scope.deals = data.deals;
+                    $scope.totalModel = data.total;
+                    $scope.subtotalModel = data.subtotal;
+                    $scope.taxModel = data.tax;
+                    $scope.totalqtyModel = data.transaction.total_qty;
+
+                    $scope.getTotalPieces = function(){
+                        var total = 0;
+                        for(var i = 0; i < data.deals.length; i++){
+                            var deal = data.deals[i];
+                            total += (+deal.pieces);
+                        }
+                        return total;
                     }
-                    return total;
-                }
 
-                $scope.form = {
-                    person: data.transaction.person.id,
-                    name: data.transaction.person.name,
-                    payterm: data.transaction.person.payterm,
-                    cust_id: data.transaction.person.cust_id,
-                    transremark: data.transaction.transremark ? data.transaction.transremark : data.transaction.person.remark,
-                    del_address: data.transaction.del_address ? data.transaction.del_address : data.transaction.person.del_address,
-                    bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
-                    del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
-                    attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
-                    contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
-                    order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
-                    delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
-                }
+                    $scope.form = {
+                        person: data.transaction.person.id,
+                        name: data.transaction.person.name,
+                        payterm: data.transaction.person.payterm,
+                        cust_id: data.transaction.person.cust_id,
+                        transremark: data.transaction.transremark ? data.transaction.transremark : data.transaction.person.remark,
+                        del_address: data.transaction.del_address ? data.transaction.del_address : data.transaction.person.del_address,
+                        bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
+                        del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
+                        attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
+                        contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
+                        order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
+                        delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
+                    }
+                });
+            }
 
-                $scope.onPrevSingleClicked = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
-                }
+            $scope.onPrevSingleClicked = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD');
+            }
 
-                $scope.onNextSingleClicked = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
-                }
+            $scope.onNextSingleClicked = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD');
+            }
 
-                $scope.dateChanged = function(modelName, date) {
-                    $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
-                }
-
-            });
+            $scope.dateChanged = function(modelName, date) {
+                $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
+            }
 
 /*            $http({
                 url: '/transaction/' + $trans_id.val(),
@@ -173,7 +176,7 @@ var app = angular.module('app', [
             var isConfirmDelete = confirm('Are you sure you want to this?');
             if(isConfirmDelete){
                 $http.delete('/api/deal/delete/' + deal_id).success(function(data) {
-                    location.reload();
+                    loadDealTable();
                 });
             }else{
                 return false;
