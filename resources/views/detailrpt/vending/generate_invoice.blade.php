@@ -152,7 +152,15 @@
                 Total Sales # Ice Cream:
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_sales ? total_sales : 0.00 | currency: "": 2}}</strong>
+                <strong>@{{ total_sales ? total_sales : 0.00 | currency:"":0}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Total Sales ($):
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_sales_figure ? total_sales_figure : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -185,6 +193,14 @@
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_payout ? total_payout : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Gross Profit ($):
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ total_gross_profit ? total_gross_profit : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>
@@ -335,6 +351,18 @@
                     <span ng-if="search.sortName == 'subtotal_payout' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'subtotal_payout' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('subtotal_gross_profit')">
+                    Gross Profit ($)
+                    <span ng-if="search.sortName == 'subtotal_gross_profit' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'subtotal_gross_profit' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('avg_selling_price')">
+                    Avg Sell Price ($)
+                    <span ng-if="search.sortName == 'avg_selling_price' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'avg_selling_price' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
             </tr>
 
             <tbody>
@@ -394,6 +422,12 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_payout | currency: "": 2}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.subtotal_gross_profit | currency: "": 2}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ transaction.avg_selling_price | currency: "": 2}}
                     </td>
                 </tr>
 

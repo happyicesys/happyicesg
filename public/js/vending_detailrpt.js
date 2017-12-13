@@ -116,10 +116,12 @@ var app = angular.module('app', [
 
                 // return total amount
                 $scope.total_sales = data.totals.total_sales;
+                $scope.total_sales_figure = data.totals.total_sales_figure;
                 $scope.total_profit_sharing = data.totals.total_profit_sharing;
                 $scope.total_rental = data.totals.total_rental;
                 $scope.total_utility = data.totals.total_utility;
                 $scope.total_payout = data.totals.total_payout;
+                $scope.total_gross_profit = data.totals.total_gross_profit;
                 $scope.spinner = false;
             });
         }

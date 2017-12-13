@@ -382,7 +382,28 @@ class VendingController extends Controller
                                     'people.vending_monthly_rental AS vending_monthly_rental',
                                     DB::raw('CASE WHEN people.is_vending THEN (FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) END AS subtotal_profit_sharing'),
                                     'people.vending_monthly_utilities AS utility_subsidy',
-                                    DB::raw('(CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END) AS subtotal_payout'),
+                                    DB::raw('(
+                                                CASE
+                                                WHEN people.is_vending
+                                                THEN ((FLOOR((analog_end.analog_clock - (
+                                                    CASE
+                                                    WHEN analog_start.analog_clock
+                                                    THEN analog_start.analog_clock
+                                                    ELSE analog_first.analog_clock
+                                                    END)) -
+                                                    ((analog_end.analog_clock - (
+                                                        CASE
+                                                        WHEN analog_start.analog_clock
+                                                        THEN analog_start.analog_clock
+                                                        ELSE analog_first.analog_clock
+                                                        END)) *
+                                                        people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities)
+                                                ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                                END) AS subtotal_payout'),
+                                    DB::raw('(CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END) -
+                                                (CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END) AS subtotal_gross_profit'),
+                                    DB::raw('((CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END) -
+                                                (CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END))/ (CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END) AS avg_selling_price'),
                                     'melted.melted_amount AS melted_amount',
                                     'vend_received.vend_received AS vend_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
                                 );
@@ -413,27 +434,33 @@ class VendingController extends Controller
     private function calVendingGenerateInvoiceIndex($query)
     {
         $total_sales = 0;
+        $total_sales_figure = 0;
         $total_profit_sharing = 0;
         $total_rental = 0;
         $total_utility = 0;
         $total_payout = 0;
+        $total_gross_profit = 0;
 
         $query1 = clone $query;
         $people = $query1->get();
         foreach($people as $person) {
             $total_sales += $person->sales;
+            $total_sales_figure += $person->subtotal_sales;
             $total_profit_sharing += $person->subtotal_profit_sharing;
             $total_rental += $person->vending_monthly_rental;
             $total_utility += $person->utility_subsidy;
             $total_payout += $person->subtotal_payout;
+            $total_gross_profit += $person->subtotal_gross_profit;
         }
 
         $totals = [
         	'total_sales' => $total_sales,
+            'total_sales_figure' => $total_sales_figure,
         	'total_profit_sharing' => $total_profit_sharing,
             'total_rental' => $total_rental,
         	'total_utility' => $total_utility,
         	'total_payout' => $total_payout,
+            'total_gross_profit' => $total_gross_profit,
         ];
 
         return $totals;

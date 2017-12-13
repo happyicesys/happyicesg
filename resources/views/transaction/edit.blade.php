@@ -50,7 +50,7 @@
         </div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id]]) !!}
+                    {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id], 'autocomplete'=>'off']) !!}
                         @include('transaction.form_cust')
 
                     <div class="row">
