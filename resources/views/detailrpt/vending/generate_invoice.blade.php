@@ -142,7 +142,7 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <span class="badge" style="background-color: #98fb98;">&nbsp;</span>
-                <span>New customer, data previous mth data</span>
+                <span>New customer, no previous mth data</span>
             </div>
         </div>
     </div>
