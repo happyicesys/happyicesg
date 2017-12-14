@@ -359,7 +359,7 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('avg_selling_price')">
-                    Avg Sell Price ($)
+                    GP/ pcs ($)
                     <span ng-if="search.sortName == 'avg_selling_price' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'avg_selling_price' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>

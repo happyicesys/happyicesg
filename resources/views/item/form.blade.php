@@ -137,7 +137,7 @@
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('base_unit', 'Pieces', ['class'=>'control-label']) !!}
+                {!! Form::label('base_unit', 'Total Pieces (per ctn)', ['class'=>'control-label']) !!}
                 {!! Form::text('base_unit', null, ['class'=>'form-control']) !!}
             </div>
         </div>
