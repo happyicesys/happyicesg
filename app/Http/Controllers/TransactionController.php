@@ -435,10 +435,12 @@ class TransactionController extends Controller
 
             if(count($vendcash_check) > 0) {
                 if($analog_clock > 0) {
-                    $prev_inv = Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first();
+                    $delivery_date = $transaction->delivery_date ? $transaction->delivery_date : Carbon::today()->toDateString();
+
+                    $prev_inv = Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $delivery_date)->latest()->first();
 
                     if($prev_inv) {
-                        $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $transaction->delivery_date)->latest()->first()->analog_clock;
+                        $prev_analog = (int)Transaction::where('person_id', $transaction->person_id)->where('is_required_analog', 1)->whereNotIn('id', [$transaction->id])->whereDate('delivery_date', '<', $delivery_date)->latest()->first()->analog_clock;
 
 
                         $current_analog = (int)request('analog_clock');

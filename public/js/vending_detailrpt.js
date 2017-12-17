@@ -26,6 +26,7 @@ var app = angular.module('app', [
             custcategory: '',
             status: 'Delivered',
             is_profit_sharing_report: '1',
+            is_rental: '',
             pageNum: 100,
             sortBy: true,
             sortName: ''
@@ -34,8 +35,9 @@ var app = angular.module('app', [
         getPage(1, true);
 
         angular.element(document).ready(function () {
-            $('.select').select2({
-                placeholder: 'Select...'
+            $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
             });
 
             $('#checkAll').change(function(){

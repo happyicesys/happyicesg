@@ -87,7 +87,7 @@
                     'ng-change'=>'searchDB()'
                     ])
                 !!} --}}
-                <select name="custcategory" class="select form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
                     <option value="">All</option>
                     @foreach($custcategories::orderBy('name')->get() as $custcategory)
                     <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
@@ -116,6 +116,18 @@
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.is_profit_sharing_report',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_rental', 'Is Rental', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_rental', [''=>'All', 'Yes'=>'Yes', 'No'=>'No'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.is_rental',
                     'ng-change'=>'searchDB()'
                     ])
                 !!}

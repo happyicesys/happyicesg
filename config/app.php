@@ -152,7 +152,7 @@ return [
         Barryvdh\Snappy\ServiceProvider::class,
         Baum\Providers\BaumServiceProvider::class,
         Msurguy\Honeypot\HoneypotServiceProvider::class,
-
+        Laravel\Socialite\SocialiteServiceProvider::class,
     ],
 
     /*
@@ -205,7 +205,7 @@ return [
         'PDF'       => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'Image'     => Barryvdh\Snappy\Facades\SnappyImage::class,
         'Honeypot' => Msurguy\Honeypot\HoneypotFacade::class,
-
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

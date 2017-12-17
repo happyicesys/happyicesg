@@ -13,6 +13,9 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+
+Route::get('/shop', 'ShopController@getShopIndex');
+
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
 Route::delete('/api/franchisee/entry/{id}/delete', 'FtransactionController@destroyApi');

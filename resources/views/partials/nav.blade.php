@@ -45,6 +45,7 @@
                 $operation_access = false;
                 $dtd_access = false;
                 $franchisee_access = false;
+                $ecommerce_access = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -78,6 +79,7 @@
                         $report_access = true;
                         $detailrpt_access = true;
                         $dtd_access = true;
+                        $ecommerce_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -98,6 +100,7 @@
                         $operation_access = true;
                         $dtd_access = true;
                         $franchisee_access = true;
+                        $ecommerce_access = true;
                     }
                 }
             @endphp
@@ -131,7 +134,7 @@
                 @endif
                 @if($detailrpt_access)
                     <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }}</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }} <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                             <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
@@ -156,17 +159,14 @@
                 @endif
 
                 @if($dtd_access)
-                    <li class="{{ strpos(Request::path(), 'setup') !== false ? 'active' : '' }}">
-                        <a href="/market/setup"><i class="fa fa-fw fa-cog"></i> DtD Setting</a>
-                    </li>
-                    <li class="{{ strpos(Request::path(), 'member') !== false ? 'active' : '' }}">
-                        <a href="/market/member"><i class="fa fa-fw fa-sitemap"></i> DtD Members</a>
-                    </li>
-                    <li class="{{ strpos(Request::path(), 'market/customer') !== false ? 'active' : '' }}">
-                        <a href="/market/customer"><i class="fa fa-fw fa-male"></i> DtD Customers</a>
-                    </li>
-                    <li class="{{ strpos(Request::path(), 'deal') !== false ? 'active' : '' }}">
-                        <a href="/market/deal"><i class="fa fa-fw fa-wpforms"></i> DtD Deals</a>
+                    <li class="{{ (strpos(Request::path(), 'setup') !== false || strpos(Request::path(), 'member') !== false || strpos(Request::path(), 'market/customer') !== false || strpos(Request::path(), 'deal') !== false)? 'active' : '' }}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-address-card"></i> Door To Door <i class="fa fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="text-left"><a href="/market/setup"> DtD Setting</a></li>
+                            <li class="text-left"><a href="/market/member"> DtD Members</a></li>
+                            <li class="text-left"><a href="/market/customer"> DtD Customers</a></li>
+                            <li class="text-left"><a href="/market/deal"> DtD Deals</a></li>
+                        </ul>
                     </li>
                 @endif
                 @if($franchisee_access)
@@ -176,6 +176,11 @@
 {{--                     <li class="{{ strpos(Request::path(), 'franrpt') !== false ? 'active' : '' }}">
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li> --}}
+                @endif
+                @if($ecommerce_access)
+                    <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
+                        <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>
+                    </li>
                 @endif
             </ul>
             @endif

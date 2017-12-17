@@ -165,6 +165,7 @@ class VendingController extends Controller
     	$custcategory = request('custcategory');
     	$status = request('status');
         $is_profit_sharing_report = request('is_profit_sharing_report');
+        $is_rental = request('is_rental');
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -209,6 +210,17 @@ class VendingController extends Controller
                     break;
                 case 0:
                     $transactions = $transactions->where('is_profit_sharing_report', 0);
+                    break;
+            }
+        }
+
+        if($is_rental) {
+            switch($is_rental) {
+                case 'Yes':
+                    $transactions = $transactions->where('people.vending_monthly_rental', '>', 0);
+                    break;
+                case 'No':
+                    $transactions = $transactions->where('people.vending_monthly_rental', '=', 0);
                     break;
             }
         }
