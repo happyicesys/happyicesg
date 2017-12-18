@@ -61,7 +61,7 @@ class FtransactionController extends Controller
                                 );
 
         // reading whether search input is filled
-		if(request('id') or request('cust_id') or request('company') or request('collection_from') or request('collection_to') or  request('franchisee_id')){
+		if(request('id') or request('cust_id') or request('company') or request('collection_from') or request('collection_to') or  request('franchisee_id') or request('person_id')){
             $ftransactions = $this->searchDBFilter($ftransactions);
         }
 
@@ -133,6 +133,9 @@ class FtransactionController extends Controller
         if(request('franchisee_id')){
             $ftransactions = $ftransactions->where('ftransactions.franchisee_id', request('franchisee_id'));
         }
+        if(request('person_id')) {
+            $ftransactions = $ftransactions->where('ftransactions.person_id', request('person_id'));
+        }
         if(request('sortName')){
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
@@ -188,6 +191,22 @@ class FtransactionController extends Controller
             'sales' => $this->calAnalogSales($person_id, $analog_clock),
             'franchisee_id' => $franchisee_id
         ]);
+
+        $this->updateLaterAnalogSales($ftransaction->id);
+    }
+
+    // search if there is any deal later than this, update analog sales deduction(int id)
+    private function updateLaterAnalogSales($id)
+    {
+        $ftransaction = Ftransaction::findOrFail($id);
+        $laterftransactions = Ftransaction::where('person_id', $ftransaction->person_id)->whereDate('collection_datetime', '>', $ftransaction->collection_datetime)->get();
+        if(count($laterftransactions)>0) {
+            foreach($laterftransactions as $laterftransaction) {
+                $previousftransaction = Ftransaction::where('collection_datetime', '<', $laterftransaction->collection_datetime)->where('person_id', $laterftransaction->person_id)->latest('collection_datetime')->first();
+                $laterftransaction->sales = $laterftransaction->analog_clock - $previousftransaction->analog_clock;
+                $laterftransaction->save();
+            }
+        }
     }
 
     // calculating tax and final total based on input(float input_total, int person_id)
@@ -226,15 +245,15 @@ class FtransactionController extends Controller
     private function calAnalogSales($person_id, $current_analog)
     {
         $collection_datetime = $this->convertDateTimeCarbon(request('collection_date'), request('collection_time'));
-        $prev_ftrans = Ftransaction::where('person_id', $person_id)->latest()->where('collection_datetime', '<', $collection_datetime)->first();
-        $latertrans_exist = Ftransaction::where('person_id', $person_id)->latest()->where('collection_datetime', '>', $collection_datetime)->first();
+        $prev_ftrans = Ftransaction::where('person_id', $person_id)->where('collection_datetime', '<', $collection_datetime)->latest('collection_datetime')->first();
+        // $latertrans_exist = Ftransaction::where('person_id', $person_id)->latest()->where('collection_datetime', '>', $collection_datetime)->first();
         $sales = null;
 
-        if(!$latertrans_exist) {
+        // if(!$latertrans_exist) {
             if($prev_ftrans and $current_analog) {
                 $sales = $current_analog - $prev_ftrans->analog_clock;
             }
-        }
+        // }
         return $sales;
     }
 

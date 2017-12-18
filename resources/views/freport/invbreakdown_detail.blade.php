@@ -1,9 +1,8 @@
 @inject('people', 'App\Person')
-@inject('fdeals', 'App\Fdeal')
 @inject('deals', 'App\Deal')
 @inject('items', 'App\Item')
-@inject('ftransactions', 'App\Ftransaction')
 @inject('transactions', 'App\Transaction')
+@inject('ftransactions', 'App\Ftransaction')
 
 @extends('template')
 @section('title')
@@ -12,12 +11,12 @@
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/freport"><h1>Invoice Breakdown - Detail</h1></a>
+    <a class="title_hyper pull-left" href="/franrpt"><h1>Freport Invoice Breakdown</h1></a>
 </div>
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Invoice Breakdown
+        Freport Invoice Breakdown
         @if($people::find($person_id))
             <span>{{$people::find($person_id)->cust_id}}: {{$people::find($person_id)->company}}</span>
         @endif
@@ -84,22 +83,35 @@
                     </button>
                 @endif
             </div>
+
+            @php
+                $revenue = 0;
+                $costs = 0;
+                $gross_earn = 0;
+                $gross_earn_percent = 0;
+
+                $revenue = $ftransactions::whereIn('id', $ftransactionsId)->sum('total');
+                $costs = $deals::whereIn('transaction_id', $transactionsId)->sum('amount');
+                $gross_earn = $revenue - $costs;
+                if($revenue) {
+                    $gross_earn_percent = $gross_earn/$revenue * 100;
+                }
+            @endphp
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         Total Revenue ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        {{-- retrieve vend cash received (product_id 051) --}}
-                        <strong>{{ number_format($fdeals::where('item_id', 38)->whereIn('ftransaction_id', $ftransactionsId)->sum('amount'), 2) }}</strong>
+                        <strong>{{ $revenue ? $revenue : 0 }}</strong>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Ice Cream Cost ($):
+                        Total Costs ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{ number_format($deals::whereNotIn('item_id', [38, 61])->whereIn('transaction_id', $transactionsId)->sum(DB::raw('ABS(amount)')), 2) }}</strong>
+                        <strong>{{ $costs ? $costs : 0 }}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -108,30 +120,30 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            {{number_format($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('amount') - $fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum(DB::raw('qty * unit_cost')), 2)}}
+                            {{$gross_earn}}
                         </strong>
                     </div>
                 </div>
-                @if($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('amount') != 0)
+                @if($deals::whereIn('transaction_id', $transactionsId)->sum('amount') != 0)
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
                             Gross Earning (%):
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                {{number_format((($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('amount') - $fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum(DB::raw('qty * unit_cost'))) / ($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('amount'))) * 100 , 2)}}
+                                {{number_format($gross_earn_percent, 2)}}
                             </strong>
                         </div>
                     </div>
                 @endif
-                @if(count($ftransactions::whereIn('id', $ftransactionsId)->get()) > 0)
+                @if(count($transactions::whereIn('id', $transactionsId)->get()) > 0)
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
                             First Inv Date:
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                {{$ftransactions::where('person_id', $person_id)->oldest()->first()->delivery_date}}
+                                {{$transactions::where('person_id', $person_id)->oldest()->first()->delivery_date}}
                             </strong>
                         </div>
                     </div>
@@ -145,9 +157,9 @@
                     <th class="col-md-4">Invoice #</th>
                     <th class="col-md-1"></th>
                     <th class="col-md-1"></th>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                         <th class="col-md-1 text-center" colspan="2">
-                            <a href="/franchisee/{{$ftransaction->id}}/edit">{{$ftransaction->ftransaction_id}}</a>
+                            <a href="/transaction/{{$transaction->id}}/edit">{{$transaction->id}}</a>
                         </th>
                     @endforeach
                 </tr>
@@ -155,24 +167,24 @@
                     <th class="col-md-4">Delivery Date</th>
                     <th class="col-md-1"></th>
                     <th class="col-md-1"></th>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                        <th class="col-md-1 text-center" colspan="2">{{$ftransaction->delivery_date}}</th>
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                        <th class="col-md-1 text-center" colspan="2">{{$transaction->delivery_date}}</th>
                     @endforeach
                 </tr>
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-4">Delivered By</th>
                     <th class="col-md-1"></th>
                     <th class="col-md-1"></th>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                        <th class="col-md-1 text-center" colspan="2">{{$ftransaction->driver}}</th>
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                        <th class="col-md-1 text-center" colspan="2">{{$transaction->driver}}</th>
                     @endforeach
                 </tr>
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-4">Payment</th>
                     <th class="col-md-1"></th>
                     <th class="col-md-1"></th>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                        <th class="col-md-1 text-center" colspan="2">{{$ftransaction->pay_method}}</th>
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                        <th class="col-md-1 text-center" colspan="2">{{$transaction->pay_method}}</th>
                     @endforeach
                 </tr>
                 <tr></tr>
@@ -180,47 +192,66 @@
                     <th class="col-md-4">Item</th>
                     <th class="col-md-1 text-center">Total Qty</th>
                     <th class="col-md-1 text-center">Total $</th>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                         <th class="col-md-1 text-center">Qty</th>
                         <th class="col-md-1 text-center">$</th>
                     @endforeach
                 </tr>
 
+                @php
+                    $total_pieces = 0;
+                @endphp
                 @foreach($items::whereIn('id', $itemsId)->orderBy('product_id', 'asc')->get() as $item)
+                    @php
+                        $pieces = number_format($deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum(DB::raw('CASE WHEN divisor>1 THEN dividend ELSE qty *'.$item->base_unit.' END')));
+                        $total_pieces += $pieces;
+                    @endphp
                 <tr>
                     <td class="col-md-4">{{$item->product_id}} - {{$item->name}}</td>
                     <td class="col-md-1 text-right">
-                        {{number_format($fdeals::whereIn('ftransaction_id', $ftransactionsId)->whereItemId($item->id)->sum('qty'), 4)}}
+                        {{$pieces}}
                     </td>
                     <td class="col-md-1 text-right">
-                        {{number_format($fdeals::whereIn('ftransaction_id', $ftransactionsId)->whereItemId($item->id)->sum('amount'), 2)}}
+                        {{number_format($deals::whereIn('transaction_id', $transactionsId)->whereItemId($item->id)->sum('amount'), 2)}}
                     </td>
-                    @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
+                    @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                         <td class="col-md-1 text-right">
-                            {{number_format($fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($item->id)->sum('qty'), 4)}}
+                            {{number_format($deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum(DB::raw('CASE WHEN divisor>1 THEN dividend ELSE qty *'.$item->base_unit.' END')))}}
                         </td>
                         <td class="col-md-1 text-right">
-                            {{number_format($fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($item->id)->sum('amount'), 2)}}
+                            {{number_format($deals::whereTransactionId($transaction->id)->whereItemId($item->id)->sum('amount'), 2)}}
                         </td>
                     @endforeach
                 </tr>
                 @endforeach
 
-                @if($people::find($person_id) and count($ftransactions::whereIn('id', $ftransactionsId)->get()) > 0)
+                @if($people::find($person_id) and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
                     <tr>
                         <th class="col-md-4">Total</th>
                         <th class="col-md-1 text-right">
-                            {{number_format($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('qty'), 4)}}
+                            {{-- {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('qty'), 4)}} --}}
+                            {{number_format($total_pieces)}}
                         </th>
                         <th class="col-md-1 text-right">
-                            {{number_format($fdeals::whereIn('ftransaction_id', $ftransactionsId)->sum('amount'), 2)}}
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2)}}
                         </th>
-                        @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
+                        @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                            @php
+                                $piece_subtotal = 0;
+                                $dealsData = $deals::whereTransactionId($transaction->id)->get();
+                                foreach($dealsData as $dealData) {
+                                    if($dealData->divisor > 1) {
+                                        $piece_subtotal += $dealData->dividend;
+                                    }else {
+                                        $piece_subtotal += $dealData->qty * $dealData->item->base_unit;
+                                    }
+                                }
+                            @endphp
                             <td class="col-md-1 text-right">
-                                {{number_format($fdeals::where('ftransaction_id', $ftransaction->id)->sum('qty'), 4)}}
+                                {{number_format($piece_subtotal)}}
                             </td>
                             <td class="col-md-1 text-right">
-                                {{number_format($fdeals::where('ftransaction_id', $ftransaction->id)->sum('amount'), 2)}}
+                                {{number_format($deals::whereTransactionId($transaction->id)->sum('amount'), 2)}}
                             </td>
                         @endforeach
                     </tr>
@@ -234,7 +265,7 @@
     </div>
 </div>
 
-    @if($people::find($person_id) and auth()->user()->hasRole('admin') and count($ftransactions::whereIn('id', $ftransactionsId)->get()) > 0)
+    @if($people::find($person_id) and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
         @if($people::find($person_id)->is_vending)
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -270,27 +301,27 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-6">
-                                Total Sales Qty:
+                                Total Sales Qty (pcs):
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
-                                    {{number_format($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->analog_clock - $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->oldest()->first()->analog_clock, 4)}}
+                                    {{number_format($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock)}}
                                 </strong>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-6">
-                                Average Sales Per Day:
+                                Average Sales Per Day (pcs):
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
-                                    @if(count($ftransactions::whereIn('id', $ftransactionsId)->get()) > 1)
+                                    @if(count($transactions::whereIn('id', $transactionsId)->get()) > 1)
                                         @php
-                                            $delivery_to = request('delivery_to') ? request('delivery_to') : $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->delivery_date;
-                                            $delivery_from = request('delivery_from') ? request('delivery_from') : $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->oldest()->first()->delivery_date;
+                                            $delivery_to = request('delivery_to') ? request('delivery_to') : $transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date;
+                                            $delivery_from = request('delivery_from') ? request('delivery_from') : $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date;
                                             $day_diff = \Carbon\Carbon::parse($delivery_from)->diffInDays(\Carbon\Carbon::parse($delivery_to));
                                         @endphp
-                                        {{ $day_diff ? number_format(($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->analog_clock - $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->oldest()->first()->analog_clock) / $day_diff, 2) : ''}}
+                                        {{ $day_diff ? number_format(($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / $day_diff, 2) : ''}}
                                     @else
                                         N/A
                                     @endif
@@ -304,136 +335,57 @@
                         <table class="table table-list-search table-hover table-bordered">
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-3">Invoice #</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                                     <th class="col-md-3 text-center">
-                                        <a href="/ftransaction/{{$ftransaction->id}}/edit">
-                                            {{$ftransaction->id}}
+                                        <a href="/transaction/{{$transaction->id}}/edit">
+                                            {{$transaction->id}}
                                         </a>
                                     </th>
                                 @endforeach
                             </tr>
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-3">Delivery Date</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <th class="col-md-3 text-center">{{$ftransaction->delivery_date}}</th>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <th class="col-md-3 text-center">{{$transaction->delivery_date}}</th>
                                 @endforeach
                             </tr>
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-3">Delivered By</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <th class="col-md-3 text-center">{{$ftransaction->driver}}</th>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <th class="col-md-3 text-center">{{$transaction->driver}}</th>
                                 @endforeach
                             </tr>
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-3">Payment</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <th class="col-md-3 text-center">{{$ftransaction->pay_method}}</th>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <th class="col-md-3 text-center">{{$transaction->pay_method}}</th>
                                 @endforeach
                             </tr>
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-3">Analog Required</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <th class="col-md-3 text-center">{{$ftransaction->is_required_analog ? 'Yes' : 'No'}}</th>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <th class="col-md-3 text-center">{{$transaction->is_required_analog ? 'Yes' : 'No'}}</th>
                                 @endforeach
                             </tr>
                             <tr>
                                 <th class="col-md-3">Sale Quatity (Based on Analog)</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $index => $ftransaction)
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $index => $transaction)
                                     <td class="col-md-3 text-right">
-                                        {{$index + 1 < count($ftransactions::whereIn('id', $ftransactionsId)->latest()->get()) ? $ftransaction->analog_clock - $ftransactions::whereIn('id', $ftransactionsId)->latest()->get()[$index + 1]->analog_clock : $ftransaction->digital_clock }}
+                                        {{$index + 1 < count($transactions::whereIn('id', $transactionsId)->latest()->get()) ? $transaction->analog_clock - $transactions::whereIn('id', $transactionsId)->latest()->get()[$index + 1]->analog_clock : $transaction->digital_clock }}
                                     </td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <th class="col-md-3">Digital Clocker</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">{{$ftransaction->digital_clock}}</td>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <td class="col-md-3 text-right">{{$transaction->digital_clock}}</td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <th class="col-md-3">Analog Clocker</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">{{$ftransaction->analog_clock}}</td>
+                                @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                                    <td class="col-md-3 text-right">{{$transaction->analog_clock}}</td>
                                 @endforeach
-                            </tr>
-                            <tr>
-                                <th class="col-md-3">Balance Coin</th>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">{{$ftransaction->balance_coin}}</td>
-                                @endforeach
-                            </tr>
-                        </table>
-
-                        {{-- need to filter with analog required flag --}}
-                        <table class="table table-list-search table-hover table-bordered">
-                            <tr>
-                                <th class="col-md-2">Payment Received</th>
-                                <th class="col-md-1 text-left">Total</th>
-                            </tr>
-                            <tr>
-                                <td class="col-md-2">Expected Payment Received</td>
-                                <td class="col-md-1 text-right">
-                                    {{ number_format(($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->analog_clock - $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->get()[count($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price , 2) }}
-                                </td>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $index => $ftransaction)
-                                    <td class="col-md-3 text-right">
-                                        @if($ftransaction->is_required_analog)
-                                        {{$index + 1 < count($ftransactions::whereIn('id', $ftransactionsId)->latest()->get()) ? number_format(($ftransaction->analog_clock - $ftransactions::whereIn('id', $ftransactionsId)->latest()->get()[$index + 1]->analog_clock) * $people::find($person_id)->vending_piece_price, 2) : 0.00}}
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
-
-                            <tr>
-                                <td class="col-md-2">Balance Coin</td>
-                                <td class="col-md-1"></td>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">
-                                        @if($ftransaction->is_required_analog)
-                                            {{number_format($ftransaction->balance_coin, 2)}}
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td class="col-md-2">{{$items::whereProductId('051')->first()->product_id}} - {{$items::whereProductId('051')->first()->name}}</td>
-                                <td></td>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">
-                                        @if($ftransaction->is_required_analog)
-                                            {{$fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first() ? number_format($fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($items::whereProductId('051')->first()->id)->first()->amount, 2) : 0.00}}
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
-                             <tr>
-                                <td class="col-md-2">Actual Subtotal Received</td>
-                                <td class="col-md-1 text-right">{{number_format($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->balance_coin + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount')), 2)}}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-2">Difference(Actual - Expected)</th>
-                                <td class="col-md-1 text-right">{{number_format(($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->balance_coin + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))) - (($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->analog_clock - $ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->get()[count($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->get()) - 1]->analog_clock) * $people::find($person_id)->vending_piece_price), 2)}}</td>
-                            </tr>
-                            <tr>
-                                <td class="col-md-2">
-                                    {{$items::whereProductId('051a')->first()->product_id}} - {{$items::whereProductId('051a')->first()->name}}
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    {{number_format($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount'), 2)}}
-                                </td>
-                                @foreach($ftransactions::whereIn('id', $ftransactionsId)->latest()->take(3)->get() as $ftransaction)
-                                    <td class="col-md-3 text-right">
-                                        @if($ftransaction->is_required_analog)
-                                            {{$fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first() ? number_format($fdeals::where('ftransaction_id', $ftransaction->id)->whereItemId($items::whereProductId('051a')->first()->id)->first()->amount, 2) : 0.00}}
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <th class="col-md-2">Stock Value in VM</th>
-                                <td class="col-md-1 text-right">
-                                    {{ number_format(($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('051a')->first()->id)->sum('amount')) + ($ftransactions::isAnalog()->whereIn('id', $ftransactionsId)->latest()->first()->balance_coin + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('051')->first()->id)->sum('amount')) + ($fdeals::isTransactionAnalog()->whereIn('ftransaction_id', $ftransactionsId)->whereItemId($items::whereProductId('052')->first()->id)->sum('amount'))), 2)}}
-                                </td>
                             </tr>
                         </table>
                     </div>

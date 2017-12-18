@@ -13,7 +13,7 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 50;
+        $scope.itemsPerPage = 20;
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.sortBy = true;
@@ -26,7 +26,7 @@ var app = angular.module('app', [
             delivery_from: '',
             delivery_to: '',
             driver: '',
-            pageNum: 50,
+            pageNum: 20,
         }
 
         $scope.allVendData = [];
@@ -35,13 +35,14 @@ var app = angular.module('app', [
         $scope.currentVendPage = 1;
         $scope.indexVendFrom = 0;
         $scope.indexVendTo = 0;
-        $scope.vendItemsPerPage = 50;
+        $scope.vendItemsPerPage = 20;
         $scope.searchvend = {
             id: '',
-            collection_from: $scope.today,
-            collection_to: $scope.today,
-            itemsPerPage: 100,
+            collection_from: '',
+            collection_to: '',
+            itemsPerPage: 20,
             sortName: '',
+            person_id: $('#person_id').val(),
             sortBy: true
         }
 

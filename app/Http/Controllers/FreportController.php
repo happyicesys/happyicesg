@@ -23,28 +23,29 @@ class FreportController extends Controller
     {
         $itemsId = [];
         // $latest3ArrId = [];
-        $ftransactionsId = [];
         $transactionsId = [];
-
-        $ftransactions = FTransaction::with(['fdeals', 'fdeals.item'])->wherePersonId($request->person_id);
-        $ftransactions = $this->filterInvoiceBreakdown($ftransactions);
-        $ftransactions = $ftransactions->orderBy('created_at', 'desc')->get();
-
-        foreach($ftransactions as $ftransaction) {
-            array_push($ftransactionsId, $ftransaction->id);
-            foreach($ftransaction->fdeals as $fdeal) {
-                array_push($itemsId, $fdeal->item_id);
-            }
-        }
+        $ftransactionsId = [];
+        $status = $request->status;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
 
         $transactions = Transaction::with(['deals', 'deals.item'])->wherePersonId($request->person_id);
-        $transactions = $this->filterInvoiceBreakdown($transactions);
-        $transactions = $transactions->get();
+        $transactions = $this->filterInvoiceBreakdownTransaction($transactions);
+        $transactions = $transactions->orderBy('created_at', 'desc')->get();
+
+        $ftransactions = Ftransaction::wherePersonId($request->person_id);
+        $ftransactions = $this->filterInvoiceBreakdownFtransaction($ftransactions);
+        $ftransactions = $ftransactions->orderBy('created_at', 'desc')->get();
 
         foreach($transactions as $transaction) {
             array_push($transactionsId, $transaction->id);
+            foreach($transaction->deals as $deal) {
+                array_push($itemsId, $deal->item_id);
+            }
         }
-
+        foreach($ftransactions as $ftransaction) {
+            array_push($ftransactionsId, $ftransaction->id);
+        }
         $itemsId = array_unique($itemsId);
         $person_id = $request->person_id ? Person::find($request->person_id)->id : null ;
 
@@ -52,11 +53,11 @@ class FreportController extends Controller
             $this->exportInvoiceBreakdownExcel($request, $ftransactionsId, $transactionsId, $itemsId, $person_id);
         }
 
-        return view('freport.invbreakdown_detail', compact('request' ,'ftransactionsId', 'transactionsId', 'itemsId', 'person_id'));
+        return view('freport.invbreakdown_detail', compact('request' ,'transactionsId', 'itemsId', 'person_id', 'ftransactionsId'));
     }
 
-    // filter for transactions and ftransactions($query)
-    private function filterInvoiceBreakdown($transactions)
+    // filter for transactions($query)
+    private function filterInvoiceBreakdownTransaction($transactions)
     {
         $status = request('status');
         $delivery_from = request('delivery_from');
@@ -83,6 +84,22 @@ class FreportController extends Controller
         return $transactions;
     }
 
+    // filter for ftransactions($query)
+    private function filterInvoiceBreakdownFtransaction($ftransactions)
+    {
+        $delivery_from = request('delivery_from');
+        $delivery_to = request('delivery_to');
+
+        if($delivery_from){
+            $ftransactions = $ftransactions->whereDate('collection_datetime', '>=', $delivery_from);
+        }
+        if($delivery_to){
+            $ftransactions = $ftransactions->whereDate('collection_datetime', '<=', $delivery_to);
+        }
+
+        return $ftransactions;
+    }
+
     // export excel for invoice breakdown (Formrequest $request, Array $ftransactionsId, Array $transactionsId, Array itemsId, int person_id)
     private function exportInvoiceBreakdownExcel($request, $ftransactionsId, $transactionsId, $itemsId, $person_id)
     {
@@ -93,7 +110,7 @@ class FreportController extends Controller
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                $sheet->loadView('franchisee.invoicebreakdown_excel', compact('request', 'ftransactionsId', 'transactionsId', 'itemsId', 'person_id'));
+                $sheet->loadView('freport.invoicebreakdown_excel', compact('request', 'ftransactionsId', 'transactionsId', 'itemsId', 'person_id'));
             });
         })->download('xlsx');
     }

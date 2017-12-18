@@ -214,7 +214,7 @@
                             </tr>
                         @endif
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
-                            <td colspan="7" class="text-center">No Records Found!</td>
+                            <td colspan="12" class="text-center">No Records Found!</td>
                         </tr>
 
                     </tbody>

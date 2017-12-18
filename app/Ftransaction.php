@@ -11,7 +11,7 @@ class Ftransaction extends Model
 
     protected $fillable=[
         'ftransaction_id', 'total', 'collection_datetime', 'person_id', 'digital_clock',
-        'analog_clock', 'sales', 'total', 'franchisee_id', 'taxtotal',
+        'analog_clock', 'sales', 'franchisee_id', 'taxtotal',
         'finaltotal'
     ];
 

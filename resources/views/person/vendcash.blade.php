@@ -77,7 +77,9 @@
             <div class="col-md-4 col-sm-6 col-xs-12 text-right">
                 <div class="row">
                     <label for="display_num">Display</label>
-                    <select ng-model="vendItemsPerPage" name="vendPageNum" ng-init="vendItemsPerPage='100'" ng-change="vendPageNumChanged()">
+                    <select ng-model="vendItemsPerPage" name="vendPageNum" ng-init="vendItemsPerPage='20'" ng-change="vendPageNumChanged()">
+                        <option ng-value="20">20</option>
+                        <option ng-value="50">50</option>
                         <option ng-value="100">100</option>
                         <option ng-value="200">200</option>
                         <option ng-value="All">All</option>

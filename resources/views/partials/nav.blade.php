@@ -173,9 +173,9 @@
                     <li class="{{ strpos(Request::path(), 'franchise') !== false ? 'active' : '' }}">
                         <a href="/franchisee"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
                     </li>
-{{--                     <li class="{{ strpos(Request::path(), 'franrpt') !== false ? 'active' : '' }}">
+                    <li class="{{ strpos(Request::path(), 'franrpt') !== false ? 'active' : '' }}">
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
-                    </li> --}}
+                    </li>
                 @endif
                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
