@@ -45,17 +45,19 @@ class FtransactionController extends Controller
         $total_vend_amount = 0;
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
-        $ftransactions = DB::table('ftransactions')
-                        ->leftJoin('people', 'ftransactions.person_id', '=', 'people.id')
+
+        $ftransactions = DB::table('ftransactions AS x')
+                        ->leftJoin('people', 'x.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->leftJoin('users', 'users.id', '=', 'ftransactions.franchisee_id')
+                        ->leftJoin('users', 'users.id', '=', 'x.franchisee_id')
                         ->select(
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'ftransactions.id', 'ftransactions.ftransaction_id', 'ftransactions.total',
-                                    DB::raw('DATE(ftransactions.collection_datetime) AS collection_date'),
-                                    DB::raw('TIME_FORMAT(TIME(ftransactions.collection_datetime), "%h:%i %p") AS collection_time'),
-                                    DB::raw('ROUND((CASE WHEN ftransactions.sales THEN ftransactions.total/ ftransactions.sales ELSE 0 END), 2) AS avg_sales_piece'),
-                                    'ftransactions.digital_clock', 'ftransactions.analog_clock', 'ftransactions.sales', 'ftransactions.taxtotal', 'ftransactions.finaltotal',
+                                    'people.name', 'people.id as person_id', 'x.id', 'x.ftransaction_id', 'x.total',
+                                    DB::raw('DATE(x.collection_datetime) AS collection_date'),
+                                    DB::raw('TIME_FORMAT(TIME(x.collection_datetime), "%h:%i %p") AS collection_time'),
+                                    DB::raw('ROUND((CASE WHEN x.sales THEN x.total/ x.sales ELSE 0 END), 2) AS avg_sales_piece'),
+                                    DB::raw('ROUND(x.sales/ABS(DATEDIFF(x.collection_datetime, (SELECT MAX(collection_datetime) FROM ftransactions WHERE x.person_id=person_id AND DATE(x.collection_datetime) < DATE(ftransactions.collection_datetime))))) AS avg_sales_day'),
+                                    'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal',
                                     'users.name', 'users.user_code',
                                     'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate'
                                 );
@@ -70,7 +72,7 @@ class FtransactionController extends Controller
 
         // filter off franchisee
         if(auth()->user()->hasRole('franchisee')) {
-            $ftransaction = $ftransactions->where('ftransactions.franchisee_id', auth()->user()->id);
+            $ftransaction = $ftransactions->where('x.franchisee_id', auth()->user()->id);
         }
 
         $total_vend_amount = $this->calDBFtransactionTotal($ftransactions);
@@ -80,9 +82,9 @@ class FtransactionController extends Controller
         }
 
         if($pageNum == 'All'){
-            $ftransactions = $ftransactions->latest('ftransactions.collection_datetime')->get();
+            $ftransactions = $ftransactions->latest('x.collection_datetime')->get();
         }else{
-            $ftransactions = $ftransactions->latest('ftransactions.collection_datetime')->paginate($pageNum);
+            $ftransactions = $ftransactions->latest('x.collection_datetime')->paginate($pageNum);
         }
 
         $data = [
@@ -103,7 +105,7 @@ class FtransactionController extends Controller
     private function searchDBFilter($ftransactions)
     {
         if(request('id')){
-            $ftransactions = $ftransactions->where('ftransactions.id', 'LIKE', '%'.request('id').'%');
+            $ftransactions = $ftransactions->where('x.id', 'LIKE', '%'.request('id').'%');
         }
         if(request('cust_id')){
             $ftransactions = $ftransactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
@@ -120,21 +122,21 @@ class FtransactionController extends Controller
         }
         if(request('collection_from') === request('collection_to')){
             if(request('collection_from') != '' and request('collection_to') != ''){
-                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '=', request('collection_to'));
+                $ftransactions = $ftransactions->whereDate('x.collection_datetime', '=', request('collection_to'));
             }
         }else{
             if(request('collection_from')){
-                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '>=', request('collection_from'));
+                $ftransactions = $ftransactions->whereDate('x.collection_datetime', '>=', request('collection_from'));
             }
             if(request('collection_to')){
-                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '<=', request('collection_to'));
+                $ftransactions = $ftransactions->whereDate('x.collection_datetime', '<=', request('collection_to'));
             }
         }
         if(request('franchisee_id')){
-            $ftransactions = $ftransactions->where('ftransactions.franchisee_id', request('franchisee_id'));
+            $ftransactions = $ftransactions->where('x.franchisee_id', request('franchisee_id'));
         }
         if(request('person_id')) {
-            $ftransactions = $ftransactions->where('ftransactions.person_id', request('person_id'));
+            $ftransactions = $ftransactions->where('x.person_id', request('person_id'));
         }
         if(request('sortName')){
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
@@ -218,7 +220,7 @@ class FtransactionController extends Controller
 
         if($person->profile->gst) {
             $tax_total = number_format($input_total - $input_total/((100 + $person->gst_rate)/ 100), 2);
-            $final_total = number_format($input_total - $tax_total, 2);
+            $final_total = number_format($input_total/ ((100 + $person->gst_rate)/ 100), 2);
         }
 
         return [
@@ -262,7 +264,7 @@ class FtransactionController extends Controller
     {
         $total_amount = 0;
         $query1 = clone $query;
-        $total_amount = $query1->sum(DB::raw('ROUND(ftransactions.total, 2)'));
+        $total_amount = $query1->sum(DB::raw('ROUND(x.total, 2)'));
         return $total_amount;
     }
 }

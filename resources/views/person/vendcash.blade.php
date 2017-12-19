@@ -159,7 +159,10 @@
                             <span ng-if="searchvend.sortName == 'finaltotal' && searchvend.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            Avg Sales/ pc
+                            Avg Sales/ pc ($)
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Avg Sales/ day
                         </th>
                         {{-- <th class="col-md-1"></th> --}}
                     </tr>
@@ -199,6 +202,9 @@
                             </td>
                             <td class="col-md-1 text-right">
                                 @{{ ftransaction.avg_sales_piece }}
+                            </td>
+                            <td class="col-md-1 text-right">
+                                @{{ ftransaction.avg_sales_day }}
                             </td>
 {{--                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-sm" ng-click="removeEntry(ftransaction.id)"><i class="fa fa-times"></i></button>
