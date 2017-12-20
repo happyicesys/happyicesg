@@ -136,7 +136,7 @@
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortVendTable('sales')">
-                            Sales
+                            Sales (pcs)
                             <span ng-if="searchvend.sortName == 'sales' && !searchvend.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="searchvend.sortName == 'sales' && searchvend.sortBy" class="fa fa-caret-up"></span>
                         </th>
@@ -148,7 +148,7 @@
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortVendTable('taxtotal')">
-                            {{$person->gst_rate + 0}}% GST
+                            {{$person->gst_rate + 0}}% GST ($)
                             <span ng-if="searchvend.sortName == 'taxtotal' && !searchvend.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="searchvend.sortName == 'taxtotal' && searchvend.sortBy" class="fa fa-caret-up"></span>
                         </th>
@@ -159,10 +159,10 @@
                             <span ng-if="searchvend.sortName == 'finaltotal' && searchvend.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            Avg Sales/ pc ($)
+                            Avg $/ pc
                         </th>
                         <th class="col-md-1 text-center">
-                            Avg Sales/ day
+                            Avg pcs/ day
                         </th>
                         {{-- <th class="col-md-1"></th> --}}
                     </tr>

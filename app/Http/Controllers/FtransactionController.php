@@ -58,7 +58,7 @@ class FtransactionController extends Controller
                                     DB::raw('ROUND((CASE WHEN x.sales THEN x.total/ x.sales ELSE 0 END), 2) AS avg_sales_piece'),
                                     DB::raw('ROUND(x.sales/ABS(DATEDIFF(x.collection_datetime,
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id AND DATE(collection_datetime)<DATE(x.collection_datetime) ORDER BY collection_datetime DESC LIMIT 1)
-                                                )))
+                                                )), 1)
                                                     AS avg_sales_day'),
                                     'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal',
                                     'users.name', 'users.user_code',

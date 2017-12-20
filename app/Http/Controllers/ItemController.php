@@ -34,7 +34,7 @@ class ItemController extends Controller
     {
         $items =  Item::withoutGlobalScopes()->orderBy('product_id')->get();
         $total_available = Item::sum('qty_now');
-        $total_booked = Item::sum('qty_order');
+        $total_booked = Item::where('is_inventory', 1)->sum('qty_order');
         $data = [
             'items' => $items,
             'total_available' => $total_available,

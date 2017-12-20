@@ -128,10 +128,10 @@
 
 <div class="row" style="padding-top: 15px;">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="col-md-3 col-md-3 col-xs-12">
+        <div ng-repeat="total in totals" class="col-md-3 col-md-6 col-xs-12">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                    <strong>HappyIce P/L</strong>
+                    <strong>@{{total.name}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -139,7 +139,7 @@
                     Cash:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cash_happyice ? total_cash_happyice : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total.cash ? total.cash : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -147,7 +147,7 @@
                     Cheque In:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequein_happyice ? total_chequein_happyice : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total.chequein ? total.chequein : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -155,7 +155,7 @@
                     Cheque Out:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequeout_happyice ? total_chequeout_happyice : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total.chequeout ? total.chequeout : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -163,7 +163,7 @@
                     TT:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_tt_happyice ? total_tt_happyice : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total.tt ? total.tt : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
             <div class="row">
@@ -171,151 +171,7 @@
                     Subtotal:
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ subtotal_happyice ? subtotal_happyice : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-3 col-xs-12">
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                    <strong>HappyIce Logistics P/L</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cash:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cash_logistic ? total_cash_logistic : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque In:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequein_logistic ? total_chequein_logistic : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque Out:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequeout_logistic ? total_chequeout_logistic : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    TT:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_tt_logistic ? total_tt_logistic : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Subtotal:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ subtotal_logistic ? subtotal_logistic : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-3 col-xs-12">
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                    <strong>Ice Drop P/L</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cash:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cash_icedrop ? total_cash_icedrop : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque In:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequein_icedrop ? total_chequein_icedrop : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque Out:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequeout_icedrop ? total_chequeout_icedrop : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    TT:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_tt_icedrop ? total_tt_icedrop : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Subtotal:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ subtotal_icedrop ? subtotal_icedrop : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-3 col-xs-12">
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                    <strong>All Profile</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cash:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_cash_all ? total_cash_all : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque In:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequein_all ? total_chequein_all : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Cheque Out:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_chequeout_all ? total_chequeout_all : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    TT:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ total_tt_all ? total_tt_all : 0.00 | currency: "": 2}}</strong>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                    Subtotal:
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ subtotal_all ? subtotal_all : 0.00 | currency: "": 2}}</strong>
+                    <strong>@{{ total.subtotal ? total.subtotal : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
         </div>
