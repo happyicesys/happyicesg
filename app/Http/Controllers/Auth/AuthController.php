@@ -52,10 +52,10 @@ class AuthController extends Controller
         if (\Auth::user()->type == 'marketer') {
             return '/market/deal';
         }
-/*
+
         if(auth()->user()->hasRole('franchisee')) {
             return '/franchisee';
-        }*/
+        }
 
         return '/transaction';
     }
