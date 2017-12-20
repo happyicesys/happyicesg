@@ -56,6 +56,12 @@
                                     <input type="text" name="total" class="form-control" ng-model="form.total" placeholder="Numbers Only">
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                    <label class="control-label">Remarks</label>
+                                    <textarea class="form-control" rows="2" ng-model="form.remarks"></textarea>
+                                </div>
+                            </div>
                             @if(!auth()->user()->hasRole('franchisee'))
                             <div class="row">
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
@@ -253,6 +259,18 @@
                                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('updated_by')">
+                                    Updated By
+                                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-2 text-center">
+                                    <a href="" ng-click="sortTable('remarks')">
+                                    Remarks
+                                    <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
@@ -287,6 +305,12 @@
                                     </td>
                                     <td class="col-md-1 text-right">
                                         @{{ ftransaction.total }}
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        @{{ ftransaction.updated_by }}
+                                    </td>
+                                    <td class="col-md-2 text-left">
+                                        @{{ ftransaction.remarks }}
                                     </td>
                                     <td class="col-md-1 text-center">
                                         <button class="btn btn-danger btn-sm" ng-click="removeEntry(ftransaction.id)"><i class="fa fa-times"></i></button>

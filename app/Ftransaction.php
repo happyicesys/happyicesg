@@ -11,8 +11,8 @@ class Ftransaction extends Model
 
     protected $fillable=[
         'ftransaction_id', 'total', 'collection_datetime', 'person_id', 'digital_clock',
-        'analog_clock', 'sales', 'franchisee_id', 'taxtotal',
-        'finaltotal'
+        'analog_clock', 'sales', 'franchisee_id', 'taxtotal', 'finaltotal',
+        'updated_by', 'remarks'
     ];
 
     protected $dates =[
@@ -60,6 +60,11 @@ class Ftransaction extends Model
     public function franchisee()
     {
         return $this->belongsTo('App\User', 'franchisee_id');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo('App\User', 'updated_by');
     }
 
     // searching scopes

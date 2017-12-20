@@ -35,7 +35,8 @@ var app = angular.module('app', [
             analog_clock: '',
             collection_date: '',
             collection_time: '',
-            total: ''
+            total: '',
+            remarks: ''
         }
         $scope.formErrors = [];
         // init page load
@@ -138,7 +139,8 @@ var app = angular.module('app', [
                 'collection_date': $scope.form.collection_date ? moment(new Date($scope.form.collection_date)).format('YYYY-MM-DD') : null,
                 'collection_time': $scope.form.collection_time ?  moment(new Date($scope.form.collection_time)).format('HH:mm') : null,
                 'total': $scope.form.total,
-                'franchisee_id': $scope.search.franchisee_id ? $scope.search.franchisee_id : null
+                'franchisee_id': $scope.search.franchisee_id ? $scope.search.franchisee_id : null,
+                'remarks': $scope.form.remarks
             }
             $http.post('/api/franchisee/submitEntry', inputData). success(function(data) {
                 getPage(1);
@@ -148,7 +150,8 @@ var app = angular.module('app', [
                     analog_clock: '',
                     collection_date: '',
                     collection_time: '',
-                    total: ''
+                    total: '',
+                    remarks: ''
                 }
 
                 $('.select').val('').trigger('change')

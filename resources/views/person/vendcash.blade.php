@@ -164,6 +164,12 @@
                         <th class="col-md-1 text-center">
                             Avg pcs/ day
                         </th>
+                        <th class="col-md-1 text-center">
+                            Updated By
+                        </th>
+                        <th class="col-md-2 text-left">
+                            Remarks
+                        </th>
                         {{-- <th class="col-md-1"></th> --}}
                     </tr>
                     <tbody>
@@ -205,6 +211,12 @@
                             </td>
                             <td class="col-md-1 text-right">
                                 @{{ ftransaction.avg_sales_day }}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                @{{ ftransaction.updated_by }}
+                            </td>
+                            <td class="col-md-2 text-left">
+                                @{{ ftransaction.remarks }}
                             </td>
 {{--                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-sm" ng-click="removeEntry(ftransaction.id)"><i class="fa fa-times"></i></button>

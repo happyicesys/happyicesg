@@ -50,6 +50,7 @@ class FtransactionController extends Controller
                         ->leftJoin('people', 'x.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('users', 'users.id', '=', 'x.franchisee_id')
+                        ->leftJoin('users AS update_person', 'update_person.id', '=', 'x.updated_by')
                         ->select(
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'x.id', 'x.ftransaction_id', 'x.total',
@@ -60,9 +61,10 @@ class FtransactionController extends Controller
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id AND DATE(collection_datetime)<DATE(x.collection_datetime) ORDER BY collection_datetime DESC LIMIT 1)
                                                 )), 1)
                                                     AS avg_sales_day'),
-                                    'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal',
+                                    'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal', 'x.remarks',
                                     'users.name', 'users.user_code',
-                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate'
+                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate',
+                                    'update_person.name AS updated_by'
                                 );
 
         // reading whether search input is filled
@@ -169,6 +171,7 @@ class FtransactionController extends Controller
         $analog_clock = request('analog_clock');
         $total = request('total');
         $franchisee_id = request('franchisee_id');
+        $remarks = request('remarks');
 
         $getTaxFinalTotals = $this->calTaxFinaltotal($total, $person_id);
         $taxtotal = $getTaxFinalTotals['tax_total'];
@@ -194,7 +197,9 @@ class FtransactionController extends Controller
             'taxtotal' => $taxtotal,
             'finaltotal' => $finaltotal,
             'sales' => $this->calAnalogSales($person_id, $analog_clock),
-            'franchisee_id' => $franchisee_id
+            'franchisee_id' => $franchisee_id,
+            'remarks' => $remarks,
+            'updated_by' => auth()->user()->id,
         ]);
 
         $this->updateLaterAnalogSales($ftransaction->id);
