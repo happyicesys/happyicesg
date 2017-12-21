@@ -104,8 +104,10 @@
 
 <div class="row">
     <div class="col-md-3 col-sm-3 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-default" form="invbreakdown">Invoice Breakdown</button>
+        <button class="btn btn-primary" ng-click="exportDataTransRpt()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+        @if(! auth()->user()->hasRole('franchisee'))
+            <button type="submit" class="btn btn-default" form="invbreakdown">Invoice Breakdown</button>
+        @endif
     </div>
     <div class="col-md-5 col-sm-5 col-xs-12" style="padding-top: 20px;">
         <div class="row">
@@ -159,7 +161,7 @@
     </div>
 </div>
 
-<div class="table-responsive" id="exportable" style="padding-top: 20px;">
+<div class="table-responsive" id="exportable_trans" style="padding-top: 20px;">
     <table class="table table-list-search table-hover table-bordered">
         {{-- hidden table for excel export --}}
         <tr class="hidden">
@@ -214,6 +216,13 @@
                 Delivered By
                 <span ng-if="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
                 <span ng-if="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
+            </th>
+
+            <th class="col-md-1 text-center">
+                <a href="" ng-click="sortType = 'pcs'; sortReverse = !sortReverse">
+                Pieces
+                <span ng-if="sortType == 'pcs' && !sortReverse" class="fa fa-caret-down"></span>
+                <span ng-if="sortType == 'pcs' && sortReverse" class="fa fa-caret-up"></span>
             </th>
 
             <th class="col-md-1 text-center">
@@ -290,6 +299,7 @@
                 {{-- status by color ended --}}
                 <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                <td class="col-md-1 text-center">@{{ transaction.pieces }} </td>
                 <td class="col-md-1 text-center">@{{ transaction.total | currency: ""}} </td>
                 <td class="col-md-1 text-center" style="color: @{{transaction.pay_status == 'Owe' ? 'red' : 'green'}};">
                     @{{ transaction.pay_status }}

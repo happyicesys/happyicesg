@@ -38,20 +38,37 @@
     </div>
 </div>
 
-<div class="form-group">
-    {!! Form::label('password', 'Password', ['class'=>'control-label']) !!}
-    {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
-</div>
+<div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('password', 'Password', ['class'=>'control-label']) !!}
+            {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
+        </div>
+    </div>
 
-<div class="form-group">
-    {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
-    {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
+            {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
+        </div>
+    </div>
 </div>
 
 <div class="form-group">
     {!! Form::label('role', 'Position', ['class'=>'control-label']) !!}
     {!! Form::select('role_list[]', $roles::lists('label', 'id'), null, ['id'=>'role', 'class'=>'select form-control']) !!}
 </div>
+
+@if($user->hasRole('franchisee'))
+    <div class="form-group">
+        {!! Form::label('company_name', 'Company Name', ['class'=>'control-label']) !!}
+        {!! Form::text('company_name', null, ['class'=>'form-control']) !!}
+    </div>
+    <div class="form-group">
+        {!! Form::label('bill_address', 'Bill Address', ['class'=>'control-label']) !!}
+        {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'3']) !!}
+    </div>
+@endif
 
 <div class="form-group">
     {!! Form::checkbox('can_access_inv', $user->can_access_inv) !!}

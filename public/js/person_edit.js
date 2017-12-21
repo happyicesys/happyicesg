@@ -71,8 +71,8 @@ var app = angular.module('app', [
             }
             $scope.searchDB();
         }
-        $scope.exportData = function () {
-            var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+        $scope.exportDataTransRpt = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_trans').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
@@ -258,6 +258,11 @@ var app = angular.module('app', [
             $scope.searchvend.sortName = '';
             $scope.searchvend.sortBy = true;
             getVendPage(1);
+        }
+
+        $scope.changeRemarks = function(id, remarks) {
+            $http.post('/api/franchisee/remarks/' + id, {'remarks': remarks}).success(function(data) {
+            });
         }
 
         getVendPage(1);

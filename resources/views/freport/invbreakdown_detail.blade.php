@@ -91,7 +91,18 @@
                 $gross_earn_percent = 0;
 
                 $revenue = $ftransactions::whereIn('id', $ftransactionsId)->sum('total');
-                $costs = $deals::whereIn('transaction_id', $transactionsId)->sum('amount');
+                $costs = \DB::table('transactions')
+                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                            ->whereIn('transactions.id', $transactionsId)
+                            ->sum(
+                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)')
+                            );
                 $gross_earn = $revenue - $costs;
                 if($revenue) {
                     $gross_earn_percent = $gross_earn/$revenue * 100;
@@ -103,7 +114,7 @@
                         Total Revenue ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{ $revenue ? $revenue : 0 }}</strong>
+                        <strong>{{ $revenue ? number_format($revenue, 2) : 0 }}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -111,7 +122,7 @@
                         Total Costs ($):
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>{{ $costs ? $costs : 0 }}</strong>
+                        <strong>{{ $costs ? number_format($costs, 2) : 0 }}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -120,7 +131,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            {{$gross_earn}}
+                            {{number_format($gross_earn, 2)}}
                         </strong>
                     </div>
                 </div>
@@ -190,10 +201,10 @@
                 <tr></tr>
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-4">Item</th>
-                    <th class="col-md-1 text-center">Total Qty</th>
+                    <th class="col-md-1 text-center">Total Qty (pcs)</th>
                     <th class="col-md-1 text-center">Total $</th>
                     @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
-                        <th class="col-md-1 text-center">Qty</th>
+                        <th class="col-md-1 text-center">Qty (pcs)</th>
                         <th class="col-md-1 text-center">$</th>
                     @endforeach
                 </tr>
@@ -225,7 +236,42 @@
                 </tr>
                 @endforeach
 
-                @if($people::find($person_id) and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
+                @php
+                    $person = $people::find($person_id);
+                @endphp
+                @if($person and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
+                    @if($person->profile->gst)
+                    <tr>
+                        <th class="col-md-4">Subtotal</th>
+                        <th class="col-md-1 text-right">
+                        </th>
+                        <td class="col-md-1 text-right">
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2)}}
+                        </td>
+                        @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                            <td class="col-md-1 text-right">
+                            </td>
+                            <td class="col-md-1 text-right">
+                                {{number_format($deals::whereTransactionId($transaction->id)->sum('amount'), 2)}}
+                            </td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <th class="col-md-4">GST ({{$person->gst_rate + 0}}%)</th>
+                        <th class="col-md-1 text-right">
+                        </th>
+                        <td class="col-md-1 text-right">
+                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum(DB::raw('amount * '.$person->gst_rate/100 )), 2)}}
+                        </td>
+                        @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
+                            <td class="col-md-1 text-right">
+                            </td>
+                            <td class="col-md-1 text-right">
+                                {{number_format($deals::whereTransactionId($transaction->id)->sum(DB::raw('amount * '.$person->gst_rate/100 )), 2)}}
+                            </td>
+                        @endforeach
+                    </tr>
+                    @endif
                     <tr>
                         <th class="col-md-4">Total</th>
                         <th class="col-md-1 text-right">
@@ -233,7 +279,7 @@
                             {{number_format($total_pieces)}}
                         </th>
                         <th class="col-md-1 text-right">
-                            {{number_format($deals::whereIn('transaction_id', $transactionsId)->sum('amount'), 2)}}
+                            {{number_format($transactions::whereIn('id', $transactionsId)->sum(DB::raw('total * '.(100 + $person->gst_rate)/100)), 2)}}
                         </th>
                         @foreach($transactions::whereIn('id', $transactionsId)->latest()->take(3)->get() as $transaction)
                             @php
@@ -251,7 +297,7 @@
                                 {{number_format($piece_subtotal)}}
                             </td>
                             <td class="col-md-1 text-right">
-                                {{number_format($deals::whereTransactionId($transaction->id)->sum('amount'), 2)}}
+                                {{number_format($transactions::where('id', $transaction->id)->sum(DB::raw('total * '.(100 + $person->gst_rate)/100)), 2)}}
                             </td>
                         @endforeach
                     </tr>

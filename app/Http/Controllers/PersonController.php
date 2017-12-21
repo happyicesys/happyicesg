@@ -320,28 +320,21 @@ class PersonController extends Controller
             $transactions = $transactions1
                             ->union($transactions2);
         }else{*/
-            $transactions = DB::table('transactions')
+            $transactions = DB::table('deals')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-/*                            ->select(
-                                DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
-                                    'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
-                                    'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
-                                    'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
-                                    'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at',
-                                    'transactions.created_at AS created_at', 'transactions.pay_method',
-                                    'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                                    'profiles.name', 'profiles.gst'
-                                )*/
                             ->select(
                                 DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + people.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
+                                DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN deals.dividend ELSE deals.qty * items.base_unit END)) AS pieces'),
                                     'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
                                     'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
                                     'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
                                     'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at',
                                     'transactions.created_at AS created_at', 'transactions.pay_method',
                                     'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                                    'profiles.name', 'profiles.gst', 'people.gst_rate'
+                                    'profiles.name', 'profiles.gst', 'people.gst_rate', 'people.is_vending', 'people.is_dvm'
                                 )
                             ->where('people.id', '=', $person_id);
         // }
@@ -357,10 +350,12 @@ class PersonController extends Controller
 
         $totals = $this->calTotals($transactions);
 
+        $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
+
         if($pageNum == 'All'){
-            $transactions = $transactions->latest('created_at')->get();
+            $transactions = $transactions->get();
         }else{
-            $transactions = $transactions->latest('created_at')->paginate($pageNum);
+            $transactions = $transactions->paginate($pageNum);
         }
 
         $profileTransactionsId = [];

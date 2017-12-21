@@ -167,7 +167,7 @@
                         <th class="col-md-1 text-center">
                             Updated By
                         </th>
-                        <th class="col-md-2 text-left">
+                        <th class="col-md-2 text-center">
                             Remarks
                         </th>
                         {{-- <th class="col-md-1"></th> --}}
@@ -216,7 +216,7 @@
                                 @{{ ftransaction.updated_by }}
                             </td>
                             <td class="col-md-2 text-left">
-                                @{{ ftransaction.remarks }}
+                                <textarea name="remarks[@{{ftransaction.id}}]" class="form-control" style='min-width: 160px; align-content: left; font-size: 12px;' rows="2" ng-model="ftransaction.remarks" ng-change="changeRemarks(ftransaction.id, ftransaction.remarks)" ng-model-options="{ debounce: 600 }"></textarea>
                             </td>
 {{--                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-sm" ng-click="removeEntry(ftransaction.id)"><i class="fa fa-times"></i></button>

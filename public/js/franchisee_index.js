@@ -175,6 +175,11 @@ var app = angular.module('app', [
             return invalid;
         }
 
+        $scope.changeRemarks = function(id, remarks) {
+            $http.post('/api/franchisee/remarks/' + id, {'remarks': remarks}).success(function(data) {
+            });
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber){
             $scope.spinner = true;

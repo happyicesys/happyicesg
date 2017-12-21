@@ -205,6 +205,14 @@ class FtransactionController extends Controller
         $this->updateLaterAnalogSales($ftransaction->id);
     }
 
+    // update ftransactions remarks when post request(int ftransaction_id)
+    public function changeRemarks($id)
+    {
+        $ftransaction = Ftransaction::findOrFail($id);
+        $ftransaction->remarks = request('remarks');
+        $ftransaction->save();
+    }
+
     // search if there is any deal later than this, update analog sales deduction(int id)
     private function updateLaterAnalogSales($id)
     {
