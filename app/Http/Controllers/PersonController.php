@@ -90,9 +90,9 @@ class PersonController extends Controller
         }
 
         if($pageNum == 'All'){
-            $people = $people->latest('people.created_at')->get();
+            $people = $people->orderBy('people.cust_id', 'asc')->get();
         }else{
-            $people = $people->latest('people.created_at')->paginate($pageNum);
+            $people = $people->orderBy('people.cust_id', 'asc')->paginate($pageNum);
         }
 
         $data = [
@@ -348,9 +348,9 @@ class PersonController extends Controller
             }
         }
 
-        $totals = $this->calTotals($transactions);
-
         $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
+
+        $totals = $this->calTotals($transactions);
 
         if($pageNum == 'All'){
             $transactions = $transactions->get();
@@ -603,18 +603,53 @@ class PersonController extends Controller
     // calculate transactions totals (Collection $transactiions)
     private function calTotals($query)
     {
+        $calTotalsQuery = clone $query;
+        $transactions = $calTotalsQuery->get();
+        $transactionsIdArr = [];
         $total_amount = 0;
         $total_paid = 0;
         $total_owe = 0;
 
-        $query1 = clone $query;
-        $query2 = clone $query;
-        $query3 = clone $query;
+        foreach($transactions as $transaction) {
+            array_push($transactionsIdArr, $transaction->id);
+        }
 
-        // $total_amount = $query1->sum(DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*107/100 + transactions.delivery_fee ELSE transactions.total*107/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2)'));
-        $total_amount = $query1->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
-        $total_paid = $query2->where('transactions.pay_status', 'Paid')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
-        $total_owe = $query3->where('transactions.pay_status', 'Owe')->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN transactions.total*((100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_amount = DB::table('transactions')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                            ->whereIn('transactions.id', $transactionsIdArr)
+                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+
+        $total_paid = DB::table('transactions')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                            ->whereIn('transactions.id', $transactionsIdArr)
+                            ->where('transactions.pay_status', 'Paid')
+                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+
+        $total_owe = DB::table('transactions')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                            ->whereIn('transactions.id', $transactionsIdArr)
+                            ->where('transactions.pay_status', 'Owe')
+                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+
+
         $totals = [
             'total_amount' => $total_amount,
             'total_paid' => $total_paid,

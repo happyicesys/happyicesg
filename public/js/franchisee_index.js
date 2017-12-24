@@ -201,7 +201,7 @@ var app = angular.module('app', [
                 $scope.All = data.ftransactions.length;
 
                 // return total amount
-                $scope.total_vend_amount = data.total_vend_amount;
+                $scope.total_vend_amount = data.totals.total_vend_amount;
                 $scope.spinner = false;
             }).error(function(data){
 

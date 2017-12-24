@@ -41,7 +41,7 @@
 
             <div class="panel-body">
                 <div class="row">
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
                                                         [
@@ -52,7 +52,7 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
                                                     [
@@ -64,7 +64,7 @@
                                                     ])
                         !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('company', null,
                                                         [
@@ -77,7 +77,7 @@
                         !!}
                     </div>
 
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('status', null,
                                                         [
@@ -90,7 +90,7 @@
                         !!}
                     </div>
 
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('pay_status', null,
                                                             [
@@ -103,7 +103,7 @@
                         !!}
                     </div>
 
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('updated_by', null,
                                                             [
@@ -115,7 +115,7 @@
                                                             ])
                         !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -131,7 +131,7 @@
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('driver', null,
                                                         [
@@ -143,7 +143,7 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
                             [
@@ -153,7 +153,7 @@
                             ])
                         !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
                             'class'=>'select form-control',
@@ -164,7 +164,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -180,7 +180,7 @@
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -196,7 +196,7 @@
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         <div class="row col-md-12 col-sm-12 col-xs-12">
                             {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
                         </div>

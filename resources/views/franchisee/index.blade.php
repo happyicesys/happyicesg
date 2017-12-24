@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('invoice', 'Ref #', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
                                                         [
@@ -101,7 +101,7 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
                                                     [
@@ -113,7 +113,7 @@
                                                     ])
                         !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('company', null,
                                                         [
@@ -125,7 +125,7 @@
                                                         ])
                         !!}
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('collection_from', 'Date From', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -141,7 +141,7 @@
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('collection_from', search.collection_from)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('collection_to', 'Date To', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -157,7 +157,7 @@
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('collection_to', search.collection_to)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         <div class="row col-md-12 col-sm-12 col-xs-12">
                             {!! Form::label('collection_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
                         </div>

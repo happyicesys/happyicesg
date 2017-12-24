@@ -80,7 +80,7 @@ class FtransactionController extends Controller
             $ftransaction = $ftransactions->where('x.franchisee_id', auth()->user()->id);
         }
 
-        $total_vend_amount = $this->calDBFtransactionTotal($ftransactions);
+        $totals = $this->calDBFtransactionTotal($ftransactions);
 
         if(request('sortName')){
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
@@ -93,7 +93,7 @@ class FtransactionController extends Controller
         }
 
         $data = [
-            'total_vend_amount' => $total_vend_amount,
+            'totals' => $totals,
             'ftransactions' => $ftransactions,
         ];
         return $data;
@@ -278,9 +278,23 @@ class FtransactionController extends Controller
     // calculating gst and non for delivered total
     private function calDBFtransactionTotal($query)
     {
-        $total_amount = 0;
+        $total_vend_amount = 0;
         $query1 = clone $query;
-        $total_amount = $query1->sum(DB::raw('ROUND(x.total, 2)'));
-        return $total_amount;
+        $query2 = clone $query;
+        $query3 = clone $query;
+        $total_vend_amount = $query1->sum(DB::raw('ROUND(x.total, 2)'));
+/*        $total_sales_pieces = $query2->sum(DB::raw('ROUND((CASE WHEN SUM(x.sales) THEN SUM(x.total)/ SUM(x.sales) ELSE 0 END), 2)'));
+        $avg_pieces_day = $query3->sum(DB::raw('ROUND(SUM(x.sales)/ABS(DATEDIFF(x.collection_datetime,
+                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
+                                                )), 1)
+                                                    AS avg_sales_day'));*/
+
+        $data = [
+            'total_vend_amount' => $total_vend_amount,
+            // 'total_sales_pieces' => $total_sales_pieces,
+            // 'avg_pieces_day' => $avg_pieces_day,
+        ];
+
+        return $data;
     }
 }

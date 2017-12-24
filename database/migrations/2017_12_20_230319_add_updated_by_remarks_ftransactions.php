@@ -27,7 +27,7 @@ class AddUpdatedByRemarksFtransactions extends Migration
     public function down()
     {
         Schema::table('ftransactions', function($table) {
-            $table->dropColumn('updated_by');
+            // $table->dropColumn('updated_by');
             $table->dropColumn('remarks');
         });
     }
