@@ -175,11 +175,13 @@
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
-                        <div class="col-md-5 col-xs-5">
-                            Total
-                        </div>
-                        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{total_vend_amount ? total_vend_amount : 0.00 | currency: "": 2}}</strong>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Total
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{total_vend_amount ? total_vend_amount : 0.00 | currency: "": 2}}</strong>
+                            </div>
                         </div>
                     </div>
 

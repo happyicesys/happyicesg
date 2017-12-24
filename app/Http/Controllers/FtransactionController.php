@@ -279,20 +279,25 @@ class FtransactionController extends Controller
     private function calDBFtransactionTotal($query)
     {
         $total_vend_amount = 0;
+        $total_sales_pieces = 0;
         $query1 = clone $query;
         $query2 = clone $query;
         $query3 = clone $query;
         $total_vend_amount = $query1->sum(DB::raw('ROUND(x.total, 2)'));
-/*        $total_sales_pieces = $query2->sum(DB::raw('ROUND((CASE WHEN SUM(x.sales) THEN SUM(x.total)/ SUM(x.sales) ELSE 0 END), 2)'));
-        $avg_pieces_day = $query3->sum(DB::raw('ROUND(SUM(x.sales)/ABS(DATEDIFF(x.collection_datetime,
+        $total_sales_pieces = $query2->sum(DB::raw('ROUND(x.total/ ((SELECT analog_clock FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime DESC LIMIT 1) - (SELECT analog_clock FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)), 2)'));
+        $avg_pieces_day = $query3->sum(DB::raw('ROUND(x.sales/ ABS(DATEDIFF(
+                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime DESC LIMIT 1),
+                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
+                                                )), 1)'));
+/*        $avg_pieces_day = $query3->sum(DB::raw('ROUND(SUM(x.sales)/ABS(DATEDIFF(x.collection_datetime,
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
                                                 )), 1)
                                                     AS avg_sales_day'));*/
 
         $data = [
             'total_vend_amount' => $total_vend_amount,
-            // 'total_sales_pieces' => $total_sales_pieces,
-            // 'avg_pieces_day' => $avg_pieces_day,
+            'total_sales_pieces' => $total_sales_pieces,
+            'avg_pieces_day' => $avg_pieces_day,
         ];
 
         return $data;
