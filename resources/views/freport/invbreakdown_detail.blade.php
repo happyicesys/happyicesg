@@ -11,7 +11,7 @@
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/franrpt"><h1>Freport Invoice Breakdown</h1></a>
+    <a class="title_hyper pull-left" href="/franrpt"><h1>F-Report</h1></a>
 </div>
 
 <div class="panel panel-primary">

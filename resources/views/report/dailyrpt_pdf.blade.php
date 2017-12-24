@@ -312,7 +312,7 @@
                                     {{ $transaction->status }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                    {{Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $transaction->delivery_date)->format('Y-m-d') }}
+                                    {{$transaction->delivery_date ? Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $transaction->delivery_date)->format('Y-m-d') : null}}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->driver }}
