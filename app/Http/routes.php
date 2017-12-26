@@ -16,6 +16,7 @@ Route::get('/admin', function () {
 
 Route::get('/shop', 'ShopController@getShopIndex');
 
+Route::post('/api/franchisee/people', 'FreportController@getFranchiseePeopleApi');
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
 Route::post('/api/franchisee/remarks/{ftransaction_id}', 'FtransactionController@changeRemarks');

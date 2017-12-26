@@ -1,82 +1,87 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination', 'ui.bootstrap.datetimepicker']);
+var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination']);
 
 function analogDifferenceController($scope, $http){
-
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.itemsPerPage = 100;
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.sortBy = true;
+    $scope.sortName = '';
+    $scope.today = moment().format("YYYY-MM-DD");
+    $scope.search = {
+        cust_id: '',
+        company: '',
+        pageNum: 100,
+    }
+    // init page load
+    getPage(1, true);
+
+    angular.element(document).ready(function () {
+        $('.select').select2();
+    });
 
     $scope.exportData = function () {
         var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "InventoryRpt"+ now + ".xls");
+        saveAs(blob, "Customer Rpt"+ now + ".xls");
     };
 
-    $http.get('/api/pricematrix').success(function(data){
-        // console.log(data);
-        $scope.items = data.items;
-        $scope.people = data.people;
-    });
+    // switching page
+    $scope.pageChanged = function(newPage){
+        getPage(newPage, false);
+    };
 
-    $http.get('/inventory/data').success(function(inventories){
-        $scope.inventories = inventories;
-        $scope.All = inventories.length;
-    });
-
-    $scope.dateChange3 = function(date){
-        $scope.search2.rec_date = moment(date).format("YYYY-MM-DD");
-    }
-
-    $scope.dateChange2 = function(date){
-        $scope.search2.created_at = moment(date).format("YYYY-MM-DD");
-    }
-
-    //delete item record
-    $scope.confirmDelete = function(id){
-        var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
-        if(isConfirmDelete){
-            $http({
-                method: 'DELETE',
-                url: '/item/data/' + id
-            })
-            .success(function(data){
-                location.reload();
-            })
-            .error(function(data){
-                alert('Unable to delete');
-            })
-        }else{
-            return false;
-        }
-    }
+    $scope.pageNumChanged = function(){
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
 
       // when hitting search button
     $scope.searchDB = function(){
-        getPage();
+        $scope.sortName = '';
+        $scope.sortBy = '';
+        getPage(1, false);
+    }
+
+    // retrieve franchisee id
+    $scope.getFranchiseeId = function() {
+        $http.get('/api/franchisee/auth').success(function(data) {
+            return data;
+        });
     }
 
     // retrieve page w/wo search
-    function getPage(pageNumber){
+    function getPage(pageNumber, first){
         $scope.spinner = true;
-        $http.post('/api/pricematrix', $scope.search).success(function(data){
-            $scope.items = data.items;
-            $scope.people = data.people;
+        $http.post('/api/franchisee/people?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            if(data.people.data){
+                $scope.alldata = data.people.data;
+                $scope.totalCount = data.people.total;
+                $scope.currentPage = data.people.current_page;
+                $scope.indexFrom = data.people.from;
+                $scope.indexTo = data.people.to;
+            }else{
+                $scope.alldata = data.people;
+                $scope.totalCount = data.people.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.people.length;
+            }
+            // get total count
+            $scope.All = data.people.length;
+
+            // return total amount
+            $scope.spinner = false;
         });
     }
 }
-
-
-function repeatController($scope) {
-    $scope.$watch('$index', function(index) {
-        $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
-    })
-}
-
-
-app.controller('analogDifferenceController', analogDifferenceController);
-app.controller('repeatController', repeatController);
-
 $(function() {
     // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -90,3 +95,5 @@ $(function() {
         $('[href="' + lastTab + '"]').tab('show');
     }
 });
+
+app.controller('analogDifferenceController', analogDifferenceController);

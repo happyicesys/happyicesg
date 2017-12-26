@@ -5,7 +5,7 @@
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/franrpt"><h1>F-Report</h1></a>
+    <a class="title_hyper pull-left" href="/franrpt"><h1>F-Report <i class="fa fa-area-chart"></i></h1></a>
 </div>
     <div ng-app="app" ng-cloak>
         <div class="panel panel-default">
