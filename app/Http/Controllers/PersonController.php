@@ -90,9 +90,9 @@ class PersonController extends Controller
         }
 
         if($pageNum == 'All'){
-            $people = $people->orderBy('people.cust_id', 'asc')->get();
+            $people = $people->orderBy('people.created_at', 'desc')->get();
         }else{
-            $people = $people->orderBy('people.cust_id', 'asc')->paginate($pageNum);
+            $people = $people->orderBy('people.created_at', 'desc')->paginate($pageNum);
         }
 
         $data = [
