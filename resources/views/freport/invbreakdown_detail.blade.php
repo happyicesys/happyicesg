@@ -4,19 +4,9 @@
 @inject('transactions', 'App\Transaction')
 @inject('ftransactions', 'App\Ftransaction')
 
-@extends('template')
-@section('title')
-    {{$FRANCHISE_RPT}}
-@stop
-@section('content')
-
-<div class="row">
-    <a class="title_hyper pull-left" href="/franrpt"><h1>F-Report</h1></a>
-</div>
-
-<div class="panel panel-primary">
+<div class="panel panel-info">
     <div class="panel-heading">
-        Freport Invoice Breakdown
+        Invoice Breakdown
         @if($people::find($person_id))
             <span>{{$people::find($person_id)->cust_id}}: {{$people::find($person_id)->company}}</span>
         @endif
@@ -313,7 +303,7 @@
 
     @if($people::find($person_id) and count($transactions::whereIn('id', $transactionsId)->get()) > 0)
         @if($people::find($person_id)->is_vending)
-            <div class="panel panel-primary">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     Vending Machine Data: {{$people::find($person_id)->cust_id}} - {{$people::find($person_id)->company}}
                 </div>
@@ -448,4 +438,3 @@
             placeholder: 'Select...'
         });
     </script>
-@stop

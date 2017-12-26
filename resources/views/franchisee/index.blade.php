@@ -256,6 +256,9 @@
                                     <span ng-if="search.sortName == 'sales' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    Avg $/ pc
+                                </th>
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('total')">
                                     $ Collected
                                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -304,6 +307,9 @@
                                     </td>
                                     <td class="col-md-1 text-right">
                                         @{{ ftransaction.sales }}
+                                    </td>
+                                    <td class="col-md-1 text-right">
+                                        @{{ ftransaction.avg_sales_piece }}
                                     </td>
                                     <td class="col-md-1 text-right">
                                         @{{ ftransaction.total }}

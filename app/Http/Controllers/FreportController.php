@@ -53,7 +53,7 @@ class FreportController extends Controller
             $this->exportInvoiceBreakdownExcel($request, $ftransactionsId, $transactionsId, $itemsId, $person_id);
         }
 
-        return view('freport.invbreakdown_detail', compact('request' ,'transactionsId', 'itemsId', 'person_id', 'ftransactionsId'));
+        return view('freport.index', compact('request' ,'transactionsId', 'itemsId', 'person_id', 'ftransactionsId'));
     }
 
     // filter for transactions($query)

@@ -19,7 +19,7 @@
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="invoice_breakdown">
-                        @include('freport.invoice_breakdown')
+                        @include('freport.invbreakdown_detail')
                     </div>
                     <div class="tab-pane" id="analog_difference">
                         @include('freport.analog_difference')
