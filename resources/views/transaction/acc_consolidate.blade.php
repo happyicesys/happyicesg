@@ -221,6 +221,7 @@
                         @endphp
 
                         @if($person->profile->gst)
+                        <div class="avoid-break">
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
@@ -299,6 +300,7 @@
                             </tr>
                         @endif
                         @endunless
+                    </div>
                     </table>
                 </div>
             </div>
