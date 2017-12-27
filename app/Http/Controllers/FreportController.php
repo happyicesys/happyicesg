@@ -68,13 +68,13 @@ class FreportController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $transactions_analog = DB::raw("(SELECT MAX(transactions.analog_clock) AS latest_analog, DATE(transactions.delivery_date) AS analog_date, people.id AS person_id
+        $transactions_analog = DB::raw("(SELECT MAX(transactions.analog_clock) AS latest_analog, MAX(DATE(transactions.delivery_date)) AS analog_date, people.id AS person_id
                                 FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 AND (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
                                 GROUP BY people.id) transactions_analog");
 
-        $ftransactions_analog = DB::raw("(SELECT MAX(ftransactions.analog_clock) AS latest_analog, DATE(ftransactions.collection_datetime) AS analog_date, people.id AS person_id
+        $ftransactions_analog = DB::raw("(SELECT MAX(ftransactions.analog_clock) AS latest_analog, MAX(DATE(ftransactions.collection_datetime)) AS analog_date, people.id AS person_id
                                 FROM ftransactions
                                 LEFT JOIN people ON ftransactions.person_id=people.id
                                 GROUP BY people.id) ftransactions_analog");

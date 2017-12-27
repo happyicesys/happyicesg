@@ -43,6 +43,7 @@
             <div class="panel-body">
                 <div class="row">
                 {!! Form::open(['id'=>'transaction_rpt', 'method'=>'POST','action'=>['TransactionController@exportAccConsolidatePdf']]) !!}
+                    <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('invoice', null,
@@ -91,7 +92,8 @@
                                                         ])
                         !!}
                     </div>
-
+                    </div>
+                    <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('pay_status', null,
@@ -145,6 +147,8 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
+                    </div>
+                    <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
@@ -164,8 +168,10 @@
                             ])
                         !!}
                     </div>
+                    </div>
                 </div>
                 <div class="row">
+                    <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
@@ -209,6 +215,7 @@
                             <a href="" ng-click="onTodayDateClicked()" class="btn btn-default"><i class="fa fa-circle"></i></a>
                             <a href="" ng-click="onNextDateClicked()" class="btn btn-default"><i class="fa fa-forward"></i></a>
                         </div>
+                    </div>
                     </div>
                 </div>
 
