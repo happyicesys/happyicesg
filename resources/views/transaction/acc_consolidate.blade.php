@@ -222,10 +222,10 @@
 
                         @if($person->profile->gst)
                             <tr class="noBorder">
-                                <td colspan="4" class="text-right">
+                                <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td></td>
+                                <td colspan="2"></td>
                                 <td></td>
                                 <td class="text-right">
                                     <strong>{{$total}}</strong>
