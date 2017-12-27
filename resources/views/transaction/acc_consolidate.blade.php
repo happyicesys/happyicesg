@@ -307,7 +307,7 @@
             </div>
 
             <div class="col-xs-12">
-                <div class="col-xs-12 avoid-break" style="padding-top: 10px">
+                <div class="col-xs-12 avoid-break" style="padding-top: 20px">
                     <div class="col-xs-6">
                         <div class="form-group">
                             <span class="text-center col-xs-12">
