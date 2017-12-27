@@ -160,10 +160,10 @@
                                 Inv #
                             </th>
                             <th class="col-xs-1 text-center">
-                                Cust ID
+                                Machine ID
                             </th>
                             <th class="col-xs-3 text-center">
-                                Cust Name
+                                Machine Name
                             </th>
                             <th class="col-xs-1 text-center">
                                 Date
