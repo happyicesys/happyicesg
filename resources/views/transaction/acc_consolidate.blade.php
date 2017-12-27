@@ -162,7 +162,7 @@
                             <th class="col-xs-1 text-center">
                                 Cust ID
                             </th>
-                            <th class="col-xs-2 text-center">
+                            <th class="col-xs-3 text-center">
                                 Cust Name
                             </th>
                             <th class="col-xs-1 text-center">
@@ -187,10 +187,10 @@
                             <td class="col-xs-1 text-center">
                                 {{ $transaction->id }}
                             </td>
-                            <td class="col-xs-1 text-left">
+                            <td class="col-xs-1 text-center">
                                 {{ $transaction->cust_id}}
                             </td>
-                            <td class="col-xs-2 text-left">
+                            <td class="col-xs-3 text-left">
                                 {{ $transaction->company}}
                             </td>
                             <td class="col-xs-1 text-center">
@@ -222,11 +222,8 @@
 
                         @if($person->profile->gst)
                             <tr class="noBorder">
-                                <td colspan="2" class="text-right">
+                                <td colspan="4" class="text-right">
                                     <strong>Total</strong>
-                                </td>
-                                <td class="col-xs-2 text-right">
-                                    {{-- {{$totalqty}} --}}
                                 </td>
                                 <td></td>
                                 <td></td>
