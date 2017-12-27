@@ -133,6 +133,18 @@
                 !!}
             </div>
         </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_active', 'Is Active', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_active', [''=>'All', 'Yes'=>'Yes', 'No'=>'No'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.is_active',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
 </div>
 

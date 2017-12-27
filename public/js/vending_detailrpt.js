@@ -27,6 +27,7 @@ var app = angular.module('app', [
             status: 'Delivered',
             is_profit_sharing_report: '1',
             is_rental: '',
+            is_active: '',
             pageNum: 100,
             sortBy: true,
             sortName: ''

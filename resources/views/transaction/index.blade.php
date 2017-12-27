@@ -1,4 +1,5 @@
 @inject('profiles', 'App\Profile')
+@inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 
 @extends('template')
@@ -170,6 +171,7 @@
                         <div class="input-group">
                             <datepicker>
                                 <input
+                                    name = "delivery_from"
                                     type = "text"
                                     class = "form-control input-sm"
                                     placeholder = "Delivery From"
@@ -186,6 +188,7 @@
                         <div class="input-group">
                             <datepicker>
                                 <input
+                                    name = "delivery_to"
                                     type = "text"
                                     class = "form-control input-sm"
                                     placeholder = "Delivery To"
@@ -208,12 +211,17 @@
                         </div>
                     </div>
                 </div>
-                {!! Form::close() !!}
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
-                        {{-- <button class="btn btn-default" ng-click="exportData()">Export Acc Consolidate</button> --}}
+                        <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        @if(auth()->user()->hasRole('admin'))
+                            <button class="btn btn-default" ng-click="enableAccConsolidate($event)">
+                                Export Acc Consolidate
+                                <span ng-if="!show_acc_consolidate_div" class="fa fa-caret-down"></span>
+                                <span ng-if="show_acc_consolidate_div" class="fa fa-caret-up"></span>
+                            </button>
+                        @endif
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
@@ -241,6 +249,39 @@
                     </div>
                 </div>
 
+                <div ng-show="show_acc_consolidate_div">
+                <hr class="row">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('person_account', 'Customer to bill ', ['class'=>'control-label search-title']) !!}
+                                    {!! Form::select('person_account',
+                                        $people::whereHas('profile', function($q){
+                                            $q->filterUserProfile();
+                                        })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
+                                        null,
+                                        [
+                                            'class'=>'select form-control',
+                                            'ng-model'=>'form.person_account',
+                                        ])
+                                    !!}
+                                    <p class="text-muted">*For Acc Consolidate Rpt, must select "Customer to bill"</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="bill" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export PDF</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <hr class="row">
+                </div>
+                {!! Form::close() !!}
                     <div class="table-responsive" id="exportable" style="padding-top:20px;">
                         <table class="table table-list-search table-hover table-bordered">
                             {{-- hidden table for excel export --}}

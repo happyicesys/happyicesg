@@ -59,49 +59,20 @@ class TransactionController extends Controller
     }
 
     // get transactions api data based on delivery date
-    public function getData(Request $request)
+    public function getData()
     {
         // showing total amount init
         $total_amount = 0;
-        $input = $request->all();
         // initiate the page num when null given
-        $pageNum = $request->pageNum ? $request->pageNum : 100;
-        $transactions = DB::table('transactions')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
-                        ->select(
-                                    'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'transactions.del_postcode',
-                                    'transactions.status', 'transactions.delivery_date', 'transactions.driver',
-                                    'transactions.total_qty', 'transactions.pay_status',
-                                    'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
-                                                CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
-                                                ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
-                                     'custcategories.name as custcategory'
-                                );
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile_id or $request->custcategory){
-            $transactions = $this->searchDBFilter($transactions, $request);
-        }
-
-        // add user profile filters
-        $transactions = $this->filterUserDbProfile($transactions);
-
-        // toll to check is franchisee or not
-        $transactions = $this->filterFranchiseeTransactionDB($transactions);
+        $transactions = $this->getTransactionsData();
 
         $total_amount = $this->calDBTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
 
-        if($request->sortName){
-            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        if(request('sortName')){
+            $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
 
         if($pageNum == 'All'){
@@ -942,28 +913,76 @@ class TransactionController extends Controller
     {
         // dd($request->all());
         $now = Carbon::now()->format('d-m-Y H:i');
+
+        $transactions = $this->getTransactionsData();
+        if(!request('delivery_from') and !request('delivery_to')){
+            $delivery_from = Carbon::today()->toDateString();
+            $delivery_to = Carbon::today()->toDateString();
+            $transactions = $transactions->where('transactions.delivery_date', '=', Carbon::today()->toDateString());
+        }else {
+            $delivery_from = request('delivery_from');
+            $delivery_to = request('delivery_to');
+        }
+        $totalprice = $this->calDBTransactionTotal($transactions);
+        $transactions = $transactions->oldest('transactions.created_at')->get();
+        $person = Person::findOrFail(request('person_account'));
+
         $data = [
+            'transactions' => $transactions,
+            'totalprice' => $totalprice,
+            'person' => $person,
+            'delivery_from' => $delivery_from,
+            'delivery_to' => $delivery_to,
         ];
-        $data = $this->apiRec($request);
-        $data['transactions'] = $this->apiTable($request);
-        $data['now'] = $now;
-
-        // insert the searched result
-        $data['transaction_id'] = $request->transaction_id;
-        $data['cust_id'] = $request->cust_id;
-        $data['company'] = $request->company;
-        $data['status'] = $request->status;
-        $data['pay_status'] = $request->pay_status;
-        $data['paid_by'] = $request->paid_by;
-        $data['paid_at'] = $request->paid_at;
-        $data['delivery_date'] = $request->delivery_date;
-        $data['driver'] = $request->driver;
-        $filename = 'Acc_Consolidate_Rpt('.$now.').pdf';
-        $pdf = PDF::loadView('report.dailyrpt_pdf', $data);
+        $name = 'Acc_Consolidate_Rpt('.$now.').pdf';
+        $pdf = PDF::loadView('transaction.acc_consolidate', $data);
         $pdf->setPaper('a4');
+        $pdf->setOption('margin-top', 5);
+        $pdf->setOption('margin-bottom', 5);
+        $pdf->setOption('margin-left', 8);
+        $pdf->setOption('margin-right', 8);
+        $pdf->setOption('footer-right', 'Page [page]/[topage]');
+        $pdf->setOption('dpi', 70);
+        $pdf->setOption('page-width', '210mm');
+        $pdf->setOption('page-height', '297mm');
+        return $pdf->download($name);
+    }
 
-        // $pdf->setOrientation('landscape');
-        return $pdf->download($filename);
+    // retrieve transactions data ()
+    private function getTransactionsData()
+    {
+        $transactions = DB::table('transactions')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+                        ->select(
+                                    'people.cust_id', 'people.company',
+                                    'people.name', 'people.id as person_id', 'transactions.del_postcode',
+                                    'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                                    'transactions.total_qty', 'transactions.pay_status',
+                                    'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                                     'custcategories.name as custcategory'
+                                );
+
+        // reading whether search input is filled
+        if(request('id') or request('cust_id') or request('company') or request('status') or request('pay_status') or request('updated_by') or request('updated_at') or request('delivery_from') or request('delivery_to') or request('driver') or request('profile_id') or request('custcategory')){
+            $transactions = $this->searchDBFilter($transactions);
+        }
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
+        // toll to check is franchisee or not
+        $transactions = $this->filterFranchiseeTransactionDB($transactions);
+
+        return $transactions;
     }
 
     private function syncTransaction(Request $request)
@@ -1416,16 +1435,16 @@ class TransactionController extends Controller
     }
 
     // pass value into filter search for DB (collection, collection request) [query]
-    private function searchDBFilter($transactions, Request $request)
+    private function searchDBFilter($transactions)
     {
-        if($request->id){
-            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.$request->id.'%');
+        if(request('id')){
+            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.request('id').'%');
         }
-        if($request->cust_id){
-            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$request->cust_id.'%');
+        if(request('cust_id')){
+            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
         }
-        if($request->company){
-            $com = $request->company;
+        if(request('company')){
+            $com = request('company');
             $transactions = $transactions->where(function($query) use ($com){
                 $query->where('people.company', 'LIKE', '%'.$com.'%')
                         ->orWhere(function ($query) use ($com){
@@ -1434,41 +1453,41 @@ class TransactionController extends Controller
                         });
                 });
         }
-        if($request->status){
-            $transactions = $transactions->where('transactions.status', 'LIKE', '%'.$request->status.'%');
+        if(request('status')){
+            $transactions = $transactions->where('transactions.status', 'LIKE', '%'.request('status').'%');
         }
-        if($request->pay_status){
-            $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.$request->pay_status.'%');
+        if(request('pay_status')){
+            $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.request('pay_status').'%');
         }
-        if($request->updated_by){
-            $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.$request->updated_by.'%');
+        if(request('updated_by')){
+            $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.request('updated_by').'%');
         }
-        if($request->updated_at){
+        if(request('updated_at')){
             $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'.$request->updated_at.'%');
         }
-        if($request->delivery_from === $request->delivery_to){
-            if($request->delivery_from != '' and $request->delivery_to != ''){
-                $transactions = $transactions->where('transactions.delivery_date', '=', $request->delivery_from);
+        if(request('delivery_from') === request('delivery_to')){
+            if(request('delivery_from') != '' and request('delivery_to') != ''){
+                $transactions = $transactions->where('transactions.delivery_date', '=', request('delivery_from'));
             }
         }else{
-            if($request->delivery_from){
-                $transactions = $transactions->where('transactions.delivery_date', '>=', $request->delivery_from);
+            if(request('delivery_from')){
+                $transactions = $transactions->where('transactions.delivery_date', '>=', request('delivery_from'));
             }
-            if($request->delivery_to){
-                $transactions = $transactions->where('transactions.delivery_date', '<=', $request->delivery_to);
+            if(request('delivery_to')){
+                $transactions = $transactions->where('transactions.delivery_date', '<=', request('delivery_to'));
             }
         }
-        if($request->driver){
-            $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.$request->driver.'%');
+        if(request('driver')){
+            $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.request('driver').'%');
         }
-        if($request->profile_id){
-            $transactions = $transactions->where('profiles.id', $request->profile_id);
+        if(request('profile_id')){
+            $transactions = $transactions->where('profiles.id', request('profile_id'));
         }
-        if($request->custcategory) {
-            $transactions = $transactions->where('custcategories.id', $request->custcategory);
+        if(request('custcategory')) {
+            $transactions = $transactions->where('custcategories.id', request('custcategory'));
         }
-        if($request->sortName){
-            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        if(request('sortName')){
+            $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $transactions;
     }

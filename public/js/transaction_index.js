@@ -34,6 +34,10 @@ var app = angular.module('app', [
             sortBy: true
         }
         $scope.updated_at = '';
+        $scope.show_acc_consolidate_div = false;
+        $scope.form = {
+            person_account: ''
+        };
         // init page load
         getPage(1);
 
@@ -41,7 +45,8 @@ var app = angular.module('app', [
             $('.select').select2();
         });
 
-        $scope.exportData = function () {
+        $scope.exportData = function (event) {
+            event.preventDefault();
             var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
@@ -120,6 +125,12 @@ var app = angular.module('app', [
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1);
+        }
+
+        // enable acc consolidate div
+        $scope.enableAccConsolidate = function(event) {
+            event.preventDefault();
+            $scope.show_acc_consolidate_div = !$scope.show_acc_consolidate_div;
         }
 
         // retrieve page w/wo search
