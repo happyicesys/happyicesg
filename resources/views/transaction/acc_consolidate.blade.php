@@ -47,7 +47,7 @@
     </style>
     </head>
 
-    <body>
+
         <div class="container">
             <div class="col-xs-10 col-xs-offset-1" style="font-size:15px">
                 <h3 class="text-center"><strong>{{$person->profile->name}}</strong></h3>
@@ -148,7 +148,7 @@
 
                 </div>
             </div>
-
+    <body>
             <div class="avoid">
                 <div class="row">
                     <table class="table table-condensed" style="font-size: 10px;">
