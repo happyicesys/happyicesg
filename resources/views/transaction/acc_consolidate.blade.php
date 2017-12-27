@@ -9,7 +9,8 @@
             display:inline;
         }
         body{
-            font-size: 12px;
+            font-size: 10px;
+            line-height: 1.2;
         }
         table{
             font-size: 12px;
@@ -35,7 +36,13 @@
         tr {
             page-break-inside: avoid;
         }
-
+        .page-break {
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        .avoid-break {
+            page-break-inside: avoid;
+        }
 
     </style>
     </head>
@@ -63,7 +70,6 @@
                             <div style="font-size:14px"><strong>Bill To:</strong></div>
                             <div style="border: solid thin; height:120px; padding-bottom: 15px;">
                             <span class="col-xs-12"><strong>{{$person->company}}</strong></span>
-                            <span class="col-xs-12">{{$person->com_remark}}</span>
                             <span class="col-xs-12">{{$person->bill_address}}</span>
                             </div>
                         </div>
