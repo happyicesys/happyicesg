@@ -151,7 +151,7 @@
 
             <div class="avoid">
                 <div class="row">
-                    <table class="table table-condensed" >
+                    <table class="table table-condensed" style="font-size: 10px;">
                         <tr>
                             <th class="col-xs-1 text-center">
                                 #
