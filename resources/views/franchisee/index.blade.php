@@ -26,7 +26,7 @@
                                     <label class="control-label">Customer</label>
                                     <select class="select form-control" ng-model="form.person_id">
                                         <option ng-value=""></option>
-                                        @foreach($people::filterFranchiseePeople()->get() as $person)
+                                        @foreach($people::filterFranchiseePeople()->where('active', 'Yes')->get() as $person)
                                             <option ng-value="{{$person->id}}">
                                                 {{$person->cust_id}} {{$person->company}}
                                             </option>

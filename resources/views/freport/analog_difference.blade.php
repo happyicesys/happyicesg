@@ -78,10 +78,24 @@
                         </a>
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortType = 'stockin_date'; sortReverse = !sortReverse">
+                        Stock In Date
+                        <span ng-show="sortType == 'stockin_date' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'stockin_date' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortType = 'collection_analog'; sortReverse = !sortReverse">
                         Collection Analog
                         <span ng-show="sortType == 'collection_analog' && !sortReverse" class="fa fa-caret-down"></span>
                         <span ng-show="sortType == 'collection_analog' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortType = 'collection_date'; sortReverse = !sortReverse">
+                        Collection Date
+                        <span ng-show="sortType == 'collection_date' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'collection_date' && sortReverse" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-1 text-center">
@@ -110,8 +124,14 @@
                         <td class="col-md-1 text-right">
                             @{{person.stockin_analog}}
                         </td>
+                        <td class="col-md-1 text-center">
+                            @{{person.stockin_date}}
+                        </td>
                         <td class="col-md-1 text-right">
                             @{{person.collection_analog}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{person.collection_date}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{person.difference_analog}}

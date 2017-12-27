@@ -74,7 +74,7 @@
         </div>
         <div class="row">
             <div class="col-md-5 col-xs-5">
-                Total Sales/ pcs
+                Avg $/ pcs
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                 <strong>@{{total_sales_pieces ? total_sales_pieces : 0.00 | currency: "": 2}}</strong>
@@ -82,7 +82,7 @@
         </div>
         <div class="row">
             <div class="col-md-5 col-xs-5">
-                Avg Overall Pcs/ day
+                Avg pcs/ day
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                 <strong>@{{avg_pieces_day ? avg_pieces_day : 0.00 | currency: "": 2}}</strong>

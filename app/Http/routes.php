@@ -209,6 +209,7 @@ Route::match(['get', 'post'], '/pricematrix', 'PriceController@getPriceMatrix');
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::post('/transaction/export/accconsolidate/pdf', 'TransactionController@exportAccConsolidatePdf');
 Route::get('/transaction/email/subscription', 'TransactionController@subscibeTransactionEmail');
 Route::get('/api/transaction/email/subscription', 'TransactionController@subscibeTransactionEmailApi');
 Route::get('/api/transaction/email/nonsubscription', 'TransactionController@nonSubscibeTransactionEmailApi');

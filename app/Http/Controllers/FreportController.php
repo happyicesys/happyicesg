@@ -68,13 +68,13 @@ class FreportController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $transactions_analog = DB::raw("(SELECT MAX(transactions.analog_clock) AS latest_analog, people.id AS person_id
+        $transactions_analog = DB::raw("(SELECT MAX(transactions.analog_clock) AS latest_analog, DATE(transactions.delivery_date) AS analog_date, people.id AS person_id
                                 FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 AND (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
                                 GROUP BY people.id) transactions_analog");
 
-        $ftransactions_analog = DB::raw("(SELECT MAX(ftransactions.analog_clock) AS latest_analog, people.id AS person_id
+        $ftransactions_analog = DB::raw("(SELECT MAX(ftransactions.analog_clock) AS latest_analog, DATE(ftransactions.collection_datetime) AS analog_date, people.id AS person_id
                                 FROM ftransactions
                                 LEFT JOIN people ON ftransactions.person_id=people.id
                                 GROUP BY people.id) ftransactions_analog");
@@ -90,7 +90,9 @@ class FreportController extends Controller
                                     'profiles.id AS profile_id', 'profiles.name AS profile_name',
                                     'transactions_analog.latest_analog AS stockin_analog',
                                     'ftransactions_analog.latest_analog AS collection_analog',
-                                    DB::raw('(transactions_analog.latest_analog - ftransactions_analog.latest_analog) AS difference_analog')
+                                    DB::raw('(transactions_analog.latest_analog - ftransactions_analog.latest_analog) AS difference_analog'),
+                                    'transactions_analog.analog_date AS stockin_date',
+                                    'ftransactions_analog.analog_date AS collection_date'
                                 );
 
         // reading whether search input is filled

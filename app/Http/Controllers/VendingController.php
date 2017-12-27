@@ -166,6 +166,7 @@ class VendingController extends Controller
     	$status = request('status');
         $is_profit_sharing_report = request('is_profit_sharing_report');
         $is_rental = request('is_rental');
+        // die(var_dump($custcategory));
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -191,6 +192,9 @@ class VendingController extends Controller
                 });
         }
         if($custcategory) {
+            if(count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
             $transactions = $transactions->whereIn('custcategories.id', $custcategory);
         }
         if($status) {

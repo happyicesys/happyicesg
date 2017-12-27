@@ -937,6 +937,35 @@ class TransactionController extends Controller
         $user->transSubscription()->delete();
     }
 
+    // export account consolidate report from transactions index()
+    public function exportAccConsolidatePdf()
+    {
+        // dd($request->all());
+        $now = Carbon::now()->format('d-m-Y H:i');
+        $data = [
+        ];
+        $data = $this->apiRec($request);
+        $data['transactions'] = $this->apiTable($request);
+        $data['now'] = $now;
+
+        // insert the searched result
+        $data['transaction_id'] = $request->transaction_id;
+        $data['cust_id'] = $request->cust_id;
+        $data['company'] = $request->company;
+        $data['status'] = $request->status;
+        $data['pay_status'] = $request->pay_status;
+        $data['paid_by'] = $request->paid_by;
+        $data['paid_at'] = $request->paid_at;
+        $data['delivery_date'] = $request->delivery_date;
+        $data['driver'] = $request->driver;
+        $filename = 'Acc_Consolidate_Rpt('.$now.').pdf';
+        $pdf = PDF::loadView('report.dailyrpt_pdf', $data);
+        $pdf->setPaper('a4');
+
+        // $pdf->setOrientation('landscape');
+        return $pdf->download($filename);
+    }
+
     private function syncTransaction(Request $request)
     {
         $transaction = Auth::user()->transactions()->create($request->all());
