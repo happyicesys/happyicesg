@@ -276,6 +276,12 @@
                                     <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('bankin_date')">
+                                    Bankin Date
+                                    <span ng-if="search.sortName == 'bankin_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'bankin_date' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
@@ -319,6 +325,21 @@
                                     </td>
                                     <td class="col-md-2 text-left">
                                         <textarea name="remarks[@{{ftransaction.id}}]" class="form-control" style='min-width: 160px; align-content: left; font-size: 12px;' rows="2" ng-model="ftransaction.remarks" ng-change="changeRemarks(ftransaction.id, ftransaction.remarks)" ng-model-options="{ debounce: 600 }"></textarea>
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        <datepicker date-format="yyyy-MM-dd">
+                                        <input
+                                            type="text"
+                                            name="bankin_dates[@{{ftransacton.id}}]"
+                                            class="form-control"
+                                            placeholder="Date"
+                                            ng-model="ftransaction.bankin_date"
+                                            datepicker-mobile="false"
+                                            ng-change="onBankinDateChanged(ftransaction.id, ftransaction.bankin_date)"
+                                            ng-model-options="{ debounce: 600 }"
+                                            style="min-width: 100px;"
+                                        />
+                                        </datepicker>
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @if(!auth()->user()->hasRole('driver'))

@@ -12,11 +12,11 @@ class Ftransaction extends Model
     protected $fillable=[
         'ftransaction_id', 'total', 'collection_datetime', 'person_id', 'digital_clock',
         'analog_clock', 'sales', 'franchisee_id', 'taxtotal', 'finaltotal',
-        'updated_by', 'remarks'
+        'updated_by', 'remarks', 'bankin_date'
     ];
 
     protected $dates =[
-        'collection_datetime'
+        'collection_datetime', 'bankin_date'
     ];
 
     public function setDigitalClockAttribute($value)

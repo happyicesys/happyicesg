@@ -157,6 +157,7 @@
           //, dateMinLimit
           //, dateMaxLimit
           , dateDisabledDates = $scope.$eval($scope.dateDisabledDates)
+          , dateEnabledDates = $scope.$eval($scope.dateEnabledDates)
           , dateDisabledWeekdays = $scope.$eval($scope.dateDisabledWeekdays)
           , date = new Date()
           , isMouseOn = false
@@ -313,15 +314,15 @@
 
               switch (true) {
                 case el.indexOf('d') !== -1: {
-                  d = dateSplit[index];
+                  d = dateSplit[index - (formatDate.length - dateSplit.length)];
                   break;
                 }
                 case el.indexOf('M') !== -1: {
-                  m = dateSplit[index];
+                  m = dateSplit[index - (formatDate.length - dateSplit.length)];
                   break;
                 }
                 case el.indexOf('y') !== -1: {
-                  y = dateSplit[index];
+                  y = dateSplit[index - (formatDate.length - dateSplit.length)];
                   break; 
                 }
                 default: {
@@ -443,6 +444,14 @@
 
               return false;
             }
+            if (dateFormat) {
+              date = localDateTimestamp(thisInput[0].value.toString(), dateFormat);
+            } else {
+              date = new Date(thisInput[0].value.toString());
+            }
+            $scope.selectedMonth = Number($filter('date')(date, 'MM'));
+            $scope.selectedDay = Number($filter('date')(date, 'dd'));
+            $scope.selectedYear = Number($filter('date')(date, 'yyyy'));
             return $scope.$eval($scope.datepickerShow);
           }
           , unregisterDataSetWatcher = $scope.$watch('dateSet', function dateSetWatcher(newValue) {
@@ -482,6 +491,17 @@
           , unregisterDateDisabledDatesWatcher = $scope.$watch('dateDisabledDates', function dateDisabledDatesWatcher(newValue) {
             if (newValue) {
               dateDisabledDates = $scope.$eval(newValue);
+
+              if (!$scope.isSelectableDate($scope.monthNumber, $scope.year, $scope.day)) {
+                thisInput.val('');
+                thisInput.triggerHandler('input');
+                thisInput.triggerHandler('change');//just to be sure;
+              }
+            }
+          })
+          , unregisterDateEnabledDatesWatcher = $scope.$watch('dateEnabledDates', function dateEnabledDatesWatcher(newValue) {
+            if (newValue) {
+              dateEnabledDates = $scope.$eval(newValue);
 
               if (!$scope.isSelectableDate($scope.monthNumber, $scope.year, $scope.day)) {
                 thisInput.val('');
@@ -788,6 +808,20 @@
               }
             }
           }
+
+          if (dateEnabledDates) {
+
+            for (i; i <= dateEnabledDates.length; i += 1) {
+
+              if (new Date(dateEnabledDates[i]).getTime() === new Date(monthNumber + '/' + day + '/' + year).getTime()) {
+
+                return true;
+              }
+            }
+
+            return false;
+          }
+
           return true;
         };
 
@@ -973,6 +1007,7 @@
           unregisterDateMaxLimitWatcher();
           unregisterDateFormatWatcher();
           unregisterDateDisabledDatesWatcher();
+          unregisterDateEnabledDatesWatcher();
           thisInput.off('focus click focusout blur');
           angular.element(theCalendar).off('mouseenter mouseleave focusin');
           angular.element($window).off('click focus focusin', onClickOnWindow);
@@ -990,6 +1025,7 @@
           'buttonNextTitle': '@',
           'buttonPrevTitle': '@',
           'dateDisabledDates': '@',
+          'dateEnabledDates': '@',
           'dateDisabledWeekdays': '@',
           'dateSetHidden': '@',
           'dateTyper': '@',

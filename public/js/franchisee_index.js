@@ -176,7 +176,12 @@ var app = angular.module('app', [
         }
 
         $scope.changeRemarks = function(id, remarks) {
-            $http.post('/api/franchisee/remarks/' + id, {'remarks': remarks}).success(function(data) {
+            $http.post('/api/franchisee/edit/' + id, {'remarks': remarks}).success(function(data) {
+            });
+        }
+
+        $scope.onBankinDateChanged = function(id, date) {
+            $http.post('/api/franchisee/edit/' + id, {'bankin_date': date}).success(function(data) {
             });
         }
 

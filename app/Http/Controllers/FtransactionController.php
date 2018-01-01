@@ -61,7 +61,7 @@ class FtransactionController extends Controller
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id AND DATE(collection_datetime)<DATE(x.collection_datetime) ORDER BY collection_datetime DESC LIMIT 1)
                                                 )), 1)
                                                     AS avg_sales_day'),
-                                    'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal', 'x.remarks',
+                                    'x.digital_clock', 'x.analog_clock', 'x.sales', 'x.taxtotal', 'x.finaltotal', 'x.remarks', 'x.bankin_date',
                                     'users.name', 'users.user_code',
                                     'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'profiles.gst_rate',
                                     'update_person.name AS updated_by'
@@ -206,10 +206,18 @@ class FtransactionController extends Controller
     }
 
     // update ftransactions remarks when post request(int ftransaction_id)
-    public function changeRemarks($id)
+    public function editApi($id)
     {
+        $remarks = request('remarks');
+        $bankin_date = request('bankin_date');
+
         $ftransaction = Ftransaction::findOrFail($id);
-        $ftransaction->remarks = request('remarks');
+        if($remarks) {
+            $ftransaction->remarks = $remarks;
+        }
+        if($bankin_date) {
+            $ftransaction->bankin_date = $bankin_date;
+        }
         $ftransaction->save();
     }
 

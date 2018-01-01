@@ -19,7 +19,7 @@ Route::get('/shop', 'ShopController@getShopIndex');
 Route::post('/api/franchisee/people', 'FreportController@getFranchiseePeopleApi');
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
-Route::post('/api/franchisee/remarks/{ftransaction_id}', 'FtransactionController@changeRemarks');
+Route::post('/api/franchisee/edit/{ftransaction_id}', 'FtransactionController@editApi');
 Route::delete('/api/franchisee/entry/{id}/delete', 'FtransactionController@destroyApi');
 Route::post('/api/franchisee/submitEntry', 'FtransactionController@submitEntry');
 Route::get('/api/franchisee/auth', 'FtransactionController@getFranchiseeIdApi');
