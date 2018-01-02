@@ -456,7 +456,7 @@
                 </tr>
 
                 <tr ng-if="!alldata || alldata.length == 0">
-                    <td colspan="18" class="text-center">No Records Found</td>
+                    <td colspan="20" class="text-center">No Records Found</td>
                 </tr>
 
             </tbody>

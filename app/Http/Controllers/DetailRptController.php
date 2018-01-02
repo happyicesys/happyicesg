@@ -991,7 +991,7 @@ class DetailRptController extends Controller
                                 GROUP BY people.id) AS first_date");
         $sales = DB::raw(
                 "(SELECT (MAX(transactions.analog_clock) - MIN(transactions.analog_clock)) AS sales_qty,
-                ((MAX(transactions.analog_clock) - MIN(transactions.analog_clock))/ DATEDIFF(MAX(transactions.delivery_date), MIN(transactions.delivery_date))) AS sales_avg_day,
+                ((MAX(transactions.analog_clock) - MIN(transactions.analog_clock))/ ".$date_diff.") AS sales_avg_day,
                 people.id AS person_id,
                 transactions.id AS transaction_id
                 FROM deals

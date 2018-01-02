@@ -35,5 +35,5 @@
         </div>
     </template>
 
-    <script src="/js/vue-controller/d2dorderController.js"></script>
+    <script src="/js/vue-controller/shopController.js"></script>
 @stop

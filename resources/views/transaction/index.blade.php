@@ -96,14 +96,12 @@
                     <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('pay_status', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.pay_status',
-                                                                'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Payment',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
-                                                            ])
+                        {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
+                            [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.pay_status',
+                            'ng-change'=>'searchDB()'
+                            ])
                         !!}
                     </div>
 
