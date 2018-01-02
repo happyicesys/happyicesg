@@ -71,7 +71,7 @@ Door To Door
                 <p style="color:red;">**Promotion: buy any 3 boxes and above for FREE delivery</p>
                 {{-- <h3 style="color:#323299;">Step 2 / 3</h3> --}}
                 {{-- <div class="table-responsive"> --}}
-                <div class="hidden-xs">
+                <div class="">
                   <table class="table table-list-search table-hover table-bordered add_item" class="table-order" style="margin-top:10px;">
                     <tr style="background-color: #f7f9f7">
                       <th class="col-md-1 text-center">

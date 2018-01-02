@@ -5,8 +5,8 @@ var app = angular.module('app', []);
     function d2dorderController($scope, $http){
         // show div init
         $scope.step1 = true;
-        $scope.step2 = false;
-        $scope.step3 = false;
+        $scope.step2 = true;
+        $scope.step3 = true;
         $scope.loading = false;
         $scope.formErrors = [];
 
