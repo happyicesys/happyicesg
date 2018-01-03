@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests;
 use App\Ftransaction;
 use App\Fdeal;
@@ -96,6 +97,11 @@ class FtransactionController extends Controller
             'totals' => $totals,
             'ftransactions' => $ftransactions,
         ];
+
+        if(request('export_excel')) {
+            $this->exportFtransactionIndexExcel($data);
+        }
+
         return $data;
 	}
 
@@ -309,5 +315,19 @@ class FtransactionController extends Controller
         ];
 
         return $data;
+    }
+
+    // export excel index for franchisee(Array $data)
+    private function exportFtransactionIndexExcel($data)
+    {
+        $title = 'FVendCash';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($data) {
+            $excel->sheet('sheet1', function($sheet) use ($data) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->setColumnFormat(array('I:J' => '0.00'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->loadView('franchisee.index_excel', compact('data'));
+            });
+        })->download('xlsx');
     }
 }

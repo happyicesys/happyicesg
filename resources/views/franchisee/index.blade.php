@@ -88,11 +88,11 @@
                         </div>
                     </div>
                 </div>
-
+                {!! Form::open(['id'=>'export_excel', 'method'=>'POST','action'=>['FtransactionController@indexApi']]) !!}
                 <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('invoice', 'Ref #', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('invoice', null,
+                        {!! Form::label('id', 'Ref #', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('id', null,
                                                         [
                                                             'class'=>'form-control input-sm',
                                                             'ng-model'=>'search.id',
@@ -102,8 +102,8 @@
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('id', null,
+                        {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('cust_id', null,
                                                     [
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.cust_id',
@@ -130,6 +130,7 @@
                         <div class="input-group">
                             <datepicker>
                                 <input
+                                    name = "collection_from"
                                     type = "text"
                                     class = "form-control input-sm"
                                     placeholder = "Date From"
@@ -146,6 +147,7 @@
                         <div class="input-group">
                             <datepicker>
                                 <input
+                                    name = "collection_to"
                                     type = "text"
                                     class = "form-control input-sm"
                                     placeholder = "Date To"
@@ -168,10 +170,12 @@
                         </div>
                     </div>
                 </div>
+                {!! Form::close() !!}
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                        {{-- <button class="btn btn-primary" ng-click="exportData()">Export Excel</button> --}}
+                        <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
