@@ -155,7 +155,7 @@
                         {{
                             \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))
                             ?
-                            ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / \Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date))
+                            ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock) / (\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->delivery_date)->diffInDays(\Carbon\Carbon::parse($transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->delivery_date)) + 1)
                             :
                             ''
                         }}

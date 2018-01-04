@@ -976,7 +976,7 @@ class DetailRptController extends Controller
         $delivery_from = $request->delivery_from;
         $delivery_to = $request->delivery_to;
         if($delivery_from and $delivery_to) {
-            $date_diff = Carbon::parse($delivery_from)->diffInDays(Carbon::parse($delivery_to));
+            $date_diff = Carbon::parse($delivery_from)->diffInDays(Carbon::parse($delivery_to)) + 1;
         }else {
             $date_diff = 1;
         }
