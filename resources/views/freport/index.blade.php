@@ -11,18 +11,18 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li class="active"><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li>
-                    <li><a href="#analog_difference" role="tab" data-toggle="tab">Analog Difference</a></li>
+                    <li class="active"><a href="#analog_difference" role="tab" data-toggle="tab">Analog Difference</a></li>
+                    <li><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li>
                 </ul>
             </div>
 
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="invoice_breakdown">
-                        @include('freport.invbreakdown_detail')
-                    </div>
-                    <div class="tab-pane" id="analog_difference">
+                    <div class="tab-pane active" id="analog_difference">
                         @include('freport.analog_difference')
+                    </div>
+                    <div class="tab-pane" id="invoice_breakdown">
+                        @include('freport.invbreakdown_detail')
                     </div>
                 </div>
             </div>

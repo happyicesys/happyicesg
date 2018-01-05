@@ -240,9 +240,14 @@
                             <th class="col-xs-1 text-center">
                                 Item Code
                             </th>
-                            <th class="col-xs-7 text-center">
+                            <th class="col-xs-6 text-center">
                                 Description
                             </th>
+                            @if($person->is_vending or $person->is_dvm)
+                            <th class="col-xs-1 text-center">
+                                Pieces
+                            </th>
+                            @endif
                             <th class="col-xs-2 text-center">
                                 Quantity
                             </th>
@@ -254,66 +259,85 @@
                             </th>
                         </tr>
 
-                        <?php $counter = 0; ?>
+                        @php
+                            $counter = 0;
+                            $total_pieces = 0;
+                        @endphp
                         @unless(count($deals)>0)
                         <td class="text-center" colspan="8">No Records Found</td>
                         @else
-                        @foreach($deals as $index => $deal)
-                        <?php $counter ++ ?>
-                        @if( $counter >= 16)
-                        <tr style="page-break-inside: always">
-                        @else
-                        <tr>
-                        @endif
-                            <td class="col-xs-1 text-center">
-                                {{ $deal->item->product_id }}
-                            </td>
-                            <td class="col-xs-7">
-                                {{ $deal->item->name}} {{ $deal->item->remark }}
-                            </td>
+                            @foreach($deals as $index => $deal)
+                                @php
+                                    $pieces = 0;
+                                    if($deal->divisor > 1) {
+                                        $pieces = $deal->item->base_unit * $deal->dividend/ $deal->divisor;
+                                    }else {
+                                        $pieces = $deal->qty * $deal->item->base_unit;
+                                    }
+                                    $total_pieces += $pieces;
 
-                            @if($deal->divisor and $deal->item->is_inventory === 1)
-                                <td class="col-xs-2 text-right">
-                                    {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
+                                    $counter += 1;
+                                @endphp
+
+                            @if( $counter >= 16)
+                            <tr style="page-break-inside: always">
+                            @else
+                            <tr>
+                            @endif
+                                <td class="col-xs-1 text-center">
+                                    {{ $deal->item->product_id }}
                                 </td>
-                            @elseif($deal->item->is_inventory === 0)
-                                <td class="col-xs-2 text-left">
-                                    @if($deal->dividend === 1)
-                                        1 Unit
+                                <td class="col-xs-6">
+                                    {{ $deal->item->name}} {{ $deal->item->remark }}
+                                </td>
+                                @if($person->is_vending or $person->is_dvm)
+                                    <td class="col-xs-1 text-right">
+                                        {{$pieces}}
+                                    </td>
+                                @endif
+
+                                @if($deal->divisor and $deal->item->is_inventory === 1)
+                                    <td class="col-xs-2 text-right">
+                                        {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
+                                    </td>
+                                @elseif($deal->item->is_inventory === 0)
+                                    <td class="col-xs-2 text-left">
+                                        @if($deal->dividend === 1)
+                                            1 Unit
+                                        @else
+                                            {{$deal->dividend + 0}} Unit
+                                        @endif
+                                    </td>
+                                @else
+                                    <td class="col-xs-2 text-right">
+                                        {{ $deal->qty + 0 }}
+                                    </td>
+                                @endif
+
+                                @if($deal->unit_price == 0 || $deal->unit_price == null)
+                                <td class="col-xs-1 text-right">
+                                    @if($deal->qty != 0)
+                                        {{ number_format(($deal->amount / $deal->qty), 2)}}
                                     @else
-                                        {{$deal->dividend + 0}} Unit
+                                        {{ number_format(($deal->amount), 2)}}
                                     @endif
                                 </td>
-                            @else
-                                <td class="col-xs-2 text-right">
-                                    {{ $deal->qty + 0 }}
-                                </td>
-                            @endif
-
-                            @if($deal->unit_price == 0 || $deal->unit_price == null)
-                            <td class="col-xs-1 text-right">
-                                @if($deal->qty != 0)
-                                    {{ number_format(($deal->amount / $deal->qty), 2)}}
                                 @else
-                                    {{ number_format(($deal->amount), 2)}}
+                                <td class="col-xs-1 text-right">
+                                    {{ number_format($deal->unit_price, 2) }}
+                                </td>
                                 @endif
-                            </td>
-                            @else
-                            <td class="col-xs-1 text-right">
-                                {{ number_format($deal->unit_price, 2) }}
-                            </td>
-                            @endif
-                            @if($deal->amount != 0)
-                            <td class="col-xs-1 text-right">
-                                {{ number_format($deal->amount, 2) }}
-                            </td>
-                            @else
-                            <td class="col-xs-1 text-right">
-                                <strong>FOC</strong>
-                            </td>
-                            @endif
-                        </tr>
-                        @endforeach
+                                @if($deal->amount != 0)
+                                <td class="col-xs-1 text-right">
+                                    {{ number_format($deal->amount, 2) }}
+                                </td>
+                                @else
+                                <td class="col-xs-1 text-right">
+                                    <strong>FOC</strong>
+                                </td>
+                                @endif
+                            </tr>
+                            @endforeach
 
                         @php
                             $subtotal = 0;
@@ -349,6 +373,9 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                <td class="col-xs-1 text-right">
+                                    {{$total_pieces}}
+                                </td>
                                 <td class="col-xs-2 text-right">
                                     {{$totalqty}}
                                 </td>
@@ -361,7 +388,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$person->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
@@ -370,7 +397,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
@@ -380,7 +407,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
@@ -389,7 +416,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$person->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                <td colspan="3"></td>
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
@@ -398,7 +425,10 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-2 text-right">
+                                <td class="col-xs-1 text-right">
+                                    {{$total_pieces}}
+                                </td>
+                                <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>
                                 <td></td>
@@ -411,7 +441,10 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-2 text-right">
+                                <td class="col-xs-1 text-right">
+                                    {{$total_pieces}}
+                                </td>
+                                <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>
                                 <td></td>

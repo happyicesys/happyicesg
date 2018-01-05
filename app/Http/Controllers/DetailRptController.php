@@ -1885,15 +1885,26 @@ class DetailRptController extends Controller
     private function calDBOriginalTotal($query)
     {
         $total_amount = 0;
+        $transactionsIdArr = [];
         $query1 = clone $query;
-        $total_amount = $query1->sum(
+        $transactions = $query1->groupBy('transactions.id')->get();
+        foreach($transactions as $transaction) {
+            array_push($transactionsIdArr, $transaction->id);
+        }
+
+        $total_amount = DB::table('transactions')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                            ->whereIn('transactions.id', $transactionsIdArr)
+                            ->sum(
                                     DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
                                                 CASE
                                                 WHEN people.is_gst_inclusive=0
-                                                THEN ROUND(ROUND(deals.amount,2)*((100+people.gst_rate)/100),2)
-                                                ELSE ROUND(deals.amount,2)
-                                                END) ELSE ROUND(deals.amount,2) END), 2)')
-                                    );
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)')
+                                );
+
         return $total_amount;
     }
 

@@ -53,7 +53,7 @@
 
         <div class="table-responsive" id="exportable" style="padding-top:15px;">
             <table class="table table-list-search table-hover table-bordered">
-                <tr style="background-color: #DDFDF8">
+                <tr class="hidden-xs" style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">
                         #
                     </th>
@@ -109,7 +109,7 @@
                 </tr>
 
                 <tbody>
-                    <tr dir-paginate="person in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" current-page="currentPage" pagination-id="analog_difference">
+                    <tr class="hidden-xs" dir-paginate="person in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" current-page="currentPage" pagination-id="analog_difference">
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
                         </td>
@@ -135,6 +135,67 @@
                         </td>
                         <td class="col-md-1 text-right">
                             @{{person.difference_analog}}
+                        </td>
+                    </tr>
+                    <tr class="hidden-lg hidden-md hidden-sm" style="font-size: 14px;" dir-paginate="person in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" current-page="currentPage" pagination-id="analog_difference">
+                        <td class="col-xs-12 text-left">
+                            @{{ $index + indexFrom }}.
+                            <a href="/person/@{{ person.id }}/edit">
+                            @{{ person.cust_id }}
+                            </a>
+                            <br>
+                            <span class="col-xs-12" style="font-size: 16px;">
+                                <strong>
+                                    @{{ person.company }}
+                                </strong>
+                            </span>
+                            <br>
+                            <span class="col-xs-12 row">
+                                <span class="col-xs-6">
+                                    Stock In Analog:
+                                </span>
+                                <span class="col-xs-6">
+                                    @{{person.stockin_analog}}
+                                </span>
+                            </span>
+                            <br>
+                            <span class="col-xs-12 row">
+                                <span class="col-xs-6">
+                                    Stock In Date:
+                                </span>
+                                <span class="col-xs-6">
+                                    @{{person.stockin_date}}
+                                </span>
+                            </span>
+                            <br>
+                            <span class="col-xs-12 row">
+                                <span class="col-xs-6">
+                                    Collection Analog:
+                                </span>
+                                <span class="col-xs-6">
+                                    @{{person.collection_analog}}
+                                </span>
+                            </span>
+                            <br>
+                            <span class="col-xs-12 row">
+                                <span class="col-xs-6">
+                                    Collection Date:
+                                </span>
+                                <span class="col-xs-6">
+                                    @{{person.collection_date}}
+                                </span>
+                            </span>
+                            <br>
+                            <span class="col-xs-12 row">
+                                <span class="col-xs-6">
+                                    Analog Diff:
+                                </span>
+                                <span class="col-xs-6">
+                                    <strong>
+                                        @{{person.difference_analog}}
+                                    </strong>
+                                </span>
+                            </span>
                         </td>
                     </tr>
                     <tr ng-if="!alldata || alldata.length == 0">

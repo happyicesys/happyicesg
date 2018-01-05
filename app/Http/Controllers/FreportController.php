@@ -119,9 +119,9 @@ class FreportController extends Controller
         $people = $people->where('people.active', 'Yes');
 
         if($pageNum == 'All'){
-            $people = $people->orderBy('people.cust_id', 'asc')->get();
+            $people = $people->orderBy('difference_analog', 'desc')->get();
         }else{
-            $people = $people->orderBy('people.cust_id', 'asc')->paginate($pageNum);
+            $people = $people->orderBy('difference_analog', 'desc')->paginate($pageNum);
         }
 
         $data = [
