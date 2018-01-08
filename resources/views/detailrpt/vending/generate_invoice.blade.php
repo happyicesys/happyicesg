@@ -18,10 +18,10 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-4 col-sm-6 col-xs-12" ng-show="!search.begin_date && !search.end_date">
             <div class="form-group">
                 {!! Form::label('current_month', 'Month', ['class'=>'control-label search-title']) !!}
-                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
+                <select class="select form-control" name="current_month" ng-model="search.current_month" ng-init="search.current_month = getPreviousMonthYear()" ng-change="searchDB()">
                     <option value="">All</option>
                     @foreach($month_options as $key => $value)
                         <option value="{{$key}}" selected="{{Carbon\Carbon::today()->subMonth()->month.'-'.Carbon\Carbon::today()->subMonth()->year ? 'selected' : ''}}">{{$value}}</option>
@@ -146,13 +146,51 @@
             </div>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+            {!! Form::label('begin_date', 'Begin Date', ['class'=>'control-label search-title']) !!}
+            <div class="input-group">
+                <datepicker>
+                    <input
+                        name = "begin_date"
+                        type = "text"
+                        class = "form-control input-sm"
+                        placeholder = "Begin Date"
+                        ng-model = "search.begin_date"
+                        ng-change = "beginDateChanged(search.begin_date)"
+                    />
+                </datepicker>
+                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('begin_date', search.begin_date)"></span>
+                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('begin_date', search.begin_date)"></span>
+            </div>
+        </div>
+        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+            {!! Form::label('end_date', 'End Date', ['class'=>'control-label search-title']) !!}
+            <div class="input-group">
+                <datepicker>
+                    <input
+                        name = "end_date"
+                        type = "text"
+                        class = "form-control input-sm"
+                        placeholder = "End Date"
+                        ng-model = "search.end_date"
+                        ng-change = "endDateChanged(search.end_date)"
+                    />
+                </datepicker>
+                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('end_date', search.end_date)"></span>
+                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('end_date', search.end_date)"></span>
+            </div>
+        </div>
+        <small>* For analysis purpose only, cannot be used to batch generate</small>
+    </div>
 </div>
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <div class="row">
             <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-            <button type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
+            <button ng-disabled="search.begin_date || search.end_date" title="@{{(search.begin_date || search.end_date) ? 'Please clear the dates to enable batch generate': ''}}" type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
             <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
         </div>
         <div class="row" style="padding-top: 10px;">

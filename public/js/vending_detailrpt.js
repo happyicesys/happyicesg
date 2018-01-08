@@ -19,7 +19,9 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.search = {
             profile_id: '',
-            current_month: moment().month() + '-' + moment().year(),
+            current_month: '',
+            begin_date: '',
+            end_date: '',
             cust_id: '',
             id_prefix: '',
             company: '',
@@ -95,6 +97,41 @@ var app = angular.module('app', [
                     return 'yellow';
                 }
             }
+        }
+
+        // retrieve previous month year for the filter
+        $scope.getPreviousMonthYear = function() {
+            var previousMonth = moment().month();
+            var currentYear = moment().year();
+            if(previousMonth == 0) {
+                currentYear = moment().subtract(1, 'year').year();
+                previousMonth = 12;
+            }
+            return previousMonth +'-'+ currentYear;
+        }
+
+        $scope.beginDateChanged = function(date){
+            if(date){
+                $scope.search.begin_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.endDateChanged = function(date){
+            if(date){
+                $scope.search.end_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            $scope.searchDB();
+        }
+
+        $scope.onPrevSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
+        }
+
+        $scope.onNextSingleClicked = function(scope_name, date) {
+            $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.searchDB();
         }
 
         // retrieve page w/wo search

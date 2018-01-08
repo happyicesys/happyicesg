@@ -240,8 +240,21 @@ class VendingController extends Controller
     private function getGenerateVendingInvoicePerson()
     {
         // indicate the month and year
-        $this_month = Carbon::createFromFormat('m-Y', request('current_month'));
-        $last_month = Carbon::createFromFormat('m-Y', request('current_month'))->subMonth();
+        if(request('begin_date') or request('end_date')) {
+                $begin_date = request('begin_date');
+                $end_date = request('end_date');
+            $this_month_start = $begin_date;
+            $this_month_end = $end_date;
+            $last_month_start = Carbon::parse($begin_date)->subMonth()->toDateString();
+            $last_month_end = Carbon::parse($end_date)->subMonth()->toDateString();
+        }else {
+            $current_month = Carbon::createFromFormat('m-Y', request('current_month'));
+            $last_month = Carbon::createFromFormat('m-Y', request('current_month'))->subMonth();
+            $this_month_start = $current_month->startOfMonth()->toDateString();
+            $this_month_end = $current_month->endOfMonth()->toDateString();
+            $last_month_start = $last_month->startOfMonth()->toDateString();
+            $last_month_end = $last_month->endOfMonth()->toDateString();
+        }
 
         if(request()->isMethod('get')) {
             $status = 'Delivered';
@@ -265,7 +278,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)<'".$this_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<'".$this_month_start."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_start");
@@ -276,8 +289,8 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
-                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_first");
@@ -288,7 +301,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_end");
@@ -299,7 +312,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)<'".$last_month->startOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<'".$last_month_start."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_start");
@@ -310,8 +323,8 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)>='".$last_month->startOfMonth()->toDateString()."'
-                                AND DATE(transactions.delivery_date)<='".$last_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>='".$last_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$last_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_first");
@@ -322,7 +335,7 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND transactions.is_required_analog=1
-                                AND DATE(transactions.delivery_date)<='".$last_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)<='".$last_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_lastmonth_end");
@@ -335,8 +348,8 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND items.product_id='051b'
-                                AND DATE(transactions.delivery_date)>= (SELECT x.delivery_date FROM transactions x WHERE DATE(x.delivery_date)<'".$this_month->startOfMonth()->toDateString()."' ORDER BY x.delivery_date DESC LIMIT 1)
-                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>= (SELECT x.delivery_date FROM transactions x WHERE DATE(x.delivery_date)<'".$this_month_start."' ORDER BY x.delivery_date DESC LIMIT 1)
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) melted");
@@ -349,8 +362,8 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND items.product_id='051'
-                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
-                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 AND deals.amount > 0
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
@@ -361,8 +374,8 @@ class VendingController extends Controller
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
-                                AND DATE(transactions.delivery_date)>='".$this_month->startOfMonth()->toDateString()."'
-                                AND DATE(transactions.delivery_date)<='".$this_month->endOfMonth()->toDateString()."'
+                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) sales_count");

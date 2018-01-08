@@ -373,9 +373,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                @if($person->is_vending or $person->is_dvm)
                                 <td class="col-xs-1 text-right">
                                     {{$total_pieces}}
                                 </td>
+                                @endif
                                 <td class="col-xs-2 text-right">
                                     {{$totalqty}}
                                 </td>
@@ -425,9 +427,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                @if($person->is_vending or $person->is_dvm)
                                 <td class="col-xs-1 text-right">
                                     {{$total_pieces}}
                                 </td>
+                                @endif
                                 <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>
@@ -441,9 +445,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
+                                @if($person->is_vending or $person->is_dvm)
                                 <td class="col-xs-1 text-right">
                                     {{$total_pieces}}
                                 </td>
+                                @endif
                                 <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>
