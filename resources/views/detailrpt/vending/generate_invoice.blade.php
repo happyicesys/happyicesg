@@ -182,7 +182,10 @@
                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('end_date', search.end_date)"></span>
             </div>
         </div>
-        <small>* For analysis purpose only, cannot be used to batch generate</small>
+        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+            <small>* For analysis purpose only, cannot be used to batch generate</small> <br>
+            <button class="btn btn-default" ng-click="clearDates($event)">Clear Dates</button>
+        </div>
     </div>
 </div>
 
@@ -219,10 +222,26 @@
         </div>
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Avg # Ice Cream/ machine:
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totalCount ? total_sales/totalCount : 0.00 | currency:"":0}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                 Total Sales ($):
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_sales_figure ? total_sales_figure : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Avg Sales ($)/ machine:
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totalCount ? total_sales_figure/totalCount : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">

@@ -114,12 +114,24 @@ var app = angular.module('app', [
             if(date){
                 $scope.search.begin_date = moment(new Date(date)).format('YYYY-MM-DD');
             }
+            if(!$scope.search.end_date) {
+                $scope.search.end_date = moment(new Date(date)).add(1, 'month').format('YYYY-MM-DD');
+            }
+            if(moment(new Date($scope.search.begin_date)) > moment(new Date($scope.search.end_date))) {
+                $scope.search.end_date = moment(new Date($scope.search.begin_date)).add(1, 'month').format('YYYY-MM-DD');
+            }
             $scope.searchDB();
         }
 
         $scope.endDateChanged = function(date){
             if(date){
                 $scope.search.end_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            if(!$scope.search.begin_date) {
+                $scope.search.begin_date = moment(new Date(date)).subtract(1, 'month').format('YYYY-MM-DD');
+            }
+            if(moment(new Date($scope.search.end_date)) < moment(new Date($scope.search.begin_date))) {
+                $scope.search.begin_date = moment(new Date($scope.search.end_date)).subtract(1, 'month').format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
@@ -132,6 +144,13 @@ var app = angular.module('app', [
         $scope.onNextSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
             $scope.searchDB();
+        }
+
+        // clear begin and end dates
+        $scope.clearDates = function(event) {
+            event.preventDefault();
+            $scope.search.begin_date = '';
+            $scope.search.end_date = '';
         }
 
         // retrieve page w/wo search
