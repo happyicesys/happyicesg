@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Transaction;
 use App\Ftransaction;
 use App\Person;
+use App\Variance;
 use Carbon\Carbon;
 use App\HasProfileAccess;
 use DB;
@@ -131,6 +132,84 @@ class FreportController extends Controller
         return $data;
     }
 
+    // adding variance entry()
+    public function submitVarianceEntry()
+    {
+        $person_id = request('person_id');
+        $datein = request('datein');
+        $pieces = request('pieces');
+        $reason = request('reason');
+
+        $variances = Variance::create([
+            'datein' => $datein,
+            'pieces' => $pieces,
+            'reason' => $reason,
+            'person_id' => $person_id,
+            'updated_by' => auth()->user()->id,
+        ]);
+    }
+
+    // remove variance (int id)
+    public function destroyVarianceApi($id)
+    {
+        $variance = Variance::findOrFail($id);
+        $variance->delete();
+    }
+
+    // retrieve variances api()
+    public function getVariancesIndex()
+    {
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        $variances = DB::table('variances')
+                        ->leftJoin('people', 'variances.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin('users AS update_person', 'update_person.id', '=', 'variances.updated_by')
+                        ->select(
+                                    'people.cust_id', 'people.company', 'people.name',
+                                    DB::raw('DATE(variances.datein) AS datein'),
+                                    'variances.pieces', 'variances.reason',
+                                    'update_person.name AS updated_by'
+                                );
+
+        // reading whether search input is filled
+        if(request('cust_id') or request('company') or request('datein_from') or request('datein_to')){
+            $variances = $this->searchDBFilter($variances);
+        }
+
+        // add user profile filters
+        $variances = $this->filterUserDbProfile($variances);
+
+        // filter off franchisee
+        if(auth()->user()->hasRole('franchisee')) {
+            $variances = $variances->where('variances.franchisee_id', auth()->user()->id);
+        }
+
+        $totals = $this->calTotalPieces($variances);
+
+        if(request('sortName')){
+            $variances = $variances->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if($pageNum == 'All'){
+            $variances = $variances->latest('variances.datein')->get();
+        }else{
+            $variances = $variances->latest('variances.datein')->paginate($pageNum);
+        }
+
+        $data = [
+            'totals' => $totals,
+            'variances' => $variances,
+        ];
+
+        if(request('export_excel')) {
+            $this->exportFtransactionIndexExcel($data);
+        }
+
+        return $data;
+    }
+
     // filter for transactions($query)
     private function filterInvoiceBreakdownTransaction($transactions)
     {
@@ -204,5 +283,49 @@ class FreportController extends Controller
         }
 
         return $people;
+    }
+
+    // pass value into filter search for DB (collection) [query]
+    private function searchDBFilter($variances)
+    {
+        if(request('cust_id')){
+            $variances = $variances->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
+        }
+        if(request('company')){
+            $com = request('company');
+            $variances = $variances->where(function($query) use ($com){
+                $query->where('people.company', 'LIKE', '%'.$com.'%')
+                        ->orWhere(function ($query) use ($com){
+                            $query->where('people.cust_id', 'LIKE', 'D%')
+                                    ->where('people.name', 'LIKE', '%'.$com.'%');
+                        });
+                });
+        }
+        if(request('datein_from') === request('datein_to')){
+            if(request('datein_from') != '' and request('datein_to') != ''){
+                $variances = $variances->whereDate('variances.datein', '=', request('datein_to'));
+            }
+        }else{
+            if(request('datein_from')){
+                $variances = $variances->whereDate('variances.datein', '>=', request('datein_from'));
+            }
+            if(request('datein_to')){
+                $variances = $variances->whereDate('variances.datein', '<=', request('datein_to'));
+            }
+        }
+        if(request('sortName')){
+            $variances = $variances->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+        return $variances;
+    }
+
+    // calculate total pieces of ice cream for variances(Collection $variances)
+    private function calTotalPieces($query)
+    {
+        $total_pieces = 0;
+        $query1 = clone $query;
+        $total_pieces = $query1->sum(DB::raw('ROUND(variances.pieces, 2)'));
+
+        return $total_pieces;
     }
 }

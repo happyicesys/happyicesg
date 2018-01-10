@@ -3,6 +3,7 @@
 @inject('items', 'App\Item')
 @inject('transactions', 'App\Transaction')
 @inject('ftransactions', 'App\Ftransaction')
+@inject('variances', 'App\Variance')
 
 <div class="panel panel-info">
     <div class="panel-heading">
@@ -361,6 +362,14 @@
                                         N/A
                                     @endif
                                 </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                Difference Stock In & Analog
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                                <strong>{{number_format($total_pieces - ($transactions::isAnalog()->whereIn('id', $transactionsId)->latest()->first()->analog_clock - $transactions::isAnalog()->whereIn('id', $transactionsId)->oldest()->first()->analog_clock), 2)}}</strong>
                             </div>
                         </div>
                     </div>

@@ -16,6 +16,10 @@ Route::get('/admin', function () {
 
 Route::get('/shop', 'ShopController@getShopIndex');
 
+Route::post('/api/variances', 'FreportController@getVariancesIndex');
+Route::post('/api/variances/submitEntry', 'FreportController@submitVarianceEntry');
+Route::delete('/api/variances/{id}/delete', 'FreportController@destroyVarianceApi');
+
 Route::post('/api/franchisee/people', 'FreportController@getFranchiseePeopleApi');
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 

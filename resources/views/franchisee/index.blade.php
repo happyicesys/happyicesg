@@ -360,7 +360,7 @@
                     <div>
                         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                     </div>
-        </div>
+            </div>
     </div>
 
     <script src="/js/franchisee_index.js"></script>

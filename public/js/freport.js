@@ -1,8 +1,10 @@
 var app = angular.module('app', [
-                            'ui.bootstrap',
-                            'angularUtils.directives.dirPagination',
-                            'ae-datetimepicker'
-                            ]);
+                                    'angularUtils.directives.dirPagination',
+                                    'ui.select',
+                                    'ngSanitize',
+                                    '720kb.datepicker',
+                                    'ae-datetimepicker'
+                                ]);
 
 function analogDifferenceController($scope, $http){
     // init the variables
@@ -149,25 +151,89 @@ function varianceManagementController($scope, $http){
         });
     }
 
+    $scope.onPrevDateClicked = function() {
+        $scope.search.datein_from = moment(new Date($scope.search.datein_from)).subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.search.datein_to = moment(new Date($scope.search.datein_to)).subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onTodayDateClicked = function() {
+        $scope.search.datein_from = moment().format('YYYY-MM-DD');
+        $scope.search.datein_to = moment().format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onNextDateClicked = function() {
+        $scope.search.datein_from = moment(new Date($scope.search.datein_from)).add(1, 'days').format('YYYY-MM-DD');
+        $scope.search.datein_to = moment(new Date($scope.search.datein_to)).add(1, 'days').format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onPrevSingleClicked = function(scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onNextSingleClicked = function(scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.isFormValid = function() {
+        let invalid = true;
+        if($scope.form.person_id && $scope.form.datein && $scope.form.pieces && $scope.form.reason) {
+            invalid = false;
+        }
+        return invalid;
+    }
+
+    $scope.addEntry = function() {
+        let inputData = {
+            'person_id': $scope.form.person_id,
+            'datein': moment(new Date($scope.form.datein)).format('YYYY-MM-DD'),
+            'pieces': $scope.form.pieces,
+            'reason': $scope.form.reason,
+        }
+        $http.post('/api/variances/submitEntry', inputData). success(function(data) {
+            getPage(1);
+
+            $scope.form = {
+                datein: '',
+                pieces: '',
+                reason: '',
+            }
+
+            $('.select').val('').trigger('change')
+        }).error(function(data, status) {
+            $scope.formErrors = data;
+        });
+    }
+
+    $scope.removeEntry = function(id) {
+        $http.delete('/api/variances/' + id + '/delete').success(function(data) {
+            getPage(1);
+        });
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first){
         $scope.spinner = true;
-        $http.post('/api/franchisee/people?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-            if(data.people.data){
-                $scope.alldata = data.people.data;
-                $scope.totalCount = data.people.total;
-                $scope.currentPage = data.people.current_page;
-                $scope.indexFrom = data.people.from;
-                $scope.indexTo = data.people.to;
+        $http.post('/api/variances?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            if(data.variances.data){
+                $scope.alldata = data.variances.data;
+                $scope.totalCount = data.variances.total;
+                $scope.currentPage = data.variances.current_page;
+                $scope.indexFrom = data.variances.from;
+                $scope.indexTo = data.variances.to;
             }else{
-                $scope.alldata = data.people;
-                $scope.totalCount = data.people.length;
+                $scope.alldata = data.variances;
+                $scope.totalCount = data.variances.length;
                 $scope.currentPage = 1;
                 $scope.indexFrom = 1;
-                $scope.indexTo = data.people.length;
+                $scope.indexTo = data.variances.length;
             }
             // get total count
-            $scope.All = data.people.length;
+            $scope.All = data.variances.length;
 
             // return total amount
             $scope.spinner = false;
