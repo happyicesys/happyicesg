@@ -419,25 +419,93 @@ class VendingController extends Controller
                                     DB::raw('(
                                                 CASE
                                                 WHEN people.is_vending
-                                                THEN ((FLOOR((analog_end.analog_clock - (
-                                                    CASE
-                                                    WHEN analog_start.analog_clock
-                                                    THEN analog_start.analog_clock
-                                                    ELSE analog_first.analog_clock
-                                                    END)) -
-                                                    ((analog_end.analog_clock - (
+                                                THEN (COALESCE((FLOOR((analog_end.analog_clock - (CASE
+                                                        WHEN analog_start.analog_clock
+                                                        THEN analog_start.analog_clock
+                                                        ELSE analog_first.analog_clock
+                                                        END)) - ((analog_end.analog_clock - (
                                                         CASE
                                                         WHEN analog_start.analog_clock
                                                         THEN analog_start.analog_clock
                                                         ELSE analog_first.analog_clock
                                                         END)) *
-                                                        people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities + people.vending_monthly_rental)
+                                                        people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
                                                 ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
                                                 END) AS subtotal_payout'),
-                                    DB::raw('(CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END) -
-                                                (CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities + people.vending_monthly_rental) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END) AS subtotal_gross_profit'),
-                                    DB::raw('((CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END) -
-                                                (CASE WHEN people.is_vending THEN ((FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) + people.vending_monthly_utilities + people.vending_monthly_rental) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental END))/ (CASE WHEN people.is_vending THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END) AS avg_selling_price'),
+                                    DB::raw('(CASE
+                                            WHEN people.is_vending
+                                            THEN FLOOR((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END))- (
+                                                CASE WHEN people.vending_clocker_adjustment
+                                                THEN ((analog_end.analog_clock - (
+                                                    CASE WHEN analog_start.analog_clock
+                                                    THEN analog_start.analog_clock
+                                                    ELSE analog_first.analog_clock
+                                                    END)) * people.vending_clocker_adjustment/ 100)
+                                                ELSE 0
+                                                END)) * people.vending_piece_price
+                                            ELSE vend_received.vend_received
+                                            END) -
+                                                (
+                                            CASE WHEN people.is_vending
+                                            THEN (COALESCE((FLOOR((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) - ((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
+                                            ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                            END) AS subtotal_gross_profit'),
+                                    DB::raw('((
+                                        CASE WHEN people.is_vending
+                                        THEN FLOOR((analog_end.analog_clock - (
+                                            CASE WHEN analog_start.analog_clock
+                                            THEN analog_start.analog_clock
+                                            ELSE analog_first.analog_clock
+                                            END))- (
+                                            CASE WHEN people.vending_clocker_adjustment
+                                            THEN ((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) * people.vending_clocker_adjustment/ 100)
+                                            ELSE 0
+                                            END)) * people.vending_piece_price
+                                        ELSE vend_received.vend_received END) - (
+                                            CASE WHEN people.is_vending
+                                            THEN (COALESCE((FLOOR((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) - ((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
+                                            ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                            END))/ (
+                                            CASE WHEN people.is_vending
+                                            THEN FLOOR((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END))- (
+                                                CASE WHEN people.vending_clocker_adjustment
+                                                THEN ((analog_end.analog_clock - (
+                                                    CASE WHEN analog_start.analog_clock
+                                                    THEN analog_start.analog_clock
+                                                    ELSE analog_first.analog_clock
+                                                    END)) * people.vending_clocker_adjustment/ 100)
+                                                ELSE 0
+                                                END))
+                                            ELSE sales_count.sales_count
+                                            END) AS avg_selling_price'),
                                     'melted.melted_amount AS melted_amount',
                                     'vend_received.vend_received AS vend_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
                                 );

@@ -190,7 +190,7 @@
 </div>
 
 <div class="row" style="padding-left: 15px;">
-    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+    <div class="col-md-6 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <div class="row">
             <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
             <button ng-disabled="search.begin_date || search.end_date" title="@{{(search.begin_date || search.end_date) ? 'Please clear the dates to enable batch generate': ''}}" type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
@@ -211,7 +211,33 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6 col-sm-12 col-xs-12 text-right">
+        <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                Machine Qty:
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totalCount ? totalCount : 0}}</strong>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                 Total Sales # Ice Cream:
@@ -244,6 +270,8 @@
                 <strong>@{{ totalCount ? total_sales_figure/totalCount : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                 Total Profit Sharing ($):
@@ -283,20 +311,6 @@
             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                 <strong>@{{ total_gross_profit ? total_gross_profit : 0.00 | currency: "": 2}}</strong>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12 text-right">
-        <div class="row">
-            <label for="display_num">Display</label>
-            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
-                <option ng-value="100">100</option>
-                <option ng-value="200">200</option>
-                <option ng-value="All">All</option>
-            </select>
-            <label for="display_num2" style="padding-right: 20px">per Page</label>
-        </div>
-        <div class="row">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
         </div>
     </div>
 </div>
