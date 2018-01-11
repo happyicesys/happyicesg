@@ -59,11 +59,32 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="col-md-6 col-sm-6 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
     </div>
 
+    <div class="col-md-6 col-sm-6 col-xs-12 text-right">
+        <div class="row">
+            <label for="display_num">Display</label>
+            <select ng-model="vendItemsPerPage" name="vendPageNum" ng-init="vendItemsPerPage='20'" ng-change="vendPageNumChanged()">
+                <option ng-value="20">20</option>
+                <option ng-value="50">50</option>
+                <option ng-value="100">100</option>
+                <option ng-value="200">200</option>
+                <option ng-value="All">All</option>
+            </select>
+            <label for="display_num2" style="padding-right: 20px">per Page</label>
+        </div>
+        <div class="row">
+            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{allVendData.length}} of @{{totalVendCount}} entries</label>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
+        <label class="control-label">
+            <u>Vend Cash</u>
+        </label>
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Total
@@ -90,22 +111,36 @@
         </div>
     </div>
 
-    <div class="col-md-4 col-sm-6 col-xs-12 text-right">
+    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
+        <label class="control-label">
+            <u>Payment</u>
+        </label>
         <div class="row">
-            <label for="display_num">Display</label>
-            <select ng-model="vendItemsPerPage" name="vendPageNum" ng-init="vendItemsPerPage='20'" ng-change="vendPageNumChanged()">
-                <option ng-value="20">20</option>
-                <option ng-value="50">50</option>
-                <option ng-value="100">100</option>
-                <option ng-value="200">200</option>
-                <option ng-value="All">All</option>
-            </select>
-            <label for="display_num2" style="padding-right: 20px">per Page</label>
+            <div class="col-md-5 col-xs-5">
+                Total:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
+            </div>
         </div>
         <div class="row">
-            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{allVendData.length}} of @{{totalVendCount}} entries</label>
+            <div class="col-md-5 col-xs-5">
+                Total Paid:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ total_paid ? total_paid : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-xs-5">
+                Total Owe:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ total_owe ? total_owe : 0.00 | currency: "": 2}}</strong>
+            </div>
         </div>
     </div>
+
 </div>
 
     <div class="table-responsive" id="exportableVend" style="padding-top:20px;">
