@@ -55,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         // Ecommerce
         view()->share('SHOP_TITLE', 'Shop');
         view()->share('ECOMMERCE_TITLE', 'Ecommerce');
+        view()->share('BOM_TITLE', 'BoM');
 
     }
 

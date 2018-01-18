@@ -45,6 +45,7 @@
                 $operation_access = false;
                 $dtd_access = false;
                 $franchisee_access = false;
+                $bom_access = false;
                 $ecommerce_access = false;
 
                 if(auth()->guest()) {
@@ -100,6 +101,7 @@
                         $operation_access = true;
                         $dtd_access = true;
                         $franchisee_access = true;
+                        $bom_access = true;
                         $ecommerce_access = true;
                     }
                 }
@@ -177,11 +179,16 @@
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
-                @if($ecommerce_access)
+                @if($bom_access)
+                    <li class="{{ strpos(Request::path(), 'bom') !== false ? 'active' : '' }}">
+                        <a href="/bom"><i class="fa fa-cogs "></i> {{ $BOM_TITLE }}</a>
+                    </li>
+                @endif
+{{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>
                     </li>
-                @endif
+                @endif --}}
             </ul>
             @endif
         </div>

@@ -13,6 +13,10 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::delete('/api/bom/category/{id}/delete', 'BomController@destroyCategoryApi');
+Route::post('/api/bom/category/create', 'BomController@createCategoryApi');
+Route::post('/api/bom/categories', 'BomController@getCategoriesApi');
+Route::get('/bom', 'BomController@index');
 
 Route::get('/shop', 'ShopController@getShopIndex');
 

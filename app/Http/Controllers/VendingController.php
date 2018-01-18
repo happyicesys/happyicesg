@@ -274,7 +274,9 @@ class VendingController extends Controller
         }
 
         $analog_start = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
-                                FROM transactions
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
@@ -285,7 +287,9 @@ class VendingController extends Controller
                                 ) analog_start");
 
         $analog_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, MIN(transactions.analog_clock) AS analog_clock, people.id AS person_id
-                                FROM transactions
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
@@ -295,6 +299,33 @@ class VendingController extends Controller
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
                                 ) analog_first");
+
+        $fvm_start = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051'
+                                AND DATE(transactions.delivery_date)<'".$this_month_start."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) fvm_start");
+
+        $fvm_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051'
+                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) fvm_first");
 
         $analog_end = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, MAX(transactions.analog_clock) AS analog_clock, people.id AS person_id
                                 FROM transactions
@@ -389,6 +420,8 @@ class VendingController extends Controller
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin($analog_start, 'people.id', '=', 'analog_start.person_id')
                         ->leftJoin($analog_first, 'people.id', '=', 'analog_first.person_id')
+                        ->leftJoin($fvm_start, 'people.id', '=', 'fvm_start.person_id')
+                        ->leftJoin($fvm_first, 'people.id', '=', 'fvm_first.person_id')
                         ->leftJoin($analog_end, 'people.id', '=', 'analog_end.person_id')
                         ->leftJoin($analog_lastmonth_start, 'people.id', '=', 'analog_lastmonth_start.person_id')
                         ->leftJoin($analog_lastmonth_first, 'people.id', '=', 'analog_lastmonth_first.person_id')
@@ -402,7 +435,7 @@ class VendingController extends Controller
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
-                                    DB::raw('CASE WHEN people.is_vending THEN (CASE WHEN analog_start.delivery_date THEN analog_start.delivery_date ELSE analog_first.delivery_date END) ELSE vend_received.min_delivery_date END AS begin_date'),
+                                    DB::raw('CASE WHEN people.is_vending THEN (CASE WHEN analog_start.delivery_date THEN analog_start.delivery_date ELSE analog_first.delivery_date END) ELSE (CASE WHEN fvm_start.delivery_date THEN fvm_start.delivery_date ELSE fvm_first.delivery_date END) END AS begin_date'),
                                     DB::raw('(CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END) AS begin_analog'),
                                     DB::raw('CASE WHEN people.is_vending THEN analog_end.delivery_date ELSE vend_received.max_delivery_date END AS end_date'),
                                     'analog_end.analog_clock AS end_analog',
