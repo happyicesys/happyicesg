@@ -425,7 +425,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$person->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="3"></td>
+                                <td colspan="2"></td>
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
