@@ -399,14 +399,17 @@ class RptController extends Controller
         $nonGst_amount = 0;
         $gst_inclusive = 0;
         $gst_exclusive = 0;
+        $delivery_fee = 0;
         $query1 = clone $query;
         $query2 = clone $query;
         $query3 = clone $query;
+        $query4 = clone $query;
 
         $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND((transactions.total), 2)'));
         $gst_inclusive = $query2->where('profiles.gst', 1)->where('people.is_gst_inclusive', 1)->sum(DB::raw('ROUND(transactions.total, 2)'));
         $gst_exclusive = $query3->where('profiles.gst', 1)->where('people.is_gst_inclusive', 0)->sum(DB::raw('ROUND((transactions.total * (100+people.gst_rate)/100), 2)'));
-        $total_amount = $nonGst_amount + $gst_inclusive + $gst_exclusive;
+        $delivery_fee = $query4->sum(DB::raw('ROUND((transactions.delivery_fee), 2)'));
+        $total_amount = $nonGst_amount + $gst_inclusive + $gst_exclusive + $delivery_fee;
         return $total_amount;
     }
 

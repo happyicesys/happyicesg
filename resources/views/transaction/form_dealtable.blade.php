@@ -119,7 +119,7 @@
                             <td colspan="3" class="text-right">
                                 <strong>Delivery Fee</strong>
                             </td>
-                            <td colspan="2"></td>
+                            <td colspan="3"></td>
                             <td class="col-md-1 text-right">
                                 <strong>@{{delivery | currency: ""}}</strong>
                             </td>

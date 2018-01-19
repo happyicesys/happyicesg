@@ -355,6 +355,12 @@
                             }else {
                                 $total = number_format($totalprice, 2);
                             }
+
+                            if($transaction->delivery_fee) {
+                                $total += $transaction->delivery_fee;
+                            }
+
+                            $total = number_format($total, 2);
                         @endphp
 
                         @if($transaction->delivery_fee != 0)
@@ -362,6 +368,7 @@
                             <td colspan="2" class="text-right">
                                 <strong>Delivery Fee</strong>
                             </td>
+                            <td colspan="2"></td>
                             <td class="text-right">
                                 {{ number_format(($transaction->delivery_fee), 2)}}
                             </td>
