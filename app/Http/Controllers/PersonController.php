@@ -549,8 +549,11 @@ class PersonController extends Controller
         if($cust_id){
             $people = $people->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
         }
-        if($custcategory){
-            $people = $people->where('custcategories.id', $custcategory);
+        if($custcategory) {
+            if(count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+            $people = $people->whereIn('custcategories.id', $custcategory);
         }
         if($company){
             $people = $people->where('people.company', 'LIKE', '%'.$company.'%');
