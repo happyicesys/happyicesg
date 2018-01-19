@@ -416,7 +416,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>
                                 </td>
-                                <td colspan="3"></td>
+                                <td colspan="2"></td>
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
