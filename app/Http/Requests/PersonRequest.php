@@ -33,6 +33,7 @@ class PersonRequest extends Request
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'postcode' => 'numeric',
             'cost_rate' => 'numeric',
+            'serial_number' => 'nullable|unique:people,serial_number,'.$person
         ];
     }
 
@@ -47,6 +48,7 @@ class PersonRequest extends Request
             'alt_contact.regex' => 'The Alt contact number only accepts 0-9, +, -',
             'postcode.numeric' => 'The postcode must be in numbers',
             'cost_rate.numeric' => 'Cost rate must be in numbers',
+            'serial_number.unique' => 'The Serial Number has been taken',
         ];
     }
 }

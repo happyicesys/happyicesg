@@ -20,4 +20,9 @@ class Bomcomponent extends Model
     {
     	return $this->hasMany('App\Bompart');
     }
+
+    public function updater()
+    {
+        return $this->belongsTo('App\User', 'updated_by');
+    }
 }

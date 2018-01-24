@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bompart extends Model
 {
     protected $fillable = [
-    	'part_id', 'name', 'remark', 'bomcomponent_id'
+    	'part_id', 'name', 'remark', 'bomcomponent_id', 'thumbnail_url'
     ];
 
     // relationships

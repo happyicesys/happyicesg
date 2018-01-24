@@ -40,7 +40,7 @@
                                                     ]) !!}
                 </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                    {!! Form::label('name', 'Cateogy Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('name', 'Category Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('name', null,
                                                 [
                                                     'class'=>'form-control input-sm',

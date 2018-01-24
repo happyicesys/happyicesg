@@ -79,7 +79,152 @@ class BomController extends Controller
     public function destroyCategoryApi($id)
     {
         $bomcategory = Bomcategory::findOrFail($id);
+        // find out the descendant and delete
+        $bomcomponents = Bomcomponent::where('bomcategory_id', $bomcategory->id)->get();
+        if(count($bomcomponents) > 0) {
+            foreach($bomcomponents as $bomcomponent) {
+                $bomparts = Bompart::where('bomcomponent_id', $bomcomponent->id)->get();
+                if(count($bomparts) > 0) {
+                    foreach($bomparts as $bompart) {
+                        $bompart->delete();
+                    }
+                }
+                $bomcomponent->delete();
+            }
+        }
         $bomcategory->delete();
+    }
+
+    // creating new bom components entries(int category_id)
+    public function createComponentApi($category_id)
+    {
+        $components = request('components');
+
+        foreach($components as $component) {
+            if($component['name']) {
+                Bomcomponent::create([
+                    'component_id' => $this->getBomcomponentIncrement(),
+                    'name' => $component['name'],
+                    'remark' => $component['remark'],
+                    'bomcategory_id' => $category_id,
+                    'updated_by' => auth()->user()->id,
+                ]);
+            }
+        }
+    }
+
+    // retrieve category and bomcomponents index api()
+    public function getCategoryComponentsApi()
+    {
+        $components = Bomcategory::with(['bomcomponents', 'bomcomponents.updater'])
+                                    ->has('bomcomponents');
+
+        // reading whether search input is filled
+        if(request('category_id') or request('category_name') or request('component_id') or request('component_name')){
+            $components = $this->searchComponentDBFilter($components);
+        }
+
+        if(request('sortName')){
+            $components = $components->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $components = $components->latest();
+        }
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if($pageNum == 'All'){
+            $components = $components->get();
+        }else{
+            $components = $components->paginate($pageNum);
+        }
+
+        $data = [
+            'components' => $components
+        ];
+
+        return $data;
+    }
+
+    // remove individual category entry(int id)
+    public function destroyComponentApi($id)
+    {
+        $bomcomponent = Bomcomponent::findOrFail($id);
+        $bomparts = Bompart::where('bomcomponent_id', $bomcomponent->id)->get();
+        if(count($bomparts) > 0) {
+            foreach($bomparts as $bompart) {
+                $bompart->delete();
+            }
+        }
+        $bomcomponent->delete();
+    }
+
+    // retrieve categories by given category id(int category_id)
+    public function getComponentsByCategory($category_id)
+    {
+        $bomcomponents = Bomcomponent::where('bomcategory_id', $category_id)->get();
+        return $bomcomponents;
+    }
+
+    // creating new bom parts entries(int component_id)
+    public function createPartApi($component_id)
+    {
+        $parts = request('parts');
+        // die(var_dump(request('parts')));
+        foreach($parts as $part) {
+            if($part['name']) {
+                Bompart::create([
+                    'part_id' => $this->getBompartIncrement(),
+                    'name' => $part['name'],
+                    'remark' => $part['remark'],
+                    'bomcomponent_id' => $component_id,
+                    'updated_by' => auth()->user()->id,
+                ]);
+            }
+        }
+    }
+
+    // retrieve parts api ()
+    public function getPartsApi()
+    {
+        $bomparts = DB::table('bomparts')
+                            ->leftJoin('users', 'users.id', '=', 'bomparts.updated_by')
+                            ->leftJoin('bomcomponents', 'bomcomponents.id', '=', 'bomparts.bomcomponent_id')
+                            ->leftJoin('bomcategories', 'bomcategories.id', '=', 'bomcomponents.bomcategory_id')
+                            ->select(
+                                'bomparts.id', 'bomparts.part_id', 'bomparts.name AS bompart_name', 'bomparts.remark AS bompart_remark', 'bomparts.thumbnail_url',
+                                'bomcomponents.component_id', 'bomcomponents.name AS bomcomponent_name', 'bomcomponents.remark AS bomcomponent_remark',
+                                'bomcategories.category_id', 'bomcategories.name AS bomcategory_name', 'bomcategories.remark AS bomcategory_remark',
+                                'users.name AS updater'
+                            );
+        // reading whether search input is filled
+        if(request('category_id') or request('category_name') or request('component_id') or request('component_name') or request('part_id') or request('part_name')){
+            $bomparts = $this->searchPartDBFilter($bomparts);
+        }
+
+        if(request('sortName')){
+            $bomparts = $bomparts->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $bomparts = $bomparts->latest('bomparts.created_at');
+        }
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if($pageNum == 'All'){
+            $bomparts = $bomparts->get();
+        }else{
+            $bomparts = $bomparts->paginate($pageNum);
+        }
+
+        $data = [
+            'bomparts' => $bomparts
+        ];
+
+        return $data;
+    }
+
+    // remove individual part entry(int id)
+    public function destroyPartApi($id)
+    {
+        $bompart = Bompart::findOrFail($id);
+        $bompart->delete();
     }
 
     // pass value into filter search for DB (collection) [query]
@@ -95,5 +240,63 @@ class BomController extends Controller
             $bomcategories = $bomcategories->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $bomcategories;
+    }
+
+    // pass value into filter search for components DB (collection) [query]
+    private function searchComponentDBFilter($bomcomponents)
+    {
+        $category_id = request('category_id');
+        $category_name = request('category_name');
+        $component_id = request('component_id');
+        $component_name = request('component_name');
+
+        if($category_id){
+            $bomcomponents = $bomcomponents->where('category_id', 'LIKE', '%'.$category_id.'%');
+        }
+        if($category_name){
+            $bomcomponents = $bomcomponents->where('name', 'LIKE', '%'.$category_name.'%');
+        }
+        if($component_id){
+            $bomcomponents = $bomcomponents->whereHas('bomcomponents', function($query) use ($component_id){
+                $query->where('component_id', 'LIKE', '%'.$component_id.'%');
+            });
+        }
+        if($component_name){
+            $bomcomponents = $bomcomponents->whereHas('bomcomponents', function($query) use ($component_name){
+                $query->where('name', 'LIKE', '%'.$component_name.'%');
+            });
+        }
+        return $bomcomponents;
+    }
+
+    // pass value into filter search for parts DB (collection) [query]
+    private function searchPartDBFilter($bomparts)
+    {
+        $category_id = request('category_id');
+        $category_name = request('category_name');
+        $component_id = request('component_id');
+        $component_name = request('component_name');
+        $part_id = request('part_id');
+        $part_name = request('part_name');
+
+        if($category_id){
+            $bomparts = $bomparts->where('bomcategories.category_id', 'LIKE', '%'.$category_id.'%');
+        }
+        if($category_name){
+            $bomparts = $bomparts->where('bomcategories.name', 'LIKE', '%'.$category_name.'%');
+        }
+        if($component_id){
+            $bomparts = $bomparts->where('bomcomponents.component_id', 'LIKE', '%'.$component_id.'%');
+        }
+        if($component_name){
+            $bomparts = $bomparts->where('bomcomponents.name', 'LIKE', '%'.$component_name.'%');
+        }
+        if($part_id){
+            $bomparts = $bomparts->where('bomparts.part_id', 'LIKE', '%'.$part_id.'%');
+        }
+        if($part_name){
+            $bomparts = $bomparts->where('bomparts.name', 'LIKE', '%'.$part_name.'%');
+        }
+        return $bomparts;
     }
 }

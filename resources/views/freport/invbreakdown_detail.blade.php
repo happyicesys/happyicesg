@@ -94,7 +94,7 @@
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)')
                             );
                 $gross_earn = $revenue - $costs;
-                if($revenue) {
+                if($revenue and $revenue != 0) {
                     $gross_earn_percent = $gross_earn/$revenue * 100;
                 }
             @endphp

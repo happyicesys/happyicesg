@@ -13,6 +13,13 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::delete('/api/bom/part/{id}/delete', 'BomController@destroyPartApi');
+Route::post('/api/bom/parts', 'BomController@getPartsApi');
+Route::post('/api/bom/parts/batchcreate/{component_id}', 'BomController@createPartApi');
+Route::get('/api/bom/components/category/{category_id}', 'BomController@getComponentsByCategory');
+Route::delete('/api/bom/component/{id}/delete', 'BomController@destroyComponentApi');
+Route::post('/api/bom/category/components', 'BomController@getCategoryComponentsApi');
+Route::post('/api/bom/component/batchcreate/{category_id}', 'BomController@createComponentApi');
 Route::delete('/api/bom/category/{id}/delete', 'BomController@destroyCategoryApi');
 Route::post('/api/bom/category/create', 'BomController@createCategoryApi');
 Route::post('/api/bom/categories', 'BomController@getCategoriesApi');
