@@ -220,6 +220,16 @@ class PersonController extends Controller
 
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
         $person->is_dvm = $request->has('is_dvm')? 1 : 0;
+
+        // serial number validation for vending
+        if($person->serial_number) {
+            $this->validate($request, [
+                'serial_number' => 'unique:people,serial_number,'.$person->id
+            ], [
+                'serial_number.unique' => 'The Serial Number has been taken'
+            ]);
+        }
+
         // default setting is dvm based on custcategory
         if($person->custcategory) {
             if($person->custcategory->name == 'V-Dir') {
