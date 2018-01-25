@@ -208,12 +208,16 @@ class PersonController extends Controller
             $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive')? 1 : 0));
         }
 
-        if($request->input('active')){
-            if($person->active == 'Yes'){
-                $request->merge(array('active' => 'No'));
-            }else{
+        switch($request->active) {
+            case 'Activate':
                 $request->merge(array('active' => 'Yes'));
-            }
+                break;
+            case 'Deactivate':
+                $request->merge(array('active' => 'No'));
+                break;
+            case 'Pending':
+                $request->merge(array('active' => 'Pending'));
+                break;
         }
         $input = $request->all();
         $person->update($input);

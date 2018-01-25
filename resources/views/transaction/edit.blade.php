@@ -150,11 +150,11 @@
                     </div>
 
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee'))
+                        @if(!auth()->user()->hasRole('franchisee') and $transaction->person->active != 'Pending')
                         {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                         {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
+                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction" class="btn btn-default">Cancel</a>
@@ -174,10 +174,10 @@
                         @endcan
                     </div>
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee'))
+                        @if(!auth()->user()->hasRole('franchisee') and $transaction->person->active != 'Pending')
                         {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
-                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
+                        {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction" class="btn btn-default">Cancel</a>

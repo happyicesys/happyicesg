@@ -21,11 +21,21 @@
                     <span class="control-label">
                         <h3 class="panel-title"><strong>Profile for {{$person->cust_id}} : {{$person->company}} </strong>
                             -
-                        @if($person->active == 'Yes')
-                            [Active]
-                        @else
-                            [Inactive]
-                        @endif
+                        @php
+                            $statusStr = '';
+                            switch($person->active) {
+                                case 'Yes':
+                                    $statusStr = '[Active]';
+                                    break;
+                                case 'No':
+                                    $statusStr = '[Inactive]';
+                                    break;
+                                case 'Pending':
+                                    $statusStr = '[Pending]';
+                                    break;
+                            }
+                        @endphp
+                        {{$statusStr}}
                     </span>
                     </div>
                 </div>
@@ -70,9 +80,14 @@
                         <div class="pull-left">
                             @cannot('transaction_view')
                                 @if($person->active == 'Yes')
+                                    {!! Form::submit('Pending', ['name'=>'active', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
+                                    {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
+                                @elseif($person->active == 'Pending')
+                                    {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                                     {!! Form::submit('Deactivate', ['name'=>'active', 'class'=> 'btn btn-warning', 'form'=>'form_person']) !!}
                                 @else
                                     <div class="btn-group">
+                                        {!! Form::submit('Pending', ['name'=>'pending', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
                                         {!! Form::submit('Activate', ['name'=>'active', 'class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                                         @if(Auth::user()->hasRole('admin'))
                                             {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_person']) !!}
