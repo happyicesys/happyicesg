@@ -77,6 +77,7 @@
                                     <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
                                 @else
                                     <span class="col-xs-12"> {{$person->cust_id}}</span>
+                                    <span class="col-xs-12">{{$person->company}}</span>
                                     <span class="col-xs-12">{{$person->com_remark}}</span>
                                     <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
                                 @endif
