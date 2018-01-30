@@ -261,12 +261,14 @@ class BomController extends Controller
         foreach($bomcategoryCollection as $bomcategory) {
             $partsArr = [];
             foreach($bompartCollection as $part) {
-                if($part->bompart_bomcategory_id == $bomcategory->id) {
+                if($part->bompart_bomcategory_id == $bomcategory->bomcategory_id) {
                     array_push($partsArr, [
                         'bomcomponent_name' => $part->bomcomponent_name,
                         'bompart_name' => $part->bompart_name,
                         'updated_by' => $part->updated_by,
-                        'id' => $part->id
+                        'id' => $part->id,
+                        'bompart_bomcategory_id' => $part->bompart_bomcategory_id,
+                        'bomcategory_id' => $bomcategory->id,
                     ]);
                 }
             }
