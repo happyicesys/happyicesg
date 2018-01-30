@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'system@happyice.com.sg', 'name' => null],
+    'from' => ['address' => null, 'name' => null],
 
     /*
     |--------------------------------------------------------------------------
