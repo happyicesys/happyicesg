@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Bomcategory;
 use App\Bomcomponent;
 use App\Bompart;
+use App\Bomtemplate;
 use DB;
 use App\GetIncrement;
 
@@ -227,6 +228,82 @@ class BomController extends Controller
         $bompart->delete();
     }
 
+    // retrieve category and bomcomponents index api()
+    public function getBomtemplateApi()
+    {
+        $bomtemplates = DB::table('bomtemplates')
+                            ->leftJoin('bomparts', 'bomparts.id', '=', 'bomtemplates.bompart_id')
+                            ->leftJoin('bomcomponents', 'bomcomponents.id', '=', 'bomparts.bomcomponent_id')
+                            ->leftJoin('bomcategories', 'bomcategories.id', '=', 'bomcomponents.bomcategory_id')
+                            ->leftJoin('custcategories', 'custcategories.id', '=', 'bomtemplates.custcategory_id')
+                            ->leftJoin('users', 'users.id', '=', 'bomtemplates.updated_by')
+                            ->select(
+                                'bomtemplates.id',
+                                'bomcategories.id AS bomcategory_id', 'bomcategories.category_id AS category_id', 'bomcategories.name AS bomcategory_name',
+                                'bomcomponents.id AS bomcomponent_id', 'bomcomponents.component_id AS component_id', 'bomcomponents.name AS bomcomponent_name',
+                                'bomparts.id AS bompart_id', 'bomparts.part_id AS part_id', 'bomparts.name AS bompart_name', 'bomcomponents.bomcategory_id AS bompart_bomcategory_id',
+                                'users.name AS updated_by'
+                            );
+
+        // reading whether search input is filled
+        $bomtemplates = $this->searchBomtemplateDBFilter($bomtemplates);
+
+        $bomtemplates = $bomtemplates->orderBy('bomcategories.category_id', 'bomcomponents.component_id');
+
+        $dataArr = [];
+
+        $bomcategoryQuery = clone $bomtemplates;
+        $bomcategoryCollection = $bomcategoryQuery->groupBy('bomcategories.id')->get();
+
+        $bompartQuery = clone $bomtemplates;
+        $bompartCollection = $bompartQuery->get();
+
+        foreach($bomcategoryCollection as $bomcategory) {
+            $partsArr = [];
+            foreach($bompartCollection as $part) {
+                if($part->bompart_bomcategory_id == $bomcategory->id) {
+                    array_push($partsArr, [
+                        'bomcomponent_name' => $part->bomcomponent_name,
+                        'bompart_name' => $part->bompart_name,
+                        'updated_by' => $part->updated_by,
+                        'id' => $part->id
+                    ]);
+                }
+            }
+            $data = [
+                'bomcategory_name' => $bomcategory->bomcategory_name,
+                'category_id' => $bomcategory->category_id,
+                'parts' => $partsArr,
+            ];
+            array_push($dataArr, $data);
+        }
+/*
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if($pageNum == 'All'){
+            $bomtemplates = $bomtemplates->get();
+        }else{
+            $bomtemplates = $bomtemplates->paginate($pageNum);
+        }*/
+
+        $data = [
+            'bomtemplates' => $dataArr
+        ];
+
+        return $data;
+    }
+
+    // creating new bom templates entries(int custcategory_id)
+    public function createBomtemplateApi($custcategory_id)
+    {
+        $bompart_id = request('bompart_id');
+
+        Bomtemplate::create([
+            'custcategory_id' => $custcategory_id,
+            'bompart_id' => $bompart_id,
+            'updated_by' => auth()->user()->id
+        ]);
+    }
+
     // pass value into filter search for DB (collection) [query]
     private function searchDBFilter($bomcategories)
     {
@@ -298,5 +375,15 @@ class BomController extends Controller
             $bomparts = $bomparts->where('bomparts.name', 'LIKE', '%'.$part_name.'%');
         }
         return $bomparts;
+    }
+
+    // pass value into filter search for parts DB (collection, int custcategory_id)
+    private function searchBomtemplateDBFilter($bomtemplates)
+    {
+        $custcategory_id = request('custcategory_id');
+
+        $bomtemplates = $bomtemplates->where('custcategories.id', '=', $custcategory_id);
+
+        return $bomtemplates;
     }
 }

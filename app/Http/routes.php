@@ -13,6 +13,9 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bom/template/custcategory/{custcategory_id}', 'BomController@createBomtemplateApi');
+Route::post('/api/bom/templates', 'BomController@getBomtemplateApi');
+
 Route::delete('/api/bom/part/{id}/delete', 'BomController@destroyPartApi');
 Route::post('/api/bom/parts', 'BomController@getPartsApi');
 Route::post('/api/bom/parts/batchcreate/{component_id}', 'BomController@createPartApi');

@@ -15,4 +15,9 @@ class Custcategory extends Model
     {
     	return $this->hasMany('App\Person');
     }
+
+    public function bomtemplate()
+    {
+    	return $this->hasMany('App\Bomtemplate');
+    }
 }

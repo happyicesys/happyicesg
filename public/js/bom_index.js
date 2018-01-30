@@ -401,10 +401,133 @@ function bomPartController($scope, $http){
 
 }
 
+function bomTemplateController($scope, $http){
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 100;
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.today = moment().format("YYYY-MM-DD");
+    $scope.search = {
+        custcategory_id: '',
+        pageNum: 100,
+        sortName: '',
+        sortBy: true
+    }
+    $scope.form = {
+        part_id: ''
+    }
+    $scope.componentSelectList = [];
+
+    angular.element(document).ready(function () {
+        $('.select').select2({
+            placeholder: 'Select..'
+        });
+        $('.selectpart').select2({
+            placeholder: 'Select..',
+            allowClear: true
+        });
+    });
+
+    // init page load
+    getPage(1, true);
+
+    $scope.exportData = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_bomtemplate').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "BoM_Parts"+ now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function(newPage){
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function(){
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage(1, false);
+    }
+
+      // when hitting search button
+    $scope.searchDB = function(){
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first){
+        $scope.spinner = true;
+        $http.post('/api/bom/templates?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            if(data.bomtemplates.data){
+                $scope.alldata = data.bomtemplates.data;
+                $scope.totalCount = data.bomtemplates.total;
+                $scope.currentPage = data.bomtemplates.current_page;
+                $scope.indexFrom = data.bomtemplates.from;
+                $scope.indexTo = data.bomtemplates.to;
+            }else{
+                $scope.alldata = data.bomtemplates;
+                $scope.totalCount = data.bomtemplates.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.bomtemplates.length;
+            }
+            $scope.All = data.bomparts.length;
+            $scope.total_amount = data.total_amount;
+            $scope.spinner = false;
+        });
+    }
+
+    $scope.removeEntry = function(id) {
+        var isConfirmDelete = confirm('Are you sure to this parts?');
+        if(isConfirmDelete){
+            $http.delete('/api/bom/part/' + id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }else{
+            return false;
+        }
+    }
+
+    $scope.isFormValid = function() {
+        let invalid = true;
+        if($scope.form.part_id) {
+            invalid = false;
+        }
+        return invalid;
+    }
+
+    $scope.confirmTemplate = function(custcategory_id) {
+        $http.post('/api/bom/template/custcategory/' + custcategory_id , {'bompart_id': $scope.form.part_id}).success(function(data) {
+            $('.selectpart').val(null).trigger('change.select2');
+            getPage(1);
+        })
+    }
+
+    $scope.onCustcategoryChanged = function() {
+        $('.selectpart').val(null).trigger('change.select2');
+        getPage(1, false);
+    }
+
+}
+
 
 app.controller('bomCategoryController', bomCategoryController);
 app.controller('bomComponentController', bomComponentController);
 app.controller('bomPartController', bomPartController);
+app.controller('bomTemplateController', bomTemplateController);
 
 $(function() {
     // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line

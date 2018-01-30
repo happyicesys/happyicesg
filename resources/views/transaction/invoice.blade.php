@@ -244,11 +244,6 @@
                             <th class="col-xs-6 text-center">
                                 Description
                             </th>
-                            @if($person->is_vending or $person->is_dvm)
-                            <th class="col-xs-1 text-center">
-                                Pieces
-                            </th>
-                            @endif
                             <th class="col-xs-2 text-center">
                                 Quantity
                             </th>
@@ -291,11 +286,6 @@
                                 <td class="col-xs-6">
                                     {{ $deal->item->name}} {{ $deal->item->remark }}
                                 </td>
-                                @if($person->is_vending or $person->is_dvm)
-                                    <td class="col-xs-1 text-right">
-                                        {{$pieces}}
-                                    </td>
-                                @endif
 
                                 @if($deal->divisor and $deal->item->is_inventory === 1)
                                     <td class="col-xs-2 text-right">
@@ -361,7 +351,7 @@
                                 $total += $transaction->delivery_fee;
                             }
 
-                            $total = number_format($total, 2);
+                            // $total = number_format($total, 2);
                         @endphp
 
                         @if($transaction->delivery_fee != 0)
@@ -381,11 +371,6 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                @if($person->is_vending or $person->is_dvm)
-                                <td class="col-xs-1 text-right">
-                                    {{$total_pieces}}
-                                </td>
-                                @endif
                                 <td class="col-xs-2 text-right">
                                     {{$totalqty}}
                                 </td>
@@ -398,7 +383,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$person->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="3"></td>
+                                <td colspan="2"></td>
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
@@ -407,7 +392,7 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
-                                <td colspan="3"></td>
+                                <td colspan="2"></td>
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
@@ -435,11 +420,6 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                @if($person->is_vending or $person->is_dvm)
-                                <td class="col-xs-1 text-right">
-                                    {{$total_pieces}}
-                                </td>
-                                @endif
                                 <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>
@@ -453,11 +433,6 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                @if($person->is_vending or $person->is_dvm)
-                                <td class="col-xs-1 text-right">
-                                    {{$total_pieces}}
-                                </td>
-                                @endif
                                 <td class="col-xs-1 text-right">
                                     {{$totalqty}}
                                 </td>

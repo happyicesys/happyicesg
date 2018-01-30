@@ -16,6 +16,7 @@
                     <li><a href="#category" role="tab" data-toggle="tab">Category</a></li>
                     <li><a href="#component" role="tab" data-toggle="tab">Component</a></li>
                     <li class="active"><a href="#part" role="tab" data-toggle="tab">Part</a></li>
+                    <li><a href="#template" role="tab" data-toggle="tab">Template Definition</a></li>
                 </ul>
             </div>
 
@@ -29,6 +30,9 @@
                     </div>
                     <div class="tab-pane active" id="part">
                         @include('bom.part')
+                    </div>
+                    <div class="tab-pane" id="template">
+                        @include('bom.template')
                     </div>
                 </div>
             </div>
