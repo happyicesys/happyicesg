@@ -54,12 +54,6 @@
                 </div>
             </div>
             @endif
-            <div class="col-md-4 col-sm-4 col-xs-12">
-                <div class="form-group" style="padding-top: 25px;">
-                    {!! Form::checkbox('is_profit_sharing_report', $person->is_profit_sharing_report) !!}
-                    {!! Form::label('is_profit_sharing_report', 'Profit Sharing Report', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">

@@ -13,6 +13,14 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::delete('/api/bom/maintenance/{bommaintenance_id}/delete', 'BomController@destroyBommaintenanceApi');
+Route::post('/api/bom/maintenances', 'BomController@getBommaintenancesApi');
+Route::post('/api/bom/maintenance/submit', 'BomController@createBommaintenanceEntry');
+Route::post('/api/bomvending/part/change', 'BomController@changeBomvendingPart');
+Route::get('/api/template/component/{component_id}/custcategory/{custcategory_id}', 'BomController@getTemplateByComponentCustcategory');
+Route::post('/api/bom/vendings', 'BomController@getVendingsPeopleApi');
+Route::post('/api/bom/synctemplate/bomvending', 'BomController@syncTemplateVending');
+Route::delete('/api/bom/template/{bomtemplate_id}/delete', 'BomController@destroyTemplateApi');
 Route::post('/api/bom/template/custcategory/{custcategory_id}', 'BomController@createBomtemplateApi');
 Route::post('/api/bom/templates', 'BomController@getBomtemplateApi');
 
@@ -320,6 +328,7 @@ Route::get('/payterm/data', 'PaytermController@getData');
 Route::delete('/payterm/data/{id}', 'PaytermController@destroyAjax');
 Route::resource('payterm', 'PaytermController');
 
+Route::get('/api/custcat/{id}', 'CustcategoryController@getCustcategoryApi');
 Route::get('/custcat/data', 'CustcategoryController@getData');
 Route::delete('/custcat/data/{id}', 'CustcategoryController@destroyAjax');
 Route::resource('custcat', 'CustcategoryController');

@@ -49,7 +49,10 @@
 
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                    <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                    <button class="btn btn-warning" ng-click="overwriteBom($event, search.custcategory_id)" ng-if="search.custcategory_id"><i class="fa fa-files-o"></i> Overwrite BOM [@{{search.custcategory_name}}]</button>
+                    <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
+                    <span ng-show="is_done"> <i class="fa fa-check-circle fa-2x" style="color: green;"></i></span>
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-xs-12 text-right">
@@ -68,7 +71,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive" id="exportable_bomtemplate" style="padding-top:20px;">
+            <div class="table-responsive" id="exportable_bomtemplate" style="padding-top:20px; font-size: 13px;">
                 <table ng-repeat="bomcategory in alldata" class="table table-list-search table-hover table-bordered table-condensed">
                     <tr style="background-color: #DDFDF8">
                         <th colspan="14" class="text-left">CAT @{{bomcategory.category_id}} - @{{bomcategory.bomcategory_name}}</th>

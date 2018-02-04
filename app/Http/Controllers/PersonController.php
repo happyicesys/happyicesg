@@ -130,7 +130,7 @@ class PersonController extends Controller
                 $person->is_dvm = 1;
             }
         }
-        $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
+        // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
         $person->save();
 
         // copying is gst inclusive to individual person
@@ -241,7 +241,7 @@ class PersonController extends Controller
                 $person->is_vending = 0;
             }
         }
-        $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
+        // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
         if(!$person->is_vending and !$person->is_dvm) {
             $person->vending_piece_price = 0.00;
@@ -249,7 +249,7 @@ class PersonController extends Controller
             $person->vending_profit_sharing = 0.00;
             $person->vending_monthly_utilities = 0.00;
             $person->vending_clocker_adjustment = 0.00;
-            $person->is_profit_sharing_report = 0;
+            // $person->is_profit_sharing_report = 0;
             $person->save();
         }
 

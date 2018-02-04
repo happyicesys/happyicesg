@@ -9,8 +9,12 @@ use App\Bomcategory;
 use App\Bomcomponent;
 use App\Bompart;
 use App\Bomtemplate;
+use App\Bomvending;
+use App\Bommaintenance;
+use App\Person;
 use DB;
 use App\GetIncrement;
+use Carbon\Carbon;
 
 class BomController extends Controller
 {
@@ -248,7 +252,7 @@ class BomController extends Controller
         // reading whether search input is filled
         $bomtemplates = $this->searchBomtemplateDBFilter($bomtemplates);
 
-        $bomtemplates = $bomtemplates->orderBy('bomcategories.category_id', 'bomcomponents.component_id');
+        $bomtemplates = $bomtemplates->orderBy('bomcategories.category_id', 'asc')->orderBy('bomcomponents.component_id', 'asc');
 
         $dataArr = [];
 
@@ -279,13 +283,6 @@ class BomController extends Controller
             ];
             array_push($dataArr, $data);
         }
-/*
-        $pageNum = request('pageNum') ? request('pageNum') : 100;
-        if($pageNum == 'All'){
-            $bomtemplates = $bomtemplates->get();
-        }else{
-            $bomtemplates = $bomtemplates->paginate($pageNum);
-        }*/
 
         $data = [
             'bomtemplates' => $dataArr
@@ -302,8 +299,140 @@ class BomController extends Controller
         Bomtemplate::create([
             'custcategory_id' => $custcategory_id,
             'bompart_id' => $bompart_id,
+            'bomcomponent_id' => Bompart::findOrFail($bompart_id)->bomcomponent->id,
             'updated_by' => auth()->user()->id
         ]);
+    }
+
+    // remove template binding in definition(int bomtemplate_id)
+    public function destroyTemplateApi($bomtemplate_id)
+    {
+        $bomtemplate = Bomtemplate::findOrFail($bomtemplate_id);
+        $bomtemplate->delete();
+    }
+
+    // syncing the template to bomvending via custcategory id()
+    public function syncTemplateVending()
+    {
+        $custcategory_id = request('custcategory_id');
+
+        $bomtemplates = Bomtemplate::where('custcategory_id', $custcategory_id)->get();
+        $people = Person::where('custcategory_id', $custcategory_id)->get();
+
+        foreach($people as $person) {
+            if($person->bomvendings) {
+                $person->bomvendings()->delete();
+            }
+            foreach($bomtemplates as $bomtemplate) {
+                Bomvending::create([
+                    'custcategory_id' => $custcategory_id,
+                    'bomcomponent_id' => $bomtemplate->bompart->bomcomponent->id,
+                    'bompart_id' => $bomtemplate->bompart_id,
+                    'person_id' => $person->id,
+                    'updated_by' => auth()->user()->id
+                ]);
+            }
+        }
+    }
+
+    // retrieve people who are dvm or fvm()
+    public function getVendingsPeople()
+    {
+        $people = Person::with('custcategory')->where('is_vending', 1)->orWhere('is_dvm', 1)->orderBy('cust_id', 'asc')->get();
+
+        return $people;
+    }
+
+    // retrieve bomvendings index api()
+    public function getVendingsPeopleApi()
+    {
+        $bomvendings = DB::table('bomvendings')
+                            ->leftJoin('people', 'people.id', '=', 'bomvendings.person_id')
+                            ->leftJoin('bomparts', 'bomparts.id', '=', 'bomvendings.bompart_id')
+                            ->leftJoin('bomcomponents', 'bomcomponents.id', '=', 'bomparts.bomcomponent_id')
+                            ->leftJoin('bomcategories', 'bomcategories.id', '=', 'bomcomponents.bomcategory_id')
+                            ->leftJoin('custcategories', 'custcategories.id', '=', 'bomvendings.custcategory_id')
+                            ->leftJoin('bomtemplates', function($join) {
+                                $join->on('bomtemplates.bompart_id', '=', 'bomparts.id');
+                                $join->on('bomtemplates.custcategory_id', '=', 'custcategories.id');
+                            })
+                            ->leftJoin('users', 'users.id', '=', 'bomvendings.updated_by')
+                            ->select(
+                                'bomvendings.id',
+                                'people.id AS person_id', 'people.cust_id', 'people.company',
+                                'bomcategories.id AS bomcategory_id', 'bomcategories.category_id AS category_id', 'bomcategories.name AS bomcategory_name',
+                                'bomcomponents.id AS bomcomponent_id', 'bomcomponents.component_id AS component_id', 'bomcomponents.name AS bomcomponent_name',
+                                'bomparts.id AS bompart_id', 'bomparts.part_id AS part_id', 'bomparts.name AS bompart_name', 'bomcomponents.bomcategory_id AS bompart_bomcategory_id',
+                                'custcategories.name AS custcategory_name', 'custcategories.id AS custcategory_id',
+                                'users.name AS updated_by'
+                            );
+
+
+        $bomvendings = $this->searchVendingDBFilter($bomvendings);
+
+        $dataArr = [];
+
+        $peopleQuery = clone $bomvendings;
+        $peopleCollection = $peopleQuery->groupBy('people.id')->get();
+
+        $bomcategoryQuery = clone $bomvendings;
+        $bomcategoryCollection = $bomcategoryQuery->groupBy('bomcategories.id')->get();
+
+        $bomcomponentQuery = clone $bomvendings;
+        $bomcomponentCollection = $bomcomponentQuery->orderBy('bomcategories.category_id', 'asc')->orderBy('bomcomponents.component_id', 'asc')->groupBy('bomcomponents.id')->get();
+
+            $dataArr = [];
+            foreach($bomcomponentCollection as $indexcomponent => $component) {
+                foreach($peopleCollection as $indexperson => $person) {
+                    $component_name = $component->bomcomponent_name;
+                    $bomvending = Bomvending::where('bomcomponent_id', $component->bomcomponent_id)
+                                ->where('person_id', $person->person_id)
+                                ->first();
+                    $part = $bomvending ? $bomvending->bompart->name : null;
+                    $part_id = $bomvending ? $bomvending->bompart->id : null;
+
+
+                    $bomtemplate = Bomtemplate::where('bomcomponent_id', $component->bomcomponent_id)
+                                    ->where('custcategory_id', $person->custcategory_id)
+                                    ->first();
+                    $original_part = $bomtemplate ? $bomtemplate->bompart->name : null;
+                    $original_part_id = $bomtemplate ? $bomtemplate->bompart->id : null;
+                    $color = $part_id == $original_part_id ? '': 'red';
+                    $choices = Bompart::where('bomcomponent_id', $component->bomcomponent_id)->whereNotIn('id', [$part_id])->get();
+
+                    $dataArr[$indexcomponent][$indexperson] = [
+                        'vending_id' => $bomvending ? $bomvending->id : null,
+                        'part' => $part,
+                        'part_id' => $part_id,
+                        'original_part' => $original_part,
+                        'original_part_id' => $original_part_id,
+                        'component_id' => $component->bomcomponent_id,
+                        'category_id' => $component->bomcategory_id,
+                        'color' => $color,
+                        'custcategory_id' => $person->custcategory_id,
+                        'choices' => $choices
+                    ];
+                }
+            }
+
+        $data = [
+            'people' => $peopleCollection,
+            'bomcategories' => $bomcategoryCollection,
+            'bomcomponents' => $bomcomponentCollection,
+            'bomvendings' => $dataArr,
+        ];
+
+        return $data;
+    }
+
+    // change the bom vending part ()
+    public function changeBomvendingPart()
+    {
+        $vending_id = request('vending_id');
+        $part_id = request('part_id');
+        $bomvending = Bomvending::findOrFail($vending_id);
+        $bomvending->bompart_id = $part_id;
+        $bomvending->save();
     }
 
     // pass value into filter search for DB (collection) [query]
@@ -348,6 +477,103 @@ class BomController extends Controller
         return $bomcomponents;
     }
 
+    // retrieve templates option by providing bomcomponent id and custcategory id(int component_id, int custcategory_id)
+    public function getTemplateByComponentCustcategory($bomcomponent_id, $custcategory_id)
+    {
+        $bomtemplates = Bomtemplate::where('bomcomponent_id', $bomcomponent_id)->where('custcategory_id', $custcategory_id)->get();
+        return $bomtemplates;
+    }
+
+    // retrieve all of the bom maintenance records()
+    public function getBommaintenancesApi()
+    {
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        $bommaintenances = DB::table('bommaintenances AS x')
+                        ->leftJoin('people', 'x.person_id', '=', 'people.id')
+                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('users AS technicians', 'technicians.id', '=', 'x.technician_id')
+                        ->leftJoin('bomcomponents', 'bomcomponents.id', '=', 'x.bomcomponent_id')
+                        ->leftJoin('bomcategories', 'bomcategories.id', '=', 'bomcomponents.bomcategory_id')
+                        ->leftJoin('users AS creators', 'creators.id', '=', 'x.created_by')
+                        ->leftJoin('users AS updaters', 'updaters.id', '=', 'x.updated_by')
+                        ->select(
+                                    'x.id',
+                                    'x.maintenance_id',
+                                    DB::raw('DATE(x.datetime) AS date'),
+                                    DB::raw('TIME_FORMAT(TIME(x.datetime), "%h:%i %p") AS time'),
+                                    'x.time_spend', 'x.urgency', 'x.issue_type', 'x.solution', 'x.remark',
+                                    'people.cust_id', 'people.company',
+                                    'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory_name',
+                                    'technicians.id AS technician_id', 'technicians.name AS technician_name',
+                                    'bomcategories.id AS bomcategory_id', 'bomcategories.name AS bomcategory_name',
+                                    'bomcomponents.id AS bomcomponent_id', 'bomcomponents.name AS bomcomponent_name',
+                                    'creators.name AS creator', 'updaters.name AS updater'
+                                );
+
+        // reading whether search input is filled
+        if(request('person_id') or request('date_from') or request('date_to') or request('custcategory_id') or request('technician_id') or  request('bomcomponent_id') or request('issue_type')){
+            $bommaintenances = $this->searchBommaintenanceDBFilter($bommaintenances);
+        }
+
+        if(request('sortName')){
+            $bommaintenances = $bommaintenances->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if($pageNum == 'All'){
+            $bommaintenances = $bommaintenances->latest('x.datetime')->get();
+        }else{
+            $bommaintenances = $bommaintenances->latest('x.datetime')->paginate($pageNum);
+        }
+
+        $data = [
+            'bommaintenances' => $bommaintenances,
+        ];
+/*
+        if(request('export_excel')) {
+            $this->exportFtransactionIndexExcel($data);
+        }*/
+
+        return $data;
+    }
+
+    // create entry for bom maintenance()
+    public function createBommaintenanceEntry()
+    {
+        $person_id = request('person_id');
+        $date = request('date');
+        $time = request('time');
+        $technician_id = request('technician_id');
+        $urgency = request('urgency');
+        $time_spend = request('time_spend');
+        $bomcomponent_id = request('bomcomponent_id');
+        $issue_type = request('issue_type');
+        $solution = request('solution');
+        $remark = request('remark');
+
+        $bommaintenances = Bommaintenance::create([
+            'maintenance_id' => $this->getBommaintenanceIncrement(),
+            'person_id' => $person_id,
+            'datetime' => $this->convertDateTimeCarbon($date, $time),
+            'technician_id' => $technician_id,
+            'urgency' => $urgency,
+            'time_spend' => $time_spend,
+            'bomcomponent_id' => $bomcomponent_id,
+            'issue_type' => $issue_type,
+            'solution' => $solution,
+            'remark' => $remark,
+            'created_by' => auth()->user()->id,
+        ]);
+    }
+
+    // remove the bom maintenance api(int bommaintenance_id)
+    public function destroyBommaintenanceApi($bommaintenance_id)
+    {
+        $bommaintenance = Bommaintenance::findOrFail($bommaintenance_id);
+        $bommaintenance->delete();
+    }
+
     // pass value into filter search for parts DB (collection) [query]
     private function searchPartDBFilter($bomparts)
     {
@@ -379,13 +605,77 @@ class BomController extends Controller
         return $bomparts;
     }
 
-    // pass value into filter search for parts DB (collection, int custcategory_id)
+    // pass value into filter search for parts DB (collection)
     private function searchBomtemplateDBFilter($bomtemplates)
     {
         $custcategory_id = request('custcategory_id');
-
         $bomtemplates = $bomtemplates->where('custcategories.id', '=', $custcategory_id);
 
         return $bomtemplates;
+    }
+
+    // pass value into filter search for bom vendings DB (collection)
+    private function searchVendingDBFilter($bomvendings)
+    {
+        $people = request('formsearches');
+        $bomvendings = $bomvendings->whereIn('people.id', $people);
+
+        return $bomvendings;
+    }
+
+    // pass value into filter search for bommaintenance DB (collection) [query]
+    private function searchBommaintenanceDBFilter($bommaintenances)
+    {
+
+        $person_id = request('person_id');
+        $date_from = request('date_from');
+        $date_to = request('date_to');
+        $custcategory_id = request('custcategory_id');
+        $technician_id = request('technician_id');
+        $bomcomponent_id = request('bomcomponent_id');
+        $issue_type = request('issue_type');
+
+        if($person_id){
+            $bommaintenances = $bommaintenances->where('people.id', $person_id);
+        }
+        if($date_from === $date_to){
+            if($date_from != '' and $date_to != ''){
+                $bommaintenances = $bommaintenances->whereDate('x.datetime', '=', $date_to);
+            }
+        }else{
+            if($date_from){
+                $bommaintenances = $bommaintenances->whereDate('x.datetime', '>=', $date_from);
+            }
+            if($date_to){
+                $bommaintenances = $bommaintenances->whereDate('x.datetime', '<=', $date_to);
+            }
+        }
+        if($custcategory_id){
+            $bommaintenances = $bommaintenances->where('custcategories.id', $custcategory_id);
+        }
+        if($technician_id){
+            $bommaintenances = $bommaintenances->where('technicians.id', $technician_id);
+        }
+        if($bomcomponent_id){
+            $bommaintenances = $bommaintenances->where('bomcomponents.id', $bomcomponent_id);
+        }
+        if($issue_type){
+            $bommaintenances = $bommaintenances->where('x.issue_type', $part_id);
+        }
+        return $bommaintenances;
+    }
+
+    // converting date and time into datetime(String date, String time)
+    private function convertDateTimeCarbon($date, $time)
+    {
+        if(!$date) {
+            $date = Carbon::today()->toDateString();
+        }
+        if(!$time) {
+            $time = Carbon::now()->toTimeString();
+        }
+        $datetime = Carbon::parse($date.' '.$time);
+
+        return $datetime;
     }
 }

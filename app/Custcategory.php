@@ -13,11 +13,16 @@ class Custcategory extends Model
     // relationships
     public function people()
     {
-    	return $this->hasMany('App\Person');
+    	return $this->belongsToMany('App\Person');
     }
 
-    public function bomtemplate()
+    public function bomtemplates()
     {
     	return $this->hasMany('App\Bomtemplate');
+    }
+
+    public function bomvendings()
+    {
+        return $this->hasMany('App\Bomvending');
     }
 }

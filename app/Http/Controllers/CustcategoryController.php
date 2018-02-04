@@ -37,6 +37,13 @@ class CustcategoryController extends Controller
         return redirect('user');
     }
 
+    // retrieve single custcategory api(int id)
+    public function getCustcategoryApi($id)
+    {
+        $custcat = Custcategory::findOrFail($id);
+
+        return $custcat;
+    }
 
     // return cust category edit page(int custcategory_id)
     public function edit($id)

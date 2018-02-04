@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class bomtemplate extends Model
+class Bomvending extends Model
 {
     protected $fillable = [
-        'custcategory_id', 'bomcomponent_id', 'bompart_id', 'updated_by'
+        'custcategory_id', 'bomcomponent_id', 'bompart_id', 'person_id', 'updated_by'
     ];
 
     public function custcategory()
@@ -18,6 +18,11 @@ class bomtemplate extends Model
     public function bompart()
     {
     	return $this->belongsTo('App\Bompart');
+    }
+
+    public function person()
+    {
+    	return $this->belongsTo('App\Person');
     }
 
     public function updater()

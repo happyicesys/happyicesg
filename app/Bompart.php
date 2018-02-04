@@ -22,8 +22,13 @@ class Bompart extends Model
     	return $this->belongsTo('App\Bomcomponent');
     }
 
-    public function bomtemplate()
+    public function bomtemplates()
     {
         return $this->hasMany('App\Bomtemplate');
+    }
+
+    public function bomvendings()
+    {
+        return $this->hasMany('App\Bomvending');
     }
 }
