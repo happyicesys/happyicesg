@@ -87,7 +87,7 @@
                     'ng-change'=>'searchDB()'
                     ])
                 !!} --}}
-                <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                <select name="custcategory[]" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
                     <option value="">All</option>
                     @foreach($custcategories::orderBy('name')->get() as $custcategory)
                     <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>

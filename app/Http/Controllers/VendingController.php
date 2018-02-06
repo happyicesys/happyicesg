@@ -192,10 +192,8 @@ class VendingController extends Controller
                         });
                 });
         }
+        // dd(request('custcategory'), count($custcategory), [$custcategory]);
         if($custcategory) {
-            if(count($custcategory) == 1) {
-                $custcategory = [$custcategory];
-            }
             $transactions = $transactions->whereIn('custcategories.id', $custcategory);
         }
         if($status) {
