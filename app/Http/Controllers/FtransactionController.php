@@ -78,10 +78,11 @@ class FtransactionController extends Controller
 
         // filter off franchisee
         if(auth()->user()->hasRole('franchisee')) {
-            $ftransaction = $ftransactions->where('x.franchisee_id', auth()->user()->id);
+            $ftransactions = $ftransactions->where('x.franchisee_id', auth()->user()->id);
         }
 
         $totals = $this->calDBFtransactionTotal($ftransactions);
+        $dynamictotals = $this->calDBDynamicFtransactionTotal($ftransactions);
 
         if(request('sortName')){
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
@@ -96,6 +97,7 @@ class FtransactionController extends Controller
         $data = [
             'totals' => $totals,
             'ftransactions' => $ftransactions,
+            'dynamictotals' => $dynamictotals
         ];
 
         if(request('export_excel')) {
@@ -294,6 +296,7 @@ class FtransactionController extends Controller
     {
         $total_vend_amount = 0;
         $total_sales_pieces = 0;
+        $person_id = request('person_id');
         $query1 = clone $query;
         $query2 = clone $query;
         $query3 = clone $query;
@@ -303,15 +306,104 @@ class FtransactionController extends Controller
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime DESC LIMIT 1),
                                                 (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
                                                 )), 1)'));
-/*        $avg_pieces_day = $query3->sum(DB::raw('ROUND(SUM(x.sales)/ABS(DATEDIFF(x.collection_datetime,
-                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
-                                                )), 1)
-                                                    AS avg_sales_day'));*/
+
+
+
+        $total_stock_in = DB::table('deals')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id');
+        $total_stock_in = $this->filterCollectionFromTo($total_stock_in);
+        $total_stock_in = $total_stock_in
+                            ->where('people.id', $person_id)
+                            ->where(function($query) {
+                                $query->where('transactions.status', 'Delivered')
+                                    ->orWhere('transactions.status', 'Verified Owe')
+                                    ->orWhere('transactions.status', 'Verified Paid');
+                                });
+        $total_stock_in = $total_stock_in->select(DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'))->first()->pieces;
+
+        $total_sold_qty = DB::table('transactions')
+                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id');
+        $total_sold_qty = $this->filterCollectionFromTo($total_sold_qty);
+        $total_sold_qty = $total_sold_qty
+                            ->where('people.id', $person_id)
+                            ->where(function($query) {
+                                $query->where('transactions.status', 'Delivered')
+                                    ->orWhere('transactions.status', 'Verified Owe')
+                                    ->orWhere('transactions.status', 'Verified Paid');
+                                });
+
+        $total_sold_qty = $total_sold_qty->select(
+                                DB::raw('(MAX(transactions.analog_clock) - MIN(transactions.analog_clock)) AS sold_qty')
+                            )->first()->sold_qty;
+
+        $difference_stock_sold = $total_stock_in - $total_sold_qty;
+
 
         $data = [
             'total_vend_amount' => $total_vend_amount,
             'total_sales_pieces' => $total_sales_pieces,
             'avg_pieces_day' => $avg_pieces_day,
+            'total_stock_in' => $total_stock_in,
+            'total_sold_qty' => $total_sold_qty,
+            'difference_stock_sold' => $difference_stock_sold
+        ];
+
+        return $data;
+    }
+
+    // calculating gst and non for delivered dynamic total
+    private function calDBDynamicFtransactionTotal($query)
+    {
+        $dynamic_vend_amount = 0;
+        $dynamic_sales_pieces = 0;
+        $query1 = clone $query;
+        $query2 = clone $query;
+        $query3 = clone $query;
+        $dynamic_vend_amount = $query1->sum(DB::raw('ROUND(x.total, 2)'));
+        $dynamic_sales_pieces = $query2->sum(DB::raw('ROUND(x.total/ ((SELECT analog_clock FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime DESC LIMIT 1) - (SELECT analog_clock FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)), 2)'));
+        $dynamic_avg_pieces_day = $query3->sum(DB::raw('ROUND(x.sales/ ABS(DATEDIFF(
+                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime DESC LIMIT 1),
+                                                (SELECT collection_datetime FROM ftransactions WHERE person_id=x.person_id ORDER BY collection_datetime ASC LIMIT 1)
+                                                )), 1)'));
+
+
+        $dynamic_stock_in = DB::table('deals')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->leftJoin('items', 'items.id', '=', 'deals.item_id');
+        $dynamic_stock_in = $this->filterCollectionFromTo($dynamic_stock_in);
+        $dynamic_stock_in = $dynamic_stock_in
+                            ->where(function($query) {
+                                $query->where('transactions.status', 'Delivered')
+                                    ->orWhere('transactions.status', 'Verified Owe')
+                                    ->orWhere('transactions.status', 'Verified Paid');
+                                });
+        $dynamic_stock_in = $dynamic_stock_in->select(DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'))->first()->pieces;
+
+        $dynamic_sold_qty = DB::table('transactions');
+        $dynamic_sold_qty = $this->filterCollectionFromTo($dynamic_sold_qty);
+        $dynamic_sold_qty = $dynamic_sold_qty
+                            ->where(function($query) {
+                                $query->where('transactions.status', 'Delivered')
+                                    ->orWhere('transactions.status', 'Verified Owe')
+                                    ->orWhere('transactions.status', 'Verified Paid');
+                                });
+
+        $dynamic_sold_qty = $dynamic_sold_qty->select(
+                                DB::raw('(MAX(transactions.analog_clock) - MIN(transactions.analog_clock)) AS sold_qty')
+                            )->first()->sold_qty;
+
+        $dynamic_difference_stock_sold = $dynamic_stock_in - $dynamic_sold_qty;
+
+
+        $data = [
+            'dynamic_vend_amount' => $dynamic_vend_amount,
+            'dynamic_sales_pieces' => $dynamic_sales_pieces,
+            'dynamic_avg_pieces_day' => $dynamic_avg_pieces_day,
+            'dynamic_stock_in' => $dynamic_stock_in,
+            'dynamic_sold_qty' => $dynamic_sold_qty,
+            'dynamic_difference_stock_sold' => $dynamic_difference_stock_sold
         ];
 
         return $data;
@@ -329,5 +421,24 @@ class FtransactionController extends Controller
                 $sheet->loadView('franchisee.index_excel', compact('data'));
             });
         })->download('xlsx');
+    }
+
+    // filter collection from and to($transactions)
+    private function filterCollectionFromTo($transactions)
+    {
+        if(request('collection_from') === request('collection_to')){
+            if(request('collection_from') != '' and request('collection_to') != ''){
+                $transactions = $transactions->whereDate('transactions.delivery_date', '=', request('collection_to'));
+            }
+        }else{
+            if(request('collection_from')){
+                $transactions = $transactions->whereDate('transactions.delivery_date', '>=', request('collection_from'));
+            }
+            if(request('collection_to')){
+                $transactions = $transactions->whereDate('transactions.delivery_date', '<=', request('collection_to'));
+            }
+        }
+
+        return $transactions;
     }
 }

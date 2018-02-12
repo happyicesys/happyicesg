@@ -43,7 +43,8 @@ class VendingController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $transactions = $this->getGenerateVendingInvoicePerson();
+        $transactions = $this->getGenerateVendingInvoicePerson()['transactions'];
+        $notAvailPeople = $this->getGenerateVendingInvoicePerson()['notAvailPeople'];
         // dd($transactions->get());
 
         $totals = $this->calVendingGenerateInvoiceIndex($transactions);
@@ -57,6 +58,7 @@ class VendingController extends Controller
         $data = [
             'totals' => $totals,
             'transactions' => $transactions,
+            'notAvailPeople' => $notAvailPeople
         ];
 
         return $data;
@@ -67,7 +69,7 @@ class VendingController extends Controller
     {
         // indicate the month and year
         $this_month = Carbon::createFromFormat('m-Y', request('current_month'));
-        $people = $this->getGenerateVendingInvoicePerson();
+        $people = $this->getGenerateVendingInvoicePerson()['transactions'];
         $totals = $this->calVendingGenerateInvoiceIndex($people);
         $checkboxes = request('checkbox');
 
@@ -562,7 +564,41 @@ class VendingController extends Controller
 
         $transactions = $transactions->groupBy('people.id');
 
-        return $transactions;
+        $clonetrans = clone $transactions;
+        $clonetrans = $clonetrans->get();
+
+        $notAvailPersonId = [];
+        $notAvailPeople = '';
+        if(count($clonetrans)>0) {
+            foreach($clonetrans as $transaction) {
+                array_push($notAvailPersonId, $transaction->person_id);
+            }
+        }
+
+        $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
+
+        if($current_month) {
+            $notAvailPeople = Person::where(function($query) {
+                                        $query->where('is_vending', 1)
+                                                ->orWhere('is_dvm', 1);
+                                    })->where('active', 'Yes')
+                                    ->whereNotIn('id', $notAvailPersonId)
+                                    ->whereDoesntHave('transactions', function($query) use ($current_month) {
+                                        $query->whereDate('delivery_date', '>=', $current_month->startOfMonth()->toDateString())
+                                                ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString());
+                                    })
+                                    ->orderBy('cust_id')
+                                    ->get();
+        }
+
+
+
+        $data = [
+            'transactions' => $transactions,
+            'notAvailPeople' => $notAvailPeople
+        ];
+
+        return $data;
     }
 
     // calculate total when sql done the filter job

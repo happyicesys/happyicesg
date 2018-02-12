@@ -152,6 +152,12 @@ function bomComponentController($scope, $http){
         },
     ];
 
+    $scope.select2Options = {
+        'multiple': true,
+        'simple_tags': true,
+        'tags': []  // Can be empty list.
+    };
+
     angular.element(document).ready(function () {
         $('.select').select2({
             placeholder: 'Select..'

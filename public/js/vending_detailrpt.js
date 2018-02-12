@@ -11,6 +11,7 @@ var app = angular.module('app', [
     function generateInvoiceController($scope, $http){
         // init the variables
         $scope.alldata = [];
+        $scope.absentlist = [];
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -158,12 +159,14 @@ var app = angular.module('app', [
             $scope.spinner = true;
             $http.post('/api/detailrpt/vending/invoice?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.transactions.data){
+                    $scope.absentlist = data.notAvailPeople;
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;
                     $scope.currentPage = data.transactions.current_page;
                     $scope.indexFrom = data.transactions.from;
                     $scope.indexTo = data.transactions.to;
                 }else{
+                    $scope.absentlist = data.notAvailPeople;
                     $scope.alldata = data.transactions;
                     $scope.totalCount = data.transactions.length;
                     $scope.currentPage = 1;

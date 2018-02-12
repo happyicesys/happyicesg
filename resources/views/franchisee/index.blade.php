@@ -205,6 +205,87 @@
                     </div>
                 </div>
 
+                <div class="row">
+
+{{--                         <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Avg $/ pcs
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{total_sales_pieces ? total_sales_pieces : 0.00 | currency: "": 2}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Avg pcs/ day
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{avg_pieces_day ? avg_pieces_day : 0.00 | currency: "": 2}}</strong>
+                            </div>
+                        </div> --}}
+                    </div>
+{{--
+                    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
+                        <label class="control-label">
+                            <u>Qty</u>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Stock In:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_stock_in ? total_stock_in : 0 | currency: "": 0}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Total Sold:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_sold_qty ? total_sold_qty : 0 | currency: "": 0}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Delta:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ difference_stock_sold ? difference_stock_sold : 0 | currency: "": 0}}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
+                        <label class="control-label">
+                            <u>Payment</u>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Total:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Total Paid:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_paid ? total_paid : 0.00 | currency: "": 2}}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                Total Owe:
+                            </div>
+                            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                                <strong>@{{ total_owe ? total_owe : 0.00 | currency: "": 2}}</strong>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+
                     <div class="table-responsive" id="exportable" style="padding-top:20px;">
                         <table class="table table-list-search table-hover table-bordered">
                             {{-- hidden table for excel export --}}

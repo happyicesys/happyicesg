@@ -25,7 +25,7 @@ trait GetIncrement{
     // retrieve increament id for bom category()
     public function getBomcategoryIncrement()
     {
-        $max_id = count(Bomcategory::all()) > 0 ? Bomcategory::max('category_id') : 100001;
+        $max_id = count(Bomcategory::all()) > 0 ? Bomcategory::max('category_id') : 1001;
         $max_id += 1;
 
         return $max_id;

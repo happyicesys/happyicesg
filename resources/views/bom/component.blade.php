@@ -130,23 +130,29 @@
                 </div>
             </div>
 
-            <div class="table-responsive" id="exportable_bomcomponent" style="padding-top:20px;">
+            <div class="table-responsive" id="exportable_bomcomponent" style="padding-top:20px; font-size: 13px;">
                 <table ng-repeat="bomcategory in alldata" class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th colspan="14" class="text-left">CAT@{{bomcategory.category_id}} - @{{bomcategory.name}}</th>
                     </tr>
                     <tr style="background-color: #DDFDF8">
-                        <th class="col-md-1 text-center">
+                        <th class="col-md-1 text-center" style="width:3%">
                             #
                         </th>
+                        <th class="col-md-1 text-center" style="width:6%">
+                            ID
+                        </th>
                         <th class="col-md-2 text-center">
-                            Component ID
+                            Name
                         </th>
-                        <th class="col-md-3 text-center">
-                            Component Name
-                        </th>
-                        <th class="col-md-4 text-center">
+                        <th class="col-md-2 text-center">
                             Remarks
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Qty
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
                             Updated By
@@ -154,24 +160,53 @@
                         <th class="col-md-1"></th>
                     </tr>
                     <tbody>
-                        <tr dir-paginate="bomcomponent in bomcategory.bomcomponents | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
-                            <td class="col-md-1 text-center">
-                                @{{ $index + indexFrom }}
+                        <tr ng-repeat-start="(index, bomcomponent) in bomcategory.bomcomponents" style="background-color: #ddd1e7;">
+                            <td class="col-md-1 text-left" style="width:3%">
+                                @{{ index + indexFrom }}
                             </td>
-                            <td class="col-md-2 text-center">
+                            <td class="col-md-1 text-center" style="width:6%">
                                 COM @{{bomcomponent.component_id}}
                             </td>
-                            <td class="col-md-3 text-left">
+                            <td class="col-md-2 text-left">
                                 @{{bomcomponent.name}}
                             </td>
-                            <td class="col-md-4 text-left">
+                            <td class="col-md-2 text-left" colspan="2">
                                 @{{bomcomponent.remark}}
                             </td>
+                            <td></td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}}
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-xs" ng-click="removeEntry(bomcomponent.id)"><i class="fa fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="(index2, bompart) in bomcomponent.bomparts" ng-repeat-end style="background-color: #c1fcc1;">
+                            <td class="col-md-1 text-left" style="width:3%">
+                                @{{index + indexFrom}}.@{{index2 + 1}}
+                            </td>
+                            <td class="col-md-1 text-center" style="width:6%">
+                                P @{{bompart.part_id}}
+                            </td>
+                            <td class="col-md-2 text-left">
+                                @{{bompart.name}}
+                            </td>
+                            <td class="col-md-2 text-left">
+                                @{{bompart.remark}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                @{{bompart.qty}}
+                            </td>
+                            <td class="col-md-2 text-center">
+                                <select ui-select2="select2Options" name="chosen[bompart.id]" ng-model="form.part_id" data-placeholder="Select.." multi>
+                                    <option value=""></option>
+{{--                                     <option ng-repeat="part in bomvending.choices" value="@{{part.id}}">
+                                        @{{part.name}}
+                                    </option> --}}
+                                </select>
+                            </td>
+                            <td class="col-md-1 text-center">
+                                @{{bompart.updater.name}}
                             </td>
                         </tr>
                         <tr ng-if="!alldata || alldata.length == 0">

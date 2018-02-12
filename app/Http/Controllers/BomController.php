@@ -121,8 +121,7 @@ class BomController extends Controller
     // retrieve category and bomcomponents index api()
     public function getCategoryComponentsApi()
     {
-        $components = Bomcategory::with(['bomcomponents', 'bomcomponents.updater'])
-                                    ->has('bomcomponents');
+        $components = Bomcategory::with(['bomcomponents', 'bomcomponents.updater', 'bomcomponents.bomparts', 'bomcomponents.bomparts.updater'])->has('bomcomponents');
 
         // reading whether search input is filled
         if(request('category_id') or request('category_name') or request('component_id') or request('component_name')){

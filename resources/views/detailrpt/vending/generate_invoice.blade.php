@@ -111,18 +111,6 @@
         </div>
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('is_profit_sharing_report', 'Commission', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_profit_sharing_report', ['All'=>'All', '1'=>'Profit Sharing', '0'=>'Non Profit Sharing'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.is_profit_sharing_report',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="form-group">
                 {!! Form::label('is_rental', 'Coorperate Method', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_rental', [''=>'All', 'Rental'=>'Rental Based', 'Profit'=>'Profit Sharing', 'Others'=>'Others'], null,
                     [
@@ -208,6 +196,10 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <span class="badge" style="background-color: #98fb98;">&nbsp;</span>
                 <span>New customer, no previous mth data</span>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <span>**</span>
+                <span>No data for current month</span>
             </div>
         </div>
     </div>
@@ -461,6 +453,11 @@
             </tr>
 
             <tbody>
+                <tr ng-repeat="person in absentlist">
+                    <td colspan="24" class="text-left">
+                        @{{person.cust_id}} - @{{person.company}} **
+                    </td>
+                </tr>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">
                     <td class="col-md-1 text-center">
                         {!! Form::checkbox('checkbox[@{{transaction.person_id}}]') !!}

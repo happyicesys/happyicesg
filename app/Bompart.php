@@ -8,7 +8,7 @@ class Bompart extends Model
 {
     protected $fillable = [
     	'part_id', 'name', 'remark', 'bomcomponent_id', 'thumbnail_url',
-        'updated_by'
+        'updated_by', 'qty', 'movable', 'color'
     ];
 
     // relationships
@@ -30,5 +30,10 @@ class Bompart extends Model
     public function bomvendings()
     {
         return $this->hasMany('App\Bomvending');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo('App\User', 'updated_by');
     }
 }
