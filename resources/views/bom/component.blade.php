@@ -151,7 +151,7 @@
                         <th class="col-md-1 text-center">
                             Qty
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-4 text-center">
                             Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
@@ -173,7 +173,7 @@
                             <td class="col-md-2 text-left" colspan="2">
                                 @{{bomcomponent.remark}}
                             </td>
-                            <td></td>
+                            <td class="col-md-4"></td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}}
                             </td>
@@ -197,13 +197,16 @@
                             <td class="col-md-1 text-left">
                                 @{{bompart.qty}}
                             </td>
-                            <td class="col-md-2 text-center">
-                                <select ui-select2="select2Options" name="chosen[bompart.id]" ng-model="form.part_id" data-placeholder="Select.." multi>
-                                    <option value=""></option>
+                            <td class="col-md-4 text-center">
+                                <ui-select name="chosen[bompart.id]" ng-model="part_id" multiple>
+                                    <ui-select-match placeholder="Select..">@{{$item.name}}</ui-select-match>
+                                    <ui-select-choices repeat="part in bomcomponent.bomparts" >
+                                        @{{part.name}}
+                                    </ui-select-choices>
 {{--                                     <option ng-repeat="part in bomvending.choices" value="@{{part.id}}">
                                         @{{part.name}}
                                     </option> --}}
-                                </select>
+                                </ui-select>
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{bompart.updater.name}}

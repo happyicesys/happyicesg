@@ -209,7 +209,7 @@
                                 </td>
                                 <td colspan="1"></td>
                                 <td class="col-md-1 text-right">
-                                    <strong>@{{totalModel | currency: ""}}</strong>
+                                    <strong>@{{totalModel}}</strong>
                                 </td>
                             </tr>
                         @endif
