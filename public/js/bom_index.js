@@ -122,9 +122,10 @@ function bomCategoryController($scope, $http){
     }
 }
 
-function bomComponentController($scope, $http){
+function bomComponentController($scope, $timeout, $http){
     // init the variables
     $scope.alldata = [];
+    $scope.partform = {};
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
@@ -132,6 +133,8 @@ function bomComponentController($scope, $http){
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.spinner = false;
+    $scope.is_done = false;
     $scope.search = {
         component_id: '',
         component_name: '',
@@ -163,10 +166,14 @@ function bomComponentController($scope, $http){
         $('.select').select2({
             placeholder: 'Select..'
         });
+        $('.selectcustcat').select2({
+            placeholder: 'Select...'
+        });
     });
 
     // init page load
     getPage(1, true);
+    getCustcatOptions();
 
     $scope.exportData = function () {
         var blob = new Blob(["\ufeff", document.getElementById('exportable_bomcomponent').innerHTML], {
@@ -223,6 +230,12 @@ function bomComponentController($scope, $http){
         });
     }
 
+    function getCustcatOptions() {
+        $http.get('/custcat/data').success(function(data) {
+            $scope.custcategories = data;
+        });
+    }
+
     $scope.removeEntry = function(id) {
         var isConfirmDelete = confirm('Are you sure to DELETE this component and its parts?');
         if(isConfirmDelete){
@@ -262,6 +275,75 @@ function bomComponentController($scope, $http){
             ];
             getPage(1);
         })
+    }
+
+    $scope.onCustcatChosen = function(bompart_id, custcategory_id) {
+        $http.post('/api/bomtemplate/part/custcat', {bompart_id: bompart_id, custcategory_id: custcategory_id}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onRemarkChanged = function(bompart_id, remark) {
+        $http.post('/api/bompart/single/remark', {bompart_id: bompart_id, remark: remark}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onQtyChanged = function(bompart_id, qty) {
+        $http.post('/api/bompart/single/qty', {bompart_id: bompart_id, qty: qty}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.removeBompart = function(bompart_id) {
+        var isConfirmDelete = confirm('Are you sure to DELETE this part?');
+        if(isConfirmDelete){
+            $http.delete('/api/bom/part/' + bompart_id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }else{
+            return false;
+        }
+    }
+
+    $scope.passDataModal = function(bomcomponent, movable) {
+        $scope.partform = {
+            title: bomcomponent.name,
+            movable: movable,
+            type: movable == 1 ? 'Moving Part' : 'Non Moving Part',
+            color: movable == 1 ? '' : '#c1fcc1',
+            component_id: bomcomponent.component_id,
+            bomcomponent_id : bomcomponent.id,
+            name: '',
+            qty: '',
+            remark: ''
+        }
+    }
+
+    $scope.createPart = function() {
+        $http.post('/api/bomcomponent/bompart/create', $scope.partform).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.syncCustcat = function(event, custcategory_id){
+        event.preventDefault();
+        var isConfirmOverwrite = confirm('Are you sure you want to overwrite all BOM?');
+        if(isConfirmOverwrite){
+            $scope.spinner = true;
+            $http.post('/api/bom/synctemplate/bomvending', {'custcategory_id': custcategory_id}).success(function(data) {
+                getPage(1, false);
+                $scope.spinner = false;
+                $scope.is_done = true;
+                $timeout(function() {
+                 $scope.is_done = false;
+                }, 5000);
+                $scope.form.custcategory_id = '';
+                $('.selectcustcat').val(null).trigger('change.select2');
+            });
+        }else{
+            return false;
+        }
     }
 }
 

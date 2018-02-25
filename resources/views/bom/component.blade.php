@@ -1,4 +1,5 @@
 @inject('bomcategories', 'App\Bomcategory')
+@inject('custcategories', 'App\Custcategory')
 
 <div ng-controller="bomComponentController">
     <div class="panel panel-primary" ng-cloak>
@@ -6,7 +7,8 @@
             <div class="row" style="margin-top: -15px;">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        Assign Component to Category
+                        Create Component
+                        <span class="badge" style="background-color: #ddd1e7;">&nbsp;</span>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -55,6 +57,38 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <button class="btn btn-success btn-block" ng-click="confirmComponents(form.category_id)" ng-disabled="isFormValid()"><i class="fa fa-check"></i> Confirm</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: -15px;">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Overwrite Sync Template
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                <label class="control-label">Customer Category</label>
+                                <select class="selectcustcat form-control" ng-model="form.custcategory_id">
+                                    <option ng-value=""></option>
+                                    <option ng-value="All">All</option>
+                                    @foreach($custcategories::orderBy('name', 'asc')->get() as $custcategory)
+                                        <option ng-value="{{$custcategory->id}}">
+                                            {{$custcategory->name}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <button class="btn btn-warning btn-block" ng-click="syncCustcat($event, form.custcategory_id)" ng-disabled="!form.custcategory_id"><i class="fa fa-sync"></i> Overwrite & Sync
+                                    <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
+                                    <span ng-show="is_done"> <i class="fa fa-check-circle fa-2x" style="color: green;"></i></span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -151,7 +185,7 @@
                         <th class="col-md-1 text-center">
                             Qty
                         </th>
-                        <th class="col-md-4 text-center">
+                        <th class="col-md-3 text-center">
                             Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
@@ -173,15 +207,18 @@
                             <td class="col-md-2 text-left" colspan="2">
                                 @{{bomcomponent.remark}}
                             </td>
-                            <td class="col-md-4"></td>
+                            <td class="col-md-3">
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}}
                             </td>
                             <td class="col-md-1 text-center">
+                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 0)"><i class="fa fa-plus"></i> Non Moving Part</button>
+                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 1)"><i class="fa fa-plus"></i> Moving Part</button>
                                 <button class="btn btn-danger btn-xs" ng-click="removeEntry(bomcomponent.id)"><i class="fa fa-times"></i></button>
                             </td>
                         </tr>
-                        <tr ng-repeat="(index2, bompart) in bomcomponent.bomparts" ng-repeat-end style="background-color: #c1fcc1;">
+                        <tr ng-repeat="(index2, bompart) in bomcomponent.bomparts" ng-repeat-end ng-style="{'background-color': bompart.movable == 1 ? '' : '#c1fcc1'}">
                             <td class="col-md-1 text-left" style="width:3%">
                                 @{{index + indexFrom}}.@{{index2 + 1}}
                             </td>
@@ -192,24 +229,25 @@
                                 @{{bompart.name}}
                             </td>
                             <td class="col-md-2 text-left">
-                                @{{bompart.remark}}
+                                <textarea class="form-control " ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }'></textarea>
                             </td>
-                            <td class="col-md-1 text-left">
-                                @{{bompart.qty}}
+                            <td class="col-md-1 text-right">
+                                <input type="text" name="bompart_qty[]" ng-model="bompart.qty" class="form-control text-right input-sm" ng-change="onQtyChanged(bompart.id, bompart.qty)" ng-model-options='{ debounce: 700 }'>
                             </td>
-                            <td class="col-md-4 text-center">
-                                <ui-select name="chosen[bompart.id]" ng-model="part_id" multiple>
-                                    <ui-select-match placeholder="Select..">@{{$item.name}}</ui-select-match>
-                                    <ui-select-choices repeat="part in bomcomponent.bomparts" >
-                                        @{{part.name}}
+                            <td class="col-md-3 text-center">
+                                <span ng-repeat="bomtemplate in bompart.bomtemplates">@{{bomtemplate.custcategory.name}}@{{$last ? '' : ', '}}</span>
+                                <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id].id)">
+                                    <ui-select-match>@{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="custcategory in custcategories | filter: $select.search">
+                                        <div ng-bind-html="custcategory.name | highlight: $select.search"></div>
                                     </ui-select-choices>
-{{--                                     <option ng-repeat="part in bomvending.choices" value="@{{part.id}}">
-                                        @{{part.name}}
-                                    </option> --}}
                                 </ui-select>
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{bompart.updater.name}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <button class="btn btn-danger btn-xs" ng-click="removeBompart(bompart.id)"><i class="fa fa-times"></i></button>
                             </td>
                         </tr>
                         <tr ng-if="!alldata || alldata.length == 0">
@@ -223,4 +261,42 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="part_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title"><span ng-style="{'background-color': partform.color}">@{{partform.type}}</span> for <span style="background-color: #ddd1e7;">COM@{{partform.component_id}} - @{{partform.title}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Name
+                            </label>
+                            <input type="text" name="name" class="form-control" ng-model="partform.name">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Qty
+                            </label>
+                            <input type="text" name="qty" class="form-control" ng-model="partform.qty">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Remark
+                            </label>
+                            <textarea name="remark" class="form-control" ng-model="partform.remark" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="createPart()" data-dismiss="modal">Create</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

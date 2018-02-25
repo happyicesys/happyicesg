@@ -14,9 +14,9 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li><a href="#category" role="tab" data-toggle="tab">Category</a></li>
-                    <li><a href="#component" role="tab" data-toggle="tab">Component</a></li>
-                    <li class="active"><a href="#part" role="tab" data-toggle="tab">Part</a></li>
-                    <li><a href="#template" role="tab" data-toggle="tab">Template Definition</a></li>
+                    <li><a href="#component" role="tab" data-toggle="tab">Component & Part</a></li>
+                    {{-- <li class="active"><a href="#part" role="tab" data-toggle="tab">Part</a></li> --}}
+                    {{-- <li><a href="#template" role="tab" data-toggle="tab">Template Definition</a></li> --}}
                     <li><a href="#vending" role="tab" data-toggle="tab">BOM Comparison</a></li>
                     <li><a href="#maintenance" role="tab" data-toggle="tab">Maintenance Record</a></li>
                 </ul>

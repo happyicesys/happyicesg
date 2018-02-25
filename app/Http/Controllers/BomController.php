@@ -121,7 +121,9 @@ class BomController extends Controller
     // retrieve category and bomcomponents index api()
     public function getCategoryComponentsApi()
     {
-        $components = Bomcategory::with(['bomcomponents', 'bomcomponents.updater', 'bomcomponents.bomparts', 'bomcomponents.bomparts.updater'])->has('bomcomponents');
+        $components = Bomcategory::with(array('bomcomponents', 'bomcomponents.updater', 'bomcomponents.bomparts', 'bomcomponents.bomparts.updater', 'bomcomponents.bomparts.bomtemplates.custcategory' => function($query) {
+            $query->orderBy('name', 'ASC');
+        }))->has('bomcomponents');
 
         // reading whether search input is filled
         if(request('category_id') or request('category_name') or request('component_id') or request('component_name')){
@@ -228,6 +230,7 @@ class BomController extends Controller
     public function destroyPartApi($id)
     {
         $bompart = Bompart::findOrFail($id);
+        $bompart->bomtemplates()->delete();
         $bompart->delete();
     }
 
@@ -315,21 +318,52 @@ class BomController extends Controller
     {
         $custcategory_id = request('custcategory_id');
 
-        $bomtemplates = Bomtemplate::where('custcategory_id', $custcategory_id)->get();
-        $people = Person::where('custcategory_id', $custcategory_id)->get();
-
-        foreach($people as $person) {
-            if($person->bomvendings) {
-                $person->bomvendings()->delete();
-            }
+        if($custcategory_id == 'All') {
+            $custcatArr = [];
+            $bomtemplates = Bomtemplate::all();
             foreach($bomtemplates as $bomtemplate) {
-                Bomvending::create([
-                    'custcategory_id' => $custcategory_id,
-                    'bomcomponent_id' => $bomtemplate->bompart->bomcomponent->id,
-                    'bompart_id' => $bomtemplate->bompart_id,
-                    'person_id' => $person->id,
-                    'updated_by' => auth()->user()->id
-                ]);
+                if(! in_array($bomtemplate->custcategory_id, $custcatArr)) {
+                    array_push($custcatArr, $bomtemplate->custcategory_id);
+                }
+            }
+            if(count($custcatArr)>0) {
+                $people = Person::whereIn('custcategory_id', $custcatArr)->get();
+
+                foreach($people as $person) {
+                    if($person->bomvendings) {
+                        $person->bomvendings()->delete();
+                    }
+                    foreach($bomtemplates as $bomtemplate) {
+                        if($person->custcategory_id == $bomtemplate->custcategory_id) {
+                            Bomvending::create([
+                                'custcategory_id' => $bomtemplate->custcategory_id,
+                                'bomcomponent_id' => $bomtemplate->bompart->bomcomponent->id,
+                                'bompart_id' => $bomtemplate->bompart_id,
+                                'person_id' => $person->id,
+                                'updated_by' => auth()->user()->id
+                            ]);
+                        }
+                    }
+                }
+            }
+
+        }else {
+            $bomtemplates = Bomtemplate::where('custcategory_id', $custcategory_id)->get();
+            $people = Person::where('custcategory_id', $custcategory_id)->get();
+
+            foreach($people as $person) {
+                if($person->bomvendings) {
+                    $person->bomvendings()->delete();
+                }
+                foreach($bomtemplates as $bomtemplate) {
+                    Bomvending::create([
+                        'custcategory_id' => $custcategory_id,
+                        'bomcomponent_id' => $bomtemplate->bompart->bomcomponent->id,
+                        'bompart_id' => $bomtemplate->bompart_id,
+                        'person_id' => $person->id,
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
             }
         }
     }
@@ -432,6 +466,28 @@ class BomController extends Controller
         $bomvending = Bomvending::findOrFail($vending_id);
         $bomvending->bompart_id = $part_id;
         $bomvending->save();
+    }
+
+    // bind custcategory to bom part
+    public function bindBompartCustcat()
+    {
+        $bompart_id = request('bompart_id');
+        $custcategory_id = request('custcategory_id');
+        $bomtemplate = Bomtemplate::where('bompart_id', $bompart_id)->where('custcategory_id', $custcategory_id)->first();
+
+        if($bomtemplate) {
+            $bomtemplate->delete();
+        }else {
+            if($custcategory_id) {
+                Bomtemplate::create([
+                    'custcategory_id' => $custcategory_id,
+                    'bompart_id' => $bompart_id,
+                    'bomcomponent_id' => Bompart::where('id', $bompart_id)->first()->bomcomponent->id,
+                    'updated_by' => auth()->user()->id
+                ]);
+            }
+        }
+
     }
 
     // pass value into filter search for DB (collection) [query]
@@ -571,6 +627,50 @@ class BomController extends Controller
     {
         $bommaintenance = Bommaintenance::findOrFail($bommaintenance_id);
         $bommaintenance->delete();
+    }
+
+    // update bom part remark()
+    public function updateBompartRemark()
+    {
+        $bompart_id = request('bompart_id');
+        $remark = request('remark');
+
+        $bompart = Bompart::findOrFail($bompart_id);
+
+        $bompart->remark = $remark;
+        $bompart->save();
+    }
+
+    // update bom part qty()
+    public function updateBompartQty()
+    {
+        $bompart_id = request('bompart_id');
+        $qty = request('qty');
+
+        $bompart = Bompart::findOrFail($bompart_id);
+
+        $bompart->qty = $qty;
+        $bompart->save();
+    }
+
+    // create bompart via bomcomponent()
+    public function createBompartByBomcomponent()
+    {
+        $movable = request('movable');
+        $bomcomponent_id = request('bomcomponent_id');
+        $name = request('name');
+        $qty = request('qty');
+        $remark = request('remark');
+
+        Bompart::create([
+            'part_id' => $this->getBompartIncrement(),
+            'movable' => $movable,
+            'bomcomponent_id' => $bomcomponent_id,
+            'name' => $name,
+            'qty' => $qty,
+            'remark' => $remark,
+            'updated_by' => auth()->user()->id
+        ]);
     }
 
     // pass value into filter search for parts DB (collection) [query]

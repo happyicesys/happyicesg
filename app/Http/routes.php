@@ -13,6 +13,10 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bomcomponent/bompart/create', 'BomController@createBompartByBomcomponent');
+Route::post('/api/bompart/single/qty', 'BomController@updateBompartQty');
+Route::post('/api/bompart/single/remark', 'BomController@updateBompartRemark');
+Route::post('/api/bomtemplate/part/custcat', 'BomController@bindBompartCustcat');
 Route::delete('/api/bom/maintenance/{bommaintenance_id}/delete', 'BomController@destroyBommaintenanceApi');
 Route::post('/api/bom/maintenances', 'BomController@getBommaintenancesApi');
 Route::post('/api/bom/maintenance/submit', 'BomController@createBommaintenanceEntry');

@@ -19,13 +19,13 @@
     <tr>
         <th></th>
         <th>Cash:</th>
-        <th>{{$data['total_cash_happyice'] ? number_format($data['total_cash_happyice'], 2, '.', '') : 0.00}}</th>
+        <th>{{$data['total_cash_happyice'] ? $data['total_cash_happyice'] : 0.00}}</th>
         <th></th>
         <th>Cash:</th>
-        <th>{{$data['total_cash_logistic'] ? number_format($data['total_cash_logistic'], 2, '.', '') : 0.00}}</th>
+        <th>{{$data['total_cash_logistic'] ? $data['total_cash_logistic'] : 0.00}}</th>
         <th></th>
         <th>Cash:</th>
-        <th>{{$data['total_cash_all'] ? number_format($data['total_cash_all'], 2, '.', '') : 0.00}}</th>
+        <th>{{$data['total_cash_all'] ? $data['total_cash_all'] : 0.00}}</th>
         <th></th>
     </tr>
 
