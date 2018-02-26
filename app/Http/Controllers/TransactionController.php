@@ -1562,20 +1562,10 @@ class TransactionController extends Controller
                 'digital_clock.integer' => 'Digital clock must be in integer',
                 'balance_coin.numeric' => 'Balance coin must be in numbers'
             ]);
-
-            // if($request->has('is_required_analog') and $transaction->total > 0) {
-/*            if($request->has('is_required_analog') and $current_analog > 0) {
-                $this->validate($request, [
-                    'analog_clock' => 'required|integer',
-                ], [
-                    'analog_clock.required' => 'Please fill in the analog clock',
-                    'analag_clock.integer' => 'Analog clock must be in integer',
-                ]);
-            }*/
         }
 
         // sales count and sales amount figure must be filled
-        if($transaction->person->is_dvm) {
+        if($transaction->person->is_dvm and auth()->user()->hasRole('driver')) {
             $this->validate($request, [
                 'sales_count' => 'required',
                 'sales_amount' => 'required'

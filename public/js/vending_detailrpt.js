@@ -86,7 +86,7 @@ var app = angular.module('app', [
 
         $scope.getRowColor = function(transaction) {
             if(transaction) {
-                if(transaction.begin_date == transaction.end_date) {
+                if(!transaction.begin_date) {
                     return '#98fb98';
                 }
 

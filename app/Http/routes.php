@@ -13,6 +13,11 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bomcategory/single/update', 'BomController@updateBomcategoryApi');
+Route::post('/api/bomcomponent/single/update', 'BomController@updateBomcomponentApi');
+Route::post('/api/bompart_id/validate', 'BomController@validateBompartId');
+Route::get('/api/bompart/increment', 'BomController@getBompartIncrementApi');
+Route::post('/api/bompart/single/update', 'BomController@updateBompartApi');
 Route::post('/api/bomcomponent/bompart/create', 'BomController@createBompartByBomcomponent');
 Route::post('/api/bompart/single/qty', 'BomController@updateBompartQty');
 Route::post('/api/bompart/single/remark', 'BomController@updateBompartRemark');

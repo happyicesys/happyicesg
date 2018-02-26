@@ -27,6 +27,7 @@ function bomCategoryController($scope, $http){
         name: '',
         remark: ''
     }
+    $scope.categoryform = {};
     // init page load
     getPage(1, true);
 
@@ -120,12 +121,28 @@ function bomCategoryController($scope, $http){
         }
         return invalid;
     }
+
+    $scope.editCategoryModal = function(bomcategory) {
+        $scope.categoryform = {
+            id: bomcategory.id,
+            category_id: bomcategory.category_id,
+            name: bomcategory.name,
+            remark: bomcategory.remark
+        }
+    }
+
+    $scope.editCategory = function() {
+        $http.post('/api/bomcategory/single/update', $scope.categoryform).success(function(data) {
+            getPage(1);
+        });
+    }
 }
 
 function bomComponentController($scope, $timeout, $http){
     // init the variables
     $scope.alldata = [];
     $scope.partform = {};
+    $scope.componentform = {};
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
@@ -155,12 +172,8 @@ function bomComponentController($scope, $timeout, $http){
             remark: ''
         },
     ];
-
-    $scope.select2Options = {
-        'multiple': true,
-        'simple_tags': true,
-        'tags': []  // Can be empty list.
-    };
+    $scope.formErrors = [];
+    $scope.notsubmitable = false;
 
     angular.element(document).ready(function () {
         $('.select').select2({
@@ -310,19 +323,44 @@ function bomComponentController($scope, $timeout, $http){
         $scope.partform = {
             title: bomcomponent.name,
             movable: movable,
-            type: movable == 1 ? 'Moving Part' : 'Non Moving Part',
-            color: movable == 1 ? '' : '#c1fcc1',
+            type: movable == 1 ? 'Consumable' : 'Part',
+            color: movable == 1 ? '#fbfafc' : '#eae3f0',
             component_id: bomcomponent.component_id,
             bomcomponent_id : bomcomponent.id,
+            part_id: getBompartIncrement(),
             name: '',
             qty: '',
             remark: ''
         }
     }
 
+    $scope.editDataModal = function(bompart) {
+        $scope.partform = {
+            id: bompart.id,
+            type: bompart.movable == 1 ? 'Consumable' : 'Part',
+            color: bompart.movable == 1 ? '#fbfafc' : '#eae3f0',
+            part_id: bompart.part_id,
+            name: bompart.name,
+            qty: bompart.qty,
+            remark: bompart.remark
+        }
+    }
+
     $scope.createPart = function() {
         $http.post('/api/bomcomponent/bompart/create', $scope.partform).success(function(data) {
             getPage(1);
+        });
+    }
+
+    $scope.editPart = function() {
+        $http.post('/api/bompart/single/update', $scope.partform).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    function getBompartIncrement() {
+        $http.get('/api/bompart/increment').success(function(data) {
+            $scope.partform.part_id = data;
         });
     }
 
@@ -344,6 +382,32 @@ function bomComponentController($scope, $timeout, $http){
         }else{
             return false;
         }
+    }
+
+    $scope.onPartIdChanged = function(part_id) {
+        $http.post('/api/bompart_id/validate', {part_id: part_id})
+            .success(function(data) {
+                $scope.formErrors = [];
+                $scope.notsubmitable = true;
+            }).error(function(data) {
+                $scope.formErrors = data;
+                $scope.notsubmitable = false;
+            });
+    }
+
+    $scope.editComponentModal = function(bomcomponent) {
+        $scope.componentform = {
+            id: bomcomponent.id,
+            component_id: bomcomponent.component_id,
+            name: bomcomponent.name,
+            remark: bomcomponent.remark
+        }
+    }
+
+    $scope.editComponent = function() {
+        $http.post('/api/bomcomponent/single/update', $scope.componentform).success(function(data) {
+            getPage(1);
+        });
     }
 }
 

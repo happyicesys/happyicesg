@@ -578,7 +578,8 @@ class VendingController extends Controller
         $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
 
         if($current_month) {
-            $notAvailPeople = Person::where(function($query) {
+            $notAvailPeople = Person::with('custcategory')
+                                    ->where(function($query) {
                                         $query->where('is_vending', 1)
                                                 ->orWhere('is_dvm', 1);
                                     })->where('active', 'Yes')
@@ -587,6 +588,7 @@ class VendingController extends Controller
                                         $query->whereDate('delivery_date', '>=', $current_month->startOfMonth()->toDateString())
                                                 ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString());
                                     })
+                                    ->whereDate('created_at', '<=', $current_month->endOfMonth()->toDateString())
                                     ->orderBy('cust_id')
                                     ->get();
         }

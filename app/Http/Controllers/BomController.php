@@ -653,9 +653,27 @@ class BomController extends Controller
         $bompart->save();
     }
 
+    // update bom part()
+    public function updateBompartApi()
+    {
+        $id = request('id');
+        $part_id = request('part_id');
+        $name = request('name');
+        $qty = request('qty');
+        $remark = request('remark');
+
+        $bompart = Bompart::findOrFail($id);
+        $bompart->part_id = $part_id;
+        $bompart->name = $name;
+        $bompart->qty = $qty;
+        $bompart->remark = $remark;
+        $bompart->save();
+    }
+
     // create bompart via bomcomponent()
     public function createBompartByBomcomponent()
     {
+        $part_id = request('part_id');
         $movable = request('movable');
         $bomcomponent_id = request('bomcomponent_id');
         $name = request('name');
@@ -663,7 +681,7 @@ class BomController extends Controller
         $remark = request('remark');
 
         Bompart::create([
-            'part_id' => $this->getBompartIncrement(),
+            'part_id' => $part_id,
             'movable' => $movable,
             'bomcomponent_id' => $bomcomponent_id,
             'name' => $name,
@@ -671,6 +689,54 @@ class BomController extends Controller
             'remark' => $remark,
             'updated_by' => auth()->user()->id
         ]);
+    }
+
+    // get bompart increment()
+    public function getBompartIncrementApi()
+    {
+        $bompart_id = $this->getBompartIncrement();
+        return $bompart_id;
+    }
+
+    // validate bompart id and return error()
+    public function validateBompartId()
+    {
+        $this->validate(request(), [
+            'part_id' => 'required|unique:bomparts,part_id'
+        ],[
+            'part_id.required' => 'Part ID is required',
+            'part_id.unique' => 'This Part ID is in used',
+        ]);
+    }
+
+    // update bom component()
+    public function updateBomcomponentApi()
+    {
+        $id = request('id');
+        $component_id = request('component_id');
+        $name = request('name');
+        $remark = request('remark');
+
+        $bomcomponent = Bomcomponent::findOrFail($id);
+        $bomcomponent->component_id = $component_id;
+        $bomcomponent->name = $name;
+        $bomcomponent->remark = $remark;
+        $bomcomponent->save();
+    }
+
+    // update bom category()
+    public function updateBomcategoryApi()
+    {
+        $id = request('id');
+        $category_id = request('category_id');
+        $name = request('name');
+        $remark = request('remark');
+
+        $bomcategory = Bomcategory::findOrFail($id);
+        $bomcategory->category_id = $category_id;
+        $bomcategory->name = $name;
+        $bomcategory->remark = $remark;
+        $bomcategory->save();
     }
 
     // pass value into filter search for parts DB (collection) [query]

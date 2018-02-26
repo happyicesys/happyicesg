@@ -454,9 +454,19 @@
 
             <tbody>
                 <tr ng-repeat="person in absentlist">
-                    <td colspan="24" class="text-left">
-                        @{{person.cust_id}} - @{{person.company}} **
+                    <td colspan="2"></td>
+                    <td class="col-md-1 text-center">
+                        @{{person.cust_id}}
                     </td>
+                    <td class="col-md-1 text-left">
+                        <a href="/person/@{{ person.id }}">
+                            @{{ person.cust_id[0] == 'D' || person.cust_id[0] == 'H' ? person.name : person.company }}
+                        </a>
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{person.custcategory.name}}
+                    </td>
+                    <td colspan="13"></td>
                 </tr>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">
                     <td class="col-md-1 text-center">
@@ -468,7 +478,7 @@
                     <td class="col-md-1 text-center">
                         @{{ transaction.cust_id }}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-left">
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>

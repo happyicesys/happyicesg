@@ -112,7 +112,9 @@
                                 @{{ $index + indexFrom }}
                             </td>
                             <td class="col-md-1 text-center">
-                                CAT @{{bomcategory.category_id}}
+                                <a href="#" data-toggle="modal" data-target="#category_modal" ng-click="editCategoryModal(bomcategory)">
+                                    CAT @{{bomcategory.category_id}}
+                                </a>
                             </td>
                             <td class="col-md-4 text-left">
                                 @{{bomcategory.name}}
@@ -135,6 +137,51 @@
             </div>
             <div>
                 <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="category_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">
+                    Edit Category
+                </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Category ID
+                            </label>
+                            <input type="text" name="category_id" class="form-control" ng-model="categoryform.category_id">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Name
+                            </label>
+                            <input type="text" name="name" class="form-control" ng-model="categoryform.name">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Qty
+                            </label>
+                            <input type="text" name="qty" class="form-control" ng-model="categoryform.qty">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Remark
+                            </label>
+                            <textarea name="remark" class="form-control" ng-model="categoryform.remark" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="editCategory()" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
