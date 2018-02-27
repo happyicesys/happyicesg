@@ -311,7 +311,7 @@
                             <label class="control-label">
                                 Remark
                             </label>
-                            <textarea name="remark" class="form-control" ng-model="partform.remark" rows="3"></textarea>
+                            <textarea name="remark" class="form-control" ng-model="partform.remark" rows="2"></textarea>
                         </div>
                     </div>
                 </div>
@@ -351,7 +351,7 @@
                             <label class="control-label">
                                 Remark
                             </label>
-                            <textarea name="remark" class="form-control" ng-model="componentform.remark" rows="3"></textarea>
+                            <textarea name="remark" class="form-control" ng-model="componentform.remark" rows="2"></textarea>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bomcomponent extends Model
 {
     protected $fillable = [
-        'component_id', 'name', 'remark', 'updated_by', 'bomcategory_id'
+        'component_id', 'name', 'remark', 'updated_by', 'bomcategory_id',
         'drawing_id', 'drawing_path'
     ];
 
