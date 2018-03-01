@@ -150,7 +150,7 @@
                 Total:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
+                <strong>@{{ transactions_total ? transactions_total : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -158,7 +158,7 @@
                 Total Paid:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ total_paid ? total_paid : 0.00 | currency: "": 2}}</strong>
+                <strong>@{{ transactions_paid ? transactions_paid : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -166,7 +166,7 @@
                 Total Owe:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ total_owe ? total_owe : 0.00 | currency: "": 2}}</strong>
+                <strong>@{{ transactions_owe ? transactions_owe : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @inject('people', 'App\Person')
 @inject('users', 'App\User')
-@inject('custcategories', 'App\Custcategory');
+@inject('custcategories', 'App\Custcategory')
 @inject('bomcategories', 'App\Bomcategory')
 @inject('bomcomponents', 'App\Bomcomponent')
 

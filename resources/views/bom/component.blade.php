@@ -145,7 +145,8 @@
 
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                    <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel"></i> Export Excel</button>
+                    <button class="btn btn-default" ng-click="formedit = !formedit"><i class="fa fa-edit"></i> Quick Edit</button>
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-xs-12 text-right">
@@ -179,13 +180,16 @@
                         <th class="col-md-2 text-center">
                             Name
                         </th>
+                        <th class="col-md-1 text-center">
+                            Drawing #
+                        </th>
                         <th class="col-md-2 text-center">
                             Remarks
                         </th>
                         <th class="col-md-1 text-center">
                             Qty
                         </th>
-                        <th class="col-md-3 text-center">
+                        <th class="col-md-2 text-center">
                             Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
@@ -206,10 +210,13 @@
                                     @{{bomcomponent.name}}
                                 </a>
                             </td>
+                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#component_drawing_modal" ng-click="editComponentModal(bomcomponent)" style="cursor: pointer;">
+                                @{{bomcomponent.drawing_id}}
+                            </td>
                             <td class="col-md-2 text-left" colspan="2">
                                 @{{bomcomponent.remark}}
                             </td>
-                            <td class="col-md-3">
+                            <td class="col-md-2">
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}}
@@ -232,15 +239,20 @@
                                     @{{bompart.name}}
                                 </a>
                             </td>
+                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#part_drawing_modal" ng-click="editDataModal(bompart)" style="cursor: pointer;">
+                                @{{bompart.drawing_id}}
+                            </td>
                             <td class="col-md-2 text-left">
-                                <textarea class="form-control " ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }'></textarea>
+                                <textarea class="form-control " ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <span ng-if="!formedit">@{{bompart.remark}}</span>
                             </td>
                             <td class="col-md-1 text-right">
-                                <input type="text" name="bompart_qty[]" ng-model="bompart.qty" class="form-control text-right input-sm" ng-change="onQtyChanged(bompart.id, bompart.qty)" ng-model-options='{ debounce: 700 }'>
+                                <input type="text" name="bompart_qty[]" ng-model="bompart.qty" class="form-control text-right input-sm" ng-change="onQtyChanged(bompart.id, bompart.qty)" ng-model-options='{ debounce: 700 }' ng-if="formedit">
+                                <span ng-if="!formedit">@{{bompart.qty}}</span>
                             </td>
-                            <td class="col-md-3 text-center">
+                            <td class="col-md-2 text-center">
                                 <span ng-repeat="bomtemplate in bompart.bomtemplates">@{{bomtemplate.custcategory.name}}@{{$last ? '' : ', '}}</span>
-                                <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id].id)">
+                                <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id].id)" ng-if="formedit">
                                     <ui-select-match>@{{$select.selected.name}}</ui-select-match>
                                     <ui-select-choices repeat="custcategory in custcategories | filter: $select.search">
                                         <div ng-bind-html="custcategory.name | highlight: $select.search"></div>
@@ -313,6 +325,30 @@
                             </label>
                             <textarea name="remark" class="form-control" ng-model="partform.remark" rows="2"></textarea>
                         </div>
+                        <hr>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Drawing #
+                            </label>
+                            <input type="text" name="drawing_id" class="form-control" ng-model="partform.drawing_id">
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="files">Upload Drawing</label>
+                                <input type="file" name="files" id="files" ng-files="setTheBompartFiles($files)" id="part_file" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" ng-click="uploadBompartFile(partform.id)"><i class="fa fa-upload"></i> Upload File</button>
+                                <button class="btn btn-danger" ng-click="deleteBompartDrawing(partform.id)"><i class="fa fa-times"></i> Remove File</button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <a ng-href="@{{partform.drawing_path}}" ng-if="partform.drawing_path">
+                                <img ng-src="@{{partform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                            </a>
+                            <img src="#" alt="No photo found" ng-if="!partform.drawing_path" height="250" width="250" style="border:2px solid black">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -353,10 +389,69 @@
                             </label>
                             <textarea name="remark" class="form-control" ng-model="componentform.remark" rows="2"></textarea>
                         </div>
+                        <hr>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Drawing #
+                            </label>
+                            <input type="text" name="drawing_id" class="form-control" ng-model="componentform.drawing_id">
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="files">Upload Drawing</label>
+                                <input type="file" name="files" id="files" ng-files="setTheBomcomponentFiles($files)" id="component_file" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" ng-click="uploadBomcomponentFile(componentform.id)"><i class="fa fa-upload"></i> Upload File</button>
+                                <button class="btn btn-danger" ng-click="deleteBomcomponentDrawing(componentform.id)"><i class="fa fa-times"></i> Remove File</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <a ng-href="@{{componentform.drawing_path}}" ng-if="componentform.drawing_path">
+                                <img ng-src="@{{componentform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                            </a>
+                            <img src="#" alt="No photo found" ng-if="!componentform.drawing_path" height="250" width="250" style="border:2px solid black">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-click="editComponent()" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="component_drawing_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    &nbsp;
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="componentform.drawing_path">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="part_drawing_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    &nbsp;
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="partform.drawing_path">
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

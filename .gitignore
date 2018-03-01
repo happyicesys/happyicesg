@@ -2,6 +2,7 @@
 /node_modules
 /public/person_asset
 /public/item_asset
+/public/bom_asset
 /public/inv_attachments
 /storage/invoice
 Homestead.yaml

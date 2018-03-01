@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use App\Http\Requests;
 use App\Bomcategory;
@@ -38,7 +39,7 @@ class BomController extends Controller
         $bomcategories = DB::table('bomcategories')
                             ->leftJoin('users', 'users.id', '=', 'bomcategories.updated_by')
                             ->select(
-                                'bomcategories.id', 'bomcategories.category_id', 'bomcategories.name', 'bomcategories.remark',
+                                'bomcategories.id', 'bomcategories.category_id', 'bomcategories.name', 'bomcategories.remark', 'bomcategories.drawing_id', 'bomcategories.drawing_path',
                                 'users.name AS updater'
                             );
         // reading whether search input is filled
@@ -49,7 +50,7 @@ class BomController extends Controller
         if(request('sortName')){
             $bomcategories = $bomcategories->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }else {
-            $bomcategories = $bomcategories->latest('bomcategories.created_at');
+            $bomcategories = $bomcategories->orderBy('bomcategories.category_id');
         }
 
         $pageNum = request('pageNum') ? request('pageNum') : 100;
@@ -121,9 +122,18 @@ class BomController extends Controller
     // retrieve category and bomcomponents index api()
     public function getCategoryComponentsApi()
     {
-        $components = Bomcategory::with(array('bomcomponents', 'bomcomponents.updater', 'bomcomponents.bomparts', 'bomcomponents.bomparts.updater', 'bomcomponents.bomparts.bomtemplates.custcategory' => function($query) {
-            $query->orderBy('name', 'ASC');
-        }))->has('bomcomponents');
+        $components = Bomcategory::with(array(
+            'bomcomponents' => function($query) {
+                $query->orderBy('component_id', 'ASC');
+            },
+            'bomcomponents.updater',
+            'bomcomponents.bomparts' => function($query) {
+                $query->orderBy('part_id', 'ASC');
+            },
+            'bomcomponents.bomparts.updater',
+            'bomcomponents.bomparts.bomtemplates.custcategory' => function($query) {
+                $query->orderBy('name', 'ASC');
+            }))->has('bomcomponents');
 
         // reading whether search input is filled
         if(request('category_id') or request('category_name') or request('component_id') or request('component_name')){
@@ -133,7 +143,7 @@ class BomController extends Controller
         if(request('sortName')){
             $components = $components->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }else {
-            $components = $components->latest();
+            $components = $components->orderBy('category_id', 'asc');
         }
 
         $pageNum = request('pageNum') ? request('pageNum') : 100;
@@ -658,12 +668,16 @@ class BomController extends Controller
     {
         $id = request('id');
         $part_id = request('part_id');
+        $drawing_id = request('drawing_id');
+        $drawing_path = request('drawing_path');
         $name = request('name');
         $qty = request('qty');
         $remark = request('remark');
 
         $bompart = Bompart::findOrFail($id);
         $bompart->part_id = $part_id;
+        $bompart->drawing_id = $drawing_id;
+        $bompart->drawing_path = $drawing_path;
         $bompart->name = $name;
         $bompart->qty = $qty;
         $bompart->remark = $remark;
@@ -714,11 +728,15 @@ class BomController extends Controller
     {
         $id = request('id');
         $component_id = request('component_id');
+        $drawing_id = request('drawing_id');
+        $drawing_path = request('drawing_path');
         $name = request('name');
         $remark = request('remark');
 
         $bomcomponent = Bomcomponent::findOrFail($id);
         $bomcomponent->component_id = $component_id;
+        $bomcomponent->drawing_id = $drawing_id;
+        $bomcomponent->drawing_path = $drawing_path;
         $bomcomponent->name = $name;
         $bomcomponent->remark = $remark;
         $bomcomponent->save();
@@ -729,14 +747,97 @@ class BomController extends Controller
     {
         $id = request('id');
         $category_id = request('category_id');
+        $drawing_id = request('drawing_id');
         $name = request('name');
         $remark = request('remark');
 
         $bomcategory = Bomcategory::findOrFail($id);
         $bomcategory->category_id = $category_id;
+        $bomcategory->drawing_id = $drawing_id;
         $bomcategory->name = $name;
         $bomcategory->remark = $remark;
         $bomcategory->save();
+    }
+
+    // upload category file()
+    public function uploadBomcategoryDrawing($bomcategory_id)
+    {
+        $bomcategory = Bomcategory::findOrFail($bomcategory_id);
+        if($file = request()->file('image_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $file->move('bom_asset/bomcategory/'.$bomcategory->id.'/', $name);
+            $bomcategory->drawing_path = '/bom_asset/bomcategory/'.$bomcategory->id.'/'.$name;
+            $bomcategory->save();
+        }
+    }
+
+    // upload component file()
+    public function uploadBomcomponentDrawing($bomcomponent_id)
+    {
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        if($file = request()->file('component_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $file->move('bom_asset/bomcategory/'.$bomcomponent->bomcategory->id.'/'.$bomcomponent->id.'/', $name);
+            $bomcomponent->drawing_path = '/bom_asset/bomcategory/'.$bomcomponent->bomcategory->id.'/'.$bomcomponent->id.'/'.$name;
+            $bomcomponent->save();
+        }
+    }
+
+    // upload part file()
+    public function uploadBompartDrawing($bompart_id)
+    {
+        $bompart = Bompart::findOrFail($bompart_id);
+        if($file = request()->file('part_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $file->move('bom_asset/bomcategory/'.$bompart->bomcomponent->bomcategory->id.'/'.$bompart->bomcomponent->id.'/', $name);
+            $bompart->drawing_path = '/bom_asset/bomcategory/'.$bompart->bomcomponent->bomcategory->id.'/'.$bompart->bomcomponent->id.'/'.$name;
+            $bompart->save();
+        }
+    }
+
+    // get single bomcategory api(int bomcategory_id)
+    public function getBomcategorySingleApi($bomcategory_id)
+    {
+        $bomcategory = Bomcategory::findOrFail($bomcategory_id);
+        return $bomcategory;
+    }
+
+    // get single bomcomponent api(int bomcategory_id)
+    public function getBomcomponentSingleApi($bomcomponent_id)
+    {
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        return $bomcomponent;
+    }
+
+    // get single bompart api(int bompart_id)
+    public function getBompartSingleApi($bompart_id)
+    {
+        $bompart = Bompart::findOrFail($bompart_id);
+        return $bompart;
+    }
+
+    public function removeBomcategoryDrawingApi($bomcategory_id)
+    {
+        $bomcategory = Bomcategory::findOrFail($bomcategory_id);
+        File::delete(public_path().$bomcategory->drawing_path);
+        $bomcategory->drawing_path = null;
+        $bomcategory->save();
+    }
+
+    public function removeBomcomponentDrawingApi($bomcomponent_id)
+    {
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        File::delete(public_path().$bomcomponent->drawing_path);
+        $bomcomponent->drawing_path = null;
+        $bomcomponent->save();
+    }
+
+    public function removeBompartDrawingApi($bompart_id)
+    {
+        $bompart = Bompart::findOrFail($bompart_id);
+        File::delete(public_path().$bompart->drawing_path);
+        $bompart->drawing_path = null;
+        $bompart->save();
     }
 
     // pass value into filter search for parts DB (collection) [query]

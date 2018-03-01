@@ -13,6 +13,15 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::delete('/api/bompart/drawing/{bompart_id}/delete', 'BomController@removeBompartDrawingApi');
+Route::get('/api/bompart/{bompart_id}', 'BomController@getBompartSingleApi');
+Route::post('/bompart/drawing/upload/{bompart_id}', 'BomController@uploadBompartDrawing');
+Route::delete('/api/bomcomponent/drawing/{bomcomponent_id}/delete', 'BomController@removeBomcomponentDrawingApi');
+Route::get('/api/bomcomponent/{bomcomponent_id}', 'BomController@getBomcomponentSingleApi');
+Route::post('/bomcomponent/drawing/upload/{bomcomponent_id}', 'BomController@uploadBomcomponentDrawing');
+Route::delete('/api/bomcategory/drawing/{bomcategory_id}/delete', 'BomController@removeBomcategoryDrawingApi');
+Route::get('/api/bomcategory/{bomcategory_id}', 'BomController@getBomcategorySingleApi');
+Route::post('/bomcategory/drawing/upload/{bomcategory_id}', 'BomController@uploadBomcategoryDrawing');
 Route::post('/api/bomcategory/single/update', 'BomController@updateBomcategoryApi');
 Route::post('/api/bomcomponent/single/update', 'BomController@updateBomcomponentApi');
 Route::post('/api/bompart_id/validate', 'BomController@validateBompartId');

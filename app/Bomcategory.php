@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Bomcategory extends Model
 {
     protected $fillable = [
-    	'category_id', 'name', 'remark', 'updated_by'
+    	'category_id', 'name', 'remark', 'updated_by', 'drawing_id',
+        'drawing_path'
     ];
 
     // relationships

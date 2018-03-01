@@ -92,7 +92,13 @@
                             <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-4 text-center">
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('drawing_id')">
+                            Drawing #
+                            <span ng-if="search.sortName == 'drawing_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'drawing_id' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-3 text-center">
                             <a href="" ng-click="sortTable('remark')">
                             Remarks
                             <span ng-if="search.sortName == 'remark' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -119,7 +125,10 @@
                             <td class="col-md-4 text-left">
                                 @{{bomcategory.name}}
                             </td>
-                            <td class="col-md-4 text-left">
+                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#drawing_modal" ng-click="editCategoryModal(bomcategory)" style="cursor: pointer;">
+                                @{{bomcategory.drawing_id}}
+                            </td>
+                            <td class="col-md-3 text-left">
                                 @{{bomcategory.remark}}
                             </td>
                             <td class="col-md-1 text-center">
@@ -166,20 +175,55 @@
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
-                                Qty
-                            </label>
-                            <input type="text" name="qty" class="form-control" ng-model="categoryform.qty">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
                                 Remark
                             </label>
-                            <textarea name="remark" class="form-control" ng-model="categoryform.remark" rows="3"></textarea>
+                            <textarea name="remark" class="form-control" ng-model="categoryform.remark" rows="2"></textarea>
+                        </div>
+                        <hr>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Drawing #
+                            </label>
+                            <input type="text" name="drawing_id" class="form-control" ng-model="categoryform.drawing_id">
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="files">Upload Drawing</label>
+                                <input type="file" name="files" id="files" ng-files="setTheFiles($files)" id="image_file" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" ng-click="uploadFile(categoryform.id)"><i class="fa fa-upload"></i> Upload File</button>
+                                <button class="btn btn-danger" ng-click="deleteBomcategoryDrawing(categoryform.id)"><i class="fa fa-times"></i> Remove File</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <a href="@{{categoryform.drawing_path}}" ng-if="categoryform.drawing_path">
+                                <img src="@{{categoryform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                            </a>
+                            <img src="#" alt="No photo found" ng-if="!categoryform.drawing_path" height="250" width="250" style="border:2px solid black">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-click="editCategory()" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="drawing_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    &nbsp;
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <img src="@{{categoryform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="categoryform.drawing_path">
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

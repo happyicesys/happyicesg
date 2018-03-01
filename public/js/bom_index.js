@@ -1,12 +1,14 @@
 var app = angular.module('app', [
-                                    'ngSanitize',
-                                    'ui.select2',
-                                    'ui.select',
-                                    'angularUtils.directives.dirPagination',
-                                    '720kb.datepicker',
-                                ]);
+        'ngSanitize',
+        'ui.select2',
+        'ui.select',
+        'angularUtils.directives.dirPagination',
+        '720kb.datepicker',
+    ], ['$httpProvider', function ($httpProvider) {
+    $httpProvider.defaults.headers.post['X-CSRF-TOKEN'] = $('meta[name=csrf-token]').attr('content');
+}]);
 
-function bomCategoryController($scope, $http){
+function bomCategoryController($scope, $http, $window){
     // init the variables
     $scope.alldata = [];
     $scope.totalCount = 0;
@@ -123,17 +125,66 @@ function bomCategoryController($scope, $http){
     }
 
     $scope.editCategoryModal = function(bomcategory) {
+        fetchSingleBomcategory(bomcategory);
+    }
+
+    function fetchSingleBomcategory(bomcategory) {
         $scope.categoryform = {
             id: bomcategory.id,
             category_id: bomcategory.category_id,
             name: bomcategory.name,
-            remark: bomcategory.remark
+            remark: bomcategory.remark,
+            drawing_id: bomcategory.drawing_id,
+            drawing_path: bomcategory.drawing_path
         }
     }
 
     $scope.editCategory = function() {
         $http.post('/api/bomcategory/single/update', $scope.categoryform).success(function(data) {
             getPage(1);
+        });
+    }
+
+    $scope.errors = [];
+    $scope.files = [];
+    var formData = new FormData();
+
+    $scope.uploadFile = function (bomcategory_id) {
+        var request = {
+            method: 'POST',
+            url: '/bomcategory/drawing/upload/' + bomcategory_id,
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#image_file');
+                fileElement.value = '';
+                alert("Image has been uploaded successfully!");
+                $http.get('/api/bomcategory/' + bomcategory_id).success(function(data) {
+                    fetchSingleBomcategory(data);
+                });
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+            });
+    };
+
+    $scope.setTheFiles = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('image_file', value);
+        });
+    };
+
+    $scope.deleteBomcategoryDrawing = function(bomcategory_id) {
+        $http.delete('/api/bomcategory/drawing/'+ bomcategory_id + '/delete').success(function(data) {
+            $http.get('/api/bomcategory/' + bomcategory_id).success(function(catdata) {
+                fetchSingleBomcategory(catdata);
+            });
         });
     }
 }
@@ -174,6 +225,7 @@ function bomComponentController($scope, $timeout, $http){
     ];
     $scope.formErrors = [];
     $scope.notsubmitable = false;
+    $scope.formedit = false;
 
     angular.element(document).ready(function () {
         $('.select').select2({
@@ -335,6 +387,10 @@ function bomComponentController($scope, $timeout, $http){
     }
 
     $scope.editDataModal = function(bompart) {
+        fetchSingleBompart(bompart);
+    }
+
+    function fetchSingleBompart(bompart) {
         $scope.partform = {
             id: bompart.id,
             type: bompart.movable == 1 ? 'Consumable' : 'Part',
@@ -342,7 +398,9 @@ function bomComponentController($scope, $timeout, $http){
             part_id: bompart.part_id,
             name: bompart.name,
             qty: bompart.qty,
-            remark: bompart.remark
+            remark: bompart.remark,
+            drawing_id: bompart.drawing_id,
+            drawing_path: bompart.drawing_path,
         }
     }
 
@@ -396,9 +454,15 @@ function bomComponentController($scope, $timeout, $http){
     }
 
     $scope.editComponentModal = function(bomcomponent) {
+        fetchSingleBomcomponent(bomcomponent);
+    }
+
+    function fetchSingleBomcomponent(bomcomponent) {
         $scope.componentform = {
             id: bomcomponent.id,
             component_id: bomcomponent.component_id,
+            drawing_id: bomcomponent.drawing_id,
+            drawing_path: bomcomponent.drawing_path,
             name: bomcomponent.name,
             remark: bomcomponent.remark
         }
@@ -407,6 +471,88 @@ function bomComponentController($scope, $timeout, $http){
     $scope.editComponent = function() {
         $http.post('/api/bomcomponent/single/update', $scope.componentform).success(function(data) {
             getPage(1);
+        });
+    }
+
+    $scope.errors = [];
+    $scope.files = [];
+    var formData = new FormData();
+
+    $scope.uploadBomcomponentFile = function (bomcomponent_id) {
+        var request = {
+            method: 'POST',
+            url: '/bomcomponent/drawing/upload/' + bomcomponent_id,
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#component_file');
+                fileElement.value = '';
+                alert("Image has been uploaded successfully!");
+                $http.get('/api/bomcomponent/' + bomcomponent_id).success(function(data) {
+                    fetchSingleBomcomponent(data);
+                });
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+            });
+    };
+
+    $scope.setTheBomcomponentFiles = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('component_file', value);
+        });
+    };
+
+    $scope.deleteBomcomponentDrawing = function(bomcomponent_id) {
+        $http.delete('/api/bomcomponent/drawing/'+ bomcomponent_id + '/delete').success(function(data) {
+            $http.get('/api/bomcomponent/' + bomcomponent_id).success(function(comdata) {
+                fetchSingleBomcomponent(comdata);
+            });
+        });
+    }
+
+    $scope.uploadBompartFile = function (bompart_id) {
+        var request = {
+            method: 'POST',
+            url: '/bompart/drawing/upload/' + bompart_id,
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#part_file');
+                fileElement.value = '';
+                alert("Image has been uploaded successfully!");
+                $http.get('/api/bompart/' + bompart_id).success(function(data) {
+                    fetchSingleBompart(data);
+                });
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+            });
+    };
+
+    $scope.setTheBompartFiles = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('part_file', value);
+        });
+    };
+
+    $scope.deleteBompartDrawing = function(bompart_id) {
+        $http.delete('/api/bompart/drawing/'+ bompart_id + '/delete').success(function(data) {
+            $http.get('/api/bompart/' + bompart_id).success(function(partdata) {
+                fetchSingleBompart(partdata);
+            });
         });
     }
 }
@@ -998,6 +1144,18 @@ app.controller('bomPartController', bomPartController);
 app.controller('bomTemplateController', bomTemplateController);
 app.controller('bomVendingController', bomVendingController);
 app.controller('maintenanceController', maintenanceController);
+
+app.directive('ngFiles', ['$parse', function ($parse) {
+    function file_links(scope, element, attrs) {
+        var onChange = $parse(attrs.ngFiles);
+        element.on('change', function (event) {
+            onChange(scope, {$files: event.target.files});
+        });
+    }
+    return {
+        link: file_links
+    }
+}]);
 
 $(function() {
     // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line

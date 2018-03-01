@@ -294,6 +294,9 @@ var app = angular.module('app', [
                 $scope.total_stock_in = data.totals.total_stock_in;
                 $scope.total_sold_qty = data.totals.total_sold_qty;
                 $scope.difference_stock_sold = data.totals.difference_stock_sold;
+                $scope.transactions_total = data.totals.transactions_total;
+                $scope.transactions_owe = data.totals.transactions_owe;
+                $scope.transactions_paid = data.totals.transactions_paid;
                 $scope.spinner = false;
             }).error(function(data){
 
