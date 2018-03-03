@@ -13,6 +13,10 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bomcomponent/custcat', 'BomController@bindBomcomponentCustcat');
+Route::post('/api/bomcategory/custcat', 'BomController@bindBomcategoryCustcat');
+/*Route::post('/api/bomcategory/{bomcategory_id}/custcategories/remove', 'BomController@removeCustcatBomcategory');
+Route::post('/api/bomcategory/{bomcategory_id}/custcategories/add', 'BomController@addCustcatBomcategory');*/
 Route::delete('/api/bompart/drawing/{bompart_id}/delete', 'BomController@removeBompartDrawingApi');
 Route::get('/api/bompart/{bompart_id}', 'BomController@getBompartSingleApi');
 Route::post('/bompart/drawing/upload/{bompart_id}', 'BomController@uploadBompartDrawing');

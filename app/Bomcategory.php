@@ -17,6 +17,11 @@ class Bomcategory extends Model
     	return $this->hasMany('App\Bomcomponent');
     }
 
+    public function bomcategorycustcat()
+    {
+        return $this->hasMany('App\Bomcategorycustcat');
+    }
+
     public function updater()
     {
         return $this->belongsTo('App\User', 'updated_by');

@@ -13,6 +13,9 @@ use App\Bomtemplate;
 use App\Bomvending;
 use App\Bommaintenance;
 use App\Person;
+use App\Bomcategorycustcat;
+use App\Bomcomponentcustcat;
+use App\Bompartcustcat;
 use DB;
 use App\GetIncrement;
 use Carbon\Carbon;
@@ -36,21 +39,24 @@ class BomController extends Controller
     // retrieve all of the bom categories
     public function getCategoriesApi()
     {
-        $bomcategories = DB::table('bomcategories')
+        $bomcategories = Bomcategory::with(['updater', 'bomcategorycustcat.custcategory' => function($query) {
+            $query->orderBy('name', 'asc');
+        }]);
+/*        $bomcategories = DB::table('bomcategories')
                             ->leftJoin('users', 'users.id', '=', 'bomcategories.updated_by')
                             ->select(
                                 'bomcategories.id', 'bomcategories.category_id', 'bomcategories.name', 'bomcategories.remark', 'bomcategories.drawing_id', 'bomcategories.drawing_path',
                                 'users.name AS updater'
-                            );
+                            );*/
         // reading whether search input is filled
         if(request('category_id') or request('name')){
-            $bomcategories = $this->searchDBFilter($bomcategories);
+            $bomcategories = $this->searchBomcategoryFilter($bomcategories);
         }
 
         if(request('sortName')){
             $bomcategories = $bomcategories->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }else {
-            $bomcategories = $bomcategories->orderBy('bomcategories.category_id');
+            $bomcategories = $bomcategories->orderBy('category_id');
         }
 
         $pageNum = request('pageNum') ? request('pageNum') : 100;
@@ -123,6 +129,12 @@ class BomController extends Controller
     public function getCategoryComponentsApi()
     {
         $components = Bomcategory::with(array(
+            'bomcategorycustcat.custcategory' => function($query) {
+                $query->orderBy('name', 'asc');
+            },
+            'bomcomponents.bomcomponentcustcat.custcategory' => function($query) {
+                $query->orderBy('name', 'asc');
+            },
             'bomcomponents' => function($query) {
                 $query->orderBy('component_id', 'ASC');
             },
@@ -481,8 +493,9 @@ class BomController extends Controller
     // bind custcategory to bom part
     public function bindBompartCustcat()
     {
+        // die(var_dump(request('custcategory_id')['custcategory_id']));
         $bompart_id = request('bompart_id');
-        $custcategory_id = request('custcategory_id');
+        $custcategory_id = request('custcategory_id')['custcategory_id'];
         $bomtemplate = Bomtemplate::where('bompart_id', $bompart_id)->where('custcategory_id', $custcategory_id)->first();
 
         if($bomtemplate) {
@@ -497,7 +510,62 @@ class BomController extends Controller
                 ]);
             }
         }
+    }
 
+    // bind custcategory to bom category
+    public function bindBomcategoryCustcat()
+    {
+        $bomcategory_id = request('bomcategory_id');
+        $custcategory_id = request('custcategory_id');
+        $bomcategorycustcat = Bomcategorycustcat::where('bomcategory_id', $bomcategory_id)->where('custcategory_id', $custcategory_id)->first();
+
+        if($bomcategorycustcat) {
+            $bomcategorycustcat->delete();
+        }else {
+            if($custcategory_id) {
+                Bomcategorycustcat::create([
+                    'custcategory_id' => $custcategory_id,
+                    'bomcategory_id' => $bomcategory_id,
+                    'updated_by' => auth()->user()->id
+                ]);
+            }
+        }
+    }
+
+    // bind custcategory to bom component
+    public function bindBomcomponentCustcat()
+    {
+        // die(var_dump(request('custcategory_id')));
+        $bomcomponent_id = request('bomcomponent_id');
+        $custcategory_id = request('custcategory_id')['custcategory_id'];
+        $bomcomponentcustcat = Bomcomponentcustcat::where('bomcomponent_id', $bomcomponent_id)->where('custcategory_id', $custcategory_id)->first();
+
+        if($bomcomponentcustcat) {
+            $bomcomponentcustcat->delete();
+        }else {
+            if($custcategory_id) {
+                Bomcomponentcustcat::create([
+                    'custcategory_id' => $custcategory_id,
+                    'bomcomponent_id' => $bomcomponent_id,
+                    'updated_by' => auth()->user()->id
+                ]);
+            }
+        }
+    }
+
+    // pass value into filter search for DB (collection) [query]
+    private function searchBomcategoryFilter($bomcategories)
+    {
+        if(request('category_id')){
+            $bomcategories = $bomcategories->where('category_id', 'LIKE', '%'.request('category_id').'%');
+        }
+        if(request('name')){
+            $bomcategories = $bomcategories->where('name', 'LIKE', '%'.request('name').'%');
+        }
+        if(request('sortName')){
+            $bomcategories = $bomcategories->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+        return $bomcategories;
     }
 
     // pass value into filter search for DB (collection) [query]
@@ -832,6 +900,7 @@ class BomController extends Controller
         $bomcomponent->save();
     }
 
+    // remove bompart drawing(int bompart_id)
     public function removeBompartDrawingApi($bompart_id)
     {
         $bompart = Bompart::findOrFail($bompart_id);
@@ -839,6 +908,33 @@ class BomController extends Controller
         $bompart->drawing_path = null;
         $bompart->save();
     }
+
+    // add cust category into bomcategory multiple select(int bomcategory_id)
+    public function addCustcatBomcategory($bomcategory_id)
+    {
+        $custcategory = request('custcategory');
+
+        Bomcategorycustcat::create([
+            'custcategory_id' => $custcategory['id'],
+            'bomcategory_id' => $bomcategory_id,
+            'updated_by' => auth()->user()->id
+        ]);
+    }
+
+    // remove cust category from bomcategory multiple select(int bomcategory_id)
+    public function removeCustcatBomcategory($bomcategory_id)
+    {
+        $custcategory = request('custcategory');
+
+        $bomcategorycustcat = Bomcategorycustcat::where('bomcategory_id', $bomcategory_id)->where('custcategory_id', $custcategory['id'])->firstOrFail();
+        $bomcategorycustcat->delete();
+    }
+/*
+    public function getBomcomponentcustcatOptions()
+    {
+        $custcats = Custcategory::orderBy('name')->get();
+        return $custcats;
+    }*/
 
     // pass value into filter search for parts DB (collection) [query]
     private function searchPartDBFilter($bomparts)

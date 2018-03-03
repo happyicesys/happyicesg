@@ -30,12 +30,12 @@
                     <div class="tab-pane" id="component">
                         @include('bom.component')
                     </div>
-                    <div class="tab-pane active" id="part">
+{{--                     <div class="tab-pane active" id="part">
                         @include('bom.part')
                     </div>
                     <div class="tab-pane" id="template">
                         @include('bom.template')
-                    </div>
+                    </div> --}}
                     <div class="tab-pane" id="vending">
                         @include('bom.vending')
                     </div>

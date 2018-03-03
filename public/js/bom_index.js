@@ -32,6 +32,8 @@ function bomCategoryController($scope, $http, $window){
     $scope.categoryform = {};
     // init page load
     getPage(1, true);
+    getCustcatOptions();
+    getCustcatOptions();
 
     $scope.exportData = function () {
         var blob = new Blob(["\ufeff", document.getElementById('exportable_bomcategory').innerHTML], {
@@ -87,6 +89,18 @@ function bomCategoryController($scope, $http, $window){
             $scope.spinner = false;
         });
     }
+
+    function getCustcatOptions() {
+        $http.get('/custcat/data').success(function(data) {
+            $scope.custcategories = data;
+        });
+    }
+/*
+    function getBomcomponentCustcatOptions(bomcomponent_id) {
+        $http.get('/api/custcat/bomcomponent/' + bomcomponent_id).success(function(data) {
+            $scope.bomcomponentcustcats = data;
+        });
+    }*/
 
     $scope.addEntry = function() {
         let inputData = {
@@ -187,6 +201,24 @@ function bomCategoryController($scope, $http, $window){
             });
         });
     }
+/*
+    $scope.onBomcategoryCustcatChosen = function(item, bomcategory_id) {
+        $http.post('/api/bomcategory/' + bomcategory_id + '/custcategories/add', {custcategory: item}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onBomcategoryCustcatRemoval = function(item, bomcategory_id) {
+        $http.post('/api/bomcategory/' + bomcategory_id + '/custcategories/remove', {custcategory: item}).success(function(data) {
+            getPage(1);
+        });
+    }*/
+
+    $scope.onBomcategoryCustcatChosen = function(bomcategory_id, custcategory_id) {
+        $http.post('/api/bomcategory/custcat', {bomcategory_id: bomcategory_id, custcategory_id: custcategory_id}).success(function(data) {
+            getPage(1);
+        });
+    }
 }
 
 function bomComponentController($scope, $timeout, $http){
@@ -225,7 +257,7 @@ function bomComponentController($scope, $timeout, $http){
     ];
     $scope.formErrors = [];
     $scope.notsubmitable = false;
-    $scope.formedit = false;
+    $scope.formedit = true;
 
     angular.element(document).ready(function () {
         $('.select').select2({
@@ -553,6 +585,14 @@ function bomComponentController($scope, $timeout, $http){
             $http.get('/api/bompart/' + bompart_id).success(function(partdata) {
                 fetchSingleBompart(partdata);
             });
+        });
+    }
+
+    $scope.onBomcomponentCustcatChosen = function(bomcomponent_id, custcategory_id) {
+        console.log(bomcomponent_id);
+        console.log(custcategory_id);
+        $http.post('/api/bomcomponent/custcat', {bomcomponent_id: bomcomponent_id, custcategory_id: custcategory_id}).success(function(data) {
+            getPage(1);
         });
     }
 }

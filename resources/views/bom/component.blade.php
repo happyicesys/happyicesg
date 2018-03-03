@@ -168,7 +168,14 @@
             <div class="table-responsive" id="exportable_bomcomponent" style="padding-top:20px; font-size: 13px;">
                 <table ng-repeat="bomcategory in alldata" class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
-                        <th colspan="14" class="text-left">CAT@{{bomcategory.category_id}} - @{{bomcategory.name}}</th>
+                        <th colspan="14" class="text-left">
+                            CAT@{{bomcategory.category_id}} - @{{bomcategory.name}}
+                            <span style="padding-left: 20px;" ng-if="bomcategory.bomcategorycustcat.length > 0">[</span>
+                            <span ng-repeat="custcat in bomcategory.bomcategorycustcat">
+                                @{{custcat.custcategory.name}}@{{$last ? '' : ', '}}
+                            </span>
+                            <span ng-if="bomcategory.bomcategorycustcat.length > 0">]</span>
+                        </th>
                     </tr>
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center" style="width:3%">
@@ -217,6 +224,14 @@
                                 @{{bomcomponent.remark}}
                             </td>
                             <td class="col-md-2">
+                                <span ng-repeat="custcat in bomcomponent.bomcomponentcustcat">@{{custcat.custcategory.name}}@{{$last ? '' : ', '}}</span>
+                                <span ng-repeat="custcategory in bomcategory.bomcategorycustcat">@{{custcategory.name}}</span>
+                                <ui-select ng-model="custcategory[bomcomponent.id]" on-select="onBomcomponentCustcatChosen(bomcomponent.id, custcategory[bomcomponent.id])" ng-if="formedit">
+                                    <ui-select-match>@{{$select.custcategory.name}}</ui-select-match>
+                                    <ui-select-choices repeat="custcategory in bomcategory.bomcategorycustcat | filter: $select.search">
+                                        <div ng-bind-html="custcategory.custcategory.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}}
@@ -252,10 +267,10 @@
                             </td>
                             <td class="col-md-2 text-center">
                                 <span ng-repeat="bomtemplate in bompart.bomtemplates">@{{bomtemplate.custcategory.name}}@{{$last ? '' : ', '}}</span>
-                                <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id].id)" ng-if="formedit">
-                                    <ui-select-match>@{{$select.selected.name}}</ui-select-match>
-                                    <ui-select-choices repeat="custcategory in custcategories | filter: $select.search">
-                                        <div ng-bind-html="custcategory.name | highlight: $select.search"></div>
+                                <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id])" ng-if="formedit">
+                                    <ui-select-match>@{{$select.custcategory.name}}</ui-select-match>
+                                    <ui-select-choices repeat="custcategory in bomcomponent.bomcomponentcustcat | filter: $select.search">
+                                        <div ng-bind-html="custcategory.custcategory.name | highlight: $select.search"></div>
                                     </ui-select-choices>
                                 </ui-select>
                             </td>
@@ -432,7 +447,7 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <img src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="componentform.drawing_path">
+                    <img ng-src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="componentform.drawing_path">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -449,7 +464,7 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <img src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="partform.drawing_path">
+                    <img ng-src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="partform.drawing_path">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

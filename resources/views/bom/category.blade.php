@@ -86,7 +86,7 @@
                             <span ng-if="search.sortName == 'category_id' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'category_id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-4 text-center">
+                        <th class="col-md-3 text-center">
                             <a href="" ng-click="sortTable('name')">
                             Category Name
                             <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -98,11 +98,14 @@
                             <span ng-if="search.sortName == 'drawing_id' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'drawing_id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-3 text-center">
+                        <th class="col-md-2 text-center">
                             <a href="" ng-click="sortTable('remark')">
                             Remarks
                             <span ng-if="search.sortName == 'remark' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'remark' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('updated_by')">
@@ -122,17 +125,26 @@
                                     CAT @{{bomcategory.category_id}}
                                 </a>
                             </td>
-                            <td class="col-md-4 text-left">
+                            <td class="col-md-3 text-left">
                                 @{{bomcategory.name}}
                             </td>
                             <td class="col-md-1 text-center" data-toggle="modal" data-target="#drawing_modal" ng-click="editCategoryModal(bomcategory)" style="cursor: pointer;">
                                 @{{bomcategory.drawing_id}}
                             </td>
-                            <td class="col-md-3 text-left">
+                            <td class="col-md-2 text-left">
                                 @{{bomcategory.remark}}
                             </td>
+                            <td class="col-md-2 text-center">
+                                <span ng-repeat="custcat in bomcategory.bomcategorycustcat">@{{custcat.custcategory.name}}@{{$last ? '' : ', '}}</span>
+                                <ui-select ng-model="custcategory[bomcategory.id]" on-select="onBomcategoryCustcatChosen(bomcategory.id, custcategory[bomcategory.id].id)">
+                                    <ui-select-match>@{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="custcategory in custcategories | filter: $select.search">
+                                        <div ng-bind-html="custcategory.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
                             <td class="col-md-1 text-center">
-                                @{{bomcategory.updater }}
+                                @{{bomcategory.updater.name }}
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-sm" ng-click="removeEntry(bomcategory.id)"><i class="fa fa-times"></i></button>
@@ -199,8 +211,8 @@
                         </div>
 
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <a href="@{{categoryform.drawing_path}}" ng-if="categoryform.drawing_path">
-                                <img src="@{{categoryform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                            <a ng-href="@{{categoryform.drawing_path}}" ng-if="categoryform.drawing_path">
+                                <img ng-src="@{{categoryform.drawing_path}}" height="250" width="250" style="border:2px solid black">
                             </a>
                             <img src="#" alt="No photo found" ng-if="!categoryform.drawing_path" height="250" width="250" style="border:2px solid black">
                         </div>
@@ -221,7 +233,7 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <img src="@{{categoryform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="categoryform.drawing_path">
+                    <img ng-src="@{{categoryform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="categoryform.drawing_path">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

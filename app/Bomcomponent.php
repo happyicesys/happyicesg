@@ -22,6 +22,11 @@ class Bomcomponent extends Model
     	return $this->hasMany('App\Bompart');
     }
 
+    public function bomcomponentcustcat()
+    {
+        return $this->hasMany('App\Bomcomponentcustcat');
+    }
+
     public function updater()
     {
         return $this->belongsTo('App\User', 'updated_by');
