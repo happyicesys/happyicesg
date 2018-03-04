@@ -25,7 +25,7 @@ trait GetIncrement{
     // retrieve increament id for bom category()
     public function getBomcategoryIncrement()
     {
-        $max_id = count(Bomcategory::all()) > 0 ? Bomcategory::latest('created_at')->first()->category_id : 1001;
+        $max_id = count(Bomcategory::all()) > 0 ? Bomcategory::max('category_id') : 1001;
         $numbers = preg_replace('/[^0-9]/', '', $max_id);
         $letters = preg_replace('/[^a-zA-Z]/', '', $max_id);
         $numbers += 1;
@@ -36,7 +36,7 @@ trait GetIncrement{
     // retrieve increament id for bom component()
     public function getBomcomponentIncrement()
     {
-        $max_id = count(Bomcomponent::all()) > 0 ? Bomcomponent::latest('created_at')->first()->component_id : 10001;
+        $max_id = count(Bomcomponent::all()) > 0 ? Bomcomponent::max('component_id') : 10001;
         $numbers = preg_replace('/[^0-9]/', '', $max_id);
         $letters = preg_replace('/[^a-zA-Z]/', '', $max_id);
         $numbers += 1;
@@ -47,7 +47,7 @@ trait GetIncrement{
     // retrieve increament id for bom component()
     public function getBompartIncrement()
     {
-        $max_id = count(Bompart::all()) > 0 ? Bompart::latest()->first()->part_id : 10001;
+        $max_id = count(Bompart::all()) > 0 ? Bompart::max('part_id') : 10001;
         $numbers = preg_replace('/[^0-9]/', '', $max_id);
         $letters = preg_replace('/[^a-zA-Z]/', '', $max_id);
         $numbers += 1;

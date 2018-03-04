@@ -195,10 +195,6 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <span class="badge" style="background-color: #98fb98;">&nbsp;</span>
-                <span>New customer, no previous mth data</span>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <span>**</span>
                 <span>No data for current month</span>
             </div>
         </div>
@@ -453,7 +449,7 @@
             </tr>
 
             <tbody>
-                <tr ng-repeat="person in absentlist">
+                <tr ng-repeat="person in absentlist" style="background-color: #98fb98;">
                     <td colspan="2"></td>
                     <td class="col-md-1 text-center">
                         @{{person.cust_id}}
@@ -466,7 +462,7 @@
                     <td class="col-md-1 text-center">
                         @{{person.custcategory.name}}
                     </td>
-                    <td colspan="13"></td>
+                    <td colspan="18"></td>
                 </tr>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">
                     <td class="col-md-1 text-center">

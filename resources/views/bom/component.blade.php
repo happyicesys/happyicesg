@@ -230,7 +230,7 @@
                                 <input type="text" name="bomcomponent_qty[]" ng-model="bomcomponent.qty" class="form-control text-right input-sm" ng-change="onBomcomponentQtyChanged(bomcomponent.id, bomcomponent.qty)" ng-model-options='{ debounce: 700 }' ng-if="formedit">
                                 <span ng-if="!formedit">@{{bomcomponent.qty}}</span>
                             </td>
-                            <td class="col-md-2" style="width:12%">
+                            <td class="col-md-2 text-center" style="width:12%">
                                 <span ng-repeat="custcat in bomcomponent.bomcomponentcustcat">@{{custcat.custcategory.name}}@{{$last ? '' : ', '}}</span>
                                 <span ng-repeat="custcategory in bomcategory.bomcategorycustcat">@{{custcategory.name}}</span>
                                 <ui-select ng-model="custcategory[bomcomponent.id]" on-select="onBomcomponentCustcatChosen(bomcomponent.id, custcategory[bomcomponent.id])" ng-if="formedit">
@@ -362,11 +362,11 @@
                             <label class="control-label">
                                 Supplier Order & Detail
                             </label>
-                            <input type="text" name="supplier_order" class="form-control" ng-model="partform.supplier_order">
+                            <textarea name="supplier_order" class="form-control" ng-model="partform.supplier_order" rows="3"></textarea>
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
-                                Unit Price
+                                Unit Price (S$)
                             </label>
                             <input type="text" name="unit_price" class="form-control" ng-model="partform.unit_price">
                         </div>
@@ -437,6 +437,12 @@
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
+                                Qty
+                            </label>
+                            <input type="text" name="qty" class="form-control" ng-model="componentform.qty">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
                                 Remark
                             </label>
                             <textarea name="remark" class="form-control" ng-model="componentform.remark" rows="2"></textarea>
@@ -452,11 +458,11 @@
                             <label class="control-label">
                                 Supplier Order & Detail
                             </label>
-                            <input type="text" name="supplier_order" class="form-control" ng-model="componentform.supplier_order">
+                            <textarea name="supplier_order" class="form-control" ng-model="componentform.supplier_order" rows="3"></textarea>
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
-                                Unit Price
+                                Unit Price (S$)
                             </label>
                             <input type="text" name="unit_price" class="form-control" ng-model="componentform.unit_price">
                         </div>

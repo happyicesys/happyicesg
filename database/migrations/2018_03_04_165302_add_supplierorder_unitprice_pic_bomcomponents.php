@@ -13,7 +13,7 @@ class AddSupplierorderUnitpricePicBomcomponents extends Migration
     public function up()
     {
         Schema::table('bomcomponents', function($table) {
-            $table->string('supplier_order')->nullable();
+            $table->text('supplier_order')->nullable();
             $table->decimal('unit_price', 10, 2);
             $table->string('pic')->nullable();
         });

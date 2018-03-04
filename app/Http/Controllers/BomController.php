@@ -716,6 +716,7 @@ class BomController extends Controller
         $bompart = Bompart::findOrFail($bompart_id);
 
         $bompart->remark = $remark;
+        $bompart->updated_by = auth()->user()->id;
         $bompart->save();
     }
 
@@ -728,6 +729,7 @@ class BomController extends Controller
         $bompart = Bompart::findOrFail($bompart_id);
 
         $bompart->qty = $qty;
+        $bompart->updated_by = auth()->user()->id;
         $bompart->save();
     }
 
@@ -740,6 +742,7 @@ class BomController extends Controller
         $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
 
         $bomcomponent->remark = $remark;
+        $bomcomponent->updated_by = auth()->user()->id;
         $bomcomponent->save();
     }
 
@@ -752,6 +755,7 @@ class BomController extends Controller
         $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
 
         $bomcomponent->qty = $qty;
+        $bomcomponent->updated_by = auth()->user()->id;
         $bomcomponent->save();
     }
 
@@ -779,6 +783,7 @@ class BomController extends Controller
         $bompart->supplier_order = $supplier_order;
         $bompart->unit_price = $unit_price;
         $bompart->pic = $pic;
+        $bompart->updated_by = auth()->user()->id;
         $bompart->save();
     }
 
@@ -795,7 +800,7 @@ class BomController extends Controller
         $unit_price = request('unit_price');
         $pic = request('pic');
 
-        Bompart::create([
+        $bompart = Bompart::create([
             'part_id' => $part_id,
             'movable' => $movable,
             'bomcomponent_id' => $bomcomponent_id,
@@ -807,6 +812,16 @@ class BomController extends Controller
             'unit_price' => $unit_price,
             'pic' => $pic
         ]);
+
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        foreach($bomcomponent->bomcomponentcustcat as $custcat) {
+            Bomtemplate::create([
+                'custcategory_id' => $custcat->custcategory_id,
+                'bomcomponent_id' => $bomcomponent->id,
+                'bompart_id' => $bompart->id,
+                'updated_by' => auth()->user()->id
+            ]);
+        }
     }
 
     // get bompart increment()
@@ -849,6 +864,7 @@ class BomController extends Controller
         $bomcomponent->supplier_order = $supplier_order;
         $bomcomponent->unit_price = $unit_price;
         $bomcomponent->pic = $pic;
+        $bomcomponent->updated_by = auth()->user()->id;
         $bomcomponent->save();
     }
 
@@ -866,6 +882,7 @@ class BomController extends Controller
         $bomcategory->drawing_id = $drawing_id;
         $bomcategory->name = $name;
         $bomcategory->remark = $remark;
+        $bomcategory->updated_by = auth()->user()->id;
         $bomcategory->save();
     }
 
@@ -873,6 +890,8 @@ class BomController extends Controller
     public function uploadBomcategoryDrawing($bomcategory_id)
     {
         $bomcategory = Bomcategory::findOrFail($bomcategory_id);
+        $bomcategory->updated_by = auth()->user()->id;
+        $bomcategory->save();
         if($file = request()->file('image_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file->move('bom_asset/bomcategory/'.$bomcategory->id.'/', $name);
@@ -885,6 +904,8 @@ class BomController extends Controller
     public function uploadBomcomponentDrawing($bomcomponent_id)
     {
         $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        $bomcomponent->updated_by = auth()->user()->id;
+        $bomcomponent->save();
         if($file = request()->file('component_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file->move('bom_asset/bomcategory/'.$bomcomponent->bomcategory->id.'/'.$bomcomponent->id.'/', $name);
@@ -897,6 +918,8 @@ class BomController extends Controller
     public function uploadBompartDrawing($bompart_id)
     {
         $bompart = Bompart::findOrFail($bompart_id);
+        $bompart->updated_by = auth()->user()->id;
+        $bompart->save();
         if($file = request()->file('part_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file->move('bom_asset/bomcategory/'.$bompart->bomcomponent->bomcategory->id.'/'.$bompart->bomcomponent->id.'/', $name);
@@ -929,6 +952,8 @@ class BomController extends Controller
     public function removeBomcategoryDrawingApi($bomcategory_id)
     {
         $bomcategory = Bomcategory::findOrFail($bomcategory_id);
+        $bomcategory->updated_by = auth()->user()->id;
+        $bomcategory->save();
         File::delete(public_path().$bomcategory->drawing_path);
         $bomcategory->drawing_path = null;
         $bomcategory->save();
@@ -937,6 +962,8 @@ class BomController extends Controller
     public function removeBomcomponentDrawingApi($bomcomponent_id)
     {
         $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+        $bomcomponent->updated_by = auth()->user()->id;
+        $bomcomponent->save();
         File::delete(public_path().$bomcomponent->drawing_path);
         $bomcomponent->drawing_path = null;
         $bomcomponent->save();
@@ -946,6 +973,8 @@ class BomController extends Controller
     public function removeBompartDrawingApi($bompart_id)
     {
         $bompart = Bompart::findOrFail($bompart_id);
+        $bompart->updated_by = auth()->user()->id;
+        $bompart->save();
         File::delete(public_path().$bompart->drawing_path);
         $bompart->drawing_path = null;
         $bompart->save();

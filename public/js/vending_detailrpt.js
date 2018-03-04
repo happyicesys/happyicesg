@@ -30,7 +30,7 @@ var app = angular.module('app', [
             status: 'Delivered',
             is_profit_sharing_report: '1',
             is_rental: '',
-            is_active: '',
+            is_active: 'Yes',
             pageNum: 100,
             sortBy: true,
             sortName: ''
@@ -86,7 +86,7 @@ var app = angular.module('app', [
 
         $scope.getRowColor = function(transaction) {
             if(transaction) {
-                if(!transaction.begin_date) {
+                if(!transaction.begin_date || !transaction.end_date) {
                     return '#98fb98';
                 }
 

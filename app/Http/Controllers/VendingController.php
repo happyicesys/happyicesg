@@ -234,9 +234,75 @@ class VendingController extends Controller
 
         if($is_active) {
             $transactions = $transactions->where('people.active', $is_active);
+        }else {
+            $transactions = $transactions->where('people.active', 'Yes');
         }
 
         return $transactions;
+    }
+
+    // conditional filter parser(Collection $query)
+    private function searchPersonFilter($people)
+    {
+        $profile_id = request('profile_id');
+        $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
+        $cust_id = request('cust_id');
+        $id_prefix = request('id_prefix');
+        $company = request('company');
+        $custcategory = request('custcategory');
+        $status = request('status');
+        $is_rental = request('is_rental');
+        $is_active = request('is_active');
+
+        if($profile_id) {
+            $people = $people->whereHas('profile', function($query) use ($profile_id) {
+                $query->where('id', $profile_id);
+            });
+        }
+
+        if($current_month) {
+            $people = $people->whereHas('transactions', function($query) use ($current_month) {
+                                    $query->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString());
+                                })->whereDoesntHave('transactions', function($query) use ($current_month) {
+                                        $query->whereDate('delivery_date', '>=', $current_month->startOfMonth()->toDateString())
+                                            ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString());
+                                });
+        }
+        if($cust_id) {
+            $people = $people->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+        }
+        if($id_prefix) {
+            $people = $people->where('cust_id', 'LIKE', $id_prefix.'%');
+        }
+        if($company) {
+            $people = $people->where('company', 'LIKE', '%'.$company.'%');
+        }
+        if($custcategory) {
+            $people = $people->whereHas('custcategory', function($query) use ($custcategory) {
+                $query->whereIn('id', $custcategory);
+            });
+        }
+
+        if($is_rental) {
+            switch($is_rental) {
+                case 'Rental':
+                    $people = $people->where('vending_monthly_rental', '>', 0)->where('vending_profit_sharing', '=', 0);
+                    break;
+                case 'Profit':
+                    $people = $people->where('vending_monthly_rental', '=', 0)->where('vending_profit_sharing', '>', 0);
+                    break;
+                case 'Others':
+                    $people = $people->where('vending_monthly_rental', '=', 0)->where('vending_profit_sharing', '=', 0);
+            }
+        }
+
+        if($is_active) {
+            $people = $people->where('active', $is_active);
+        }else {
+            $people = $people->where('active', 'Yes');
+        }
+
+        return $people;
     }
 
     // generate vending invoices api by person()
@@ -322,7 +388,7 @@ class VendingController extends Controller
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
-                                AND items.product_id='051'
+                                AND items.product_id='051a'
                                 AND DATE(transactions.delivery_date)>='".$this_month_start."'
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
@@ -433,7 +499,7 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
@@ -577,21 +643,16 @@ class VendingController extends Controller
 
         $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
 
-        if($current_month) {
-            $notAvailPeople = Person::with('custcategory')
+            $notAvailPeople = Person::with(['custcategory', 'transactions'])
                                     ->where(function($query) {
                                         $query->where('is_vending', 1)
                                                 ->orWhere('is_dvm', 1);
-                                    })->where('active', 'Yes')
-                                    ->whereNotIn('id', $notAvailPersonId)
-                                    ->whereDoesntHave('transactions', function($query) use ($current_month) {
-                                        $query->whereDate('delivery_date', '>=', $current_month->startOfMonth()->toDateString())
-                                                ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString());
                                     })
-                                    ->whereDate('created_at', '<=', $current_month->endOfMonth()->toDateString())
-                                    ->orderBy('cust_id')
-                                    ->get();
-        }
+                                    ->whereNotIn('id', $notAvailPersonId);
+            $notAvailPeople = $this->searchPersonFilter($notAvailPeople);
+            $notAvailPeople = $notAvailPeople->whereDate('created_at', '<=', $current_month->endOfMonth()->toDateString())
+                                ->orderBy('cust_id')
+                                ->get();
 
 
 
