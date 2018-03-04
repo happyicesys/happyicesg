@@ -122,7 +122,7 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 <a href="#" data-toggle="modal" data-target="#category_modal" ng-click="editCategoryModal(bomcategory)">
-                                    CAT @{{bomcategory.category_id}}
+                                    @{{bomcategory.category_id}}
                                 </a>
                             </td>
                             <td class="col-md-3 text-left">

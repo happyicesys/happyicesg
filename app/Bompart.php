@@ -8,7 +8,8 @@ class Bompart extends Model
 {
     protected $fillable = [
     	'part_id', 'name', 'remark', 'bomcomponent_id', 'thumbnail_url',
-        'updated_by', 'qty', 'movable', 'color', 'drawing_id', 'drawing_path'
+        'updated_by', 'qty', 'movable', 'color', 'drawing_id', 'drawing_path',
+        'supplier_order', 'unit_price', 'pic'
     ];
 
     // relationships

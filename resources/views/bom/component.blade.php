@@ -18,7 +18,7 @@
                                     <option ng-value=""></option>
                                     @foreach($bomcategories::all() as $bomcategory)
                                         <option ng-value="{{$bomcategory->id}}">
-                                            CAT {{$bomcategory->category_id}} - {{$bomcategory->name}}
+                                            {{$bomcategory->category_id}} - {{$bomcategory->name}}
                                         </option>
                                     @endforeach
                                 </select>
@@ -169,7 +169,7 @@
                 <table ng-repeat="bomcategory in alldata" class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th colspan="14" class="text-left">
-                            CAT@{{bomcategory.category_id}} - @{{bomcategory.name}}
+                            @{{bomcategory.category_id}} - @{{bomcategory.name}}
                             <span style="padding-left: 20px;" ng-if="bomcategory.bomcategorycustcat.length > 0">[</span>
                             <span ng-repeat="custcat in bomcategory.bomcategorycustcat">
                                 @{{custcat.custcategory.name}}@{{$last ? '' : ', '}}
@@ -181,7 +181,7 @@
                         <th class="col-md-1 text-center" style="width:3%">
                             #
                         </th>
-                        <th class="col-md-1 text-center" style="width:6%">
+                        <th class="col-md-1 text-center" style="width:10%">
                             ID
                         </th>
                         <th class="col-md-2 text-center">
@@ -193,10 +193,10 @@
                         <th class="col-md-2 text-center">
                             Remarks
                         </th>
-                        <th class="col-md-1 text-center">
+                        <th class="col-md-1 text-center" style="width:6%">
                             Qty
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-2 text-center" style="width:12%">
                             Category Assignment
                         </th>
                         <th class="col-md-1 text-center">
@@ -209,8 +209,8 @@
                             <td class="col-md-1 text-left" style="width:3%">
                                 @{{ index + indexFrom }}
                             </td>
-                            <td class="col-md-1 text-center" style="width:6%">
-                                COM @{{bomcomponent.component_id}}
+                            <td class="col-md-1 text-center" style="width:10%">
+                                @{{bomcomponent.component_id}}
                             </td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#component_modal" ng-click="editComponentModal(bomcomponent)">
@@ -218,12 +218,19 @@
                                 </a>
                             </td>
                             <td class="col-md-1 text-center" data-toggle="modal" data-target="#component_drawing_modal" ng-click="editComponentModal(bomcomponent)" style="cursor: pointer;">
-                                @{{bomcomponent.drawing_id}}
+                                <a href="">
+                                    @{{bomcomponent.drawing_id}}
+                                </a>
                             </td>
-                            <td class="col-md-2 text-left" colspan="2">
-                                @{{bomcomponent.remark}}
+                            <td class="col-md-2 text-left">
+                                <textarea class="form-control " ng-model="bomcomponent.remark" rows="2" ng-change="onBomcomponentRemarkChanged(bomcomponent.id, bomcomponent.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <span ng-if="!formedit">@{{bomcomponent.remark}}</span>
                             </td>
-                            <td class="col-md-2">
+                            <td class="col-md-1 text-right" style="width:6%">
+                                <input type="text" name="bomcomponent_qty[]" ng-model="bomcomponent.qty" class="form-control text-right input-sm" ng-change="onBomcomponentQtyChanged(bomcomponent.id, bomcomponent.qty)" ng-model-options='{ debounce: 700 }' ng-if="formedit">
+                                <span ng-if="!formedit">@{{bomcomponent.qty}}</span>
+                            </td>
+                            <td class="col-md-2" style="width:12%">
                                 <span ng-repeat="custcat in bomcomponent.bomcomponentcustcat">@{{custcat.custcategory.name}}@{{$last ? '' : ', '}}</span>
                                 <span ng-repeat="custcategory in bomcategory.bomcategorycustcat">@{{custcategory.name}}</span>
                                 <ui-select ng-model="custcategory[bomcomponent.id]" on-select="onBomcomponentCustcatChosen(bomcomponent.id, custcategory[bomcomponent.id])" ng-if="formedit">
@@ -234,7 +241,8 @@
                                 </ui-select>
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{bomcomponent.updater.name}}
+                                @{{bomcomponent.updater.name}} <br>
+                                @{{bomcomponent.updated_at | date:'yy/MM/dd h:mma'}}
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-xs" ng-click="removeEntry(bomcomponent.id)"><i class="fa fa-times"></i></button>
@@ -246,8 +254,8 @@
                             <td class="col-md-1 text-left" style="width:3%">
                                 @{{index + indexFrom}}.@{{index2 + 1}}
                             </td>
-                            <td class="col-md-1 text-center" style="width:6%">
-                                P @{{bompart.part_id}}
+                            <td class="col-md-1 text-center" style="width:10%">
+                                @{{bompart.part_id}}
                             </td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#part_modal" ng-click="editDataModal(bompart)">
@@ -255,17 +263,19 @@
                                 </a>
                             </td>
                             <td class="col-md-1 text-center" data-toggle="modal" data-target="#part_drawing_modal" ng-click="editDataModal(bompart)" style="cursor: pointer;">
-                                @{{bompart.drawing_id}}
+                                <a href="">
+                                    @{{bompart.drawing_id}}
+                                </a>
                             </td>
                             <td class="col-md-2 text-left">
                                 <textarea class="form-control " ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
                                 <span ng-if="!formedit">@{{bompart.remark}}</span>
                             </td>
-                            <td class="col-md-1 text-right">
+                            <td class="col-md-1 text-right" style="width:6%">
                                 <input type="text" name="bompart_qty[]" ng-model="bompart.qty" class="form-control text-right input-sm" ng-change="onQtyChanged(bompart.id, bompart.qty)" ng-model-options='{ debounce: 700 }' ng-if="formedit">
                                 <span ng-if="!formedit">@{{bompart.qty}}</span>
                             </td>
-                            <td class="col-md-2 text-center">
+                            <td class="col-md-2 text-center" style="width:12%">
                                 <span ng-repeat="bomtemplate in bompart.bomtemplates">@{{bomtemplate.custcategory.name}}@{{$last ? '' : ', '}}</span>
                                 <ui-select ng-model="custcategory[bompart.id]" on-select="onCustcatChosen(bompart.id, custcategory[bompart.id])" ng-if="formedit">
                                     <ui-select-match>@{{$select.custcategory.name}}</ui-select-match>
@@ -275,7 +285,8 @@
                                 </ui-select>
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{bompart.updater.name}}
+                                @{{bompart.updater.name}} <br>
+                                @{{bompart.updated_at | date:'yy/MM/dd h:mma'}}
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-xs" ng-click="removeBompart(bompart.id)"><i class="fa fa-times"></i></button>
@@ -304,7 +315,7 @@
                     </span>
                     <span ng-if="partform.component_id">for
                         <span style="background-color: #ddd1e7;">
-                            COM@{{partform.component_id}} - @{{partform.title}}
+                            @{{partform.component_id}} - @{{partform.title}}
                         </span>
                     </span>
                 </h4>
@@ -347,6 +358,24 @@
                             </label>
                             <input type="text" name="drawing_id" class="form-control" ng-model="partform.drawing_id">
                         </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Supplier Order & Detail
+                            </label>
+                            <input type="text" name="supplier_order" class="form-control" ng-model="partform.supplier_order">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Unit Price
+                            </label>
+                            <input type="text" name="unit_price" class="form-control" ng-model="partform.unit_price">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Person In Charge
+                            </label>
+                            <input type="text" name="pic" class="form-control" ng-model="partform.pic">
+                        </div>
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
@@ -360,15 +389,23 @@
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <a ng-href="@{{partform.drawing_path}}" ng-if="partform.drawing_path">
-                                <img ng-src="@{{partform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                                <img ng-src="@{{partform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="partform.drawing_path &&
+                                        (
+                                            partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'jpeg' ||
+                                            partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'jpg' ||
+                                            partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'png'
+                                        )">
+                                <embed ng-src="@{{partform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'pdf'">
                             </a>
                             <img src="#" alt="No photo found" ng-if="!partform.drawing_path" height="250" width="250" style="border:2px solid black">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" ng-if="!partform.id" ng-disabled="notsubmitable" ng-click="createPart()" data-dismiss="modal">Create</button>
-                    <button type="button" class="btn btn-success" ng-if="partform.id" ng-disabled="notsubmitable" ng-click="editPart()" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-success" ng-if="!partform.id"  ng-click="createPart()" data-dismiss="modal">Create</button>
+                    <button type="button" class="btn btn-success" ng-if="partform.id" ng-click="editPart()" data-dismiss="modal">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -411,7 +448,24 @@
                             </label>
                             <input type="text" name="drawing_id" class="form-control" ng-model="componentform.drawing_id">
                         </div>
-
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Supplier Order & Detail
+                            </label>
+                            <input type="text" name="supplier_order" class="form-control" ng-model="componentform.supplier_order">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Unit Price
+                            </label>
+                            <input type="text" name="unit_price" class="form-control" ng-model="componentform.unit_price">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Person In Charge
+                            </label>
+                            <input type="text" name="pic" class="form-control" ng-model="componentform.pic">
+                        </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
                                 <label for="files">Upload Drawing</label>
@@ -425,7 +479,15 @@
 
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <a ng-href="@{{componentform.drawing_path}}" ng-if="componentform.drawing_path">
-                                <img ng-src="@{{componentform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                                <img ng-src="@{{componentform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="componentform.drawing_path &&
+                                        (
+                                            componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'jpeg' ||
+                                            componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'jpg' ||
+                                            componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'png'
+                                        )">
+                                <embed ng-src="@{{componentform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'pdf'">
                             </a>
                             <img src="#" alt="No photo found" ng-if="!componentform.drawing_path" height="250" width="250" style="border:2px solid black">
                         </div>
@@ -447,7 +509,15 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <img ng-src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="componentform.drawing_path">
+                    <img ng-src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black"
+                    ng-if="componentform.drawing_path &&
+                            (
+                                componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'jpeg' ||
+                                componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'jpg' ||
+                                componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'png'
+                            )">
+                    <embed ng-src="@{{componentform.drawing_path}}" height="600" width="550" style="border:2px solid black"
+                    ng-if="componentform.drawing_path.substr(componentform.drawing_path.lastIndexOf('.') + 1) == 'pdf'">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -464,7 +534,15 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <img ng-src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black" ng-if="partform.drawing_path">
+                    <img ng-src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black"
+                    ng-if="partform.drawing_path &&
+                            (
+                                partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'jpeg' ||
+                                partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'jpg' ||
+                                partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'png'
+                            )">
+                    <embed ng-src="@{{partform.drawing_path}}" height="600" width="550" style="border:2px solid black"
+                    ng-if="partform.drawing_path.substr(partform.drawing_path.lastIndexOf('.') + 1) == 'pdf'">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

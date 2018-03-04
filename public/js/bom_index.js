@@ -336,7 +336,7 @@ function bomComponentController($scope, $timeout, $http){
     $scope.removeEntry = function(id) {
         var isConfirmDelete = confirm('Are you sure to DELETE this component and its parts?');
         if(isConfirmDelete){
-            $http.delete('/api/bom/category/' + id + '/delete').success(function(data) {
+            $http.delete('/api/bom/component/' + id + '/delete').success(function(data) {
                 getPage(1);
             });
         }else{
@@ -392,6 +392,18 @@ function bomComponentController($scope, $timeout, $http){
         });
     }
 
+    $scope.onBomcomponentRemarkChanged = function(bomcomponent_id, remark) {
+        $http.post('/api/bomcomponent/single/remark', {bomcomponent_id: bomcomponent_id, remark: remark}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onBomcomponentQtyChanged = function(bomcomponent_id, qty) {
+        $http.post('/api/bomcomponent/single/qty', {bomcomponent_id: bomcomponent_id, qty: qty}).success(function(data) {
+            getPage(1);
+        });
+    }
+
     $scope.removeBompart = function(bompart_id) {
         var isConfirmDelete = confirm('Are you sure to DELETE this part?');
         if(isConfirmDelete){
@@ -411,10 +423,13 @@ function bomComponentController($scope, $timeout, $http){
             color: movable == 1 ? '#fbfafc' : '#eae3f0',
             component_id: bomcomponent.component_id,
             bomcomponent_id : bomcomponent.id,
-            part_id: getBompartIncrement(),
+            part_id: $scope.getBompartIncrement(),
             name: '',
             qty: '',
-            remark: ''
+            remark: '',
+            supplier_order: '',
+            unit_price: '',
+            pic: ''
         }
     }
 
@@ -433,6 +448,9 @@ function bomComponentController($scope, $timeout, $http){
             remark: bompart.remark,
             drawing_id: bompart.drawing_id,
             drawing_path: bompart.drawing_path,
+            supplier_order: bompart.supplier_order,
+            unit_price: bompart.unit_price,
+            pic: bompart.pic
         }
     }
 
@@ -448,8 +466,8 @@ function bomComponentController($scope, $timeout, $http){
         });
     }
 
-    function getBompartIncrement() {
-        $http.get('/api/bompart/increment').success(function(data) {
+    $scope.getBompartIncrement = function() {
+        $http.get('/api/bompart_id/increment').success(function(data) {
             $scope.partform.part_id = data;
         });
     }
@@ -496,7 +514,10 @@ function bomComponentController($scope, $timeout, $http){
             drawing_id: bomcomponent.drawing_id,
             drawing_path: bomcomponent.drawing_path,
             name: bomcomponent.name,
-            remark: bomcomponent.remark
+            remark: bomcomponent.remark,
+            supplier_order: bomcomponent.supplier_order,
+            unit_price: bomcomponent.unit_price,
+            pic: bomcomponent.pic
         }
     }
 
@@ -511,6 +532,7 @@ function bomComponentController($scope, $timeout, $http){
     var formData = new FormData();
 
     $scope.uploadBomcomponentFile = function (bomcomponent_id) {
+        $scope.editComponent();
         var request = {
             method: 'POST',
             url: '/bomcomponent/drawing/upload/' + bomcomponent_id,
@@ -550,6 +572,7 @@ function bomComponentController($scope, $timeout, $http){
     }
 
     $scope.uploadBompartFile = function (bompart_id) {
+        $scope.editPart();
         var request = {
             method: 'POST',
             url: '/bompart/drawing/upload/' + bompart_id,

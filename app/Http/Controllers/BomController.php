@@ -731,6 +731,30 @@ class BomController extends Controller
         $bompart->save();
     }
 
+    // update bom component remark()
+    public function updateBomcomponentRemark()
+    {
+        $bomcomponent_id = request('bomcomponent_id');
+        $remark = request('remark');
+
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+
+        $bomcomponent->remark = $remark;
+        $bomcomponent->save();
+    }
+
+    // update bom component qty()
+    public function updateBomcomponentQty()
+    {
+        $bomcomponent_id = request('bomcomponent_id');
+        $qty = request('qty');
+
+        $bomcomponent = Bomcomponent::findOrFail($bomcomponent_id);
+
+        $bomcomponent->qty = $qty;
+        $bomcomponent->save();
+    }
+
     // update bom part()
     public function updateBompartApi()
     {
@@ -741,6 +765,9 @@ class BomController extends Controller
         $name = request('name');
         $qty = request('qty');
         $remark = request('remark');
+        $supplier_order = request('supplier_order');
+        $unit_price = request('unit_price');
+        $pic = request('pic');
 
         $bompart = Bompart::findOrFail($id);
         $bompart->part_id = $part_id;
@@ -749,6 +776,9 @@ class BomController extends Controller
         $bompart->name = $name;
         $bompart->qty = $qty;
         $bompart->remark = $remark;
+        $bompart->supplier_order = $supplier_order;
+        $bompart->unit_price = $unit_price;
+        $bompart->pic = $pic;
         $bompart->save();
     }
 
@@ -761,6 +791,9 @@ class BomController extends Controller
         $name = request('name');
         $qty = request('qty');
         $remark = request('remark');
+        $supplier_order = request('supplier_order');
+        $unit_price = request('unit_price');
+        $pic = request('pic');
 
         Bompart::create([
             'part_id' => $part_id,
@@ -769,7 +802,10 @@ class BomController extends Controller
             'name' => $name,
             'qty' => $qty,
             'remark' => $remark,
-            'updated_by' => auth()->user()->id
+            'updated_by' => auth()->user()->id,
+            'supplier_order' => $supplier_order,
+            'unit_price' => $unit_price,
+            'pic' => $pic
         ]);
     }
 
@@ -800,6 +836,9 @@ class BomController extends Controller
         $drawing_path = request('drawing_path');
         $name = request('name');
         $remark = request('remark');
+        $supplier_order = request('supplier_order');
+        $unit_price = request('unit_price');
+        $pic = request('pic');
 
         $bomcomponent = Bomcomponent::findOrFail($id);
         $bomcomponent->component_id = $component_id;
@@ -807,6 +846,9 @@ class BomController extends Controller
         $bomcomponent->drawing_path = $drawing_path;
         $bomcomponent->name = $name;
         $bomcomponent->remark = $remark;
+        $bomcomponent->supplier_order = $supplier_order;
+        $bomcomponent->unit_price = $unit_price;
+        $bomcomponent->pic = $pic;
         $bomcomponent->save();
     }
 
