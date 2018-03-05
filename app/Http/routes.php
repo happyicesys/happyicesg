@@ -13,6 +13,16 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bompartconsumable/custcat', 'BomController@bindBompartconsumableCustcat');
+Route::delete('/api/bompartconsumable/drawing/{bompartconsumable_id}/delete', 'BomController@removeBompartconsumableDrawingApi');
+Route::get('/api/bompartconsumable/{bompartconsumable_id}', 'BomController@getBompartconsumableSingleApi');
+Route::post('/bompartconsumable/drawing/upload/{bompartconsumable_id}', 'BomController@uploadBompartconsumableDrawing');
+Route::post('/api/bompartconsumable/update', 'BomController@updateBompartconsumable');
+Route::post('/api/bompartconsumable/create', 'BomController@createBompartconsumable');
+Route::delete('/api/bom/bompartconsumable/{id}/delete', 'BomController@destroyBompartconsumableApi');
+Route::post('/api/bompartconsumable/single/qty', 'BomController@updateBompartconsumableQty');
+Route::post('/api/bompartconsumable/single/remark', 'BomController@updateBompartconsumableRemark');
+Route::get('/api/bompartconsumable_id/increment', 'BomController@getBompartconsumableIncrementApi');
 Route::post('/api/bomcomponent/single/qty', 'BomController@updateBomcomponentQty');
 Route::post('/api/bomcomponent/single/remark', 'BomController@updateBomcomponentRemark');
 Route::post('/api/bomcomponent/custcat', 'BomController@bindBomcomponentCustcat');

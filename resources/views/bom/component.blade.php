@@ -250,7 +250,7 @@
                                 <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 1)"><i class="fa fa-plus"></i> Consumable</button>
                             </td>
                         </tr>
-                        <tr ng-repeat="(index2, bompart) in bomcomponent.bomparts" ng-repeat-end ng-style="{'background-color': bompart.movable == 1 ? '#fbfafc' : '#eae3f0'}">
+                        <tr ng-repeat-start="(index2, bompart) in bomcomponent.bomparts" ng-style="{'background-color': bompart.movable == 1 ? '#fbfafc' : '#eae3f0'}">
                             <td class="col-md-1 text-left" style="width:3%">
                                 @{{index + indexFrom}}.@{{index2 + 1}}
                             </td>
@@ -290,8 +290,53 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-xs" ng-click="removeBompart(bompart.id)"><i class="fa fa-times"></i></button>
+                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="passBompartconsumableModal(bompart)"><i class="fa fa-plus"></i> Consumable</button>
                             </td>
                         </tr>
+                        <tr ng-repeat="(index3, bompartconsumable) in bompart.bompartconsumables" ng-repeat-end>
+                            <td class="col-md-1 text-left" style="width:3%">
+                                @{{index + indexFrom}}.@{{index2 + 1}}.@{{index3 + 1}}
+                            </td>
+                            <td class="col-md-1 text-center" style="width:10%">
+                                @{{bompartconsumable.partconsumable_id}}
+                            </td>
+                            <td class="col-md-2 text-left">
+                                <a href="#" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="editBompartconsumableModal(bompartconsumable)">
+                                    @{{bompartconsumable.name}}
+                                </a>
+                            </td>
+                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#bompartconsumable_drawing_modal" ng-click="editBompartconsumableModal(bompartconsumable)" style="cursor: pointer;">
+                                <a href="">
+                                    @{{bompartconsumable.drawing_id}}
+                                </a>
+                            </td>
+                            <td class="col-md-2 text-left">
+                                <textarea class="form-control " ng-model="bompartconsumable.remark" rows="2" ng-change="onBompartconsumableRemarkChanged(bompartconsumable.id, bompartconsumable.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <span ng-if="!formedit">@{{bompartconsumable.remark}}</span>
+                            </td>
+                            <td class="col-md-1 text-right" style="width:6%">
+                                <input type="text" name="bompartconsumable_qty[]" ng-model="bompartconsumable.qty" class="form-control text-right input-sm" ng-change="onBompartconsumableQtyChanged(bompartconsumable.id, bompartconsumable.qty)" ng-model-options='{ debounce: 700 }' ng-if="formedit">
+                                <span ng-if="!formedit">@{{bompartconsumable.qty}}</span>
+                            </td>
+                            <td class="col-md-2 text-center" style="width:12%">
+                                <span ng-repeat="custcat in bompartconsumable.bompartconsumablecustcat">@{{custcat.custcategory.name}}@{{$last ? '' : ', '}}</span>
+                                <span ng-repeat="custcategory in bompart.bompartconsumablecustcat">@{{custcategory.name}}</span>
+                                <ui-select ng-model="custcategory[bompartconsumable.id]" on-select="onBompartconsumableCustcatChosen(bompartconsumable.id, custcategory[bompartconsumable.id])" ng-if="formedit">
+                                    <ui-select-match>@{{$select.custcategory.name}}</ui-select-match>
+                                    <ui-select-choices repeat="custcategory in bompart.bomtemplates | filter: $select.search">
+                                        <div ng-bind-html="custcategory.custcategory.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td class="col-md-1 text-center">
+                                @{{bompartconsumable.updater.name}} <br>
+                                @{{bompartconsumable.updated_at | date:'yy/MM/dd h:mma'}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <button class="btn btn-danger btn-xs" ng-click="removeBompartconsumable(bompartconsumable.id)"><i class="fa fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end ng-hide="true"></tr>
                         <tr ng-if="!alldata || alldata.length == 0">
                             <td colspan="18" class="text-center">No Records Found</td>
                         </tr>
@@ -377,7 +422,7 @@
                             <input type="text" name="pic" class="form-control" ng-model="partform.pic">
                         </div>
 
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-sm-12 col-xs-12" ng-if="partform.id">
                             <div class="form-group">
                                 <label for="files">Upload Drawing</label>
                                 <input type="file" name="files" id="files" ng-files="setTheBompartFiles($files)" id="part_file" class="form-control">
@@ -406,6 +451,102 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-if="!partform.id"  ng-click="createPart()" data-dismiss="modal">Create</button>
                     <button type="button" class="btn btn-success" ng-if="partform.id" ng-click="editPart()" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bompartconsumable_modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        Add Consumable for Part @{{conpartform.bompart_name}}
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Part Consumable ID
+                            </label>
+                            <input type="text" name="bompartconsumable_id" class="form-control" ng-model="conpartform.bompartconsumable_id" ng-model-options='{ debounce: 500 }'>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Name
+                            </label>
+                            <input type="text" name="name" class="form-control" ng-model="conpartform.name">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Qty
+                            </label>
+                            <input type="text" name="qty" class="form-control" ng-model="conpartform.qty">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Remark
+                            </label>
+                            <textarea name="remark" class="form-control" ng-model="conpartform.remark" rows="2"></textarea>
+                        </div>
+                        <hr>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Drawing #
+                            </label>
+                            <input type="text" name="drawing_id" class="form-control" ng-model="conpartform.drawing_id">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Supplier Order & Detail
+                            </label>
+                            <textarea name="supplier_order" class="form-control" ng-model="conpartform.supplier_order" rows="3"></textarea>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Unit Price (S$)
+                            </label>
+                            <input type="text" name="unit_price" class="form-control" ng-model="conpartform.unit_price">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Person In Charge
+                            </label>
+                            <input type="text" name="pic" class="form-control" ng-model="conpartform.pic">
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12" ng-if="conpartform.id">
+                            <div class="form-group">
+                                <label for="files">Upload Drawing</label>
+                                <input type="file" name="files" id="files" ng-files="setTheBompartconsumableFiles($files)" id="part_file" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" ng-click="uploadBompartconsumableFile(conpartform.id)"><i class="fa fa-upload"></i> Upload File</button>
+                                <button class="btn btn-danger" ng-click="deleteBompartconsumableDrawing(conpartform.id)"><i class="fa fa-times"></i> Remove File</button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <a ng-href="@{{conpartform.drawing_path}}" ng-if="conpartform.drawing_path">
+                                <img ng-src="@{{conpartform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="conpartform.drawing_path &&
+                                        (
+                                            conpartform.drawing_path.substr(conpartform.drawing_path.lastIndexOf('.') + 1) == 'jpeg' ||
+                                            conpartform.drawing_path.substr(conpartform.drawing_path.lastIndexOf('.') + 1) == 'jpg' ||
+                                            conpartform.drawing_path.substr(conpartform.drawing_path.lastIndexOf('.') + 1) == 'png'
+                                        )">
+                                <embed ng-src="@{{conpartform.drawing_path}}" height="250" width="250" style="border:2px solid black"
+                                ng-if="conpartform.drawing_path.substr(conpartform.drawing_path.lastIndexOf('.') + 1) == 'pdf'">
+                            </a>
+                            <img src="#" alt="No photo found" ng-if="!conpartform.drawing_path" height="250" width="250" style="border:2px solid black">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-if="!conpartform.id"  ng-click="createBompartconsumable()" data-dismiss="modal">Create</button>
+                    <button type="button" class="btn btn-success" ng-if="conpartform.id" ng-click="editBompartconsumable()" data-dismiss="modal">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

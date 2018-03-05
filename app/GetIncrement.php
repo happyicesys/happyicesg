@@ -55,6 +55,17 @@ trait GetIncrement{
         return $letters.$numbers;
     }
 
+    // retrieve increament id for bompartconsumable()
+    public function getBompartconsumableIncrement()
+    {
+        $max_id = count(Bompartconsumable::all()) > 0 ? Bompartconsumable::max('partconsumable_id') : 10001;
+        $numbers = preg_replace('/[^0-9]/', '', $max_id);
+        $letters = preg_replace('/[^a-zA-Z]/', '', $max_id);
+        $numbers += 1;
+
+        return $letters.$numbers;
+    }
+
     // retrieve increament id for bom component()
     public function getBommaintenanceIncrement()
     {

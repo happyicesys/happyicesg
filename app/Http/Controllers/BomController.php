@@ -12,10 +12,12 @@ use App\Bompart;
 use App\Bomtemplate;
 use App\Bomvending;
 use App\Bommaintenance;
+use App\Bompartconsumable;
 use App\Person;
 use App\Bomcategorycustcat;
 use App\Bomcomponentcustcat;
 use App\Bompartcustcat;
+use App\Bompartconsumablecustcat;
 use DB;
 use App\GetIncrement;
 use Carbon\Carbon;
@@ -142,6 +144,9 @@ class BomController extends Controller
             'bomcomponents.bomparts' => function($query) {
                 $query->orderBy('part_id', 'ASC');
             },
+            'bomcomponents.bomparts.bompartconsumables',
+            'bomcomponents.bomparts.bompartconsumables.updater',
+            'bomcomponents.bomparts.bompartconsumables.bompartconsumablecustcat.custcategory',
             'bomcomponents.bomparts.updater',
             'bomcomponents.bomparts.bomtemplates.custcategory' => function($query) {
                 $query->orderBy('name', 'ASC');
@@ -1000,12 +1005,162 @@ class BomController extends Controller
         $bomcategorycustcat = Bomcategorycustcat::where('bomcategory_id', $bomcategory_id)->where('custcategory_id', $custcategory['id'])->firstOrFail();
         $bomcategorycustcat->delete();
     }
-/*
-    public function getBomcomponentcustcatOptions()
+
+    // get bompartconsumable increment()
+    public function getBompartconsumableIncrementApi()
     {
-        $custcats = Custcategory::orderBy('name')->get();
-        return $custcats;
-    }*/
+        $bompartconsumable_id = $this->getBompartconsumableIncrement();
+        return $bompartconsumable_id;
+    }
+
+    // update bom bompartconsumable remark()
+    public function updateBompartconsumableRemark()
+    {
+        $bompartconsumable_id = request('bompartconsumable_id');
+        $remark = request('remark');
+
+        $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
+
+        $bompartconsumable->remark = $remark;
+        $bompartconsumable->updated_by = auth()->user()->id;
+        $bompartconsumable->save();
+    }
+
+    // update bom bompartconsumable qty()
+    public function updateBompartconsumableQty()
+    {
+        $bomcomponent_id = request('bompartconsumable_id');
+        $qty = request('qty');
+
+        $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
+
+        $bompartconsumable->qty = $qty;
+        $bompartconsumable->updated_by = auth()->user()->id;
+        $bompartconsumable->save();
+    }
+
+    // remove the bompartconsumable api(int bompartconsumable_id)
+    public function destroyBompartconsumableApi($bompartconsumable_id)
+    {
+        $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
+        $bompartconsumable->delete();
+    }
+
+    // create bompartconsumable()
+    public function createBompartconsumable()
+    {
+        $partconsumable_id = request('bompartconsumable_id');
+        $bompart_id = request('bompart_id');
+        $name = request('name');
+        $qty = request('qty');
+        $remark = request('remark');
+        $supplier_order = request('supplier_order');
+        $unit_price = request('unit_price');
+        $pic = request('pic');
+
+        $bompartconsumable = Bompartconsumable::create([
+            'partconsumable_id' => $partconsumable_id,
+            'bompart_id' => $bompart_id,
+            'name' => $name,
+            'qty' => $qty,
+            'remark' => $remark,
+            'updated_by' => auth()->user()->id,
+            'supplier_order' => $supplier_order,
+            'unit_price' => $unit_price,
+            'pic' => $pic
+        ]);
+
+        $bompart = Bompart::findOrFail($bompart_id);
+        foreach($bompart->bomtemplates as $bomtemplate) {
+            Bompartconsumablecustcat::create([
+                'custcategory_id' => $bomtemplate->custcategory_id,
+                'bompartconsumable_id' => $bompartconsumable->id,
+                'updated_by' => auth()->user()->id
+            ]);
+        }
+    }
+
+    // update bompartconsumable()
+    public function updateBompartconsumable()
+    {
+        $id = request('id');
+        $bompart_id = request('bompart_id');
+        $partconsumable_id = request('bompartconsumable_id');
+        $drawing_id = request('drawing_id');
+        $drawing_path = request('drawing_path');
+        $name = request('name');
+        $qty = request('qty');
+        $remark = request('remark');
+        $supplier_order = request('supplier_order');
+        $unit_price = request('unit_price');
+        $pic = request('pic');
+
+        $bompartconsumable = Bompartconsumable::findOrFail($id);
+        $bompartconsumable->bompart_id = $bompart_id;
+        $bompartconsumable->drawing_id = $drawing_id;
+        $bompartconsumable->drawing_path = $drawing_path;
+        $bompartconsumable->name = $name;
+        $bompartconsumable->qty = $qty;
+        $bompartconsumable->remark = $remark;
+        $bompartconsumable->supplier_order = $supplier_order;
+        $bompartconsumable->unit_price = $unit_price;
+        $bompartconsumable->pic = $pic;
+        $bompartconsumable->updated_by = auth()->user()->id;
+        $bompartconsumable->save();
+    }
+
+    // upload bompartconsumable file()
+    public function uploadBompartconsumableDrawing($bompartconsumable_id)
+    {
+        $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
+        $bompartconsumable->updated_by = auth()->user()->id;
+        $bompartconsumable->save();
+        if($file = request()->file('bompartconsumable_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $file->move('bom_asset/bomcategory/'.$bompartconsumable->bompart->bomcomponent->bomcategory->id.'/'.$bompartconsumable->bompart->bomcomponent->id.'/', $name);
+            $bompartconsumable->drawing_path = '/bom_asset/bomcategory/'.$bompartconsumable->bompart->bomcomponent->bomcategory->id.'/'.$bompartconsumable->bompart->bomcomponent->id.'/'.$name;
+            $bompartconsumable->save();
+        }
+    }
+
+    // remove bompartconsumable drawing(int bompart_id)
+    public function removeBompartconsumableDrawingApi($bompartconsumable_id)
+    {
+        $bompartconsumable = Bompart::findOrFail($bompartconsumable_id);
+        $bompartconsumable->updated_by = auth()->user()->id;
+        $bompartconsumable->save();
+        File::delete(public_path().$bompartconsumable->bompart->drawing_path);
+        $bompartconsumable->drawing_path = null;
+        $bompartconsumable->save();
+    }
+
+    // get single bompartconsumable api(int bomcategory_id)
+    public function getBompartconsumableSingleApi($bompartconsumable_id)
+    {
+        $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
+        return $bompartconsumable;
+    }
+
+    // bind custcategory to bompartconsumable
+    public function bindBompartconsumableCustcat()
+    {
+        // die(var_dump(request('custcategory_id')['custcategory_id']));
+        $bompartconsumable_id = request('bompartconsumable_id');
+        $custcategory_id = request('custcategory_id')['custcategory_id'];
+        $bompartconsumablecustcat = Bompartconsumablecustcat::where('bompartconsumable_id', $bompartconsumable_id)->where('custcategory_id', $custcategory_id)->first();
+
+        if($bompartconsumablecustcat) {
+            $bompartconsumablecustcat->delete();
+        }else {
+            if($custcategory_id) {
+                Bompartconsumablecustcat::create([
+                    'custcategory_id' => $custcategory_id,
+                    'bompartconsumable_id' => $bompartconsumable_id,
+                    'updated_by' => auth()->user()->id
+                ]);
+            }
+        }
+    }
 
     // pass value into filter search for parts DB (collection) [query]
     private function searchPartDBFilter($bomparts)

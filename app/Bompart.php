@@ -33,8 +33,18 @@ class Bompart extends Model
         return $this->hasMany('App\Bomvending');
     }
 
+    public function bompartconsumables()
+    {
+        return $this->hasMany('App\Bompartconsumable');
+    }
+
     public function updater()
     {
         return $this->belongsTo('App\User', 'updated_by');
+    }
+
+    public function drawings()
+    {
+        return $this->hasMany('App\Drawing');
     }
 }

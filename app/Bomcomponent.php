@@ -31,4 +31,9 @@ class Bomcomponent extends Model
     {
         return $this->belongsTo('App\User', 'updated_by');
     }
+
+    public function drawings()
+    {
+        return $this->hasMany('App\Drawing');
+    }
 }

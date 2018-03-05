@@ -226,6 +226,7 @@ function bomComponentController($scope, $timeout, $http){
     $scope.alldata = [];
     $scope.partform = {};
     $scope.componentform = {};
+    $scope.conpartform = {};
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
@@ -612,12 +613,132 @@ function bomComponentController($scope, $timeout, $http){
     }
 
     $scope.onBomcomponentCustcatChosen = function(bomcomponent_id, custcategory_id) {
-        console.log(bomcomponent_id);
-        console.log(custcategory_id);
         $http.post('/api/bomcomponent/custcat', {bomcomponent_id: bomcomponent_id, custcategory_id: custcategory_id}).success(function(data) {
             getPage(1);
         });
     }
+
+    $scope.passBompartconsumableModal = function(bompart) {
+        $scope.conpartform = {
+            part_name: bompart.name,
+            bompart_id: bompart.id,
+            bompartconsumable_id: $scope.getBompartconsumableIncrement(),
+            name: '',
+            qty: '',
+            remark: '',
+            supplier_order: '',
+            unit_price: '',
+            pic: ''
+        }
+    }
+
+    $scope.getBompartconsumableIncrement = function() {
+        $http.get('/api/bompartconsumable_id/increment').success(function(data) {
+            $scope.conpartform.bompartconsumable_id = data;
+        });
+    }
+
+    $scope.editBompartconsumableModal = function(bompartconsumable) {
+        fetchSingleBompartconsumable(bompartconsumable);
+    }
+
+    function fetchSingleBompartconsumable(bompartconsumable) {
+        $scope.conpartform = {
+            id: bompartconsumable.id,
+            bompartconsumable_id: bompartconsumable.partconsumable_id,
+            bompart_id: bompartconsumable.part_id,
+            name: bompartconsumable.name,
+            qty: bompartconsumable.qty,
+            remark: bompartconsumable.remark,
+            drawing_id: bompartconsumable.drawing_id,
+            drawing_path: bompartconsumable.drawing_path,
+            supplier_order: bompartconsumable.supplier_order,
+            unit_price: bompartconsumable.unit_price,
+            pic: bompartconsumable.pic
+        }
+    }
+
+    $scope.onBompartconsumableRemarkChanged = function(bompartconsumable_id, remark) {
+        $http.post('/api/bompartconsumable/single/remark', {bompartconsumable_id: bompartconsumable_id, remark: remark}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onBompartconsumableQtyChanged = function(bompartconsumable_id, qty) {
+        $http.post('/api/bompartconsumable/single/qty', {bompartconsumable_id: bompartconsumable_id, qty: qty}).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.removeBompartconsumable = function(bompartconsumable_id) {
+        var isConfirmDelete = confirm('Are you sure to DELETE consumable from thispart?');
+        if(isConfirmDelete){
+            $http.delete('/api/bom/bompartconsumable/' + bompartconsumable_id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }else{
+            return false;
+        }
+    }
+
+    $scope.uploadBompartconsumableFile = function (bompartconsumable_id) {
+        $scope.editBompartconsumable();
+        var request = {
+            method: 'POST',
+            url: '/bompartconsumable/drawing/upload/' + bompartconsumable_id,
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#bompartconsumable_file');
+                fileElement.value = '';
+                alert("Image has been uploaded successfully!");
+                $http.get('/api/bompartconsumable/' + bompartconsumable_id).success(function(data) {
+                    fetchSingleBompartconsumable(data);
+                });
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+            });
+    };
+
+    $scope.setTheBompartconsumableFiles = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('bompartconsumable_file', value);
+        });
+    };
+
+    $scope.deleteBompartconsumableDrawing = function(bompartconsumable_id) {
+        $http.delete('/api/bompartconsumable/drawing/'+ bompartconsumable_id + '/delete').success(function(data) {
+            $http.get('/api/bompartconsumable/' + bompartconsumable_id).success(function(conpartdata) {
+                fetchSingleBompartconsumable(conpartdata);
+            });
+        });
+    }
+
+    $scope.createBompartconsumable = function() {
+        $http.post('/api/bompartconsumable/create', $scope.conpartform).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.editBompartconsumable = function() {
+        $http.post('/api/bompartconsumable/update', $scope.conpartform).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onBompartconsumableCustcatChosen = function(bompartconsumable_id, custcategory_id) {
+        $http.post('/api/bompartconsumable/custcat', {bompartconsumable_id: bompartconsumable_id, custcategory_id: custcategory_id}).success(function(data) {
+            getPage(1);
+        });
+    }
+
 }
 
 function bomPartController($scope, $http){
