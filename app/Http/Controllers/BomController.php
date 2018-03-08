@@ -18,6 +18,7 @@ use App\Bomcategorycustcat;
 use App\Bomcomponentcustcat;
 use App\Bompartcustcat;
 use App\Bompartconsumablecustcat;
+use App\Bomgroup;
 use DB;
 use App\GetIncrement;
 use Carbon\Carbon;
@@ -144,7 +145,9 @@ class BomController extends Controller
             'bomcomponents.bomparts' => function($query) {
                 $query->orderBy('part_id', 'ASC');
             },
+            'bomcomponents.bomparts.bomgroup',
             'bomcomponents.bomparts.bompartconsumables',
+            'bomcomponents.bomparts.bompartconsumables.bomgroup',
             'bomcomponents.bomparts.bompartconsumables.updater',
             'bomcomponents.bomparts.bompartconsumables.bompartconsumablecustcat.custcategory',
             'bomcomponents.bomparts.updater',
@@ -153,7 +156,7 @@ class BomController extends Controller
             }))->has('bomcomponents');
 
         // reading whether search input is filled
-        if(request('category_id') or request('category_name') or request('component_id') or request('component_name')){
+        if(request('category_id') or request('category_name') or request('component_id') or request('component_name') or request('custcategory')){
             $components = $this->searchComponentDBFilter($components);
         }
 
@@ -595,6 +598,7 @@ class BomController extends Controller
         $category_name = request('category_name');
         $component_id = request('component_id');
         $component_name = request('component_name');
+        $custcategory = request('custcategory');
 
         if($category_id){
             $bomcomponents = $bomcomponents->where('category_id', 'LIKE', '%'.$category_id.'%');
@@ -611,6 +615,26 @@ class BomController extends Controller
             $bomcomponents = $bomcomponents->whereHas('bomcomponents', function($query) use ($component_name){
                 $query->where('name', 'LIKE', '%'.$component_name.'%');
             });
+        }
+        if($custcategory) {
+            if(count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+/*            $bomcomponents = $bomcomponents->with(['bomcategorycustcat.custcategory' => function($query) use ($custcategory) {
+                $query->whereIn('id', $custcategory);
+            }]);*/
+            $bomcomponents = $bomcomponents->whereHas('bomcategorycustcat.custcategory', function($query) use ($custcategory){
+                $query->whereIn('id', $custcategory);
+            });
+/*            $bomcomponents = $bomcomponents->whereHas('bomcomponents.bomcomponentcustcat.custcategory', function($query) use ($custcategory){
+                $query->whereIn('id', $custcategory);
+            });
+            $bomcomponents = $bomcomponents->whereHas('bomcomponents.bomparts.bompartconsumables.bompartconsumablecustcat.custcategory', function($query) use ($custcategory){
+                $query->whereIn('id', $custcategory);
+            });
+            $bomcomponents = $bomcomponents->whereHas('bomcomponents.bomparts.bomtemplates.custcategory', function($query) use ($custcategory){
+                $query->whereIn('id', $custcategory);
+            });*/
         }
         return $bomcomponents;
     }
@@ -777,9 +801,11 @@ class BomController extends Controller
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
         $pic = request('pic');
+        $bomgroup_id = request('bomgroup_id');
 
         $bompart = Bompart::findOrFail($id);
         $bompart->part_id = $part_id;
+        $bompart->bomgroup_id = $bomgroup_id;
         $bompart->drawing_id = $drawing_id;
         $bompart->drawing_path = $drawing_path;
         $bompart->name = $name;
@@ -804,11 +830,13 @@ class BomController extends Controller
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
         $pic = request('pic');
+        $bomgroup_id = request('bomgroup_id');
 
         $bompart = Bompart::create([
             'part_id' => $part_id,
-            'movable' => $movable,
+            'movable' => 0,
             'bomcomponent_id' => $bomcomponent_id,
+            'bomgroup_id' => $bomgroup_id,
             'name' => $name,
             'qty' => $qty,
             'remark' => $remark,
@@ -1029,7 +1057,7 @@ class BomController extends Controller
     // update bom bompartconsumable qty()
     public function updateBompartconsumableQty()
     {
-        $bomcomponent_id = request('bompartconsumable_id');
+        $bompartconsumable_id = request('bompartconsumable_id');
         $qty = request('qty');
 
         $bompartconsumable = Bompartconsumable::findOrFail($bompartconsumable_id);
@@ -1057,10 +1085,12 @@ class BomController extends Controller
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
         $pic = request('pic');
+        $bomgroup_id = request('bomgroup_id');
 
         $bompartconsumable = Bompartconsumable::create([
             'partconsumable_id' => $partconsumable_id,
             'bompart_id' => $bompart_id,
+            'bomgroup_id' => $bomgroup_id,
             'name' => $name,
             'qty' => $qty,
             'remark' => $remark,
@@ -1094,9 +1124,11 @@ class BomController extends Controller
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
         $pic = request('pic');
+        $bomgroup_id = request('bomgroup_id');
 
         $bompartconsumable = Bompartconsumable::findOrFail($id);
         $bompartconsumable->bompart_id = $bompart_id;
+        $bompartconsumable->bomgroup_id = $bomgroup_id;
         $bompartconsumable->drawing_id = $drawing_id;
         $bompartconsumable->drawing_path = $drawing_path;
         $bompartconsumable->name = $name;
@@ -1160,6 +1192,81 @@ class BomController extends Controller
                 ]);
             }
         }
+    }
+
+    // retrieve all of the bom groups
+    public function getBomgroupsApi()
+    {
+        $bomgroups = Bomgroup::with('updater');
+
+        // reading whether search input is filled
+        if(request('prefix') or request('name')){
+            $bomgroups = $this->searchBomgroupFilter($bomgroups);
+        }
+
+        if(request('sortName')){
+            $bomgroups = $bomgroups->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $bomgroups = $bomgroups->orderBy('prefix');
+        }
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if($pageNum == 'All'){
+            $bomgroups = $bomgroups->get();
+        }else{
+            $bomgroups = $bomgroups->paginate($pageNum);
+        }
+
+        $data = [
+            'bomgroups' => $bomgroups
+        ];
+
+        return $data;
+    }
+
+    // get all of the bomgroups option()
+    public function getBomgroupsSelectApi()
+    {
+        $bomgroups = Bomgroup::orderBy('prefix')->get();
+        return $bomgroups;
+    }
+
+    // creating new bomgroup entry()
+    public function createBomgroupApi()
+    {
+        $prefix = request('prefix');
+        $name = request('name');
+        $remark = request('remark');
+
+        Bomgroup::create([
+            'prefix' => $prefix,
+            'name' => $name,
+            'remark' => $remark,
+            'updated_by' => auth()->user()->id
+        ]);
+    }
+
+    // remove bomgroup entry(int bomgroup_id)
+    public function destroyBomgroupApi($bomgroup_id)
+    {
+        $bomgroup = Bomgroup::findOrFail($bomgroup_id);
+        $bomgroup->delete();
+    }
+
+    // update bom group api()
+    public function updateBomgroupApi()
+    {
+        $id = request('id');
+        $prefix = request('prefix');
+        $name = request('name');
+        $remark = request('remark');
+
+        $bomgroup = Bomgroup::findOrFail($id);
+        $bomgroup->prefix = $prefix;
+        $bomgroup->name = $name;
+        $bomgroup->remark = $remark;
+        $bomgroup->updated_by = auth()->user()->id;
+        $bomgroup->save();
     }
 
     // pass value into filter search for parts DB (collection) [query]
@@ -1265,5 +1372,20 @@ class BomController extends Controller
         $datetime = Carbon::parse($date.' '.$time);
 
         return $datetime;
+    }
+
+    // search filter for bomgroups(Query bomgroups)
+    private function searchBomgroupFilter($bomgroups)
+    {
+        $prefix = request('prefix');
+        $name = request('name');
+
+        if($prefix){
+            $bomgroups = $bomgroups->where('prefix', 'LIKE', '%'.$prefix.'%');
+        }
+        if($name){
+            $bomgroups = $bomgroups->where('name', 'LIKE', '%'.$name.'%');
+        }
+        return $bomgroups;
     }
 }

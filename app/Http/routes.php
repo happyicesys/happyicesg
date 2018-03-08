@@ -13,6 +13,12 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::get('/api/bom/groups/all', 'BomController@getBomgroupsSelectApi');
+Route::post('/api/bom/group/update', 'BomController@updateBomgroupApi');
+Route::delete('/api/bom/group/{id}/delete', 'BomController@destroyBomgroupApi');
+Route::post('/api/bom/group/create', 'BomController@createBomgroupApi');
+Route::post('/api/bom/groups', 'BomController@getBomgroupsApi');
+
 Route::post('/api/bompartconsumable/custcat', 'BomController@bindBompartconsumableCustcat');
 Route::delete('/api/bompartconsumable/drawing/{bompartconsumable_id}/delete', 'BomController@removeBompartconsumableDrawingApi');
 Route::get('/api/bompartconsumable/{bompartconsumable_id}', 'BomController@getBompartconsumableSingleApi');

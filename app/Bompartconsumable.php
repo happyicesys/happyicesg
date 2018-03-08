@@ -9,7 +9,7 @@ class Bompartconsumable extends Model
     protected $fillable = [
     	'partconsumable_id', 'name', 'remark', 'bompart_id',
         'updated_by', 'qty', 'color', 'supplier_order', 'unit_price',
-        'pic', 'drawing_id', 'drawing_path'
+        'pic', 'drawing_id', 'drawing_path', 'bomgroup_id'
     ];
 
 
@@ -26,6 +26,11 @@ class Bompartconsumable extends Model
     public function drawings()
     {
         return $this->hasMany('App\Drawing');
+    }
+
+    public function bomgroup()
+    {
+    	return $this->belongsTo('App\Bomgroup');
     }
 
     public function updater()

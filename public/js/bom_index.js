@@ -241,6 +241,7 @@ function bomComponentController($scope, $timeout, $http){
         component_name: '',
         category_id: '',
         category_name: '',
+        custcategory: '',
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -259,6 +260,7 @@ function bomComponentController($scope, $timeout, $http){
     $scope.formErrors = [];
     $scope.notsubmitable = false;
     $scope.formedit = true;
+    $scope.bomgroups = [];
 
     angular.element(document).ready(function () {
         $('.select').select2({
@@ -267,11 +269,15 @@ function bomComponentController($scope, $timeout, $http){
         $('.selectcustcat').select2({
             placeholder: 'Select...'
         });
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
     });
 
     // init page load
     getPage(1, true);
     getCustcatOptions();
+    getBomgroupSelectOptions();
 
     $scope.exportData = function () {
         var blob = new Blob(["\ufeff", document.getElementById('exportable_bomcomponent').innerHTML], {
@@ -416,15 +422,13 @@ function bomComponentController($scope, $timeout, $http){
         }
     }
 
-    $scope.passDataModal = function(bomcomponent, movable) {
+    $scope.passDataModal = function(bomcomponent) {
         $scope.partform = {
             title: bomcomponent.name,
-            movable: movable,
-            type: movable == 1 ? 'Consumable' : 'Part',
-            color: movable == 1 ? '#fbfafc' : '#eae3f0',
             component_id: bomcomponent.component_id,
             bomcomponent_id : bomcomponent.id,
             part_id: $scope.getBompartIncrement(),
+            bomgroup_id: '',
             name: '',
             qty: '',
             remark: '',
@@ -443,6 +447,7 @@ function bomComponentController($scope, $timeout, $http){
             id: bompart.id,
             type: bompart.movable == 1 ? 'Consumable' : 'Part',
             color: bompart.movable == 1 ? '#fbfafc' : '#eae3f0',
+            bomgroup_id: bompart.bomgroup_id,
             part_id: bompart.part_id,
             name: bompart.name,
             qty: bompart.qty,
@@ -621,7 +626,9 @@ function bomComponentController($scope, $timeout, $http){
     $scope.passBompartconsumableModal = function(bompart) {
         $scope.conpartform = {
             part_name: bompart.name,
+            part_id: bompart.part_id,
             bompart_id: bompart.id,
+            bomgroup_id: '',
             bompartconsumable_id: $scope.getBompartconsumableIncrement(),
             name: '',
             qty: '',
@@ -646,6 +653,7 @@ function bomComponentController($scope, $timeout, $http){
         $scope.conpartform = {
             id: bompartconsumable.id,
             bompartconsumable_id: bompartconsumable.partconsumable_id,
+            bomgroup_id: bompartconsumable.bomgroup_id,
             bompart_id: bompartconsumable.part_id,
             name: bompartconsumable.name,
             qty: bompartconsumable.qty,
@@ -739,6 +747,12 @@ function bomComponentController($scope, $timeout, $http){
         });
     }
 
+    function getBomgroupSelectOptions() {
+        $http.get('/api/bom/groups/all').success(function(data) {
+            $scope.bomgroups = data;
+        });
+    }
+
 }
 
 function bomPartController($scope, $http){
@@ -756,6 +770,7 @@ function bomPartController($scope, $http){
         category_name: '',
         component_id: '',
         component_name: '',
+        custcategory: '',
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -1320,6 +1335,141 @@ function maintenanceController($scope, $http){
     }
 }
 
+function bomgroupController($scope, $http, $window){
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 100;
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.search = {
+        prefix: '',
+        name: '',
+        pageNum: 100,
+        sortName: '',
+        sortBy: true
+    }
+    $scope.form = {
+        id: '',
+        prefix: '',
+        name: '',
+        remark: ''
+    }
+    // init page load
+    getPage(1, true);
+
+    $scope.exportData = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_bomgroup').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "BOM Group"+ now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function(newPage){
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function(){
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage(1, false);
+    }
+
+      // when hitting search button
+    $scope.searchDB = function(){
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first){
+        $scope.spinner = true;
+        $http.post('/api/bom/groups?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            if(data.bomgroups.data){
+                $scope.alldata = data.bomgroups.data;
+                $scope.totalCount = data.bomgroups.total;
+                $scope.currentPage = data.bomgroups.current_page;
+                $scope.indexFrom = data.bomgroups.from;
+                $scope.indexTo = data.bomgroups.to;
+            }else{
+                $scope.alldata = data.bomgroups;
+                $scope.totalCount = data.bomgroups.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.bomgroups.length;
+            }
+            $scope.All = data.bomgroups.length;
+            $scope.spinner = false;
+        });
+    }
+
+    $scope.createBomgroupModal = function() {
+        $scope.form = {
+            id: '',
+            prefix: '',
+            name: '',
+            remark: ''
+        }
+    }
+
+
+    $scope.createBomgroup = function() {
+        $http.post('/api/bom/group/create', $scope.form). success(function(data) {
+            getPage(1);
+
+            $scope.form = {
+                id: '',
+                prefix: '',
+                name: '',
+                remark: ''
+            }
+        }).error(function(data, status) {
+            $scope.formErrors = data;
+        });
+    }
+
+    $scope.removeEntry = function(id) {
+        var isConfirmDelete = confirm('Are you sure to DELETE this group, its parts and consumables?');
+        if(isConfirmDelete){
+            $http.delete('/api/bom/group/' + id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }else{
+            return false;
+        }
+    }
+
+    $scope.editBomgroupModal = function(bomgroup) {
+        fetchSingleBomgroup(bomgroup);
+    }
+
+    function fetchSingleBomgroup(bomgroup) {
+        $scope.form = {
+            id: bomgroup.id,
+            prefix: bomgroup.prefix,
+            name: bomgroup.name,
+            remark: bomgroup.remark,
+        }
+    }
+
+    $scope.editBomgroup = function() {
+        $http.post('/api/bom/group/update', $scope.form).success(function(data) {
+            getPage(1);
+        });
+    }
+}
+
 
 
 app.controller('bomCategoryController', bomCategoryController);
@@ -1328,6 +1478,7 @@ app.controller('bomPartController', bomPartController);
 app.controller('bomTemplateController', bomTemplateController);
 app.controller('bomVendingController', bomVendingController);
 app.controller('maintenanceController', maintenanceController);
+app.controller('bomgroupController', bomgroupController);
 
 app.directive('ngFiles', ['$parse', function ($parse) {
     function file_links(scope, element, attrs) {

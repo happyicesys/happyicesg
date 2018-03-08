@@ -13,21 +13,18 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li><a href="#category" role="tab" data-toggle="tab">Category</a></li>
-                    <li><a href="#component" role="tab" data-toggle="tab">Component & Part</a></li>
+                    <li class="active"><a href="#component" role="tab" data-toggle="tab">BOM Template</a></li>
                     {{-- <li class="active"><a href="#part" role="tab" data-toggle="tab">Part</a></li> --}}
                     {{-- <li><a href="#template" role="tab" data-toggle="tab">Template Definition</a></li> --}}
                     <li><a href="#vending" role="tab" data-toggle="tab">BOM Comparison</a></li>
                     <li><a href="#maintenance" role="tab" data-toggle="tab">Maintenance Record</a></li>
+                    <li><a href="#category" role="tab" data-toggle="tab">Settings</a></li>
                 </ul>
             </div>
 
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane" id="category">
-                        @include('bom.category')
-                    </div>
-                    <div class="tab-pane" id="component">
+                    <div class="tab-pane active" id="component">
                         @include('bom.component')
                     </div>
 {{--                     <div class="tab-pane active" id="part">
@@ -41,6 +38,9 @@
                     </div>
                     <div class="tab-pane" id="maintenance">
                         @include('bom.maintenance')
+                    </div>
+                    <div class="tab-pane" id="category">
+                        @include('bom.category')
                     </div>
                 </div>
             </div>

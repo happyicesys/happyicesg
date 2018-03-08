@@ -142,6 +142,20 @@
                     !!}
                 </div>
             </div>
+{{--
+            <div class="row">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                        <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                            <option value="">All</option>
+                            @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                            <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div> --}}
 
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -184,6 +198,9 @@
                         <th class="col-md-1 text-center" style="width:10%">
                             ID
                         </th>
+                        <th class="col-md-1 text-center" style="width:5%">
+                            Group Prefix
+                        </th>
                         <th class="col-md-2 text-center">
                             Name
                         </th>
@@ -199,6 +216,15 @@
                         <th class="col-md-2 text-center" style="width:12%">
                             Category Assignment
                         </th>
+                        <th class="hidden">
+                            Supplier Order & Detail
+                        </th>
+                        <th class="hidden">
+                            Unit Price
+                        </th>
+                        <th class="hidden">
+                            Person In Charge
+                        </th>
                         <th class="col-md-1 text-center">
                             Updated By
                         </th>
@@ -212,18 +238,20 @@
                             <td class="col-md-1 text-center" style="width:10%">
                                 @{{bomcomponent.component_id}}
                             </td>
+                            <td class="col-md-1 text-center" style="width:5%"></td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#component_modal" ng-click="editComponentModal(bomcomponent)">
                                     @{{bomcomponent.name}}
                                 </a>
                             </td>
-                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#component_drawing_modal" ng-click="editComponentModal(bomcomponent)" style="cursor: pointer;">
-                                <a href="">
+                            <td class="col-md-1 text-left">
+                                <a href="" data-toggle="modal" data-target="#component_drawing_modal" ng-click="editComponentModal(bomcomponent)">
                                     @{{bomcomponent.drawing_id}}
                                 </a>
+                                {{-- <a href="" style="color: black;"><i class="fa fa-caret-square-o-down"></i></a> --}}
                             </td>
                             <td class="col-md-2 text-left">
-                                <textarea class="form-control " ng-model="bomcomponent.remark" rows="2" ng-change="onBomcomponentRemarkChanged(bomcomponent.id, bomcomponent.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <textarea class="form-control" input-sm ng-model="bomcomponent.remark" rows="2" ng-change="onBomcomponentRemarkChanged(bomcomponent.id, bomcomponent.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
                                 <span ng-if="!formedit">@{{bomcomponent.remark}}</span>
                             </td>
                             <td class="col-md-1 text-right" style="width:6%">
@@ -240,35 +268,50 @@
                                     </ui-select-choices>
                                 </ui-select>
                             </td>
+                            <td class="hidden">
+                                @{{bomcomponent.supplier_order}}
+                            </td>
+                            <td class="hidden">
+                                @{{bomcomponent.unit_price}}
+                            </td>
+                            <td class="hidden">
+                                @{{bomcomponent.pic}}
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{bomcomponent.updater.name}} <br>
                                 @{{bomcomponent.updated_at | date:'yy/MM/dd h:mma'}}
                             </td>
                             <td class="col-md-1 text-center">
-                                <button class="btn btn-danger btn-xs" ng-click="removeEntry(bomcomponent.id)"><i class="fa fa-times"></i></button>
+                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent)"><i class="fa fa-plus"></i></button>
+                                <button class="btn btn-danger btn-sm" ng-click="removeEntry(bomcomponent.id)"><i class="fa fa-times"></i></button>
+{{--
                                 <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 0)"><i class="fa fa-plus"></i> Part</button>
-                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 1)"><i class="fa fa-plus"></i> Consumable</button>
+                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent, 1)"><i class="fa fa-plus"></i> Consumable</button> --}}
                             </td>
                         </tr>
-                        <tr ng-repeat-start="(index2, bompart) in bomcomponent.bomparts" ng-style="{'background-color': bompart.movable == 1 ? '#fbfafc' : '#eae3f0'}">
+                        <tr ng-repeat-start="(index2, bompart) in bomcomponent.bomparts" style="background-color: #eae3f0;">
                             <td class="col-md-1 text-left" style="width:3%">
                                 @{{index + indexFrom}}.@{{index2 + 1}}
                             </td>
                             <td class="col-md-1 text-center" style="width:10%">
                                 @{{bompart.part_id}}
                             </td>
+                            <td class="col-md-1 text-center" style="width:5%">
+                                @{{bompart.bomgroup.prefix}}
+                            </td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#part_modal" ng-click="editDataModal(bompart)">
                                     @{{bompart.name}}
                                 </a>
                             </td>
-                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#part_drawing_modal" ng-click="editDataModal(bompart)" style="cursor: pointer;">
-                                <a href="">
+                            <td class="col-md-1 text-left">
+                                <a href="" data-toggle="modal" data-target="#part_drawing_modal" ng-click="editDataModal(bompart)">
                                     @{{bompart.drawing_id}}
                                 </a>
+                                {{-- <a href="" style="color: black;"><i class="fa fa-caret-square-o-down"></i></a> --}}
                             </td>
                             <td class="col-md-2 text-left">
-                                <textarea class="form-control " ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <textarea class="form-control" input-sm ng-model="bompart.remark" rows="2" ng-change="onRemarkChanged(bompart.id, bompart.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
                                 <span ng-if="!formedit">@{{bompart.remark}}</span>
                             </td>
                             <td class="col-md-1 text-right" style="width:6%">
@@ -284,13 +327,24 @@
                                     </ui-select-choices>
                                 </ui-select>
                             </td>
+                            <td class="hidden">
+                                @{{bompart.supplier_order}}
+                            </td>
+                            <td class="hidden">
+                                @{{bompart.unit_price}}
+                            </td>
+                            <td class="hidden">
+                                @{{bompart.pic}}
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{bompart.updater.name}} <br>
                                 @{{bompart.updated_at | date:'yy/MM/dd h:mma'}}
                             </td>
                             <td class="col-md-1 text-center">
-                                <button class="btn btn-danger btn-xs" ng-click="removeBompart(bompart.id)"><i class="fa fa-times"></i></button>
-                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="passBompartconsumableModal(bompart)"><i class="fa fa-plus"></i> Consumable</button>
+                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="passBompartconsumableModal(bompart)"><i class="fa fa-plus"></i></button>
+                                <button class="btn btn-danger btn-sm" ng-click="removeBompart(bompart.id)"><i class="fa fa-times"></i></button>
+{{--
+                                <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="passBompartconsumableModal(bompart)"><i class="fa fa-plus"></i> Consumable</button> --}}
                             </td>
                         </tr>
                         <tr ng-repeat="(index3, bompartconsumable) in bompart.bompartconsumables" ng-repeat-end>
@@ -300,18 +354,22 @@
                             <td class="col-md-1 text-center" style="width:10%">
                                 @{{bompartconsumable.partconsumable_id}}
                             </td>
+                            <td class="col-md-1 text-center" style="width:5%">
+                                @{{bompartconsumable.bomgroup.prefix}}
+                            </td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="editBompartconsumableModal(bompartconsumable)">
                                     @{{bompartconsumable.name}}
                                 </a>
                             </td>
-                            <td class="col-md-1 text-center" data-toggle="modal" data-target="#bompartconsumable_drawing_modal" ng-click="editBompartconsumableModal(bompartconsumable)" style="cursor: pointer;">
-                                <a href="">
+                            <td class="col-md-1 text-left">
+                                <a href="" data-toggle="modal" data-target="#bompartconsumable_drawing_modal" ng-click="editBompartconsumableModal(bompartconsumable)">
                                     @{{bompartconsumable.drawing_id}}
                                 </a>
+                                {{-- <a href="" style="color: black;"><i class="fa fa-caret-square-o-down"></i></a> --}}
                             </td>
                             <td class="col-md-2 text-left">
-                                <textarea class="form-control " ng-model="bompartconsumable.remark" rows="2" ng-change="onBompartconsumableRemarkChanged(bompartconsumable.id, bompartconsumable.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
+                                <textarea class="form-control" input-sm ng-model="bompartconsumable.remark" rows="2" ng-change="onBompartconsumableRemarkChanged(bompartconsumable.id, bompartconsumable.remark)" ng-model-options='{ debounce: 700 }' ng-if="formedit"></textarea>
                                 <span ng-if="!formedit">@{{bompartconsumable.remark}}</span>
                             </td>
                             <td class="col-md-1 text-right" style="width:6%">
@@ -328,12 +386,21 @@
                                     </ui-select-choices>
                                 </ui-select>
                             </td>
+                            <td class="hidden">
+                                @{{bompartconsumable.supplier_order}}
+                            </td>
+                            <td class="hidden">
+                                @{{bompartconsumable.unit_price}}
+                            </td>
+                            <td class="hidden">
+                                @{{bompartconsumable.pic}}
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{bompartconsumable.updater.name}} <br>
                                 @{{bompartconsumable.updated_at | date:'yy/MM/dd h:mma'}}
                             </td>
                             <td class="col-md-1 text-center">
-                                <button class="btn btn-danger btn-xs" ng-click="removeBompartconsumable(bompartconsumable.id)"><i class="fa fa-times"></i></button>
+                                <button class="btn btn-danger btn-sm" ng-click="removeBompartconsumable(bompartconsumable.id)"><i class="fa fa-times"></i></button>
                             </td>
                         </tr>
                         <tr ng-repeat-end ng-hide="true"></tr>
@@ -355,8 +422,8 @@
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">
-                    <span ng-style="{'background-color': partform.color}">
-                        @{{partform.type}}
+                    <span>
+                        Adding subset for
                     </span>
                     <span ng-if="partform.component_id">for
                         <span style="background-color: #ddd1e7;">
@@ -367,28 +434,42 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Part ID
-                            </label>
-                            <input type="text" name="part_id" class="form-control" ng-model="partform.part_id" ng-change="onPartIdChanged(partform.part_id)" ng-model-options='{ debounce: 500 }'>
-{{--                             <span ng-if="formErrors['part_id']" class="help-block" style="color:red;">
-                              <ul class="row">
-                                  <li style="color:red;">@{{ formErrors['part_id'][0] }}</li>
-                              </ul>
-                            </span> --}}
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Group
+                                    </label>
+                                    <select class="form-control select" ng-model="partform.bomgroup_id">
+                                        <option ng-value=""></option>
+                                        <option ng-repeat="bomgroup in bomgroups" ng-value="bomgroup.id">
+                                            @{{bomgroup.prefix}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Part ID
+                                    </label>
+                                    <input type="text" name="part_id" class="form-control" ng-model="partform.part_id" ng-change="onPartIdChanged(partform.part_id)" ng-model-options='{ debounce: 500 }'>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Name
-                            </label>
-                            <input type="text" name="name" class="form-control" ng-model="partform.name">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Qty
-                            </label>
-                            <input type="text" name="qty" class="form-control" ng-model="partform.qty">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Name
+                                    </label>
+                                    <input type="text" name="name" class="form-control" ng-model="partform.name">
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Qty
+                                    </label>
+                                    <input type="text" name="qty" class="form-control" ng-model="partform.qty">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
@@ -409,17 +490,21 @@
                             </label>
                             <textarea name="supplier_order" class="form-control" ng-model="partform.supplier_order" rows="3"></textarea>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Unit Price (S$)
-                            </label>
-                            <input type="text" name="unit_price" class="form-control" ng-model="partform.unit_price">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Person In Charge
-                            </label>
-                            <input type="text" name="pic" class="form-control" ng-model="partform.pic">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Unit Price (S$)
+                                    </label>
+                                    <input type="text" name="unit_price" class="form-control" ng-model="partform.unit_price">
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Person In Charge
+                                    </label>
+                                    <input type="text" name="pic" class="form-control" ng-model="partform.pic">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-12 col-sm-12 col-xs-12" ng-if="partform.id">
@@ -463,28 +548,47 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">
-                        Add Consumable for Part @{{conpartform.bompart_name}}
+                        Add Subsidiary for @{{conpartform.part_id}} - @{{conpartform.part_name}}
                     </h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Part Consumable ID
-                            </label>
-                            <input type="text" name="bompartconsumable_id" class="form-control" ng-model="conpartform.bompartconsumable_id" ng-model-options='{ debounce: 500 }'>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Group
+                                    </label>
+                                    <select class="form-control select" ng-model="conpartform.bomgroup_id">
+                                        <option ng-value=""></option>
+                                        <option ng-repeat="bomgroup in bomgroups" ng-value="bomgroup.id">
+                                            @{{bomgroup.prefix}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        ID
+                                    </label>
+                                    <input type="text" name="bompartconsumable_id" class="form-control" ng-model="conpartform.bompartconsumable_id" ng-model-options='{ debounce: 500 }'>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Name
-                            </label>
-                            <input type="text" name="name" class="form-control" ng-model="conpartform.name">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Qty
-                            </label>
-                            <input type="text" name="qty" class="form-control" ng-model="conpartform.qty">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                <label class="control-label">
+                                    Name
+                                </label>
+                                <input type="text" name="name" class="form-control" ng-model="conpartform.name">
+                            </div>
+                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                <label class="control-label">
+                                    Qty
+                                </label>
+                                <input type="text" name="qty" class="form-control" ng-model="conpartform.qty">
+                            </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
@@ -505,17 +609,21 @@
                             </label>
                             <textarea name="supplier_order" class="form-control" ng-model="conpartform.supplier_order" rows="3"></textarea>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Unit Price (S$)
-                            </label>
-                            <input type="text" name="unit_price" class="form-control" ng-model="conpartform.unit_price">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Person In Charge
-                            </label>
-                            <input type="text" name="pic" class="form-control" ng-model="conpartform.pic">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Unit Price (S$)
+                                    </label>
+                                    <input type="text" name="unit_price" class="form-control" ng-model="conpartform.unit_price">
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Person In Charge
+                                    </label>
+                                    <input type="text" name="pic" class="form-control" ng-model="conpartform.pic">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-12 col-sm-12 col-xs-12" ng-if="conpartform.id">
@@ -570,17 +678,21 @@
                             </label>
                             <input type="text" name="part_id" class="form-control" ng-model="componentform.component_id">
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Name
-                            </label>
-                            <input type="text" name="name" class="form-control" ng-model="componentform.name">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Qty
-                            </label>
-                            <input type="text" name="qty" class="form-control" ng-model="componentform.qty">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="col-md-6 col-sm-6 col-xs-12 form-group">
+                                    <label class="control-label">
+                                        Name
+                                    </label>
+                                    <input type="text" name="name" class="form-control" ng-model="componentform.name">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12 form-group">
+                                    <label class="control-label">
+                                        Qty
+                                    </label>
+                                    <input type="text" name="qty" class="form-control" ng-model="componentform.qty">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
@@ -601,17 +713,21 @@
                             </label>
                             <textarea name="supplier_order" class="form-control" ng-model="componentform.supplier_order" rows="3"></textarea>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Unit Price (S$)
-                            </label>
-                            <input type="text" name="unit_price" class="form-control" ng-model="componentform.unit_price">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Person In Charge
-                            </label>
-                            <input type="text" name="pic" class="form-control" ng-model="componentform.pic">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Unit Price (S$)
+                                    </label>
+                                    <input type="text" name="unit_price" class="form-control" ng-model="componentform.unit_price">
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Person In Charge
+                                    </label>
+                                    <input type="text" name="pic" class="form-control" ng-model="componentform.pic">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
