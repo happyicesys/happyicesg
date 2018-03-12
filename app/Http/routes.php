@@ -13,6 +13,7 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/bom/currency/{bomcurrency_id}/rate', 'BomController@updateBomcurrencyRateApi');
 Route::get('/api/bom/currencies/all', 'BomController@getBomcurrenciesSelectApi');
 Route::post('/api/bom/currency/update', 'BomController@updateBomcurrencyApi');
 Route::delete('/api/bom/currency/{id}/delete', 'BomController@destroyBomcurrencyApi');

@@ -262,6 +262,11 @@ function bomComponentController($scope, $timeout, $http){
     $scope.notsubmitable = false;
     $scope.formedit = true;
     $scope.bomgroups = [];
+    $scope.getcurrency = {
+        same_basecurrency: '',
+        converted: '',
+        base_symbol: ''
+    }
 
     angular.element(document).ready(function () {
         $('.select').select2({
@@ -435,6 +440,7 @@ function bomComponentController($scope, $timeout, $http){
             remark: '',
             supplier_order: '',
             unit_price: '',
+            price_remark: '',
             pic: ''
         }
     }
@@ -457,6 +463,7 @@ function bomComponentController($scope, $timeout, $http){
             drawing_path: bompart.drawing_path,
             supplier_order: bompart.supplier_order,
             unit_price: bompart.unit_price,
+            price_remark: bompart.price_remark,
             pic: bompart.pic
         }
     }
@@ -525,6 +532,7 @@ function bomComponentController($scope, $timeout, $http){
             remark: bomcomponent.remark,
             supplier_order: bomcomponent.supplier_order,
             unit_price: bomcomponent.unit_price,
+            price_remark: bomcomponent.price_remark,
             pic: bomcomponent.pic
         }
     }
@@ -637,6 +645,7 @@ function bomComponentController($scope, $timeout, $http){
             remark: '',
             supplier_order: '',
             unit_price: '',
+            price_remark: '',
             pic: ''
         }
     }
@@ -664,6 +673,7 @@ function bomComponentController($scope, $timeout, $http){
             drawing_path: bompartconsumable.drawing_path,
             supplier_order: bompartconsumable.supplier_order,
             unit_price: bompartconsumable.unit_price,
+            price_remark: bompartconsumable.price_remark,
             pic: bompartconsumable.pic
         }
     }
@@ -772,6 +782,18 @@ function bomComponentController($scope, $timeout, $http){
             $('.selectcustcat').val(null).trigger('change.select2');
             getPage(1);
         });
+    }
+
+    $scope.clearGetCurrency = function() {
+        $scope.getcurrency = {
+            same_basecurrency: '',
+            converted: '',
+            base_symbol: ''
+        }
+    }
+
+    $scope.retrieveGetCurrency = function() {
+        $http.post
     }
 
 }
@@ -1620,6 +1642,13 @@ function bomcurrencyController($scope, $http, $window){
 
     $scope.editBomcurrency = function() {
         $http.post('/api/bom/currency/update', $scope.form).success(function(data) {
+            getPage(1);
+        });
+    }
+
+    $scope.onBomcurrencyRateChanged = function(bomcurrency_id, rate) {
+        console.log($scope.form.rate);
+        $http.post('/api/bom/currency/' + bomcurrency_id + '/rate', {rate: rate}).success(function(data) {
             getPage(1);
         });
     }

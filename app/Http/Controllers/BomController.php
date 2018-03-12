@@ -803,6 +803,7 @@ class BomController extends Controller
         $remark = request('remark');
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
+        $price_remark = request('price_remark');
         $pic = request('pic');
         $bomgroup_id = request('bomgroup_id');
 
@@ -816,6 +817,7 @@ class BomController extends Controller
         $bompart->remark = $remark;
         $bompart->supplier_order = $supplier_order;
         $bompart->unit_price = $unit_price;
+        $bompart->price_remark = $price_remark;
         $bompart->pic = $pic;
         $bompart->updated_by = auth()->user()->id;
         $bompart->save();
@@ -832,6 +834,7 @@ class BomController extends Controller
         $remark = request('remark');
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
+        $price_remark = request('price_remark');
         $pic = request('pic');
         $bomgroup_id = request('bomgroup_id');
 
@@ -846,6 +849,7 @@ class BomController extends Controller
             'updated_by' => auth()->user()->id,
             'supplier_order' => $supplier_order,
             'unit_price' => $unit_price,
+            'price_remark' => $price_remark,
             'pic' => $pic
         ]);
 
@@ -890,6 +894,7 @@ class BomController extends Controller
         $remark = request('remark');
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
+        $price_remark = request('price_remark');
         $pic = request('pic');
 
         $bomcomponent = Bomcomponent::findOrFail($id);
@@ -901,6 +906,7 @@ class BomController extends Controller
         $bomcomponent->remark = $remark;
         $bomcomponent->supplier_order = $supplier_order;
         $bomcomponent->unit_price = $unit_price;
+        $bomcomponent->price_remark = $price_remark;
         $bomcomponent->pic = $pic;
         $bomcomponent->updated_by = auth()->user()->id;
         $bomcomponent->save();
@@ -1089,6 +1095,7 @@ class BomController extends Controller
         $remark = request('remark');
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
+        $price_remark = request('price_remark');
         $pic = request('pic');
         $bomgroup_id = request('bomgroup_id');
 
@@ -1102,6 +1109,7 @@ class BomController extends Controller
             'updated_by' => auth()->user()->id,
             'supplier_order' => $supplier_order,
             'unit_price' => $unit_price,
+            'price_remark' => $price_remark,
             'pic' => $pic
         ]);
 
@@ -1128,6 +1136,7 @@ class BomController extends Controller
         $remark = request('remark');
         $supplier_order = request('supplier_order');
         $unit_price = request('unit_price');
+        $price_remark = request('price_remark');
         $pic = request('pic');
         $bomgroup_id = request('bomgroup_id');
 
@@ -1141,6 +1150,7 @@ class BomController extends Controller
         $bompartconsumable->remark = $remark;
         $bompartconsumable->supplier_order = $supplier_order;
         $bompartconsumable->unit_price = $unit_price;
+        $bompartconsumable->price_remark = $price_remark;
         $bompartconsumable->pic = $pic;
         $bompartconsumable->updated_by = auth()->user()->id;
         $bompartconsumable->save();
@@ -1433,11 +1443,21 @@ class BomController extends Controller
         $name = request('name');
         $rate = request('rate');
 
-        $bomcurrency = Bomcurrency::findOrFail($id);
+        $bomcurrency = Currency::findOrFail($id);
         $bomcurrency->symbol = $symbol;
         $bomcurrency->name = $name;
         $bomcurrency->rate = $rate;
         $bomcurrency->updated_by = auth()->user()->id;
+        $bomcurrency->save();
+    }
+
+    // update individual currency rate(int bomcurrency_id)
+    public function updateBomcurrencyRateApi($bomcurrency_id)
+    {
+        $rate = request('rate');
+
+        $bomcurrency = Currency::findOrFail($bomcurrency_id);
+        $bomcurrency->rate = $rate;
         $bomcurrency->save();
     }
 

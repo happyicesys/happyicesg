@@ -9,7 +9,8 @@ class GeneralSetting extends Model
     protected $table = 'generalsettings';
 
     protected $fillable = [
-        'DTDCUST_EMAIL_CONTENT', 'INVOICE_FREEZE_DATE', 'internal_billing_prefix', 'country_region', 'home_url'
+        'DTDCUST_EMAIL_CONTENT', 'INVOICE_FREEZE_DATE', 'internal_billing_prefix', 'country_region', 'home_url',
+        'base_bomcurrency_id'
     ];
 
     protected $dates = [

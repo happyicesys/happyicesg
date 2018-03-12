@@ -467,13 +467,14 @@
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">
-                    <span>
+                    <span ng-if="!partform.id">
                         Subset for
-                    </span>
-                    <span ng-if="partform.component_id">for
                         <span style="background-color: #ddd1e7;">
                             @{{partform.component_id}} - @{{partform.title}}
                         </span>
+                    </span>
+                    <span ng-if="partform.id">
+                        Editing @{{partform.part_id}} - @{{partform.name}}
                     </span>
                 </h4>
                 </div>
@@ -537,11 +538,20 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
                                     <label class="control-label">
                                         Unit Price (S$)
                                     </label>
                                     <input type="text" name="unit_price" class="form-control" ng-model="partform.unit_price">
+{{--                                     <span ng-if="getcurrency.same_basecurrency">
+                                        <em>Approximate @{{getcurrency.converted}} @{{getcurrency.base_symbol}}</em>
+                                    </span> --}}
+                                </div>
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
+                                    <label class="control-label">
+                                        Price Remark
+                                    </label>
+                                    <input type="text" name="price_remark" class="form-control" ng-model="partform.price_remark">
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                     <label class="control-label">
@@ -549,8 +559,26 @@
                                     </label>
                                     <input type="text" name="pic" class="form-control" ng-model="partform.pic">
                                 </div>
+{{--                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Currency
+                                    </label>
+                                    <ui-select ng-model="partform.bomcurrency_id">
+                                        <ui-select-match allow-clear="true">@{{$select.selected.symbol}} - @{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices repeat="bomcurrency.id as bomcurrency in bomcurrencies | filter: $select.search">
+                                            <div ng-bind-html="bomcurrency.symbol + ' - ' + bomcurrency.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div> --}}
                             </div>
                         </div>
+{{--
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Person In Charge
+                            </label>
+                            <input type="text" name="pic" class="form-control" ng-model="partform.pic">
+                        </div> --}}
 
                         <div class="col-md-12 col-sm-12 col-xs-12" ng-if="partform.id">
                             <div class="form-group">
@@ -593,7 +621,12 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">
-                        Add Subsidiary for @{{conpartform.part_id}} - @{{conpartform.part_name}}
+                        <span ng-if="!conpartform.id">
+                            Add Subsidiary for @{{conpartform.part_id}} - @{{conpartform.part_name}}
+                        </span>
+                        <span ng-if="conpartform.id">
+                            Editing @{{conpartform.bompartconsumable_id}} - @{{conpartform.name}}
+                        </span>
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -656,11 +689,17 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
                                     <label class="control-label">
                                         Unit Price (S$)
                                     </label>
                                     <input type="text" name="unit_price" class="form-control" ng-model="conpartform.unit_price">
+                                </div>
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
+                                    <label class="control-label">
+                                        Price Remark
+                                    </label>
+                                    <input type="text" name="price_remark" class="form-control" ng-model="conpartform.price_remark">
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                     <label class="control-label">
@@ -775,11 +814,17 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
                                     <label class="control-label">
                                         Unit Price (S$)
                                     </label>
                                     <input type="text" name="unit_price" class="form-control" ng-model="componentform.unit_price">
+                                </div>
+                                <div class="form-group col-md-3 col-sm-3 col-xs-6">
+                                    <label class="control-label">
+                                        Price Remark
+                                    </label>
+                                    <input type="text" name="price_remark" class="form-control" ng-model="componentform.price_remark">
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                     <label class="control-label">

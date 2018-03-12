@@ -510,10 +510,12 @@
                                 @{{currency.symbol}}
                             </td>
                             <td class="col-md-3 text-left">
-                                @{{currency.name}}
+                                <a href="#" data-toggle="modal" data-target="#bomcurrency_modal" ng-click="editBomcurrencyModal(currency)">
+                                    @{{currency.name}}
+                                </a>
                             </td>
                             <td class="col-md-2 text-right">
-                                <input type="text" name="currencies[]" ng-model="currency.rate" class="form-control text-right input-sm" ng-change="onBomcurrencyRateChanged(currency.id)" ng-model-options='{ debounce: 700 }'>
+                                <input type="text" name="currencies[]" ng-model="currency.rate" class="form-control text-right input-sm" ng-change="onBomcurrencyRateChanged(currency.id, currency.rate)" ng-model-options='{ debounce: 700 }'>
                             </td>
                             <td class="col-md-2 text-center">
                                 @{{currency.updater.name }}
@@ -534,7 +536,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="bomcurrenct_modal" role="dialog">
+    <div class="modal fade" id="bomcurrency_modal" role="dialog">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">

@@ -9,7 +9,7 @@ class Bompartconsumable extends Model
     protected $fillable = [
     	'partconsumable_id', 'name', 'remark', 'bompart_id',
         'updated_by', 'qty', 'color', 'supplier_order', 'unit_price',
-        'pic', 'drawing_id', 'drawing_path', 'bomgroup_id'
+        'pic', 'drawing_id', 'drawing_path', 'bomgroup_id', 'price_remark'
     ];
 
 
