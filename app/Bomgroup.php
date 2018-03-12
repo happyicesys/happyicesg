@@ -20,6 +20,11 @@ class Bomgroup extends Model
     	return $this->hasMany('App\Bompartconsumable');
     }
 
+    public function bomcomponents()
+    {
+        return $this->hasMany('App\Bomcomponent');
+    }
+
     public function updater()
     {
         return $this->belongsTo('App\User', 'updated_by');

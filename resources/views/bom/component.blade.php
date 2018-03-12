@@ -94,6 +94,49 @@
                     </div>
                 </div>
             </div>
+            <div class="row" style="margin-top: -15px;">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Replicate Customer Category Binding
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                <label class="control-label">Customer Category</label>
+                                <select class="selectcustcat form-control" ng-model="form.from_custcategory_id" ng-change="onFromCustcategoryIdChanged(form.from_custcategory_id)">
+                                    <option ng-value=""></option>
+                                    @foreach($custcategories::orderBy('name', 'asc')->get() as $custcategory)
+                                        <option ng-value="{{$custcategory->id}}">
+                                            {{$custcategory->name}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="form.from_custcategory_id">
+                            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                                <label class="control-label">To sync with</label>
+                                <select class="selectcustcat form-control" ng-model="form.to_custcategory_id">
+                                    <option value=""></option>
+                                    <option value="unbind">Unbind Selected Customer Category [x]</option>
+                                    <option ng-repeat="to_custcategory in to_custcategories" ng-value="@{{to_custcategory.id}}">
+                                        @{{to_custcategory.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <button class="btn btn-success btn-block" ng-click="replicateCuscatBinding($event)" ng-disabled="!form.to_custcategory_id"><i class="fa fa-sync"></i> Sync
+                                    <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
+                                    <span ng-show="is_done"> <i class="fa fa-check-circle fa-2x" style="color: green;"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('category_id', 'Category ID', ['class'=>'control-label search-title']) !!}
@@ -238,7 +281,9 @@
                             <td class="col-md-1 text-center" style="width:10%">
                                 @{{bomcomponent.component_id}}
                             </td>
-                            <td class="col-md-1 text-center" style="width:5%"></td>
+                            <td class="col-md-1 text-center" style="width:5%">
+                                @{{bomcomponent.bomgroup.prefix}}
+                            </td>
                             <td class="col-md-2 text-left">
                                 <a href="#" data-toggle="modal" data-target="#component_modal" ng-click="editComponentModal(bomcomponent)">
                                     @{{bomcomponent.name}}
@@ -423,7 +468,7 @@
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                   <h4 class="modal-title">
                     <span>
-                        Adding subset for
+                        Subset for
                     </span>
                     <span ng-if="partform.component_id">for
                         <span style="background-color: #ddd1e7;">
@@ -440,12 +485,12 @@
                                     <label class="control-label">
                                         Group
                                     </label>
-                                    <select class="form-control select" ng-model="partform.bomgroup_id">
-                                        <option ng-value=""></option>
-                                        <option ng-repeat="bomgroup in bomgroups" ng-value="bomgroup.id">
-                                            @{{bomgroup.prefix}}
-                                        </option>
-                                    </select>
+                                    <ui-select ng-model="partform.bomgroup_id">
+                                        <ui-select-match allow-clear="true">@{{$select.selected.prefix}} - @{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices repeat="bomgroup.id as bomgroup in bomgroups | filter: $select.search">
+                                            <div ng-bind-html="bomgroup.prefix + ' - ' + bomgroup.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                     <label class="control-label">
@@ -559,12 +604,12 @@
                                     <label class="control-label">
                                         Group
                                     </label>
-                                    <select class="form-control select" ng-model="conpartform.bomgroup_id">
-                                        <option ng-value=""></option>
-                                        <option ng-repeat="bomgroup in bomgroups" ng-value="bomgroup.id">
-                                            @{{bomgroup.prefix}}
-                                        </option>
-                                    </select>
+                                    <ui-select ng-model="conpartform.bomgroup_id">
+                                        <ui-select-match allow-clear="true">@{{$select.selected.prefix}} - @{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices repeat="bomgroup.id as bomgroup in bomgroups | filter: $select.search">
+                                            <div ng-bind-html="bomgroup.prefix + ' - ' + bomgroup.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
                                 </div>
                                 <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                     <label class="control-label">
@@ -672,11 +717,26 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Component ID
-                            </label>
-                            <input type="text" name="part_id" class="form-control" ng-model="componentform.component_id">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                        Group
+                                    </label>
+                                    <ui-select ng-model="componentform.bomgroup_id">
+                                        <ui-select-match allow-clear="true">@{{$select.selected.prefix}} - @{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices repeat="bomgroup.id as bomgroup in bomgroups | filter: $select.search">
+                                            <div ng-bind-html="bomgroup.prefix + ' - ' + bomgroup.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <label class="control-label">
+                                       Component ID
+                                    </label>
+                                    <input type="text" name="bomcomponent_id" class="form-control" ng-model="componentform.component_id">
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12 ">

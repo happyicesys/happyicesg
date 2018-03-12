@@ -224,6 +224,7 @@ function bomCategoryController($scope, $http, $window){
 function bomComponentController($scope, $timeout, $http){
     // init the variables
     $scope.alldata = [];
+    $scope.to_custcategories = [];
     $scope.partform = {};
     $scope.componentform = {};
     $scope.conpartform = {};
@@ -516,6 +517,7 @@ function bomComponentController($scope, $timeout, $http){
     function fetchSingleBomcomponent(bomcomponent) {
         $scope.componentform = {
             id: bomcomponent.id,
+            bomgroup_id: bomcomponent.bomgroup_id,
             component_id: bomcomponent.component_id,
             drawing_id: bomcomponent.drawing_id,
             drawing_path: bomcomponent.drawing_path,
@@ -654,7 +656,7 @@ function bomComponentController($scope, $timeout, $http){
             id: bompartconsumable.id,
             bompartconsumable_id: bompartconsumable.partconsumable_id,
             bomgroup_id: bompartconsumable.bomgroup_id,
-            bompart_id: bompartconsumable.part_id,
+            bompart_id: bompartconsumable.bompart_id,
             name: bompartconsumable.name,
             qty: bompartconsumable.qty,
             remark: bompartconsumable.remark,
@@ -750,6 +752,25 @@ function bomComponentController($scope, $timeout, $http){
     function getBomgroupSelectOptions() {
         $http.get('/api/bom/groups/all').success(function(data) {
             $scope.bomgroups = data;
+        });
+    }
+
+    $scope.onFromCustcategoryIdChanged = function(from_custcategory_id) {
+        $http.get('/api/tocustcategory/' + from_custcategory_id).success(function(data) {
+            $scope.to_custcategories = data;
+        });
+    }
+
+    $scope.replicateCuscatBinding = function(event) {
+        event.preventDefault();
+        $http.post('/api/bom/replicate/custcat', {
+            from_custcategory_id: $scope.form.from_custcategory_id,
+            to_custcategory_id: $scope.form.to_custcategory_id
+        }).success(function(data) {
+            $scope.form.to_custcategory_id = '';
+            $scope.form.from_custcategory_id = '';
+            $('.selectcustcat').val(null).trigger('change.select2');
+            getPage(1);
         });
     }
 
@@ -1470,6 +1491,140 @@ function bomgroupController($scope, $http, $window){
     }
 }
 
+function bomcurrencyController($scope, $http, $window){
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 100;
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.search = {
+        name: '',
+        pageNum: 100,
+        sortName: '',
+        sortBy: true
+    }
+    $scope.form = {
+        id: '',
+        symbol: '',
+        name: '',
+        rate: ''
+    }
+    // init page load
+    getPage(1, true);
+
+    $scope.exportData = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_bomcurrency').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Currencies"+ now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function(newPage){
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function(){
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage(1, false);
+    }
+
+      // when hitting search button
+    $scope.searchDB = function(){
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first){
+        $scope.spinner = true;
+        $http.post('/api/bom/currencies?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            if(data.bomcurrencies.data){
+                $scope.alldata = data.bomcurrencies.data;
+                $scope.totalCount = data.bomcurrencies.total;
+                $scope.currentPage = data.bomcurrencies.current_page;
+                $scope.indexFrom = data.bomcurrencies.from;
+                $scope.indexTo = data.bomcurrencies.to;
+            }else{
+                $scope.alldata = data.bomcurrencies;
+                $scope.totalCount = data.bomcurrencies.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.bomcurrencies.length;
+            }
+            $scope.All = data.bomcurrencies.length;
+            $scope.spinner = false;
+        });
+    }
+
+    $scope.createBomcurrencyModal = function() {
+        $scope.form = {
+            id: '',
+            symbol: '',
+            name: '',
+            rate: ''
+        }
+    }
+
+
+    $scope.createBomcurrency = function() {
+        $http.post('/api/bom/currency/create', $scope.form). success(function(data) {
+            getPage(1);
+
+            $scope.form = {
+                id: '',
+                symbol: '',
+                name: '',
+                rate: ''
+            }
+        }).error(function(data, status) {
+            $scope.formErrors = data;
+        });
+    }
+
+    $scope.removeEntry = function(id) {
+        var isConfirmDelete = confirm('Are you sure to DELETE this currency?');
+        if(isConfirmDelete){
+            $http.delete('/api/bom/currency/' + id + '/delete').success(function(data) {
+                getPage(1);
+            });
+        }else{
+            return false;
+        }
+    }
+
+    $scope.editBomcurrencyModal = function(bomcurrency) {
+        fetchSingleBomcurrency(bomcurrency);
+    }
+
+    function fetchSingleBomcurrency(bomcurrency) {
+        $scope.form = {
+            id: bomcurrency.id,
+            symbol: bomcurrency.symbol,
+            name: bomcurrency.name,
+            rate: bomcurrency.rate,
+        }
+    }
+
+    $scope.editBomcurrency = function() {
+        $http.post('/api/bom/currency/update', $scope.form).success(function(data) {
+            getPage(1);
+        });
+    }
+}
+
 
 
 app.controller('bomCategoryController', bomCategoryController);
@@ -1479,6 +1634,7 @@ app.controller('bomTemplateController', bomTemplateController);
 app.controller('bomVendingController', bomVendingController);
 app.controller('maintenanceController', maintenanceController);
 app.controller('bomgroupController', bomgroupController);
+app.controller('bomcurrencyController', bomcurrencyController);
 
 app.directive('ngFiles', ['$parse', function ($parse) {
     function file_links(scope, element, attrs) {

@@ -13,6 +13,14 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::get('/api/bom/currencies/all', 'BomController@getBomcurrenciesSelectApi');
+Route::post('/api/bom/currency/update', 'BomController@updateBomcurrencyApi');
+Route::delete('/api/bom/currency/{id}/delete', 'BomController@destroyBomcurrencyApi');
+Route::post('/api/bom/currency/create', 'BomController@createBomcurrencyApi');
+Route::post('/api/bom/currencies', 'BomController@getBomcurrenciesApi');
+
+Route::post('/api/bom/replicate/custcat', 'BomController@replicateBomCustcat');
+Route::get('/api/tocustcategory/{from_custcategory_id}', 'BomController@getToCustcategoryIdOptions');
 Route::get('/api/bom/groups/all', 'BomController@getBomgroupsSelectApi');
 Route::post('/api/bom/group/update', 'BomController@updateBomgroupApi');
 Route::delete('/api/bom/group/{id}/delete', 'BomController@destroyBomgroupApi');

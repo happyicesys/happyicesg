@@ -8,7 +8,8 @@ class Bomcomponent extends Model
 {
     protected $fillable = [
         'component_id', 'name', 'remark', 'updated_by', 'bomcategory_id',
-        'drawing_id', 'drawing_path', 'supplier_order', 'unit_price', 'pic'
+        'drawing_id', 'drawing_path', 'supplier_order', 'unit_price', 'pic',
+        'bomgroup_id'
     ];
 
     // relationships
@@ -25,6 +26,11 @@ class Bomcomponent extends Model
     public function bomcomponentcustcat()
     {
         return $this->hasMany('App\Bomcomponentcustcat');
+    }
+
+    public function bomgroup()
+    {
+        return $this->belongsTo('App\Bomgroup');
     }
 
     public function updater()

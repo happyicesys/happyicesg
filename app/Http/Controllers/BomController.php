@@ -19,6 +19,8 @@ use App\Bomcomponentcustcat;
 use App\Bompartcustcat;
 use App\Bompartconsumablecustcat;
 use App\Bomgroup;
+use App\Custcategory;
+use App\Currency;
 use DB;
 use App\GetIncrement;
 use Carbon\Carbon;
@@ -145,6 +147,7 @@ class BomController extends Controller
             'bomcomponents.bomparts' => function($query) {
                 $query->orderBy('part_id', 'ASC');
             },
+            'bomcomponents.bomgroup',
             'bomcomponents.bomparts.bomgroup',
             'bomcomponents.bomparts.bompartconsumables',
             'bomcomponents.bomparts.bompartconsumables.bomgroup',
@@ -879,6 +882,7 @@ class BomController extends Controller
     public function updateBomcomponentApi()
     {
         $id = request('id');
+        $bomgroup_id = request('bomgroup_id');
         $component_id = request('component_id');
         $drawing_id = request('drawing_id');
         $drawing_path = request('drawing_path');
@@ -889,6 +893,7 @@ class BomController extends Controller
         $pic = request('pic');
 
         $bomcomponent = Bomcomponent::findOrFail($id);
+        $bomcomponent->bomgroup_id = $bomgroup_id;
         $bomcomponent->component_id = $component_id;
         $bomcomponent->drawing_id = $drawing_id;
         $bomcomponent->drawing_path = $drawing_path;
@@ -1267,6 +1272,173 @@ class BomController extends Controller
         $bomgroup->remark = $remark;
         $bomgroup->updated_by = auth()->user()->id;
         $bomgroup->save();
+    }
+
+    // retrieve to custcategory options(int from_custcategory_id)
+    public function getToCustcategoryIdOptions($from_custcategory_id)
+    {
+        $custcategory = Custcategory::findOrFail($from_custcategory_id);
+        $custcategories = Custcategory::where('id', '!=', $custcategory->id)->get();
+
+        return $custcategories;
+    }
+
+    // replicate one custcat from another()
+    public function replicateBomCustcat()
+    {
+        $from_custcategory_id = request('from_custcategory_id');
+        $to_custcategory_id = request('to_custcategory_id');
+
+        if($to_custcategory_id == 'unbind') {
+            $bomcategorycustcats = Bomcategorycustcat::where('custcategory_id', $from_custcategory_id)->get();
+            if(count($bomcategorycustcats)>0) {
+                foreach($bomcategorycustcats as $bomcategorycustcat) {
+                    $bomcategorycustcat->delete();
+                }
+            }
+
+            $bomcomponentcustcats = Bomcomponentcustcat::where('custcategory_id', $from_custcategory_id)->get();
+            if(count($bomcomponentcustcats)>0) {
+                foreach($bomcomponentcustcats as $bomcomponentcustcat) {
+                    $bomcomponentcustcat->delete();
+                }
+            }
+
+            $bomtemplates = Bomtemplate::where('custcategory_id', $from_custcategory_id)->get();
+            if(count($bomtemplates)>0) {
+                foreach($bomtemplates as $bomtemplate) {
+                    $bomtemplate->delete();
+                }
+            }
+
+            $bompartconsumablecustcats = Bompartconsumablecustcat::where('custcategory_id', $from_custcategory_id)->get();
+            if(count($bompartconsumablecustcats)>0) {
+                foreach($bompartconsumablecustcats as $bompartconsumablecustcat) {
+                    $bompartconsumablecustcat->delete();
+                }
+            }
+        }else {
+            $bomcategorycustcats = Bomcategorycustcat::where('custcategory_id', $to_custcategory_id)->get();
+            if(count($bomcategorycustcats)>0) {
+                foreach($bomcategorycustcats as $bomcategorycustcat) {
+                    Bomcategorycustcat::create([
+                        'custcategory_id' => $from_custcategory_id,
+                        'bomcategory_id' => $bomcategorycustcat->bomcategory_id,
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+            $bomcomponentcustcats = Bomcomponentcustcat::where('custcategory_id', $to_custcategory_id)->get();
+            if(count($bomcomponentcustcats)>0) {
+                foreach($bomcomponentcustcats as $bomcomponentcustcat) {
+                    Bomcomponentcustcat::create([
+                        'custcategory_id' => $from_custcategory_id,
+                        'bomcomponent_id' => $bomcomponentcustcat->bomcomponent_id,
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+            $bomtemplates = Bomtemplate::where('custcategory_id', $to_custcategory_id)->get();
+            if(count($bomtemplates)>0) {
+                foreach($bomtemplates as $bomtemplate) {
+                    Bomtemplate::create([
+                        'custcategory_id' => $from_custcategory_id,
+                        'bomcomponent_id' => $bomtemplate->bomcomponent_id,
+                        'bompart_id' => $bomtemplate->bompart_id,
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
+            }
+
+            $bompartconsumablecustcats = Bompartconsumablecustcat::where('custcategory_id', $to_custcategory_id)->get();
+            if(count($bompartconsumablecustcats)>0) {
+                foreach($bompartconsumablecustcats as $bompartconsumablecustcat) {
+                    Bompartconsumablecustcat::create([
+                        'custcategory_id' => $from_custcategory_id,
+                        'bompartconsumable_id' => $bompartconsumablecustcat->bompartconsumable_id,
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
+            }
+        }
+    }
+
+    // retrieve all of the bom currencies
+    public function getBomcurrenciesApi()
+    {
+        $bomcurrencies = Currency::with('updater');
+
+        // reading whether search input is filled
+        if(request('name')){
+            $name = request('name');
+            $bomcurrencies = $bomcurrencies->where('name', 'LIKE', '%'.$name.'%');
+        }
+
+        if(request('sortName')){
+            $bomcurrencies = $bomcurrencies->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $bomcurrencies = $bomcurrencies->orderBy('name');
+        }
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if($pageNum == 'All'){
+            $bomcurrencies = $bomcurrencies->get();
+        }else{
+            $bomcurrencies = $bomcurrencies->paginate($pageNum);
+        }
+
+        $data = [
+            'bomcurrencies' => $bomcurrencies
+        ];
+
+        return $data;
+    }
+
+    // get all of the bomcurrencies option()
+    public function getBomcurrenciesSelectApi()
+    {
+        $bomcurrencies = Bomgroup::orderBy('name')->get();
+        return $bomcurrencies;
+    }
+
+    // creating new bomcurrency entry()
+    public function createBomcurrencyApi()
+    {
+        $symbol = request('symbol');
+        $name = request('name');
+        $rate = request('rate');
+
+        Currency::create([
+            'symbol' => $symbol,
+            'name' => $name,
+            'rate' => $rate,
+            'updated_by' => auth()->user()->id
+        ]);
+    }
+
+    // remove bomcurrency entry(int bomcurrency_id)
+    public function destroyBomcurrencyApi($bomcurrency_id)
+    {
+        $currency = Currency::findOrFail($bomcurrency_id);
+        $currency->delete();
+    }
+
+    // update bom currency api()
+    public function updateBomcurrencyApi()
+    {
+        $id = request('id');
+        $symbol = request('symbol');
+        $name = request('name');
+        $rate = request('rate');
+
+        $bomcurrency = Bomcurrency::findOrFail($id);
+        $bomcurrency->symbol = $symbol;
+        $bomcurrency->name = $name;
+        $bomcurrency->rate = $rate;
+        $bomcurrency->updated_by = auth()->user()->id;
+        $bomcurrency->save();
     }
 
     // pass value into filter search for parts DB (collection) [query]

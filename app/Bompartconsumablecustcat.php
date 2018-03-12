@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bompartconsumablecustcat extends Model
 {
     protected $fillable = [
-        'custcategory_id', 'bompartconsumable_id', 'updated_by', 'group_id'
+        'custcategory_id', 'bompartconsumable_id', 'updated_by'
     ];
 
     public function custcategory()

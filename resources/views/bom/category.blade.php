@@ -243,8 +243,6 @@
     </div>
 </div>
 
-
-
 <div ng-controller="bomgroupController">
     <div class="panel panel-primary" ng-cloak>
         <div class="panel-body">
@@ -411,6 +409,165 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-click="createBomgroup()" data-dismiss="modal" ng-if="!form.id">Create</button>
                     <button type="button" class="btn btn-success" ng-click="editBomgroup()" data-dismiss="modal" ng-if="form.id">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-controller="bomcurrencyController">
+    <div class="panel panel-primary" ng-cloak>
+        <div class="panel-body">
+            <div class="row" style="margin-top: -15px;">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <span class="pull-left">
+                            BOM Currency Management
+                        </span>
+                        <span class="pull-right">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#bomcurrency_modal" ng-click="createBomcurrencyModal()">
+                                <i class="fa fa-plus"></i>
+                                Add Currency
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {!! Form::label('name', 'Name', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('name', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.name',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'Name',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ]) !!}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12 text-right">
+                    <div class="row">
+                        <label for="display_num">Display</label>
+                        <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                            <option ng-value="100">100</option>
+                            <option ng-value="200">200</option>
+                            <option ng-value="All">All</option>
+                        </select>
+                        <label for="display_num2" style="padding-right: 20px">per Page</label>
+                    </div>
+                    <div class="row">
+                        <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive" id="exportable_bomcurrency" style="padding-top:20px;">
+                <table class="table table-list-search table-hover table-bordered">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="" ng-click="sortTable('symbol')">
+                            Symbol
+                            <span ng-if="search.sortName == 'symbol' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'symbol' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-3 text-center">
+                            <a href="" ng-click="sortTable('name')">
+                            Name
+                            <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-3 text-center">
+                            <a href="" ng-click="sortTable('rate')">
+                            Current Rate
+                            <span ng-if="search.sortName == 'rate' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'rate' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="" ng-click="sortTable('updated_by')">
+                            Updated By
+                            <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1"></th>
+                    </tr>
+                    <tbody>
+                        <tr dir-paginate="currency in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                            <td class="col-md-1 text-center">
+                                @{{ $index + indexFrom }}
+                            </td>
+                            <td class="col-md-2 text-center">
+                                @{{currency.symbol}}
+                            </td>
+                            <td class="col-md-3 text-left">
+                                @{{currency.name}}
+                            </td>
+                            <td class="col-md-2 text-right">
+                                <input type="text" name="currencies[]" ng-model="currency.rate" class="form-control text-right input-sm" ng-change="onBomcurrencyRateChanged(currency.id)" ng-model-options='{ debounce: 700 }'>
+                            </td>
+                            <td class="col-md-2 text-center">
+                                @{{currency.updater.name }}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <button class="btn btn-danger btn-sm" ng-click="removeEntry(currency.id)"><i class="fa fa-times"></i></button>
+                            </td>
+                        </tr>
+                        <tr ng-if="!alldata || alldata.length == 0">
+                            <td colspan="18" class="text-center">No Records Found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bomcurrenct_modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">
+                    @{{form.id ? 'Edit Currency' : 'Create Currency'}}
+                </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Symbol
+                            </label>
+                            <input type="text" name="symbol" class="form-control" ng-model="form.symbol">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Name
+                            </label>
+                            <input type="text" name="name" class="form-control" ng-model="form.name">
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                            <label class="control-label">
+                                Current Rate
+                            </label>
+                            <input type="text" name="rate" class="form-control" ng-model="form.rate">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="createBomcurrency()" data-dismiss="modal" ng-if="!form.id">Create</button>
+                    <button type="button" class="btn btn-success" ng-click="editBomcurrency()" data-dismiss="modal" ng-if="form.id">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

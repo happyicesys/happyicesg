@@ -1147,7 +1147,7 @@ class DetailRptController extends Controller
                         })
                         ->where('delivery_date', '>=', $current_from)
                         ->where('delivery_date', '<=', $current_to)
-                        ->whereHas('profile', function($query) {
+                        ->whereHas('person.profile', function($query) {
                             $query->filterUserProfile();
                         });
 
