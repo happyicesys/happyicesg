@@ -449,8 +449,11 @@
             </tr>
 
             <tbody>
-                <tr ng-repeat="person in absentlist" style="background-color: #98fb98;">
-                    <td colspan="2"></td>
+                <tr ng-repeat="(absindex, person) in absentlist" style="background-color: #98fb98;">
+                    <td class="col-md-1"></td>
+                    <td class="col-md-1 text-center">
+                        @{{absindex + 1}}
+                    </td>
                     <td class="col-md-1 text-center">
                         @{{person.cust_id}}
                     </td>

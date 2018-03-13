@@ -389,7 +389,6 @@ class VendingController extends Controller
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE ".$statusStr."
                                 AND items.product_id='051a'
-                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
                                 AND DATE(transactions.delivery_date)<='".$this_month_end."'
                                 GROUP BY people.id
                                 ORDER BY transactions.delivery_date DESC
@@ -643,7 +642,13 @@ class VendingController extends Controller
 
         $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
 
-            $notAvailPeople = Person::with(['custcategory', 'transactions'])
+            $notAvailPeople = Person::with(['custcategory', 'transactions' => function($query) use ($current_month) {
+                                        $query->whereHas('deals.item', function($query) {
+                                                    $query->where('product_id', '051');
+                                                })
+                                                ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString())
+                                                ->limit(1);
+                                    }])
                                     ->where(function($query) {
                                         $query->where('is_vending', 1)
                                                 ->orWhere('is_dvm', 1);
