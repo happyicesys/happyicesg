@@ -323,8 +323,12 @@
                                 @{{bomcomponent.pic}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{bomcomponent.updater.name}} <br>
-                                @{{bomcomponent.updated_at | date:'yy/MM/dd h:mma'}}
+                                <span class="col-md-12">
+                                    @{{bomcomponent.updater.name}}
+                                </span>
+                                <span class="col-md-12">
+                                    @{{bomcomponent.updated_at | date:'yy/MM/dd h:mma'}}
+                                </span>
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#part_modal" ng-click="passDataModal(bomcomponent)"><i class="fa fa-plus"></i></button>
@@ -382,8 +386,12 @@
                                 @{{bompart.pic}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{bompart.updater.name}} <br>
-                                @{{bompart.updated_at | date:'yy/MM/dd h:mma'}}
+                                <span class="col-md-12">
+                                    @{{bompart.updater.name}}
+                                </span>
+                                <span class="col-md-12">
+                                    @{{bompart.updated_at | date:'yy/MM/dd h:mma'}}
+                                </span>
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#bompartconsumable_modal" ng-click="passBompartconsumableModal(bompart)"><i class="fa fa-plus"></i></button>
@@ -441,14 +449,18 @@
                                 @{{bompartconsumable.pic}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{bompartconsumable.updater.name}} <br>
-                                @{{bompartconsumable.updated_at | date:'yy/MM/dd h:mma'}}
+                                <span class="col-md-12">
+                                    @{{bompartconsumable.updater.name}}
+                                </span>
+                                <span class="col-md-12">
+                                    @{{bompartconsumable.updated_at | date:'yy/MM/dd h:mma'}}
+                                </span>
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-danger btn-sm" ng-click="removeBompartconsumable(bompartconsumable.id)"><i class="fa fa-times"></i></button>
                             </td>
                         </tr>
-                        <tr ng-repeat-end ng-hide="true"></tr>
+                        <tr ng-repeat-end ng-if="!formedit"></tr>
                         <tr ng-if="!alldata || alldata.length == 0">
                             <td colspan="18" class="text-center">No Records Found</td>
                         </tr>
