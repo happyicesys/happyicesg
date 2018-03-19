@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
+use Auth;
 
 
 class AuthController extends Controller
@@ -138,6 +139,42 @@ class AuthController extends Controller
         }
 
         return view('password.reset');
+    }
+
+    // check whether the user is active or not
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $lockedOut = $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        $credentials = $this->getCredentials($request);
+
+        if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
+            return $this->handleUserWasAuthenticated($request, $throttles);
+        }
+
+        if ($throttles && !$lockedOut) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    protected function getCredentials(Request $request)
+    {
+
+        $credentials = $request->only($this->loginUsername(), 'password');
+        $user = User::where('username', $credentials['username'])->firstOrFail();
+        $credentials['is_active'] = 1;
+        return $credentials;
+        
     }
 
     // send password reset email

@@ -189,10 +189,17 @@ class UserController extends Controller
     public function removeProfileByUser($user_id, $profile_id)
     {
         $user = User::findOrFail($user_id);
-
         $profile = Profile::findOrFail($profile_id);
-
         $user->profiles()->detach($profile);
+    }
+
+    // control user activation(int $user_id)
+    public function userActivationControl($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        $user->is_active = !$user->is_active;
+        $user->save();
+        return redirect('user');
     }
 
     private function syncRole(User $user, $selected_role)

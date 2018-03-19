@@ -13,6 +13,9 @@
         <h3 class="panel-title"><strong>Editing {{$user->id}} : {{$user->name}} </strong></h3>
     </div>
 
+    {!! Form::open(['id'=>'user_activation', 'method'=>'POST', 'action'=>['UserController@userActivationControl', $user->id]]) !!}
+    {!! Form::close() !!}
+
     {!! Form::open(['id'=>'delete_user', 'method'=>'DELETE', 'action'=>['UserController@destroy', $user->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
     {!! Form::close() !!}
 
@@ -30,7 +33,13 @@
                     </div>
                     @if(Auth::user()->hasRole('admin') and !$person::where('user_id', $user->id)->first())
                         <div class="pull-left">
-                            {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_user']) !!}
+
+                            @if($user->is_active)
+                                {!! Form::submit('Deactivate', ['class'=> 'btn btn-warning', 'form'=>'user_activation']) !!}
+                            @else
+                                {!! Form::submit('Activate', ['class'=> 'btn btn-warning', 'form'=>'user_activation']) !!}
+                                {!! Form::submit('Delete', ['class'=> 'btn btn-danger', 'form'=>'delete_user']) !!}
+                            @endif
                                 <button class="dropdown btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
                                 Add to DTD
                                 <span class="caret"></span></button>
