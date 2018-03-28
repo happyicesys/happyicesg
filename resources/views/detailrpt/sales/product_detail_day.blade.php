@@ -118,16 +118,15 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('cust_category', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('cust_category', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.cust_category',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!}
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                    <option value="">All</option>
+                    @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                    <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
+                    @endforeach
+                </select>
             </div>
-        </div>
+        </div>           
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}

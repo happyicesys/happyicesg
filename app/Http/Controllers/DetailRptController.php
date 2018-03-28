@@ -283,6 +283,7 @@ class DetailRptController extends Controller
                                     'transactions.delivery_fee', 'transactions.pay_status', 'transactions.pay_method', 'transactions.paid_at as payreceived_date',
                                     'users.name',
                                     'paysummaryinfos.remark',
+                                    'paysummaryinfos.is_verified',
                                     DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
                                     DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
                                 );
@@ -724,6 +725,35 @@ class DetailRptController extends Controller
             }
         }
         return redirect('detailrpt/account');
+    }
+
+    // verify pay summary single()
+    public function verifyAccountPaysummaryApi()
+    {
+        $bankin_date = request('bankin_date');
+        $paid_at = request('paid_at');
+        $pay_method = request('pay_method');
+        $profile_id = request('profile_id');
+        $remark = request('remark');
+        $is_verified = request('is_verified');
+
+        if ($bankin_date != '' or $remark != '') {
+            $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_at)->toDateString())->wherePayMethod($pay_method)->whereProfileId($profile_id)->first();
+
+            if (!$exist) {
+                $paysummaryinfo = new Paysummaryinfo();
+                $paysummaryinfo->paid_at = $paid_at;
+                $paysummaryinfo->pay_method = $pay_method;
+                $paysummaryinfo->profile_id = $profile_id;
+            } else {
+                $paysummaryinfo = $exist;
+            }
+            $paysummaryinfo->remark = $remark;
+            $paysummaryinfo->bankin_date = $bankin_date ? Carbon::parse($bankin_date) : null;
+            $paysummaryinfo->user_id = Auth::user()->id;
+            $paysummaryinfo->is_verified = $is_verified;
+            $paysummaryinfo->save();
+        }
     }
 
     // retrieve customers sales summary api(Formrequest $request)
@@ -1848,9 +1878,15 @@ class DetailRptController extends Controller
         if($id_prefix) {
             $transactions = $transactions->where('people.cust_id', 'LIKE', $id_prefix.'%');
         }
-        if($custcategory) {
+/*         if($custcategory) {
             $transactions = $transactions->where('custcategories.id', $custcategory);
-        }
+        } */
+        if ($custcategory) {
+            if (count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+            $transactions = $transactions->whereIn('custcategories.id', $custcategory);
+        }        
         if($bankin_from) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
         }

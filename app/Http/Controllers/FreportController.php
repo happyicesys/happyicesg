@@ -210,6 +210,149 @@ class FreportController extends Controller
         return $data;
     }
 
+    // get invoice summary for franchisee()
+    public function getInvoiceSummaryApi()
+    {
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        $collection_from = request('collection_from');
+        $collection_to = request('collection_to');
+        if ($collection_from and $collection_to) {
+            $date_diff = Carbon::parse($collection_from)->diffInDays(Carbon::parse($collection_to)) + 1;
+        } else {
+            $date_diff = 1;
+        }
+
+        $first_date = DB::raw("(SELECT MIN(DATE(ftransactions.collection_datetime)) AS collection_datetime, people.id AS person_id FROM transactions
+                                LEFT JOIN people ON people.id=ftransactions.person_id
+                                GROUP BY people.id) AS first_date");
+        $sales = DB::raw(
+            "(SELECT (MAX(ftransactions.analog_clock) - MIN(ftransactions.analog_clock)) AS sales_qty,
+                ((MAX(ftransactions.analog_clock) - MIN(ftransactions.analog_clock))/ " . $date_diff . ") AS sales_avg_day,
+                people.id AS person_id,
+                ftransactions.id AS ftransaction_id
+                FROM ftransactions
+                LEFT JOIN people ON people.id=ftransactions.person_id
+                WHERE ftransactions.collection_datetime>='" . $collection_from . "'
+                AND ftransactions.collection_datetime<='" . $collection_to . "'
+                GROUP BY people.id) AS sales"
+        );
+        $transactions_total = DB::raw(
+            "(SELECT people.id AS person_id, 
+                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE transactions.delivery_date>='" . $collection_from . "'
+                AND transactions.delivery_date<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
+                GROUP BY people.id) AS transactions_total
+            "
+        );
+
+        $transactions_paid = DB::raw(
+            "(SELECT people.id AS person_id, 
+                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE transactions.delivery_date>='" . $collection_from . "'
+                AND transactions.delivery_date<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
+                AND transactions.pay_method='Paid'
+                GROUP BY people.id) AS transactions_paid
+            "
+        );
+
+        $transactions_owe = DB::raw(
+            "(SELECT people.id AS person_id, 
+                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                WHERE transactions.delivery_date>='" . $collection_from . "'
+                AND transactions.delivery_date<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
+                AND transactions.pay_method='Owe'
+                GROUP BY people.id) AS transactions_owe
+            "
+        );          
+
+        $ftransactions = DB::table('ftransactions')
+            ->leftJoin('people', 'people.id', '=', 'ftransactions.person_id')
+            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->leftJoin('users AS franchisees', 'ftransactions.franchisee_id', '=', 'franchisees.id')
+            ->leftJoin($first_date, 'people.id', '=', 'first_date.person_id')
+            ->leftJoin($sales, 'people.id', '=', 'sales.person_id')
+            ->leftjoin($transactions_total, 'people.id', '=', 'transactions_total.person_id')
+            ->leftjoin($transactions_paid, 'people.id', '=', 'transactions_paid.person_id')
+            ->leftjoin($transactions_owe, 'people.id', '=', 'transactions_owe.person_id')
+            ->select(
+                'people.cust_id AS cust_id',
+                'people.company AS company',
+                'franchisees.name AS franchisee_name', 'franchisees.id AS franchisee_id',
+                'first_date.delivery_date AS first_date',
+                DB::raw('ROUND(SUM(ftransactions.total), 2) AS total'),
+                DB::raw('ROUND(SUM(ftransactions.taxtotal), 2) AS taxtotal'),
+                DB::raw('ROUND(SUM(ftransactions.finaltotal), 2) AS finaltotal'),
+                DB::raw('transactions_total.total AS total_cost'),
+                DB::raw('ROUND(SUM(ftransactions.total) - transactions_total.total, 2) AS gross_profit'),
+                DB::raw('ROUND((SUM(ftransactions.total) - transactions_total.total)/ SUM(ftransactions.total) * 100, 2) AS gross_profit_percent'),                
+                DB::raw('transactions_owe.total AS owe'),
+                DB::raw('transactions_paid.total AS paid'),
+                'people.is_vending',
+                'people.vending_monthly_rental',
+                'people.vending_profit_sharing',
+                'sales.sales_qty AS sales_qty',
+                'sales.sales_avg_day AS sales_avg_day'
+            );
+
+        if (request('collection_from') or request('collection_to') or request('cust_id') or request('company') or request('person_id') or request('franchisee_id')) {
+            $ftransactions = $this->searchInvoiceSummaryDBFilter($ftransactions);
+        }
+
+        // add user profile filters
+        $deals = $this->filterUserDbProfile($deals);
+
+        $deals = $deals->groupBy('people.id');
+
+        if ($request->sortName) {
+            $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        } else {
+            $deals = $deals->orderBy('cust_id');
+        }
+
+        $fixedtotals = $this->calInvbreakdownSummaryFixedTotals($deals);
+
+        if ($pageNum == 'All') {
+            $deals = $deals->get();
+        } else {
+            $deals = $deals->paginate($pageNum);
+        }
+
+        $dynamictotals = $this->calInvbreakdownSummaryDynamicTotals($deals);
+
+        $data = [
+            'deals' => $deals,
+            'fixedtotals' => $fixedtotals,
+            'dynamictotals' => $dynamictotals
+        ];
+
+        return $data;        
+    }
+
     // filter for transactions($query)
     private function filterInvoiceBreakdownTransaction($transactions)
     {
@@ -328,4 +471,44 @@ class FreportController extends Controller
 
         return $total_pieces;
     }
+
+    // pass value into filter search for invoice summary (collection) [query]
+    private function searchInvoiceSummaryDBFilter($ftransactions)
+    {
+        if (request('cust_id')) {
+            $ftransactions = $ftransactions->where('people.cust_id', 'LIKE', '%' . request('cust_id') . '%');
+        }
+        if (request('company')) {
+            $com = request('company');
+            $ftransactions = $ftransactions->where(function ($query) use ($com) {
+                $query->where('people.company', 'LIKE', '%' . $com . '%')
+                    ->orWhere(function ($query) use ($com) {
+                        $query->where('people.cust_id', 'LIKE', 'D%')
+                            ->where('people.name', 'LIKE', '%' . $com . '%');
+                    });
+            });
+        }
+        if (request('collection_from') === request('collection_to')) {
+            if (request('collection_from') != '' and request('collection_to') != '') {
+                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '=', request('collection_to'));
+            }
+        } else {
+            if (request('collection_from')) {
+                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '>=', request('collection_from'));
+            }
+            if (request('collection_to')) {
+                $ftransactions = $ftransactions->whereDate('ftransactions.collection_datetime', '<=', request('collection_to'));
+            }
+        }
+        if (request('franchisee_id')) {
+            $ftransactions = $ftransactions->where('ftransactions.franchisee_id', request('franchisee_id'));
+        }
+        if (request('person_id')) {
+            $ftransactions = $ftransactions->where('ftransactions.person_id', request('person_id'));
+        }
+        if (request('sortName')) {
+            $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+        return $ftransactions;
+    }    
 }

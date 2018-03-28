@@ -43,6 +43,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });            
         });
 
         $scope.onDeliveryFromChanged = function(date){
@@ -171,6 +174,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });            
         });
 
         $scope.exportData = function () {
@@ -268,6 +274,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });             
         });
 
         $scope.onDeliveryFromChanged = function(date){
@@ -489,6 +498,20 @@ var app = angular.module('app', [
                 $scope.totals = data.totals;
 
                 $scope.spinner = false;
+            });
+        }
+
+        $scope.verifyPaysummary = function(event, transaction, is_verified) {
+            event.preventDefault();
+            $http.post('/api/detailrpt/account/paysummary/verify', {
+                bankin_date: transaction.bankin_date,
+                paid_at: transaction.payreceived_date,
+                pay_method: transaction.pay_method,
+                profile_id: transaction.profile_id,
+                remark: transaction.remark,
+                is_verified: is_verified
+            }).success(function(data) {
+                getPage(1, false);
             });
         }
     }

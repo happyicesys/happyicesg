@@ -9,7 +9,7 @@ class Paysummaryinfo extends Model
 {
     protected $fillable = [
     	'paid_at', 'pay_method', 'remark', 'bankin_date',
-    	'profile_id', 'user_id'
+    	'profile_id', 'user_id', 'is_verified'
     ];
 
     protected $dates = [

@@ -256,6 +256,14 @@
                     <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account'))
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('is_verified')">
+                    Validation
+                    <span ng-if="search.sortName == 'is_verified' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'is_verified' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>                
+                @endif
             </tr>
             <tbody>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="payment_summary" total-items="totalCount">
@@ -280,6 +288,13 @@
                         <textarea name="remarks[@{{$index}}]" ng-model="transaction.remark" class="form-control"></textarea>
                     </td>
                     <td class="col-md-1 text-left">@{{ transaction.name }} </td>
+                    <td class="col-md-1 text-left">
+                        <span class="col-md-12 col-sm-12 col-xs-12">@{{transaction.is_verified ? 'Yes' : 'No'}}</span>
+                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account'))
+                            <button ng-if="!transaction.is_verified" class="btn btn-success" ng-click="verifyPaysummary($event, transaction, 1)"><i class="fa fa-check"></i> Verify</button>
+                            <button ng-if="transaction.is_verified" class="btn btn-warning" ng-click="verifyPaysummary($event, transaction, 0)"><i class="fa fa-cross"></i> Undo Verify</button>
+                        @endif
+                    </td>
 
                     <td class="hidden">{!! Form::text('paid_ats[@{{$index}}]', null, ['class'=>'form-control hidden', 'ng-model'=>'transaction.payreceived_date']) !!}</td>
                     <td class="hidden">{!! Form::text('pay_methods[@{{$index}}]', null, ['class'=>'form-control hidden', 'ng-model'=>'transaction.pay_method']) !!}</td>
