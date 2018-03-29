@@ -73,7 +73,7 @@
                         $dtd_access = true;
                     }
 
-                    if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('admin_account')) {
+                    if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin')) {
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;

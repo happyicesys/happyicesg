@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(VendingSeeder::class);
         $this->call(RoleFranchiseeSeeder::class);
         */
+        $this->call(UserRoleAccountAdmin::class);
         Model::reguard();
     }
 }

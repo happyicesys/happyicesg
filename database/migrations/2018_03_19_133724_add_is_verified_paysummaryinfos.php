@@ -13,7 +13,7 @@ class AddIsVerifiedPaysummaryinfos extends Migration
     public function up()
     {
         Schema::table('paysummaryinfos', function ($table) {
-            $table->boolean('is_verified')->default(0);
+            $table->boolean('is_verified')->nullable();
         });
     }
 
