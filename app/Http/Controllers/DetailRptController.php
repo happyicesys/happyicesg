@@ -123,10 +123,10 @@ class DetailRptController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         // indicate the month and year
-        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month);
-        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
-        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
-        $prev3Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(3);
+        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month)->day(15);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(2);
+        $prev3Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(3);
 
         $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
@@ -341,7 +341,6 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_to' => $delivery_to));
         $status = $request->status;
 
-        dd($request->current_month, $delivery_from, $carbondate, $prevMonth);
         if($status) {
             if($status == 'Delivered') {
                 $statusStr = " (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
@@ -470,10 +469,10 @@ class DetailRptController extends Controller
         $input = $request->all();
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
-        $thismonth = Carbon::createFromFormat('m-Y', $request->current_month);
-        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
-        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
-        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
+        $thismonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subYear();
         $profile_id = $request->profile_id;
 
         $thistotal = "(SELECT ROUND(SUM(amount), 2) AS amount, ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
@@ -768,10 +767,10 @@ class DetailRptController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         // indicate the month and year
-        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month);
-        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
-        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
-        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
+        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month)->day(15);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subYear();
         $delivery_from = $carbondate->startOfMonth()->toDateString();
         $delivery_to = $carbondate->endOfMonth()->toDateString();
         $profile_id = $request->profile_id;
