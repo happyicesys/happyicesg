@@ -331,10 +331,10 @@ class DetailRptController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         // indicate the month and year
-        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month);
-        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->subMonth();
-        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->subMonths(2);
-        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->subYear();
+        $carbondate = Carbon::createFromFormat('m-Y', $request->current_month)->day(15);
+        $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonth();
+        $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subYear();
         $delivery_from = $carbondate->startOfMonth()->toDateString();
         $delivery_to = $carbondate->endOfMonth()->toDateString();
         $request->merge(array('delivery_from' => $delivery_from));
