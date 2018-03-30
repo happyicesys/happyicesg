@@ -340,6 +340,8 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
         $status = $request->status;
+
+        dd($request->current_month, $delivery_from, $carbondate, $prevMonth);
         if($status) {
             if($status == 'Delivered') {
                 $statusStr = " (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
