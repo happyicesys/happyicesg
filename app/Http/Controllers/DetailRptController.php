@@ -341,7 +341,7 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_to' => $delivery_to));
         $status = $request->status;
 
-        dd($request->current_month, $carbondate, $delivery_from, $prevMonth);
+        dd($request->current_month, Carbon::createFromFormat('m-Y', $request->current_month)->day(15), $carbondate, $delivery_from, $prevMonth);
 
         if($status) {
             if($status == 'Delivered') {
