@@ -71,8 +71,8 @@ class ProfileController extends Controller
 
         $input = request()->all();
         $profile = Profile::create($input);
-        if($request->hasFile('logo')){
-        }
+        // if($request->hasFile('logo')){
+        // }
         return redirect('profile');
     }
 
