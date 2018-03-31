@@ -331,6 +331,7 @@ class DetailRptController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         // indicate the month and year
+        Carbon::useMonthsOverflow(false);
         $carbondate = Carbon::createFromFormat('m-Y', $request->current_month)->day(15);
         $prevMonth = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonth();
         $prev2Months = Carbon::createFromFormat('m-Y', $request->current_month)->day(15)->subMonths(2);
