@@ -132,6 +132,12 @@ class ProfileController extends Controller
         $profile->delete();
     }
 
+    public function destroyApi($id)
+    {
+        $profile = Profile::findOrFail($id);
+        $profile->delete();
+    }
+
     //adding file
     //@param file var, request
     private function addFile($file, $request)

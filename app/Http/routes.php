@@ -261,6 +261,7 @@ Route::get('/api/person/getLatLng/{person_id}', 'PersonController@getDeliveryLat
 Route::post('/api/person/storelatlng/{person_id}', 'PersonController@storeDeliveryLatLng');
 
 Route::get('/profile/data', 'ProfileController@getData');
+Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');
 Route::resource('profile', 'ProfileController');
 
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');

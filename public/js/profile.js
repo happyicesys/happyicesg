@@ -15,7 +15,7 @@ var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPag
             if(isConfirmDelete){
                 $http({
                     method: 'DELETE',
-                    url: '/profile/data/' + id
+                    url: '/api/profile/' + id + '/destroy'
                 })
                 .success(function(data){
                     console.log(data);
