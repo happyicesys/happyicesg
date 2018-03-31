@@ -60,10 +60,10 @@ class ProfileController extends Controller
      */
     public function store()
     {
-        if(!request()->has('gst') and request()->has('is_gst_inclusive')) {
-            Flash::error('GST tickbox is required for GST inclusive');
-            return redirect()->action('ProfileController@edit', $profile->id);
-        }
+        // if(!request()->has('gst') and request()->has('is_gst_inclusive')) {
+        //     Flash::error('GST tickbox is required for GST inclusive');
+        //     return redirect()->action('ProfileController@edit', $profile->id);
+        // }
         $gst = request()->has('gst') ? 1 : 0;
         $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
         request()->merge(array('gst' => $gst));
