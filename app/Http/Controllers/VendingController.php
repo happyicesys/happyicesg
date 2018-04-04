@@ -712,7 +712,7 @@ class VendingController extends Controller
 
         // 2 compulsory items 055, U01
         $sales_commission = Item::where('product_id', '055')->firstOrFail();
-        $utility_subsidy = Item::where('product_id', 'U01')->firstOrFail();
+        $utility_subsidy = Item::where('product_id', 'V01')->firstOrFail();
 
         if($person->is_vending) {
             $deal_comm = new Deal();

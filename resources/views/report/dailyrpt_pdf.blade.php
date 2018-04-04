@@ -318,7 +318,7 @@
                                     {{ $transaction->driver }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                    {{ $transaction->gst ? number_format(($transaction->total * 107/100), 2, '.', ',') : number_format($transaction->total, 2, '.', ',') }}
+                                    {{ ($transaction->gst && !$transaction->is_gst_inclusive) ? number_format(($transaction->total * $transaction->gst_rate/100), 2, '.', ',') : number_format($transaction->total, 2, '.', ',') }}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->total_qty }}
