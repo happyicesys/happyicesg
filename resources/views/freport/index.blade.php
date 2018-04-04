@@ -12,7 +12,7 @@
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#analog_difference" role="tab" data-toggle="tab">Analog Difference</a></li>
-                    {{--  <li><a href="#invoice_summary" role="tab" data-toggle="tab">Invoice Summary</a></li>  --}}
+                    <li><a href="#invoice_summary" role="tab" data-toggle="tab">Invoice Summary</a></li> 
                     <li><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li>
                     {{-- <li><a href="#variance_management" role="tab" data-toggle="tab">Variance Management</a></li> --}}
                 </ul>

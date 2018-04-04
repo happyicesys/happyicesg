@@ -87,6 +87,7 @@ Route::get('/bom', 'BomController@index');
 
 Route::get('/shop', 'ShopController@getShopIndex');
 
+Route::post('/api/invsummaries', 'FreportController@getInvoiceSummaryApi');
 Route::post('/api/variances', 'FreportController@getVariancesIndex');
 Route::post('/api/variances/submitEntry', 'FreportController@submitVarianceEntry');
 Route::delete('/api/variances/{id}/delete', 'FreportController@destroyVarianceApi');

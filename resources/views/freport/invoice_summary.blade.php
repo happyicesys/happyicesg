@@ -101,13 +101,27 @@
                     !!}
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('is_active', 'Active', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('is_active',
+                        [''=>'All', 'Yes'=>'Yes', 'No'=>'No'],
+                        null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.is_active',
+                            'ng-change'=>'searchDB()'
+                        ])
+                    !!}
+                </div>
+            </div>            
         </div>
 
         <div class="row">
             <div class="col-md-2 col-sm-2 col-xs-12">
                 <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
             </div>
-            <div class="col-md-7 col-sm-7 col-xs-12">
+{{--             <div class="col-md-7 col-sm-7 col-xs-12">
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
@@ -162,8 +176,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-12 text-right">
+            </div> --}}
+            <div class="col-md-3 col-sm-3 col-xs-12 pull-right">
                 <div class="row">
                     <label for="display_num">Display</label>
                     <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
@@ -179,9 +193,9 @@
             </div>
         </div>
 
-        <div class="table-responsive" id="exportable_invbreakdownsummary" style="padding-top: 20px;">
+        <div class="table-responsive" id="exportable_invoicesummary" style="padding-top: 20px;">
             <table class="table table-list-search table-hover table-bordered">
-                <tr class="hidden">
+{{--                 <tr class="hidden">
                     <td></td>
                     <td data-tableexport-display="always">Grand Total</td>
                     <td data-tableexport-display="always" class="text-right">@{{grand_total | currency: "": 2}}</td>
@@ -208,7 +222,7 @@
                 </tr>
                 <tr class="hidden" data-tableexport-display="always">
                     <td></td>
-                </tr>
+                </tr> --}}
 
                 <tr>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
@@ -233,16 +247,16 @@
                         <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        <a href="" ng-click="sortTable('gsttotal')">
+                        <a href="" ng-click="sortTable('taxtotal')">
                         GST
-                        <span ng-if="search.sortName == 'gsttotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'gsttotal' && search.sortBy" class="fa fa-caret-up"></span>
+                        <span ng-if="search.sortName == 'taxtotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'taxtotal' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
-                        <a href="" ng-click="sortTable('subtotal')">
+                        <a href="" ng-click="sortTable('finaltotal')">
                         Total Revenue
-                        <span ng-if="search.sortName == 'subtotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'subtotal' && search.sortBy" class="fa fa-caret-up"></span>
+                        <span ng-if="search.sortName == 'finaltotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'finaltotal' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         <a href="" ng-click="sortTable('cost')">
@@ -274,7 +288,7 @@
                         <span ng-if="search.sortName == 'owe' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'owe' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
-                    <th class="col-md-1 text-center" style="background-color: #D896FF">
+{{--                     <th class="col-md-1 text-center" style="background-color: #D896FF">
                         <a href="" ng-click="sortTable('vending_monthly_rental')">
                         Monthly Rental
                         <span ng-if="search.sortName == 'vending_monthly_rental' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -285,7 +299,7 @@
                         Profit Sharing
                         <span ng-if="search.sortName == 'vending_profit_sharing' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'vending_profit_sharing' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
+                    </th> --}}
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
                         <a href="" ng-click="sortTable('sales_qty')">
                         Total Sales Qty
@@ -299,17 +313,17 @@
                         <span ng-if="search.sortName == 'sales_avg_day' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
-                        <a href="" ng-click="sortTable('difference')">
-                        Difference (Actual - Expected)
-                        <span ng-if="search.sortName == 'difference' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'difference' && search.sortBy" class="fa fa-caret-up"></span>
+                        <a href="" ng-click="sortTable('stock_in')">
+                        Stock In
+                        <span ng-if="search.sortName == 'stock_in' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'stock_in' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #D896FF">
-                        <a href="" ng-click="sortTable('vm_stock_value')">
-                        VM Stock Value
-                        <span ng-if="search.sortName == 'vm_stock_value' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'vm_stock_value' && search.sortBy" class="fa fa-caret-up"></span>
-                    </th>
+                        <a href="" ng-click="sortTable('delta')">
+                        Delta
+                        <span ng-if="search.sortName == 'delta' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'delta' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>                    
                 </tr>
 
                 <tbody>
@@ -327,28 +341,26 @@
                             @{{deal.total | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            <span ng-if="deal.gst==1">
-                                @{{deal.gsttotal | currency: "": 2}}
-                            </span>
+                            @{{deal.taxtotal | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.subtotal | currency: "": 2}}
+                            @{{deal.finaltotal | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.cost | currency: "": 2}}
+                            @{{deal.total_cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.gross_money | currency: "": 2}}
+                            @{{deal.gross_profit | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
-                            @{{deal.gross_percent | currency: "": 2}}
+                            @{{deal.gross_profit_percent | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.paid | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.owe | currency: "": 2}}
-                        </td>
+{{--                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
                                 @{{deal.vending_monthly_rental | currency: "": 2}}
@@ -358,27 +370,27 @@
                             <span ng-if="deal.is_vending==1">
                                 @{{deal.vending_profit_sharing}}
                             </span>
-                        </td>
+                        </td> --}}
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.sales_qty | currency: "": 4}}
+                                @{{deal.sales_qty}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.sales_avg_day | currency: "": 4}}
+                                @{{deal.sales_avg_day | currency: "": 2}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.difference | currency : '' : 2 }}
+                                @{{deal.stock_in}}
                             </span>
                         </td>
                         <td class="col-md-1 text-right">
                             <span ng-if="deal.is_vending==1">
-                                @{{deal.vm_stock_value | currency : '' : 2}}
+                                @{{deal.delta}}
                             </span>
-                        </td>
+                        </td>                        
                     </tr>
 
                     <tr ng-if="alldata || alldata.length > 0">
@@ -386,44 +398,40 @@
                             Average
                         </th>
                         <th class="col-md-1"></th>
-                        <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
                             @{{avg_grand_total | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{avg_subtotal | currency: "": 2}}
+                            @{{avg_finaltotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
                             @{{avg_cost | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_gross_money | currency: "": 2}}
+                            @{{avg_gross_profit | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_gross_percent | currency: "": 2}}
+                            @{{avg_gross_profit_percent | currency: "": 2}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1"></th>
-                        <th class="col-md-1 text-right">
-                            @{{avg_vending_piece_price | currency: "": 2}}
-                        </th>
-                        <th class="col-md-1 text-right">
+{{--                         <th class="col-md-1 text-right">
                             @{{avg_vending_monthly_rental | currency: "": 2}}
                         </th>
-                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th> --}}
                         <th class="col-md-1 text-right">
-                            @{{avg_sales_qty | currency: "": 4}}
+                            @{{avg_sales_qty }}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_sales_avg_day | currency: "": 4}}
+                            @{{avg_sales_avg_day | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_difference | currency: "": 2}}
+                            @{{avg_stock_in}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{avg_vm_stock_value | currency: "": 2}}
-                        </th>
+                            @{{avg_delta}}
+                        </th>                        
                     </tr>
                     <tr ng-if="alldata || alldata.length > 0">
                         <th colspan="2">
@@ -434,19 +442,19 @@
                             @{{total_grand_total | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gsttotal | currency: "": 2}}
+                            @{{total_taxtotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_subtotal | currency: "": 2}}
+                            @{{total_finaltotal | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
                             @{{total_cost | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gross_money | currency: "": 2}}
+                            @{{total_gross_profit | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
-                            @{{total_gross_percent | currency: "": 2}}
+                            @{{total_gross_profit_percent | currency: "": 2}}
                         </th>
                         <th class="col-md-1 text-right">
                             @{{total_paid | currency: "": 2}}
@@ -454,20 +462,20 @@
                         <th class="col-md-1 text-right">
                             @{{total_owe | currency: "": 2}}
                         </th>
-                        <th class="col-md-1"></th>
-                        <th class="col-md-1 text-right">
+                        {{-- <th class="col-md-1"></th> --}}
+{{--                         <th class="col-md-1 text-right">
                             @{{total_vending_monthly_rental | currency: "": 2}}
                         </th>
-                        <th class="col-md-1"></th>
+                        <th class="col-md-1"></th> --}}
                         <th class="col-md-1 text-right">
-                            @{{total_sales_qty | currency: "": 4}}
+                            @{{total_sales_qty}}
                         </th>
                         <th class="col-md-1"></th>
                         <th class="col-md-1 text-right">
-                            @{{total_difference | currency: "": 2}}
-                        </th>
+                            @{{total_stock_in}}
+                        </th>                        
                         <th class="col-md-1 text-right">
-                            @{{total_vm_stock_value | currency: "": 2}}
+                            @{{total_delta}}
                         </th>
                     </tr>
 

@@ -109,6 +109,7 @@ function invoiceSummaryController($scope, $http) {
         cust_id: '',
         company: '',
         person_id: '',
+        is_active: 'Yes',
         pageNum: 100,
     }
     // init page load
@@ -119,7 +120,7 @@ function invoiceSummaryController($scope, $http) {
     });
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_invoicesummary').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
@@ -149,6 +150,20 @@ function invoiceSummaryController($scope, $http) {
         $http.get('/api/franchisee/auth').success(function (data) {
             return data;
         });
+    }
+
+    $scope.onCollectionFromChanged = function (date) {
+        if(date) {
+            $scope.search.collection_from = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+        $scope.searchDB();
+    }
+
+    $scope.onCollectionToChanged = function (date) {
+        if(date) {
+            $scope.search.collection_to = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+        $scope.searchDB();
     }
 
     $scope.onPrevDateClicked = function () {
@@ -183,23 +198,44 @@ function invoiceSummaryController($scope, $http) {
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
-        $http.post('/api/franchisee/people?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
-            if (data.people.data) {
-                $scope.alldata = data.people.data;
-                $scope.totalCount = data.people.total;
-                $scope.currentPage = data.people.current_page;
-                $scope.indexFrom = data.people.from;
-                $scope.indexTo = data.people.to;
+        $http.post('/api/invsummaries?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            if (data.ftransactions.data) {
+                $scope.alldata = data.ftransactions.data;
+                $scope.totalCount = data.ftransactions.total;
+                $scope.currentPage = data.ftransactions.current_page;
+                $scope.indexFrom = data.ftransactions.from;
+                $scope.indexTo = data.ftransactions.to;
             } else {
-                $scope.alldata = data.people;
-                $scope.totalCount = data.people.length;
+                $scope.alldata = data.ftransactions;
+                $scope.totalCount = data.ftransactions.length;
                 $scope.currentPage = 1;
                 $scope.indexFrom = 1;
-                $scope.indexTo = data.people.length;
+                $scope.indexTo = data.ftransactions.length;
             }
             // get total count
-            $scope.All = data.people.length;
+            $scope.All = data.ftransactions.length;
 
+            $scope.avg_grand_total = data.dynamictotals.avg_grand_total.toFixed(2);
+            $scope.avg_finaltotal = data.dynamictotals.avg_finaltotal.toFixed(2);
+            $scope.avg_cost = data.dynamictotals.avg_cost.toFixed(2);
+            $scope.avg_gross_profit = data.dynamictotals.avg_gross_profit.toFixed(2);
+            $scope.avg_gross_profit_percent = data.dynamictotals.avg_gross_profit_percent.toFixed(2);
+            $scope.avg_sales_qty = data.dynamictotals.avg_sales_qty.toFixed(2);
+            $scope.avg_sales_avg_day = data.dynamictotals.avg_sales_avg_day.toFixed(2);
+            $scope.avg_delta = data.dynamictotals.avg_delta.toFixed(2);
+            $scope.avg_stock_in = data.dynamictotals.avg_stock_in.toFixed(2);
+
+            $scope.total_grand_total = data.dynamictotals.total_grand_total.toFixed(2);
+            $scope.total_finaltotal = data.dynamictotals.total_finaltotal.toFixed(2);
+            $scope.total_taxtotal = data.dynamictotals.total_taxtotal.toFixed(2);
+            $scope.total_cost = data.dynamictotals.total_cost.toFixed(2);
+            $scope.total_gross_profit = data.dynamictotals.total_gross_profit.toFixed(2);
+            $scope.total_gross_profit_percent = data.dynamictotals.total_gross_profit_percent.toFixed(2);
+            $scope.total_owe = data.dynamictotals.total_owe.toFixed(2);
+            $scope.total_paid = data.dynamictotals.total_paid.toFixed(2);
+            $scope.total_sales_qty = data.dynamictotals.total_sales_qty.toFixed(2);
+            $scope.total_delta = data.dynamictotals.total_delta.toFixed(2);
+            $scope.total_stock_in = data.dynamictotals.total_stock_in.toFixed(2);
             // return total amount
             $scope.spinner = false;
         });

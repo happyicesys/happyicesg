@@ -210,7 +210,7 @@ class FreportController extends Controller
         return $data;
     }
 
-    // get invoice summary for franchisee()
+    // get invoice summary for invoice summary()
     public function getInvoiceSummaryApi()
     {
         // initiate the page num when null given
@@ -223,18 +223,18 @@ class FreportController extends Controller
             $date_diff = 1;
         }
 
-        $first_date = DB::raw("(SELECT MIN(DATE(ftransactions.collection_datetime)) AS collection_datetime, people.id AS person_id FROM transactions
-                                LEFT JOIN people ON people.id=ftransactions.person_id
+        $first_date = DB::raw("(SELECT MIN(DATE(transactions.delivery_date)) AS delivery_date, people.id AS person_id FROM transactions
+                                LEFT JOIN people ON people.id=transactions.person_id
                                 GROUP BY people.id) AS first_date");
         $sales = DB::raw(
-            "(SELECT (MAX(ftransactions.analog_clock) - MIN(ftransactions.analog_clock)) AS sales_qty,
-                ((MAX(ftransactions.analog_clock) - MIN(ftransactions.analog_clock))/ " . $date_diff . ") AS sales_avg_day,
+            "(SELECT SUM(ftransactions.sales) AS sales_qty,
+                (SUM(ftransactions.sales)/ " . $date_diff . ") AS sales_avg_day,
                 people.id AS person_id,
                 ftransactions.id AS ftransaction_id
                 FROM ftransactions
                 LEFT JOIN people ON people.id=ftransactions.person_id
-                WHERE ftransactions.collection_datetime>='" . $collection_from . "'
-                AND ftransactions.collection_datetime<='" . $collection_to . "'
+                WHERE DATE(ftransactions.collection_datetime)>='" . $collection_from . "'
+                AND DATE(ftransactions.collection_datetime)<='" . $collection_to . "'
                 GROUP BY people.id) AS sales"
         );
         $transactions_total = DB::raw(
@@ -247,31 +247,13 @@ class FreportController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
-                WHERE transactions.delivery_date>='" . $collection_from . "'
-                AND transactions.delivery_date<='" . $collection_to . "'
+                LEFT JOIN profiles ON profiles.id=people.profile_id
+                WHERE DATE(transactions.delivery_date)>='" . $collection_from . "'
+                AND DATE(transactions.delivery_date)<='" . $collection_to . "'
                 AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
                 GROUP BY people.id) AS transactions_total
             "
         );
-
-        $transactions_paid = DB::raw(
-            "(SELECT people.id AS person_id, 
-                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
-                                                CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
-                                                ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
-                FROM transactions
-                LEFT JOIN people ON people.id=transactions.person_id
-                WHERE transactions.delivery_date>='" . $collection_from . "'
-                AND transactions.delivery_date<='" . $collection_to . "'
-                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
-                AND transactions.pay_method='Paid'
-                GROUP BY people.id) AS transactions_paid
-            "
-        );
-
         $transactions_owe = DB::raw(
             "(SELECT people.id AS person_id, 
                 SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
@@ -282,13 +264,46 @@ class FreportController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
-                WHERE transactions.delivery_date>='" . $collection_from . "'
-                AND transactions.delivery_date<='" . $collection_to . "'
-                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
-                AND transactions.pay_method='Owe'
+                LEFT JOIN profiles ON profiles.id=people.profile_id
+                WHERE DATE(transactions.delivery_date)>='" . $collection_from . "'
+                AND DATE(transactions.delivery_date)<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Owe')
+                AND transactions.pay_status='Owe'
                 GROUP BY people.id) AS transactions_owe
             "
-        );          
+        );
+        $transactions_paid = DB::raw(
+            "(SELECT people.id AS person_id, 
+                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                CASE
+                                                WHEN people.is_gst_inclusive=0
+                                                THEN total*((100+people.gst_rate)/100)
+                                                ELSE transactions.total
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                FROM transactions
+                LEFT JOIN people ON people.id=transactions.person_id
+                LEFT JOIN profiles ON profiles.id=people.profile_id
+                WHERE DATE(transactions.delivery_date)>='" . $collection_from . "'
+                AND DATE(transactions.delivery_date)<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid')
+                AND transactions.pay_status='Paid'
+                GROUP BY people.id) AS transactions_paid
+            "
+        );
+        $transactions_stock = DB::raw(
+            "(SELECT people.id AS person_id,
+                ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces
+                FROM deals
+                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                LEFT JOIN items ON items.id=deals.item_id
+                LEFT JOIN people ON people.id=transactions.person_id
+                LEFT JOIN profiles ON profiles.id=people.profile_id
+                WHERE DATE(transactions.delivery_date)>='" . $collection_from . "'
+                AND DATE(transactions.delivery_date)<='" . $collection_to . "'
+                AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
+                GROUP BY people.id) AS transactions_stock
+            "
+        );        
 
         $ftransactions = DB::table('ftransactions')
             ->leftJoin('people', 'people.id', '=', 'ftransactions.person_id')
@@ -299,54 +314,57 @@ class FreportController extends Controller
             ->leftjoin($transactions_total, 'people.id', '=', 'transactions_total.person_id')
             ->leftjoin($transactions_paid, 'people.id', '=', 'transactions_paid.person_id')
             ->leftjoin($transactions_owe, 'people.id', '=', 'transactions_owe.person_id')
+            ->leftjoin($transactions_stock, 'people.id', '=', 'transactions_stock.person_id')
             ->select(
                 'people.cust_id AS cust_id',
                 'people.company AS company',
+                'profiles.gst',
                 'franchisees.name AS franchisee_name', 'franchisees.id AS franchisee_id',
                 'first_date.delivery_date AS first_date',
                 DB::raw('ROUND(SUM(ftransactions.total), 2) AS total'),
                 DB::raw('ROUND(SUM(ftransactions.taxtotal), 2) AS taxtotal'),
-                DB::raw('ROUND(SUM(ftransactions.finaltotal), 2) AS finaltotal'),
-                DB::raw('transactions_total.total AS total_cost'),
+                DB::raw('ROUND(SUM(ftransactions.total) - SUM(ftransactions.taxtotal), 2) AS finaltotal'),
+                'transactions_total.total AS total_cost',
                 DB::raw('ROUND(SUM(ftransactions.total) - transactions_total.total, 2) AS gross_profit'),
                 DB::raw('ROUND((SUM(ftransactions.total) - transactions_total.total)/ SUM(ftransactions.total) * 100, 2) AS gross_profit_percent'),                
-                DB::raw('transactions_owe.total AS owe'),
-                DB::raw('transactions_paid.total AS paid'),
+                'transactions_owe.total AS owe',
+                'transactions_paid.total AS paid',
                 'people.is_vending',
                 'people.vending_monthly_rental',
                 'people.vending_profit_sharing',
                 'sales.sales_qty AS sales_qty',
-                'sales.sales_avg_day AS sales_avg_day'
+                'sales.sales_avg_day AS sales_avg_day',
+                'transactions_stock.pieces AS stock_in',
+                DB::raw('ROUND(transactions_stock.pieces - sales.sales_qty, 2) AS delta')
             );
 
-        if (request('collection_from') or request('collection_to') or request('cust_id') or request('company') or request('person_id') or request('franchisee_id')) {
+        if (request('collection_from') or request('collection_to') or request('cust_id') or request('company') or request('person_id') or request('franchisee_id') or request('is_active')) {
             $ftransactions = $this->searchInvoiceSummaryDBFilter($ftransactions);
         }
 
         // add user profile filters
-        $deals = $this->filterUserDbProfile($deals);
+        $ftransactions = $this->filterUserDbProfile($ftransactions);
 
-        $deals = $deals->groupBy('people.id');
+        $ftransactions = $ftransactions->groupBy('people.id');
 
-        if ($request->sortName) {
-            $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        if (request('sortName')) {
+            $ftransactions = $ftransactions->orderBy(request('sortName'), $request->sortBy ? 'asc' : 'desc');
         } else {
-            $deals = $deals->orderBy('cust_id');
+            $ftransactions = $ftransactions->orderBy('cust_id');
         }
 
-        $fixedtotals = $this->calInvbreakdownSummaryFixedTotals($deals);
+        // $fixedtotals = $this->calInvoiceSummaryFixedTotals($ftransactions);
 
         if ($pageNum == 'All') {
-            $deals = $deals->get();
+            $ftransactions = $ftransactions->get();
         } else {
-            $deals = $deals->paginate($pageNum);
+            $ftransactions = $ftransactions->paginate($pageNum);
         }
 
-        $dynamictotals = $this->calInvbreakdownSummaryDynamicTotals($deals);
+        $dynamictotals = $this->calInvoiceSummaryDynamicTotals($ftransactions);
 
         $data = [
-            'deals' => $deals,
-            'fixedtotals' => $fixedtotals,
+            'ftransactions' => $ftransactions,
             'dynamictotals' => $dynamictotals
         ];
 
@@ -478,6 +496,9 @@ class FreportController extends Controller
         if (request('cust_id')) {
             $ftransactions = $ftransactions->where('people.cust_id', 'LIKE', '%' . request('cust_id') . '%');
         }
+        if(request('is_active')) {
+            $ftransactions = $ftransactions->where('people.active', request('is_active'));
+        }
         if (request('company')) {
             $com = request('company');
             $ftransactions = $ftransactions->where(function ($query) use ($com) {
@@ -510,5 +531,120 @@ class FreportController extends Controller
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $ftransactions;
+    }    
+
+    // calculate totals for the invoice breakdown summary(collection $deals)
+    private function calInvoiceSummaryFixedTotals($ftransactions)
+    {
+        $grand_total = 0;
+        $taxtotal = 0;
+        $subtotal = 0;
+        $total_gross_money = 0;
+        $total_gross_percent = 0;
+
+        foreach ($deals->get() as $deal) {
+            $grand_total += $deal->total;
+            if ($deal->gst) {
+                $taxtotal += $deal->gsttotal;
+            }
+            $subtotal += $deal->subtotal;
+            $total_gross_money += $deal->gross_money;
+            $total_gross_percent += $deal->gross_percent;
+        }
+
+        $totals = [
+            'grand_total' => $grand_total,
+            'taxtotal' => $taxtotal,
+            'subtotal' => $subtotal,
+            'total_gross_money' => $total_gross_money,
+            'total_gross_percent' => $total_gross_percent
+        ];
+
+        return $totals;
+    }
+
+    // calculate dynamic average and totals for invoice breakdown summary(collection $deals)
+    private function calInvoiceSummaryDynamicTotals($ftransactions)
+    {
+        $avg_grand_total = 0;
+        $avg_finaltotal = 0;
+        $avg_cost = 0;
+        $avg_gross_profit = 0;
+        $avg_gross_profit_percent = 0;
+        $avg_sales_qty = 0;
+        $avg_sales_avg_day = 0;
+        $avg_stock_in = 0;
+        $avg_delta = 0;
+
+        $total_grand_total = 0;
+        $total_taxtotal = 0;
+        $total_finaltotal = 0;
+        $total_cost = 0;
+        $total_gross_profit = 0;
+        $total_gross_profit_percent = 0;
+        $total_owe = 0;
+        $total_paid = 0;
+        $total_sales_qty = 0;
+        $total_stock_in = 0;
+        $total_delta = 0;
+        // placeholder
+        $total_sales_avg_day = 0;
+
+        $ftransactionscount = count($ftransactions);
+
+        foreach ($ftransactions as $ftransaction) {
+            $total_grand_total += $ftransaction->total;
+            $total_finaltotal += $ftransaction->finaltotal;
+            if ($ftransaction->gst) {
+                $total_taxtotal += $ftransaction->taxtotal;
+            }
+            $total_cost += $ftransaction->total_cost;
+            $total_gross_profit += $ftransaction->gross_profit;
+            $total_gross_profit_percent += $ftransaction->gross_profit_percent;
+            $total_owe += $ftransaction->owe;
+            $total_paid += $ftransaction->paid;
+            $total_sales_qty += $ftransaction->sales_qty;
+            $total_delta += $ftransaction->delta;
+            $total_stock_in += $ftransaction->stock_in;
+            $total_sales_avg_day += $ftransaction->sales_avg_day;
+        }
+
+        if ($ftransactionscount > 0) {
+            $avg_grand_total = $total_grand_total / $ftransactionscount;
+            $avg_finaltotal = $total_finaltotal / $ftransactionscount;
+            $avg_cost = $total_cost / $ftransactionscount;
+            $avg_gross_profit = $total_gross_profit / $ftransactionscount;
+            $avg_gross_profit_percent = $total_gross_profit_percent / $ftransactionscount;
+            $avg_sales_qty = $total_sales_qty / $ftransactionscount;
+            $avg_sales_avg_day = $total_sales_avg_day / $ftransactionscount;
+            $avg_delta = $total_delta / $ftransactionscount;
+            $avg_stock_in = $total_stock_in / $ftransactionscount;
+        }
+
+        $totals = [
+            'avg_grand_total' => $avg_grand_total,
+            'avg_finaltotal' => $avg_finaltotal,
+            'avg_cost' => $avg_cost,
+            'avg_gross_profit' => $avg_gross_profit,
+            'avg_gross_profit_percent' => $avg_gross_profit_percent,
+            'avg_sales_qty' => $avg_sales_qty,
+            'avg_sales_avg_day' => $avg_sales_avg_day,
+            'avg_delta' => $avg_delta,
+            'avg_stock_in' => $avg_stock_in,
+
+            'total_grand_total' => $total_grand_total,
+            'total_finaltotal' => $total_finaltotal,
+            'total_taxtotal' => $total_taxtotal,
+            'total_cost' => $total_cost,
+            'total_gross_profit' => $total_gross_profit,
+            'total_gross_profit_percent' => $total_gross_profit_percent,
+            'total_owe' => $total_owe,
+            'total_paid' => $total_paid,
+            'total_sales_qty' => $total_sales_qty,
+            'total_delta' => $total_delta,
+            'total_stock_in' => $total_stock_in
+        ];
+
+        return $totals;
     }    
 }
