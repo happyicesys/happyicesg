@@ -124,7 +124,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_active', [''=>'All', 'Yes'=>'Yes', 'No'=>'No', 'Pending'=>'Pending'], null,
+                {!! Form::select('is_active', [''=>'All', 'Yes'=>'Active', 'No'=>'Deactive', 'Pending'=>'Pending'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.is_active',
@@ -465,6 +465,9 @@
                     <td class="col-md-1 text-center">
                         @{{person.custcategory.name}}
                     </td>
+                    <td class="col-md-1 text-center">
+                        @{{person.transactions[0].delivery_date}}
+                    </td>                    
                     <td colspan="18"></td>
                 </tr>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">

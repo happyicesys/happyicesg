@@ -234,8 +234,6 @@ class VendingController extends Controller
 
         if($is_active) {
             $transactions = $transactions->where('people.active', $is_active);
-        }else {
-            $transactions = $transactions->where('people.active', 'Yes');
         }
 
         return $transactions;
@@ -643,11 +641,13 @@ class VendingController extends Controller
         $current_month = request('current_month') ? Carbon::createFromFormat('m-Y', request('current_month')) : null;
 
             $notAvailPeople = Person::with(['custcategory', 'transactions' => function($query) use ($current_month) {
-                                        $query->whereHas('deals.item', function($query) {
-                                                    $query->where('product_id', '051');
+                                                $query->whereHas('deals', function($query) {
+                                                    $query->whereHas('item', function($query) {
+                                                        $query->where('product_id', '051');
+                                                    });
                                                 })
-                                                ->whereDate('delivery_date', '<=', $current_month->endOfMonth()->toDateString())
-                                                ->limit(1);
+                                                ->whereDate('delivery_date', '<=', $current_month->startOfMonth()->toDateString())
+                                                ->latest('delivery_date');
                                     }])
                                     ->where(function($query) {
                                         $query->where('is_vending', 1)
