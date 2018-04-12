@@ -13,6 +13,12 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/personmaintenance/update', 'PersonController@updatePersonmaintenanceApi');
+Route::delete('/api/personmaintenance/{id}/delete', 'PersonController@destroyPersonmaintenanceApi');
+Route::post('/api/personmaintenance/create', 'PersonController@createPersonmaintenanceApi');
+Route::post('/api/personmaintenances', 'PersonController@getPersonmaintenancesApi');
+Route::get('/personmaintenance', 'PersonController@getPersonmaintenanceIndex');
+
 Route::post('/api/bom/currency/{bomcurrency_id}/rate', 'BomController@updateBomcurrencyRateApi');
 Route::get('/api/bom/currencies/all', 'BomController@getBomcurrenciesSelectApi');
 Route::post('/api/bom/currency/update', 'BomController@updateBomcurrencyApi');
@@ -234,6 +240,7 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::get('/api/people/options', 'PersonController@getPeopleOptionsApi');
 Route::post('/api/person/file/remove', 'PersonController@removeFileApi');
 Route::post('/person/files/update/{person_id}', 'PersonController@updateFilesName');
 Route::get('/api/person/files/{person_id}', 'PersonController@getFilesApi');

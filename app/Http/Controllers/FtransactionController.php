@@ -342,7 +342,7 @@ class FtransactionController extends Controller
                                                 WHEN people.is_gst_inclusive=0
                                                 THEN total*((100+people.gst_rate)/100)
                                                 ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS caltotal'),
                                     'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
@@ -354,9 +354,24 @@ class FtransactionController extends Controller
         $transactions_owe = clone $transactions;
         $transactions_paid = clone $transactions;
 
-        $transactions_total = $transactions->sum('total');
-        $transactions_owe = $transactions_owe->where('transactions.pay_status', 'Owe')->sum('total');
-        $transactions_paid = $transactions_paid->where('transactions.pay_status', 'Paid')->sum('total');
+        $transactions_total = $transactions->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                            CASE
+                                                            WHEN people.is_gst_inclusive=0
+                                                            THEN transactions.total*((100+people.gst_rate)/100)
+                                                            ELSE transactions.total
+                                                            END) ELSE transactions.total END), 2)'));
+        $transactions_owe = $transactions_owe->where('transactions.pay_status', 'Owe')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                                                                    CASE
+                                                                                                    WHEN people.is_gst_inclusive=0
+                                                                                                    THEN transactions.total*((100+people.gst_rate)/100)
+                                                                                                    ELSE transactions.total
+                                                                                                    END) ELSE transactions.total END), 2)'));
+        $transactions_paid = $transactions_paid->where('transactions.pay_status', 'Paid')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                                                                                        CASE
+                                                                                                        WHEN people.is_gst_inclusive=0
+                                                                                                        THEN transactions.total*((100+people.gst_rate)/100)
+                                                                                                        ELSE transactions.total
+                                                                                                        END) ELSE transactions.total END), 2)'));      
 
         $data = [
             'total_vend_amount' => $total_vend_amount,

@@ -105,7 +105,7 @@ function invoiceSummaryController($scope, $http) {
     $scope.monthend = moment().endOf('month').format('YYYY-MM-DD');
     $scope.search = {
         collection_from: $scope.monthstart,
-        collection_to: $scope.monthend,
+        collection_to: $scope.today,
         cust_id: '',
         company: '',
         person_id: '',

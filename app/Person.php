@@ -176,6 +176,11 @@ class Person extends Baum\Node
         return $this->hasMany('App\Bomvending');
     }
 
+    public function personmaintenances()
+    {
+        return $this->hasMany('App\Personmaintenance');
+    }
+
     // getter and setter
 
     public function setDobAttribute($date)

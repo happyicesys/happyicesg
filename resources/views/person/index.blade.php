@@ -83,16 +83,12 @@
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('active', 'Active', ['class'=>'control-label search-title']) !!}
-                            {!! Form::text('active', null,
-                                                            [
-                                                                'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.active',
-                                                                'placeholder'=>'Active',
-                                                                'ng-change'=>'searchDB()',
-                                                                'ng-model-options'=>'{ debounce: 500 }',
-                                                                'ng-init'=>'search.active = "Yes"'
-                                                            ])
-                            !!}
+                            {!! Form::select('active', [''=>'All', 'Yes'=>'Yes', 'No'=>'No'], null, ['id'=>'active',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.active',
+                                'ng-change' => 'searchDB()'
+                                ])
+                            !!}                            
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}

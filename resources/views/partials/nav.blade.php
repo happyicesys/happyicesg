@@ -47,6 +47,7 @@
                 $franchisee_access = false;
                 $bom_access = false;
                 $ecommerce_access = false;
+                $personmaintenance_access = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -71,6 +72,7 @@
                         $item_access = true;
                         $report_access = true;
                         $dtd_access = true;
+                        $personmaintenance_access = true;
                     }
 
                     if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin')) {
@@ -82,6 +84,7 @@
                         $detailrpt_access = true;
                         $dtd_access = true;
                         $ecommerce_access = true;
+                        $personmaintenance_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -104,6 +107,7 @@
                         $franchisee_access = true;
                         $bom_access = true;
                         $ecommerce_access = true;
+                        $personmaintenance_access = true;
                     }
                 }
             @endphp
@@ -185,6 +189,11 @@
                         <a href="/bom"><i class="fa fa-cogs "></i> {{ $BOM_TITLE }}</a>
                     </li>
                 @endif
+                @if($personmaintenance_access)
+                    <li class="{{ strpos(Request::path(), 'personmaintenance') !== false ? 'active' : '' }}">
+                        <a href="/personmaintenance"><i class="fa fa-wrench "></i> {{ $PERSONMAINTENANCE_TITLE }}</a>
+                    </li>
+                @endif                
 {{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>
