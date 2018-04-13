@@ -82,8 +82,8 @@
                             !!}
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                            {!! Form::label('active', 'Active', ['class'=>'control-label search-title']) !!}
-                            {!! Form::select('active', [''=>'All', 'Yes'=>'Yes', 'No'=>'No'], null, ['id'=>'active',
+                            {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('active', [''=>'All', 'Yes'=>'Active', 'No'=>'Inactive', 'Pending'=>'Pending'], null, ['id'=>'active',
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.active',
                                 'ng-change' => 'searchDB()'

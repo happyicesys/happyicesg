@@ -48,6 +48,7 @@
                 $bom_access = false;
                 $ecommerce_access = false;
                 $personmaintenance_access = false;
+                $jobcard_access = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -73,6 +74,7 @@
                         $report_access = true;
                         $dtd_access = true;
                         $personmaintenance_access = true;
+                        $jobcard_access = true;
                     }
 
                     if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin')) {
@@ -85,6 +87,7 @@
                         $dtd_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
+                        $jobcard_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -108,6 +111,7 @@
                         $bom_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
+                        $jobcard_access = true;
                     }
                 }
             @endphp
@@ -193,7 +197,12 @@
                     <li class="{{ strpos(Request::path(), 'personmaintenance') !== false ? 'active' : '' }}">
                         <a href="/personmaintenance"><i class="fa fa-wrench "></i> {{ $PERSONMAINTENANCE_TITLE }}</a>
                     </li>
-                @endif                
+                @endif     
+{{--                 @if($jobcard_access)
+                    <li class="{{ strpos(Request::path(), 'jobcard') !== false ? 'active' : '' }}">
+                        <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
+                    </li>
+                @endif    --}}                             
 {{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>

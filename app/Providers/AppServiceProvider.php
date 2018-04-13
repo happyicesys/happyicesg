@@ -60,6 +60,9 @@ class AppServiceProvider extends ServiceProvider
         // Maintenance
         view()->share('PERSONMAINTENANCE_TITLE', 'Maintenance Log');
 
+        // Job Cart
+        view()->share('JOBCARD_TITLE', 'Job Card');        
+
     }
 
     /**

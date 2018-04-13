@@ -13,6 +13,12 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::post('/api/job/update', 'JobController@updateJobApi');
+Route::delete('/api/job/{id}/delete', 'JobController@destroyJobApi');
+Route::post('/api/job/create', 'JobController@createJobApi');
+Route::post('/api/jobs', 'JobController@getJobsApi');
+Route::get('/job', 'JobController@getJobIndex');
+
 Route::post('/api/personmaintenance/update', 'PersonController@updatePersonmaintenanceApi');
 Route::delete('/api/personmaintenance/{id}/delete', 'PersonController@destroyPersonmaintenanceApi');
 Route::post('/api/personmaintenance/create', 'PersonController@createPersonmaintenanceApi');
