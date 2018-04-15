@@ -198,11 +198,11 @@
                         <a href="/personmaintenance"><i class="fa fa-wrench "></i> {{ $PERSONMAINTENANCE_TITLE }}</a>
                     </li>
                 @endif     
-{{--                 @if($jobcard_access)
+                @if($jobcard_access)
                     <li class="{{ strpos(Request::path(), 'jobcard') !== false ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
                     </li>
-                @endif    --}}                             
+                @endif                                
 {{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>

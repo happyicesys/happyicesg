@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Job;
 
 class JobController extends Controller
 {
@@ -24,82 +25,41 @@ class JobController extends Controller
     // retrieve person maintenance api()
     public function getJobsApi()
     {
-        $jobs = Job::with(['updater', 'creator', 'person']);
+        $jobs = Job::with(['updater', 'creator']);
 
-        // reading whether search input is filled
-        if (request('title')) {
-            $title = request('title');
-            $personmaintenances = $personmaintenances->where('title', 'LIKE', '%' . $title . '%');
-        }
-
-        if (request('person_id')) {
-            $person_id = request('person_id');
-            $personmaintenances = $personmaintenances->where('person_id', $person_id);
-        }
-
-        if (request('created_from')) {
-            $created_from = request('created_from');
-            $personmaintenances = $personmaintenances->whereDate('created_at', '>=', $created_from);
-        }
-
-        if (request('created_to')) {
-            $created_to = request('created_to');
-            $personmaintenances = $personmaintenances->whereDate('created_at', '<=', $created_to);
-        }
-
-        if (request('sortName')) {
-            $personmaintenances = $personmaintenances->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
-        } else {
-            $personmaintenances = $personmaintenances->latest();
-        }
-
-        $pageNum = request('pageNum') ? request('pageNum') : 100;
-        if ($pageNum == 'All') {
-            $personmaintenances = $personmaintenances->get();
-        } else {
-            $personmaintenances = $personmaintenances->paginate($pageNum);
-        }
+        $jobs = $this->jobFilter($jobs);
+        // $jobs = $jobs->get();
 
         $data = [
-            'personmaintenances' => $personmaintenances
+            'jobs' => $jobs
         ];
 
         return $data;
     }
 
     // create person maintenance()
-    public function createPersonmaintenanceApi()
+    public function createJobApi()
     {
-        $personmaintenance = Personmaintenance::create([
-            'person_id' => request('person_id'),
-            'title' => request('title'),
+        $job = Job::create([
+            'task_name' => request('task_name'),
+            'progress' => request('progress'),
             'remarks' => request('remarks'),
+            'task_date' => request('task_date'),
             'created_by' => auth()->user()->id,
-            'created_at' => request('created_at'),
-            'is_refund' => (request('refund_name') or request('refund_bank')) ? 1 : 0,
-            'refund_name' => request('refund_name'),
-            'refund_bank' => request('refund_bank'),
-            'refund_account' => request('refund_account'),
-            'refund_contact' => request('refund_contact')
         ]);
     }
 
     // update person maintenance()
-    public function updatePersonmaintenanceApi()
+    public function updateJobApi()
     {
         // dd(request()->all());
-        $personmaintenance = Personmaintenance::findOrFail(request('id'));
+        $job = Job::findOrFail(request('id'));
 
-        $personmaintenance->update([
-            'person_id' => request('person_id'),
-            'title' => request('title'),
+        $job->update([
+            'task_name' => request('task_name'),
+            'progress' => request('progress'),
             'remarks' => request('remarks'),
-            'created_at' => request('created_at'),
-            'is_refund' => (request('refund_name') or request('refund_bank')) ? 1 : 0,
-            'refund_name' => request('refund_name'),
-            'refund_bank' => request('refund_bank'),
-            'refund_account' => request('refund_account'),
-            'refund_contact' => request('refund_contact'),
+            'task_date' => request('task_date'),
             'updated_by' => auth()->user()->id
         ]);
     }    
@@ -112,9 +72,65 @@ class JobController extends Controller
     }
 
     // remove single personmaintenance api(integer id)
-    public function destroyPersonmaintenanceApi($id)
+    public function destroyJobApi($id)
     {
-        $personmaintenance = Personmaintenance::findOrFail($id);
-        $personmaintenance->delete();
+        $job = Job::findOrFail($id);
+        $job->delete();
+    }
+
+    // update verification of job()
+    public function verifyJobApi()
+    {
+        $job = Job::findOrFail(request('job_id'));
+        $job->is_verify = request('is_verify');
+        $job->save();
+    }
+
+    // jobs filter
+    private function jobFilter($jobs)
+    {
+        $task_name = request('task_name');
+        $from = request('from');
+        $to = request('to');
+        $progress = request('progress');
+        
+        // reading whether search input is filled
+        if($task_name) {
+            $jobs = $jobs->where('task_name', 'LIKE', '%' . $task_name . '%');
+        }
+
+        if($from) {
+            $jobs = $jobs->whereDate('task_date', '>=', $from);
+        }
+
+        if($to) {
+            $jobs = $jobs->whereDate('task_date', '<=', $to);
+        }        
+
+        if($progress) {
+            switch($progress) {
+                case 'In Progress':
+                    $jobs = $jobs->where('progress', '<', 100);
+                    break;
+                case 'Completed':
+                    $jobs = $jobs->where('progress', '=', 100);
+                    break;                    
+            }
+        }
+
+        if (request('sortName')) {
+            $jobs = $jobs->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        } else {
+            $jobs = $jobs->latest();
+        }
+
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        if ($pageNum == 'All') {
+            $jobs = $jobs->get();
+        } else {
+            $jobs = $jobs->paginate($pageNum);
+        }
+
+        return $jobs;
     }
 }

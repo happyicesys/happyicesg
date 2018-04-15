@@ -18,7 +18,7 @@ class CreateJobsTable extends Migration
             $table->integer('progress')->default(0);
             $table->text('remarks')->nullable();
             $table->datetime('task_date');
-            $table->boolean('is_verify')->default(0);
+            $table->boolean('is_verify')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->timestamps();

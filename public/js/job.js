@@ -9,7 +9,7 @@ var app = angular.module('app', [
 }]);
 
 
-function personmaintenanceController($scope, $http, $window) {
+function jobController($scope, $http, $window) {
     // init the variables
     $scope.alldata = [];
     $scope.totalCount = 0;
@@ -18,41 +18,41 @@ function personmaintenanceController($scope, $http, $window) {
     $scope.itemsPerPage = 100;
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
-    $scope.weekstart = moment().startOf('isoWeek').format("YYYY-MM-DD");
-    $scope.weekend = moment().endOf('isoWeek').format("YYYY-MM-DD");
+    $scope.today = moment().format("YYYY-MM-DD");
+    $scope.tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
     $scope.search = {
-        title: '',
-        person_id: '',
-        created_from: $scope.weekstart,
-        created_to: $scope.weekend,
+        task_name: '',
+        from: $scope.today,
+        to: $scope.tomorrow,
+        progress: '',
+        workers: '',
         pageNum: 100,
         sortName: '',
         sortBy: true
     }
     $scope.form = {
-        title: '',
-        person_id: '',
+        task_name: '',
+        task_date: '',
         remarks: '',
-        is_refund: '',
-        refund_name: '',
-        refund_bank: '',
-        refund_account: '',
-        refund_contact: '',
+        progress: '',
+        workers: ''
     }
     // init page load
     getPage(1, true);
-    fetchPeopleApi();
 
     angular.element(document).ready(function () {
         $('.select').select2();
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
     });
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable_personmaintenance').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_job').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "Maintenance Log" + now + ".xls");
+        saveAs(blob, "Job Card" + now + ".xls");
     };
 
     // switching page
@@ -72,16 +72,16 @@ function personmaintenanceController($scope, $http, $window) {
         getPage(1, false);
     }
 
-    $scope.createdFromChange = function (date) {
+    $scope.fromChange = function (date) {
         if (date) {
-            $scope.search.created_from = moment(new Date(date)).format('YYYY-MM-DD');
+            $scope.search.from = moment(new Date(date)).format('YYYY-MM-DD');
         }
         $scope.searchDB();
     }
 
-    $scope.createdToChange = function (date) {
+    $scope.toChange = function (date) {
         if (date) {
-            $scope.search.created_to = moment(new Date(date)).format('YYYY-MM-DD');
+            $scope.search.to = moment(new Date(date)).format('YYYY-MM-DD');
         }
         $scope.searchDB();
     }
@@ -106,53 +106,47 @@ function personmaintenanceController($scope, $http, $window) {
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
-        $http.post('/api/personmaintenances?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
-            if (data.personmaintenances.data) {
-                $scope.alldata = data.personmaintenances.data;
-                $scope.totalCount = data.personmaintenances.total;
-                $scope.currentPage = data.personmaintenances.current_page;
-                $scope.indexFrom = data.personmaintenances.from;
-                $scope.indexTo = data.personmaintenances.to;
+        $http.post('/api/jobs?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            if (data.jobs.data) {
+                $scope.alldata = data.jobs.data;
+                $scope.totalCount = data.jobs.total;
+                $scope.currentPage = data.jobs.current_page;
+                $scope.indexFrom = data.jobs.from;
+                $scope.indexTo = data.jobs.to;
             } else {
-                $scope.alldata = data.personmaintenances;
-                $scope.totalCount = data.personmaintenances.length;
+                $scope.alldata = data.jobs;
+                $scope.totalCount = data.jobs.length;
                 $scope.currentPage = 1;
                 $scope.indexFrom = 1;
-                $scope.indexTo = data.personmaintenances.length;
+                $scope.indexTo = data.jobs.length;
             }
-            $scope.All = data.personmaintenances.length;
+            $scope.All = data.jobs.length;
             $scope.spinner = false;
         });
     }
 
-    $scope.createPersonmaintenanceModal = function () {
+    $scope.createJobModal = function () {
         $scope.form = {
-            title: '',
-            person_id: '',
+            id: '',
+            task_name: '',
+            task_date: $scope.today,
             remarks: '',
-            is_refund: '',
-            refund_name: '',
-            refund_bank: '',
-            refund_account: '',
-            refund_contact: '',
-            created_at: moment().format('YYYY-MM-DD')
+            progress: '',
+            workers: ''
         }
     }
 
-    $scope.createPersonmaintenance = function () {
-        $http.post('/api/personmaintenance/create', $scope.form).success(function (data) {
+    $scope.createJob = function () {
+        $http.post('/api/job/create', $scope.form).success(function (data) {
             getPage(1);
 
             $scope.form = {
-                title: '',
-                person_id: '',
+                id: '',
+                task_name: '',
+                task_date: '',
                 remarks: '',
-                is_refund: '',
-                refund_name: '',
-                refund_bank: '',
-                refund_account: '',
-                refund_contact: '',
-                created_at: moment().format('YYYY-MM-DD')
+                progress: '',
+                workers: ''
             }
         }).error(function (data, status) {
             $scope.formErrors = data;
@@ -160,9 +154,9 @@ function personmaintenanceController($scope, $http, $window) {
     }
 
     $scope.removeEntry = function (id) {
-        var isConfirmDelete = confirm('Are you sure to DELETE this currency?');
+        var isConfirmDelete = confirm('Are you sure to DELETE this job card?');
         if (isConfirmDelete) {
-            $http.delete('/api/personmaintenance/' + id + '/delete').success(function (data) {
+            $http.delete('/api/job/' + id + '/delete').success(function (data) {
                 getPage(1);
             });
         } else {
@@ -170,51 +164,51 @@ function personmaintenanceController($scope, $http, $window) {
         }
     }
 
-    $scope.editPersonmaintenanceModal = function (personmaintenance) {
-        fetchSinglePersonmaintenance(personmaintenance);
+    $scope.editJobModal = function (job) {
+        fetchSingleJob(job);
     }
 
-    function fetchSinglePersonmaintenance(personmaintenance) {
+    function fetchSingleJob(job) {
         $scope.form = {
-            id: personmaintenance.id,
-            title: personmaintenance.title,
-            person_id: personmaintenance.person_id,
-            remarks: personmaintenance.remarks,
-            is_refund: personmaintenance.is_refund,
-            refund_name: personmaintenance.refund_name,
-            refund_bank: personmaintenance.refund_bank,
-            refund_account: personmaintenance.refund_account,
-            refund_contact: personmaintenance.refund_contact,
-            created_at: personmaintenance.created_at
+            id: job.id,
+            task_name: job.task_name,
+            task_date: job.task_date,
+            remarks: job.remarks,
+            progress: job.progress,
+            workers: ''
         }
     }
 
-    function fetchPeopleApi() {
-        $http.get('/api/people/options').success(function (data) {
-            $scope.people = data;
-        });
-    }
-
-    $scope.editPersonmaintenance = function () {
-        $http.post('/api/personmaintenance/update', $scope.form).success(function (data) {
+    $scope.editJob = function () {
+        $http.post('/api/job/update', $scope.form).success(function (data) {
             getPage(1);
         });
     }
 
     $scope.isFormValid = function () {
-        if ($scope.form.title || $scope.form.person_id || $scope.form.remarks) {
+        if ($scope.form.task_name) {
             return false;
         } else {
             return true;
         }
     }
 
-    $scope.createdAtChanged = function (date) {
+    $scope.taskDateChanged = function (date) {
         if (date) {
-            $scope.form.created_at = moment(new Date(date)).format('YYYY-MM-DD');
+            $scope.form.task_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
     }
 
+    $scope.verifyJob = function (event, job, is_verify) {
+        event.preventDefault();
+        $http.post('/api/job/verify', {
+            job_id: job.id,
+            is_verify: is_verify
+        }).success(function (data) {
+            getPage(1, false);
+        });
+    }    
+
 }
 
-app.controller('personmaintenanceController', personmaintenanceController);
+app.controller('jobController', jobController);

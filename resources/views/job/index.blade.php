@@ -1,4 +1,4 @@
-@inject('people', 'App\Person')
+@inject('users', 'App\User')
 
 @extends('template')
 @section('title')
@@ -12,7 +12,7 @@
         </a>
     </div>
 
-        <div ng-app="app" ng-controller="jobController">
+        <div ng-app="app" ng-controller="jobController" ng-cloak>
             <div class="panel panel-primary" >
                 <div class="panel-body">
                     <div class="row" style="margin-top: -15px;">
@@ -32,65 +32,74 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
-                            {!! Form::select('person_id',
-                                [''=>'All'] + $people::whereHas('profile', function($q){
-                                    $q->filterUserProfile();
-                                })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereIn('active', ['Yes', 'Pending'])->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
-                                null,
-                                [
-                                'id'=>'person_id',
-                                'class'=>'select form-control',
-                                'ng-model'=>'search.person_id',
-                                'ng-change'=>'searchDB()'
-                                ])
-                            !!}                                                            
-                        </div>                         
-                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('title', 'Affected Component', ['class'=>'control-label search-title']) !!}
-                            {!! Form::text('title', null,
+                            {!! Form::label('task_name', 'Task Name', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('task_name', null,
                                                             [
                                                                 'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.title',
+                                                                'ng-model'=>'search.task_name',
                                                                 'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Affected Component',
+                                                                'placeholder'=>'Task Name',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
-                        </div>  
+                        </div>                          
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('created_from', 'Created From', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('from', 'From', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
                                 <datepicker>
                                     <input
-                                        name = "created_from"
+                                        name = "from"
                                         type = "text"
                                         class = "form-control input-sm"
-                                        placeholder = "Created From"
-                                        ng-model = "search.created_from"
-                                        ng-change = "createdFromChange(search.created_from)"
+                                        placeholder = "From"
+                                        ng-model = "search.from"
+                                        ng-change = "fromChange(search.from)"
                                     />
                                 </datepicker>
-                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_from', search.created_from)"></span>
-                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_from', search.created_from)"></span>
+                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('from', search.from)"></span>
+                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('from', search.from)"></span>
                             </div>
                         </div>                        
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('created_to', 'Created To', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('to', 'To', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
                                 <datepicker>
                                     <input
-                                        name = "created_to"
+                                        name = "to"
                                         type = "text"
                                         class = "form-control input-sm"
-                                        placeholder = "Created To"
-                                        ng-model = "search.created_to"
-                                        ng-change = "createdToChange(search.created_to)"
+                                        placeholder = "To"
+                                        ng-model = "search.to"
+                                        ng-change = "createdToChange(search.to)"
                                     />
                                 </datepicker>
-                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_to', search.created_to)"></span>
-                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_to', search.created_to)"></span>
+                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('to', search.to)"></span>
+                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('to', search.to)"></span>
                             </div>
-                        </div>                                                                                                 
+                        </div>                         
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('progress', 'Progress', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('progress',
+                                [''=>'All', 'In Progress'=>'In Progress', 'Completed'=>'Completed'],
+                                null,
+                                [
+                                'id'=>'progress',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.progress',
+                                'ng-change'=>'searchDB()'
+                                ])
+                            !!}                                                            
+                        </div>      
+{{--                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('workers', 'Worker', ['class'=>'control-label search-title']) !!}
+                            <select name="workers" class="selectmultiple form-control" ng-model="search.workers" ng-change="searchDB()" multiple>
+                                <option value="">All</option>
+                                @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                <option value="{{$user->id}}">{{$user->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>   --}}                                                                    
+
+                                                                                                
                     </div>
 
                     <div class="row">
@@ -114,96 +123,80 @@
                         </div>
                     </div>
 
-                    <div class="table-responsive" id="exportable_personmaintenance" style="padding-top:20px;">
+                    <div class="table-responsive" id="exportable_job" style="padding-top:20px;">
                         <table class="table table-list-search table-hover table-bordered">
                             <tr style="background-color: #DDFDF8">
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
-                                <th class="col-md-2 text-center">
-                                    <a href="" ng-click="sortTable('cust_id')">
-                                    Customer
-                                    <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('task_date')">
+                                    Date
+                                    <span ng-if="search.sortName == 'task_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'task_date' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>                                
                                 <th class="col-md-2 text-center">
-                                    <a href="" ng-click="sortTable('title')">
-                                    Affected Component
-                                    <span ng-if="search.sortName == 'title' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'title' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <a href="" ng-click="sortTable('task_name')">
+                                    Task
+                                    <span ng-if="search.sortName == 'task_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'task_name' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-3 text-center">
                                     <a href="" ng-click="sortTable('remarks')">
-                                    Repair Details
+                                    Remarks
                                     <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('is_refund')">
-                                    Refund?
-                                    <span ng-if="search.sortName == 'is_refund' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'is_refund' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
-                                <th class="col-md-1 text-center">
+                                </th>      
+                                <th class="col-md-3 text-center">
                                     <a href="" ng-click="sortTable('created_by')">
-                                    Created By
+                                    Issue By
                                     <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'created_by' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
+                                </th>                                                                                        
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('created_at')">
-                                    Created At
-                                    <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_by')">
-                                    Updated By
-                                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <a href="" ng-click="sortTable('progress')">
+                                    Progress (%)
+                                    <span ng-if="search.sortName == 'progress' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'progress' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_at')">
-                                    Updated At
-                                    <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <a href="" ng-click="sortTable('is_verify')">
+                                    Validation
+                                    <span ng-if="search.sortName == 'is_verify' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'is_verify' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
-                                <tr dir-paginate="personmaintenance in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                                <tr dir-paginate="job in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                                     <td class="col-md-1 text-center">
                                         @{{ $index + indexFrom }}
                                     </td>
-                                    <td class="col-md-2 text-center">
-                                        <a href="/person/@{{personmaintenance.person.id}}/edit">
-                                            (@{{personmaintenance.person.cust_id}}) @{{personmaintenance.person.company}}
-                                        </a>
+                                    <td class="col-md-1 text-center">
+                                        @{{job.task_date}}
                                     </td>                                    
-                                    <td class="col-md-2 text-center">
-                                        @{{personmaintenance.title}}
+                                    <td class="col-md-2 text-left">
+                                        @{{job.task_name}}
                                     </td>
                                     <td class="col-md-3 text-left">
-                                        @{{personmaintenance.remarks}}
+                                        @{{job.remarks}}
                                     </td>
                                     <td class="col-md-1 text-center">
-                                        @{{personmaintenance.is_refund == 1 ? 'Yes' : 'No'}}
+                                        @{{job.creator.name}}
+                                    </td>                                                                          
+                                    <td class="col-md-1 text-center">
+                                        @{{job.progress}}
                                     </td>                                      
+                                    <td class="col-md-1 text-left">
+                                        <span class="col-md-12 col-sm-12 col-xs-12">@{{job.is_verify == null ? 'Pending' : (job.is_verify == 1 ? 'Verified' : 'Rejected')}}</span>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <button ng-if="job.is_verify != '1' && job.progress == '100'" class="btn btn-sm btn-success" ng-click="verifyJob($event, job, 1)"><i class="fa fa-check"></i> Verify</button>
+                                            <button ng-if="job.is_verify != '0' && job.progress == '100'" class="btn btn-sm btn-danger" ng-click="verifyJob($event, job, 0)"><i class="fa fa-cross"></i> Reject</button>
+                                        @endif
+                                    </td>                                                                     
                                     <td class="col-md-1 text-center">
-                                        @{{personmaintenance.creator.name}}
-                                    </td>                                      
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.created_at}}
-                                    </td>                                    
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.updater.name}}
-                                    </td>
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.updated_at}}
-                                    </td>                                    
-                                    <td class="col-md-1 text-center">
-                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
-                                        <button class="btn btn-danger btn-sm" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>
+                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
+                                        <button class="btn btn-danger btn-sm" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
@@ -218,102 +211,67 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="personmaintenance_modal" role="dialog">
+            <div class="modal fade" id="job_modal" role="dialog">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">
-                            @{{form.id ? 'Edit Maintenance Log' : 'Add Maintenance Log'}}
+                            @{{form.id ? 'Edit Job Card' : 'Add Job Card'}}
                         </h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
-                                        Customer
+                                        Task Name
                                     </label>
-{{--                                     <select ui-select2 class="form-control" name="formsearches[]" ng-model="form.person_id" data-placeholder="Select..">
-                                        @foreach($people::where('is_vending', 1)->orWhere('is_dvm', 1)->has('custcategory')->orderBy('cust_id', 'asc')->get() as $person)
-                                            <option value="{{$person->id}}">
-                                                {{$person->cust_id}} - {{$person->company}}
-                                                @if($person->custcategory)
-                                                    [{{$person->custcategory['name']}}]
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select> --}}
-                                    <ui-select ng-model="form.person_id">
+                                    <input type="text" name="task_name" class="form-control" ng-model="form.task_name">                                                                      
+                                </div>      
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Date
+                                    </label>
+                                    <datepicker>
+                                        <input
+                                            name = "task_date"
+                                            type = "text"
+                                            class = "form-control input-sm"
+                                            placeholder = "Date"
+                                            ng-model = "form.task_date"
+                                            ng-change = "taskDateChanged(form.task_date)"
+                                        />
+                                    </datepicker>                                    
+                                </div>   
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Remarks
+                                    </label>
+                                    <textarea name="remarks" rows="5" class="form-control" ng-model="form.remarks"></textarea>
+                                </div>    
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Progress (%)
+                                    </label>
+                                    <input type="text" name="progress" class="form-control" ng-model="form.progress" placeholder="Numbers only">
+                                </div>                                                            
+{{--                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Workers
+                                    </label>
+                                    <ui-select ng-model="form.workers">
                                         <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
                                         <ui-select-choices repeat="person.id as person in people | filter: $select.search">
                                             <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>                                                                        
-                                </div>      
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Created On
-                                    </label>
-                                    {{-- <input type="text" name="title" class="form-control" ng-model="form.created_at"> --}}
-                                    <datepicker>
-                                        <input
-                                            name = "created_at"
-                                            type = "text"
-                                            class = "form-control input-sm"
-                                            placeholder = "Created At"
-                                            ng-model = "form.created_at"
-                                            ng-change = "createdAtChanged(form.created_at)"
-                                        />
-                                    </datepicker>                                    
-                                </div>                                                          
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Affected Component
-                                    </label>
-                                    <input type="text" name="title" class="form-control" ng-model="form.title">
-                                </div>
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Repair Details
-                                    </label>
-                                    <textarea name="remarks" rows="5" class="form-control" ng-model="form.remarks"></textarea>
-                                </div>
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label>Need to refund? <input type="checkbox" ng-model="form.is_refund" ng-true-value="1" ng-false-value="0"></label>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row" ng-if="form.is_refund">
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Customer Name
-                                    </label>
-                                    <input type="text" name="title" class="form-control" ng-model="form.refund_name">
-                                </div>
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Customer Bank Name
-                                    </label>
-                                    <input type="text" name="title" class="form-control" ng-model="form.refund_bank">
-                                </div>
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Customer Bank Account#
-                                    </label>
-                                    <input type="text" name="title" class="form-control" ng-model="form.refund_account">
-                                </div>                                
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Customer Contact
-                                    </label>
-                                    <input type="text" name="title" class="form-control" ng-model="form.refund_contact">
-                                </div>                                
-                            </div>                            
+                                </div>  --}}                                                                                         
+                            </div>                           
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" ng-click="createPersonmaintenance()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
-                            <button type="button" class="btn btn-success" ng-click="editPersonmaintenance()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
+                            <button type="button" class="btn btn-success" ng-click="createJob()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
+                            <button type="button" class="btn btn-success" ng-click="editJob()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>

@@ -160,7 +160,7 @@ function personmaintenanceController($scope, $http, $window) {
     }
 
     $scope.removeEntry = function (id) {
-        var isConfirmDelete = confirm('Are you sure to DELETE this currency?');
+        var isConfirmDelete = confirm('Are you sure to DELETE this maintenance log?');
         if (isConfirmDelete) {
             $http.delete('/api/personmaintenance/' + id + '/delete').success(function (data) {
                 getPage(1);
