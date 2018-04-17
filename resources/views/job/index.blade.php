@@ -188,15 +188,23 @@
                                         @{{job.progress}}
                                     </td>                                      
                                     <td class="col-md-1 text-left">
-                                        <span class="col-md-12 col-sm-12 col-xs-12">@{{job.is_verify == null ? 'Pending' : (job.is_verify == 1 ? 'Verified' : 'Rejected')}}</span>
+                                        <span class="col-md-12 col-sm-12 col-xs-12" ng-style="{color: (job.is_verify == null ? '' : (job.is_verify == 1 ? 'green' : 'red'))}">
+                                            @{{job.is_verify == null ? 'Pending' : (job.is_verify == 1 ? 'Verified' : 'Rejected')}}
+                                        </span>
                                         @if(auth()->user()->hasRole('admin'))
                                             <button ng-if="job.is_verify != '1' && job.progress == '100'" class="btn btn-sm btn-success" ng-click="verifyJob($event, job, 1)"><i class="fa fa-check"></i> Verify</button>
                                             <button ng-if="job.is_verify != '0' && job.progress == '100'" class="btn btn-sm btn-danger" ng-click="verifyJob($event, job, 0)"><i class="fa fa-cross"></i> Reject</button>
                                         @endif
                                     </td>                                                                     
                                     <td class="col-md-1 text-center">
-                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
-                                        <button class="btn btn-danger btn-sm" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
+                                            <button class="btn btn-danger btn-sm" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>
+                                        @endif
+                                        @if(!auth()->user()->hasRole('admin'))
+                                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-if="job.is_verify != '1'" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
+                                            <button class="btn btn-danger btn-sm" ng-if="job.is_verify != '1' && (job.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>                                        
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
