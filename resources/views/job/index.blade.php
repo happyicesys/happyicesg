@@ -69,7 +69,7 @@
                                         class = "form-control input-sm"
                                         placeholder = "To"
                                         ng-model = "search.to"
-                                        ng-change = "createdToChange(search.to)"
+                                        ng-change = "toChange(search.to)"
                                     />
                                 </datepicker>
                                 <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('to', search.to)"></span>
@@ -286,6 +286,8 @@
                 </div>
             </div>
         </div>
+
+        {{-- @include('job.overtime') --}}
 
     <script src="/js/job.js"></script>
 @stop        
