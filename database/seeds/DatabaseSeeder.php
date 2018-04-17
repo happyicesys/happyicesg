@@ -35,8 +35,9 @@ class DatabaseSeeder extends Seeder
         $this->call(CurrencySeeder::class);
         $this->call(VendingSeeder::class);
         $this->call(RoleFranchiseeSeeder::class);
-        */
         $this->call(UserRoleAccountAdmin::class);
+         */
+        $this->call(SupervisorMsiaSeeder::class);
         Model::reguard();
     }
 }

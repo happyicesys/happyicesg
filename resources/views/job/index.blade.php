@@ -147,7 +147,7 @@
                                     <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>      
-                                <th class="col-md-3 text-center">
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('created_by')">
                                     Issue By
                                     <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>

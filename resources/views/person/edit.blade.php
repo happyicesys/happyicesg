@@ -340,6 +340,20 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
+            <h3 class="panel-title"><strong>Maintenance Log : {{$person->company}}</strong></h3>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            @include('person.maintenance_log')
+        </div>
+    </div>
+</div>
+{{-- divider --}}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
             <h3 class="panel-title"><strong>Notes : {{$person->company}}</strong></h3>
         </div>
     </div>

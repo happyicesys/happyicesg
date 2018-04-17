@@ -12,7 +12,7 @@
         </a>
     </div>
 
-        <div ng-app="app" ng-controller="personmaintenanceController">
+        <div ng-app="app" ng-controller="personmaintenanceController" ng-cloak>
             <div class="panel panel-primary" >
                 <div class="panel-body">
                     <div class="row" style="margin-top: -15px;">
@@ -168,6 +168,12 @@
                                     <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('complete_date')">
+                                    Solved On
+                                    <span ng-if="search.sortName == 'complete_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'complete_date' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>                                
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
@@ -200,7 +206,10 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.updated_at}}
-                                    </td>                                    
+                                    </td> 
+                                    <td class="col-md-1 text-center">
+                                        @{{personmaintenance.complete_date}}
+                                    </td>                                                                        
                                     <td class="col-md-1 text-center">
                                         <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
                                         <button class="btn btn-danger btn-sm" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>
@@ -249,23 +258,45 @@
                                             <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>                                                                        
-                                </div>      
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Created On
-                                    </label>
-                                    {{-- <input type="text" name="title" class="form-control" ng-model="form.created_at"> --}}
-                                    <datepicker>
-                                        <input
-                                            name = "created_at"
-                                            type = "text"
-                                            class = "form-control input-sm"
-                                            placeholder = "Created At"
-                                            ng-model = "form.created_at"
-                                            ng-change = "createdAtChanged(form.created_at)"
-                                        />
-                                    </datepicker>                                    
-                                </div>                                                          
+                                </div> 
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                            <label class="control-label">
+                                                Created On
+                                            </label>
+                                            <datepicker>
+                                                <input
+                                                    name = "created_at"
+                                                    type = "text"
+                                                    class = "form-control input-sm"
+                                                    placeholder = "Created At"
+                                                    ng-model = "form.created_at"
+                                                    ng-change = "createdAtChanged(form.created_at)"
+                                                />
+                                            </datepicker> 
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                            <label class="control-label">
+                                                Solved On
+                                            </label>
+                                            <datepicker>
+                                                <input
+                                                    name = "complete_date"
+                                                    type = "text"
+                                                    class = "form-control input-sm"
+                                                    placeholder = "Solved On"
+                                                    ng-model = "form.complete_date"
+                                                    ng-change = "completeDateChanged(form.complete_date)"
+                                                />
+                                            </datepicker> 
+                                            </div>
+                                        </div>                                                                       
+                                    </div> 
+                                </div>                                                              
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Affected Component

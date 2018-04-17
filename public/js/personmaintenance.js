@@ -33,6 +33,7 @@ function personmaintenanceController($scope, $http, $window) {
         title: '',
         person_id: '',
         remarks: '',
+        complete_date: '',
         is_refund: '',
         refund_name: '',
         refund_bank: '',
@@ -130,6 +131,7 @@ function personmaintenanceController($scope, $http, $window) {
             title: '',
             person_id: '',
             remarks: '',
+            complete_date: '',
             is_refund: '',
             refund_name: '',
             refund_bank: '',
@@ -147,6 +149,7 @@ function personmaintenanceController($scope, $http, $window) {
                 title: '',
                 person_id: '',
                 remarks: '',
+                complete_date: '',
                 is_refund: '',
                 refund_name: '',
                 refund_bank: '',
@@ -180,6 +183,7 @@ function personmaintenanceController($scope, $http, $window) {
             title: personmaintenance.title,
             person_id: personmaintenance.person_id,
             remarks: personmaintenance.remarks,
+            complete_date: personmaintenance.complete_date,
             is_refund: personmaintenance.is_refund,
             refund_name: personmaintenance.refund_name,
             refund_bank: personmaintenance.refund_bank,
@@ -214,6 +218,12 @@ function personmaintenanceController($scope, $http, $window) {
             $scope.form.created_at = moment(new Date(date)).format('YYYY-MM-DD');
         }
     }
+
+    $scope.completeDateChanged = function (date) {
+        if (date) {
+            $scope.form.complete_date = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+    }    
 
 }
 

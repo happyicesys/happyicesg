@@ -90,6 +90,17 @@
                         $jobcard_access = true;
                     }
 
+                    if(auth()->user()->hasRole('supervisor_msia')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $report_access = true;
+                        $ecommerce_access = true;
+                        $personmaintenance_access = true;
+                        $jobcard_access = true;
+                    }
+
                     if(auth()->user()->can_access_inv) {
                         $item_access = true;
                     }else {
@@ -194,7 +205,7 @@
                     </li>
                 @endif
                 @if($personmaintenance_access)
-                    <li class="{{ strpos(Request::path(), 'personmaintenance') !== false ? 'active' : '' }}">
+                    <li class="{{ strpos(Request::path(), 'maintenance') !== false ? 'active' : '' }}">
                         <a href="/personmaintenance"><i class="fa fa-wrench "></i> {{ $PERSONMAINTENANCE_TITLE }}</a>
                     </li>
                 @endif     
