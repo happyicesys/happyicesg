@@ -23,7 +23,7 @@ function jobController($scope, $http, $window) {
     $scope.search = {
         task_name: '',
         from: $scope.today,
-        to: $scope.tomorrow,
+        to: '',
         progress: '',
         workers: '',
         pageNum: 100,

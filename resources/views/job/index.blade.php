@@ -179,7 +179,7 @@
                                         @{{job.task_name}}
                                     </td>
                                     <td class="col-md-3 text-left">
-                                        @{{job.remarks}}
+                                        <pre>@{{job.remarks}}</pre>
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{job.creator.name}}
