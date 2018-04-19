@@ -71,7 +71,7 @@ class PersonController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active) {
+        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active or $request->franchisee_id) {
             $people = $this->searchPeopleDBFilter($people, $request);
         }else {
             if($request->sortName) {
@@ -84,11 +84,6 @@ class PersonController extends Controller
 
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
-
-        // add in franchisee checker
-        if(auth()->user()->hasRole('franchisee')) {
-            $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
-        }
 
         if($pageNum == 'All'){
             $people = $people->orderBy('people.created_at', 'desc')->get();
@@ -665,6 +660,7 @@ class PersonController extends Controller
         $contact = $request->contact;
         $active = $request->active;
         $profile_id = $request->profile_id;
+        $franchisee_id = $request->franchisee_id;
 
         if($cust_id){
             $people = $people->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
@@ -688,6 +684,12 @@ class PersonController extends Controller
         }
         if($profile_id) {
             $people = $people->where('profiles.id', $profile_id);
+        }
+                // add in franchisee checker
+        if(auth()->user()->hasRole('franchisee')) {
+            $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
+        }else if($franchisee_id) {
+            $people = $people->where('people.franchisee_id', $franchisee_id);
         }
 
         return $people;

@@ -76,7 +76,7 @@ class DetailRptController extends Controller
                                 );
 
         // reading whether search input is filled
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory){
+        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->delivery_from or $request->delivery_to or $request->driver or $request->profile or $request->custcategory or $request->franchisee_id){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
 
@@ -1830,6 +1830,7 @@ class DetailRptController extends Controller
         $custcategory = $request->custcategory;
         $bankin_from = $request->bankin_from;
         $bankin_to = $request->bankin_to;
+        $franchisee_id = $request->franchisee_id;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -1893,6 +1894,9 @@ class DetailRptController extends Controller
         }
         if($bankin_to) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '<=', $bankin_to);
+        }
+        if($franchisee_id) {
+            $transactions = $transactions->where('people.franchisee_id', $franchisee_id);
         }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');

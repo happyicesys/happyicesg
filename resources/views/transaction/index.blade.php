@@ -1,6 +1,7 @@
 @inject('profiles', 'App\Profile')
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
+@inject('franchisees', 'App\User')
 
 @extends('template')
 @section('title')
@@ -94,78 +95,87 @@
                     </div>
                     </div>
                     <div class="row">
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
-                            [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.pay_status',
-                            'ng-change'=>'searchDB()'
-                            ])
-                        !!}
-                    </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
+                                [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.pay_status',
+                                'ng-change'=>'searchDB()'
+                                ])
+                            !!}
+                        </div>
 
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('updated_by', null,
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('updated_by', null,
+                                                                [
+                                                                    'class'=>'form-control input-sm',
+                                                                    'ng-model'=>'search.updated_by',
+                                                                    'ng-change'=>'searchDB()',
+                                                                    'placeholder'=>'Last Modified By',
+                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
+                            <div class="input-group">
+                                <datepicker>
+                                    <input
+                                        type = "text"
+                                        class = "form-control input-sm"
+                                        placeholder = "Last Modify Date"
+                                        ng-model = "search.updated_at"
+                                        ng-change = "dateChange2(search.updated_at)"
+                                    />
+                                </datepicker>
+                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
+                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('driver', null,
                                                             [
+                                                                'id'=>'updated_at',
                                                                 'class'=>'form-control input-sm',
-                                                                'ng-model'=>'search.updated_by',
+                                                                'ng-model'=>'search.driver',
                                                                 'ng-change'=>'searchDB()',
-                                                                'placeholder'=>'Last Modified By',
+                                                                'placeholder'=>'Delivered By',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
-                                                            ])
-                        !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
-                        <div class="input-group">
-                            <datepicker>
-                                <input
-                                    type = "text"
-                                    class = "form-control input-sm"
-                                    placeholder = "Last Modify Date"
-                                    ng-model = "search.updated_at"
-                                    ng-change = "dateChange2(search.updated_at)"
-                                />
-                            </datepicker>
-                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
-                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
+                                                            ]) !!}
                         </div>
                     </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('driver', null,
-                                                        [
-                                                            'id'=>'updated_at',
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.driver',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Delivered By',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                        ]) !!}
-                    </div>
-                    </div>
                     <div class="row">
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
-                            [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.custcategory',
-                            'ng-change'=>'searchDB()'
-                            ])
-                        !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.profile_id',
-                            'ng-change' => 'searchDB()'
-                            ])
-                        !!}
-                    </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
+                                [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.custcategory',
+                                'ng-change'=>'searchDB()'
+                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.profile_id',
+                                'ng-change' => 'searchDB()'
+                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('franchisee_id', [''=>'All']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.franchisee_id',
+                                'ng-change' => 'searchDB()'
+                                ])
+                            !!}
+                        </div>                    
                     </div>
                 </div>
                 <div class="row">
