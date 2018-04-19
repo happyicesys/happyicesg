@@ -97,6 +97,7 @@ class VendingController extends Controller
                 $transaction->del_postcode = $person->del_postcode;
                 $transaction->bill_address = $person->bill_address;
                 $transaction->total = -$person->subtotal_payout;
+                $transaction->is_vending_generate = 1;
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date));
                 $remarkStr = '';
                 if($person->is_vending) {

@@ -148,10 +148,14 @@
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
                                 <div style="font-size: 130%;" class="text-center">
-                                    @if($person->profile->gst)
-                                    <strong>DO/ TAX INVOICE</strong>
+                                    @if($transaction->is_vending_generate)
+                                        <strong>SALES REPORT</strong>
                                     @else
-                                    <strong>DO/ INVOICE</strong>
+                                        @if($person->profile->gst)
+                                        <strong>DO/ TAX INVOICE</strong>
+                                        @else
+                                        <strong>DO/ INVOICE</strong>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -245,10 +249,18 @@
                                 Description
                             </th>
                             <th class="col-xs-2 text-center">
-                                Quantity
+                                @if($transaction->is_vending_generate)
+                                    Sales
+                                @else
+                                    Quantity
+                                @endif
                             </th>
                             <th class="col-xs-1 text-center">
-                                Price/Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                                @if($transaction->is_vending_generate)
+                                    Percent
+                                @else
+                                    Price/Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                                @endif                                
                             </th>
                             <th class="col-xs-1 text-center">
                                 Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
