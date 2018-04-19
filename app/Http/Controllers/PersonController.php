@@ -688,7 +688,9 @@ class PersonController extends Controller
                 // add in franchisee checker
         if(auth()->user()->hasRole('franchisee')) {
             $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
-        }else if($franchisee_id) {
+        } else if (auth()->user()->hasRole('subfranchisee')) {
+            $people = $people->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
+        } else if($franchisee_id) {
             $people = $people->where('people.franchisee_id', $franchisee_id);
         }
 

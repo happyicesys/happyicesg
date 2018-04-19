@@ -270,6 +270,8 @@ class Person extends Baum\Node
 
         if(auth()->user()->hasRole('franchisee')) {
             $people = Person::where('franchisee_id', auth()->user()->id)->latest()->get();
+        }else if (auth()->user()->hasRole('subfranchisee')) {
+            $people = Person::where('franchisee_id', auth()->user()->master_franchisee_id)->latest()->get();
         }else {
             $people = Person::all();
         }

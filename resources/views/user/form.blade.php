@@ -1,4 +1,5 @@
 @inject('roles', 'App\Role')
+@inject('franchisees', 'App\User')
 
 <div class="row">
     <div class="col-md-4 col-sm-6 col-xs-12">
@@ -70,6 +71,16 @@
     </div>
 @endif
 
+@if($user->hasRole('subfranchisee'))
+    <div class="form-group">
+        {!! Form::label('master_franchisee_id', 'Master Franchisee', ['class'=>'control-label search-title']) !!}
+        {!! Form::select('master_franchisee_id', [''=>'All']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(id,user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'master_franchisee_id',
+            'class'=>'select form-control'
+            ])
+        !!}
+    </div> 
+@endif
+
 <div class="form-group">
     {!! Form::checkbox('can_access_inv', $user->can_access_inv) !!}
     {!! Form::label('can_access_inv', 'Can Access Inventory', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
@@ -77,7 +88,7 @@
 
 @section('footer')
 <script>
-    $('#role').select2({
+    $('.select').select2({
         tags:false,
         placeholder: 'Select...'
     });

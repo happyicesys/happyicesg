@@ -65,6 +65,13 @@
                         $franchisee_access = true;
                     }
 
+                    if(auth()->user()->hasRole('subfranchisee')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $franchisee_access = true;
+                    }                    
+
                     if(auth()->user()->hasRole('driver')) {
                         $access = true;
                         $transaction_access = true;

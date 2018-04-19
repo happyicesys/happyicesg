@@ -116,6 +116,10 @@ class FreportController extends Controller
             $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
         }
 
+        if(auth()->user()->hasRole('subfranchisee')) {
+            $people = $people->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
+        }
+
         // showing is active only
         $people = $people->where('people.active', 'Yes');
 

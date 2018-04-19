@@ -32,7 +32,7 @@ class User extends Model implements AuthenticatableContract,
     protected $fillable = [
         'name', 'email', 'password',
         'username', 'contact', 'can_access_inv', 'user_code', 'company_name',
-        'bill_address', 'is_active'
+        'bill_address', 'is_active', 'master_franchisee_id'
     ];
 
     /**
@@ -127,6 +127,8 @@ class User extends Model implements AuthenticatableContract,
 
         if(auth()->user()->hasRole('franchisee')) {
             array_push($userIdArr, auth()->user()->id);
+        }else if(auth()->user()->hasRole('subfranchisee')) {
+            array_push($userIdArr, auth()->user()->master_franchisee_id);
         }else {
             $users = User::all();
             foreach($users as $user) {

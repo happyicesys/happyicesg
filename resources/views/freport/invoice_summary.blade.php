@@ -89,6 +89,7 @@
                             ->whereHas('profile', function($q) {
                                 $q->filterUserProfile();
                             })
+                            ->filterFranchiseePeople()
                             ->orderBy('cust_id')
                             ->pluck('full', 'id')
                             ->all(),

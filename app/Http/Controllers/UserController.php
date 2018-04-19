@@ -72,6 +72,7 @@ class UserController extends Controller
 
     public function update(UserRequest $request, $id)
     {
+        // dd($request->all());
         $user = User::findOrFail($id);
         $request->merge(array('can_access_inv' => request()->has('can_access_inv') ? 1 : 0));
 
@@ -93,7 +94,7 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
         $this->assignType($user);
-        return redirect('user');
+        return redirect()->action('UserController@edit', ['id' => $user->id]);        
     }
 
     public function destroy($id)

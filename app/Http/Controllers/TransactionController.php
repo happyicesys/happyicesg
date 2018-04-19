@@ -1490,7 +1490,9 @@ class TransactionController extends Controller
         // add in franchisee checker
         if (auth()->user()->hasRole('franchisee')) {
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->id]);
-        }else if(request('franchisee_id')) {
+        } else if(auth()->user()->hasRole('subfranchisee')) {
+            $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
+        } else if(request('franchisee_id')) {
             $transactions = $transactions->where('people.franchisee_id', request('franchisee_id'));
         }        
        

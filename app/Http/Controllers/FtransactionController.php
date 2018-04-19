@@ -81,6 +81,10 @@ class FtransactionController extends Controller
             $ftransactions = $ftransactions->where('x.franchisee_id', auth()->user()->id);
         }
 
+        if(auth()->user()->hasRole('subfranchisee')) {
+            $ftransactions = $ftransactions->where('x.franchisee_id', auth()->user()->master_franchisee_id);
+        }
+
         $totals = $this->calDBFtransactionTotal($ftransactions);
         $dynamictotals = $this->calDBDynamicFtransactionTotal($ftransactions);
 
