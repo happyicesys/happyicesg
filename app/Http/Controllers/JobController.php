@@ -116,6 +116,8 @@ class JobController extends Controller
                     $jobs = $jobs->where('progress', '=', 100);
                     break;                    
             }
+        }else {
+            $jobs = $jobs->orWhere('progress', '<', 100);
         }
 
         if (request('sortName')) {
