@@ -42,10 +42,17 @@
     {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
     {!! Form::close() !!}
 
+    {!! Form::model($transaction, ['id'=>'new_transaction', 'method'=>'POST', 'action'=>['TransactionController@store']]) !!}
+        <input type="text" class="hidden" name="person_id" value="{{$transaction->person->id}}">
+    {!! Form::close() !!}    
+
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                {!! Form::submit('Log History', ['class'=> 'btn btn-warning pull-right', 'form'=>'log']) !!}
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
+                    {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
+                </div>
             </div>
         </div>
             <div class="row">
