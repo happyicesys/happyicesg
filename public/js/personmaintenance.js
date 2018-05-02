@@ -137,7 +137,7 @@ function personmaintenanceController($scope, $http, $window) {
             refund_bank: '',
             refund_account: '',
             refund_contact: '',
-            created_at: moment().format('YYYY-MM-DD') 
+            created_at: moment().format('YYYY-MM-DD HH:mm') 
         }
     }
 
@@ -223,7 +223,17 @@ function personmaintenanceController($scope, $http, $window) {
         if (date) {
             $scope.form.complete_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
-    }    
+    }  
+    
+    $scope.verifyPersonmaintenance = function (event, personmaintenance, is_verify) {
+        event.preventDefault();
+        $http.post('/api/personmaintenance/verify', {
+            personmaintenance_id: personmaintenance.id,
+            is_verify: is_verify
+        }).success(function (data) {
+            getPage(1, false);
+        });
+    }      
 
 }
 

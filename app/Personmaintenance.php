@@ -10,7 +10,7 @@ class Personmaintenance extends Model
     protected $fillable = [
         'person_id', 'title', 'remarks', 'updated_by', 'is_refund',
         'refund_name', 'refund_bank', 'refund_contact', 'created_by', 'refund_account',
-        'created_at', 'complete_date'
+        'created_at', 'complete_date', 'is_verify'
     ];
 
     // relationship

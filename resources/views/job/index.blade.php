@@ -192,8 +192,10 @@
                                             @{{job.is_verify == null ? 'Pending' : (job.is_verify == 1 ? 'Verified' : 'Rejected')}}
                                         </span>
                                         @if(auth()->user()->hasRole('admin'))
+                                        <span class="col-md-12 col-sm-12 col-xs-12">
                                             <button ng-if="job.is_verify != '1' && job.progress == '100'" class="btn btn-sm btn-success" ng-click="verifyJob($event, job, 1)"><i class="fa fa-check"></i> Verify</button>
                                             <button ng-if="job.is_verify != '0' && job.progress == '100'" class="btn btn-sm btn-danger" ng-click="verifyJob($event, job, 0)"><i class="fa fa-cross"></i> Reject</button>
+                                        </span>
                                         @endif
                                     </td>                                                                     
                                     <td class="col-md-1 text-center">

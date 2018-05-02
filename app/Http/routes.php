@@ -20,6 +20,7 @@ Route::post('/api/job/create', 'JobController@createJobApi');
 Route::post('/api/jobs', 'JobController@getJobsApi');
 Route::get('/jobcard', 'JobController@getJobIndex');
 
+Route::post('/api/personmaintenance/verify', 'PersonController@verifyPersonmaintenanceApi');
 Route::post('/api/personmaintenance/update', 'PersonController@updatePersonmaintenanceApi');
 Route::delete('/api/personmaintenance/{id}/delete', 'PersonController@destroyPersonmaintenanceApi');
 Route::post('/api/personmaintenance/create', 'PersonController@createPersonmaintenanceApi');

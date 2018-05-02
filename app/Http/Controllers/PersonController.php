@@ -578,6 +578,8 @@ class PersonController extends Controller
             $personmaintenances = $personmaintenances->whereDate('created_at', '<=', $created_to);
         }         
 
+        $personmaintenances = $personmaintenances->orWhere('is_verify', null);
+
         if (request('sortName')) {
             $personmaintenances = $personmaintenances->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         } else {
@@ -606,7 +608,7 @@ class PersonController extends Controller
             'title' => request('title'),
             'remarks' => request('remarks'),
             'created_by' => auth()->user()->id,
-            'created_at' => request('created_at'),
+            'created_at' => Carbon::parse(request('created_at')),
             'complete_date' => request('complete_date'),
             'is_refund' => (request('refund_name') or request('refund_bank')) ? 1 : 0,
             'refund_name' => request('refund_name'),
@@ -635,6 +637,14 @@ class PersonController extends Controller
             'refund_contact' => request('refund_contact'),
             'updated_by' => auth()->user()->id
         ]);
+    }   
+    
+    // update verification of job()
+    public function verifyPersonmaintenanceApi()
+    {
+        $personmaintenance = Personmaintenance::findOrFail(request('personmaintenance_id'));
+        $personmaintenance->is_verify = request('is_verify');
+        $personmaintenance->save();
     }    
 
     // get all people api()

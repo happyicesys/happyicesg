@@ -173,7 +173,13 @@
                                     Solved On
                                     <span ng-if="search.sortName == 'complete_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'complete_date' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
+                                </th>    
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('is_verify')">
+                                    Validation
+                                    <span ng-if="search.sortName == 'is_verify' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'is_verify' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>                                                            
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
@@ -209,10 +215,27 @@
                                     </td> 
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.complete_date}}
-                                    </td>                                                                        
+                                    </td>   
+                                    <td class="col-md-1 text-left">
+                                        <span class="col-md-12 col-sm-12 col-xs-12" ng-style="{color: (personmaintenance.is_verify == null ? '' : (personmaintenance.is_verify == 1 ? 'green' : 'red'))}">
+                                            @{{personmaintenance.is_verify == null ? 'Pending' : (personmaintenance.is_verify == 1 ? 'Verified' : 'Rejected')}}
+                                        </span>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <span class="col-md-12 col-sm-12 col-xs-12">
+                                            <button ng-if="personmaintenance.is_verify != '1'" class="btn btn-sm btn-success" ng-click="verifyPersonmaintenance($event, personmaintenance, 1)"><i class="fa fa-check"></i> Verify</button>
+                                            <button ng-if="personmaintenance.is_verify != '0'" class="btn btn-sm btn-danger" ng-click="verifyPersonmaintenance($event, personmaintenance, 0)"><i class="fa fa-cross"></i> Reject</button>
+                                            </span>
+                                        @endif
+                                    </td>                                                                                                            
                                     <td class="col-md-1 text-center">
-                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
-                                        <button class="btn btn-danger btn-sm" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
+                                            <button class="btn btn-danger btn-sm" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>
+                                        @endif
+                                        @if(!auth()->user()->hasRole('admin'))
+                                            <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-if="personmaintenance.is_verify != '1'" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
+                                            <button class="btn btn-danger btn-sm" ng-if="personmaintenance.is_verify != '1' && (personmaintenance.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>                                        
+                                        @endif                                        
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">

@@ -117,8 +117,9 @@ class JobController extends Controller
                     break;                    
             }
         }else {
-            $jobs = $jobs->orWhere('progress', '<', 100);
+            $jobs = $jobs->orWhere('progress', '<', 100)->orWhere('is_verify', null);
         }
+
 
         if (request('sortName')) {
             $jobs = $jobs->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
