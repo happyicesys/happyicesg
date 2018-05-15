@@ -1563,6 +1563,7 @@ class TransactionController extends Controller
     private function vendingMachineValidation($request, $transaction_id)
     {
         $transaction = Transaction::findOrFail($transaction_id);
+        // dd($transaction->person->toArray());
         if($transaction->person->is_vending === 1) {
             $this->validate($request, [
                 'digital_clock' => 'integer',
@@ -1582,6 +1583,9 @@ class TransactionController extends Controller
                 'sales_count.required' => 'Sales Count (pcs) must be filled',
                 'sales_amount.required' => 'Sales Amount ($) must be filled'
             ]);
+            if($request->sales_count <= 0 and $request->sales_amount <= 0) {
+                Flash::error('Sales count and Sales amount must be greater than 0');
+            }
         }
     }
 
