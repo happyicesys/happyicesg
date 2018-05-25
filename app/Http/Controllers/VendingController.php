@@ -108,7 +108,6 @@ class VendingController extends Controller
                 $transaction->transremark = $remarkStr;
                 $transaction->is_required_analog = 0;
                 $transaction->save();
-
                 array_push($transactionsid, $transaction->id);
 
                 $this->createVendingDeals($transaction->id, $person);
