@@ -705,23 +705,64 @@ class DetailRptController extends Controller
         $pay_methods = $request->pay_methods;
         $profile_ids = $request->profile_ids;
         $remarks = $request->remarks;
+        $submitbtn = $request->submitbtn;
+
         if($checkboxes) {
             foreach($checkboxes as $index => $checkbox) {
                 if($bankin_dates[$index] !== '' or $remarks[$index] !== '') {
-                    $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
-                    // dd($exist->toArray(), Carbon::parse($paid_ats[$index]), $profile_ids[$index], $request->all());
-                    if(! $exist) {
-                        $paysummaryinfo = new Paysummaryinfo();
-                        $paysummaryinfo->paid_at = $paid_ats[$index];
-                        $paysummaryinfo->pay_method = $pay_methods[$index];
-                        $paysummaryinfo->profile_id = $profile_ids[$index];
-                    }else {
-                        $paysummaryinfo = $exist;
+
+                    switch($submitbtn) {
+                        case 'submit':
+                            $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
+                            if (!$exist) {
+                                $paysummaryinfo = new Paysummaryinfo();
+                                $paysummaryinfo->paid_at = $paid_ats[$index];
+                                $paysummaryinfo->pay_method = $pay_methods[$index];
+                                $paysummaryinfo->profile_id = $profile_ids[$index];
+                            } else {
+                                $paysummaryinfo = $exist;
+                            }
+                            $paysummaryinfo->remark = $remarks[$index];
+                            $paysummaryinfo->bankin_date = $bankin_dates[$index] ? Carbon::parse($bankin_dates[$index]) : null;
+                            $paysummaryinfo->user_id = Auth::user()->id;
+                            $paysummaryinfo->save();
+                            break;
+                        
+                        case 'verify':
+                            $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
+                            if (!$exist) {
+                                $paysummaryinfo = new Paysummaryinfo();
+                                $paysummaryinfo->paid_at = $paid_ats[$index];
+                                $paysummaryinfo->pay_method = $pay_methods[$index];
+                                $paysummaryinfo->profile_id = $profile_ids[$index];
+                            } else {
+                                $paysummaryinfo = $exist;
+                            }
+                            $paysummaryinfo->remark = $remarks[$index];
+                            $paysummaryinfo->bankin_date = $bankin_dates[$index] ? Carbon::parse($bankin_dates[$index]) : null;
+                            $paysummaryinfo->user_id = Auth::user()->id;
+                            $paysummaryinfo->is_verified = 1;
+                            $paysummaryinfo->save();
+                            break;
+
+                        case 'reject':
+                            $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
+                            if (!$exist) {
+                                $paysummaryinfo = new Paysummaryinfo();
+                                $paysummaryinfo->paid_at = $paid_ats[$index];
+                                $paysummaryinfo->pay_method = $pay_methods[$index];
+                                $paysummaryinfo->profile_id = $profile_ids[$index];
+                            } else {
+                                $paysummaryinfo = $exist;
+                            }
+                            $paysummaryinfo->remark = $remarks[$index];
+                            $paysummaryinfo->bankin_date = $bankin_dates[$index] ? Carbon::parse($bankin_dates[$index]) : null;
+                            $paysummaryinfo->user_id = Auth::user()->id;
+                            $paysummaryinfo->is_verified = 0;
+                            $paysummaryinfo->save();
+                            break;                            
                     }
-                    $paysummaryinfo->remark = $remarks[$index];
-                    $paysummaryinfo->bankin_date = $bankin_dates[$index] ? Carbon::parse($bankin_dates[$index]) : null;
-                    $paysummaryinfo->user_id = Auth::user()->id;
-                    $paysummaryinfo->save();
+
                 }
             }
         }
