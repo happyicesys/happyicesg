@@ -392,6 +392,7 @@ var app = angular.module('app', [
             profile_id: '',
             payment_from: $scope.today,
             payment_to: $scope.today,
+            pay_method: '',
             sortBy: true,
             sortName: '',
             itemsPerPage: 100

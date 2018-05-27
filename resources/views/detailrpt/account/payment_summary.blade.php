@@ -99,6 +99,19 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('pay_method', 'Pay Method', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('pay_method', [''=>'All', 'cash' => 'Cash', 'cheque' => 'Cheque', 'tt' => 'T/t'],
+                    null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.pay_method',
+                    'ng-change'=>'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>        
         <div class="col-md-4 col-xs-6 text-right">
             <div class="row">
             <label for="display_num">Display</label>
