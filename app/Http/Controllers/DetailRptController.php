@@ -2075,13 +2075,16 @@ class DetailRptController extends Controller
     }
 
     // retrieve total amount and qty for the items product detail daily(Collection $items)
-    private function calItemTotals($query)
+    private function calItemTotals($items)
     {
-        $query_total = clone $query;
-        $query_qty = clone $query;
-
-        $total_amount = $query_total->sum('amount');
-        $total_qty = $query_qty->sum('qty');
+        $total_amount = 0;
+        $total_qty = 0;
+        
+        foreach($items as $item) {
+            $total_amount += $item->amount;
+            $total_qty += $item->qty;
+        }
+        
         $totals = [
             'total_amount' => $total_amount,
             'total_qty' => $total_qty

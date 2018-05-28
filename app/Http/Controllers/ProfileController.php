@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Laracasts\Flash\Flash;
 
 use App\Profile;
+use App\Person;
 
 class ProfileController extends Controller
 {
@@ -99,7 +100,7 @@ class ProfileController extends Controller
 
         // validate is gst rate filled
         if(request()->has('gst')) {
-            if(! request('gst_rate')) {
+            if(request('gst_rate') == null) {
                 Flash::error('Please fill in the GST rate');
                 return redirect()->action('ProfileController@edit', $profile->id);
             }
@@ -109,6 +110,16 @@ class ProfileController extends Controller
         $is_gst_inclusive = request()->has('is_gst_inclusive') ? 1 : 0;
         request()->merge(array('gst' => $gst));
         request()->merge(array('is_gst_inclusive' => $is_gst_inclusive));
+
+        if ((request('gst_rate') != $profile->gst_rate) or (request('gst') != $profile->gst) or (request('is_gst_inclusive') != $profile->is_gst_inclusive)) {
+            $people = Person::where('profile_id', $profile->id)->get();
+
+            foreach ($people as $person) {
+                $person->is_gst_inclusive = request('is_gst_inclusive');
+                $person->gst_rate = request('gst_rate');
+                $person->save();
+            }
+        }        
 
         if($profile->is_gst_inclusive != $is_gst_inclusive ){
             $people = $profile->people;

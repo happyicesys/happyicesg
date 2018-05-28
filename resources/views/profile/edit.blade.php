@@ -12,7 +12,7 @@ Company Profile
     </div>
 
     <div class="panel-body">
-        {!! Form::model($profile,['method'=>'PATCH','action'=>['ProfileController@update', $profile->id]]) !!}
+        {!! Form::model($profile,['method'=>'PATCH','action'=>['ProfileController@update', $profile->id], 'onsubmit'=>'return confirm("Any changes to the gst rate will override the customers profile, still proceed?")']) !!}
 
             @include('profile.form')
 

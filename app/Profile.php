@@ -37,14 +37,14 @@ class Profile extends Model
     }
 
     // getter and setter
-    public function setGstRateAttribute($value)
+/*     public function setGstRateAttribute($value)
     {
-        if($value){
+        if($value ){
             $this->attributes['gst_rate'] = $value;
         }else{
             $this->attributes['gst_rate'] = null;
         }
-    }
+    } */
 
     // scopes
     // normal builder
