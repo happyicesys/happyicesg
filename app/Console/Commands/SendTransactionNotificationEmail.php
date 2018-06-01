@@ -59,8 +59,8 @@ class SendTransactionNotificationEmail extends Command
                                     'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     DB::raw('ROUND((
-                                                CASE WHEN profiles.gst=1 THEN (
-                                                    CASE WHEN profiles.is_gst_inclusive=0 THEN total*((100+profiles.gst_rate)/100)
+                                                CASE WHEN transactions.gst=1 THEN (
+                                                    CASE WHEN transactions.is_gst_inclusive=0 THEN total*((100+transactions.gst_rate)/100)
                                                     ELSE transactions.total
                                                     END)
                                                 ELSE transactions.total
@@ -68,7 +68,7 @@ class SendTransactionNotificationEmail extends Command
                                                 CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee
                                                 ELSE 0
                                                 END), 2) AS total'),
-                                    'profiles.id as profile_id', 'profiles.gst', 'profiles.is_gst_inclusive', 'profiles.gst_rate',
+                                    'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
 

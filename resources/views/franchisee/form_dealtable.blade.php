@@ -118,7 +118,7 @@
                                 <strong>@{{delivery | currency: ""}}</strong>
                             </td>
                         </tr>
-                        @if($person->profile->gst and $person->is_gst_inclusive)
+                        @if($transaction->gst and $transaction->is_gst_inclusive)
                             <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
@@ -133,7 +133,7 @@
                             </tr>
                             <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
+                                    <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
@@ -149,7 +149,7 @@
                                     @{{subtotalModel | currency: ""}}
                                 </td>
                             </tr>
-                        @elseif($person->profile->gst and !$person->is_gst_inclusive)
+                        @elseif($transaction->gst and !$transaction->is_gst_inclusive)
                             <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
@@ -161,7 +161,7 @@
                             </tr>
                             <tr ng-if="fdeals.length>0">
                                 <td colspan="3" class="text-right">
-                                    <strong>GST ({{number_format($person->gst_rate)}}%)</strong>
+                                    <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">

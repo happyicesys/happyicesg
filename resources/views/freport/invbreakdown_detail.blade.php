@@ -86,10 +86,10 @@
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->whereIn('transactions.id', $transactionsId)
                             ->sum(
-                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                    DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)')
                             );

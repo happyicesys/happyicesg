@@ -12,7 +12,7 @@ class Ftransaction extends Model
     protected $fillable=[
         'ftransaction_id', 'total', 'collection_datetime', 'person_id', 'digital_clock',
         'analog_clock', 'sales', 'franchisee_id', 'taxtotal', 'finaltotal',
-        'updated_by', 'remarks', 'bankin_date'
+        'updated_by', 'remarks', 'bankin_date', 'gst', 'is_gst_inclusive', 'gst_rate'
     ];
 
     protected $dates =[

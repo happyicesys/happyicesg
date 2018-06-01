@@ -336,7 +336,7 @@ class PersonController extends Controller
                             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                             ->select(
-                                DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + people.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
+                                DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                                 DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
                                     'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
                                     'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
@@ -345,7 +345,7 @@ class PersonController extends Controller
                                     'transactions.created_at AS created_at', 'transactions.pay_method',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                                    'profiles.name', 'profiles.gst', 'people.gst_rate', 'people.is_vending', 'people.is_dvm'
+                                    'profiles.name', 'transactions.gst', 'transactions.gst_rate', 'people.is_vending', 'people.is_dvm'
                                 )
                             ->where('people.id', '=', $person_id);
         // }
@@ -756,10 +756,10 @@ class PersonController extends Controller
                             ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->whereIn('transactions.id', $transactionsIdArr)
-                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
@@ -768,10 +768,10 @@ class PersonController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->whereIn('transactions.id', $transactionsIdArr)
                             ->where('transactions.pay_status', 'Paid')
-                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
@@ -780,10 +780,10 @@ class PersonController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->whereIn('transactions.id', $transactionsIdArr)
                             ->where('transactions.pay_status', 'Owe')
-                            ->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 

@@ -243,10 +243,10 @@ class FreportController extends Controller
         );
         $transactions_total = DB::raw(
             "(SELECT people.id AS person_id, 
-                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
                 FROM transactions
@@ -260,10 +260,10 @@ class FreportController extends Controller
         );
         $transactions_owe = DB::raw(
             "(SELECT people.id AS person_id, 
-                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
                 FROM transactions
@@ -278,10 +278,10 @@ class FreportController extends Controller
         );
         $transactions_paid = DB::raw(
             "(SELECT people.id AS person_id, 
-                SUM(ROUND((CASE WHEN profiles.gst=1 THEN (
+                SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
                 FROM transactions
@@ -322,7 +322,7 @@ class FreportController extends Controller
             ->select(
                 'people.cust_id AS cust_id',
                 'people.company AS company',
-                'profiles.gst',
+                'ftransactions.gst',
                 'franchisees.name AS franchisee_name', 'franchisees.id AS franchisee_id',
                 'first_date.delivery_date AS first_date',
                 DB::raw('ROUND(SUM(ftransactions.total), 2) AS total'),

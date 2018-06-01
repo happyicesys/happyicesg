@@ -244,15 +244,15 @@ class TransactionController extends Controller
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
                                 'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                 'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver',
-                                DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                     CASE
-                                                    WHEN people.is_gst_inclusive=0
-                                                    THEN total*((100+people.gst_rate)/100)
+                                                    WHEN transactions.is_gst_inclusive=0
+                                                    THEN total*((100+transactions.gst_rate)/100)
                                                     ELSE transactions.total
                                                     END)
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                                'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                 DB::raw('
                                     ROUND(CASE WHEN deals.divisor > 1
                                     THEN (items.base_unit * deals.dividend/deals.divisor)
@@ -267,14 +267,14 @@ class TransactionController extends Controller
         $tax = 0;
         $total = number_format($transaction->total, 2);
 
-        if($transaction->person->profile->gst) {
-            if($transaction->person->is_gst_inclusive) {
+        if($transaction->gst) {
+            if($transaction->is_gst_inclusive) {
                 $total = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->person->gst_rate)/ 100), 2);
+                $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->gst_rate)/ 100), 2);
                 $subtotal = number_format($transaction->total - $tax, 2);
             }else {
                 $subtotal = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total * ($transaction->person->gst_rate)/100, 2);
+                $tax = number_format($transaction->total * ($transaction->gst_rate)/100, 2);
                 $total = number_format(((float)$transaction->total + (float) $tax), 2);
             }
         }
@@ -442,6 +442,9 @@ class TransactionController extends Controller
 
         $request->merge(array('person_id' => $request->input('person_copyid')));
         $request->merge(array('updated_by' => Auth::user()->name));
+        $request->merge(array('gst' => $transaction->person->profile->gst));
+        $request->merge(array('is_gst_inclusive' => $transaction->person->is_gst_inclusive));
+        $request->merge(array('gst_rate' => $transaction->person->gst_rate));
         $transaction->update($request->all());
 
         //Qty insert to on order upon confirmed(1) transaction status
@@ -694,14 +697,14 @@ class TransactionController extends Controller
                             'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                             'transactions.total_qty', 'transactions.pay_status',
                             'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                            DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END)
                                             ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                            'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                            'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                              'custcategories.name as custcategory'
                         )
                 ->where('people.id', $person_id)
@@ -962,13 +965,13 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
-                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                    DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                                    'profiles.id as profile_id', 'profiles.gst', 'people.is_gst_inclusive', 'people.gst_rate',
+                                    'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                      'custcategories.name as custcategory'
                                 );
 
@@ -1542,9 +1545,9 @@ class TransactionController extends Controller
         $query2 = clone $query;
         $query3= clone $query;
 
-        $nonGst_amount = $query1->where('profiles.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_exclusive = $query2->where('profiles.gst', 1)->where('people.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + people.gst_rate)/100), 2)'));
-        $gst_inclusive = $query3->where('profiles.gst', 1)->where('people.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $nonGst_amount = $query1->where('transactions.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $gst_exclusive = $query2->where('transactions.gst', 1)->where('transactions.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + transactions.gst_rate)/100), 2)'));
+        $gst_inclusive = $query3->where('transactions.gst', 1)->where('transactions.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
 
         $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
 

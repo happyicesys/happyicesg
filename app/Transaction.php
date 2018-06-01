@@ -67,7 +67,8 @@ class Transaction extends Model
         'del_address', 'name', 'po_no', 'total_qty', 'pay_method', 'note',
         'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
-        'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate'
+        'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
+        'gst', 'is_gst_inclusive', 'gst_rate'
     ];
 
     protected $dates =[

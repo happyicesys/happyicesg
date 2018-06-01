@@ -64,14 +64,14 @@ class DetailRptController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->select(
-                                    DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*(100+people.gst_rate)/100 + transactions.delivery_fee ELSE transactions.total*(100+people.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
+                                    DB::raw('ROUND(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.delivery_fee>0 THEN transactions.total*(100+transactions.gst_rate)/100 + transactions.delivery_fee ELSE transactions.total*(100+transactions.gst_rate)/100 END) ELSE (CASE WHEN transactions.delivery_fee>0 THEN transactions.total + transactions.delivery_fee ELSE transactions.total END) END, 2) AS total'),
                                     DB::raw('ROUND(SUM(CASE WHEN deals.divisor > 1 THEN (items.base_unit * deals.dividend/ deals.divisor) ELSE (items.base_unit * deals.qty) END)) AS pieces'),
                                     'transactions.id', 'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
                                     'transactions.pay_status',
                                     'profiles.id as profile_id', 'transactions.order_date',
-                                    'profiles.gst', 'people.gst_rate', 'transactions.delivery_fee', 'transactions.paid_at',
+                                    'transactions.gst', 'transactions.gst_rate', 'transactions.delivery_fee', 'transactions.paid_at',
                                     'custcategories.name as custcategory'
                                 );
 
@@ -128,7 +128,7 @@ class DetailRptController extends Controller
         $prev2Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(2);
         $prev3Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(3);
 
-        $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
+        $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$carbondate->startOfMonth()->toDateString()."'
@@ -137,7 +137,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) thistotal");
 
-        $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
+        $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
@@ -146,7 +146,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prevtotal");
 
-        $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
+        $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
@@ -155,7 +155,7 @@ class DetailRptController extends Controller
                                 AND (status='Delivered' OR status='Verified Owe')
                                 GROUP BY people.id) prev2total");
 
-        $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
+        $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE transactions.delivery_date<='".$prev3Months->endOfMonth()->toDateString()."'
@@ -173,8 +173,8 @@ class DetailRptController extends Controller
                         ->leftJoin($prevmore3total, 'people.id', '=', 'prevmore3total.person_id')
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
-                                    'people.is_gst_inclusive', 'people.gst_rate',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst',
+                                    'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevmore3total.prevmore3total AS prevmore3total'
@@ -227,9 +227,9 @@ class DetailRptController extends Controller
                                     'transactions.id', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.order_date', 'transactions.note', 'transactions.pay_method',
                                     'custcategories.name as custcategory',
                                     // DB::raw('(CASE WHEN transactions.delivery_fee>0 THEN (transactions.total + transactions.delivery_fee) ELSE transactions.total END) AS inv_amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/((100+people.gst_rate)/100))) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS inv_amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS amount'),
-                                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total - transactions.total/((100+people.gst_rate)/100)) ELSE transactions.total * (people.gst_rate)/100 END) ELSE null END) AS gst')
+                                    DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/((100+transactions.gst_rate)/100))) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS inv_amount'),
+                                    DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END) AS amount'),
+                                    DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total - transactions.total/((100+transactions.gst_rate)/100)) ELSE transactions.total * (transactions.gst_rate)/100 END) ELSE null END) AS gst')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->delivery_from or $request->cust_id or $request->payment_to or $request->delivery_to or $request->company or $request->payment or $request->status or $request->person_id or $request->pay_method or $request->custcategory) {
@@ -285,7 +285,7 @@ class DetailRptController extends Controller
                                     'paysummaryinfos.remark',
                                     'paysummaryinfos.is_verified',
                                     DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
-                                    DB::raw('SUM(ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
+                                    DB::raw('SUM(ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to or $request->bankin_from or $request->bankin_to){
@@ -422,7 +422,7 @@ class DetailRptController extends Controller
                         ->select(
                                     'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst', 'people.gst_rate',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
@@ -946,7 +946,7 @@ class DetailRptController extends Controller
                         })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst', 'people.gst_rate',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
@@ -1148,10 +1148,10 @@ class DetailRptController extends Controller
                     'people.cust_id AS cust_id', 'people.company AS company',
                     'custcategories.name AS custcategory_name',
                     'first_date.delivery_date AS first_date',
-                    DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN ROUND((SUM(deals.amount)/((100+people.gst_rate)/100)), 2) ELSE SUM(deals.amount) END) ELSE (SUM(deals.amount)) END, 2) AS total'),
-                    'profiles.gst AS gst',
-                    DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount) * (people.gst_rate/100), 2) ELSE (SUM(deals.amount) - SUM(deals.amount)/((100+people.gst_rate)/100) ) END) ELSE NULL END) AS gsttotal'),
-                    DB::raw('ROUND(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount), 2) ELSE SUM(deals.amount) - (SUM(deals.amount) - SUM(deals.amount)/((100+people.gst_rate)/100)) END) ELSE (SUM(deals.amount)) END, 2) AS subtotal'),
+                    DB::raw('ROUND(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND((SUM(deals.amount)/((100+transactions.gst_rate)/100)), 2) ELSE SUM(deals.amount) END) ELSE (SUM(deals.amount)) END, 2) AS total'),
+                    'transactions.gst AS gst',
+                    DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount) * (transactions.gst_rate/100), 2) ELSE (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100) ) END) ELSE NULL END) AS gsttotal'),
+                    DB::raw('ROUND(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount), 2) ELSE SUM(deals.amount) - (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100)) END) ELSE (SUM(deals.amount)) END, 2) AS subtotal'),
                     DB::raw('ROUND(SUM(deals.unit_cost * deals.qty), 2) AS cost'),
                     DB::raw('(SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) AS gross_money'),
                     DB::raw('ROUND(CASE WHEN SUM(deals.amount)>0 THEN ((SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2))/ SUM(deals.amount) * 100) ELSE (SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) END, 2) AS gross_percent'),
@@ -1955,8 +1955,8 @@ class DetailRptController extends Controller
         $query1 = clone $query;
         $query2 = clone $query;
 
-        $nonGst_amount = $query1->where('profiles.gst', 0)->sum(DB::raw('ROUND(transactions.total, 2)'));
-        $gst_amount = $query2->where('profiles.gst', 1)->sum(DB::raw('ROUND((transactions.total * (100+people.gst_rate)/100), 2)'));
+        $nonGst_amount = $query1->where('transactions.gst', 0)->sum(DB::raw('ROUND(transactions.total, 2)'));
+        $gst_amount = $query2->where('transactions.gst', 1)->sum(DB::raw('ROUND((transactions.total * (100+transactions.gst_rate)/100), 2)'));
 
         $total_amount = $nonGst_amount + $gst_amount;
 
@@ -1979,10 +1979,10 @@ class DetailRptController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->whereIn('transactions.id', $transactionsIdArr)
                             ->sum(
-                                    DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (
+                                    DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
-                                                WHEN people.is_gst_inclusive=0
-                                                THEN total*((100+people.gst_rate)/100)
+                                                WHEN transactions.is_gst_inclusive=0
+                                                THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)')
                                 );
@@ -2029,9 +2029,9 @@ class DetailRptController extends Controller
         $query2 = clone $query;
         $query3 = clone $query;
 
-        $total_inv_amount = $query1->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/((100+people.gst_rate)/100))) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
-        $total_gst = $query2->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=1 THEN (transactions.total - transactions.total/((100+people.gst_rate)/100)) ELSE transactions.total * (people.gst_rate)/100 END) ELSE null END)'));
-        $total_amount = $query3->sum(DB::raw('(CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_inv_amount = $query1->sum(DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total - (transactions.total - transactions.total/((100+transactions.gst_rate)/100))) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
+        $total_gst = $query2->sum(DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total - transactions.total/((100+transactions.gst_rate)/100)) ELSE transactions.total * (transactions.gst_rate)/100 END) ELSE null END)'));
+        $total_amount = $query3->sum(DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END)'));
 
         $caldata = [
             'total_inv_amount' => $total_inv_amount,
@@ -2103,30 +2103,30 @@ class DetailRptController extends Controller
             $profileArr = [];
             $profileArr['name'] = $profile->name;
             $cash = clone $transactions;
-            $profileArr['cash'] = $cash->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+            $profileArr['cash'] = $cash->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
             $chequein = clone $transactions;
-            $profileArr['chequein'] = $chequein->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+            $profileArr['chequein'] = $chequein->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
             $chequeout = clone $transactions;
-            $profileArr['chequeout'] = $chequeout->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+            $profileArr['chequeout'] = $chequeout->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
             $tt = clone $transactions;
-            $profileArr['tt'] = $tt->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+            $profileArr['tt'] = $tt->where('profiles.id', $profile->id)->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
             $subtotal = clone $transactions;
-            $profileArr['subtotal'] = $subtotal->where('profiles.id', $profile->id)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+            $profileArr['subtotal'] = $subtotal->where('profiles.id', $profile->id)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
             array_push($data, $profileArr);
         }
 
         $profileArr = [];
         $profileArr['name'] = 'All Profile(s)';
         $cash_all = clone $transactions;
-        $profileArr['cash'] = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $profileArr['cash'] = $cash_all->where('transactions.pay_method', '=', 'cash')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $chequein_all = clone $transactions;
-        $profileArr['chequein'] = $chequein_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $profileArr['chequein'] = $chequein_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '>', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $chequeout_all = clone $transactions;
-        $profileArr['chequeout'] = $chequeout_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $profileArr['chequeout'] = $chequeout_all->where('transactions.pay_method', '=', 'cheque')->where('transactions.total', '<', 0)->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $tt_all = clone $transactions;
-        $profileArr['tt'] = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $profileArr['tt'] = $tt_all->where('transactions.pay_method', '=', 'tt')->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         $all = clone $transactions;
-        $profileArr['subtotal'] = $all->sum(DB::raw('ROUND((CASE WHEN profiles.gst=1 THEN (CASE WHEN people.is_gst_inclusive=0 THEN (transactions.total * (100+people.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
+        $profileArr['subtotal'] = $all->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE (transactions.total) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
         array_push($data, $profileArr);
 
         return $data;
@@ -2239,7 +2239,7 @@ class DetailRptController extends Controller
                 })
                 ->select(
                     'deals.divisor', 'deals.dividend',
-                    'profiles.id AS profile_id', 'profiles.name AS profile_name', 'profiles.gst', 'people.gst_rate',
+                    'profiles.id AS profile_id', 'profiles.name AS profile_name', 'transactions.gst', 'transactions.gst_rate',
                     'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark',
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),

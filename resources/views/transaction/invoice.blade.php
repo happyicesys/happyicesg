@@ -47,7 +47,7 @@
                 <h5 class="text-center" style="margin-bottom: -5px">{{$person->profile->address}}</h5>
                 <h5 class="text-center" style="margin-bottom: -5px">Tel: {{$person->profile->contact}}</h5>
                 <h5 class="text-center">
-                    @if($person->profile->gst)
+                    @if($transaction->gst)
                         Co. Reg & GST Reg No:
                     @else
                         Co. Reg No:
@@ -151,7 +151,7 @@
                                     @if($transaction->is_vending_generate)
                                         <strong>SALES REPORT</strong>
                                     @else
-                                        @if($person->profile->gst)
+                                        @if($transaction->gst)
                                         <strong>DO/ TAX INVOICE</strong>
                                         @else
                                         <strong>DO/ INVOICE</strong>
@@ -347,14 +347,14 @@
                             $gst = 0;
                             $total = 0;
 
-                            if($person->profile->gst and $person->is_gst_inclusive) {
-                                $subtotal = number_format($totalprice - ($totalprice - $totalprice/(1 + $person->gst_rate/100)), 2);
-                                $gst = number_format(($totalprice - $totalprice/(1 + $person->gst_rate/100)), 2);
+                            if($transaction->gst and $transaction->is_gst_inclusive) {
+                                $subtotal = number_format($totalprice - ($totalprice - $totalprice/(1 + $transaction->gst_rate/100)), 2);
+                                $gst = number_format(($totalprice - $totalprice/(1 + $transaction->gst_rate/100)), 2);
                                 $total = number_format($totalprice, 2);
-                            }else if($person->profile->gst and !$person->is_gst_inclusive) {
+                            }else if($transaction->gst and !$transaction->is_gst_inclusive) {
                                 $subtotal = number_format($totalprice, 2);
-                                $gst = number_format($totalprice * $person->gst_rate/100, 2);
-                                $total = number_format($totalprice + ($totalprice * $person->gst_rate/100), 2);
+                                $gst = number_format($totalprice * $transaction->gst_rate/100, 2);
+                                $total = number_format($totalprice + ($totalprice * $transaction->gst_rate/100), 2);
                             }else {
                                 $total = number_format($totalprice, 2);
                             }
@@ -378,7 +378,7 @@
                         </tr>
                         @endif
 
-                        @if($person->profile->gst and $person->is_gst_inclusive)
+                        @if($transaction->gst and $transaction->is_gst_inclusive)
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
@@ -393,7 +393,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="text-right">
-                                    <strong>GST ({{$person->gst_rate + 0}}%)</strong>
+                                    <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="text-right">
@@ -409,7 +409,7 @@
                                     {{$subtotal}}
                                 </td>
                             </tr>
-                        @elseif($person->profile->gst and !$person->is_gst_inclusive)
+                        @elseif($transaction->gst and !$transaction->is_gst_inclusive)
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>
@@ -421,7 +421,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2" class="text-right">
-                                    <strong>GST ({{$person->gst_rate + 0}}%)</strong>
+                                    <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
                                 <td class="text-right">
