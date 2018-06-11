@@ -89,6 +89,7 @@
                                             switch($access) {
                                                 case 'admin':
                                                 case 'account':
+                                                case 'accountadmin':
                                                 case 'supervisor':
                                                     $valid = true;
                                                     break;
