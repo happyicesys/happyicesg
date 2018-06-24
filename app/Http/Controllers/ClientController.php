@@ -488,6 +488,12 @@ class ClientController extends Controller
         return Redirect::action('ClientController@franchiseIndex');
     }
 
+    // get vending complain page
+    public function getVendComplainIndex()
+    {
+        return view('client.vendcomplain');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {

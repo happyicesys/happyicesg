@@ -13,6 +13,8 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::get('/vendcomplain', 'ClientController@getVendComplain');
+
 Route::post('/api/job/verify', 'JobController@verifyJobApi');
 Route::post('/api/job/update', 'JobController@updateJobApi');
 Route::delete('/api/job/{id}/delete', 'JobController@destroyJobApi');
