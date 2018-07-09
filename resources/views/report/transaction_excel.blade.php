@@ -59,8 +59,8 @@
             {{$transaction->total}}
             </td>
             <td>
-                @if($transaction->person->profile->gst)
-                    {{ number_format(($transaction->total * 7/100), 2, '.', ',') }}
+                @if($transaction->gst)
+                    {{ number_format(($transaction->total * $transaction->gst_rate/100), 2, '.', ',') }}
                 @else
                     -
                 @endif

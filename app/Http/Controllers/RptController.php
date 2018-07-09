@@ -151,7 +151,7 @@ class RptController extends Controller
                     $date2 = $dateto;
                     $transactions = Transaction::with('deals', 'person')
                                     ->searchDateRange($datefrom, $dateto)
-                                    ->whereHas('profile', function($q) {
+                                    ->whereHas('person.profile', function($q) {
                                         $q->filterUserProfile();
                                     });
                     $transactions = $transactions->get();
