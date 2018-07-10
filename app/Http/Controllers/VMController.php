@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Chrisbjr\ApiGuard\Http\Controllers\ApiGuardController;
-
 use App\Http\Requests;
+use Chrisbjr\ApiGuard\Http\Controllers\ApiGuardController;
 
 class VMController extends ApiGuardController
 {
