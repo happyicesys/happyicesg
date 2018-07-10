@@ -3,11 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Chrisbjr\ApiGuard\Models\Mixins\Apikeyable;
 
 class Vending extends Model
 {
+    use Apikeyable;
+    
     protected $fillable = [
-    	'name'
+    	'vend_id', 'serial_no', 'type', 'router', 'desc'
     ];
 
     // relationships

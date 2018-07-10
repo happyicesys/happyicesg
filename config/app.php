@@ -153,6 +153,7 @@ return [
         Baum\Providers\BaumServiceProvider::class,
         Msurguy\Honeypot\HoneypotServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Chrisbjr\ApiGuard\Providers\ApiGuardServiceProvider::class,
     ],
 
     /*
@@ -206,6 +207,7 @@ return [
         'Image'     => Barryvdh\Snappy\Facades\SnappyImage::class,
         'Honeypot' => Msurguy\Honeypot\HoneypotFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        //'ApiGuardAuth' => Chrisbjr\ApiGuard\Facades\ApiGuardAuth::class,
     ],
 
 ];

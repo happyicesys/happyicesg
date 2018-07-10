@@ -13,6 +13,8 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+Route::get('/testing', 'VMController@index')->middleware('apiguard');
+
 Route::get('/vendcomplain', 'ClientController@getVendComplainIndex');
 Route::post('/vendcomplain/create', 'ClientController@sendVendingComplain');
 

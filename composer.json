@@ -18,7 +18,8 @@
         "baum/baum": "~1.1",
         "barryvdh/laravel-debugbar": "^2.2",
         "msurguy/honeypot": "^1.0",
-        "laravel/socialite": "^2.0"
+        "laravel/socialite": "^2.0",
+        "chrisbjr/api-guard": "3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
