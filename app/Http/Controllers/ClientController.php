@@ -463,7 +463,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
         $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
-        $bcc = ['leehongjie91@gmail.com'];
+        $bcc = ['brianlee@happyice.com.my'];
 
         $countries = Country::all();
 
@@ -492,6 +492,50 @@ class ClientController extends Controller
     public function getVendComplainIndex()
     {
         return view('client.vendcomplain');
+    }
+
+    // submit vending complain page and generate email
+    public function sendVendingComplain(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'contact' => 'required',
+            'email' => 'email|required',
+            'message' => 'required',
+            'my_name' => 'honeypot',
+            'my_time' => 'required|honeytime:10'
+        ], [
+            'name.required' => 'Please fill in the name',
+            'contact.required' => 'Please fill in the contact number',
+            'email.required' => 'Please fill in the email',
+            'email.email' => 'Email format is not right, please try again',
+            'note.required' => 'Please provide the information in your message',
+        ]);
+
+        // email array send from
+        $sendfrom = ['system@happyice.com.sg'];
+        // email array send to
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $bcc = ['brianlee@happyice.com.my'];
+
+        // capture email sending date
+        $today = Carbon::now()->format('d-F-Y');
+        $data = array(
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'note' => $request->note
+        );
+
+        $mail = Mail::send('client.vend_complain_mail', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc) {
+            $message->from($sendfrom);
+            $message->subject('Vending Complain [' . $today . ']');
+            $message->setTo($sendto);
+            $message->bcc($bcc);
+        });
+
+        Flash::success('The form has been submitted');
+        return Redirect::action('ClientController@getVendComplainIndex');   
     }
 
     // create H code customer process based on given postcode and assign to member

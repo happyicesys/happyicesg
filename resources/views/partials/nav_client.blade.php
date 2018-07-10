@@ -36,6 +36,7 @@
                     $about_access = true;
                     $contact_access = true;
                     $order_now_access = false;
+                    $vend_complain_access=true;
                     break;
                 case 'MALAYSIA':
                     $home_access = true;
@@ -47,6 +48,7 @@
                     $about_access = false;
                     $contact_access = false;
                     $order_now_access = true;
+                    $vend_complain_access=true;
                     break;
                 default:
                     $home_access = false;
@@ -58,6 +60,7 @@
                     $about_access = false;
                     $contact_access = false;
                     $order_now_access = false;
+                    $vend_complain_access=true;
             }
         @endphp
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -115,6 +118,11 @@
                 <li>
                     <a class="page-scroll" style="color: white;" href="/shop">Order Now</a>
                 </li>
+                @endif
+                @if($vend_complain_access)
+                <li>
+                    <a class="page-scroll" style="color: white;" href="/vendcomplain">Vending Complain</a>
+                </li>                
                 @endif
             </ul>
         </div>

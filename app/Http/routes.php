@@ -13,7 +13,8 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
-Route::get('/vendcomplain', 'ClientController@getVendComplain');
+Route::get('/vendcomplain', 'ClientController@getVendComplainIndex');
+Route::post('/vendcomplain/create', 'ClientController@sendVendingComplain');
 
 Route::post('/api/job/verify', 'JobController@verifyJobApi');
 Route::post('/api/job/update', 'JobController@updateJobApi');
