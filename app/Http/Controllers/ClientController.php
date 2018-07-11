@@ -501,7 +501,9 @@ class ClientController extends Controller
             'name' => 'required',
             'contact' => 'required',
             'email' => 'email|required',
-            'message' => 'required',
+            'note' => 'required',
+            'vend_id' => 'required',
+            'product_id' => 'required',
             'my_name' => 'honeypot',
             'my_time' => 'required|honeytime:10'
         ], [
@@ -509,6 +511,8 @@ class ClientController extends Controller
             'contact.required' => 'Please fill in the contact number',
             'email.required' => 'Please fill in the email',
             'email.email' => 'Email format is not right, please try again',
+            'vend_id.required' => 'Please fill in the vending id',
+            'product_id.required' => 'Please fill in the product id',
             'note.required' => 'Please provide the information in your message',
         ]);
 
@@ -524,7 +528,9 @@ class ClientController extends Controller
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,
-            'note' => $request->note
+            'note' => $request->note,
+            'vend_id' => $request->vend_id,
+            'product_id' => $request->product_id,
         );
 
         $mail = Mail::send('client.vend_complain_mail', $data, function ($message) use ($sendfrom, $sendto, $today, $bcc) {
