@@ -14,7 +14,6 @@ class CreateVendingsTable extends Migration
     {
         Schema::create('vendings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
             $table->timestamps();
         });
     }

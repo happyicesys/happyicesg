@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVendings extends Migration
+class AddTypeVendings extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddVendings extends Migration
     public function up()
     {
         Schema::table('vendings', function ($table) {
-            $table->integer('updated_by');
-            $table->integer('person_id');
-        });        
+            $table->string('type');
+        });  
     }
 
     /**
@@ -26,8 +25,7 @@ class AddVendings extends Migration
     public function down()
     {
         Schema::table('vendings', function ($table) {
-            $table->dropColumn('updated_by');
-            $table->dropColumn('person_id');
+            $table->dropColumn('type');
         });
     }
 }

@@ -13,7 +13,15 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
-Route::post('/testing', 'VMController@index')->middleware('apiguard');
+Route::patch('/vm/{id}/update', 'VMController@updateVending');
+Route::get('/vm/{id}/edit', 'VMController@editVending');
+Route::delete('/vm/{id}/destroy', 'VMController@destroyVending');
+Route::post('/vm/store', 'VMController@storeVending');
+Route::get('/vm/create', 'VMController@getVendingCreate');
+Route::post('/api/vm/data', 'VMController@getVendingIndexApi');
+Route::get('/vm', 'VMController@vendingIndex');
+
+Route::post('/testing', 'VMController@dataIndex')->middleware('apiguard');
 
 Route::get('/vendcomplain', 'ClientController@getVendComplainIndex');
 Route::post('/vendcomplain/create', 'ClientController@sendVendingComplain');

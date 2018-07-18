@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVendings extends Migration
+class AddUpdatedPersonVendings extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddVendings extends Migration
         Schema::table('vendings', function ($table) {
             $table->integer('updated_by');
             $table->integer('person_id');
-        });        
+        }); 
     }
 
     /**

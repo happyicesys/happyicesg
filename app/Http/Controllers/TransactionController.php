@@ -520,7 +520,7 @@ class TransactionController extends Controller
             }
             $transaction->delete();
 
-            return redirect('transaction');
+            return Redirect::action('PersonController@edit', $transaction->person->id);
         }
     }
 

@@ -49,6 +49,7 @@
                 $ecommerce_access = false;
                 $personmaintenance_access = false;
                 $jobcard_access = false;
+                $vending_access = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -95,6 +96,7 @@
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
+                        $vending_access = true;
                     }
 
                     if(auth()->user()->hasRole('supervisor_msia')) {
@@ -106,6 +108,7 @@
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
+                        $vending_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -130,6 +133,7 @@
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
+                        $vending_access = true;
                     }
                 }
             @endphp
@@ -206,14 +210,18 @@
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
-                @if($bom_access)
-                    <li class="{{ strpos(Request::path(), 'bom') !== false ? 'active' : '' }}">
-                        <a href="/bom"><i class="fa fa-cogs "></i> {{ $BOM_TITLE }}</a>
-                    </li>
-                @endif
-                @if($personmaintenance_access)
-                    <li class="{{ strpos(Request::path(), 'maintenance') !== false ? 'active' : '' }}">
-                        <a href="/personmaintenance"><i class="fa fa-wrench "></i> {{ $PERSONMAINTENANCE_TITLE }}</a>
+                @if($vending_access)
+                    <li class="{{ (strpos(Request::path(), 'bom') !== false || strpos(Request::path(), 'personmaintenance') !== false || strpos(Request::path(), 'vm') !== false || strpos(Request::path(), 'deal') !== false)? 'active' : '' }}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>                        
+                        <ul class="dropdown-menu">
+                            @if($bom_access)
+                                <li class="text-left"><a href="/bom"> {{ $BOM_TITLE }}</a></li>
+                            @endif
+                            @if($personmaintenance_access)
+                                <li class="text-left"><a href="/personmaintenance"> {{ $PERSONMAINTENANCE_TITLE }}</a></li>
+                            @endif  
+                            <li class="text-left"><a href="/vm"> Machine</a></li> 
+                        </ul>
                     </li>
                 @endif     
                 @if($jobcard_access)

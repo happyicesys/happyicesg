@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVendings extends Migration
+class CreateVmhistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,13 @@ class AddVendings extends Migration
      */
     public function up()
     {
-        Schema::table('vendings', function ($table) {
-            $table->integer('updated_by');
+        Schema::create('vmhistories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('vending_id');
             $table->integer('person_id');
-        });        
+            $table->datetime('binding_date');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -25,9 +28,6 @@ class AddVendings extends Migration
      */
     public function down()
     {
-        Schema::table('vendings', function ($table) {
-            $table->dropColumn('updated_by');
-            $table->dropColumn('person_id');
-        });
+        Schema::drop('vmhistories');
     }
 }

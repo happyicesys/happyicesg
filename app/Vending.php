@@ -7,15 +7,26 @@ use Chrisbjr\ApiGuard\Models\Mixins\Apikeyable;
 
 class Vending extends Model
 {
-    use Apikeyable;
+    // use Apikeyable;
     
     protected $fillable = [
-    	'vend_id', 'serial_no', 'type', 'router', 'desc'
+        'vend_id', 'serial_no', 'type', 'router', 'desc',
+        'person_id', 'updated_by'
     ];
 
     // relationships
-    public function people()
+    public function person()
     {
-    	return $this->belongsToMany('App\Person');
+    	return $this->belongsTo('App\Person');
     }
+
+    public function vmhistories()
+    {
+        return $this->hasMany('App\Vmhistory');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo('App\User', 'updated_by');
+    }    
 }

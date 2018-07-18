@@ -1,0 +1,210 @@
+@inject('profiles', 'App\Profile')
+@inject('people', 'App\Person')
+@inject('custcategories', 'App\Custcategory')
+@inject('franchisees', 'App\User')
+
+@extends('template')
+@section('title')
+Vending Machine
+@stop
+@section('content')
+
+    <div ng-app="app" ng-controller="vmController">
+
+    <div class="row">
+        <a class="title_hyper pull-left" href="/vm"><h1>Vending Machine <i class="fa fa-plug"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+    </div>
+
+        <div class="panel panel-default" ng-cloak>
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="pull-right">
+                            <a href="/vm/create" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                <span class="hidden-xs"> New Vending Machine </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('id', 'Vend ID', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('id', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.vend_id',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'Vend ID',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
+                        !!}
+                    </div>                        
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('id', 'Cust ID', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('id', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.cust_id',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'Cust ID',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
+                        !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('company', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.company',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'ID Name',
+                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                        ])
+                        !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('custcategory', [''=>'All']+$custcategories::orderBy('name')->pluck('name', 'id')->all(), null,
+                            [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.custcategory',
+                            'ng-change'=>'searchDB()'
+                            ])
+                        !!}
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 col-xs-12 text-right">
+                        <div class="row">
+                            <label for="display_num">Display</label>
+                            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                                <option ng-value="100">100</option>
+                                <option ng-value="200">200</option>
+                                <option ng-value="All">All</option>
+                            </select>
+                            <label for="display_num2" style="padding-right: 20px">per Page</label>
+                        </div>
+                        <div class="row">
+                            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" id="exportable" style="padding-top:20px;">
+                    <table class="table table-list-search table-hover table-bordered">
+                        <tr style="background-color: #DDFDF8">
+                            <th class="col-md-1 text-center">
+                                #
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('vend_id')">
+                                Vend ID
+                                <span ng-if="search.sortName == 'vend_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'vend_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('serial_no')">
+                                Serial No
+                                <span ng-if="search.sortName == 'serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'serial_no' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('type')">
+                                Type
+                                <span ng-if="search.sortName == 'type' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'type' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('router')">
+                                Router
+                                <span ng-if="search.sortName == 'router' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'router' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-2 text-center">
+                                <a href="" ng-click="sortTable('desc')">
+                                Desc
+                                <span ng-if="search.sortName == 'desc' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'desc' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-2 text-center">
+                                <a href="" ng-click="sortTable('cust_id')">
+                                Current Cust
+                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('updated_by')">
+                                Last Modified By
+                                <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('transactions.updated_at')">
+                                Last Modified Time
+                                <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                Action
+                            </th>
+                        </tr>
+                        <tbody>
+                            <tr dir-paginate="vm in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+                                <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
+                                <td class="col-md-1 text-center">
+                                    <a href="/vm/@{{ vm.id }}/edit">
+                                        @{{ vm.vend_id }}
+                                    </a>
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.serial_no }} 
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.type }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.router }} 
+                                </td>
+                                <td class="col-md-2 text-left">
+                                    @{{ vm.desc }}
+                                </td>
+                                <td class="col-md-2 text-left">
+                                    <a href="/person/@{{ vm.person_id }}">
+                                        @{{ vm.cust_id}} - @{{vm.company}}
+                                    </a>                                    
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.updater }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.updated_at }}
+                                </td>  
+                                <td class="col-md-1 text-center">
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, vm.id)"><i class="fa fa-times"></i></button>
+                                </td>                              
+                            </tr>
+                            <tr ng-if="!alldata || alldata.length == 0">
+                                <td colspan="18" class="text-center">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+                </div>
+        </div>
+    </div>
+
+    <script src="/js/vm_index.js"></script>
+@stop

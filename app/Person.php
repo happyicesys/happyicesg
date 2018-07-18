@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 use Baum;
 
 class Person extends Baum\Node
 {
 
     use \Venturecraft\Revisionable\RevisionableTrait;
-    use SoftDeletes;
+    // use SoftDeletes;
     public static function boot()
     {
         parent::boot();
