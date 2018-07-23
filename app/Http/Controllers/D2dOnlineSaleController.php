@@ -224,7 +224,7 @@ class D2dOnlineSaleController extends Controller
     // get H code customer running number
     private function getCustRunningNum()
     {
-        $people = Person::withTrashed()->where('cust_id', 'LIKE', 'H%');
+        $people = Person::where('cust_id', 'LIKE', 'H%');
         $first_person = Person::where('cust_id', 'H100001')->first();
         if(count($people) > 0 and $first_person){
             $latest_cust = (int) substr($people->max('cust_id'), 1) + 1;
