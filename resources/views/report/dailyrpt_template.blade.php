@@ -432,7 +432,7 @@
                             <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                             <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                             <td class="col-md-1 text-center">
-                                @{{ transaction.total }}
+                                @{{ transaction.total | currency: "": 2}}
                             </td>
                             <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                             {{-- pay status --}}
