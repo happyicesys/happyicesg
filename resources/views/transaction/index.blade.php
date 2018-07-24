@@ -433,7 +433,7 @@
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">
-                                        @{{ transaction.total }}
+                                        @{{ transaction.total | number: 2}}
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                     {{-- pay status --}}
