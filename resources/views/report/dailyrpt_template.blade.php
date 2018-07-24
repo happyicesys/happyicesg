@@ -431,11 +431,8 @@
                             {{-- status by color ended --}}
                             <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
                             <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
-                            <td class="col-md-1 text-center" ng-if="transaction.delivery_fee <= 0">
-                                @{{ transaction.gst && transaction.is_gst_inclusive == 0 ? transaction.total * 107/100 : transaction.total | currency: "" }}
-                            </td>
-                            <td class="col-md-1 text-center" ng-if="transaction.delivery_fee > 0">
-                                @{{ (transaction.total/1) + (transaction.delivery_fee/1) | currency: "" }}
+                            <td class="col-md-1 text-center">
+                                @{{ transaction.total }}
                             </td>
                             <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                             {{-- pay status --}}
