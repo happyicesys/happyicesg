@@ -490,7 +490,14 @@ class RptController extends Controller
             $query1 = $this->filterUserDbProfile($query1);
 
             $query1 = $this->extraField($request, $query1);
-            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'people.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'transactions.is_gst_inclusive');
+            $query1 = $query1->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'people.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee',
+            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+                            CASE
+                            WHEN transactions.is_gst_inclusive=0
+                            THEN total*((100+transactions.gst_rate)/100)
+                            ELSE transactions.total
+                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),             
+            'profiles.id as profile_id', 'transactions.is_gst_inclusive');
 
         $query2 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -511,7 +518,14 @@ class RptController extends Controller
 
             $query2 = $this->extraField($request, $query2);
             $query2 = $this->filterUserDbProfile($query2);
-            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'people.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee', 'profiles.id as profile_id', 'transactions.is_gst_inclusive');
+            $query2 = $query2->select('transactions.id', 'people.cust_id', 'people.company', 'people.id as person_id', 'transactions.status', 'transactions.delivery_date', 'transactions.driver', 'transactions.total_qty', 'transactions.pay_status', 'transactions.updated_by', 'transactions.updated_at', 'profiles.name', 'transactions.created_at', 'profiles.gst', 'people.gst_rate', 'transactions.pay_method', 'transactions.note', 'transactions.paid_by', 'transactions.paid_at', 'transactions.delivery_fee',
+            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+                            CASE
+                            WHEN transactions.is_gst_inclusive=0
+                            THEN total*((100+transactions.gst_rate)/100)
+                            ELSE transactions.total
+                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),             
+            'profiles.id as profile_id', 'transactions.is_gst_inclusive');
 
             $query2 = $query2
                 ->union($query)->union($query1)
