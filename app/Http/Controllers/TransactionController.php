@@ -946,7 +946,6 @@ class TransactionController extends Controller
             'delivery_to' => $delivery_to,
             'title' => $title
         ];
-        $name = 'Acc_Consolidate_Rpt('.$now.').pdf';
         $pdf = PDF::loadView('transaction.acc_consolidate', $data);
         $pdf->setPaper('a4');
         $pdf->setOption('margin-top', 5);
