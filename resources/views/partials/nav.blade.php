@@ -221,6 +221,7 @@
                                 <li class="text-left"><a href="/personmaintenance"> {{ $PERSONMAINTENANCE_TITLE }}</a></li>
                             @endif  
                             <li class="text-left"><a href="/vm"> Machine</a></li> 
+                            <li class="text-left"><a href="/simcard"> SIM card</a></li> 
                         </ul>
                     </li>
                 @endif     

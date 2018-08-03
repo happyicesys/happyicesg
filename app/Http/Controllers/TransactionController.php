@@ -914,8 +914,14 @@ class TransactionController extends Controller
     // export account consolidate report from transactions index()
     public function exportAccConsolidatePdf()
     {
-        // dd($request->all());
+
         $now = Carbon::now()->format('d-m-Y H:i');
+
+        if(request('exportpdf') == 'do') {
+            $title = 'Consolidated DO';
+        }else {
+            $title = 'Consolidated Tax Invoice';
+        }
 
         $transactions = $this->getTransactionsData();
         if(!request('delivery_from') and !request('delivery_to')){
@@ -936,6 +942,7 @@ class TransactionController extends Controller
             'person' => $person,
             'delivery_from' => $delivery_from,
             'delivery_to' => $delivery_to,
+            'title' => $title
         ];
         $name = 'Acc_Consolidate_Rpt('.$now.').pdf';
         $pdf = PDF::loadView('transaction.acc_consolidate', $data);

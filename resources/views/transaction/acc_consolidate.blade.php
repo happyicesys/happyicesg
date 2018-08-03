@@ -91,7 +91,7 @@
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
                                 <div style="font-size: 140%;" class="text-center">
-                                    <strong>Consolidated Tax Invoice</strong>
+                                    <strong>{{$title}}</strong>
                                 </div>
                             </div>
                             <div class="row">

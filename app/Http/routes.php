@@ -13,6 +13,20 @@ Route::get('/admin', function () {
     return view('welcome');
 });
 
+
+Route::post('/api/simcard/update', 'VMController@updateSimcardApi');
+Route::delete('/api/simcard/{id}/delete', 'VMController@destroySimcardApi');
+Route::post('/api/simcard/create', 'VMController@createSimcardApi');
+
+Route::patch('/simcard/{id}/update', 'VMController@updateSimcard');
+Route::get('/simcard/{id}/edit', 'VMController@editSimcard');
+Route::delete('/simcard/{id}/destroy', 'VMController@destroySimcard');
+Route::post('/simcard/store', 'VMController@storeSimcard');
+Route::get('/simcard/create', 'VMController@getSimcardCreate');
+Route::post('/api/simcard/data', 'VMController@getSimcardIndexApi');
+Route::get('/simcard', 'VMController@simcardIndex');
+
+
 Route::patch('/vm/{id}/update', 'VMController@updateVending');
 Route::get('/vm/{id}/edit', 'VMController@editVending');
 Route::delete('/vm/{id}/destroy', 'VMController@destroyVending');

@@ -7,6 +7,7 @@ use App\Http\Requests;
 // use Chrisbjr\ApiGuard\Http\Controllers\ApiGuardController;
 use DB;
 use App\Vending;
+use App\Simcard;
 
 class VMController extends Controller
 {
@@ -15,12 +16,6 @@ class VMController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['dataIndex']]);
-    }
-
-    // api linkup function
-    public function dataIndex()
-    {
-        return 'hello';
     }
 
     // get vending index page
@@ -64,7 +59,7 @@ class VMController extends Controller
     public function storeVending(Request $request)
     {
         $this->validate($request, [
-            'serial_no' => 'required|unique:vendings,serial_no'
+            'serial_no' => 'required|unique:vendings,serial_no',
         ], [
             'serial_no.required' => 'Please fill in serial number',
             'serial_no.unique' => 'The serial number has been used'
@@ -101,6 +96,82 @@ class VMController extends Controller
 
         return redirect('vm');
     }
+
+    // get vending index page
+    public function simcardIndex()
+    {
+        return view('simcard.index');
+    }
+
+    // get vending index api
+    public function getSimcardIndexApi()
+    {
+        // showing total amount init
+        $total_amount = 0;
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        $simcards = $this->getSimcardsData();
+
+        if (request('sortName')) {
+            $simcards = $simcards->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if ($pageNum == 'All') {
+            $simcards = $simcards->latest('simcards.created_at')->get();
+        } else {
+            $simcards = $simcards->latest('simcards.created_at')->paginate($pageNum);
+        }
+
+        $data = [
+            'simcards' => $simcards
+        ];
+        return $data;
+    }
+
+    // return simcard create page
+    public function getSimcardCreate()
+    {
+        return view('simcard.create');
+    }
+
+    // store new simcard data(Request request)
+    public function createSimcardApi(Request $request)
+    {
+        $request->merge(array('updated_by' => Auth::user()->name));        
+        $input = $request->all();
+        Simcard::create($input);
+    }
+
+    // remove simcard entry (integer id)
+    public function destroySimcard($id)
+    {
+        $simcard = Simcard::findOrFail($id);
+
+        $simcard->delete();
+    }
+
+    // return simcard edit page(integer id)
+    public function editSimcard($id)
+    {
+        $simcard = Simcard::findOrFail($id);
+
+        return view('simcard.edit', compact('simcard'));
+    }
+
+    // update simcard entry(Request request, integer id)
+    public function updateSimcard(Request $request, $id)
+    {
+        $input = $request->all();
+
+        $simcard = Simcard::findOrFail($id);
+
+        $simcard->update($input);
+
+        return redirect('simcard');
+    }    
+
+
 
     // retrieve vms data ()
     private function getVmsData()
@@ -152,5 +223,40 @@ class VMController extends Controller
         }
         return $vendings;
     }
+
+    // retrieve simcards data ()
+    private function getSimcardsData()
+    {
+        $simcards = DB::table('simcards')
+            ->leftJoin('vendings', 'vendings.id', '=', 'simcards.vending_id')
+            ->leftJoin('users', 'users.id', '=', 'simcards.updated_by')
+            ->select(
+                'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no', 'simcards.id',
+                'simcards.updated_by', 'vendings.id', 
+                'simcards.updated_at'
+            );
+
+        // reading whether search input is filled
+        if (request('phone_no') or request('telco_name')) {
+            $simcards = $this->searchSimcardDBFilter($simcards);
+        }
+
+        return $simcards;
+    }   
+    
+    // pass value into filter search for DB (collection, collection request) [query]
+    private function searchSimcardDBFilter($simcards)
+    {
+        if (request('phone_no')) {
+            $simcards = $simcards->where('simcards.phone_no', 'LIKE', '%' . request('phone_no') . '%');
+        }
+        if (request('telco_name')) {
+            $simcards = $simcards->where('simcards.telco_name', 'LIKE', '%' . request('telco_name') . '%');
+        }
+        if (request('sortName')) {
+            $simcards = $simcards->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+        return $simcards;
+    }    
     
 }

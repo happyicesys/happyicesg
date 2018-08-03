@@ -288,7 +288,8 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="bill" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export PDF</button>
+                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="do" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export DO</button>
+                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="invoice" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export Tax Invoice</button>
                                 </div>
                                 </div>
                             </div>

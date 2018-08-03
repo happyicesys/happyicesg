@@ -4,15 +4,14 @@
     <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('vend_id', 'Vend ID', ['class'=>'control-label']) !!}
-                {!! Form::text('vend_id', null, ['class'=>'form-control']) !!}
-            </div>
-        </div>
-
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="form-group">
                 {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
                 {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>        
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('vend_id', 'Vend ID', ['class'=>'control-label']) !!}
+                {!! Form::text('vend_id', null, ['class'=>'form-control']) !!}
             </div>
         </div>
     </div>
@@ -26,7 +25,7 @@
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('router', 'Router', ['class'=>'control-label']) !!}
+                {!! Form::label('router', 'Router/ HP', ['class'=>'control-label']) !!}
                 {!! Form::text('router', null, ['class'=>'form-control']) !!}
             </div>
         </div>
