@@ -919,8 +919,10 @@ class TransactionController extends Controller
 
         if(request('exportpdf') == 'do') {
             $title = 'Consolidated DO';
+            $name = 'Consolidated_DO(' . $now . ').pdf';
         }else {
             $title = 'Consolidated Tax Invoice';
+            $name = 'Consolidated_Tax_Invoice(' . $now . ').pdf';
         }
 
         $transactions = $this->getTransactionsData();
