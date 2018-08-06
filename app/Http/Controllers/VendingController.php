@@ -98,7 +98,7 @@ class VendingController extends Controller
                 $transaction->bill_address = $person->bill_address;
                 $transaction->total = -$person->subtotal_payout;
                 $transaction->is_vending_generate = 1;
-                $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date));
+                $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;
                 $remarkStr = '';
                 if($person->is_vending) {
                     $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
