@@ -11,7 +11,7 @@ class Vending extends Model
     
     protected $fillable = [
         'vend_id', 'serial_no', 'type', 'router', 'desc',
-        'person_id', 'updated_by'
+        'person_id', 'updated_by', 'simcard_id'
     ];
 
     // relationships
@@ -29,4 +29,9 @@ class Vending extends Model
     {
         return $this->belongsTo('App\User', 'updated_by');
     }    
+
+    public function simcard()
+    {
+        return $this->belongsTo('App\Simcard');
+    }
 }

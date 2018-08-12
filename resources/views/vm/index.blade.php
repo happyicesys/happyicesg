@@ -168,7 +168,9 @@ Vending Machine
                                     </a>
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ vm.serial_no }} 
+                                    <a href="/vm/@{{ vm.id }}/edit">
+                                        @{{ vm.serial_no }} 
+                                    </a>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ vm.type }}

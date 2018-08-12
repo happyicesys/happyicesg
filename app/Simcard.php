@@ -15,7 +15,7 @@ class Simcard extends Model
     // relationships
     public function vending()
     {
-        return $this->belongsTo('App\Vending');
+        return $this->hasOne('App\Vending');
     }
 
     public function updater()

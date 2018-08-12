@@ -8,6 +8,7 @@ use App\Http\Requests;
 use DB;
 use App\Vending;
 use App\Simcard;
+use Auth;
 
 class VMController extends Controller
 {
@@ -91,6 +92,8 @@ class VMController extends Controller
         $input = $request->all();
 
         $vending = Vending::findOrFail($id);
+
+        $request->merge(array('updated_by' => Auth::user()->name));
 
         $vending->update($input);
 
@@ -182,7 +185,7 @@ class VMController extends Controller
             ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->select(
                 'people.cust_id', 'people.company', 'people.id as person_id',
-                'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id',
+                'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id', 'vendings.updated_at',
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory'
             );

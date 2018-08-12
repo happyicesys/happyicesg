@@ -62,6 +62,23 @@
                     {!! Form::text('serial_number', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            @if($person->vending)
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
+                    <a href="/vm/{{$person->vending->id}}/edit">
+                    {!! Form::text('serial_no', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+                    </a>
+                </div>
+            </div>            
+            @else
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
+                    {!! Form::text('serial_no', 'Not yet bind to machine', ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+                </div>
+            </div>            
+            @endif
         </div>
     </div>
 </div>

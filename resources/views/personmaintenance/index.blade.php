@@ -143,19 +143,7 @@
                                     Refund?
                                     <span ng-if="search.sortName == 'is_refund' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'is_refund' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('created_by')">
-                                    Created By
-                                    <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'created_by' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('created_at')">
-                                    Created At
-                                    <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
+                                </th>                                                              
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('updated_by')">
                                     Updated By
@@ -200,13 +188,7 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.is_refund == 1 ? 'Yes' : 'No'}}
-                                    </td>                                      
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.creator.name}}
-                                    </td>                                      
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.created_at}}
-                                    </td>                                    
+                                    </td>                                                                        
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.updater.name}}
                                     </td>
