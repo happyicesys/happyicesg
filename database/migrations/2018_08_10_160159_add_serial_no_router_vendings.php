@@ -14,7 +14,7 @@ class AddSerialNoRouterVendings extends Migration
     {
         Schema::table('vendings', function ($table) {
             // $table->string('vend_id')->nullable();
-            $table->string('name')->nullable();
+            // $table->string('name')->nullable();
             $table->string('serial_no');
             $table->string('router')->nullable();
             $table->text('desc')->nullable();
@@ -30,7 +30,7 @@ class AddSerialNoRouterVendings extends Migration
     {
         Schema::table('vendings', function ($table) {
             // $table->dropColumn('vend_id');
-            $table->dropColumn('name');
+            // $table->dropColumn('name');
             $table->dropColumn('serial_no');
             $table->dropColumn('router');
             $table->dropColumn('desc');
