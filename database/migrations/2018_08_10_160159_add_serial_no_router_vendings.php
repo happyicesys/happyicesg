@@ -16,8 +16,8 @@ class AddSerialNoRouterVendings extends Migration
             // $table->string('vend_id')->nullable();
             // $table->string('name')->nullable();
             // $table->string('serial_no');
-            $table->string('router')->nullable();
-            $table->text('desc')->nullable();
+            // $table->string('router')->nullable();
+            // $table->text('desc')->nullable();
         }); 
     }
 
@@ -32,8 +32,8 @@ class AddSerialNoRouterVendings extends Migration
             // $table->dropColumn('vend_id');
             // $table->dropColumn('name');
             // $table->dropColumn('serial_no');
-            $table->dropColumn('router');
-            $table->dropColumn('desc');
+            // $table->dropColumn('router');
+            // $table->dropColumn('desc');
         });
     }
 }
