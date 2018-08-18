@@ -39,13 +39,18 @@ function personmaintenanceController($scope, $http, $window) {
         refund_bank: '',
         refund_account: '',
         refund_contact: '',
+        vending_details: '',
+        vending_id: '',
+        error_code: '',
+        lane_number: ''
     }
+
     // init page load
     getPage(1, true);
     fetchPeopleApi();
 
     angular.element(document).ready(function () {
-        $('.select').select2();
+        $('.select2').select2();
     });
 
     $scope.exportData = function () {
@@ -104,6 +109,16 @@ function personmaintenanceController($scope, $http, $window) {
         getPage(1, false);
     }
 
+    $scope.onSelected = function(selectedItem) {
+        if(selectedItem.vending) {
+            $scope.form.vending_details = selectedItem.vending.serial_no + ' - ' + selectedItem.vending.type;
+            $scope.form.vending_id = selectedItem.vending.id;
+        }else {
+            $scope.form.vending_details = '';
+            $scope.form.vending_id = '';
+        }
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -137,7 +152,9 @@ function personmaintenanceController($scope, $http, $window) {
             refund_bank: '',
             refund_account: '',
             refund_contact: '',
-            created_at: moment().format('YYYY-MM-DD HH:mm') 
+            created_at: moment().format('YYYY-MM-DD HH:mm'),
+            error_code: '',
+            lane_number: ''
         }
     }
 
@@ -155,7 +172,9 @@ function personmaintenanceController($scope, $http, $window) {
                 refund_bank: '',
                 refund_account: '',
                 refund_contact: '', 
-                created_at: moment().format('YYYY-MM-DD')               
+                created_at: moment().format('YYYY-MM-DD'),
+                error_code: '',
+                lane_number: ''
             }
         }).error(function (data, status) {
             $scope.formErrors = data;
@@ -189,7 +208,11 @@ function personmaintenanceController($scope, $http, $window) {
             refund_bank: personmaintenance.refund_bank,
             refund_account: personmaintenance.refund_account,
             refund_contact: personmaintenance.refund_contact,  
-            created_at: personmaintenance.created_at          
+            created_at: personmaintenance.created_at,
+            vending_details: personmaintenance.vending ? personmaintenance.vending.serial_no + ' - ' + personmaintenance.vending.type : '',
+            vending_id: personmaintenance.vending ? personmaintenance.vending.id : '',
+            error_code: personmaintenance.error_code,
+            lane_number: personmaintenance.lane_number,
         }
     }
 

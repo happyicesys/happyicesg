@@ -11,13 +11,18 @@ class Personmaintenance extends Model
         'person_id', 'title', 'remarks', 'updated_by', 'is_refund',
         'refund_name', 'refund_bank', 'refund_contact', 'created_by', 'refund_account',
         'created_at', 'complete_date', 'is_verify', 'product_id', 'error_code',
-        'failuretype_id'
+        'failuretype_id', 'vending_id', 'lane_number'
     ];
 
     // relationship
     public function person()
     {
         return $this->belongsTo('App\Person');
+    }
+
+    public function vending()
+    {
+        return $this->belongsTo('App\Vending');
     }
     
     public function updater()

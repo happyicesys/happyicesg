@@ -40,7 +40,7 @@
                                 null,
                                 [
                                 'id'=>'person_id',
-                                'class'=>'select form-control',
+                                'class'=>'select2 form-control',
                                 'ng-model'=>'search.person_id',
                                 'ng-change'=>'searchDB()'
                                 ])
@@ -120,12 +120,36 @@
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('vending.serial_no')">
+                                    Serial Num
+                                    <span ng-if="search.sortName == 'vending.serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'vending.serial_no' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>                                  
                                 <th class="col-md-2 text-center">
                                     <a href="" ng-click="sortTable('cust_id')">
                                     Customer
                                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
+                                </th> 
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('vending.type')">
+                                    Type
+                                    <span ng-if="search.sortName == 'vending.type' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'vending.type' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th> 
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('error_code')">
+                                    Error Code
+                                    <span ng-if="search.sortName == 'error_code' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'error_code' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th> 
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('lane_number')">
+                                    Lane Num
+                                    <span ng-if="search.sortName == 'lane_number' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'lane_number' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>                                                                                                                                
                                 <th class="col-md-2 text-center">
                                     <a href="" ng-click="sortTable('title')">
                                     Affected Component
@@ -144,18 +168,6 @@
                                     <span ng-if="search.sortName == 'is_refund' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'is_refund' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>                                                              
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_by')">
-                                    Updated By
-                                    <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('updated_at')">
-                                    Updated At
-                                    <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('complete_date')">
                                     Solved On
@@ -176,10 +188,24 @@
                                         @{{ $index + indexFrom }}
                                     </td>
                                     <td class="col-md-2 text-center">
+                                        <a href="/vm/@{{personmaintenance.vending.id}}/edit">
+                                            @{{personmaintenance.vending.serial_no}}
+                                        </a>
+                                    </td>                                     
+                                    <td class="col-md-2 text-center">
                                         <a href="/person/@{{personmaintenance.person.id}}/edit">
                                             (@{{personmaintenance.person.cust_id}}) @{{personmaintenance.person.company}}
                                         </a>
-                                    </td>                                    
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        @{{personmaintenance.vending.type}}
+                                    </td> 
+                                    <td class="col-md-1 text-center">
+                                        @{{personmaintenance.error_code}}
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        @{{personmaintenance.lane_number}}
+                                    </td>                                                                                                                                               
                                     <td class="col-md-2 text-center">
                                         @{{personmaintenance.title}}
                                     </td>
@@ -189,12 +215,6 @@
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.is_refund == 1 ? 'Yes' : 'No'}}
                                     </td>                                                                        
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.updater.name}}
-                                    </td>
-                                    <td class="col-md-1 text-center">
-                                        @{{personmaintenance.updated_at}}
-                                    </td> 
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.complete_date}}
                                     </td>   
@@ -243,27 +263,31 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <label class="control-label">
-                                        Customer
-                                    </label>
-{{--                                     <select ui-select2 class="form-control" name="formsearches[]" ng-model="form.person_id" data-placeholder="Select..">
-                                        @foreach($people::where('is_vending', 1)->orWhere('is_dvm', 1)->has('custcategory')->orderBy('cust_id', 'asc')->get() as $person)
-                                            <option value="{{$person->id}}">
-                                                {{$person->cust_id}} - {{$person->company}}
-                                                @if($person->custcategory)
-                                                    [{{$person->custcategory['name']}}]
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select> --}}
-                                    <ui-select ng-model="form.person_id">
-                                        <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
-                                        <ui-select-choices repeat="person.id as person in people | filter: $select.search">
-                                            <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>                                                                        
-                                </div> 
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                            <label class="control-label">
+                                                Customer
+                                            </label>
+                                            <ui-select ng-model="form.person_id" on-select="onSelected($item)">
+                                                <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
+                                                <ui-select-choices repeat="person.id as person in people | filter: $select.search">
+                                                    <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>  
+                                            </div>
+                                        </div>   
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group" ng-if="form.vending_id">
+                                                <label for="vending_details">Vending Machine</label>
+                                                <a href="/vm/@{{form.vending_id}}/edit">
+                                                    <input type="text" name="title" class="form-control" ng-model="form.vending_details" readonly>
+                                                </a>
+                                            </div>                                                                                     
+                                        </div>                                                                   
+                                    </div> 
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -308,6 +332,53 @@
                                     </label>
                                     <input type="text" name="title" class="form-control" ng-model="form.title">
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                            <label class="control-label">
+                                                Error Code
+                                            </label>
+                                            <select name="error_code" id="error_code" class="select form-control" ng-model="form.error_code">
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="20">20</option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                            <label class="control-label">
+                                                Lane Number
+                                            </label>
+                                            <select name="lane_number" id="lane_number" class="select form-control" ng-model="form.lane_number">
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="51">51</option>
+                                                <option value="52">52</option>
+                                                <option value="53">53</option>                                                
+                                            </select>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                </div>                                
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Repair Details

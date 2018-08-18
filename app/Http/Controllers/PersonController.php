@@ -555,7 +555,7 @@ class PersonController extends Controller
     // retrieve person maintenance api()
     public function getPersonmaintenancesApi()
     {
-        $personmaintenances = Personmaintenance::with(['updater', 'creator', 'person']);
+        $personmaintenances = Personmaintenance::with(['updater', 'creator', 'person', 'vending']);
 
         // reading whether search input is filled
         if (request('title')) {
@@ -605,6 +605,7 @@ class PersonController extends Controller
     {
         $personmaintenance = Personmaintenance::create([
             'person_id' => request('person_id'),
+            'vending_id' => request('vending_id'),
             'title' => request('title'),
             'remarks' => request('remarks'),
             'created_by' => auth()->user()->id,
@@ -614,7 +615,9 @@ class PersonController extends Controller
             'refund_name' => request('refund_name'),
             'refund_bank' => request('refund_bank'),
             'refund_account' => request('refund_account'),
-            'refund_contact' => request('refund_contact')
+            'refund_contact' => request('refund_contact'),
+            'error_code' => request('error_code'),
+            'lane_number' => request('lane_number')
         ]);
     }
 
@@ -626,6 +629,7 @@ class PersonController extends Controller
 
         $personmaintenance->update([
             'person_id' => request('person_id'),
+            'vending_id' => request('vending_id'),
             'title' => request('title'),
             'remarks' => request('remarks'),
             'complete_date' => request('complete_date'),
@@ -635,7 +639,9 @@ class PersonController extends Controller
             'refund_bank' => request('refund_bank'),
             'refund_account' => request('refund_account'),
             'refund_contact' => request('refund_contact'),
-            'updated_by' => auth()->user()->id
+            'updated_by' => auth()->user()->id,
+            'error_code' => request('error_code'),
+            'lane_number' => request('lane_number')            
         ]);
     }   
     
@@ -650,7 +656,7 @@ class PersonController extends Controller
     // get all people api()
     public function getPeopleOptionsApi()
     {
-        $people = Person::orderBy('cust_id')->get();
+        $people = Person::with('vending')->orderBy('cust_id')->get();
         return $people;
     }
 
