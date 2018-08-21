@@ -3,34 +3,20 @@
 
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
-                {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
-            </div>
-        </div>        
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('vend_id', 'Vend ID', ['class'=>'control-label']) !!}
-                {!! Form::text('vend_id', null, ['class'=>'form-control']) !!}
-            </div>
+        <div class="form-group">
+            {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
+            {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('type', 'Type', ['class'=>'control-label']) !!}
                 {!! Form::select('type', ['FVM'=>'FVM', 'DVM'=>'DVM', 'COMBI'=>'COMBI'], null, ['class'=>'select form-control']) !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('router', 'Router/ HP', ['class'=>'control-label']) !!}
-                {!! Form::text('router', null, ['class'=>'form-control']) !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('simcard_id', 'Simcard Num', ['class'=>'control-label']) !!}
                 {!! Form::select('simcard_id', [''=>null] + $simcards::select(DB::raw("CONCAT(simcard_no,' - ',telco_name,' - ',phone_no) AS full, id"))->orderBy('telco_name')->lists('full', 'id')->all(),
@@ -71,7 +57,8 @@
 @section('footer')
 <script>
     $('.select').select2({
-        placeholder: 'Select..'
+        placeholder: 'Select..',
+        allowClear: true
     });
 </script>
 @stop
