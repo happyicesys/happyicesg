@@ -129,7 +129,9 @@ SIM Card
                                     @{{ simcard.telco_name }} 
                                 </td>
                                 <td class="col-md-2 text-center">
-                                    @{{ simcard.simcard_no }}
+                                    <a href="#" data-toggle="modal" data-target="#simcard_modal" ng-click="editSimcardModal(simcard)">
+                                        @{{ simcard.simcard_no }}
+                                    </a>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ simcard.updater }}

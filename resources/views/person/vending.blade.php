@@ -67,7 +67,7 @@
                 <div class="form-group">
                     {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
                     <a href="/vm/{{$person->vending->id}}/edit">
-                        {{$person->vending->serial_no}}
+                        {!! Form::text('serial_no', $person->vending->serial_no, ['class'=>'form-control', 'readonely'=>'readonly']) !!}
                     </a>
                 </div>
             </div>            
