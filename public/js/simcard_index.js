@@ -121,8 +121,9 @@ function simcardController($scope, $http) {
         });
     }
 
-    $scope.removeSimcard = function (id) {
-        var isConfirmDelete = confirm('Are you sure to DELETE this group, its parts and consumables?');
+    $scope.removeSimcard = function (event, id) {
+        event.preventDefault();
+        var isConfirmDelete = confirm('Are you sure to DELETE this simcard?');
         if (isConfirmDelete) {
             $http.delete('/api/simcard/' + id + '/delete').success(function (data) {
                 getPage(1);
@@ -150,7 +151,7 @@ function simcardController($scope, $http) {
         $http.post('/api/simcard/update', $scope.form).success(function (data) {
             getPage(1);
         });
-    }    
+    }
 }
 
 app.filter('delDate', [

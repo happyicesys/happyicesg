@@ -37,22 +37,22 @@ class PriceController extends Controller
         $retail_price = $request->retail;
         $quote_price = $request->quote;
 
-        foreach($quote_price as $index => $quote){
-            if($quote != 0 and $quote != null){
-                if(auth()->user()->hasRole('franchisee')) {
+        foreach ($quote_price as $index => $quote) {
+            if ($quote != 0 and $quote != null) {
+                if (auth()->user()->hasRole('franchisee')) {
                     $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
-                }else {
+                } else {
                     $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
                 }
 
-                if($price){
+                if ($price) {
                     $price->retail_price = $retail_price[$index];
                     $price->quote_price = $quote_price[$index];
                     $price->save();
-                }else{
-                    if(auth()->user()->hasRole('franchisee')) {
+                } else {
+                    if (auth()->user()->hasRole('franchisee')) {
                         $price = new Fprice();
-                    }else {
+                    } else {
                         $price = new Price();
                     }
                     $price->retail_price = $retail_price[$index];
@@ -61,18 +61,18 @@ class PriceController extends Controller
                     $price->item_id = $index;
                     $price->save();
                 }
-            }else{
-                if(auth()->user()->hasRole('franchisee')) {
+            } else {
+                if (auth()->user()->hasRole('franchisee')) {
                     $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
-                }else {
+                } else {
                     $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
                 }
 
-                if($retail_price[$index] == 0 or $retail_price[$index] == null){
-                    if($price){
+                if ($retail_price[$index] == 0 or $retail_price[$index] == null) {
+                    if ($price) {
                         $price->delete();
                     }
-                }else{
+                } else {
                     $price->retail_price = $retail_price[$index];
                     $price->quote_price = $quote_price[$index];
                     $price->person_id = $person_id;
@@ -90,7 +90,7 @@ class PriceController extends Controller
 
         $input = $request->all();
         $price = Price::create($input);
-        */
+         */
 
         return Redirect::action('PersonController@edit', $person_id);
     }
@@ -133,7 +133,7 @@ class PriceController extends Controller
         $price = Price::findOrFail($id);
         $retail_price = $request->input('retail_price');
 
-        if(! $request->has('quote_price')){
+        if (!$request->has('quote_price')) {
             $request->merge(array('quote_price' => $this->calquote($price->person_id, $retail_price)));
         }
 
@@ -206,25 +206,25 @@ class PriceController extends Controller
         $retailprices = request('retail_price');
         $quoteprices = request('quote_price');
 
-        if($checkboxes) {
-            foreach($checkboxes as $index => $checkbox) {
+        if ($checkboxes) {
+            foreach ($checkboxes as $index => $checkbox) {
                 $person = Person::findOrFail($index);
                 $person->cost_rate = $costrates[$index];
                 $person->save();
 
-                foreach($retailprices as $retailindex => $retailprice) {
-                    if(explode('-', $retailindex)[1] == $index) {
+                foreach ($retailprices as $retailindex => $retailprice) {
+                    if (explode('-', $retailindex)[1] == $index) {
                         $price = Price::where('person_id', $index)->where('item_id', explode('-', $retailindex)[0])->first();
-                        if($price) {
-                            if(($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
+                        if ($price) {
+                            if (($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
                                 $price->retail_price = $retailprice;
                                 $price->quote_price = $quoteprices[$retailindex];
                                 $price->save();
-                            }else {
+                            } else {
                                 $price->delete();
                             }
-                        }else {
-                            if(($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
+                        } else {
+                            if (($retailprice != 0.00 and $retailprice != '') or ($quoteprices[$retailindex] != 0.00 and $quoteprices[$retailindex] != '')) {
                                 $price = new Price();
                                 $price->person_id = $person->id;
                                 $price->item_id = explode('-', $retailindex)[0];
@@ -239,7 +239,7 @@ class PriceController extends Controller
                 }
             }
 
-        }else {
+        } else {
             Flash::error('Please select at least one checkbox');
         }
         return redirect()->action('PriceController@getPriceMatrix');
@@ -254,19 +254,19 @@ class PriceController extends Controller
 
         $items = new Item();
 
-        if($product_id) {
-            $items = $items->where('product_id', 'LIKE', '%'.$product_id.'%');
+        if ($product_id) {
+            $items = $items->where('product_id', 'LIKE', '%' . $product_id . '%');
         }
-        if($name) {
-            $items = $items->where('name', 'LIKE', '%'.$name.'%');
+        if ($name) {
+            $items = $items->where('name', 'LIKE', '%' . $name . '%');
         }
 
         // init
-        if(request()->isMethod('get')) {
+        if (request()->isMethod('get')) {
 
             $items = $items->where('is_inventory', 1);
 
-        }else if(request()->isMethod('post')) {
+        } else if (request()->isMethod('post')) {
 
             $items = $items->where('is_inventory', $is_inventory);
         }
@@ -285,18 +285,18 @@ class PriceController extends Controller
 
         $people = new Person();
 
-        if($cust_id) {
-            $people = $people->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+        if ($cust_id) {
+            $people = $people->where('cust_id', 'LIKE', '%' . $cust_id . '%');
         }
-        if($custcategory_id) {
+        if ($custcategory_id) {
             $people = $people->where('custcategory_id', $custcategory_id);
         }
-        if($company) {
-            $people = $people->where('company', 'LIKE', '%'.$company.'%');
+        if ($company) {
+            $people = $people->where('company', 'LIKE', '%' . $company . '%');
         }
 
         // init
-        if(request()->isMethod('get')) {
+        if (request()->isMethod('get')) {
             $people = $people->where('custcategory_id', 2);
         }
 
@@ -311,10 +311,10 @@ class PriceController extends Controller
 
         $cost_rate = $person->cost_rate;
 
-        if($cost_rate){
+        if ($cost_rate) {
             $result = round($retail_price * ($cost_rate / 100), 2);
             return $result;
-        }else{
+        } else {
             return false;
         }
 

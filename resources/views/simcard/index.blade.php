@@ -42,7 +42,7 @@ SIM Card
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                         !!}
-                    </div>                        
+                    </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('telco_name', 'Telco Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('telco_name', [''=>'All', 'Singtel'=>'Singtel', 'Starhub'=>'Starhub', 'M1'=>'M1', 'Redone'=>'Redone'], null,
@@ -126,7 +126,7 @@ SIM Card
                                     </a>
                                 </td>
                                 <td class="col-md-2 text-center">
-                                    @{{ simcard.telco_name }} 
+                                    @{{ simcard.telco_name }}
                                 </td>
                                 <td class="col-md-2 text-center">
                                     <a href="#" data-toggle="modal" data-target="#simcard_modal" ng-click="editSimcardModal(simcard)">
@@ -138,10 +138,10 @@ SIM Card
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ simcard.updated_at }}
-                                </td>  
+                                </td>
                                 <td class="col-md-1 text-center">
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, simcard.id)"><i class="fa fa-times"></i></button>
-                                </td>                              
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="removeSimcard($event, simcard.id)"><i class="fa fa-times"></i></button>
+                                </td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">
                                 <td colspan="18" class="text-center">No Records Found</td>
@@ -198,7 +198,7 @@ SIM Card
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 
     <script src="/js/simcard_index.js"></script>
 @stop

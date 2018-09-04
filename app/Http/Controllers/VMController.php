@@ -141,13 +141,13 @@ class VMController extends Controller
     // store new simcard data(Request request)
     public function createSimcardApi(Request $request)
     {
-        $request->merge(array('updated_by' => Auth::user()->name));        
+        $request->merge(array('updated_by' => Auth::user()->name));
         $input = $request->all();
         Simcard::create($input);
     }
 
     // remove simcard entry (integer id)
-    public function destroySimcard($id)
+    public function destroySimcardApi($id)
     {
         $simcard = Simcard::findOrFail($id);
 
@@ -172,7 +172,7 @@ class VMController extends Controller
         $simcard->update($input);
 
         return redirect('simcard');
-    }    
+    }
 
 
 
@@ -196,8 +196,8 @@ class VMController extends Controller
         }
 
         return $vendings;
-    }   
-    
+    }
+
     // pass value into filter search for DB (collection, collection request) [query]
     private function searchDBFilter($vendings)
     {
@@ -235,7 +235,7 @@ class VMController extends Controller
             ->leftJoin('users', 'users.id', '=', 'simcards.updated_by')
             ->select(
                 'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no', 'simcards.id',
-                'simcards.updated_by', 'vendings.id', 
+                'simcards.updated_by', 'vendings.id AS vending_id',
                 'simcards.updated_at'
             );
 
@@ -245,8 +245,8 @@ class VMController extends Controller
         }
 
         return $simcards;
-    }   
-    
+    }
+
     // pass value into filter search for DB (collection, collection request) [query]
     private function searchSimcardDBFilter($simcards)
     {
@@ -260,6 +260,6 @@ class VMController extends Controller
             $simcards = $simcards->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $simcards;
-    }    
-    
+    }
+
 }

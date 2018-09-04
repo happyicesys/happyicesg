@@ -38,13 +38,13 @@ class PersonController extends Controller
 
     public function getPersonData($person_id)
     {
-        $person =  Person::findOrFail($person_id);
+        $person = Person::findOrFail($person_id);
         return $person;
     }
 
     public function getData()
     {
-        $person =  Person::with('custcategory')->where(function($query){
+        $person = Person::with('custcategory')->where(function ($query) {
             $query->where('cust_id', 'NOT LIKE', 'H%');
         })->orderBy('cust_id')->get();
         return $person;
@@ -60,21 +60,29 @@ class PersonController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         $people = DB::table('people')
-                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
-                        ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                        ->select(
-                                    'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact',
-                                    'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active',
-                                    'people.payterm',
-                                    'custcategories.name as custcategory',
-                                    'profiles.id AS profile_id', 'profiles.name AS profile_name'
-                                );
+            ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->select(
+                'people.id',
+                'people.cust_id',
+                'people.company',
+                'people.name',
+                'people.contact',
+                'people.alt_contact',
+                'people.del_address',
+                'people.del_postcode',
+                'people.active',
+                'people.payterm',
+                'custcategories.name as custcategory',
+                'profiles.id AS profile_id',
+                'profiles.name AS profile_name'
+            );
 
         // reading whether search input is filled
-        if($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active or $request->franchisee_id) {
+        if ($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active or $request->franchisee_id) {
             $people = $this->searchPeopleDBFilter($people, $request);
-        }else {
-            if($request->sortName) {
+        } else {
+            if ($request->sortName) {
                 $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
@@ -85,9 +93,9 @@ class PersonController extends Controller
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
 
-        if($pageNum == 'All'){
+        if ($pageNum == 'All') {
             $people = $people->orderBy('people.created_at', 'desc')->get();
-        }else{
+        } else {
             $people = $people->orderBy('people.created_at', 'desc')->paginate($pageNum);
         }
 
@@ -118,11 +126,11 @@ class PersonController extends Controller
     {
         $input = $request->all();
         $person = Person::create($input);
-        $person->is_vending = $request->has('is_vending')? 1 : 0;
-        $person->is_dvm = $request->has('is_dvm')? 1 : 0;
+        $person->is_vending = $request->has('is_vending') ? 1 : 0;
+        $person->is_dvm = $request->has('is_dvm') ? 1 : 0;
         // default setting is dvm based on custcategory
-        if($person->custcategory) {
-            if($person->custcategory->name == 'V-Dir') {
+        if ($person->custcategory) {
+            if ($person->custcategory->name == 'V-Dir') {
                 $person->is_dvm = 1;
             }
         }
@@ -170,8 +178,8 @@ class PersonController extends Controller
     {
         $filesname = request('file_name');
 
-        foreach($filesname as $index => $filename) {
-            if($filename) {
+        foreach ($filesname as $index => $filename) {
+            if ($filename) {
                 $file = StoreFile::findOrFail($index);
                 $file->name = $filename;
                 $file->save();
@@ -196,15 +204,15 @@ class PersonController extends Controller
         $person = Person::findOrFail($id);
 
         // detect if changing profile, will copy the original is gst inclusive
-        if($person->profile_id != $request->profile_id) {
+        if ($person->profile_id != $request->profile_id) {
             $newprofile = Profile::findOrFail($request->profile_id);
             $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive));
             $request->merge(array('gst_rate' => $newprofile->gst_rate ? $newprofile->gst_rate : 0));
-        }else {
-            $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive')? 1 : 0));
+        } else {
+            $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive') ? 1 : 0));
         }
 
-        switch($request->active) {
+        switch ($request->active) {
             case 'Activate':
                 $request->merge(array('active' => 'Yes'));
                 break;
@@ -219,27 +227,27 @@ class PersonController extends Controller
         $person->update($input);
 
         $person->is_vending = $request->has('is_vending') ? 1 : 0;
-        $person->is_dvm = $request->has('is_dvm')? 1 : 0;
+        $person->is_dvm = $request->has('is_dvm') ? 1 : 0;
 
         // serial number validation for vending
-        if($person->serial_number) {
+        if ($person->serial_number) {
             $this->validate($request, [
-                'serial_number' => 'unique:people,serial_number,'.$person->id
+                'serial_number' => 'unique:people,serial_number,' . $person->id
             ], [
                 'serial_number.unique' => 'The Serial Number has been taken'
             ]);
         }
 
         // default setting is dvm based on custcategory
-        if($person->custcategory) {
-            if($person->custcategory->name == 'V-Dir') {
+        if ($person->custcategory) {
+            if ($person->custcategory->name == 'V-Dir') {
                 $person->is_dvm = 1;
                 $person->is_vending = 0;
             }
         }
         // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
-        if(!$person->is_vending and !$person->is_dvm) {
+        if (!$person->is_vending and !$person->is_dvm) {
             $person->vending_piece_price = 0.00;
             $person->vending_monthly_rental = 0.00;
             $person->vending_profit_sharing = 0.00;
@@ -270,7 +278,7 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($id);
         $file = $request->file('file');
-        $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+        $name = (Carbon::now()->format('dmYHi')) . $file->getClientOriginalName();
         $file->move('person_asset/file', $name);
         $person->files()->create(['path' => "/person_asset/file/{$name}"]);
 
@@ -281,11 +289,10 @@ class PersonController extends Controller
         $file = StoreFile::findOrFail($id);
         $filename = $file->path;
         $path = public_path();
-        if (!File::delete($path.$filename))
-        {
+        if (!File::delete($path . $filename)) {
             $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
-        }else {
+        } else {
             $file->delete();
             return Redirect::action('PersonController@edit', $file->person_id);
         }
@@ -330,31 +337,44 @@ class PersonController extends Controller
             $transactions = $transactions1
                             ->union($transactions2);
         }else{*/
-            $transactions = DB::table('deals')
-                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                            ->select(
-                                DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
-                                DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
-                                    'transactions.delivery_fee','transactions.id AS id', 'transactions.status AS status',
-                                    'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver',
-                                    'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status',
-                                    'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at',
-                                    'transactions.created_at AS created_at', 'transactions.pay_method',
-                                    DB::raw('DATE(transactions.delivery_date) AS del_date'),
-                                    'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                                    'profiles.name', 'transactions.gst', 'transactions.gst_rate', 'people.is_vending', 'people.is_dvm'
-                                )
-                            ->where('people.id', '=', $person_id);
+        $transactions = DB::table('deals')
+            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->select(
+                DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
+                DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
+                'transactions.delivery_fee',
+                'transactions.id AS id',
+                'transactions.status AS status',
+                'transactions.delivery_date AS delivery_date',
+                'transactions.driver AS driver',
+                'transactions.total_qty AS total_qty',
+                'transactions.pay_status AS pay_status',
+                'transactions.updated_by AS updated_by',
+                'transactions.updated_at AS updated_at',
+                'transactions.created_at AS created_at',
+                'transactions.pay_method',
+                DB::raw('DATE(transactions.delivery_date) AS del_date'),
+                'people.cust_id',
+                'people.company',
+                'people.del_postcode',
+                'people.id as person_id',
+                'profiles.name',
+                'transactions.gst',
+                'transactions.gst_rate',
+                'people.is_vending',
+                'people.is_dvm'
+            )
+            ->where('people.id', '=', $person_id);
         // }
 
         // reading whether search input is filled
-        if($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver){
+        if ($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver) {
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }else{
-            if($request->sortName){
+        } else {
+            if ($request->sortName) {
                 $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
             }
         }
@@ -363,14 +383,14 @@ class PersonController extends Controller
 
         $totals = $this->calTotals($transactions);
 
-        if($pageNum == 'All'){
+        if ($pageNum == 'All') {
             $transactions = $transactions->get();
-        }else{
+        } else {
             $transactions = $transactions->paginate($pageNum);
         }
 
         $profileTransactionsId = [];
-        foreach(Transaction::wherePersonId($person->id)->get() as $transac) {
+        foreach (Transaction::wherePersonId($person->id)->get() as $transac) {
             array_push($profileTransactionsId, $transac->id);
         }
         $profileDealsGrossProfit = number_format((Deal::whereIn('transaction_id', $profileTransactionsId)->sum('amount') - Deal::whereIn('transaction_id', $profileTransactionsId)->sum(DB::raw('qty * unit_cost'))), 2, '.', '');
@@ -403,8 +423,8 @@ class PersonController extends Controller
     public function addFreezer(Request $request)
     {
         $this->validate($request, [
-                'freezer_id',
-            ]);
+            'freezer_id',
+        ]);
         $addfreezer = AddFreezer::create($request->all());
         return Redirect::action('PersonController@edit', $addfreezer->person_id);
     }
@@ -419,8 +439,8 @@ class PersonController extends Controller
     public function addAccessory(Request $request)
     {
         $this->validate($request, [
-                'accessory_id',
-            ]);
+            'accessory_id',
+        ]);
         $addaccessory = AddAccessory::create($request->all());
         return Redirect::action('PersonController@edit', $addaccessory->person_id);
     }
@@ -436,43 +456,49 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($person_id);
 
-        if($person->cust_id[0] === 'H') {
+        if ($person->cust_id[0] === 'H') {
             $person_id = 1643;
         }
 
         $personprice = DB::raw(
-                            "(
+            "(
                                 SELECT prices.retail_price, prices.quote_price, prices.item_id, people.cost_rate FROM prices
                                 LEFT JOIN people ON people.id = prices.person_id
-                                WHERE people.id = ".$person_id."
+                                WHERE people.id = " . $person_id . "
                                 ) personprice"
-                        );
+        );
 
-        if(auth()->user()->hasRole('franchisee')) {
+        if (auth()->user()->hasRole('franchisee')) {
             $personprice = DB::raw(
-                                "(
+                "(
                                     SELECT fprices.retail_price, fprices.quote_price, fprices.item_id, people.cost_rate FROM fprices
                                     LEFT JOIN people ON people.id = fprices.person_id
-                                    WHERE people.id = ".$person_id."
+                                    WHERE people.id = " . $person_id . "
                                     ) personprice"
-                            );
+            );
         }
 
         $items = DB::table('items')
-                    ->leftJoin($personprice, 'personprice.item_id', '=', 'items.id')
-                    ->select(
-                        'items.id AS item_id', 'items.product_id', 'items.name', 'items.remark',
-                        'personprice.retail_price', 'personprice.quote_price', 'personprice.cost_rate'
-                    );
+            ->leftJoin($personprice, 'personprice.item_id', '=', 'items.id')
+            ->select(
+                'items.id AS item_id',
+                'items.product_id',
+                'items.name',
+                'items.remark',
+                'personprice.retail_price',
+                'personprice.quote_price',
+                'personprice.cost_rate'
+            );
 
         $items = $items->where('items.is_active', 1)
-                        ->orderBy('items.product_id', 'asc')
-                        ->get();
+            ->orderBy('items.product_id', 'asc')
+            ->get();
 
         return $items;
     }
 
-    public function getPersonCostRate($person_id) {
+    public function getPersonCostRate($person_id)
+    {
         $person = Person::findOrFail($person_id);
 
         return $person->cost_rate;
@@ -492,10 +518,10 @@ class PersonController extends Controller
         $members = '';
         $member = Person::whereUserId(Auth::user()->id)->first();
         $admin = Auth::user()->hasRole('admin');
-        if($admin) {
+        if ($admin) {
             // $members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_id', 'asc')->pluck('name')->all();
             $members = Person::where('cust_id', 'LIKE', 'D%')->orderBy('cust_id', 'asc')->get();
-        }else if($member and !$admin) {
+        } else if ($member and !$admin) {
             // $members = $member->descendantsAndSelf()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_id', 'asc')->pluck('name')->all();
             $members = $member->descendantsAndSelf()->where('cust_id', 'LIKE', 'D%')->reOrderBy('cust_id', 'asc')->get();
         }
@@ -528,13 +554,13 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($person_id);
         $rep_person = $person->replicate();
-        $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id.'-replicate-%');
-        $rep_person->cust_id = $find_already_replicate->first() ?  substr($find_already_replicate->max('cust_id'), 0, -1).(substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id.'-replicate-1';
+        $find_already_replicate = Person::where('cust_id', 'LIKE', $person->cust_id . '-replicate-%');
+        $rep_person->cust_id = $find_already_replicate->first() ? substr($find_already_replicate->max('cust_id'), 0, -1) . (substr($find_already_replicate->max('cust_id'), -1) + 1) : $person->cust_id . '-replicate-1';
         $rep_person->save();
 
         // replicate pricelist
         $prices = $person->prices;
-        foreach($prices as $price) {
+        foreach ($prices as $price) {
             $rep_price = new Price();
             $rep_price->retail_price = $price->retail_price;
             $rep_price->quote_price = $price->quote_price;
@@ -576,7 +602,7 @@ class PersonController extends Controller
         if (request('created_to')) {
             $created_to = request('created_to');
             $personmaintenances = $personmaintenances->whereDate('created_at', '<=', $created_to);
-        }         
+        }
 
         $personmaintenances = $personmaintenances->orWhere('is_verify', null);
 
@@ -597,7 +623,7 @@ class PersonController extends Controller
             'personmaintenances' => $personmaintenances
         ];
 
-        return $data;        
+        return $data;
     }
 
     // create person maintenance()
@@ -641,17 +667,17 @@ class PersonController extends Controller
             'refund_contact' => request('refund_contact'),
             'updated_by' => auth()->user()->id,
             'error_code' => request('error_code'),
-            'lane_number' => request('lane_number')            
+            'lane_number' => request('lane_number')
         ]);
-    }   
-    
+    }
+
     // update verification of job()
     public function verifyPersonmaintenanceApi()
     {
         $personmaintenance = Personmaintenance::findOrFail(request('personmaintenance_id'));
         $personmaintenance->is_verify = request('is_verify');
         $personmaintenance->save();
-    }    
+    }
 
     // get all people api()
     public function getPeopleOptionsApi()
@@ -678,35 +704,35 @@ class PersonController extends Controller
         $profile_id = $request->profile_id;
         $franchisee_id = $request->franchisee_id;
 
-        if($cust_id){
-            $people = $people->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+        if ($cust_id) {
+            $people = $people->where('people.cust_id', 'LIKE', '%' . $cust_id . '%');
         }
-        if($custcategory) {
-            if(count($custcategory) == 1) {
+        if ($custcategory) {
+            if (count($custcategory) == 1) {
                 $custcategory = [$custcategory];
             }
             $people = $people->whereIn('custcategories.id', $custcategory);
         }
-        if($company){
-            $people = $people->where('people.company', 'LIKE', '%'.$company.'%');
+        if ($company) {
+            $people = $people->where('people.company', 'LIKE', '%' . $company . '%');
         }
-        if($contact){
-            $people = $people->where(function($query) use ($contact) {
-                $query->where('people.contact', 'LIKE', '%'.$contact.'%')->orWhere('people.alt_contact', 'LIKE', '%'.$contact.'%');
+        if ($contact) {
+            $people = $people->where(function ($query) use ($contact) {
+                $query->where('people.contact', 'LIKE', '%' . $contact . '%')->orWhere('people.alt_contact', 'LIKE', '%' . $contact . '%');
             });
         }
-        if($active){
-            $people = $people->where('people.active', 'LIKE', '%'.$active.'%');
+        if ($active) {
+            $people = $people->where('people.active', 'LIKE', '%' . $active . '%');
         }
-        if($profile_id) {
+        if ($profile_id) {
             $people = $people->where('profiles.id', $profile_id);
         }
                 // add in franchisee checker
-        if(auth()->user()->hasRole('franchisee')) {
+        if (auth()->user()->hasRole('franchisee')) {
             $people = $people->whereIn('people.franchisee_id', [auth()->user()->id]);
         } else if (auth()->user()->hasRole('subfranchisee')) {
             $people = $people->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
-        } else if($franchisee_id) {
+        } else if ($franchisee_id) {
             $people = $people->where('people.franchisee_id', $franchisee_id);
         }
 
@@ -723,23 +749,23 @@ class PersonController extends Controller
         $delivery_to = $request->delivery_to;
         $driver = $request->driver;
 
-        if($id){
-            $transactions = $transactions->where('id', 'LIKE', '%'.$id.'%');
+        if ($id) {
+            $transactions = $transactions->where('id', 'LIKE', '%' . $id . '%');
         }
-        if($status){
-            $transactions = $transactions->where('status', 'LIKE', '%'.$status.'%');
+        if ($status) {
+            $transactions = $transactions->where('status', 'LIKE', '%' . $status . '%');
         }
-        if($pay_status){
-            $transactions = $transactions->where('pay_status', 'LIKE', '%'.$pay_status.'%');
+        if ($pay_status) {
+            $transactions = $transactions->where('pay_status', 'LIKE', '%' . $pay_status . '%');
         }
-        if($delivery_from){
+        if ($delivery_from) {
             $transactions = $transactions->where('delivery_date', '>=', $delivery_from);
         }
-        if($delivery_to){
+        if ($delivery_to) {
             $transactions = $transactions->where('delivery_date', '<=', $delivery_to);
         }
-        if($driver){
-            $transactions = $transactions->where('driver', 'LIKE', '%'.$driver.'%');
+        if ($driver) {
+            $transactions = $transactions->where('driver', 'LIKE', '%' . $driver . '%');
         }
         return $transactions;
     }
@@ -754,15 +780,15 @@ class PersonController extends Controller
         $total_paid = 0;
         $total_owe = 0;
 
-        foreach($transactions as $transaction) {
+        foreach ($transactions as $transaction) {
             array_push($transactionsIdArr, $transaction->id);
         }
 
         $total_amount = DB::table('transactions')
-                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                            ->whereIn('transactions.id', $transactionsIdArr)
-                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->whereIn('transactions.id', $transactionsIdArr)
+            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
@@ -770,11 +796,11 @@ class PersonController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $total_paid = DB::table('transactions')
-                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                            ->whereIn('transactions.id', $transactionsIdArr)
-                            ->where('transactions.pay_status', 'Paid')
-                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->whereIn('transactions.id', $transactionsIdArr)
+            ->where('transactions.pay_status', 'Paid')
+            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
@@ -782,11 +808,11 @@ class PersonController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)'));
 
         $total_owe = DB::table('transactions')
-                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                            ->whereIn('transactions.id', $transactionsIdArr)
-                            ->where('transactions.pay_status', 'Owe')
-                            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->whereIn('transactions.id', $transactionsIdArr)
+            ->where('transactions.pay_status', 'Owe')
+            ->sum(DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
