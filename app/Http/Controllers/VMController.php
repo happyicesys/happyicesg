@@ -235,8 +235,8 @@ class VMController extends Controller
             ->leftJoin('users', 'users.id', '=', 'simcards.updated_by')
             ->select(
                 'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no', 'simcards.id',
-                'simcards.updated_by', 'vendings.id AS vending_id',
-                'simcards.updated_at'
+                'simcards.updated_by', 'simcards.updated_at',
+                'vendings.id AS vending_id', 'vendings.serial_no'
             );
 
         // reading whether search input is filled

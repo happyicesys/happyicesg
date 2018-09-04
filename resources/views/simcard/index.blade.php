@@ -178,6 +178,7 @@ SIM Card
                             </label>
                             <select name="telco_name" id="telco_name" class="select form-control" ng-model="form.telco_name">
                                 <option value="Singtel">Singtel</option>
+                                <option value="Singtel M2M">Singtel M2M</option>
                                 <option value="Starhub">Starhub</option>
                                 <option value="M1">M1</option>
                                 <option value="Redone">Redone</option>
@@ -189,6 +190,19 @@ SIM Card
                             </label>
                             <input type="text" name="simcard_no" class="form-control" ng-model="form.simcard_no">
                         </div>
+
+
+                        <div class="col-md-12 col-sm-12 col-xs-12" ng-if="form.vending_id">
+                            <div class="form-group">
+                                {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
+                                <a href="/vm/@{{form.vending_id}}/edit">
+                                    <input type="text" name="serial_no" class="form-control" ng-model=form.serial_no readonly>
+                                </a>
+                            </div>
+                        </div>
+
+
+
                     </div>
                 </div>
                 <div class="modal-footer">

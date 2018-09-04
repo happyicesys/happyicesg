@@ -25,7 +25,9 @@ function simcardController($scope, $http) {
         id: '',
         phone_no: '',
         telco_name: '',
-        simcard_no: ''
+        simcard_no: '',
+        vending_id: '',
+        serial_no: ''
     }
 
     // init page load
@@ -101,7 +103,9 @@ function simcardController($scope, $http) {
             id: '',
             phone_no: '',
             telco_name: '',
-            simcard_no: ''
+            simcard_no: '',
+            vending_id: '',
+            serial_no: ''
         }
     }
 
@@ -114,7 +118,9 @@ function simcardController($scope, $http) {
                 id: '',
                 phone_no: '',
                 telco_name: '',
-                simcard_no: ''
+                simcard_no: '',
+                vending_id: '',
+                serial_no: ''
             }
         }).error(function (data, status) {
             $scope.formErrors = data;
@@ -143,8 +149,9 @@ function simcardController($scope, $http) {
             phone_no: simcard.phone_no,
             telco_name: simcard.telco_name,
             simcard_no: simcard.simcard_no,
+            vending_id: simcard.vending_id,
+            serial_no: simcard.serial_no
         }
-        console.log($scope.form.telco_name);
     }
 
     $scope.editSimcard = function () {
