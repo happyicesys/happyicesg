@@ -45,7 +45,7 @@ SIM Card
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('telco_name', 'Telco Name', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('telco_name', [''=>'All', 'Singtel'=>'Singtel', 'Singtel_M2M'=>'Singtel M2M' 'Starhub'=>'Starhub', 'M1'=>'M1', 'Redone'=>'Redone'], null,
+                        {!! Form::select('telco_name', [''=>'All', 'Singtel'=>'Singtel', 'Singtel_M2M'=>'Singtel M2M', 'Starhub'=>'Starhub', 'M1'=>'M1', 'Redone'=>'Redone'], null,
                             [
                             'class'=>'select form-control',
                             'ng-model'=>'search.telco_name',
