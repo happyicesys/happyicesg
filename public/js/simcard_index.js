@@ -34,7 +34,7 @@ function simcardController($scope, $http) {
     getPage(1);
 
     angular.element(document).ready(function () {
-        $('.select').select2();
+        $('.select2').select2();
     });
 
     $scope.exportData = function (event) {

@@ -47,7 +47,7 @@ SIM Card
                         {!! Form::label('telco_name', 'Telco Name', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('telco_name', [''=>'All', 'Singtel'=>'Singtel', 'Singtel_M2M'=>'Singtel M2M', 'Starhub'=>'Starhub', 'M1'=>'M1', 'Redone'=>'Redone'], null,
                             [
-                            'class'=>'select form-control',
+                            'class'=>'select2 form-control',
                             'ng-model'=>'search.telco_name',
                             'ng-change'=>'searchDB()'
                             ])
