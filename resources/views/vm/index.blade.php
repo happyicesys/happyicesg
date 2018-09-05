@@ -42,7 +42,7 @@ Vending Machine
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                         !!}
-                    </div>                        
+                    </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'Cust ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
@@ -108,12 +108,6 @@ Vending Machine
                                 #
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('vend_id')">
-                                Vend ID
-                                <span ng-if="search.sortName == 'vend_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'vend_id' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('serial_no')">
                                 Serial No
                                 <span ng-if="search.sortName == 'serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -144,39 +138,26 @@ Vending Machine
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('updated_by')">
-                                Last Modified By
-                                <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.updated_at')">
-                                Last Modified Time
-                                <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
-                            <th class="col-md-1 text-center">
                                 Action
                             </th>
                         </tr>
                         <tbody>
                             <tr dir-paginate="vm in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
-                                <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/vm/@{{ vm.id }}/edit">
-                                        @{{ vm.vend_id }}
+                                        @{{ $index + indexFrom }}
                                     </a>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/vm/@{{ vm.id }}/edit">
-                                        @{{ vm.serial_no }} 
+                                        @{{ vm.serial_no }}
                                     </a>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ vm.type }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ vm.router }} 
+                                    @{{ vm.router }}
                                 </td>
                                 <td class="col-md-2 text-left">
                                     @{{ vm.desc }}
@@ -184,17 +165,11 @@ Vending Machine
                                 <td class="col-md-2 text-left">
                                     <a href="/person/@{{ vm.person_id }}">
                                         @{{ vm.cust_id}} - @{{vm.company}}
-                                    </a>                                    
+                                    </a>
                                 </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.updater }}
-                                </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.updated_at }}
-                                </td>  
                                 <td class="col-md-1 text-center">
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, vm.id)"><i class="fa fa-times"></i></button>
-                                </td>                              
+                                </td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">
                                 <td colspan="18" class="text-center">No Records Found</td>
