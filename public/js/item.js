@@ -128,13 +128,14 @@ function unitcostController($scope, $http){
     function getPage(pageNumber){
         $scope.spinner = true;
         $http.post('/api/item/unitcost', $scope.search).success(function(data){
-            $scope.items = data.items;
+/*             $scope.items = data.items;
             $scope.profiles = data.profiles;
-            $scope.unitcosts = data.unitcosts;
-            $scope.spinner = false;
+            $scope.unitcosts = data.unitcosts; */
+            $scope.alldata = data.dataArr;
         });
         $scope.totalCount = 0;
-        $scope.countInit = function() {
+        $scope.spinner = false;
+/*         $scope.countInit = function() {
            return $scope.totalCount++;
         }
         $scope.getUnitcostInit = function(profile_id, item_id){
@@ -144,7 +145,7 @@ function unitcostController($scope, $http){
                     return $scope.unitcosts[i].unit_cost;
                 }
             }
-        }
+        } */
     }
 }
 

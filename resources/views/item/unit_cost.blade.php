@@ -34,7 +34,7 @@
                 <button type="submit" form="submit_unitcost" class="btn btn-success"> Batch Update</button>
                 <button type="submit" form="export_excel" name="exportExcel" value="exportExcel" class="btn btn-primary" >Export Excel</button>
             </div>
-            <label class="pull-right totalnum" for="totalnum">Showing @{{items.length * profiles.length ? items.length * profiles.length : 0}} entries</label>
+            <label class="pull-right totalnum" for="totalnum">Showing @{{alldata.length}} entries</label>
         </div>
     </div>
 
@@ -65,25 +65,29 @@
                     Unit Cost
                 </th>
             </tr>
-            <tbody ng-repeat="item in items">
-                <tr ng-repeat="profile in profiles" ng-init="number = countInit()">
-                    <td class="col-md-1 text-center">{!! Form::checkbox('checkboxes[@{{number+1}}]') !!}</td>
-                    <td class="col-md-1 text-center">@{{number + 1}}</td>
-                    <td class="col-md-2 text-center">@{{ item.product_id }} </td>
-                    <td class="col-md-3 text-left">@{{ item.name }}</td>
-                    <td class="col-md-3 text-left">@{{ profile.name }}</td>
+            <tbody>
+                <tr ng-repeat="unitcost in alldata">
+                    <td class="col-md-1 text-center">
+                    <input type="checkbox" name="checkboxes[@{{unitcost.id}}]" value="@{{unitcost.id}}=@{{unitcost.profile_id}}=@{{unitcost.item_id}}=@{{unitcost.unitcost}}">
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{unitcost.id}}
+                    </td>
+                    <td class="col-md-2 text-center">
+                        @{{unitcost.product_id}}
+                    </td>
+                    <td class="col-md-3 text-left">
+                        @{{unitcost.item_name}}
+                    </td>
+                    <td class="col-md-3 text-left">
+                        @{{unitcost.profile_name}}
+                    </td>
                     <td class="col-md-2 text-right">
-                        <input type="text" name="unit_costs[@{{number+1}}]" class="text-right form-control" ng-init="unitCostModel = getUnitcostInit(profile.id, item.id)" ng-model="unitCostModel"/>
-                    </td>
-                    <td class="hidden">
-                        <input type="text" name="profile_ids[@{{number+1}}]" ng-model="profile.id">
-                    </td>
-                    <td class="hidden">
-                        <input type="text" name="item_ids[@{{number+1}}]" ng-model="item.id">
+                        <input type="text" class="text-right form-control" ng-model="unitcost.unitcost"/>
                     </td>
                 </tr>
             </tbody>
-            <tr ng-if="!profiles.length && !items.length">
+            <tr ng-if="!alldata.length">
                 <td class="text-center" colspan="14">No Records Found!</td>
             </tr>
         </table>

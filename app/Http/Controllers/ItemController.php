@@ -209,10 +209,9 @@ class ItemController extends Controller
     public function getUnitcostIndexApi(Request $request)
     {
         $total_amount = 0;
-        $input = $request->all();
-        $items = Item::whereNotNull('created_at');
-        $profiles = Profile::whereNotNull('created_at');
-        $unitcosts = Unitcost::whereNotNull('created_at');
+        $items = new Item();
+        $profiles = new Profile();
+        $unitcosts = new Unitcost();
         // reading whether search input is filled
         if($request->product_id) {
             $items = $items->where('product_id', '=', $request->product_id);
@@ -237,12 +236,42 @@ class ItemController extends Controller
             $this->exportUnitcostExcel($profiles, $items);
         }
 
+        $dataArr = [];
+        $index = 0;
+        foreach($items as $item) {
+            foreach($profiles as $profile) {
+                $index += 1;
+
+                $unitcost = Unitcost::where('item_id', $item->id)->where('profile_id', $profile->id)->first();
+
+                if($unitcost) {
+                    array_push($dataArr, [
+                        'id' => $index,
+                        'item_id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'item_name' => $item->name,
+                        'profile_id' => $profile->id,
+                        'profile_name' => $profile->name,
+                        'unitcost' => $unitcost->unit_cost
+                    ]);
+                }else {
+                    array_push($dataArr, [
+                        'id' => $index,
+                        'item_id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'item_name' => $item->name,
+                        'profile_id' => $profile->id,
+                        'profile_name' => $profile->name,
+                    ]);
+                }
+            }
+        }
+        // dd($dataArr);
+
         $data = [
-            'profiles' => $profiles,
-            'items' => $items,
-            'unitcosts' => $unitcosts
+            'dataArr' => $dataArr
         ];
-        // dd($data['profiles']->toArray(), $data['items']->toArray());
+
         return $data;
     }
 
@@ -250,24 +279,24 @@ class ItemController extends Controller
     public function batchUpdateUnitcost(Request $request)
     {
         $checkboxes = $request->checkboxes;
-        $unit_costs = $request->unit_costs;
-        $profile_ids = $request->profile_ids;
-        $item_ids = $request->item_ids;
 
         if($checkboxes) {
-            foreach($checkboxes as $index => $checkbox) {
-                $unitcost = Unitcost::where('profile_id', $profile_ids[$index])->where('item_id', $item_ids[$index])->first();
-                if($unit_costs[$index]) {
+            foreach($checkboxes as $checkbox) {
+                $profile_id = explode("=", $checkbox)[1];
+                $item_id = explode("=", $checkbox)[2];
+                $unit_cost = explode("=", $checkbox)[3];
+                $unitcost = Unitcost::where('profile_id', $profile_id)->where('item_id', $item_id)->first();
+                if($checkbox) {
                     if($unitcost) {
-                        $unitcost->unit_cost = $unit_costs[$index];
-                        $unitcost->item_id = $item_ids[$index];
-                        $unitcost->profile_id = $profile_ids[$index];
+                        $unitcost->unit_cost = $unit_cost;
+                        $unitcost->item_id = $item_id;
+                        $unitcost->profile_id = $profile_id;
                         $unitcost->save();
                     }else {
                         $unitcost = new Unitcost;
-                        $unitcost->unit_cost = $unit_costs[$index];
-                        $unitcost->item_id = $item_ids[$index];
-                        $unitcost->profile_id = $profile_ids[$index];
+                        $unitcost->unit_cost = $unit_cost;
+                        $unitcost->item_id = $item_id;
+                        $unitcost->profile_id = $profile_id;
                         $unitcost->save();
                     }
                 }else {
