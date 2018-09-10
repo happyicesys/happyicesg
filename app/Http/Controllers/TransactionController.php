@@ -1111,6 +1111,7 @@ class TransactionController extends Controller
                                     $item->save();
                                     $deal->qty_after = $item->qty_now;
                                 }
+
                                 $deal->save();
                                 $this->dealSyncOrder($index);
                             }
