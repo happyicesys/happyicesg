@@ -214,7 +214,7 @@ class ItemController extends Controller
         $unitcosts = new Unitcost();
         // reading whether search input is filled
         if($request->product_id) {
-            $items = $items->where('product_id', '=', $request->product_id);
+            $items = $items->where('product_id', 'LIKE', '%'.$request->product_id.'%');
         }
         if($request->name) {
             $items = $items->where('name', 'LIKE', '%'.$request->name.'%');
