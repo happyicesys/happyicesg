@@ -229,6 +229,9 @@
                     <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
+                    Del Address
+                </th>
+                <th class="col-md-2 text-center">
                     Ops Note
                 </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
@@ -257,6 +260,9 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ person.custcategory }}
+                    </td>
+                    <td class="col-md-2 text-left">
+                        @{{person.del_address}}
                     </td>
                     <td class="col-md-2">
                         {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 160px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
