@@ -734,7 +734,7 @@ class PersonController extends Controller
             $people = $people->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
         } else if ($franchisee_id) {
             $people = $people->where('people.franchisee_id', $franchisee_id);
-        }else if($franchsee_id == 0) {
+        }else if($franchisee_id == 0) {
             $people = $people->whereNull('people.franchisee_id');
         }
 
