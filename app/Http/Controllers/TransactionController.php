@@ -1511,8 +1511,13 @@ class TransactionController extends Controller
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->id]);
         } else if(auth()->user()->hasRole('subfranchisee')) {
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);
-        } else if(request('franchisee_id')) {
-            $transactions = $transactions->where('people.franchisee_id', request('franchisee_id'));
+        } else if(request('franchisee_id') != null) {
+            if(request('franchisee_id') != 0) {
+                $transactions = $transactions->whereNull('people.franchisee_id');
+            }else {
+                $transactions = $transactions->where('people.franchisee_id', request('franchisee_id'));
+            }
+
         }
 
         if(request('sortName')){

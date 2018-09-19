@@ -1936,10 +1936,12 @@ class DetailRptController extends Controller
         if($bankin_to) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '<=', $bankin_to);
         }
-        if($franchisee_id) {
-            $transactions = $transactions->where('people.franchisee_id', $franchisee_id);
-        }else if($franchisee_id == 0) {
-            $transactions = $transactions->whereNull('people.franchisee_id');
+        if($franchisee_id != null) {
+            if($franchisee_id != 0) {
+                $transactions = $transactions->whereNull('people.franchisee_id');
+            }else {
+                $transactions = $transactions->where('people.franchisee_id', $franchisee_id);
+            }
         }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
