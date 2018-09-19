@@ -984,7 +984,7 @@ class TransactionController extends Controller
                                 );
 
         // reading whether search input is filled
-        if(request('id') or request('cust_id') or request('company') or request('status') or request('pay_status') or request('updated_by') or request('updated_at') or request('delivery_from') or request('delivery_to') or request('driver') or request('profile_id') or request('custcategory') or request('franchisee_id')){
+        if(request('id') or request('cust_id') or request('company') or request('status') or request('pay_status') or request('updated_by') or request('updated_at') or request('delivery_from') or request('delivery_to') or request('driver') or request('profile_id') or request('custcategory') or request('franchisee_id') or request('statuses')){
             $transactions = $this->searchDBFilter($transactions);
         }
 
@@ -1468,6 +1468,13 @@ class TransactionController extends Controller
         }
         if(request('status')){
             $transactions = $transactions->where('transactions.status', 'LIKE', '%'.request('status').'%');
+        }
+        if (request('statuses')) {
+            $statuses = request('statuses');
+            if (count($statuses) == 1) {
+                $statuses = [$statuses];
+            }
+            $transactions = $transactions->whereIn('transactions.status', $statuses);
         }
         if(request('pay_status')){
             $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%'.request('pay_status').'%');

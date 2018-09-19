@@ -727,7 +727,7 @@ class DetailRptController extends Controller
                             $paysummaryinfo->user_id = Auth::user()->id;
                             $paysummaryinfo->save();
                             break;
-                        
+
                         case 'verify':
                             $exist = Paysummaryinfo::whereDate('paid_at', '=', Carbon::parse($paid_ats[$index])->toDateString())->wherePayMethod($pay_methods[$index])->whereProfileId($profile_ids[$index])->first();
                             if (!$exist) {
@@ -760,7 +760,7 @@ class DetailRptController extends Controller
                             $paysummaryinfo->user_id = Auth::user()->id;
                             $paysummaryinfo->is_verified = 0;
                             $paysummaryinfo->save();
-                            break;                            
+                            break;
                     }
 
                 }
@@ -1929,7 +1929,7 @@ class DetailRptController extends Controller
                 $custcategory = [$custcategory];
             }
             $transactions = $transactions->whereIn('custcategories.id', $custcategory);
-        }        
+        }
         if($bankin_from) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
         }
@@ -1938,6 +1938,8 @@ class DetailRptController extends Controller
         }
         if($franchisee_id) {
             $transactions = $transactions->where('people.franchisee_id', $franchisee_id);
+        }else if($franchisee_id == 0) {
+            $transactions = $transactions->whereNull('people.franchisee_id');
         }
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -2079,12 +2081,12 @@ class DetailRptController extends Controller
     {
         $total_amount = 0;
         $total_qty = 0;
-        
+
         foreach($items as $item) {
             $total_amount += $item->amount;
             $total_qty += $item->qty;
         }
-        
+
         $totals = [
             'total_amount' => $total_amount,
             'total_qty' => $total_qty

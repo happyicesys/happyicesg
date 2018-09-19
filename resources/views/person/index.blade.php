@@ -90,7 +90,7 @@
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
                                 @endif
-                            </select>                          
+                            </select>
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
@@ -103,7 +103,7 @@
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
-                            {!! Form::select('franchisee_id', [''=>'All']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
+                            {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.franchisee_id',
                                 'ng-change' => 'searchDB()'

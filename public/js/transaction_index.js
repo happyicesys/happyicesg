@@ -22,6 +22,7 @@ var app = angular.module('app', [
             cust_id: '',
             company: '',
             status: '',
+            statuses: '',
             pay_status: '',
             updated_by: '',
             updated_at: '',
@@ -43,6 +44,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
         });
 
         $scope.exportData = function (event) {

@@ -80,18 +80,16 @@
                                                         ])
                         !!}
                     </div>
-
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('status', null,
-                                                        [
-                                                            'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.status',
-                                                            'ng-change'=>'searchDB()',
-                                                            'placeholder'=>'Status',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
-                                                        ])
-                        !!}
+                        {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
+                        <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Verified Owe">Verified Owe</option>
+                            <option value="Verified Paid">Verified Paid</option>
+                        </select>
                     </div>
                     </div>
                     <div class="row">
@@ -169,13 +167,13 @@
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
-                            {!! Form::select('franchisee_id', [''=>'All']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
+                            {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.franchisee_id',
                                 'ng-change' => 'searchDB()'
                                 ])
                             !!}
-                        </div>                    
+                        </div>
                     </div>
                 </div>
                 <div class="row">

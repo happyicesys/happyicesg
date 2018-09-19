@@ -78,7 +78,7 @@
             'class'=>'select form-control'
             ])
         !!}
-    </div> 
+    </div>
 @endif
 
 <div class="form-group">
