@@ -1938,7 +1938,7 @@ class DetailRptController extends Controller
         }
         if($franchisee_id != null) {
             if($franchisee_id != 0) {
-                $transactions = $transactions->whereNull('people.franchisee_id')->andWhere('people.franchisee_id', 0);
+                $transactions = $transactions->whereNull('people.franchisee_id')->where('people.franchisee_id', 0);
             }else {
                 $transactions = $transactions->where('people.franchisee_id', $franchisee_id);
             }
