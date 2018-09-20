@@ -1515,7 +1515,7 @@ class TransactionController extends Controller
             if(request('franchisee_id') != 0) {
                 $transactions = $transactions->where('people.franchisee_id', request('franchisee_id'));
             }else {
-                $transactions = $transactions->whereNull('people.franchisee_id');
+                $transactions = $transactions->whereNull('people.franchisee_id')->orWhere('people.franchisee_id', 0);
             }
 
         }
