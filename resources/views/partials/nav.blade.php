@@ -71,7 +71,7 @@
                         $transaction_access = true;
                         $person_access = true;
                         $franchisee_access = true;
-                    }                    
+                    }
 
                     if(auth()->user()->hasRole('driver')) {
                         $access = true;
@@ -109,6 +109,7 @@
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $vending_access = true;
+                        $operation_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -212,24 +213,24 @@
                 @endif
                 @if($vending_access)
                     <li class="{{ (strpos(Request::path(), 'bom') !== false || strpos(Request::path(), 'personmaintenance') !== false || strpos(Request::path(), 'vm') !== false || strpos(Request::path(), 'deal') !== false)? 'active' : '' }}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>                        
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             @if($bom_access)
                                 <li class="text-left"><a href="/bom"> {{ $BOM_TITLE }}</a></li>
                             @endif
                             @if($personmaintenance_access)
                                 <li class="text-left"><a href="/personmaintenance"> {{ $PERSONMAINTENANCE_TITLE }}</a></li>
-                            @endif  
-                            <li class="text-left"><a href="/vm"> Machine</a></li> 
-                            <li class="text-left"><a href="/simcard"> SIM card</a></li> 
+                            @endif
+                            <li class="text-left"><a href="/vm"> Machine</a></li>
+                            <li class="text-left"><a href="/simcard"> SIM card</a></li>
                         </ul>
                     </li>
-                @endif     
+                @endif
                 @if($jobcard_access)
                     <li class="{{ strpos(Request::path(), 'jobcard') !== false ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
                     </li>
-                @endif                                
+                @endif
 {{--                 @if($ecommerce_access)
                     <li class="{{ strpos(Request::path(), 'ecommerce') !== false ? 'active' : '' }}">
                         <a href="/ecommerce"><i class="fa fa-shopping-bag "></i> {{ $ECOMMERCE_TITLE }}</a>
