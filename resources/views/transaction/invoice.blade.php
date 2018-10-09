@@ -260,7 +260,7 @@
                                     Percent
                                 @else
                                     Price/Unit ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
-                                @endif                                
+                                @endif
                             </th>
                             <th class="col-xs-1 text-center">
                                 Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
@@ -462,7 +462,7 @@
         {{-- <footer class="footer"> --}}
                 <div class="row">
                     <div class="col-xs-12">
-                        @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D')
+                        @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D' or $person->is_vending or $person->is_dvm)
                             Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
                         @endunless
                     </div>
