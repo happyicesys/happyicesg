@@ -164,6 +164,13 @@
             {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
+{{--
+    <div class="col-md-6 col-sm-6 col-xs-6">
+        <div class="form-group">
+            {!! Form::checkbox('is_profit_percent', $person->is_profit_percent) !!}
+            {!! Form::label('is_profit_percent', 'Profit Sharing by Percentage?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
+    </div> --}}
 </div>
 
 <div class="row">

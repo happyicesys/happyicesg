@@ -200,8 +200,7 @@ class ClientController extends Controller
 
         $timeArr = [
             '1' => '8am - 12pm',
-            '2' => '12pm - 5pm',
-            '3' => '5pm - 9pm',
+            '2' => '12pm - 5pm'
         ];
 
         return view('client.d2d', compact('lookupArr', 'priceArr', 'dayArr', 'timeArr'));
@@ -249,8 +248,7 @@ class ClientController extends Controller
         ];
         $timeArr = [
             '1' => '8am - 12pm',
-            '2' => '12pm - 5pm',
-            '3' => '5pm - 9pm',
+            '2' => '12pm - 5pm'
         ];
 
         $data = array(
@@ -541,7 +539,7 @@ class ClientController extends Controller
         });
 
         Flash::success('The form has been submitted');
-        return Redirect::action('ClientController@getVendComplainIndex');   
+        return Redirect::action('ClientController@getVendComplainIndex');
     }
 
     // create H code customer process based on given postcode and assign to member

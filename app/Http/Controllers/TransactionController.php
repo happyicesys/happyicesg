@@ -265,19 +265,23 @@ class TransactionController extends Controller
 
         $subtotal = 0;
         $tax = 0;
-        $total = number_format($transaction->total, 2);
+        $total = $transaction->total;
 
         if($transaction->gst) {
             if($transaction->is_gst_inclusive) {
-                $total = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total - $transaction->total/((100 + $transaction->gst_rate)/ 100), 2);
-                $subtotal = number_format($transaction->total - $tax, 2);
+                $total = $transaction->total;
+                $tax = $transaction->total - $transaction->total/((100 + $transaction->gst_rate)/ 100);
+                $subtotal = $transaction->total - $tax;
             }else {
-                $subtotal = number_format($transaction->total, 2);
-                $tax = number_format($transaction->total * ($transaction->gst_rate)/100, 2);
-                $total = number_format(((float)$transaction->total + (float) $tax), 2);
+                $subtotal = $transaction->total;
+                $tax = $transaction->total * ($transaction->gst_rate)/100;
+                $total = $transaction->total + $tax;
             }
         }
+
+        $subtotal = number_format($subtotal, 2);
+        $tax = number_format($tax, 2);
+        $total = number_format($total, 2);
 
         $delivery_fee = $transaction->delivery_fee;
 
