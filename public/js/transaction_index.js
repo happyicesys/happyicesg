@@ -30,6 +30,7 @@ var app = angular.module('app', [
             delivery_to: $scope.today,
             driver: '',
             custcategory: '',
+            person_active: 'Yes',
             itemsPerPage: 100,
             sortName: '',
             sortBy: true
