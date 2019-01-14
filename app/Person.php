@@ -187,6 +187,11 @@ class Person extends Baum\Node
         return $this->hasOne('App\Vending');
     }
 
+    public function personassets()
+    {
+        return $this->hasMany('App\Personasset');
+    }
+
     // getter and setter
 
     public function setDobAttribute($date)
@@ -274,7 +279,7 @@ class Person extends Baum\Node
     {
         $peopleIdArr = [];
 
-        if(auth()->user()->hasRole('franchisee')) {
+        if(auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user')) {
             $people = Person::where('franchisee_id', auth()->user()->id)->latest()->get();
         }else if (auth()->user()->hasRole('subfranchisee')) {
             $people = Person::where('franchisee_id', auth()->user()->master_franchisee_id)->latest()->get();

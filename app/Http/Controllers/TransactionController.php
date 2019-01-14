@@ -34,6 +34,7 @@ use App\GeneralSetting;
 use App\Invattachment;
 use App\TransSubscription;
 use App\User;
+use App\Deliveryorder;
 // use App\Ftransaction;
 
 // traits
@@ -125,7 +126,13 @@ class TransactionController extends Controller
 
         $request->merge(array('updated_by' => Auth::user()->name));
         $request->merge(['delivery_date' => Carbon::today()]);
-        $request->merge(['order_date' => Carbon::today()]);
+        $request->merge(['created_by' => auth()->user()->id]);
+
+        // haagen daz user logic, open delivery order
+        if(auth()->user()->hasRole('hd_user')) {
+            $request->merge(array('is_deliveryorder' => 1));
+        }
+
         $input = $request->all();
 
         // filter delivery date if the invoice lock date is before request delivery date
@@ -151,6 +158,14 @@ class TransactionController extends Controller
         if($transaction->person->is_vending) {
             $transaction->is_required_analog = 1;
             $transaction->save();
+        }
+
+        // create delivery order if is delivery order
+        if($transaction->is_deliveryorder) {
+            $do = new Deliveryorder();
+            $do->transaction_id = $transaction->id;
+            $do->requester = auth()->user()->id;
+            $do->save();
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
@@ -363,13 +378,19 @@ class TransactionController extends Controller
 
         }elseif($request->input('confirm')){
             // confirmation must with the entries start
-            if(array_filter($quantities) != null and array_filter($amounts) != null) {
+            if(!$transaction->is_deliveryorder) {
+                if(array_filter($quantities) != null and array_filter($amounts) != null) {
+                    $request->merge(array('status' => 'Confirmed'));
+                }else{
+                    Flash::error('The list cannot be empty upon confirmation');
+                    return Redirect::action('TransactionController@edit', $transaction->id);
+                }
+            }else {
                 $request->merge(array('status' => 'Confirmed'));
-            }else{
-                Flash::error('The list cannot be empty upon confirmation');
-                return Redirect::action('TransactionController@edit', $transaction->id);
+                $do = $transaction->deliveryorder;
+                $do->submission_datetime = Carbon::now();
+                $do->save();
             }
-            // confirmation must with the entries end
 
         }elseif($request->input('unpaid')){
             $request->merge(array('pay_status' => 'Owe'));
@@ -475,6 +496,12 @@ class TransactionController extends Controller
                 $transaction->delivery_fee = 0;
                 $transaction->save();
             }
+        }
+
+        // given this is a delivery order
+        if($transaction->is_deliveryorder) {
+            $do = Deliveryorder::where('transaction_id', $transaction->id)->firstOrFail();
+            $do->update($request->all());
         }
 
         // record the transactions to ftransaction when franchisee id is detected
@@ -1511,7 +1538,7 @@ class TransactionController extends Controller
             $transactions = $transactions->where('custcategories.id', request('custcategory'));
         }
         // add in franchisee checker
-        if (auth()->user()->hasRole('franchisee')) {
+        if (auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('watcher')) {
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->id]);
         } else if(auth()->user()->hasRole('subfranchisee')) {
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->master_franchisee_id]);

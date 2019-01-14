@@ -125,14 +125,14 @@ class User extends Model implements AuthenticatableContract,
     {
         $userIdArr = [];
 
-        if(auth()->user()->hasRole('franchisee')) {
+        if(auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user')) {
             array_push($userIdArr, auth()->user()->id);
         }else if(auth()->user()->hasRole('subfranchisee')) {
             array_push($userIdArr, auth()->user()->master_franchisee_id);
         }else {
             $users = User::all();
             foreach($users as $user) {
-                if($user->hasRole('franchisee')) {
+                if($user->hasRole('franchisee') or $user->hasRole('hd_user') or $user->hasRole('watcher')) {
                     array_push($userIdArr, $user->id);
                 }
             }

@@ -206,9 +206,10 @@
 </div>
 
 <div class="row" style="padding-left: 15px;">
-    <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
-        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        <button type="submit" class="btn btn-success" form="exportData" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
+    <div class="col-md-4 col-xs-12 btn-group" style="padding-top: 20px;">
+        <button class="btn btn-primary btn-sm" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+        <button class="btn btn-warning btn-sm" form="batch_pdf"><i class="fa fa-file-pdf-o"></i><span class="hidden-xs"></span> Batch Export PDF</button>
+        <button type="submit" class="btn btn-success btn-sm" form="exportData" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
@@ -216,7 +217,7 @@
                 Total:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                <strong>@{{ total_amount ? total_amount : 0 | currency: "": 2}}</strong>
             </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
@@ -237,19 +238,23 @@
 {!! Form::close() !!}
 
     <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
+        {!! Form::open(['id'=>'batch_pdf', 'method'=>'POST','action'=>['DetailRptController@batchDownloadPdf']]) !!}
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}
             <tr class="hidden">
                 <td></td>
                 <td data-tableexport-display="always">Total Amount</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
+                <td data-tableexport-display="always" class="text-right">@{{total_amount ? total_amount : 0 | currency: "": 2}}</td>
             </tr>
             <tr class="hidden" data-tableexport-display="always">
                 <td></td>
             </tr>
 
             <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    <input type="checkbox" id="checkAll" />
+                </th>
                 <th class="col-md-1 text-center">
                     #
                 </th>
@@ -326,6 +331,9 @@
             <tbody>
 
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
+                        <input type="checkbox" name="checkbox[@{{transaction.id}}]>
+                    </td>
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">
                         <a href="/transaction/@{{ transaction.id }}/edit">
@@ -380,7 +388,7 @@
 
             </tbody>
         </table>
-
+        {!! Form::close() !!}
         <div>
               <dir-pagination-controls max-size="5" pagination-id="cust_detail" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>

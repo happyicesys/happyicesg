@@ -21,7 +21,8 @@ class Transaction extends Model
 
     protected $dontKeepRevisionOf = array(
         'person_id', 'name', 'cancel_trace',
-        'dtdtransaction_id', 'delivery_fee', 'is_required_analog', 'ftransaction_id', 'is_vending_generate'
+        'dtdtransaction_id', 'delivery_fee', 'is_required_analog', 'ftransaction_id', 'is_vending_generate',
+        'is_deliveryorder'
     );
 
     protected $revisionEnabled = true;
@@ -68,13 +69,13 @@ class Transaction extends Model
         'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
-        'gst', 'is_gst_inclusive', 'gst_rate'
+        'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by'
     ];
 
     protected $dates =[
         'created_at', 'delivery_date', 'order_date', 'paid_at'
     ];
-
+/*
     public function setDeliveryDateAttribute($date)
     {
         if($date){
@@ -82,8 +83,8 @@ class Transaction extends Model
         }else{
             $this->attributes['delivery_date'] = null;
         }
-    }
-
+    } */
+/*
     public function setOrderDateAttribute($date)
     {
         if($date){
@@ -91,7 +92,7 @@ class Transaction extends Model
         }else{
             $this->attributes['order_date'] = null;
         }
-    }
+    } */
 
     public function setPaidAtAttribute($date)
     {
@@ -195,6 +196,16 @@ class Transaction extends Model
     public function invattachments()
     {
         return $this->hasMany('App\Invattachment');
+    }
+
+    public function deliveryorder()
+    {
+        return $this->hasOne('App\Deliveryorder');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     // searching scopes

@@ -69,7 +69,7 @@
                             </td>
                             {{-- unit price --}}
                             <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
-                            <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price }}</td>
+                            <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price | currency: "" }}</td>
                             {{-- deal amount --}}
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>

@@ -411,6 +411,7 @@ Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProd
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 Route::get('/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonth');
 Route::post('/api/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonthApi');
+Route::post('/detailrpt/account/custdetail/batchpdf', 'DetailRptController@batchDownloadPdf');
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

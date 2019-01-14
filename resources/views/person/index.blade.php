@@ -17,6 +17,7 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">
+                        @if(!auth()->user()->hasRole('watcher'))
                         @cannot('transaction_view')
                             <a href="/person/create" class="btn btn-sm btn-success">+ New {{ $PERSON_TITLE }}</a>
                             @if(!auth()->user()->hasRole('franchisee'))
@@ -26,6 +27,7 @@
                                 <a href="/pricematrix" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Price Matrix</a>
                             @endif
                         @endcannot
+                        @endif
                     </div>
                 </div>
             </div>
@@ -92,6 +94,7 @@
                                 @endif
                             </select>
                         </div>
+                        @if(!auth()->user()->hasRole('watcher'))
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
@@ -110,6 +113,7 @@
                                 ])
                             !!}
                         </div>
+                        @endif
                     </div>
                 </div>
 

@@ -51,12 +51,12 @@
                         </td>
                         <td class="col-md-1 col-xs-2">
                             @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control"/>
+                            <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
                             @else
                                 @can('transaction_view')
                                 <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
                                 @else
-                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control"/>
+                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
                                 @endcan
                             @endif
                         </td>
@@ -76,7 +76,7 @@
                             @else
                                 <input type="text" name="quote[{{$price->item_id}}]"
                                 value="{{$price->quote_price}}"
-                                class="text-right form-control quoteClass"/>
+                                class="text-right form-control quoteClass" {{$disabledStr}}/>
                             @endif
                             </strong>
                             {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}

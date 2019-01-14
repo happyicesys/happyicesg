@@ -40,18 +40,30 @@
                     </div>
                 </div>
 
+
+                @php
+                    $disabled = false;
+                    $disabledStr = '';
+
+                    if(auth()->user()->hasRole('watcher')) {
+                        $disabled = true;
+                        $disabledStr = 'disabled';
+                    }
+                @endphp
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">
-                            {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
-                            @cannot('transaction_view')
-                                <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
-                                    <i class="fa fa-files-o"></i> <span class="hidden-xs hidden-sm">Replicate</span>
+                            @if(!auth()->user()->hasRole('watcher'))
+                                {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
+                                @cannot('transaction_view')
+                                    <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
+                                        <i class="fa fa-files-o"></i> <span class="hidden-xs hidden-sm">Replicate</span>
+                                    </a>
+                                @endcannot
+                                <a href="/person/log/{{$person->id}}" class="btn btn-warning">
+                                    <i class="fa fa-history"></i> <span class="hidden-xs hidden-sm">Log History</span>
                                 </a>
-                            @endcannot
-                            <a href="/person/log/{{$person->id}}" class="btn btn-warning">
-                                <i class="fa fa-history"></i> <span class="hidden-xs hidden-sm">Log History</span>
-                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -64,7 +76,7 @@
         <div class="panel-body">
             {!! Form::model($person,['id'=>'form_person', 'method'=>'PATCH','action'=>['PersonController@update', $person->id], 'onsubmit'=>'return storeDeliveryLatLng()']) !!}
                 @include('person.form')
-                @if($person->is_vending === 1 or $person->is_dvm)
+                @if(($person->is_vending === 1 or $person->is_dvm) and !auth()->user()->hasRole('watcher'))
                     @include('person.vending')
                 @endif
 
@@ -72,12 +84,15 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">
+                            @if(!auth()->user()->hasRole('watcher'))
                             @cannot('transaction_view')
                             {!! Form::submit('Save Profile', ['class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                             @endcannot
-                            <a href="/person" class="btn btn-default">Cancel</a>
+                            @endif
+                            <a href="/person" class="btn btn-default">Back</a>
                         </div>
                         <div class="pull-left">
+                            @if(!auth()->user()->hasRole('watcher'))
                             @cannot('transaction_view')
                                 @if($person->active == 'Yes')
                                     {!! Form::submit('Pending', ['name'=>'active', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
@@ -95,6 +110,7 @@
                                     </div>
                                 @endif
                             @endcannot
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -124,7 +140,7 @@
 </div>
 
 {{-- divider --}}
-@if($person->franchisee_id)
+@if($person->franchisee_id and !auth()->user()->hasRole('watcher'))
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -188,12 +204,12 @@
                         </td>
                         <td class="col-md-2">
                             <strong>
-                                <input type="text" name="retail[@{{item.item_id}}]" class="text-right form-control" ng-model="item.retail_price" ng-change="calQuotePrice($index, item)" {{$disable == true ? 'readonly' : ''}}/>
+                                <input type="text" name="retail[@{{item.item_id}}]" class="text-right form-control" ng-model="item.retail_price" ng-change="calQuotePrice($index, item)" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
                             </strong>
                         </td>
                         <td class="col-md-2">
                             <strong>
-                                <input type="text" name="quote[@{{item.item_id}}]" class="text-right form-control" ng-model="item.quote_price" {{$disable == true ? 'readonly' : ''}}/>
+                                <input type="text" name="quote[@{{item.item_id}}]" class="text-right form-control" ng-model="item.quote_price" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
                             </strong>
                         </td>
                     </tr>
@@ -204,7 +220,9 @@
                     </tbody>
                 </table>
                 <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-                {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                @if(!auth()->user()->hasRole('watcher'))
+                    {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                @endif
             </div>
             {!! Form::close() !!}
 
@@ -214,6 +232,7 @@
 @endunless
 
 {{-- divider --}}
+@if(!auth()->user()->hasRole('watcher'))
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
@@ -233,6 +252,7 @@
         </div>
     </div>
 </div>
+@endif
 {{-- divider --}}
 
 <div class="panel panel-primary">
@@ -308,7 +328,9 @@
                         </td>
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
-                            <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                            @if(!auth()->user()->hasRole('watcher'))
+                                <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                            @endif
                             <a href="{{$file->path}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                         </td>
                     </tr>
@@ -323,13 +345,16 @@
             {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
             {!! Form::close() !!}
         @endif
-
-        <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
+        @if(!auth()->user()->hasRole('watcher'))
+            <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
+        @endif
     </div>
 
     <div class="panel-footer">
-        {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
-        {!! Form::close() !!}
+        @if(!auth()->user()->hasRole('watcher'))
+            {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
+            {!! Form::close() !!}
+        @endif
         <label class="pull-right totalnum" for="totalnum">
             Total of @{{files.length}} entries
             {{-- Total of {{count($files)}} entries --}}
@@ -337,6 +362,7 @@
     </div>
 </div>
 {{-- divider --}}
+@if(!auth()->user()->hasRole('watcher'))
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
@@ -350,6 +376,7 @@
         </div>
     </div>
 </div>
+@endif
 {{-- divider --}}
 <div class="panel panel-primary">
     <div class="panel-heading">
@@ -362,8 +389,10 @@
         <div class="form-group">
             {!! Form::model($person, ['action'=>['PersonController@storeNote', $person->id]]) !!}
                 {!! Form::label('note', 'Notes', ['class'=>'control-label']) !!}
-                {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel']) !!}
-                {!! Form::submit('Save Note', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel', 'disabled'=>$disabled]) !!}
+                @if(!auth()->user()->hasRole('watcher'))
+                    {!! Form::submit('Save Note', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                @endif
             {!! Form::close() !!}
         </div>
     </div>

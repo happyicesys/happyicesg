@@ -45,7 +45,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });            
+            });
         });
 
         $scope.onDeliveryFromChanged = function(date){
@@ -176,7 +176,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });            
+            });
         });
 
         $scope.exportData = function () {
@@ -276,7 +276,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });             
+            });
         });
 
         $scope.onDeliveryFromChanged = function(date){

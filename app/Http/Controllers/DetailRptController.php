@@ -1509,6 +1509,20 @@ class DetailRptController extends Controller
         return $pdf->download($name);
     }
 
+    // batch download selected pdf()
+    public function batchDownloadPdf()
+    {
+        $checkboxes = request('checkbox');
+
+        if($checkboxes) {
+            foreach($checkboxes as $index => $checkbox) {
+                return redirect()->action('TransactionController@generateInvoice', ['trans_id' => $index]);
+            }
+        }else {
+            Flash::error('Please choose at least 1 checkbox');
+        }
+    }
+
     // filters function for stock (formrequest request(), query deals)
     private function detailrptStockFilters($request, $deals)
     {

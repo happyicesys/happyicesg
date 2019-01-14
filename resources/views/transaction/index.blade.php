@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            @if(!auth()->user()->hasRole('franchisee'))
+                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
                                 <a href="/transaction/create" class="btn btn-success">
                                     <i class="fa fa-plus"></i>
                                     <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
@@ -132,6 +132,7 @@
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                             </div>
                         </div>
+                        @if(!auth()->user()->hasRole('hd_user'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('driver', null,
@@ -144,7 +145,9 @@
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                         </div>
+                        @endif
                     </div>
+                    @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher'))
                     <div class="row">
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('custcategory', 'Category', ['class'=>'control-label search-title']) !!}
@@ -175,7 +178,7 @@
                             !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('person_active', 'Status', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                             <select name="person_active" id="person_active" class="select form-control" ng-model="search.person_active" ng-change="searchDB()">
                                 <option value="">All</option>
                                 <option value="Yes">Active</option>
@@ -185,8 +188,8 @@
                                 @endif
                             </select>
                         </div>
-
                     </div>
+                    @endif
                 </div>
                 <div class="row">
                     <div class="row">
@@ -443,7 +446,7 @@
                                     {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
-                                    <td class="col-md-1 text-center">
+                                    <td class="col-md-1 text-right">
                                         @{{ transaction.total | currency: "": 2}}
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
