@@ -208,6 +208,11 @@ class Transaction extends Model
         return $this->belongsTo('App\User', 'created_by');
     }
 
+    public function transactionpersonassets()
+    {
+        return $this->hasMany('App\Transactionpersonasset');
+    }
+
     // searching scopes
     // (query, integer) [query]
     public function scopeSearchId($query, $id)

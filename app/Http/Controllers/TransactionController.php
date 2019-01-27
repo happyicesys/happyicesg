@@ -247,7 +247,7 @@ class TransactionController extends Controller
         $subtotal = 0;
         $tax = 0;
 
-        $transaction = Transaction::with('person')->findOrFail($transaction_id);
+        $transaction = Transaction::with(['person', 'deliveryorder'])->findOrFail($transaction_id);
 
         $deals = DB::table('deals')
                     ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -497,11 +497,28 @@ class TransactionController extends Controller
                 $transaction->save();
             }
         }
-
         // given this is a delivery order
         if($transaction->is_deliveryorder) {
             $do = Deliveryorder::where('transaction_id', $transaction->id)->firstOrFail();
-            $do->update($request->all());
+            // $do->update($request->all());
+            $do->update([
+                'job_type' => request('job_type'),
+                'po_no' => request('po_no'),
+                'pickup_date' => request('pickup_date'),
+                'pickup_timerange' => request('pickup_timerange'),
+                'pickup_attn' => request('pickup_attn'),
+                'pickup_contact' => request('pickup_contact'),
+                'pickup_postcode' => request('pickup_postcode'),
+                'pickup_address' => request('pickup_address'),
+                'pickup_comment' => request('pickup_comment'),
+                'delivery_date1' => request('delivery_date1'),
+                'delivery_timerange' => request('delivery_timerange'),
+                'delivery_attn' => request('delivery_attn'),
+                'delivery_contact' => request('delivery_contact'),
+                'delivery_postcode' => request('delivery_postcode'),
+                'delivery_address' => request('delivery_address'),
+                'delivery_comment' => request('delivery_comment')
+            ]);
         }
 
         // record the transactions to ftransaction when franchisee id is detected

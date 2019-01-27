@@ -109,6 +109,7 @@ class AuthController extends Controller
         $field = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         $request->merge([$field => $request->input('login')]);
         $this->username = $field;
+
         return self::laravelPostLogin($request);
     }
 
@@ -174,7 +175,7 @@ class AuthController extends Controller
         $user = User::where('username', $credentials['username'])->firstOrFail();
         $credentials['is_active'] = 1;
         return $credentials;
-        
+
     }
 
     // send password reset email

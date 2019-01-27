@@ -413,6 +413,18 @@ Route::get('/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProdu
 Route::post('/api/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonthApi');
 Route::post('/detailrpt/account/custdetail/batchpdf', 'DetailRptController@batchDownloadPdf');
 
+Route::post('/api/personassets', 'PersonassetController@indexApi');
+Route::get('/personasset', 'PersonassetController@index');
+Route::post('/api/personasset/create', 'PersonassetController@createApi');
+Route::post('/api/personasset/update', 'PersonassetController@updateApi');
+Route::delete('/api/personasset/{id}/delete', 'PersonassetController@destroyApi');
+Route::post('/api/personassetmovements', 'PersonassetController@indexMovementApi');
+
+Route::post('/api/transactionpersonasset/create', 'TransactionpersonassetController@createApi');
+Route::get('/api/transactionpersonasset/index/{transaction_id}', 'TransactionpersonassetController@indexApi');
+Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
+Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
+
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');
 Route::resource('freezer', 'FreezerController');

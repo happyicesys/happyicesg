@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
         view()->share('ITEM_PREFIX', 'I');
 
         //Transaction
+        view()->share('PERSONASSET_TITLE', 'Cust Asset');
+        view()->share('PERSONASSET_PREFIX', 'CA');
+
+        //Transaction
         view()->share('TRANS_TITLE', 'Transaction');
         view()->share('TRANS_PREFIX', 'T');
 
@@ -61,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
         view()->share('PERSONMAINTENANCE_TITLE', 'Maintenance Log');
 
         // Job Cart
-        view()->share('JOBCARD_TITLE', 'Job Card');        
+        view()->share('JOBCARD_TITLE', 'Job Card');
 
     }
 

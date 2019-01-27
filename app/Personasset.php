@@ -16,4 +16,9 @@ class Personasset extends Model
     {
         return $this->belongsTo('App\Person');
     }
+
+    public function transactionpersonassets()
+    {
+        return $this->hasMany('App\Transactionpersonasset');
+    }
 }

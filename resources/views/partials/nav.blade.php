@@ -37,6 +37,7 @@
                 $access = false;
                 $transaction_access = false;
                 $person_access = false;
+                $personasset_access = false;
                 $item_access = false;
                 $profile_access = false;
                 $user_access = false;
@@ -57,6 +58,7 @@
                     if(auth()->user()->hasRole('hd_user')) {
                         $access = true;
                         $transaction_access = true;
+                        $personasset_access = true;
                     }
 
                     if(auth()->user()->hasRole('watcher')) {
@@ -133,6 +135,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        $personasset_access = true;
                         $item_access = true;
                         $profile_access = true;
                         $user_access = true;
@@ -153,32 +156,37 @@
             @if($access)
             <ul class="nav navbar-nav side-nav">
                 @if($transaction_access)
-                    <li class="{{ strpos(Request::path(), 'transaction') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'transaction' ? 'active' : '' }}">
                         <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
                     </li>
                 @endif
                 @if($person_access)
-                    <li class="{{ strpos(Request::path(), 'person') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'person' ? 'active' : '' }}">
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                     </li>
                 @endif
+                @if($personasset_access)
+                    <li class="{{ Request::segment(1) == 'personasset' ? 'active' : '' }}">
+                        <a href="/personasset"><i class="fa fa-fw fa-cubes"></i> {{ $PERSONASSET_TITLE }}</a>
+                    </li>
+                @endif
                 @if($item_access)
-                    <li class="{{ strpos(Request::path(), 'item') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'item' ? 'active' : '' }}">
                         <a href="/item"><i class="fa fa-fw fa-shopping-cart"></i> {{ $ITEM_TITLE }}</a>
                     </li>
                 @endif
                 @if($profile_access)
-                    <li class="{{ strpos(Request::path(), 'profile') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'profile' ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
                     </li>
                 @endif
                 @if($user_access)
-                    <li class="{{ strpos(Request::path(), 'user') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'user' ? 'active' : '' }}">
                         <a href="/user"><i class="fa fa-fw fa-user"></i> {{ $USER_TITLE }} & Data</a>
                     </li>
                 @endif
                 @if($detailrpt_access)
-                    <li class="{{ strpos(Request::path(), 'detailrpt') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'detailrpt' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }} <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
@@ -193,18 +201,18 @@
                     </li>
                 @endif
                 @if($report_access)
-                    <li class="{{ strpos(Request::path(), 'report') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'report' ? 'active' : '' }}">
                         <a href="/report"><i class="fa fa-fw fa-file-text-o"></i> {{ $REPORT_TITLE }}</a>
                     </li>
                 @endif
                 @if($operation_access)
-                    <li class="{{ strpos(Request::path(), 'operation') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'operation' ? 'active' : '' }}">
                         <a href="/operation"><i class="fa fa-sticky-note-o"></i> Ops Worksheet</a>
                     </li>
                 @endif
 
                 @if($dtd_access)
-                    <li class="{{ (strpos(Request::path(), 'setup') !== false || strpos(Request::path(), 'member') !== false || strpos(Request::path(), 'market/customer') !== false || strpos(Request::path(), 'deal') !== false)? 'active' : '' }}">
+                    <li class="{{ (Request::segment(1) == 'setup' || Request::segment(1) == 'member' || Request::segment(1) == 'market') ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-address-card"></i> Door To Door <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/market/setup"> DtD Setting</a></li>
@@ -215,15 +223,15 @@
                     </li>
                 @endif
                 @if($franchisee_access)
-                    <li class="{{ strpos(Request::path(), 'franchise') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'franchise' ? 'active' : '' }}">
                         <a href="/franchisee"><i class="fa fa-fw fa-handshake-o"></i> {{ $FRANCHISE_TRANS }}</a>
                     </li>
-                    <li class="{{ strpos(Request::path(), 'franrpt') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'franrpt' ? 'active' : '' }}">
                         <a href="/franrpt"><i class="fa fa-fw fa-area-chart"></i> {{ $FRANCHISE_RPT }}</a>
                     </li>
                 @endif
                 @if($vending_access)
-                    <li class="{{ (strpos(Request::path(), 'bom') !== false || strpos(Request::path(), 'personmaintenance') !== false || strpos(Request::path(), 'vm') !== false || strpos(Request::path(), 'deal') !== false)? 'active' : '' }}">
+                    <li class="{{ (Request::segment(1) == 'bom' || Request::segment(1) == 'personmaintenance' || Request::segment(1) == 'vm' || Request::segment(1) == 'deal') ? 'active' : '' }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-rocket"></i> Vending <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             @if($bom_access)
@@ -238,7 +246,7 @@
                     </li>
                 @endif
                 @if($jobcard_access)
-                    <li class="{{ strpos(Request::path(), 'jobcard') !== false ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'jobcard' ? 'active' : '' }}">
                         <a href="/jobcard"><i class="fa fa-th-list "></i> {{ $JOBCARD_TITLE }}</a>
                     </li>
                 @endif

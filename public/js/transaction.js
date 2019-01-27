@@ -15,6 +15,55 @@ var $person_select = $('.person_select');
 function transactionController($scope, $http) {
     $scope.selection = {};
     $scope.Math = window.Math;
+    $today = moment().format('YYYY-MM-DD');
+    $scope.assetform = {
+        personasset_id: '',
+        personasset_qty: ''
+    }
+    $scope.assetformitems = [];
+    $scope.transactionpersonassetform = {
+        id: '',
+        code: '',
+        name: '',
+        brand: '',
+        serial_no: '',
+        sticker: '',
+    }
+    $scope.doform = {
+        job_type: '',
+        po_no: '',
+        submission_datetime: '',
+        pickup_date: '',
+        pickup_timerange: '',
+        pickup_attn: '',
+        pickup_contact: '',
+        pickup_address: '',
+        pickup_postcode: '',
+        pickup_comment: '',
+        delivery_date1: '',
+        delivery_timerange: '',
+        delivery_attn: '',
+        delivery_contact: '',
+        delivery_address: '',
+        delivery_postcode: '',
+        delivery_comment: '',
+        transaction_id: '',
+        requester: ''
+    }
+    $scope.jobtypeSelection = [
+        {
+            id: 'Delivery_Job',
+            name: 'Delivery Job'
+        },
+        {
+            id: 'OnSite_Troubleshooting',
+            name: 'OnSite Troubleshooting'
+        },
+    ]
+    $scope.showpersonassetSelection = true;
+
+    loadDealTable();
+    transactionpersonasset();
 
     angular.element(document).ready(function () {
         $('.date').datetimepicker({
@@ -24,6 +73,9 @@ function transactionController($scope, $http) {
         $person.select2();
         $item.select2({
             placeholder: "Select Item...",
+        });
+        $('.selectassetform').select2({
+            placeholder: 'Please Select'
         });
 
         $(".qtyClass").keyup(multInputs);
@@ -129,8 +181,6 @@ function transactionController($scope, $http) {
         $scope.people = people;
     });
 
-    loadDealTable();
-
     function loadDealTable() {
         $http.get('/api/transaction/edit/' + $trans_id.val()).success(function (data) {
             $scope.delivery = data.delivery_fee;
@@ -163,6 +213,38 @@ function transactionController($scope, $http) {
                 order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
                 delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
             }
+
+            if(data.transaction.deliveryorder) {
+                var dodata = data.transaction.deliveryorder;
+                $scope.doform = {
+                    job_type: dodata.job_type,
+                    po_no: dodata.po_no,
+                    submission_datetime: dodata.submission_datetime ? moment(dodata.submission_datetime).format('YYYY-MM-DD   hh:mm A') : '',
+                    pickup_date: dodata.pickup_date ? moment(dodata.pickup_date).format('YYYY-MM-DD') : $today,
+                    pickup_timerange: dodata.pickup_timerange,
+                    pickup_attn: dodata.pickup_attn,
+                    pickup_contact: dodata.pickup_contact,
+                    pickup_address: dodata.pickup_address,
+                    pickup_postcode: dodata.pickup_postcode,
+                    pickup_comment: dodata.pickup_comment,
+                    delivery_date1: dodata.delivery_date1 ? moment(dodata.delivery_date1).format('YYYY-MM-DD') : $today,
+                    delivery_timerange: dodata.delivery_timerange,
+                    delivery_attn: dodata.delivery_attn,
+                    delivery_contact: dodata.delivery_contact,
+                    delivery_address: dodata.delivery_address,
+                    delivery_postcode: dodata.delivery_postcode,
+                    delivery_comment: dodata.delivery_comment,
+                    transaction_id: dodata.transaction_id,
+                    requester: dodata.requester
+                }
+            }
+        });
+    }
+
+
+    function transactionpersonasset() {
+        $http.get('/api/transactionpersonasset/index/' + $trans_id.val()).success(function(data) {
+            $scope.alldata = data.data;
         });
     }
 
@@ -178,70 +260,6 @@ function transactionController($scope, $http) {
         $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
     }
 
-    /*            $http({
-                    url: '/transaction/' + $trans_id.val(),
-                    method: "GET",
-                }).success(function(transaction){
-
-                    $scope.delivery = transaction.delivery_fee
-                    $http({
-                        url: '/deal/data/' + transaction.id,
-                        method: "GET",
-                    }).success(function(deals){
-                        $scope.deals = deals;
-                        var total = 0;
-                        var totalqty = 0;
-                        for(var i = 0; i < $scope.deals.length; i++){
-                            var deal = $scope.deals[i];
-                            total += (deal.amount/100*100);
-                            totalqty += (deal.qty/100*100);
-                        }
-
-                            $http({
-                                url: '/person/profile/' + transaction.person_id,
-                                method: "GET",
-                            }).success(function(profile){
-                                $scope.totalModel = total;
-                                $scope.totalqtyModel = totalqty;
-                                if(profile.gst){
-                                    $scope.totalModelStore = (total * 7/100) + total;
-                                }else{
-                                    $scope.totalModelStore = total;
-                                }
-                            });
-
-                    $http({
-                        url: '/transaction/person/'+ transaction.person_id,
-                        method: "GET",
-                    }).success(function(person){
-
-                        $scope.form = {
-                            person: person.id,
-                            name: person.name,
-                            payterm: person.payterm,
-                            cust_id: person.cust_id,
-                            transremark: transaction.transremark ? transaction.transremark : person.remark,
-                            del_address: transaction.del_address ? transaction.del_address : person.del_address,
-                            bill_address: transaction.bill_address ? transaction.bill_address : person.bill_address,
-                            del_postcode: transaction.del_postcode ? transaction.del_postcode : person.del_postcode,
-                            attn_name: transaction.name ? transaction.name : person.name,
-                            contact: transaction.contact ? transaction.contact : person.contact,
-                            order_date: transaction.order_date ? transaction.order_date : moment().format("YYYY-MM-DD"),
-                            delivery_date: transaction.delivery_date ? transaction.delivery_date : moment().format("YYYY-MM-DD"),
-                        }
-
-
-
-                        $http({
-                            url: '/transaction/item/'+ person.id,
-                            method: "GET",
-                        }).success(function(items){
-                            $scope.items = items;
-                        });
-                    });
-                });*/
-    // });
-
     //delete deals
     $scope.confirmDelete = function ($event, deal_id) {
         $event.preventDefault();
@@ -254,6 +272,119 @@ function transactionController($scope, $http) {
             return false;
         }
     }
+
+    $scope.onAssetqtyChanged = function() {
+        $scope.assetformitems = [];
+        var i;
+
+        for (i = 0; i < $scope.assetform.personasset_qty; i++) {
+            $scope.assetformitems.push({
+                serial_no: '',
+                sticker: '',
+            });
+        }
+    }
+
+    $scope.submitTransactionpersonasset = function() {
+        $http.post('/api/transactionpersonasset/create', {
+            items: $scope.assetformitems,
+            personasset_id: $scope.assetform.personasset_id,
+            transaction_id: $('#transaction_id').val(),
+            qty: $scope.assetform.personasset_qty
+        }).success(function(data) {
+            $scope.assetformitems = [];
+            $scope.assetform = {
+                personasset_id: '',
+                personasset_qty: ''
+            }
+            $('.selectassetform').val(null).trigger('change.select2');
+            transactionpersonasset();
+            return data;
+        })
+    }
+
+    function clearTransactionpersonassetform() {
+        $scope.transactionpersonassetform = {
+            id: '',
+            code: '',
+            name: '',
+            brand: '',
+            serial_no: '',
+            sticker: '',
+        }
+    }
+
+
+    $scope.removeTransactionpersonassetEntry = function ($event, id) {
+        $event.stopPropagation();
+        $event.preventDefault();
+        var isConfirmDelete = confirm('Are you sure to DELETE this item?');
+        if (isConfirmDelete) {
+            $http.delete('/api/transactionpersonasset/' + id + '/delete').success(function (data) {
+                transactionpersonasset();
+            });
+        }else {
+            return false;
+        }
+    }
+
+    $scope.editTransactionpersonassetModal = function ($event, transactionpersonasset) {
+        // $event.stopPropagation();
+        $event.preventDefault();
+        fetchSingleTransactionpersonasset(transactionpersonasset);
+    }
+
+    function fetchSingleTransactionpersonasset(data) {
+        $scope.transactionpersonassetform = {
+            id: data.id,
+            code: data.code,
+            name: data.name,
+            brand: data.brand,
+            serial_no: data.serial_no,
+            sticker: data.sticker
+        }
+    }
+
+    $scope.updateTransactionpersonasset = function ($event) {
+        $event.preventDefault();
+        $http.post('/api/transactionpersonasset/update', $scope.transactionpersonassetform).success(function (data) {
+            transactionpersonasset();
+        });
+    }
+
+    $scope.onFromHappyiceChanged = function() {
+
+        if($scope.doform.from_happyice) {
+            $scope.doform.pickup_attn = 'Kent';
+            $scope.doform.pickup_contact = '96977973';
+            $scope.doform.pickup_address = 'Happy Ice, Blk 2021 #01-198 Bukit Batok St 23';
+            $scope.doform.pickup_postcode = '659526';
+            $scope.doform.to_happyice = false;
+            $scope.showpersonassetSelection = false;
+        }else {
+            $scope.doform.pickup_attn = '';
+            $scope.doform.pickup_contact = '';
+            $scope.doform.pickup_address = '';
+            $scope.doform.pickup_postcode = '';
+            $scope.showpersonassetSelection = true;
+        }
+    }
+
+    $scope.onToHappyiceChanged = function () {
+        if ($scope.doform.to_happyice) {
+            $scope.doform.delivery_attn = 'Kent';
+            $scope.doform.delivery_contact = '96977973';
+            $scope.doform.delivery_address = 'Happy Ice, Blk 2021 #01-198 Bukit Batok St 23';
+            $scope.doform.delivery_postcode = '659526';
+            $scope.doform.from_happyice = false;
+        } else {
+            $scope.doform.delivery_attn = '';
+            $scope.doform.delivery_contact = '';
+            $scope.doform.delivery_address = '';
+            $scope.doform.delivery_postcode = '';
+        }
+    }
+
 }
 
 

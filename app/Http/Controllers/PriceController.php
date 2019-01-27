@@ -38,7 +38,7 @@ class PriceController extends Controller
         $quote_price = $request->quote;
 
         foreach ($quote_price as $index => $quote) {
-            if ($quote != 0 and $quote != null) {
+            if ($quote != null) {
                 if (auth()->user()->hasRole('franchisee')) {
                     $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
                 } else {

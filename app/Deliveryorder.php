@@ -11,7 +11,7 @@ class Deliveryorder extends Model
         'pickup_date', 'pickup_timerange', 'pickup_attn', 'pickup_contact', 'pickup_address',
         'pickup_postcode', 'pickup_comment', 'delivery_date1', 'delivery_timerange', 'delivery_attn',
         'delivery_contact', 'delivery_address', 'delivery_postcode', 'delivery_comment', 'transaction_id',
-        'requester'
+        'requester', 'from_happyice', 'to_happyice'
     ];
 
     protected $dates = [
