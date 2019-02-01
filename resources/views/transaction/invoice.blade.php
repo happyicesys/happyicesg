@@ -72,21 +72,21 @@
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                 <div style="font-size:14px"><strong>Bill To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                @if($person->franchisee)
+{{--                                 @if($person->franchisee)
                                     <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
                                     <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
-                                @else
+                                @else --}}
                                     <span class="col-xs-12"> {{$person->cust_id}}</span>
                                     <span class="col-xs-12">{{$person->company}}</span>
                                     <span class="col-xs-12">{{$person->com_remark}}</span>
                                     <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
-                                @endif
+                                {{-- @endif --}}
                                 </div>
                             </div>
                         @endif
 
                         <div style="padding-top:20px">
-                            @if($person->franchisee)
+{{--                             @if($person->franchisee)
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
@@ -97,7 +97,7 @@
                                 <div class="inline"><strong>Tel:</strong></div>
                                 <div class="inline" style="padding-left: 20px">{{$person->franchisee->contact}}</div>
                             </div>
-                            @else
+                            @else --}}
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
@@ -112,12 +112,12 @@
                                 <div class="inline"><strong>Tel:</strong></div>
                                 <div class="inline" style="padding-left: 20px">{{$transaction->contact ? $transaction->contact : $person->contact}}</div>
                             </div>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </div>
                     <div class="col-xs-4">
                         @unless($person->cust_id[0] == 'H')
-                            @if($person->franchisee)
+{{--                             @if($person->franchisee)
                             <div class="form-group" style="padding: 3px 0px 0px 10px">
                                 <div style="font-size:14px"><strong>Send To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
@@ -128,7 +128,7 @@
                                     @endif
                                 </div>
                             </div>
-                            @else
+                            @else --}}
                             <div class="form-group" style="padding: 3px 0px 0px 10px">
                                 <div style="font-size:14px"><strong>Send To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
@@ -141,7 +141,7 @@
                                     <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
                                 </div>
                             </div>
-                            @endif
+                            {{-- @endif --}}
                         @endunless
                     </div>
                     <div class="col-xs-4">
@@ -179,7 +179,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{\Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</span>
+                                        <span class="inline">{{$transaction->order_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y') : ''}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +191,7 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{\Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y')}}</span>
+                                        <span class="inline">{{$transaction->delivery_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y') : ''}}</span>
                                     </div>
                                 </div>
                             </div>

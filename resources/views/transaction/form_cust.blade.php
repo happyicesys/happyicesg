@@ -1,6 +1,7 @@
 @inject('people', 'App\Person')
 @inject('users', 'App\User')
 @inject('personassets', 'App\Personasset')
+@inject('transactionpersonassets', 'App\Transactionpersonasset')
 
 <div class="panel panel-primary">
     <div class="panel-body">
@@ -584,6 +585,28 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div ng-show="!showpersonassetSelection">
+                @if(auth()->user()->hasRole('admin') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
+                <div class="row">
+                    <div class="form-group col-md-10 col-sm-10 col-xs-12">
+                        {!! Form::label('transactionpersonasset_id', 'Asset', ['class'=>'control-label search-title']) !!}
+                        <label for="required" class="control-label" style="color:red;">*</label>
+                        {!! Form::select('transactionpersonasset_id',
+                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->orderBy('code')->lists('full', 'id')->all(),
+                            null,
+                            [
+                            'id'=>'transactionpersonasset_id',
+                            'class'=>'selectassetform form-control',
+                            'ng-model'=>'assetform.transactionpersonasset_id'
+                            ])
+                        !!}
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12" style="padding-top: 25px;">
+                        <button type="button" class="btn btn-success btn-block" ng-disabled="!assetform.transactionpersonasset_id" ng-click="submitTransactionpersonasset()">Add</button>
+                    </div>
+                </div>
+                @endif
             </div>
 
             <div class="table-responsive" style="padding-top:20px;">

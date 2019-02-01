@@ -18,7 +18,8 @@ function transactionController($scope, $http) {
     $today = moment().format('YYYY-MM-DD');
     $scope.assetform = {
         personasset_id: '',
-        personasset_qty: ''
+        personasset_qty: '',
+        transactionpersonasset_id: ''
     }
     $scope.assetformitems = [];
     $scope.transactionpersonassetform = {
@@ -289,13 +290,15 @@ function transactionController($scope, $http) {
         $http.post('/api/transactionpersonasset/create', {
             items: $scope.assetformitems,
             personasset_id: $scope.assetform.personasset_id,
+            transactionpersonasset_id: $scope.assetform.transactionpersonasset_id,
             transaction_id: $('#transaction_id').val(),
             qty: $scope.assetform.personasset_qty
         }).success(function(data) {
             $scope.assetformitems = [];
             $scope.assetform = {
                 personasset_id: '',
-                personasset_qty: ''
+                personasset_qty: '',
+                transactionpersonasset_id: ''
             }
             $('.selectassetform').val(null).trigger('change.select2');
             transactionpersonasset();
@@ -368,6 +371,13 @@ function transactionController($scope, $http) {
             $scope.doform.pickup_postcode = '';
             $scope.showpersonassetSelection = true;
         }
+        $scope.assetformitems = [];
+        $scope.assetform = {
+            personasset_id: '',
+            personasset_qty: '',
+            transactionpersonasset_id: ''
+        }
+        $('.selectassetform').val(null).trigger('change.select2');
     }
 
     $scope.onToHappyiceChanged = function () {
@@ -383,6 +393,14 @@ function transactionController($scope, $http) {
             $scope.doform.delivery_address = '';
             $scope.doform.delivery_postcode = '';
         }
+        $scope.showpersonassetSelection = true;
+        $scope.assetformitems = [];
+        $scope.assetform = {
+            personasset_id: '',
+            personasset_qty: '',
+            transactionpersonasset_id: ''
+        }
+        $('.selectassetform').val(null).trigger('change.select2');
     }
 
 }
