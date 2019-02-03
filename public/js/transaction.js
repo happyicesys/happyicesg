@@ -29,6 +29,7 @@ function transactionController($scope, $http) {
         brand: '',
         serial_no: '',
         sticker: '',
+        remarks: ''
     }
     $scope.doform = {
         job_type: '',
@@ -236,7 +237,9 @@ function transactionController($scope, $http) {
                     delivery_postcode: dodata.delivery_postcode,
                     delivery_comment: dodata.delivery_comment,
                     transaction_id: dodata.transaction_id,
-                    requester: dodata.requester
+                    requester: dodata.requester,
+                    from_happyice: dodata.from_happyice == 1 ? true : false,
+                    to_happyice: dodata.to_happyice == 1 ? true : false
                 }
             }
         });
@@ -282,6 +285,7 @@ function transactionController($scope, $http) {
             $scope.assetformitems.push({
                 serial_no: '',
                 sticker: '',
+                remarks: ''
             });
         }
     }
@@ -314,6 +318,7 @@ function transactionController($scope, $http) {
             brand: '',
             serial_no: '',
             sticker: '',
+            remarks: '',
         }
     }
 
@@ -344,7 +349,8 @@ function transactionController($scope, $http) {
             name: data.name,
             brand: data.brand,
             serial_no: data.serial_no,
-            sticker: data.sticker
+            sticker: data.sticker,
+            remarks: data.remarks
         }
     }
 
@@ -401,6 +407,12 @@ function transactionController($scope, $http) {
             transactionpersonasset_id: ''
         }
         $('.selectassetform').val(null).trigger('change.select2');
+    }
+
+    $scope.onPickupDate = function(date) {
+        if(date) {
+            $scope.doform.pickup_date = moment(new Date(date)).format('YYYY-MM-DD');
+        }
     }
 
 }

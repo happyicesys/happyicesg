@@ -144,8 +144,8 @@ class PersonassetController extends Controller
                 'personassets.code', 'personassets.name', 'personassets.brand',
                 'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode'
             )
-            ->where('transactions.is_deliveryorder', 1);
-            // ->where('transactionpersonassets.is_warehouse', 1);
+            ->where('transactions.is_deliveryorder', 1)
+            ->where('transactionpersonassets.is_warehouse', 1);
 
         // reading whether search input is filled
         if ($datefrom) {

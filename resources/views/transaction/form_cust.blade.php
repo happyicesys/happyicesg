@@ -16,12 +16,22 @@
         {!! Form::text('person_code', '@{{form.cust_id}}', ['class'=>'hidden form-control']) !!}
         {!! Form::text('name', '@{{form.name}}', ['class'=>'hidden form-control']) !!}
 
+        @php
+            $dodisable = false;
+            $dodisableStr = '';
+            if(auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') {
+                $dodisable = true;
+                $dodisableStr = 'disabled';
+            }
+        @endphp
+
         <div class="row">
             <div class="col-md-4 form-group">
                 {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
                 {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                 'ng-model'=>'form.bill_address',
                 'disabled'=> $disabled,
+                'disabled'=> $dodisable,
                 'rows'=>'5']) !!}
             </div>
 
@@ -292,7 +302,8 @@
                     $transaction->deliveryorder->job_type,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'doform.job_type'
+                        'ng-model'=>'doform.job_type',
+                        'disabled' => $dodisable
                     ])
                 !!}
             </div>
@@ -304,7 +315,8 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'doform.po_no'
+                        'ng-model'=>'doform.po_no',
+                        'disabled' => $dodisable
                     ])
                 !!}
             </div>
@@ -377,7 +389,18 @@
                     {!! Form::label('pickup_date', 'Pickup Date', ['class'=>'control-label']) !!}
                     <label for="required" class="control-label" style="color:red;">*</label>
                     <div class="input-group date">
-                        {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_date ? $transaction->deliveryorder->pickup_date : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'pickup_date']) !!}
+                        {{-- {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_date ? $transaction->deliveryorder->pickup_date : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'pickup_date', 'ng-model'=>'doform.pickup_date']) !!} --}}
+                        <datepicker>
+                            <input
+                                name = "pickup_date"
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Pickup Date"
+                                ng-model = "doform.pickup_date"
+                                ng-change = "onPickupDate(doform.pickup_date)"
+                                {{$dodisableStr}}
+                            />
+                        </datepicker>
                         <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                     </div>
                 </div>
@@ -396,7 +419,8 @@
                             ],
                             $transaction->deliveryorder->pickup_timerange,
                             [
-                                'class'=>'person form-control'
+                                'class'=>'person form-control',
+                                'disabled' => $dodisable
                              ])
                         !!}
                     </div>
@@ -405,41 +429,41 @@
                     <div class="form-group">
                         {!! Form::label('pickup_attn', 'Contact Person', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('pickup_attn', null, ['class'=>'form-control', 'ng-model'=>'doform.pickup_attn']) !!}
+                        {!! Form::text('pickup_attn', null, ['class'=>'form-control', 'ng-model'=>'doform.pickup_attn', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('pickup_contact', 'Tel No.', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control', 'ng-model'=>'doform.pickup_contact']) !!}
+                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control', 'ng-model'=>'doform.pickup_contact', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('pickup_postcode', 'Pickup Postcode', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control', 'ng-model'=>'doform.pickup_postcode']) !!}
+                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control', 'ng-model'=>'doform.pickup_postcode', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
                         <br>
-                        {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()']) !!}
+                        {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('pickup_address', 'Pickup Address', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'doform.pickup_address']) !!}
+                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'doform.pickup_address', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('pickup_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control', 'rows'=>'3']) !!}
+                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control', 'rows'=>'3', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
             </div>
@@ -453,11 +477,11 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
                     {!! Form::label('delivery_date1', 'Delivery Date', ['class'=>'control-label']) !!}
-                    <label for="required" class="control-label" style="color:red;">*</label>
-                    <div class="input-group date">
+                    <input type="text" name="delivery_date1" class="form-control" ng-model="doform.pickup_date" readonly>
+{{--                     <div class="input-group date">
                         {!! Form::text('delivery_date1', $transaction->deliveryorder->delivery_date1 ? $transaction->deliveryorder->delivery_date1 : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'delivery_date1']) !!}
                         <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
@@ -473,7 +497,7 @@
                                 'Anytime before 5pm' => 'Anytime before 5pm',
                             ],
                             $transaction->deliveryorder->delivery_timerange,
-                            ['class'=>'person form-control'])
+                            ['class'=>'person form-control', 'disabled' => $dodisable])
                         !!}
                     </div>
                 </div>
@@ -481,41 +505,44 @@
                     <div class="form-group">
                         {!! Form::label('delivery_attn', 'Contact Person', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control', 'ng-model'=>'doform.delivery_attn']) !!}
+                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control', 'ng-model'=>'doform.delivery_attn', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('delivery_contact', 'Tel No.', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control', 'ng-model'=>'doform.delivery_contact']) !!}
+                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control', 'ng-model'=>'doform.delivery_contact', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('delivery_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control', 'ng-model'=>'doform.delivery_postcode']) !!}
+                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control', 'ng-model'=>'doform.delivery_postcode', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
+{{--                     @php
+                        dd($transaction->deliveryorder->to_happyice);
+                    @endphp --}}
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
                         <br>
-                        {!! Form::checkbox('to_happyice', $transaction->deliveryorder->to_happyice, null, ['ng-model'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()']) !!}
+                        {!! Form::checkbox('to_happyice', 'to_happyice', $transaction->deliveryorder->to_happyice ? true : false, ['ng-model'=>'doform.to_happyice', 'ng-checked'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('delivery_address', 'Delivery Address', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'doform.delivery_address']) !!}
+                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'doform.delivery_address', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('delivery_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control', 'rows'=>'3']) !!}
+                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control', 'rows'=>'3', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
             </div>
@@ -538,7 +565,8 @@
                             [
                             'id'=>'personasset_id',
                             'class'=>'selectassetform form-control',
-                            'ng-model'=>'assetform.personasset_id'
+                            'ng-model'=>'assetform.personasset_id',
+                            'disabled' => $dodisable
                             ])
                         !!}
                     </div>
@@ -564,7 +592,8 @@
                             'id'=>'personasset_qty',
                             'class'=>'selectassetform form-control',
                             'ng-model'=>'assetform.personasset_qty',
-                            'ng-change'=> 'onAssetqtyChanged()'
+                            'ng-change'=> 'onAssetqtyChanged()',
+                            'disabled' => $dodisable
                             ])
                         !!}
                     </div>
@@ -583,6 +612,10 @@
                             {!! Form::label('sticker', 'Sticker', ['class'=>'control-label']) !!}
                             {!! Form::text('sticker', null, ['class'=>'form-control', 'ng-model'=>'assetformitem.sticker']) !!}
                         </div>
+                        <div class="form-group">
+                            {!! Form::label('remarks', 'Comment', ['class'=>'control-label']) !!}
+                            <textarea name="remarks" class="form-control" rows="3" ng-model="assetformitem.remarks"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -593,12 +626,13 @@
                         {!! Form::label('transactionpersonasset_id', 'Asset', ['class'=>'control-label search-title']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
                         {!! Form::select('transactionpersonasset_id',
-                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->orderBy('code')->lists('full', 'id')->all(),
+                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->orderBy('code')->lists('full', 'id')->all(),
                             null,
                             [
                             'id'=>'transactionpersonasset_id',
                             'class'=>'selectassetform form-control',
-                            'ng-model'=>'assetform.transactionpersonasset_id'
+                            'ng-model'=>'assetform.transactionpersonasset_id',
+                            'disabled' => $dodisable
                             ])
                         !!}
                     </div>
@@ -639,11 +673,17 @@
                             <span ng-if="search.sortName == 'serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'serial_no' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('sticker')">
                             Sticker
                             <span ng-if="search.sortName == 'sticker' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'sticker' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('remarks')">
+                            Comments
+                            <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1"></th>
                     </tr>
@@ -661,11 +701,14 @@
                             <td class="col-md-1 text-center">
                                 @{{data.brand}}
                             </td>
-                            <td class="col-md-2 text-left">
+                            <td class="col-md-1 text-left">
                                 @{{data.serial_no}}
                             </td>
-                            <td class="col-md-2 text-left">
+                            <td class="col-md-1 text-left">
                                 @{{data.sticker}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                @{{data.remarks}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user'))
@@ -717,11 +760,17 @@
                                     </label>
                                     <input type="text" name="title" class="form-control" ng-model="transactionpersonassetform.serial_no">
                                 </div>
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group col-md-6 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Sticker
                                     </label>
-                                    <textarea name="specs3" class="form-control" rows="3" ng-model="transactionpersonassetform.sticker"></textarea>
+                                    <textarea name="sticker" class="form-control" rows="3" ng-model="transactionpersonassetform.sticker"></textarea>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Remarks
+                                    </label>
+                                    <textarea name="remarks" class="form-control" rows="3" ng-model="transactionpersonassetform.remarks"></textarea>
                                 </div>
                             </div>
                         </div>

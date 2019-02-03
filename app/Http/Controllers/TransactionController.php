@@ -346,6 +346,11 @@ class TransactionController extends Controller
             if(! $request->driver){
                 $request->merge(array('driver'=>Auth::user()->name));
             }
+
+            if($transaction->is_deliveryorder) {
+                $this->updateIsWarehouseTransactionpersonassets($transaction->id);
+            }
+
             if(count($deals) == 0){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
@@ -358,6 +363,10 @@ class TransactionController extends Controller
                 $request->merge(array('driver'=>Auth::user()->name));
             }
             $request->merge(array('paid_by'=>null));
+
+            if($transaction->is_deliveryorder) {
+                $this->updateIsWarehouseTransactionpersonassets($transaction->id);
+            }
 
             if(count($deals) == 0){
                 Flash::error('Please entry the list');
@@ -386,8 +395,36 @@ class TransactionController extends Controller
                     return Redirect::action('TransactionController@edit', $transaction->id);
                 }
             }else {
-                $request->merge(array('status' => 'Confirmed'));
+                $this->saveDoByTransactionid($transaction->id);
+                $this->validate($request, [
+                    'job_type' => 'required',
+                    'po_no' => 'required',
+                    'pickup_date' => 'required',
+                    'pickup_attn' => 'required',
+                    'pickup_contact' => 'required',
+                    'pickup_postcode' => 'required',
+                    'pickup_address' => 'required',
+                    'delivery_attn' => 'required',
+                    'delivery_contact' => 'required',
+                    'delivery_postcode' => 'required',
+                    'delivery_address' => 'required',
+                ], [
+                    'job_type.required' => 'Please select the Job Type',
+                    'po_no.required' => 'Please select the PO Number',
+                    'pickup_date.required' => 'Please choose the Pickup Date',
+                    'pickup_attn.required' => 'Please fill in the Pickup Contact Person',
+                    'pickup_contact.required' => 'Please fill in the Pickup Tel No.',
+                    'pickup_postcode.required' => 'Please fill in the Pickup Postcode',
+                    'pickup_address.required' => 'Please fill in the Pickup Address',
+                    'delivery_attn.required' => 'Please fill in the Delivery Contact Person',
+                    'delivery_contact.required' => 'Please fill in the Delivery Tel No.',
+                    'delivery_postcode.required' => 'Please fill in the Delivery Postcode',
+                    'delivery_address.required' => 'Please fill in the Delivery Address',
+
+                ]);
+
                 $do = $transaction->deliveryorder;
+                $request->merge(array('status' => 'Confirmed'));
                 $do->submission_datetime = Carbon::now();
                 $do->save();
             }
@@ -499,26 +536,7 @@ class TransactionController extends Controller
         }
         // given this is a delivery order
         if($transaction->is_deliveryorder) {
-            $do = Deliveryorder::where('transaction_id', $transaction->id)->firstOrFail();
-            // $do->update($request->all());
-            $do->update([
-                'job_type' => request('job_type'),
-                'po_no' => request('po_no'),
-                'pickup_date' => request('pickup_date'),
-                'pickup_timerange' => request('pickup_timerange'),
-                'pickup_attn' => request('pickup_attn'),
-                'pickup_contact' => request('pickup_contact'),
-                'pickup_postcode' => request('pickup_postcode'),
-                'pickup_address' => request('pickup_address'),
-                'pickup_comment' => request('pickup_comment'),
-                'delivery_date1' => request('delivery_date1'),
-                'delivery_timerange' => request('delivery_timerange'),
-                'delivery_attn' => request('delivery_attn'),
-                'delivery_contact' => request('delivery_contact'),
-                'delivery_postcode' => request('delivery_postcode'),
-                'delivery_address' => request('delivery_address'),
-                'delivery_comment' => request('delivery_comment')
-            ]);
+            $this->saveDoByTransactionid($transaction->id);
         }
 
         // record the transactions to ftransaction when franchisee id is detected
@@ -1703,4 +1721,52 @@ class TransactionController extends Controller
             'franchisee_id' => $transaction->person->franchisee_id,
         ]);
     }*/
+
+    // save do data by transaction id(transaction_id)
+    private function saveDoByTransactionid($transaction_id)
+    {
+        $do = Deliveryorder::where('transaction_id', $transaction_id)->firstOrFail();
+        // dd(request()->all(), request('to_happyice'), request()->has('to_happyice'));
+            // $do->update($request->all());
+        $do->update([
+            'job_type' => request('job_type'),
+            'po_no' => request('po_no'),
+            'pickup_date' => request('pickup_date'),
+            'pickup_timerange' => request('pickup_timerange'),
+            'pickup_attn' => request('pickup_attn'),
+            'pickup_contact' => request('pickup_contact'),
+            'pickup_postcode' => request('pickup_postcode'),
+            'pickup_address' => request('pickup_address'),
+            'pickup_comment' => request('pickup_comment'),
+            'delivery_date1' => request('delivery_date1'),
+            'delivery_timerange' => request('delivery_timerange'),
+            'delivery_attn' => request('delivery_attn'),
+            'delivery_contact' => request('delivery_contact'),
+            'delivery_postcode' => request('delivery_postcode'),
+            'delivery_address' => request('delivery_address'),
+            'delivery_comment' => request('delivery_comment'),
+            'from_happyice' => request()->has('from_happyice') == true ? 1 : 0,
+            'to_happyice' => request()->has('to_happyice') == true ? 1 : 0,
+        ]);
+    }
+
+    // update transaction person assets into asset movement($transaction_id)
+    private function updateIsWarehouseTransactionpersonassets($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        $transactionpersonassets = $transaction->transactionpersonassets;
+
+        foreach($transactionpersonassets as $transactionpersonasset) {
+            if($transaction->deliveryorder->from_happyice) {
+                $transactionpersonasset->dateout = Carbon::now();
+                $transactionpersonasset->is_warehouse = 0;
+            }
+            if($transaction->deliveryorder->to_happyice) {
+                $transactionpersonasset->datein = Carbon::now();
+                $transactionpersonasset->is_warehouse = 1;
+            }
+            $transactionpersonasset->save();
+        }
+    }
 }

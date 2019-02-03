@@ -23,7 +23,8 @@ class TransactionpersonassetController extends Controller
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
             ->where('transactionpersonassets.transaction_id', $transaction_id)
             ->select(
-                'transactionpersonassets.id', 'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.qty',
+                'transactionpersonassets.id', 'transactionpersonassets.serial_no', 'transactionpersonassets.sticker',
+                'transactionpersonassets.remarks', 'transactionpersonassets.qty',
                 'personassets.code', 'personassets.name', 'personassets.brand'
             )
             ->oldest('transactionpersonassets.updated_at')
@@ -57,6 +58,7 @@ class TransactionpersonassetController extends Controller
                     'transaction_id' => $transaction_id,
                     'serial_no' => $item['serial_no'],
                     'sticker' => $item['sticker'],
+                    'remarks' => $item['remarks'],
                     'qty' => 1
                 ]);
             }
@@ -82,6 +84,7 @@ class TransactionpersonassetController extends Controller
             'brand' => request('brand'),
             'serial_no' => request('serial_no'),
             'sticker' => request('sticker'),
+            'remarks' => request('remarks')
         ]);
     }
 }
