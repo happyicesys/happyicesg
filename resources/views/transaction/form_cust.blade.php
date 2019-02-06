@@ -450,7 +450,9 @@
                     <div class="form-group">
                         {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
                         <br>
-                        {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
+                        {{-- {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!} --}}
+                        {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['ng-model'=>'doform.from_happyice', 'ng-checked'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
+                        <input type="hidden" name="from_happyice" ng-value="doform.from_happyice">
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -529,7 +531,8 @@
                     <div class="form-group">
                         {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
                         <br>
-                        {!! Form::checkbox('to_happyice', 'to_happyice', $transaction->deliveryorder->to_happyice ? true : false, ['ng-model'=>'doform.to_happyice', 'ng-checked'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
+                        {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['ng-model'=>'doform.to_happyice', 'ng-checked'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
+                        <input type="hidden" name="to_happyice" ng-value="doform.to_happyice">
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">

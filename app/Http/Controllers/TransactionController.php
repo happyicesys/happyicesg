@@ -324,6 +324,8 @@ class TransactionController extends Controller
      */
     public function update(TransactionRequest $request, $id)
     {
+
+        // dd(request()->all());
         // dynamic form arrays
         $quantities = $request->qty;
         $amounts = $request->amount;
@@ -706,6 +708,21 @@ class TransactionController extends Controller
         $deals = Deal::whereTransactionId($transaction->id)->get();
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+        $transactionpersonassets = DB::table('transactionpersonassets')
+            ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
+            ->where('transactionpersonassets.transaction_id', $transaction->id)
+            ->select(
+                'transactionpersonassets.id',
+                'transactionpersonassets.serial_no',
+                'transactionpersonassets.sticker',
+                'transactionpersonassets.remarks',
+                'transactionpersonassets.qty',
+                'personassets.code',
+                'personassets.name',
+                'personassets.brand'
+            )
+            ->oldest('transactionpersonassets.updated_at')
+            ->get();
         // $profile = Profile::firstOrFail();
         $data = [
             'inv_id' => $transaction->id,
@@ -714,6 +731,7 @@ class TransactionController extends Controller
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
+            'transactionpersonassets' => $transactionpersonassets
             // 'profile'       =>  $profile,
         ];
 
@@ -1745,8 +1763,8 @@ class TransactionController extends Controller
             'delivery_postcode' => request('delivery_postcode'),
             'delivery_address' => request('delivery_address'),
             'delivery_comment' => request('delivery_comment'),
-            'from_happyice' => request()->has('from_happyice') == true ? 1 : 0,
-            'to_happyice' => request()->has('to_happyice') == true ? 1 : 0,
+            'from_happyice' => request('from_happyice') == 'true' ? 1 : 0,
+            'to_happyice' => request('to_happyice') == 'true' ? 1 : 0,
         ]);
     }
 

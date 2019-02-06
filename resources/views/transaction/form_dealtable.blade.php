@@ -89,6 +89,7 @@
                                                     $valid = true;
                                                     break;
                                                 case 'franchisee':
+                                                case 'watcher':
                                                     $valid = false;
                                                     break;
                                                 default:

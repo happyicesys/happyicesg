@@ -331,6 +331,17 @@
                 </label>
             </div>
         </div>
+{{--
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Signature
+            </div>
+            <div class="panel-body">
+                @if(!auth()->user()->hasRole('watcher'))
+                    <canvas id="canvas" width="640" height="480"></canvas>
+                @endif
+            </div>
+        </div> --}}
     </div>
 </div>
 </div>

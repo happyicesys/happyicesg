@@ -3,7 +3,7 @@
     <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    {{-- <link rel="stylesheet" href="../bootstrap-css/bootstrap.min.css"/>  --}}
+    {{-- <link rel="stylesheet" href="../bootstrap-css/bootstrap.min.css"/> --}}
     <style type="text/css" media="print">
         .inline {
             display:inline;
@@ -35,7 +35,9 @@
         tr {
             page-break-inside: avoid;
         }
-
+		.page-break {
+		    page-break-after: always;
+		}
 
     </style>
     </head>
@@ -85,19 +87,8 @@
                             </div>
                         @endif
 
+                        @if(!$transaction->is_deliveryorder)
                         <div style="padding-top:20px">
-{{--                             @if($person->franchisee)
-                            <div class="form-group" style="margin-bottom: 0px">
-                                <div class="inline"><strong>Attn:</strong></div>
-                                <div class="inline col-xs-offset-1">
-                                    {{$person->franchisee->user_code}} - {{$person->franchisee->name}}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="inline"><strong>Tel:</strong></div>
-                                <div class="inline" style="padding-left: 20px">{{$person->franchisee->contact}}</div>
-                            </div>
-                            @else --}}
                             <div class="form-group" style="margin-bottom: 0px">
                                 <div class="inline"><strong>Attn:</strong></div>
                                 <div class="inline col-xs-offset-1">
@@ -112,11 +103,11 @@
                                 <div class="inline"><strong>Tel:</strong></div>
                                 <div class="inline" style="padding-left: 20px">{{$transaction->contact ? $transaction->contact : $person->contact}}</div>
                             </div>
-                            {{-- @endif --}}
                         </div>
+                        @endif
                     </div>
                     <div class="col-xs-4">
-                        @unless($person->cust_id[0] == 'H')
+                        @unless($person->cust_id[0] == 'H' or $transaction->is_deliveryorder)
 {{--                             @if($person->franchisee)
                             <div class="form-group" style="padding: 3px 0px 0px 10px">
                                 <div style="font-size:14px"><strong>Send To:</strong></div>
@@ -150,6 +141,8 @@
                                 <div style="font-size: 130%;" class="text-center">
                                     @if($transaction->is_vending_generate)
                                         <strong>SALES REPORT</strong>
+                                    @elseif($transaction->is_deliveryorder)
+                                        <strong>DELIVERY ORDER</strong>
                                     @else
                                         @if($transaction->gst)
                                         <strong>DO/ TAX INVOICE</strong>
@@ -171,30 +164,47 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                            @if(!$transaction->is_deliveryorder)
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Order On:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->order_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y') : ''}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->order_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y') : ''}}</span>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->delivery_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y') : ''}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 85%;"><strong>Delivery On:</strong></span>
+                            @else
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Submitted On:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->deliveryorder ? $transaction->deliveryorder->submission_datetime->format('d M y') : ''}}</span>
+                                            <br>
+                                            <span class="inline">{{$transaction->deliveryorder ? $transaction->deliveryorder->submission_datetime->format('H:m A') : ''}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->delivery_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y') : ''}}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            @endif
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -207,18 +217,33 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" style="font-size: 85%;"><strong>Updated By:</strong></span>
+                            @if(!$transaction->is_deliveryorder)
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Updated By:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->updated_by}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->updated_by}}</span>
+                            @else
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Requested By:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{\App\User::find($transaction->deliveryorder->requester)->name}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
@@ -231,16 +256,190 @@
                                     </div>
                                 </div>
                             </div>
-
+                            @if($transaction->is_deliveryorder)
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline" style="font-size: 85%;"><strong>Job Type:</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <span class="inline">{{$transaction->deliveryorder->job_type}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
-
                 </div>
             </div>
 
+            @if($transaction->is_deliveryorder)
+            <div class="row">
+                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
+                    Pick-up Detail
+                </span>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_date', 'Pickup Date', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_timerange', 'Time Range', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_timerange, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_attn', 'Contact Person', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_attn', $transaction->deliveryorder->pickup_attn, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_contact', 'Tel No.', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_postcode', 'Pickup Postcode', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        <div class="form-group">
+                            {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
+                            <br>
+                            {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
+                        {!! Form::label('pickup_address', 'Pickup Address', ['class'=>'control-label']) !!}
+                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control', 'rows'=>'2']) !!}
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
+                        {!! Form::label('pickup_comment', 'Comment', ['class'=>'control-label']) !!}
+                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control', 'rows'=>'2']) !!}
+                    </div>
+                </div>
+
+                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
+                    Delivery Detail
+                </span>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('pickup_date', 'Delivery Date', ['class'=>'control-label']) !!}
+                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('delivery_timerange', 'Time Range', ['class'=>'control-label']) !!}
+                        {!! Form::text('delivery_timerange', $transaction->deliveryorder->delivery_timerange, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('delivery_attn', 'Contact Person', ['class'=>'control-label']) !!}
+                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('delivery_contact', 'Tel No.', ['class'=>'control-label']) !!}
+                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        {!! Form::label('delivery_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
+                        <div class="form-group">
+                            {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
+                            <br>
+                            {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['class'=>'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
+                        {!! Form::label('delivery_address', 'Delivery Address', ['class'=>'control-label']) !!}
+                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control', 'rows'=>'2']) !!}
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
+                        {!! Form::label('delivery_comment', 'Comment', ['class'=>'control-label']) !!}
+                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control', 'rows'=>'2']) !!}
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive row page-break" style="padding-top:20px;">
+                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
+                    Asset and Quantity
+                </span>
+                </div>
+                <table class="table table-list-search table-hover table-bordered table-condensed">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-xs-1 text-center">
+                            #
+                        </th>
+                        <th class="col-xs-1 text-center">
+                            Code
+                        </th>
+                        <th class="col-xs-2 text-center">
+                            Name
+                        </th>
+                        <th class="col-xs-1 text-center">
+                            Brand
+                        </th>
+                        <th class="col-xs-1 text-center">
+                            Serial No
+                        </th>
+                        <th class="col-xs-1 text-center">
+                            Sticker
+                        </th>
+                        <th class="col-xs-1 text-center">
+                            Comments
+                        </th>
+                    </tr>
+                    <tbody>
+                        @foreach($transactionpersonassets as $index => $data)
+                        <tr ng-repeat="data in alldata">
+                            <td class="col-md-1 text-center">
+                                {{ $index + 1 }}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                {{$data->code}}
+                            </td>
+                            <td class="col-md-2 text-left">
+                                {{$data->name}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                {{$data->brand}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                {{$data->serial_no}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                {{$data->sticker}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                {{$data->remarks}}
+                            </td>
+                        </tr>
+                        @endforeach
+                        @if(count($transactionpersonassets) == 0)
+                            <tr>
+                                <td colspan="18" class="text-center">No Records Found</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+            @endif
+
             <div class="avoid">
                 <div class="row">
-                    <table class="table table-bordered table-condensed" style="border:thin solid black;">
+                @if($transaction->is_deliveryorder)
+                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
+                    Items
+                </span>
+                @endif
+                </div>
+                    <table class="table table-bordered table-condensed row">
                         <tr>
                             <th class="col-xs-1 text-center">
                                 Item Code
