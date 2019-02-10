@@ -175,7 +175,6 @@
                             </td>
                             <td class="col-md-2 text-left">
                                 @{{data.pickup_address}}
-                                <br>
                                 @{{data.pickup_postcode}}
                             </td>
                             <td class="col-md-1 text-center">
@@ -189,9 +188,8 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{data.datein_week}}
-                                <br>
                                 <small>
-                                    @{{data.datein_year}}
+                                    (@{{data.datein_year}})
                                 </small>
                             </td>
                             <td class="col-md-1 text-center">

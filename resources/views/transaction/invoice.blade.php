@@ -364,7 +364,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive row page-break" style="padding-top:20px;">
+            <div class="table-responsive row" style="padding-top:20px;">
                 <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Asset and Quantity
