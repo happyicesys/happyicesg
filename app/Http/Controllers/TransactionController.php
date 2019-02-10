@@ -741,8 +741,6 @@ class TransactionController extends Controller
 
         $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
         $pdf = PDF::loadView('transaction.invoice', $data);
-        $pdf->setPaper('a4');
-        $pdf->setOption('dpi', 85);
         return $pdf->download($name);
     }
 
