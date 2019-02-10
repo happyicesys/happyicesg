@@ -13,18 +13,17 @@
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li class="active"><a href="#category" role="tab" data-toggle="tab">Asset Category</a></li>
-                    <li><a href="#movement" role="tab" data-toggle="tab">Asset Movement</a></li>
-
+                    <li class="active"><a href="#movement" role="tab" data-toggle="tab">Asset Movement</a></li>
+                    <li><a href="#category" role="tab" data-toggle="tab">Asset Category</a></li>
                 </ul>
             </div>
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="category">
-                        @include('personasset.category')
-                    </div>
-                    <div class="tab-pane" id="movement">
+                    <div class="tab-pane active" id="movement">
                         @include('personasset.movement')
+                    </div>
+                    <div class="tab-pane" id="category">
+                        @include('personasset.category')
                     </div>
                 </div>
             </div>

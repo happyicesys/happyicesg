@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive" id="exportable_personasset" style="padding-top:20px;">
+            <div class="table-responsive" id="exportable_personassetmovement" style="padding-top:20px;">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">

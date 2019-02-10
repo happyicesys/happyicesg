@@ -274,11 +274,11 @@ function personassetMovementController($scope, $http, $window) {
   });
 
   $scope.exportData = function () {
-    var blob = new Blob(["\ufeff", document.getElementById('exportable_personasset').innerHTML], {
+    var blob = new Blob(["\ufeff", document.getElementById('exportable_personassetmovement').innerHTML], {
       type: "application/vnd.ms-excel;charset=charset=utf-8"
     });
     var now = Date.now();
-    saveAs(blob, "Customer Asset" + now + ".xls");
+    saveAs(blob, "Customer Asset Movement" + now + ".xls");
   };
 
 

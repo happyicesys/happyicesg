@@ -74,13 +74,12 @@
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id], 'autocomplete'=>'off']) !!}
                         @include('transaction.form_cust')
 
-                    @if(!auth()->user()->hasRole('hd_user'))
                     <div class="row">
                         <div class="col-md-12" style="padding-top:15px;">
                             @include('transaction.form_dealtable')
                         </div>
                     </div>
-
+                    @if(!auth()->user()->hasRole('hd_user'))
                     @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
                         <div class="row">
                             <div class="col-md-12" style="padding-top:15px;">
@@ -172,7 +171,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-left">
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
                         {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         @endif
                     </div>

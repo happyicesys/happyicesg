@@ -39,6 +39,7 @@ function transactionController($scope, $http) {
         pickup_timerange: '',
         pickup_attn: '',
         pickup_contact: '',
+        pickup_location_name: '',
         pickup_address: '',
         pickup_postcode: '',
         pickup_comment: '',
@@ -46,6 +47,7 @@ function transactionController($scope, $http) {
         delivery_timerange: '',
         delivery_attn: '',
         delivery_contact: '',
+        delivery_location_name: '',
         delivery_address: '',
         delivery_postcode: '',
         delivery_comment: '',
@@ -257,6 +259,7 @@ function transactionController($scope, $http) {
                     pickup_timerange: dodata.pickup_timerange,
                     pickup_attn: dodata.pickup_attn,
                     pickup_contact: dodata.pickup_contact,
+                    pickup_location_name: dodata.pickup_location_name,
                     pickup_address: dodata.pickup_address,
                     pickup_postcode: dodata.pickup_postcode,
                     pickup_comment: dodata.pickup_comment,
@@ -264,6 +267,7 @@ function transactionController($scope, $http) {
                     delivery_timerange: dodata.delivery_timerange,
                     delivery_attn: dodata.delivery_attn,
                     delivery_contact: dodata.delivery_contact,
+                    delivery_location_name: dodata.delivery_location_name,
                     delivery_address: dodata.delivery_address,
                     delivery_postcode: dodata.delivery_postcode,
                     delivery_comment: dodata.delivery_comment,
@@ -405,13 +409,15 @@ function transactionController($scope, $http) {
         if($scope.doform.from_happyice) {
             $scope.doform.pickup_attn = 'Kent';
             $scope.doform.pickup_contact = '96977973';
-            $scope.doform.pickup_address = 'Happy Ice, Blk 2021 #01-198 Bukit Batok St 23';
+            $scope.doform.pickup_location_name = 'Happy Ice';
+            $scope.doform.pickup_address = 'Blk 2021 #01-198 Bukit Batok St 23';
             $scope.doform.pickup_postcode = '659526';
             $scope.doform.to_happyice = false;
             $scope.showpersonassetSelection = false;
         }else {
             $scope.doform.pickup_attn = '';
             $scope.doform.pickup_contact = '';
+            $scope.doform.pickup_location_name = '';
             $scope.doform.pickup_address = '';
             $scope.doform.pickup_postcode = '';
             $scope.showpersonassetSelection = true;
@@ -429,12 +435,14 @@ function transactionController($scope, $http) {
         if ($scope.doform.to_happyice) {
             $scope.doform.delivery_attn = 'Kent';
             $scope.doform.delivery_contact = '96977973';
-            $scope.doform.delivery_address = 'Happy Ice, Blk 2021 #01-198 Bukit Batok St 23';
+            $scope.doform.delivery_location_name = 'Happy Ice';
+            $scope.doform.delivery_address = 'Blk 2021 #01-198 Bukit Batok St 23';
             $scope.doform.delivery_postcode = '659526';
             $scope.doform.from_happyice = false;
         } else {
             $scope.doform.delivery_attn = '';
             $scope.doform.delivery_contact = '';
+            $scope.doform.delivery_location_name = '';
             $scope.doform.delivery_address = '';
             $scope.doform.delivery_postcode = '';
         }

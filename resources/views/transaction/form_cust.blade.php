@@ -455,6 +455,13 @@
                         <input type="hidden" name="from_happyice" ng-value="doform.from_happyice">
                     </div>
                 </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('pickup_location_name', 'Pickup Location Name', ['class'=>'control-label']) !!}
+                        <label for="required" class="control-label" style="color:red;">*</label>
+                        {!! Form::text('pickup_location_name', $transaction->deliveryorder->pickup_location_name, ['class'=>'form-control', 'ng-model'=>'doform.pickup_location_name', 'disabled' => $dodisable]) !!}
+                    </div>
+                </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('pickup_address', 'Pickup Address', ['class'=>'control-label']) !!}
@@ -533,6 +540,13 @@
                         <br>
                         {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['ng-model'=>'doform.to_happyice', 'ng-checked'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
                         <input type="hidden" name="to_happyice" ng-value="doform.to_happyice">
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('delivery_location_name', 'Delivery Location Name', ['class'=>'control-label']) !!}
+                        <label for="required" class="control-label" style="color:red;">*</label>
+                        {!! Form::text('delivery_location_name', $transaction->deliveryorder->delivery_location_name, ['class'=>'form-control', 'ng-model'=>'doform.delivery_location_name', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
