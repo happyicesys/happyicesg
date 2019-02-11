@@ -439,7 +439,7 @@
                 </span>
                 @endif
                 </div>
-                    <table class="table table-bordered table-condensed row">
+                    <table class="table table-bordered table-condensed">
                         <tr>
                             <th class="col-xs-1 text-center">
                                 Item Code

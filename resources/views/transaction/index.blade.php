@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
+                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                                 <a href="/transaction/create" class="btn btn-success">
                                     <i class="fa fa-plus"></i>
                                     <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>

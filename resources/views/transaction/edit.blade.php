@@ -43,7 +43,7 @@
         $disabled = false;
         $disabledStr = '';
 
-        if(auth()->user()->hasRole('watcher')) {
+        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee')) {
             $disabled = true;
             $disabledStr = 'disabled';
         }
@@ -60,7 +60,7 @@
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
                 <div class="pull-right">
-                    @if(!auth()->user()->hasRole('watcher'))
+                    @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
                         @if(!auth()->user()->hasRole('hd_user'))
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
@@ -151,7 +151,7 @@
             <div class="row">
                 <div class="col-md-12" >
                     <div class="pull-left">
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         @endif
                     </div>
@@ -171,20 +171,23 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="pull-left">
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         @endif
                     </div>
 
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher'))
+                        @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         @if(!auth()->user()->hasRole('franchisee') and $transaction->person->active != 'Pending')
                         {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                         {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         @endif
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        @endif
+                        @if($transaction->is_deliveryorder)
+                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
                         @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
@@ -196,7 +199,7 @@
                     <div class="pull-left">
                         @can('transaction_deleteitem')
                         @cannot('supervisor_view')
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                         {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                         @endif
                         @endcannot
@@ -209,7 +212,10 @@
                         @endif
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
+                        @if($transaction->is_deliveryorder)
+                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
+                        @endif
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
@@ -220,7 +226,7 @@
                 <div class="row">
                     <div class="pull-right">
                         @cannot('transaction_view')
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                             {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
                             {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
                         @endif
@@ -236,7 +242,7 @@
                         {{-- @can('transaction_deleteitem') --}}
                         @cannot('transaction_view')
                         @cannot('supervisor_view')
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                         @endif
@@ -245,11 +251,14 @@
                         {{-- @endcan --}}
                     </div>
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                         @endif
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print</a>
+                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
+                        @if($transaction->is_deliveryorder)
+                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
+                        @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
                 </div>
@@ -316,7 +325,7 @@
                     {!! Form::close() !!}
                 @endif
 
-                @if(!auth()->user()->hasRole('watcher'))
+                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
                 @endif
 {{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
@@ -331,13 +340,17 @@
             </div>
         </div>
 {{--
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" style="width: 820px;">
             <div class="panel-heading">
                 Signature
+                <button class="btn btn-sm btn-default" ng-click="onSignatureCaretClicked()">
+                    <i class="fa fa-caret-down" ng-if="hideSignature"></i>
+                    <i class="fa fa-caret-right" ng-if="!hideSignature"></i>
+                </button>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" ng-show="!hideSignature">
                 @if(!auth()->user()->hasRole('watcher'))
-                    <canvas id="canvas" width="640" height="480"></canvas>
+                    <canvas id="canvas" width="800" height="480"></canvas>
                 @endif
             </div>
         </div> --}}

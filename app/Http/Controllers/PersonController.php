@@ -459,7 +459,7 @@ class PersonController extends Controller
                 'personprice.cost_rate'
             );
 
-        if(auth()->user()->hasRole('watcher')) {
+        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee')) {
             $items = $items->where('personprice.quote_price', '>', 0);
         }
 

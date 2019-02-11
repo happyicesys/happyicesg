@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">{{ config('app.name', 'Happyice') }}</a>
-            @if(!auth()->guest() and !auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
+            @if(!auth()->guest() and !auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                 <a href="/transaction/create" class="btn btn-success btn-sm" style="margin: 10px 0px 0px 10px;">
                     <i class="fa fa-plus"></i>
                     New Transaction
@@ -83,7 +83,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
-                        $franchisee_access = true;
+                        // $franchisee_access = true;
                     }
 
                     if(auth()->user()->hasRole('driver')) {

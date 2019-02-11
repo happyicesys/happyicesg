@@ -65,6 +65,7 @@ function transactionController($scope, $http) {
         },
     ]
     $scope.showpersonassetSelection = true;
+    $scope.hideSignature = true;
 
     loadDealTable();
     transactionpersonasset();
@@ -460,6 +461,10 @@ function transactionController($scope, $http) {
         if(date) {
             $scope.doform.pickup_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
+    }
+
+    $scope.onSignatureCaretClicked = function() {
+        $scope.hideSignature = !$scope.hideSignature;
     }
 
 }
