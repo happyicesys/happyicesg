@@ -325,7 +325,7 @@
                     {!! Form::close() !!}
                 @endif
 
-                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
+                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
                 @endif
 {{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
