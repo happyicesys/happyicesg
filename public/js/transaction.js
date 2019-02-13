@@ -183,34 +183,25 @@ function transactionController($scope, $http) {
 
         var canvas = document.querySelector("canvas");
 
-        var signaturePad = new SignaturePad(canvas);
+        var signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 3
+        });
 
-        // Returns signature image as data URL (see https://mdn.io/todataurl for the list of possible parameters)
-        signaturePad.toDataURL(); // save image as PNG
-        signaturePad.toDataURL("image/jpeg"); // save image as JPEG
-        signaturePad.toDataURL("image/svg+xml"); // save image as SVG
 
-        // Draws signature image from data URL.
-        // NOTE: This method does not populate internal data structure that represents drawn signature. Thus, after using #fromDataURL, #toData won't work properly.
-        signaturePad.fromDataURL("data:image/png;base64,iVBORw0K...");
+        $scope.submitSignature = function() {
+            var signdata = signaturePad.toDataURL();
+            $http.post('/transaction/signature/submit/' + $trans_id.val(), {'data': signdata}).success(function (data) {
+                loadDealTable();
+            });
+            location.reload();
+        }
 
-        // Returns signature image as an array of point groups
-        const data = signaturePad.toData();
-
-        // Draws signature image from an array of point groups
-        signaturePad.fromData(data);
-
-        // Clears the canvas
-        signaturePad.clear();
-
-        // Returns true if canvas is empty, otherwise returns false
-        signaturePad.isEmpty();
-
-        // Unbinds all event handlers
-        signaturePad.off();
-
-        // Rebinds all event handlers
-        signaturePad.on();
+        $scope.clearSignature = function() {
+            // Clears the canvas
+            signaturePad.clear();
+        }
     });
 
     $http.get('/person/data').success(function (people) {
@@ -248,6 +239,8 @@ function transactionController($scope, $http) {
                 contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
                 order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
                 delivery_date: data.transaction.delivery_date ? data.transaction.delivery_date : moment().format("YYYY-MM-DD"),
+                sign_url: data.transaction.sign_url,
+                is_deliveryorder: data.transaction.is_deliveryorder
             }
 
             if(data.transaction.deliveryorder) {
@@ -465,6 +458,12 @@ function transactionController($scope, $http) {
 
     $scope.onSignatureCaretClicked = function() {
         $scope.hideSignature = !$scope.hideSignature;
+    }
+
+    $scope.deleteSignature = function() {
+        $http.get('/transaction/signature/delete/' + $trans_id.val()).success(function(data) {
+            loadDealTable();
+        });
     }
 
 }

@@ -359,6 +359,8 @@ Route::put('/transaction/{trans_id}/total', 'TransactionController@storeTotal');
 Route::get('/transaction/person/{person_id}', 'TransactionController@getCust');
 Route::get('/transaction/item/{person_id}', 'TransactionController@getItem');
 Route::get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');
+Route::post('/transaction/signature/submit/{transaction_id}', 'TransactionController@saveSignature');
+Route::get('/transaction/signature/delete/{transaction_id}', 'TransactionController@deleteSignature');
 Route::resource('transaction', 'TransactionController');
 
 Route::delete('/api/deal/delete/{deal_id}', 'DealController@destroyAjax');

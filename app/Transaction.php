@@ -59,7 +59,8 @@ class Transaction extends Model
         'digital_clock' => 'Digital Clock',
         'analog_clock' => 'Analog Clock',
         'balance_coin' => 'Balance Coin',
-        'is_freeze' => 'Date Freeze'
+        'is_freeze' => 'Date Freeze',
+        'sign_url' => 'Signature'
     );
 
     protected $fillable=[
@@ -69,7 +70,7 @@ class Transaction extends Model
         'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
-        'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by'
+        'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url'
     ];
 
     protected $dates =[

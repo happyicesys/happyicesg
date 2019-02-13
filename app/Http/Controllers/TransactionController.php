@@ -35,6 +35,7 @@ use App\Invattachment;
 use App\TransSubscription;
 use App\User;
 use App\Deliveryorder;
+use Illuminate\Support\Facades\Storage;
 // use App\Ftransaction;
 
 // traits
@@ -707,6 +708,11 @@ class TransactionController extends Controller
     // generate pdf invoice for transaction
     public function generateInvoice($id)
     {
+        $type = 'invoice';
+
+        if(request()->has('value')) {
+            $type = 'do';
+        }
         $transaction = Transaction::findOrFail($id);
         $person = Person::findOrFail($transaction->person_id);
         $deals = Deal::whereTransactionId($transaction->id)->get();
@@ -735,7 +741,8 @@ class TransactionController extends Controller
             'deals'         =>  $deals,
             'totalprice'    =>  $totalprice,
             'totalqty'      =>  $totalqty,
-            'transactionpersonassets' => $transactionpersonassets
+            'transactionpersonassets' => $transactionpersonassets,
+            'type' => $type
             // 'profile'       =>  $profile,
         ];
 
@@ -1043,6 +1050,32 @@ class TransactionController extends Controller
         $pdf->setOption('page-width', '210mm');
         $pdf->setOption('page-height', '297mm');
         return $pdf->download($name);
+    }
+
+    // submit signature from transaction edit(int transaction_id)
+    public function saveSignature($transaction_id)
+    {
+        $imgdata = request('data');
+        $encoded_image = explode(",", $imgdata)[1];
+        $decoded_image = base64_decode($encoded_image);
+        $filename = $transaction_id.'_'.Carbon::now()->format('dmYHi').'.png';
+        $file = file_put_contents($filename, $decoded_image);
+        File::move(public_path().'/'.$filename, public_path().'/custsignature/'.$filename);
+
+        $transaction = Transaction::findOrFail($transaction_id);
+        $transaction->sign_url = "/custsignature/".$filename;
+        $transaction->save();
+    }
+
+    // remove signature by transaction id given (int transaction_id)
+    public function deleteSignature($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        File::delete(public_path().$transaction->sign_url);
+        $transaction->sign_url = null;
+        $transaction->save();
+
+
     }
 
     // retrieve transactions data ()

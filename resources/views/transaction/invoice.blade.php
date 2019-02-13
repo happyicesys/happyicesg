@@ -15,6 +15,9 @@
             font-size: 12px;
             font-family: 'Times New Roman';
         }
+        label {
+            font-size: 10px;
+        }
         th{
             font-size: 12px;
         }
@@ -32,8 +35,14 @@
             font-family: 'Times New Roman';
             background-color: transparent;
         }
+        thead{
+        display: table-header-group;
+        }
+        tfoot {
+        display: table-row-group;
+        }
         tr {
-            page-break-inside: avoid;
+        page-break-inside: avoid;
         }
 		.page-break {
 		    page-break-after: always;
@@ -141,7 +150,7 @@
                                 <div style="font-size: 130%;" class="text-center">
                                     @if($transaction->is_vending_generate)
                                         <strong>SALES REPORT</strong>
-                                    @elseif($transaction->is_deliveryorder)
+                                    @elseif($type == 'do')
                                         <strong>DELIVERY ORDER</strong>
                                     @else
                                         @if($transaction->gst)
@@ -276,7 +285,7 @@
             </div>
 
             @if($transaction->is_deliveryorder)
-            <div class="row">
+            <div class="row page-break">
                 <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Pick-up Detail
@@ -285,38 +294,38 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_date', 'Pickup Date', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_timerange', 'Time Range', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_timerange, ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_timerange, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_attn', 'Contact Person', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_attn', $transaction->deliveryorder->pickup_attn, ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_attn', $transaction->deliveryorder->pickup_attn, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_contact', 'Tel No.', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_postcode', 'Pickup Postcode', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         <div class="form-group">
                             {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
                             <br>
-                            {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['class'=>'form-control']) !!}
+                            {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['class'=>'form-control input-sm']) !!}
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 form-group">
                         {!! Form::label('pickup_address', 'Pickup Address', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control', 'rows'=>'2']) !!}
+                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 form-group">
                         {!! Form::label('pickup_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control', 'rows'=>'2']) !!}
+                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
                     </div>
                 </div>
 
@@ -328,50 +337,50 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('pickup_date', 'Delivery Date', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control']) !!}
+                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('delivery_timerange', 'Time Range', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_timerange', $transaction->deliveryorder->delivery_timerange, ['class'=>'form-control']) !!}
+                        {!! Form::text('delivery_timerange', $transaction->deliveryorder->delivery_timerange, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('delivery_attn', 'Contact Person', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control']) !!}
+                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('delivery_contact', 'Tel No.', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control']) !!}
+                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         {!! Form::label('delivery_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control']) !!}
+                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control input-sm']) !!}
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-4 form-group">
                         <div class="form-group">
                             {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
                             <br>
-                            {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['class'=>'form-control']) !!}
+                            {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['class'=>'form-control input-sm']) !!}
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 form-group">
                         {!! Form::label('delivery_address', 'Delivery Address', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control', 'rows'=>'2']) !!}
+                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 form-group">
                         {!! Form::label('delivery_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control', 'rows'=>'2']) !!}
+                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
                     </div>
                 </div>
             </div>
 
-            <div class="table-responsive row" style="padding-top:20px;">
+            <div class="row" style="padding-top:20px;">
                 <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Asset and Quantity
                 </span>
                 </div>
                 <table class="table table-list-search table-hover table-bordered table-condensed">
-                    <tr style="background-color: #DDFDF8">
+                    <tr>
                         <th class="col-xs-1 text-center">
                             #
                         </th>
@@ -454,6 +463,7 @@
                                     Quantity
                                 @endif
                             </th>
+                            @if($type == 'invoice')
                             <th class="col-xs-1 text-center">
                                 @if($transaction->is_vending_generate)
                                     Percent
@@ -464,6 +474,7 @@
                             <th class="col-xs-1 text-center">
                                 Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
                             </th>
+                            @endif
                         </tr>
 
                         @php
@@ -516,6 +527,7 @@
                                     </td>
                                 @endif
 
+                                @if($type == 'invoice')
                                 @if($deal->unit_price == 0 || $deal->unit_price == null)
                                 <td class="col-xs-1 text-right">
                                     @if($deal->qty != 0)
@@ -537,6 +549,7 @@
                                 <td class="col-xs-1 text-right">
                                     <strong>FOC</strong>
                                 </td>
+                                @endif
                                 @endif
                             </tr>
                             @endforeach
@@ -565,6 +578,7 @@
                             // $total = number_format($total, 2);
                         @endphp
 
+                        @if($type == 'invoice')
                         @if($transaction->delivery_fee != 0)
                         <tr>
                             <td colspan="2" class="text-right">
@@ -654,6 +668,7 @@
                             </tr>
                         @endif
                         @endunless
+                        @endif
                     </table>
                 </div>
             </div>
@@ -681,20 +696,31 @@
                     </div>
                     @endif
 
+                    <div class="row">
                     <div class="col-xs-12" style="padding-top: 10px">
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
                                     <strong>Goods Received in Good Conditions</strong>
                                 </span>
-                                <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
-                                    _______________________________
-                                </span>
-                                <span class="text-center col-xs-12" style="margin-top:0px">
-                                    <strong>Customer Sign & Co. Stamp</strong>
-                                </span>
+                                @if($transaction->is_deliveryorder and $transaction->sign_url)
+                                    <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:10px">
+                                        <img src="{{public_path().$transaction->sign_url}}" style="width: 100px; height: 100px;">
+                                    </span>
+                                    <span class="text-center col-xs-12" style="margin-top:0px">
+                                        <strong>Customer Sign & Co. Stamp</strong>
+                                    </span>
+                                @else
+                                    <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
+                                        _______________________________
+                                    </span>
+                                    <span class="text-center col-xs-12" style="margin-top:0px">
+                                        <strong>Customer Sign & Co. Stamp</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
+                        @if($type == 'invoice')
                         <div class="col-xs-6">
                             <div class="form-group">
                                 <span class="text-center col-xs-12">
@@ -708,8 +734,9 @@
                                 </span>
                             </div>
                         </div>
+                        @endif
                     </div>
-
+                    </div>
                 </div>
         {{-- </footer>             --}}
         </div>

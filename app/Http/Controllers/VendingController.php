@@ -98,6 +98,9 @@ class VendingController extends Controller
                 $transaction->bill_address = $person->bill_address;
                 $transaction->total = -$person->subtotal_payout;
                 $transaction->is_vending_generate = 1;
+                $transaction->gst = $person->gst;
+                $transaction->is_gst_inclusive = $person->is_gst_inclusive;
+                $transaction->gst_rate = $person->gst_rate;
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;
                 $remarkStr = '';
                 if($person->is_vending) {
@@ -496,7 +499,7 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
@@ -750,5 +753,12 @@ class VendingController extends Controller
             $deal_util->amount = -$person->utility_subsidy;
             $deal_util->save();
         }
+
+        $deals = Deal::whereTransactionId($transaction->id)->get();
+        $deal_total = $deals->sum('amount');
+        $deal_totalqty = $deals->sum('qty');
+        $transaction->total = $deal_total;
+        $transaction->total_qty = $deal_totalqty;
+        $transaction->save();
     }
 }

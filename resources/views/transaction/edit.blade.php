@@ -187,7 +187,7 @@
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         @endif
                         @if($transaction->is_deliveryorder)
-                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
+                            <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
                         @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
@@ -339,21 +339,37 @@
                 </label>
             </div>
         </div>
-{{--
-        <div class="panel panel-primary" style="width: 820px;">
-            <div class="panel-heading">
-                Signature
-                <button class="btn btn-sm btn-default" ng-click="onSignatureCaretClicked()">
-                    <i class="fa fa-caret-down" ng-if="hideSignature"></i>
-                    <i class="fa fa-caret-right" ng-if="!hideSignature"></i>
-                </button>
+
+        @if($transaction->is_deliveryorder)
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Signature &nbsp;
+                    <span ng-if="form.sign_url">
+                        <button type="button" ng-click="deleteSignature()" class="btn btn-danger btn-md">
+                            Delete Existing
+                        </button>
+                    </span>
+                    <span ng-if="!form.sign_url">
+                        <button class="btn btn-md btn-default" ng-click="onSignatureCaretClicked()">
+                            <i class="fa fa-caret-down" ng-if="hideSignature"></i>
+                            <i class="fa fa-caret-right" ng-if="!hideSignature"></i>
+                        </button>
+                        <button type="button" ng-click="clearSignature()" class="btn btn-default btn-md">
+                            Clear
+                        </button>
+                        <button type="button" ng-click="submitSignature()" class="btn btn-success btn-md">
+                            Submit
+                        </button>
+                    </span>
+                </div>
+                <img ng-src="@{{form.sign_url}}" style="max-width:500px; max-height:500px;" ng-show="form.sign_url">
+                <div class="panel-body" ng-show="!hideSignature && !form.sign_url">
+                    @if(!auth()->user()->hasRole('watcher'))
+                        <canvas id="canvas" name="signature" width=1000 height=450 ></canvas>
+                    @endif
+                </div>
             </div>
-            <div class="panel-body" ng-show="!hideSignature">
-                @if(!auth()->user()->hasRole('watcher'))
-                    <canvas id="canvas" width="800" height="480"></canvas>
-                @endif
-            </div>
-        </div> --}}
+        @endif
     </div>
 </div>
 </div>
