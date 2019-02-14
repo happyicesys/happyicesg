@@ -62,9 +62,9 @@
                 <div class="pull-right">
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
-                        @if(!auth()->user()->hasRole('hd_user'))
+                        {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
-                        @endif
+                        {{-- @endif --}}
                     @endif
                 </div>
             </div>
@@ -214,7 +214,7 @@
                         @endif
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
                         @if($transaction->is_deliveryorder)
-                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
+                            <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
                         @endif
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction" class="btn btn-default">Back</a>
@@ -257,7 +257,7 @@
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
                         @if($transaction->is_deliveryorder)
-                            <a href="/transaction/download/do/{{$transaction->id}}" class="btn btn-primary">Print DO</a>
+                            <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
                         @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
