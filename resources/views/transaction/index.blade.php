@@ -363,11 +363,19 @@
                                     <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('delivery_date1')">
+                                    Requested Delivery Date
+                                    <span ng-if="search.sortName == 'delivery_date1' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'delivery_date1' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                @if(!auth()->user()->hasRole('hd_user'))
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('delivery_date')">
                                     Delivery Date
                                     <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @endif
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('driver')">
                                     Delivered By
@@ -444,7 +452,10 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
+                                    @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
+                                    @endif
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-right">
                                         @{{ transaction.total | currency: "": 2}}

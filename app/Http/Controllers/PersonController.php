@@ -310,6 +310,7 @@ class PersonController extends Controller
             ->rightJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
             ->select(
                 DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                 DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
@@ -333,7 +334,9 @@ class PersonController extends Controller
                 'transactions.gst',
                 'transactions.gst_rate',
                 'people.is_vending',
-                'people.is_dvm'
+                'people.is_dvm',
+                DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
+                'transactions.is_deliveryorder'
             )
             ->where('people.id', '=', $person_id);
 

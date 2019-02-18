@@ -148,6 +148,25 @@
                 </div>
             </div>
         @endif
+        @else
+            @if(!auth()->user()->hasRole('hd_user'))
+            <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group">
+                    <datepicker>
+                        <input
+                            type = "text"
+                            class = "form-control"
+                            placeholder = "Delivery Date"
+                            ng-model = "form.delivery_date"
+                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
+                        />
+                    </datepicker>
+                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
+                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
+                </div>
+            </div>
+            @endif
         @endif
 
             <div class="col-md-3 col-xs-6 form-group">
@@ -399,7 +418,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
-                    {!! Form::label('pickup_date', 'Pickup Date', ['class'=>'control-label']) !!}
+                    {!! Form::label('pickup_date', 'Requested Pickup Date', ['class'=>'control-label']) !!}
                     <label for="required" class="control-label" style="color:red;">*</label>
                     <div class="input-group date">
                         {{-- {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_date ? $transaction->deliveryorder->pickup_date : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'pickup_date', 'ng-model'=>'doform.pickup_date']) !!} --}}
@@ -498,7 +517,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
-                    {!! Form::label('delivery_date1', 'Delivery Date', ['class'=>'control-label']) !!}
+                    {!! Form::label('delivery_date1', 'Requested Delivery Date', ['class'=>'control-label']) !!}
                     <input type="text" name="delivery_date1" class="form-control" ng-model="doform.pickup_date" readonly>
 {{--                     <div class="input-group date">
                         {!! Form::text('delivery_date1', $transaction->deliveryorder->delivery_date1 ? $transaction->deliveryorder->delivery_date1 : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'delivery_date1']) !!}

@@ -7,14 +7,14 @@
                         <span class="pull-left">
                             Asset Movement
                         </span>
-                        @if(auth()->user()->hasRole('admin'))
+{{--                         @if(auth()->user()->hasRole('admin'))
                         <span class="pull-right">
                             <button class="btn btn-success" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="createPersonassetMovementModal()">
                                 <i class="fa fa-plus"></i>
                                 Manually Create Movement
                             </button>
                         </span>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             </div>
@@ -174,11 +174,12 @@
                                 @{{data.serial_no}}
                             </td>
                             <td class="col-md-2 text-left">
-                                @{{data.pickup_address}}
-                                @{{data.pickup_postcode}}
+                                @{{data.pickup_location_name}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{data.transaction_id}}
+                                <a href="/transaction/@{{ data.transaction_id }}/edit">
+                                    @{{ data.transaction_id }}
+                                </a>
                             </td>
                             <td class="col-md-1 text-left">
                                 @{{data.sticker}}

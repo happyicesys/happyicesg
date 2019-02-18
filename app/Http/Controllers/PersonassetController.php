@@ -142,7 +142,9 @@ class PersonassetController extends Controller
                 DB::raw('WEEK(transactionpersonassets.dateout, 1) AS dateout_week'),
                 DB::raw('YEAR(transactionpersonassets.dateout) AS dateout_year'),
                 'personassets.code', 'personassets.name', 'personassets.brand',
-                'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode'
+                'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode',
+                'deliveryorders.pickup_location_name',
+                'deliveryorders.delivery_location_name'
             )
             ->whereNotNull('transactionpersonassets.datein')
             ->where('transactionpersonassets.is_warehouse', 1);
