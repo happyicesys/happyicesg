@@ -307,7 +307,7 @@ class PersonController extends Controller
 
         $transactions = DB::table('deals')
             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+            ->rightJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->select(
@@ -459,7 +459,7 @@ class PersonController extends Controller
                 'personprice.cost_rate'
             );
 
-        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee')) {
+        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
             $items = $items->where('personprice.quote_price', '>', 0);
         }
 

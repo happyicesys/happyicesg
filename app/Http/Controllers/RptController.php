@@ -738,6 +738,8 @@ class RptController extends Controller
         $status = $request->status;
         $pay_status = $request->pay_status;
         $profile_id = $request->profile_id;
+
+        // die(var_dump($request->all()));
         if ($transaction_id) {
             $query = $query->where('transactions.id', 'LIKE', '%' . $transaction_id . '%');
         }
@@ -750,8 +752,15 @@ class RptController extends Controller
         if ($status) {
             $query = $query->where('transactions.status', 'LIKE', '%' . $status . '%');
         }
+/*         if ($statuses) {
+            // dd('here');
+            if (count($statuses) == 1) {
+                $statuses = [$statuses];
+            }
+            $query = $query->whereIn('transactions.status', $statuses);
+        } */
         if ($pay_status) {
-            $query = $query->where('transactions.pay_status', 'LIKE', '%' . $pay_status . '%');
+            $query = $query->where('transactions.pay_status',  $pay_status);
         }
         if ($profile_id) {
             $query = $query->where('profiles.id', $profile_id);

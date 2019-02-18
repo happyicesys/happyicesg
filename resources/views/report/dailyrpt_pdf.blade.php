@@ -1,3 +1,4 @@
+@inject('users', 'App\User')
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -146,7 +147,7 @@
                         </div>
                         <div class="col-xs-8">
                             <div class="form-group" style="margin-bottom: 0px;">
-                                <span class="inline">{{$driver}}</span>
+                                <span class="inline">{{$users::find($driver_id) ? $users::find($driver_id)->name : ''}}</span>
                             </div>
                         </div>
                     </div>

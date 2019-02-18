@@ -52,7 +52,9 @@ function transactionController($scope, $http) {
         delivery_postcode: '',
         delivery_comment: '',
         transaction_id: '',
-        requester: ''
+        requester: '',
+        requester_name: '',
+        requester_contact: ''
     }
     $scope.jobtypeSelection = [
         {
@@ -248,6 +250,8 @@ function transactionController($scope, $http) {
                 $scope.doform = {
                     job_type: dodata.job_type,
                     po_no: dodata.po_no,
+                    requester_name: dodata.requester_name,
+                    requester_contact: dodata.requester_contact,
                     submission_datetime: dodata.submission_datetime ? moment(dodata.submission_datetime).format('YYYY-MM-DD   hh:mm A') : '',
                     pickup_date: dodata.pickup_date ? moment(dodata.pickup_date).format('YYYY-MM-DD') : $today,
                     pickup_timerange: dodata.pickup_timerange,

@@ -1,6 +1,5 @@
 var app = angular.module('app', [
   'ngSanitize',
-  'ui.select2',
   'ui.select',
   'angularUtils.directives.dirPagination',
   '720kb.datepicker',

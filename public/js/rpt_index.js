@@ -23,6 +23,7 @@ function rptController($scope, $http) {
         cust_id: '',
         company: '',
         status: '',
+        driver_id: '',
         pay_status: '',
         profile_id: ''
     }
@@ -39,6 +40,15 @@ function rptController($scope, $http) {
 
     angular.element(document).ready(function () {
         $('.select_profile').select2();
+
+        $('.select').select2({
+            placeholder: 'Select..',
+            allowClear: true
+        });
+
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
 
         $http.get('/user/data/' + $('#user_id').val()).success(function (person) {
             var driver = false;

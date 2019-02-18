@@ -224,7 +224,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="personasset_modal" role="dialog">
+    <div class="modal fade" id="personassetmovement_modal" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">

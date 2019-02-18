@@ -159,10 +159,11 @@
             </div>
 
             @if($transaction->is_deliveryorder)
+{{--
                 <div class="col-md-3 col-xs-6 form-group">
                     {!! Form::label('created_by', 'Requested By', ['class'=>'control-label']) !!}
                     {!! Form::text('created_by', \App\User::find($transaction->deliveryorder->requester)->name, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                </div>
+                </div> --}}
 
                 @if($transaction->status != 'Pending')
                 <div class="col-md-3 col-xs-6 form-group">
@@ -295,6 +296,18 @@
         @if($transaction->is_deliveryorder)
         <div class="row">
             <div class="col-md-4 form-group">
+                {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label']) !!}
+                <label for="required" class="control-label" style="color:red;">*</label>
+                {!! Form::text('requester_name', $transaction->deliveryorder->requester_name, ['class'=>'form-control', 'ng-model'=>'doform.requester_name', 'disabled' => $dodisable]) !!}
+            </div>
+            <div class="col-md-4 form-group">
+                {!! Form::label('requester_contact', 'Requester Contact', ['class'=>'control-label']) !!}
+                <label for="required" class="control-label" style="color:red;">*</label>
+                {!! Form::text('requester_contact', $transaction->deliveryorder->requester_contact, ['class'=>'form-control', 'ng-model'=>'doform.requester_contact', 'disabled' => $dodisable]) !!}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-group">
                 {!! Form::label('job_type', 'Job Type', ['class'=>'control-label']) !!}
                 <label for="required" class="control-label" style="color:red;">*</label>
                 {!! Form::select('job_type',
@@ -312,7 +325,7 @@
                 <label for="required" class="control-label" style="color:red;">*</label>
                 {!! Form::select('po_no',
                     [''=>null, '4505160978_(FSI)'=>'4505160978 (FSI)', '4505160966_(Retail)'=>'4505160966 (Retail)'],
-                    null,
+                    $transaction->deliveryorder->po_no,
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'doform.po_no',
@@ -448,7 +461,7 @@
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
+                        {!! Form::label('from_happyice', 'From Happyice Warehouse', ['class'=>'control-label']) !!}
                         <br>
                         {{-- {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!} --}}
                         {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['ng-model'=>'doform.from_happyice', 'ng-checked'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
@@ -536,7 +549,7 @@
                     @endphp --}}
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
+                        {!! Form::label('to_happyice', 'To Happyice Warehouse', ['class'=>'control-label']) !!}
                         <br>
                         {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['ng-model'=>'doform.to_happyice', 'ng-checked'=>'doform.to_happyice', 'ng-change'=>'onToHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
                         <input type="hidden" name="to_happyice" ng-value="doform.to_happyice">

@@ -45,7 +45,7 @@
                     $disabled = false;
                     $disabledStr = '';
 
-                    if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee')) {
+                    if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
                         $disabled = true;
                         $disabledStr = 'disabled';
                     }
@@ -55,11 +55,13 @@
                         <div class="pull-right">
                             @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                                 {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
+                                @if(!auth()->user()->hasRole('hd_user'))
                                 @cannot('transaction_view')
                                     <a href="/person/replicate/{{$person->id}}" class="btn btn-default" onclick="return confirm('Are you sure to replicate?')">
                                         <i class="fa fa-files-o"></i> <span class="hidden-xs hidden-sm">Replicate</span>
                                     </a>
                                 @endcannot
+                                @endif
                                 <a href="/person/log/{{$person->id}}" class="btn btn-warning">
                                     <i class="fa fa-history"></i> <span class="hidden-xs hidden-sm">Log History</span>
                                 </a>
@@ -92,7 +94,7 @@
                             <a href="/person" class="btn btn-default">Back</a>
                         </div>
                         <div class="pull-left">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                             @cannot('transaction_view')
                                 @if($person->active == 'Yes')
                                     {!! Form::submit('Pending', ['name'=>'active', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
@@ -232,7 +234,7 @@
 @endunless
 
 {{-- divider --}}
-@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">
@@ -351,7 +353,7 @@
     </div>
 
     <div class="panel-footer">
-        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
             {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
             {!! Form::close() !!}
         @endif
@@ -362,7 +364,7 @@
     </div>
 </div>
 {{-- divider --}}
-@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
 <div class="panel panel-primary">
     <div class="panel-heading">
         <div class="panel-title">

@@ -305,6 +305,7 @@ class TransactionController extends Controller
             $total += number_format($delivery_fee, 2);
         }
 
+        // die(var_dump($transaction));
         return $data = [
             'transaction' => $transaction,
             'deals' => $deals,
@@ -413,6 +414,8 @@ class TransactionController extends Controller
                     'delivery_postcode' => 'required',
                     'delivery_location_name' => 'required',
                     'delivery_address' => 'required',
+                    'requester_name' => 'required',
+                    'requester_contact' => 'required'
                 ], [
                     'job_type.required' => 'Please select the Job Type',
                     'po_no.required' => 'Please select the PO Number',
@@ -427,7 +430,8 @@ class TransactionController extends Controller
                     'delivery_postcode.required' => 'Please fill in the Delivery Postcode',
                     'delivery_location_name.required' => 'Please fill in the Delivery Location Name',
                     'delivery_address.required' => 'Please fill in the Delivery Address',
-
+                    'requester_name.required' => 'Please fill in the Requester Name',
+                    'requester_contact.required' => 'Please fill in the Requester Contact'
                 ]);
 
                 $do = $transaction->deliveryorder;
@@ -1802,6 +1806,8 @@ class TransactionController extends Controller
             'delivery_comment' => request('delivery_comment'),
             'from_happyice' => request('from_happyice') == 'true' ? 1 : 0,
             'to_happyice' => request('to_happyice') == 'true' ? 1 : 0,
+            'requester_name' => request('requester_name'),
+            'requester_contact' => request('requester_contact')
         ]);
     }
 

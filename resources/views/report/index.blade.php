@@ -235,7 +235,10 @@
 
 <script src="/js/rpt_index.js"></script>
 <script>
-    $('.select').select2({'placeholder':'Select...'});
+    $('.select').select2({
+        placeholder :'Select...',
+        allowClear: true
+    });
 
     $('.date').datetimepicker({
         format: 'DD MMM YY'

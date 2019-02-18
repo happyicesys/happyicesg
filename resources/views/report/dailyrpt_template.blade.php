@@ -40,12 +40,42 @@
                 {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
             </div>
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('status', 'Status:', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Status']) !!}
+                {!! Form::label('statuses', 'Status:', ['class'=>'control-label search-title']) !!}
+{{--
+                <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="dbSearch()" multiple>
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Verified Owe">Verified Owe</option>
+                    <option value="Verified Paid">Verified Paid</option>
+                </select> --}}
+                <select name="status" class="select form-control" ng-model="search.status" ng-change="dbSearch()">
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Verified Owe">Verified Owe</option>
+                    <option value="Verified Paid">Verified Paid</option>
+                </select>
+{{--
+
+                {!! Form::text('status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Status']) !!} --}}
             </div>
+{{--
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
                 {!! Form::label('pay_status', 'Payment:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('pay_status', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.pay_status', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Payment']) !!}
+            </div> --}}
+            <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
+                    [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.pay_status',
+                    'ng-change'=>'dbSearch()'
+                    ])
+                !!}
             </div>
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver'))
@@ -206,7 +236,7 @@
                 @cannot('transaction_view')
                 {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!}
                 @endcannot
-                <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
+                <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{transactions.length}} of @{{transactions.length}} entries</label>
             </div>
         </div>
             {!! Form::open(['id'=>'verify', 'method'=>'POST','action'=>['RptController@getVerifyPaid']]) !!}
@@ -394,7 +424,7 @@
                     </tr>
                     <tbody>
                         {{-- <tr><td>@{{transactions}}</td></tr> --}}
-                        <tr dir-paginate="transaction in transactions | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
+                        <tr dir-paginate="transaction in transactions| itemsPerPage:itemsPerPage" current-page="currentPage" ng-controller="repeatController">
                             <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td>
                             <td class="col-md-1 text-center">@{{ number }} </td>
                             <td class="col-md-1 text-center">
@@ -477,7 +507,7 @@
                             </td>
                             @endcannot
                         </tr>
-                        <tr ng-if="(transactions | filter:search).length == 0 || ! transactions.length">
+                        <tr ng-if="transactions.length == 0 || ! transactions.length">
                             <td colspan="16" class="text-center">No Records Found</td>
                         </tr>
                     </tbody>
