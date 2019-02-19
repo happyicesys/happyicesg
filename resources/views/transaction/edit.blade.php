@@ -312,7 +312,9 @@
                                     </a>
                                 </td>
                                 <td class="col-md-1 text-center">
+                                    @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher'))
                                     <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
