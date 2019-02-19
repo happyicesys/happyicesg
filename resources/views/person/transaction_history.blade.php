@@ -203,7 +203,7 @@
                 <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
                 <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
             </th>
-            <th class="col-md-1 text-center" ng-if="transaction.is_deliveryorder">
+            <th class="col-md-1 text-center">
                 <a href="" ng-click="sortType = 'delivery_date1'; sortReverse = !sortReverse">
                 Requested Delivery Date
                 <span ng-if="sortType == 'delivery_date1' && !sortReverse" class="fa fa-caret-down"></span>
@@ -303,7 +303,7 @@
                     <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                 </td>
                 {{-- status by color ended --}}
-                <td class="col-md-1 text-center" ng-if="transaction.is_deliveryorder">@{{ transaction.delivery_date1}}</td>
+                <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                 @if(!auth()->user()->hasRole('hd_user'))
                 <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                 @endif

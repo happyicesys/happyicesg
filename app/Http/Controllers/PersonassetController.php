@@ -120,6 +120,12 @@ class PersonassetController extends Controller
         $personasset->delete();
     }
 
+    public function destroyMovementApi($id)
+    {
+        $transactionpersonasset = Transactionpersonasset::findOrFail($id);
+        $transactionpersonasset->delete();
+    }
+
     // retrieve api for person asset movement()
     public function indexMovementApi()
     {
@@ -130,11 +136,13 @@ class PersonassetController extends Controller
 
         $items = DB::table('transactionpersonassets')
             ->leftJoin('transactions', 'transactions.id', '=', 'transactionpersonassets.transaction_id')
+            ->leftJoin('transactions AS to_transactions', 'to_transactions.id', '=', 'transactionpersonassets.to_transaction_id')
             ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
+            ->leftJoin('deliveryorders AS to_deliveryorders', 'to_deliveryorders.transaction_id', '=', 'to_transactions.id')
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
             ->select(
                 'transactionpersonassets.id AS id', 'transactionpersonassets.transaction_id', 'transactionpersonassets.personasset_id',
-                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks',
+                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks', 'transactionpersonassets.to_transaction_id',
                 DB::raw('DATE(transactionpersonassets.datein) AS datein'),
                 DB::raw('DATE(transactionpersonassets.dateout) AS dateout'),
                 DB::raw('WEEK(transactionpersonassets.datein, 1) AS datein_week'),
@@ -143,8 +151,9 @@ class PersonassetController extends Controller
                 DB::raw('YEAR(transactionpersonassets.dateout) AS dateout_year'),
                 'personassets.code', 'personassets.name', 'personassets.brand',
                 'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode',
-                'deliveryorders.pickup_location_name',
-                'deliveryorders.delivery_location_name'
+                'deliveryorders.pickup_location_name AS from_location_name',
+                'deliveryorders.delivery_location_name',
+                'to_deliveryorders.delivery_location_name AS to_location_name'
             )
             ->whereNotNull('transactionpersonassets.datein')
             ->where('transactionpersonassets.is_warehouse', 1);
@@ -152,24 +161,22 @@ class PersonassetController extends Controller
         // reading whether search input is filled
         if ($datefrom) {
             $items = $items->where(function($query) use ($datefrom){
-                $query->whereNull('transactionpersonassets.dateout')
-                    ->whereDate('transactionpersonassets.datein', '>=', $datefrom)
-                    ->orWhere(DB::raw('DATE(transactionpersonassets.dateout)', '>=', $datefrom));
+                $query->whereDate('transactionpersonassets.datein', '>=', $datefrom)
+                    ->orWhereDate('transactionpersonassets.dateout', '>=', $datefrom);
             });
         }
 
         if ($dateto) {
             $items = $items->where(function ($query) use ($dateto) {
-                $query->whereNull('transactionpersonassets.dateout')
-                    ->whereDate('transactionpersonassets.datein', '<=', $dateto)
-                    ->orWhere(DB::raw('DATE(transactionpersonassets.dateout)', '<=', $dateto));
+                $query->whereDate('transactionpersonassets.datein', '<=', $dateto)
+                    ->orWhereDate('transactionpersonassets.dateout', '<=', $dateto);
             });
         }
 
         if (request('sortName')) {
             $items = $items->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         } else {
-            $items = $items->latest('transactionpersonassets.created_at');
+            $items = $items->latest('deliveryorders.pickup_date');
         }
 
         $pageNum = request('pageNum') ? request('pageNum') : 100;

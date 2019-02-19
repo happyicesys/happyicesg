@@ -58,6 +58,7 @@
                     if(auth()->user()->hasRole('hd_user')) {
                         $access = true;
                         $transaction_access = true;
+                        $person_access = true;
                         $personasset_access = true;
                     }
 

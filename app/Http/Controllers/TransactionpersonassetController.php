@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Transactionpersonasset;
+use App\Transaction;
 use DB;
 
 class TransactionpersonassetController extends Controller
@@ -21,7 +22,10 @@ class TransactionpersonassetController extends Controller
     {
         $transactionpersonassets = DB::table('transactionpersonassets')
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
-            ->where('transactionpersonassets.transaction_id', $transaction_id)
+            ->where(function($query) use ($transaction_id) {
+                $query->where('transactionpersonassets.transaction_id', $transaction_id)
+                        ->orWhere('transactionpersonassets.to_transaction_id', $transaction_id);
+            })
             ->select(
                 'transactionpersonassets.id', 'transactionpersonassets.serial_no', 'transactionpersonassets.sticker',
                 'transactionpersonassets.remarks', 'transactionpersonassets.qty',
@@ -45,12 +49,17 @@ class TransactionpersonassetController extends Controller
         $transaction_id = request('transaction_id');
         $transactionpersonasset_id = request('transactionpersonasset_id');
         $items = request('items');
+        $transaction = Transaction::findOrFail($transaction_id);
 
         if($transactionpersonasset_id) {
             $transactionpersonasset = Transactionpersonasset::findOrFail($transactionpersonasset_id);
-            $transactionpersonasset->transaction_id = $transaction_id;
-
+            $transactionpersonasset->to_transaction_id = $transaction_id;
             $transactionpersonasset->save();
+
+            if($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
+                $transactionpersonasset->dateout = $transaction->deliveryorder->pickup_date;
+                $transactionpersonasset->save();
+            }
         }else {
             foreach ($items as $item) {
                 $transactionpersonasset = Transactionpersonasset::create([
@@ -61,6 +70,12 @@ class TransactionpersonassetController extends Controller
                     'remarks' => $item['remarks'],
                     'qty' => 1
                 ]);
+
+                if ($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
+                    $transactionpersonasset->datein = $transaction->deliveryorder->pickup_date;
+                    $transactionpersonasset->is_warehouse = 1;
+                    $transactionpersonasset->save();
+                }
             }
         }
     }
@@ -78,10 +93,10 @@ class TransactionpersonassetController extends Controller
         $transactionpersonasset = Transactionpersonasset::findOrFail(request('id'));
 
         $transactionpersonasset->update([
-            'person_id' => request('person_id'),
+/*             'person_id' => request('person_id'),
             'name' => request('name'),
             'code' => request('code'),
-            'brand' => request('brand'),
+            'brand' => request('brand'), */
             'serial_no' => request('serial_no'),
             'sticker' => request('sticker'),
             'remarks' => request('remarks')

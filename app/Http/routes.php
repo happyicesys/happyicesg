@@ -424,6 +424,7 @@ Route::post('/api/personassetmovements', 'PersonassetController@indexMovementApi
 
 Route::post('/api/transactionpersonasset/create', 'TransactionpersonassetController@createApi');
 Route::get('/api/transactionpersonasset/index/{transaction_id}', 'TransactionpersonassetController@indexApi');
+Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
 Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 

@@ -106,9 +106,21 @@
                             <span ng-if="search.sortName == 'serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'serial_no' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('sticker')">
+                            Sticker
+                            <span ng-if="search.sortName == 'sticker' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'sticker' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('remarks')">
+                            Comment
+                            <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
                         <th class="col-md-2 text-center">
                             <a href="" ng-click="sortTable('last_address')">
-                            Last Location
+                            From Location
                             <span ng-if="search.sortName == 'last_address' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'last_address' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
@@ -118,12 +130,7 @@
                             <span ng-if="search.sortName == 'from_transaction' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'from_transaction' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('sticker')">
-                            Sticker
-                            <span ng-if="search.sortName == 'sticker' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'sticker' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
+
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('datein')">
                             Date In
@@ -135,6 +142,18 @@
                             Week In
                             <span ng-if="search.sortName == 'weekin' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'weekin' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-2 text-center">
+                            <a href="" ng-click="sortTable('to_address')">
+                            To Location
+                            <span ng-if="search.sortName == 'to_address' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'to_address' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('to_transaction')">
+                            To Inv #
+                            <span ng-if="search.sortName == 'to_transaction' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'to_transaction' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('dateout')">
@@ -173,16 +192,19 @@
                             <td class="col-md-1 text-left">
                                 @{{data.serial_no}}
                             </td>
-                            <td class="col-md-2 text-left">
-                                @{{data.pickup_location_name}}
+                            <td class="col-md-1 text-left">
+                                @{{data.sticker}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                @{{data.remarks}}
+                            </td>
+                            <td class="col-md-1 text-left">
+                                @{{data.from_location_name}}
                             </td>
                             <td class="col-md-1 text-center">
                                 <a href="/transaction/@{{ data.transaction_id }}/edit">
                                     @{{ data.transaction_id }}
                                 </a>
-                            </td>
-                            <td class="col-md-1 text-left">
-                                @{{data.sticker}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{data.datein}}
@@ -193,6 +215,14 @@
                                     (@{{data.datein_year}})
                                 </small>
                             </td>
+                            <td class="col-md-1 text-left">
+                                @{{data.to_location_name}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <a href="/transaction/@{{ data.to_transaction_id }}/edit">
+                                    @{{ data.to_transaction_id }}
+                                </a>
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{data.dateout}}
                             </td>
@@ -200,15 +230,15 @@
                                 @{{data.dateout_week}}
                                 <br>
                                 <small>
-                                    @{{data.dateout_year}}
+                                    (@{{data.dateout_year}})
                                 </small>
                             </td>
-                            <td class="col-md-1 text-left">
-                                @{{getWeekDifference(data.datein, data.dateout)}}
+                            <td class="col-md-1 text-center">
+                                @{{getWeekDifference(data.dateout, data.datein)}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin'))
-                                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personasset_modal" ng-click="editPersonassetModal(data)"><i class="fa fa-pencil-square-o"></i></button>
+                                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="editPersonassetMovementModal(data)"><i class="fa fa-pencil-square-o"></i></button>
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(data.id)"><i class="fa fa-times"></i></button>
                                 @endif
                             </td>
@@ -231,93 +261,35 @@
                 <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
-                    @{{form.id ? 'Edit Customer Asset' : 'Add Customer Asset'}}
+                    @{{form.id ? 'Edit Asset Movement' : 'Add Customer Asset'}}
                 </h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label class="control-label">
-                                Code
+                                Serial No
                             </label>
-                            <label for="required" class="control-label" style="color:red;">*</label>
-                            <input type="text" name="title" class="form-control" ng-model="form.code">
+                            <input type="text" name="serial_no" class="form-control" ng-model="form.serial_no">
                         </div>
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label class="control-label">
-                                Name
+                                Sticker
                             </label>
-                            <label for="required" class="control-label" style="color:red;">*</label>
-                            <input type="text" name="title" class="form-control" ng-model="form.name">
+                            <input type="text" name="sticker" class="form-control" ng-model="form.sticker">
                         </div>
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label class="control-label">
-                                Brand
+                                Comment
                             </label>
-                            <input type="text" name="title" class="form-control" ng-model="form.brand">
-                        </div>
-
-                        <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                            <label class="control-label">
-                                Size 1
-                            </label>
-                            <input type="text" name="title" class="form-control" ng-model="form.size1">
-                        </div>
-                        <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                            <label class="control-label">
-                                Size 2
-                            </label>
-                            <input type="text" name="title" class="form-control" ng-model="form.size2">
-                        </div>
-                        <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                            <label class="control-label">
-                                Weight
-                            </label>
-                            <input type="text" name="title" class="form-control" ng-model="form.weight">
-                        </div>
-                        <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                            <label class="control-label">
-                                Capacity
-                            </label>
-                            <input type="text" name="title" class="form-control" ng-model="form.capacity">
-                        </div>
-                        <div class="form-group col-md-4 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Specs 1
-                            </label>
-                            <textarea name="specs1" class="form-control" rows="5" ng-model="form.specs1"></textarea>
-                            {{-- <input type="text" name="title" class="form-control" ng-model="form.capacity"> --}}
-                        </div>
-                        <div class="form-group col-md-4 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Specs 2
-                            </label>
-                            <textarea name="specs2" class="form-control" rows="5" ng-model="form.specs2"></textarea>
-                        </div>
-                        <div class="form-group col-md-4 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Specs 3
-                            </label>
-                            <textarea name="specs3" class="form-control" rows="5" ng-model="form.specs3"></textarea>
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Customer
-                            </label>
-                            <label for="required" class="control-label" style="color:red;">*</label>
-                            <ui-select ng-model="form.person_id" on-select="onSelected($item)">
-                                <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
-                                <ui-select-choices repeat="person.id as person in people | filter: $select.search">
-                                    <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
-                                </ui-select-choices>
-                            </ui-select>
+                            <input type="text" name="remarks" class="form-control" ng-model="form.remarks">
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" ng-click="createPersonasset()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
-                    <button type="button" class="btn btn-success" ng-click="updatePersonasset()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
+                    <button type="button" class="btn btn-success" ng-click="createPersonassetMovement()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
+                    <button type="button" class="btn btn-success" ng-click="updatePersonassetMovement()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

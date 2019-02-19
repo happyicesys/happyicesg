@@ -17,7 +17,7 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                         @cannot('transaction_view')
                             <a href="/person/create" class="btn btn-sm btn-success">+ New {{ $PERSON_TITLE }}</a>
                             @if(!auth()->user()->hasRole('franchisee'))
@@ -94,7 +94,7 @@
                                 @endif
                             </select>
                         </div>
-                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
                             {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',

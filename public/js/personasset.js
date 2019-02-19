@@ -374,17 +374,9 @@ function personassetMovementController($scope, $http, $window) {
   function clearForm() {
     $scope.form = {
       id: '',
-      code: '',
-      name: '',
-      brand: '',
-      size1: '',
-      size2: '',
-      weight: '',
-      capacity: '',
-      specs1: '',
-      specs2: '',
-      specs3: '',
-      person_id: ''
+      serial_no: '',
+      sticker: '',
+      comment: ''
     }
   }
 
@@ -404,7 +396,7 @@ function personassetMovementController($scope, $http, $window) {
   $scope.removeEntry = function (id) {
     var isConfirmDelete = confirm('Are you sure to DELETE this customer asset?');
     if (isConfirmDelete) {
-      $http.delete('/api/personasset/' + id + '/delete').success(function (data) {
+      $http.delete('/api/transactionpersonasset/' + id + '/delete').success(function (data) {
         getPage(1);
       });
     } else {
@@ -412,24 +404,16 @@ function personassetMovementController($scope, $http, $window) {
     }
   }
 
-  $scope.editPersonassetModal = function (personasset) {
-    fetchSinglePersonasset(personasset);
+  $scope.editPersonassetMovementModal = function (personassetmovement) {
+    fetchSinglePersonassetMovement(personassetmovement);
   }
 
-  function fetchSinglePersonasset(data) {
+  function fetchSinglePersonassetMovement(data) {
     $scope.form = {
       id: data.id,
-      code: data.code,
-      name: data.name,
-      brand: data.brand,
-      size1: data.size1,
-      size2: data.size2,
-      weight: data.weight,
-      capacity: data.capacity,
-      specs1: data.specs1,
-      specs2: data.specs2,
-      specs3: data.specs3,
-      person_id: data.person_id,
+      serial_no: data.serial_no,
+      sticker: data.sticker,
+      remarks: data.remarks
     }
   }
 
@@ -439,14 +423,14 @@ function personassetMovementController($scope, $http, $window) {
     });
   }
 
-  $scope.updatePersonasset = function () {
-    $http.post('/api/personasset/update', $scope.form).success(function (data) {
+  $scope.updatePersonassetMovement = function () {
+    $http.post('/api/transactionpersonasset/update', $scope.form).success(function (data) {
       getPage(1);
     });
   }
 
   $scope.isFormValid = function () {
-    if ($scope.form.code && $scope.form.name && $scope.form.person_id) {
+    if ($scope.form.serial_no && $scope.form.sticker && $scope.form.remarks) {
       return false;
     } else {
       return true;

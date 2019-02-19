@@ -155,6 +155,7 @@
                 <div class="input-group">
                     <datepicker>
                         <input
+                            name = "delivery_date"
                             type = "text"
                             class = "form-control"
                             placeholder = "Delivery Date"
