@@ -438,6 +438,9 @@ class TransactionController extends Controller
                 $request->merge(array('status' => 'Confirmed'));
                 $do->submission_datetime = Carbon::now();
                 $do->save();
+
+                $transaction->delivery_date = $request->pickup_date ?: Carbon::now();
+                $transaction->save();
             }
 
         }elseif($request->input('unpaid')){
