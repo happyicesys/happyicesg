@@ -441,6 +441,8 @@ class TransactionController extends Controller
 
                 $transaction->delivery_date = $request->pickup_date ?: Carbon::now();
                 $transaction->save();
+
+                $this->sendDoConfirmEmailAlert($transaction->id);
             }
 
         }elseif($request->input('unpaid')){
@@ -550,6 +552,8 @@ class TransactionController extends Controller
         }
         // given this is a delivery order
         if($transaction->is_deliveryorder) {
+            $transaction->del_postcode = $request->delivery_postcode;
+            $transaction->save();
             $this->saveDoByTransactionid($transaction->id);
         }
 
@@ -1834,5 +1838,33 @@ class TransactionController extends Controller
             }
             $transactionpersonasset->save();
         }
+    }
+
+    // send do confirmation email (int transaction_id)
+    private function sendDoConfirmEmailAlert($transaction_id)
+    {
+        $today = Carbon::now()->format('d-m-Y H:i');
+        $emails = EmailAlert::where('status', 'active')->get();
+        $email_list = array();
+        foreach ($emails as $email) {
+            $email_list[] = $email->email;
+        }
+        $email = array_unique($email_list);
+        // $email = 'leehongjie91@gmail.com';
+
+        // $sender = 'daniel.ma@happyice.com.sg';
+        $sender = 'system@happyice.com.sg';
+
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        $data = [
+            'transaction' => $transaction,
+        ];
+
+        Mail::send('email.do_confirm_alert', $data, function ($message) use ($transaction, $email, $today, $sender) {
+            $message->from($sender);
+            $message->subject('HaagenDaz Confirm ['.$transaction->id.'] ' . $today);
+            $message->setTo($email);
+        });
     }
 }
