@@ -237,7 +237,7 @@
                                 @{{getWeekDifference(data.dateout, data.datein)}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @if(auth()->user()->hasRole('admin'))
+                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver'))
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="editPersonassetMovementModal(data)"><i class="fa fa-pencil-square-o"></i></button>
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(data.id)"><i class="fa fa-times"></i></button>
                                 @endif
