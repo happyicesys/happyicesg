@@ -389,6 +389,7 @@ function personassetMovementController($scope, $http, $window) {
   function clearForm() {
     $scope.form = {
       id: '',
+      personasset_id: '',
       serial_no: '',
       sticker: '',
       comment: ''
