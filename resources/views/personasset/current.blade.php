@@ -1,17 +1,17 @@
-<div ng-controller="personassetMovementController">
+<div ng-controller="personassetCurrentController">
     <div class="panel panel-primary" >
         <div class="panel-body">
             <div class="row" style="margin-top: -15px;">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <span class="pull-left">
-                            Asset Movement
+                            Current Asset
                         </span>
 {{--                         @if(auth()->user()->hasRole('admin'))
                         <span class="pull-right">
                             <button class="btn btn-success" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="createPersonassetMovementModal()">
                                 <i class="fa fa-plus"></i>
-                                Manually Create Movement
+                                Manually Add Asset
                             </button>
                         </span>
                         @endif --}}
@@ -38,14 +38,6 @@
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('from_invoice', 'From Invoice #', ['class'=>'control-label search-title']) !!}
                     <input type="text" name="from_invoice" class="form-control input-sm" ng-model="search.from_invoice" ng-change="searchDB()" placeholder="From Invoice" ng-model-options="{debounce: 500}">
-                </div>
-                <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                    {!! Form::label('to_location', 'To Location', ['class'=>'control-label search-title']) !!}
-                    <input type="text" name="to_location" class="form-control input-sm" ng-model="search.to_location" ng-change="searchDB()" placeholder="To Location" ng-model-options="{debounce: 500}">
-                </div>
-                <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                    {!! Form::label('to_invoice', 'To Invoice #', ['class'=>'control-label search-title']) !!}
-                    <input type="text" name="to_invoice" class="form-control input-sm" ng-model="search.to_invoice" ng-change="searchDB()" placeholder="To Invoice" ng-model-options="{debounce: 500}">
                 </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('datefrom', 'Date In From', ['class'=>'control-label search-title']) !!}
@@ -104,7 +96,7 @@
                 </div>
             </div>
 
-            <div class="table-responsive" id="exportable_personassetmovement" style="padding-top:20px;">
+            <div class="table-responsive" id="exportable_personassetcurrent" style="padding-top:20px;">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">
@@ -165,43 +157,7 @@
                             <span ng-if="search.sortName == 'datein' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'datein' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('weekin')">
-                            Week In
-                            <span ng-if="search.sortName == 'weekin' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'weekin' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-2 text-center">
-                            <a href="" ng-click="sortTable('to_address')">
-                            To Location
-                            <span ng-if="search.sortName == 'to_address' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'to_address' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('to_transaction')">
-                            To Inv #
-                            <span ng-if="search.sortName == 'to_transaction' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'to_transaction' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('dateout')">
-                            Date Out
-                            <span ng-if="search.sortName == 'dateout' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'dateout' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('weekout')">
-                            Week Out
-                            <span ng-if="search.sortName == 'weekout' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'weekout' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortTable('total_week')">
-                            Total Week
-                            <span ng-if="search.sortName == 'total_week' && !search.sortBy" class="fa fa-caret-down"></span>
-                            <span ng-if="search.sortName == 'total_week' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>
-                        <th class="col-md-1"></th>
+                        {{-- <th class="col-md-1"></th> --}}
                     </tr>
                     <tbody>
                         <tr dir-paginate="data in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
@@ -237,39 +193,13 @@
                             <td class="col-md-1 text-center">
                                 @{{data.datein}}
                             </td>
-                            <td class="col-md-1 text-center">
-                                @{{data.datein_week}}
-                                <small>
-                                    (@{{data.datein_year}})
-                                </small>
-                            </td>
-                            <td class="col-md-1 text-left">
-                                @{{data.to_location_name}}
-                            </td>
-                            <td class="col-md-1 text-center">
-                                <a href="/transaction/@{{ data.to_transaction_id }}/edit">
-                                    @{{ data.to_transaction_id }}
-                                </a>
-                            </td>
-                            <td class="col-md-1 text-center">
-                                @{{data.dateout}}
-                            </td>
-                            <td class="col-md-1 text-center">
-                                @{{data.dateout_week}}
-                                <br>
-                                <small>
-                                    (@{{data.dateout_year}})
-                                </small>
-                            </td>
-                            <td class="col-md-1 text-center">
-                                @{{getWeekDifference(data.dateout, data.datein)}}
-                            </td>
+{{--
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver'))
-                                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="editPersonassetMovementModal(data)"><i class="fa fa-pencil-square-o"></i></button>
+                                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personassetcurrent_modal" ng-click="editPersonassetCurrentModal(data)"><i class="fa fa-pencil-square-o"></i></button>
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(data.id)"><i class="fa fa-times"></i></button>
                                 @endif
-                            </td>
+                            </td> --}}
                         </tr>
                         <tr ng-if="!alldata || alldata.length == 0">
                             <td colspan="18" class="text-center">No Records Found</td>
@@ -283,29 +213,17 @@
         </div>
     </div>
 
-    <div class="modal fade" id="personassetmovement_modal" role="dialog">
+    <div class="modal fade" id="personassetcurrent_modal" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
-                    @{{form.id ? 'Edit Asset Movement' : 'Add Customer Asset'}}
+                    @{{form.id ? 'Edit Current Asset' : 'Add Current Asset'}}
                 </h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Asset Category
-                            </label>
-                            <label for="required" class="control-label" style="color:red;">*</label>
-                            <ui-select ng-model="form.personasset_id" on-select="onSelected($item)">
-                                <ui-select-match allow-clear="true">@{{$select.selected.code}} - @{{$select.selected.name}} - @{{$select.selected.brand}}</ui-select-match>
-                                <ui-select-choices repeat="personassetcategory.personasset_id as personassetcategory in personassetcategories | filter: $select.search">
-                                    <div ng-bind-html="personassetcategory.code + ' - ' + personassetcategory.name + ' - ' + personassetcategory.brand | highlight: $select.search"></div>
-                                </ui-select-choices>
-                            </ui-select>
-                        </div>
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label class="control-label">
                                 Serial No
@@ -325,7 +243,6 @@
                             <textarea name="remarks" class="form-control" id="remarks" rows="3" ng-model="form.remarks"></textarea>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">

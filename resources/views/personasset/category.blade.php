@@ -200,7 +200,7 @@
                                 @{{data.specs3}}
                             </td>
                             <td class="col-md-1 text-left">
-                                @{{data.person.company}}
+                                @{{data.company}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin'))

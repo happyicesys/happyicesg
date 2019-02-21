@@ -97,6 +97,7 @@ class TransactionpersonassetController extends Controller
             'name' => request('name'),
             'code' => request('code'),
             'brand' => request('brand'), */
+            'personasset_id' => request('personasset_id'),
             'serial_no' => request('serial_no'),
             'sticker' => request('sticker'),
             'remarks' => request('remarks')

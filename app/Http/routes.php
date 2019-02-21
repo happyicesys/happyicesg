@@ -421,12 +421,12 @@ Route::post('/api/personasset/create', 'PersonassetController@createApi');
 Route::post('/api/personasset/update', 'PersonassetController@updateApi');
 Route::delete('/api/personasset/{id}/delete', 'PersonassetController@destroyApi');
 Route::post('/api/personassetmovements', 'PersonassetController@indexMovementApi');
+Route::post('/api/personassetcurrents', 'PersonassetController@indexCurrentApi');
 
 Route::post('/api/transactionpersonasset/create', 'TransactionpersonassetController@createApi');
 Route::get('/api/transactionpersonasset/index/{transaction_id}', 'TransactionpersonassetController@indexApi');
 Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
-Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');
