@@ -1,3 +1,4 @@
+@inject('people', 'App\Person')
 <div ng-controller="personassetCategoryController">
     <div class="panel panel-primary" >
         <div class="panel-body">
@@ -8,7 +9,7 @@
                             Asset Category
                         </span>
                         <span class="pull-right">
-                            @if(auth()->user()->hasRole('admin'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user'))
                             <button class="btn btn-success" data-toggle="modal" data-target="#personasset_modal" ng-click="createPersonassetModal()">
                                 <i class="fa fa-plus"></i>
                                 Add Asset
@@ -296,18 +297,24 @@
                             </label>
                             <textarea name="specs3" class="form-control" rows="5" ng-model="form.specs3"></textarea>
                         </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Customer
-                            </label>
-                            <label for="required" class="control-label" style="color:red;">*</label>
-                            <ui-select ng-model="form.person_id" on-select="onSelected($item)">
-                                <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
-                                <ui-select-choices repeat="person.id as person in people | filter: $select.search">
-                                    <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
-                                </ui-select-choices>
-                            </ui-select>
-                        </div>
+                        @if(auth()->user()->hasRole('hd_user'))
+                            <div class="form-group col-md-12 col-sm-12 col-xs-12 hidden">
+                                <input type="text" ng-model="form.person_id" ng-init="form.person_id={{$people::where('cust_id', 'B301')->first()->id}}">
+                            </div>
+                        @else
+                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                <label class="control-label">
+                                    Customer
+                                </label>
+                                <label for="required" class="control-label" style="color:red;">*</label>
+                                <ui-select ng-model="form.person_id" on-select="onSelected($item)">
+                                    <ui-select-match allow-clear="true">@{{$select.selected.cust_id}} - @{{$select.selected.company}}</ui-select-match>
+                                    <ui-select-choices repeat="person.id as person in people | filter: $select.search">
+                                        <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

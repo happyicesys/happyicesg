@@ -82,7 +82,7 @@ class PersonassetController extends Controller
     public function createApi()
     {
         $personasset = Personasset::create([
-            'person_id' => request('person_id'),
+            'person_id' => request('person_id') ? : 3301,
             'name' => request('name'),
             'code' => request('code'),
             'brand' => request('brand'),
@@ -143,6 +143,7 @@ class PersonassetController extends Controller
         $code = request('code');
         $name = request('name');
         $brand = request('brand');
+        $serial_no = request('serial_no');
         $from_location = request('from_location');
         $from_invoice = request('from_invoice');
         $to_location = request('to_location');
@@ -199,6 +200,10 @@ class PersonassetController extends Controller
             $items = $items->where('personassets.brand', 'LIKE', '%'.$brand.'%');
         }
 
+        if($serial_no){
+             $items = $items->where('transactionpersonassets.serial_no', 'LIKE', '%'.$serial_no.'%');
+        }
+
         if($from_location) {
             $items = $items->where('deliveryorders.pickup_location_name', 'LIKE', '%'.$from_location.'%');
         }
@@ -243,6 +248,7 @@ class PersonassetController extends Controller
         $code = request('code');
         $name = request('name');
         $brand = request('brand');
+        $serial_no = request('serial_no');
         $from_location = request('from_location');
         $from_invoice = request('from_invoice');
 
@@ -297,6 +303,10 @@ class PersonassetController extends Controller
 
         if($brand){
             $items = $items->where('personassets.brand', 'LIKE', '%'.$brand.'%');
+        }
+
+        if($serial_no){
+             $items = $items->where('transactionpersonassets.serial_no', 'LIKE', '%'.$serial_no.'%');
         }
 
         if($from_location){

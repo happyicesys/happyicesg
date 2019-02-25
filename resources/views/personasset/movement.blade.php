@@ -32,6 +32,10 @@
                     <input type="text" name="brand" class="form-control input-sm" ng-model="search.brand" ng-change="searchDB()" placeholder="Brand" ng-model-options="{debounce: 500}">
                 </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    {!! Form::label('serial_no', 'Serial No', ['class'=>'control-label search-title']) !!}
+                    <input type="text" name="serial_no" class="form-control input-sm" ng-model="search.serial_no" ng-change="searchDB()" placeholder="Serial No" ng-model-options="{debounce: 500}">
+                </div>
+                <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('from_location', 'From Location', ['class'=>'control-label search-title']) !!}
                     <input type="text" name="from_location" class="form-control input-sm" ng-model="search.from_location" ng-change="searchDB()" placeholder="From Location" ng-model-options="{debounce: 500}">
                 </div>

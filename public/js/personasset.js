@@ -213,7 +213,7 @@ function personassetCategoryController($scope, $http, $window) {
   }
 
   $scope.isFormValid = function () {
-    if ($scope.form.code && $scope.form.name && $scope.form.person_id) {
+    if ($scope.form.code && $scope.form.name) {
       return false;
     } else {
       return true;
@@ -246,6 +246,7 @@ function personassetMovementController($scope, $http, $window) {
     code: '',
     name: '',
     brand: '',
+    serial_no: '',
     from_location: '',
     from_invoice: '',
     to_location: '',
@@ -475,6 +476,7 @@ function personassetCurrentController($scope, $http, $window) {
     code: '',
     name: '',
     brand: '',
+    serial_no: '',
     from_location: '',
     from_invoice: '',
     serial_no: '',

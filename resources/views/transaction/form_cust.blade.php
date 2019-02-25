@@ -19,7 +19,7 @@
         @php
             $dodisable = false;
             $dodisableStr = '';
-            if(auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') {
+            if((auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') or (!auth()->user()->hasRole('hd_user') and ($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid' or $transaction->status == 'Cancelled'))) {
                 $dodisable = true;
                 $dodisableStr = 'disabled';
             }
@@ -263,7 +263,9 @@
                 </div>
             @endif
         </div>
+        @endif
 
+        @if(!auth()->user()->hasRole('hd_user'))
         <div class="row">
             @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
                 @cannot('transaction_view')
@@ -312,6 +314,7 @@
             @endif
         </div>
         @endif
+
 
         @if($transaction->is_deliveryorder)
         <div class="row">
