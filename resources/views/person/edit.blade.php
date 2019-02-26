@@ -12,6 +12,16 @@
 @section('content')
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
+
+    @php
+        $disabled = false;
+        $disabledStr = '';
+
+        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
+            $disabled = true;
+            $disabledStr = 'disabled';
+        }
+    @endphp
     @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
     <div class="panel panel-primary">
         <div class="panel-heading">
@@ -40,16 +50,6 @@
                     </div>
                 </div>
 
-
-                @php
-                    $disabled = false;
-                    $disabledStr = '';
-
-                    if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
-                        $disabled = true;
-                        $disabledStr = 'disabled';
-                    }
-                @endphp
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">

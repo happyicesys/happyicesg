@@ -3,6 +3,16 @@
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
 
+@php
+    $disabled = false;
+    $disabledStr = '';
+
+    if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
+        $disabled = true;
+        $disabledStr = 'disabled';
+    }
+@endphp
+
 <div class="row">
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
