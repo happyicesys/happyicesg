@@ -157,7 +157,19 @@ class PersonassetController extends Controller
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
             ->select(
                 'transactionpersonassets.id AS id', 'transactionpersonassets.transaction_id', 'transactionpersonassets.personasset_id',
-                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks', 'transactionpersonassets.to_transaction_id',
+                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks',
+                DB::raw(
+                'CASE WHEN to_transactions.status="Delivered" THEN to_transactions.id
+                            WHEN to_transactions.status="Verified Owe" THEN to_transactions.id
+                            WHEN to_transactions.status="Verified Paid" THEN to_transactions.id
+                            ELSE "" END AS to_transaction_id'
+                ),
+                DB::raw(
+                'CASE WHEN to_transactions.status="Delivered" THEN to_deliveryorders.delivery_location_name
+                            WHEN to_transactions.status="Verified Owe" THEN to_deliveryorders.delivery_location_name
+                            WHEN to_transactions.status="Verified Paid" THEN to_deliveryorders.delivery_location_name
+                            ELSE "" END AS to_location_name'
+                ),
                 DB::raw('DATE(transactionpersonassets.datein) AS datein'),
                 DB::raw('DATE(transactionpersonassets.dateout) AS dateout'),
                 DB::raw('WEEK(transactionpersonassets.datein, 1) AS datein_week'),
@@ -167,8 +179,7 @@ class PersonassetController extends Controller
                 'personassets.code', 'personassets.name', 'personassets.brand', 'personassets.id AS personasset_id',
                 'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode',
                 'deliveryorders.pickup_location_name AS from_location_name',
-                'deliveryorders.delivery_location_name',
-                'to_deliveryorders.delivery_location_name AS to_location_name'
+                'deliveryorders.delivery_location_name'
             )
             ->whereNotNull('transactionpersonassets.datein')
             ->where('transactionpersonassets.is_warehouse', 1);

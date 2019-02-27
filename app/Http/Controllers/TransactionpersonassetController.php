@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Transactionpersonasset;
 use App\Transaction;
+use App\Deliveryorder;
 use DB;
 
 class TransactionpersonassetController extends Controller
@@ -50,11 +51,14 @@ class TransactionpersonassetController extends Controller
         $transactionpersonasset_id = request('transactionpersonasset_id');
         $items = request('items');
         $transaction = Transaction::findOrFail($transaction_id);
+        $deliveryorder = Deliveryorder::where('transaction_id', $transaction_id)->firstOrFail();
 
         if($transactionpersonasset_id) {
             $transactionpersonasset = Transactionpersonasset::findOrFail($transactionpersonasset_id);
             $transactionpersonasset->to_transaction_id = $transaction_id;
             $transactionpersonasset->save();
+            $deliveryorder->from_happyice = 1;
+            $deliveryorder->save();
 
             if($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
                 $transactionpersonasset->dateout = $transaction->deliveryorder->pickup_date;
@@ -77,6 +81,8 @@ class TransactionpersonassetController extends Controller
                     $transactionpersonasset->save();
                 }
             }
+            $deliveryorder->to_happyice = 1;
+            $deliveryorder->save();
         }
     }
 
@@ -84,7 +90,16 @@ class TransactionpersonassetController extends Controller
     public function destroyApi($id)
     {
         $transactionpersonasset = Transactionpersonasset::findOrFail($id);
-        $transactionpersonasset->delete();
+        // die(var_dump( $transactionpersonasset->toArray()));
+        $deliveryorder = Deliveryorder::where('transaction_id', $transactionpersonasset->to_transaction_id)->first();
+        if($deliveryorder) {
+            // die(var_dump('here1'));
+            $transactionpersonasset->to_transaction_id = '';
+            $transactionpersonasset->save();
+        }else {
+            // die(var_dump('here2'));
+            $transactionpersonasset->delete();
+        }
     }
 
     // update transactionpersonasset api()

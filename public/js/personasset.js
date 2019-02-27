@@ -462,7 +462,7 @@ function personassetCurrentController($scope, $http, $window) {
   $scope.totalCount = 0;
   $scope.totalPages = 0;
   $scope.currentPage = 1;
-  $scope.itemsPerPage = 100;
+  $scope.itemsPerPage = 'All';
   $scope.indexFrom = 0;
   $scope.indexTo = 0;
   $scope.thisyear = moment().format('YYYY');
@@ -482,7 +482,7 @@ function personassetCurrentController($scope, $http, $window) {
     serial_no: '',
     sticker: '',
     comment: '',
-    pageNum: 100,
+    pageNum: 'All',
     sortName: '',
     sortBy: true
   }

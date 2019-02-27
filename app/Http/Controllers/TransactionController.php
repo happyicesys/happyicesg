@@ -1112,13 +1112,12 @@ class TransactionController extends Controller
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                     'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                     'custcategories.name as custcategory',
-                                    DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1')
+                                    DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
+                                    'deliveryorders.po_no AS do_po', 'deliveryorders.requester_name', 'deliveryorders.pickup_location_name',
+                                    'deliveryorders.delivery_location_name'
                                 );
 
-        // reading whether search input is filled
-        if(request('id') or request('cust_id') or request('company') or request('status') or request('pay_status') or request('updated_by') or request('updated_at') or request('delivery_from') or request('delivery_to') or request('driver') or request('profile_id') or request('custcategory') or request('franchisee_id') or request('statuses') or request('person_active')){
-            $transactions = $this->searchDBFilter($transactions);
-        }
+        $transactions = $this->searchDBFilter($transactions);
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
@@ -1582,6 +1581,7 @@ class TransactionController extends Controller
     // pass value into filter search for DB (collection, collection request) [query]
     private function searchDBFilter($transactions)
     {
+        // dd(request()->all());
         if(request('id')){
             $transactions = $transactions->where('transactions.id', 'LIKE', '%'.request('id').'%');
         }
@@ -1615,7 +1615,7 @@ class TransactionController extends Controller
             $transactions = $transactions->where('transactions.updated_by', 'LIKE', '%'.request('updated_by').'%');
         }
         if(request('updated_at')){
-            $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'.$request->updated_at.'%');
+            $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'. request('updated_at').'%');
         }
         if(request('delivery_from') === request('delivery_to')){
             if(request('delivery_from') != '' and request('delivery_to') != ''){
@@ -1654,6 +1654,23 @@ class TransactionController extends Controller
 
         if (request('person_active')) {
             $transactions = $transactions->where('people.active', request('person_active'));
+        }
+
+        if(request('do_po')) {
+            $transactions = $transactions->where('deliveryorders.po_no', 'LIKE', '%'.request( 'do_po').'%');
+        }
+
+        if(request('requester_name')) {
+            $transactions = $transactions->where('deliveryorders.requester_name', 'LIKE', '%'.request('requester_name').'%');
+        }
+
+        if(request('pickup_location_name')) {
+            $transactions = $transactions->where('deliveryorders.pickup_location_name', 'LIKE', '%'.request('pickup_location_name').'%');
+        }
+
+
+        if(request('delivery_location_name')) {
+            $transactions = $transactions->where('deliveryorders.delivery_location_name', 'LIKE', '%'.request('delivery_location_name').'%');
         }
 
         if(request('sortName')){
@@ -1843,7 +1860,7 @@ class TransactionController extends Controller
     // send do confirmation email (int transaction_id)
     private function sendDoConfirmEmailAlert($transaction_id)
     {
-        $today = Carbon::now()->format('d-m-Y H:i');
+        $today = Carbon::now()->format('Y-m-d');
         $emails = EmailAlert::where('status', 'active')->get();
         $email_list = array();
         foreach ($emails as $email) {
@@ -1863,7 +1880,7 @@ class TransactionController extends Controller
 
         Mail::send('email.do_confirm_alert', $data, function ($message) use ($transaction, $email, $today, $sender) {
             $message->from($sender);
-            $message->subject('HaagenDaz Confirm ['.$transaction->id.'] ' . $today);
+            $message->subject('HaagenDaz Job Confirmed '.$today.' ['.$transaction->id.']');
             $message->setTo($email);
         });
     }

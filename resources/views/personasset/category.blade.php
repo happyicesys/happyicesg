@@ -12,7 +12,7 @@
                             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user'))
                             <button class="btn btn-success" data-toggle="modal" data-target="#personasset_modal" ng-click="createPersonassetModal()">
                                 <i class="fa fa-plus"></i>
-                                Add Asset
+                                Add Asset Category
                             </button>
                             @endif
                         </span>

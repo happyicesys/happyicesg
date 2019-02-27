@@ -342,7 +342,7 @@
             </div>
         </div>
 
-        @if($transaction->is_deliveryorder)
+        @if($transaction->is_deliveryorder and !auth()->user()->hasRole('hd_user'))
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     Signature &nbsp;

@@ -31,6 +31,10 @@ var app = angular.module('app', [
             driver: '',
             custcategory: '',
             person_active: 'Yes',
+            do_po: '',
+            requester_name: '',
+            pickup_location_name: '',
+            delivery_location_name: '',
             itemsPerPage: 100,
             sortName: '',
             sortBy: true

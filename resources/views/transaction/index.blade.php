@@ -56,6 +56,8 @@
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
+
+                    @if(!auth()->user()->hasRole('hd_user'))
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('id', null,
@@ -80,6 +82,33 @@
                                                         ])
                         !!}
                     </div>
+                    @else
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('do_po', 'PO Num', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('do_po', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.do_po',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'PO Num',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
+                        !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('requester_name', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.requester_name',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'Requester Name',
+                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                        ])
+                        !!}
+                    </div>
+                    @endif
+
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
                         <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
@@ -104,6 +133,7 @@
                             !!}
                         </div>
 
+                        @if(!auth()->user()->hasRole('hd_user'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('updated_by', null,
@@ -116,6 +146,33 @@
                                                                 ])
                             !!}
                         </div>
+                        @else
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('pickup_location_name', 'Pickup Loc Name', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('pickup_location_name', null,
+                                                                [
+                                                                    'class'=>'form-control input-sm',
+                                                                    'ng-model'=>'search.pickup_location_name',
+                                                                    'ng-change'=>'searchDB()',
+                                                                    'placeholder'=>'Pickup Loc Name',
+                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('delivery_location_name', 'Delivery Loc Name', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('delivery_location_name', null,
+                                                                [
+                                                                    'class'=>'form-control input-sm',
+                                                                    'ng-model'=>'search.delivery_location_name',
+                                                                    'ng-change'=>'searchDB()',
+                                                                    'placeholder'=>'Delivery Loc Name',
+                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                ])
+                            !!}
+                        </div>
+                        @endif
+
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('updated_at', 'Last Modify Dt', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
@@ -332,6 +389,8 @@
                                     <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @if(!auth()->user()->hasRole('hd_user'))
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('cust_id')">
                                     ID
@@ -356,6 +415,34 @@
                                     <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @else
+
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('do_po')">
+                                    PO Num
+                                    <span ng-if="search.sortName == 'do_po' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'do_po' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('requester_name')">
+                                    Requester Name
+                                    <span ng-if="search.sortName == 'requester_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'requester_name' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('pickup_location_name')">
+                                    Pickup Loc Name
+                                    <span ng-if="search.sortName == 'pickup_location_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'pickup_location_name' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('delivery_location_name')">
+                                    Delivery Loc Name
+                                    <span ng-if="search.sortName == 'delivery_location_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'delivery_location_name' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                @endif
+
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('status')">
                                     Status
@@ -375,25 +462,27 @@
                                     <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
-                                @endif
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('driver')">
                                     Delivered By
                                     <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @endif
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('total')">
                                     Total Amount
                                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @if(!auth()->user()->hasRole('hd_user'))
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('total_qty')">
                                     Total Qty
                                     <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                @endif
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('pay_status')">
                                     Payment
@@ -424,6 +513,8 @@
                                             @{{ transaction.id }}
                                         </a>
                                     </td>
+
+                                    @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/person/@{{ transaction.person_id }}">
@@ -432,6 +523,13 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
+                                    @else
+                                    <td class="col-md-1 text-center">@{{ transaction.do_po }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.requester_name }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.pickup_location_name }} </td>
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_location_name }}</td>
+                                    @endif
+
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
@@ -455,12 +553,14 @@
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
-                                    @endif
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                                    @endif
                                     <td class="col-md-1 text-right">
                                         @{{ transaction.total | currency: "": 2}}
                                     </td>
+                                    @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
+                                    @endif
                                     {{-- pay status --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
                                         @{{ transaction.pay_status }}

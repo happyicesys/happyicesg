@@ -364,7 +364,7 @@ function transactionController($scope, $http) {
     }
 
 
-    $scope.removeTransactionpersonassetEntry = function ($event, id) {
+    $scope.removeTransactionpersonassetEntry = function ($event, id, showpersonassetSelection) {
         $event.stopPropagation();
         $event.preventDefault();
         var isConfirmDelete = confirm('Are you sure to DELETE this item?');

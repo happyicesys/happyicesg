@@ -610,7 +610,7 @@
                 @if(auth()->user()->hasRole('admin') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 <div class="row">
                     <div class="form-group col-md-7 col-sm-7 col-xs-12">
-                        {!! Form::label('personasset_id', 'Asset', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('personasset_id', 'Add New Asset', ['class'=>'control-label search-title']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
                         {!! Form::select('personasset_id',
                             [''=>null] + $personassets::select(DB::raw("CONCAT(code,' - ',name,'  [',brand,']') AS full, id"))->orderBy('code')->lists('full', 'id')->all(),
@@ -676,7 +676,7 @@
                 @if(auth()->user()->hasRole('admin') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 <div class="row">
                     <div class="form-group col-md-10 col-sm-10 col-xs-12">
-                        {!! Form::label('transactionpersonasset_id', 'Asset', ['class'=>'control-label search-title']) !!}
+                        {!! Form::label('transactionpersonasset_id', 'Asset from Happy Ice Warehouse', ['class'=>'control-label search-title']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
                         {!! Form::select('transactionpersonasset_id',
                             [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->orderBy('code')->lists('full', 'id')->all(),
@@ -766,7 +766,7 @@
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user'))
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#transactionpersonasset_modal" ng-click="editTransactionpersonassetModal($event, data)" ng-disabled="{{auth()->user()->hasRole('hd_user') && $transaction->status != 'Pending'}}"><i class="fa fa-pencil-square-o"></i></button>
-                                    <button class="btn btn-danger btn-sm" ng-click="removeTransactionpersonassetEntry($event, data.id)" ng-disabled="{{auth()->user()->hasRole('hd_user') && $transaction->status != 'Pending'}}"><i class="fa fa-times"></i></button>
+                                    <button class="btn btn-danger btn-sm" ng-click="removeTransactionpersonassetEntry($event, data.id, showpersonassetSelection)" ng-disabled="{{auth()->user()->hasRole('hd_user') && $transaction->status != 'Pending'}}"><i class="fa fa-times"></i></button>
                                 @endif
                             </td>
                         </tr>
