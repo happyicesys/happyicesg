@@ -299,16 +299,18 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Asset Category
-                            </label>
+                            <b>
+                                @{{form.code}} - @{{form.name}} - @{{form.brand}}
+                            </b>
+
+{{--
                             <label for="required" class="control-label" style="color:red;">*</label>
                             <ui-select ng-model="form.personasset_id" on-select="onSelected($item)">
                                 <ui-select-match allow-clear="true">@{{$select.selected.code}} - @{{$select.selected.name}} - @{{$select.selected.brand}}</ui-select-match>
                                 <ui-select-choices repeat="personassetcategory.personasset_id as personassetcategory in personassetcategories | filter: $select.search">
                                     <div ng-bind-html="personassetcategory.code + ' - ' + personassetcategory.name + ' - ' + personassetcategory.brand | highlight: $select.search"></div>
                                 </ui-select-choices>
-                            </ui-select>
+                            </ui-select> --}}
                         </div>
                         <div class="form-group col-md-4 col-sm-6 col-xs-12">
                             <label class="control-label">

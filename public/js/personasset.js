@@ -393,7 +393,10 @@ function personassetMovementController($scope, $http, $window) {
       personasset_id: '',
       serial_no: '',
       sticker: '',
-      comment: ''
+      comment: '',
+      code: '',
+      name: '',
+      brand: ''
     }
   }
 
@@ -431,7 +434,10 @@ function personassetMovementController($scope, $http, $window) {
       personasset_id: data.personasset_id,
       serial_no: data.serial_no,
       sticker: data.sticker,
-      remarks: data.remarks
+      remarks: data.remarks,
+      code: data.code,
+      name: data.name,
+      brand: data.brand
     }
   }
 
@@ -448,7 +454,7 @@ function personassetMovementController($scope, $http, $window) {
   }
 
   $scope.isFormValid = function () {
-    if ($scope.form.serial_no && $scope.form.sticker && $scope.form.remarks) {
+    if ($scope.form.serial_no || $scope.form.sticker || $scope.form.remarks) {
       return false;
     } else {
       return true;
