@@ -19,7 +19,7 @@
         @php
             $dodisable = false;
             $dodisableStr = '';
-            if((auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') or (!auth()->user()->hasRole('hd_user') and ($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid' or $transaction->status == 'Cancelled'))) {
+            if((auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') or ((!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('admin')) and ($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid' or $transaction->status == 'Cancelled'))) {
                 $dodisable = true;
                 $dodisableStr = 'disabled';
             }
