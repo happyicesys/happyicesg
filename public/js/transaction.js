@@ -54,7 +54,8 @@ function transactionController($scope, $http) {
         transaction_id: '',
         requester: '',
         requester_name: '',
-        requester_contact: ''
+        requester_contact: '',
+        requester_notification_emails: ''
     }
     $scope.jobtypeSelection = [
         {
@@ -272,7 +273,8 @@ function transactionController($scope, $http) {
                     transaction_id: dodata.transaction_id,
                     requester: dodata.requester,
                     from_happyice: dodata.from_happyice == 1 ? true : false,
-                    to_happyice: dodata.to_happyice == 1 ? true : false
+                    to_happyice: dodata.to_happyice == 1 ? true : false,
+                    requester_notification_emails: dodata.requester_notification_emails
                 }
 
                 if($scope.doform.from_happyice) {

@@ -1617,18 +1617,22 @@ class TransactionController extends Controller
         if(request('updated_at')){
             $transactions = $transactions->where('transactions.updated_at', 'LIKE', '%'. request('updated_at').'%');
         }
-        if(request('delivery_from') === request('delivery_to')){
-            if(request('delivery_from') != '' and request('delivery_to') != ''){
-                $transactions = $transactions->where('transactions.delivery_date', '=', request('delivery_from'));
-            }
-        }else{
-            if(request('delivery_from')){
-                $transactions = $transactions->where('transactions.delivery_date', '>=', request('delivery_from'));
-            }
-            if(request('delivery_to')){
-                $transactions = $transactions->where('transactions.delivery_date', '<=', request('delivery_to'));
+
+        if(!auth()->user()->hasRole('hd_user')) {
+            if(request('delivery_from') === request('delivery_to')){
+                if(request('delivery_from') != '' and request('delivery_to') != ''){
+                    $transactions = $transactions->where('transactions.delivery_date', '=', request('delivery_from'));
+                }
+            }else{
+                if(request('delivery_from')){
+                    $transactions = $transactions->where('transactions.delivery_date', '>=', request('delivery_from'));
+                }
+                if(request('delivery_to')){
+                    $transactions = $transactions->where('transactions.delivery_date', '<=', request('delivery_to'));
+                }
             }
         }
+
         if(request('driver')){
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.request('driver').'%');
         }
@@ -1668,9 +1672,23 @@ class TransactionController extends Controller
             $transactions = $transactions->where('deliveryorders.pickup_location_name', 'LIKE', '%'.request('pickup_location_name').'%');
         }
 
-
         if(request('delivery_location_name')) {
             $transactions = $transactions->where('deliveryorders.delivery_location_name', 'LIKE', '%'.request('delivery_location_name').'%');
+        }
+
+        if(auth()->user()->hasRole('hd_user')) {
+            if(request('requested_from') === request('requested_to')){
+                if(request('requested_from') != '' and request('requested_to') != ''){
+                    $transactions = $transactions->where('deliveryorders.delivery_date1', '=', request('requested_from'));
+                }
+            }else{
+                if(request('requested_from')){
+                    $transactions = $transactions->where('deliveryorders.delivery_date1', '>=', request('requested_from'));
+                }
+                if(request('requested_to')){
+                    $transactions = $transactions->where('deliveryorders.delivery_date1', '<=', request('requested_to'));
+                }
+            }
         }
 
         if(request('sortName')){
@@ -1833,7 +1851,8 @@ class TransactionController extends Controller
             'from_happyice' => request('from_happyice') == 'true' ? 1 : 0,
             'to_happyice' => request('to_happyice') == 'true' ? 1 : 0,
             'requester_name' => request('requester_name'),
-            'requester_contact' => request('requester_contact')
+            'requester_contact' => request('requester_contact'),
+            'requester_notification_emails' => request('requester_notification_emails')
         ]);
     }
 
@@ -1854,6 +1873,9 @@ class TransactionController extends Controller
                 $transactionpersonasset->is_warehouse = 1;
             }
             $transactionpersonasset->save();
+        }
+        if($transaction->deliveryorder->requester_notification_emails) {
+            $this->sendDoDeliveredEmailAlert($transaction->id);
         }
     }
 
@@ -1881,6 +1903,31 @@ class TransactionController extends Controller
         Mail::send('email.do_confirm_alert', $data, function ($message) use ($transaction, $email, $today, $sender) {
             $message->from($sender);
             $message->subject('HaagenDaz Job Confirmed '.$today.' ['.$transaction->id.']');
+            $message->setTo($email);
+        });
+    }
+
+    // send do delivered email (int transaction_id)
+    private function sendDoDeliveredEmailAlert($transaction_id)
+    {
+
+        $transaction = Transaction::findOrFail($transaction_id);
+        $today = Carbon::now()->format('Y-m-d');
+        $email_list = explode(";", $transaction->deliveryorder->requester_notification_emails);
+
+        $email = array_unique($email_list);
+        // $email = 'leehongjie91@gmail.com';
+
+        // $sender = 'daniel.ma@happyice.com.sg';
+        $sender = 'system@happyice.com.sg';
+
+        $data = [
+            'transaction' => $transaction,
+        ];
+
+        Mail::send('email.do_confirm_alert', $data, function ($message) use ($transaction, $email, $today, $sender) {
+            $message->from($sender);
+            $message->subject('HaagenDaz Job Delivered '.$today.' ['.$transaction->id.']');
             $message->setTo($email);
         });
     }

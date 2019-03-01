@@ -52,7 +52,7 @@
                     <input type="text" name="to_invoice" class="form-control input-sm" ng-model="search.to_invoice" ng-change="searchDB()" placeholder="To Invoice" ng-model-options="{debounce: 500}">
                 </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                    {!! Form::label('datefrom', 'Date In From', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('datefrom', 'Date From', ['class'=>'control-label search-title']) !!}
                     <div class="input-group">
                         <datepicker>
                             <input
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                    {!! Form::label('dateto', 'Date In To', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('dateto', 'Date To', ['class'=>'control-label search-title']) !!}
                     <div class="input-group">
                         <datepicker>
                             <input

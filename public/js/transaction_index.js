@@ -17,6 +17,8 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.today = moment().format("YYYY-MM-DD");
+        $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
+        $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
         $scope.search = {
             id: '',
             cust_id: '',
@@ -28,6 +30,8 @@ var app = angular.module('app', [
             updated_at: '',
             delivery_from: $scope.today,
             delivery_to: $scope.today,
+            requested_from: $scope.requestfrom,
+            requested_to: $scope.requestto,
             driver: '',
             custcategory: '',
             person_active: 'Yes',
@@ -63,19 +67,19 @@ var app = angular.module('app', [
             saveAs(blob, "TransactionRpt"+ now + ".xls");
         };
 
-        $scope.delFromChange = function(date){
+        $scope.dateChange = function(scope_from, date){
             if(date){
-                $scope.search.delivery_from = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
         }
-
-        $scope.delToChange = function(date){
+/*
+        $scope.delToChange = function(scope_todate){
             if(date){
                 $scope.search.delivery_to = moment(new Date(date)).format('YYYY-MM-DD');
             }
             $scope.searchDB();
-        }
+        } */
 
         $scope.dateChange2 = function(date){
             if(date){
@@ -84,21 +88,21 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
-        $scope.onPrevDateClicked = function() {
-            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).subtract(1, 'days').format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.onPrevDateClicked = function(scope_from, scope_to) {
+            $scope.search[scope_from] = moment(new Date($scope.search[scope_from])).subtract(1, 'days').format('YYYY-MM-DD');
+            $scope.search[scope_to] = moment(new Date($scope.search[scope_to])).subtract(1, 'days').format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
-        $scope.onTodayDateClicked = function() {
-            $scope.search.delivery_from = moment().format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment().format('YYYY-MM-DD');
+        $scope.onTodayDateClicked = function(scope_from, scope_to) {
+            $scope.search[scope_from] = moment().format('YYYY-MM-DD');
+            $scope.search[scope_to] = moment().format('YYYY-MM-DD');
             $scope.searchDB();
         }
 
-        $scope.onNextDateClicked = function() {
-            $scope.search.delivery_from = moment(new Date($scope.search.delivery_from)).add(1, 'days').format('YYYY-MM-DD');
-            $scope.search.delivery_to = moment(new Date($scope.search.delivery_to)).add(1, 'days').format('YYYY-MM-DD');
+        $scope.onNextDateClicked = function(scope_from, scope_to) {
+            $scope.search[scope_from] = moment(new Date($scope.search[scope_from])).add(1, 'days').format('YYYY-MM-DD');
+            $scope.search[scope_to] = moment(new Date($scope.search[scope_to])).add(1, 'days').format('YYYY-MM-DD');
             $scope.searchDB();
         }
 

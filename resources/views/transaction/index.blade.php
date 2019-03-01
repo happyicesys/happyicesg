@@ -85,15 +85,13 @@
                     @else
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('do_po', 'PO Num', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('do_po', null,
-                                                    [
-                                                        'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.do_po',
-                                                        'ng-change'=>'searchDB()',
-                                                        'placeholder'=>'PO Num',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
-                                                    ])
-                        !!}
+                            {!! Form::select('do_po', [''=>'All', '4505160978_(FSI)'=>'4505160978 (FSI)', '4505160966_(Retail)'=>'4505160966 (Retail)'], null,
+                                [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.do_po',
+                                'ng-change'=>'searchDB()'
+                                ])
+                            !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label search-title']) !!}
@@ -248,6 +246,56 @@
                     </div>
                     @endif
                 </div>
+                @if(auth()->user()->hasRole('hd_user'))
+                <div class="row">
+                    <div class="row">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('requested_from', 'Requested Date (Start)', ['class'=>'control-label search-title']) !!}
+                        <div class="input-group">
+                            <datepicker>
+                                <input
+                                    name = "requested_from"
+                                    type = "text"
+                                    class = "form-control input-sm"
+                                    placeholder = "Requested Date (Start)"
+                                    ng-model = "search.requested_from"
+                                    ng-change = "dateChange(requested_from, search.requested_from)"
+                                />
+                            </datepicker>
+                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('requested_from', search.requested_from)"></span>
+                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('requested_from', search.requested_from)"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('requested_to', 'Requested Date (End)', ['class'=>'control-label search-title']) !!}
+                        <div class="input-group">
+                            <datepicker>
+                                <input
+                                    name = "requested_to"
+                                    type = "text"
+                                    class = "form-control input-sm"
+                                    placeholder = "Requested Date (End)"
+                                    ng-model = "search.requested_to"
+                                    ng-change = "dateChange(requested_to, search.requested_to)"
+                                />
+                            </datepicker>
+                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('requested_to', search.requested_to)"></span>
+                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('requested_to', search.requested_to)"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        <div class="row col-md-12 col-sm-12 col-xs-12">
+                            {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
+                        </div>
+                        <div class="btn-group">
+                            <a href="" ng-click="onPrevDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                            <a href="" ng-click="onTodayDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                            <a href="" ng-click="onNextDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                @else
                 <div class="row">
                     <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -260,7 +308,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Delivery From"
                                     ng-model = "search.delivery_from"
-                                    ng-change = "delFromChange(search.delivery_from)"
+                                    ng-change = "dateChange(delivery_from, search.delivery_from)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
@@ -277,7 +325,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Delivery To"
                                     ng-model = "search.delivery_to"
-                                    ng-change = "delToChange(search.delivery_to)"
+                                    ng-change = "dateChange(delivery_to, search.delivery_to)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
@@ -289,13 +337,14 @@
                             {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
                         </div>
                         <div class="btn-group">
-                            <a href="" ng-click="onPrevDateClicked()" class="btn btn-default"><i class="fa fa-backward"></i></a>
-                            <a href="" ng-click="onTodayDateClicked()" class="btn btn-default"><i class="fa fa-circle"></i></a>
-                            <a href="" ng-click="onNextDateClicked()" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                            <a href="" ng-click="onPrevDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                            <a href="" ng-click="onTodayDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                            <a href="" ng-click="onNextDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-forward"></i></a>
                         </div>
                     </div>
                     </div>
                 </div>
+                @endif
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
