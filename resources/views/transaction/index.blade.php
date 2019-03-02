@@ -259,7 +259,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Requested Date (Start)"
                                     ng-model = "search.requested_from"
-                                    ng-change = "dateChange(requested_from, search.requested_from)"
+                                    ng-change = "dateChange('requested_from', search.requested_from)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('requested_from', search.requested_from)"></span>
@@ -276,7 +276,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Requested Date (End)"
                                     ng-model = "search.requested_to"
-                                    ng-change = "dateChange(requested_to, search.requested_to)"
+                                    ng-change = "dateChange('requested_to', search.requested_to)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('requested_to', search.requested_to)"></span>
@@ -288,9 +288,9 @@
                             {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
                         </div>
                         <div class="btn-group">
-                            <a href="" ng-click="onPrevDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-backward"></i></a>
-                            <a href="" ng-click="onTodayDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-circle"></i></a>
-                            <a href="" ng-click="onNextDateClicked(requested_from, requested_to)" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                            <a href="" ng-click="onPrevDateClicked('requested_from', 'requested_to')" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                            <a href="" ng-click="onTodayDateClicked('requested_from', 'requested_to')" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                            <a href="" ng-click="onNextDateClicked('requested_from', 'requested_to')" class="btn btn-default"><i class="fa fa-forward"></i></a>
                         </div>
                     </div>
                     </div>
@@ -308,7 +308,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Delivery From"
                                     ng-model = "search.delivery_from"
-                                    ng-change = "dateChange(delivery_from, search.delivery_from)"
+                                    ng-change = "dateChange('delivery_from', search.delivery_from)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
@@ -325,7 +325,7 @@
                                     class = "form-control input-sm"
                                     placeholder = "Delivery To"
                                     ng-model = "search.delivery_to"
-                                    ng-change = "dateChange(delivery_to, search.delivery_to)"
+                                    ng-change = "dateChange('delivery_to', search.delivery_to)"
                                 />
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
@@ -337,9 +337,9 @@
                             {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
                         </div>
                         <div class="btn-group">
-                            <a href="" ng-click="onPrevDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-backward"></i></a>
-                            <a href="" ng-click="onTodayDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-circle"></i></a>
-                            <a href="" ng-click="onNextDateClicked(delivery_from, delivery_to)" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                            <a href="" ng-click="onPrevDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                            <a href="" ng-click="onTodayDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                            <a href="" ng-click="onNextDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-forward"></i></a>
                         </div>
                     </div>
                     </div>
