@@ -111,7 +111,7 @@
                     ])
                 !!}
             </div>
-        </div>        
+        </div>
         <div class="col-md-4 col-xs-6 text-right">
             <div class="row">
             <label for="display_num">Display</label>
@@ -276,7 +276,7 @@
                     Validation
                     <span ng-if="search.sortName == 'is_verified' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'is_verified' && search.sortBy" class="fa fa-caret-up"></span>
-                </th>                
+                </th>
             </tr>
             <tbody>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" pagination-id="payment_summary" total-items="totalCount">
@@ -303,7 +303,7 @@
                     <td class="col-md-1 text-left">@{{ transaction.name }} </td>
                     <td class="col-md-1 text-left">
                         <span class="col-md-12 col-sm-12 col-xs-12">@{{transaction.is_verified == null ? 'Pending' : (transaction.is_verified == 1 ? 'Verified' : 'Rejected')}}</span>
-                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account'))
+                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('operation'))
                             <button ng-if="transaction.is_verified != '1'" class="btn btn-sm btn-success" ng-click="verifyPaysummary($event, transaction, 1)"><i class="fa fa-check"></i> Verify</button>
                             <button ng-if="transaction.is_verified != '0'" class="btn btn-sm btn-danger" ng-click="verifyPaysummary($event, transaction, 0)"><i class="fa fa-cross"></i> Reject</button>
                         @endif

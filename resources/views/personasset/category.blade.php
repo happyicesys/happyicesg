@@ -9,7 +9,7 @@
                             Asset Category
                         </span>
                         <span class="pull-right">
-                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('operation'))
                             <button class="btn btn-success" data-toggle="modal" data-target="#personasset_modal" ng-click="createPersonassetModal()">
                                 <i class="fa fa-plus"></i>
                                 Add Asset Category
@@ -204,7 +204,7 @@
                                 @{{data.company}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @if(auth()->user()->hasRole('admin'))
+                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personasset_modal" ng-click="editPersonassetModal(data)"><i class="fa fa-pencil-square-o"></i></button>
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(data.id)"><i class="fa fa-times"></i></button>
                                 @endif

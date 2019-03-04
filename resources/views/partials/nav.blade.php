@@ -151,6 +151,21 @@
                         $jobcard_access = true;
                         $vending_access = true;
                     }
+
+                    if(auth()->user()->hasRole('operation')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $personasset_access = true;
+                        $item_access = true;
+                        $detailrpt_access = true;
+                        $report_access = true;
+                        $operation_access = true;
+                        $bom_access = true;
+                        $ecommerce_access = true;
+                        $personmaintenance_access = true;
+                        $jobcard_access = true;
+                    }
                 }
             @endphp
 

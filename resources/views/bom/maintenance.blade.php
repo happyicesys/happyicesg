@@ -388,7 +388,7 @@
                                 @{{bommaintenance.updater}}
                             </td>
                             <td class="col-md-1 text-center">
-                                @if(auth()->user()->hasRole('admin'))
+                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(bommaintenance.id)"><i class="fa fa-times"></i></button>
                                 @endif
                             </td>

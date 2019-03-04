@@ -512,7 +512,7 @@ class TransactionController extends Controller
         }
 
         // analog required validate by roles
-        if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account')) {
+        if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('operation')) {
             $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));
         }else {
             $request->merge(array('is_required_analog' => $transaction->is_required_analog));

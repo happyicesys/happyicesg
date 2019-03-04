@@ -57,7 +57,7 @@
     </div>
 </div>
 
-@if(auth()->user()->hasRole('admin'))
+@if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
     <div class="panel panel-primary">
         <div class="panel-heading">
             Profile Access : {{$user->id}} - {{$user->name}}

@@ -41,7 +41,7 @@
                                                                 'placeholder'=>'Task Name',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
-                        </div>                          
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('from', 'From', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
@@ -58,7 +58,7 @@
                                 <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('from', search.from)"></span>
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('from', search.from)"></span>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('to', 'To', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
@@ -75,7 +75,7 @@
                                 <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('to', search.to)"></span>
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('to', search.to)"></span>
                             </div>
-                        </div>                         
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('progress', 'Progress', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('progress',
@@ -87,8 +87,8 @@
                                 'ng-model'=>'search.progress',
                                 'ng-change'=>'searchDB()'
                                 ])
-                            !!}                                                            
-                        </div>      
+                            !!}
+                        </div>
 {{--                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('workers', 'Worker', ['class'=>'control-label search-title']) !!}
                             <select name="workers" class="selectmultiple form-control" ng-model="search.workers" ng-change="searchDB()" multiple>
@@ -97,9 +97,9 @@
                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                 @endforeach
                             </select>
-                        </div>   --}}                                                                    
+                        </div>   --}}
 
-                                                                                                
+
                     </div>
 
                     <div class="row">
@@ -134,7 +134,7 @@
                                     Date
                                     <span ng-if="search.sortName == 'task_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'task_date' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                
+                                </th>
                                 <th class="col-md-2 text-center">
                                     <a href="" ng-click="sortTable('task_name')">
                                     Task
@@ -146,13 +146,13 @@
                                     Remarks
                                     <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>      
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('created_by')">
                                     Issue By
                                     <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'created_by' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                                                                        
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('progress')">
                                     Progress (%)
@@ -174,7 +174,7 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{job.task_date}}
-                                    </td>                                    
+                                    </td>
                                     <td class="col-md-2 text-left">
                                         @{{job.task_name}}
                                     </td>
@@ -183,29 +183,29 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{job.creator.name}}
-                                    </td>                                                                          
+                                    </td>
                                     <td class="col-md-1 text-center">
                                         @{{job.progress}}
-                                    </td>                                      
+                                    </td>
                                     <td class="col-md-1 text-left">
                                         <span class="col-md-12 col-sm-12 col-xs-12" ng-style="{color: (job.is_verify == null ? '' : (job.is_verify == 1 ? 'green' : 'red'))}">
                                             @{{job.is_verify == null ? 'Pending' : (job.is_verify == 1 ? 'Verified' : 'Rejected')}}
                                         </span>
-                                        @if(auth()->user()->hasRole('admin'))
+                                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                                         <span class="col-md-12 col-sm-12 col-xs-12">
                                             <button ng-if="job.is_verify != '1' && job.progress == '100'" class="btn btn-sm btn-success" ng-click="verifyJob($event, job, 1)"><i class="fa fa-check"></i> Verify</button>
                                             <button ng-if="job.is_verify != '0' && job.progress == '100'" class="btn btn-sm btn-danger" ng-click="verifyJob($event, job, 0)"><i class="fa fa-cross"></i> Reject</button>
                                         </span>
                                         @endif
-                                    </td>                                                                     
+                                    </td>
                                     <td class="col-md-1 text-center">
-                                        @if(auth()->user()->hasRole('admin'))
+                                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
                                             <button class="btn btn-danger btn-sm" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>
                                         @endif
-                                        @if(!auth()->user()->hasRole('admin'))
+                                        @if(!auth()->user()->hasRole('admin') and !auth()->user()->hasRole('operation'))
                                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-if="job.is_verify != '1'" ng-click="editJobModal(job)"><i class="fa fa-pencil-square-o"></i></button>
-                                            <button class="btn btn-danger btn-sm" ng-if="job.is_verify != '1' && (job.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>                                        
+                                            <button class="btn btn-danger btn-sm" ng-if="job.is_verify != '1' && (job.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(job.id)"><i class="fa fa-times"></i></button>
                                         @endif
                                     </td>
                                 </tr>
@@ -236,8 +236,8 @@
                                     <label class="control-label">
                                         Task Name
                                     </label>
-                                    <input type="text" name="task_name" class="form-control" ng-model="form.task_name">                                                                      
-                                </div>      
+                                    <input type="text" name="task_name" class="form-control" ng-model="form.task_name">
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Date
@@ -251,20 +251,20 @@
                                             ng-model = "form.task_date"
                                             ng-change = "taskDateChanged(form.task_date)"
                                         />
-                                    </datepicker>                                    
-                                </div>   
+                                    </datepicker>
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Remarks
                                     </label>
                                     <textarea name="remarks" rows="5" class="form-control" ng-model="form.remarks"></textarea>
-                                </div>    
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Progress (%)
                                     </label>
                                     <input type="text" name="progress" class="form-control" ng-model="form.progress" placeholder="Numbers only">
-                                </div>                                                            
+                                </div>
 {{--                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Workers
@@ -274,11 +274,11 @@
                                         <ui-select-choices repeat="person.id as person in people | filter: $select.search">
                                             <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
                                         </ui-select-choices>
-                                    </ui-select>                                                                        
-                                </div>  --}}                                                                                         
-                            </div>                           
+                                    </ui-select>
+                                </div>  --}}
+                            </div>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" ng-click="createJob()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
                             <button type="button" class="btn btn-success" ng-click="editJob()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
@@ -292,4 +292,4 @@
         {{-- @include('job.overtime') --}}
 
     <script src="/js/job.js"></script>
-@stop        
+@stop
