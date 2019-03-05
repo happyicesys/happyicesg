@@ -332,7 +332,7 @@
 
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="cust_detail" total-items="totalCount" current-page="currentPage">
                     <td class="col-md-1 text-center">
-                        <input type="checkbox" name="checkbox[@{{transaction.id}}]>
+                        <input type="checkbox" name="checkbox[@{{transaction.id}}]">
                     </td>
                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                     <td class="col-md-1 text-center">
