@@ -146,6 +146,45 @@ class OperationWorksheetController extends Controller
         })->download('xlsx');
     }
 
+    // update preferred days in ops worksheet()
+    public function updateWeekDay()
+    {
+        $val = request('value');
+        $person_id = request('person_id');
+        $day = request('day');
+        $daysArr = [];
+
+        $person = Person::findOrFail($person_id);
+        $dayArr = explode(",", $person->preferred_days);
+
+        switch($day) {
+            case 'monday':
+                $dayArr[0] = $val;
+                break;
+            case 'tuesday':
+                $dayArr[1] = $val;
+                break;
+            case 'wednesday':
+                $dayArr[2] = $val;
+                break;
+            case 'thursday':
+                $dayArr[3] = $val;
+                break;
+            case 'friday':
+                $dayArr[4] = $val;
+                break;
+            case 'saturday':
+                $dayArr[5] = $val;
+                break;
+            case 'sunday':
+                $dayArr[6] = $val;
+                break;
+        }
+        $dayStr = implode(",", $dayArr);
+        $person->preferred_days = $dayStr;
+        $person->save();
+    }
+
     // return each of the dates in array given start and end (String $startDate, String $endDate)
     private function generateDateRange($startDate, $endDate)
     {
@@ -243,6 +282,7 @@ class OperationWorksheetController extends Controller
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
+        // $del_postcode = request('del_postcode');
         $today = $datesVar['today'];
         $earliest = $datesVar['earliest'];
         $latest = $datesVar['latest'];
@@ -267,7 +307,11 @@ class OperationWorksheetController extends Controller
         if($company) {
             $transactions = $transactions->where('people.company', 'LIKE', '%'.$company.'%');
         }
-
+/*
+        if($del_postcode) {
+            $transactions = $transactions->where('transactions.del_postcode', 'LIKE', '%'.$del_postcode.'%');
+        }
+ */
         if($earliest) {
             $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $earliest);
         }
@@ -391,6 +435,9 @@ class OperationWorksheetController extends Controller
         $cust_id = request('cust_id');
         $company = request('company');
         $color = request('color');
+        $del_postcode = request('del_postcode');
+        $preferred_days = request('preferred_days');
+        // die(var_dump($preferred_days));
 
         if($profile_id) {
             $people = $people->where('profiles.id', $profile_id);
@@ -411,6 +458,11 @@ class OperationWorksheetController extends Controller
         if($company) {
             $people = $people->where('people.company', 'LIKE', '%'.$company.'%');
         }
+
+        if($del_postcode) {
+            $people = $people->where('people.del_postcode', 'LIKE', '%'.$del_postcode.'%');
+        }
+
 
         if($color) {
             if($color == 'Yellow & Green') {
@@ -437,6 +489,32 @@ class OperationWorksheetController extends Controller
                         ->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
                         ->where('operationdates.color', $color);
                 });
+            }
+        }
+
+        if($preferred_days) {
+            switch($preferred_days) {
+                case 1:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 1, 1)'), '1');
+                    break;
+                case 2:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 3, 1)'), '1');
+                    break;
+                case 3:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 5, 1)'), '1');
+                    break;
+                case 4:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 7, 1)'), '1');
+                    break;
+                case 5:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 9, 1)'), '1');
+                    break;
+                case 6:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 11, 1)'), '1');
+                    break;
+                case 7:
+                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 13, 1)'), '1');
+                    break;
             }
         }
 
@@ -471,11 +549,20 @@ class OperationWorksheetController extends Controller
             array_push($transactionsId, $transaction->transaction_id);
         }
 
-        $people = DB::table('people')
+        // $people = DB::table('people')
+        $people =   Person::with('personassets')
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng',
+                            DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 3, 1) AS tuesday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 5, 1) AS wednesday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 7, 1) AS thursday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 9, 1) AS friday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 11, 1) AS saturday'),
+                            DB::raw('SUBSTRING(people.preferred_days, 13, 1) AS sunday'),
+                            'people.preferred_days',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
                     );

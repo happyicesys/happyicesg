@@ -3,7 +3,6 @@
     <thead>
     <tr>
         <th>#</th>
-        <th>Address</th>
         <th>Postcode</th>
         <th>Cust ID</th>
         <th>ID Name</th>
@@ -21,7 +20,6 @@
     @foreach($people as $indexpeople => $person)
         <tr>
             <td>{{$indexpeople + 1}}</td>
-            <td>{{$person->del_address}}</td>
             <td>{{$person->del_postcode}}</td>
             <td>{{$person->cust_id}}</td>
             <td>{{$person->company}}</td>

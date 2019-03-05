@@ -24,6 +24,8 @@ var app = angular.module('app', [
             previous: 'Last 7 days',
             future: '2 days',
             color: '',
+            del_postcode: '',
+            preferred_days: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -33,6 +35,10 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
 
             $('.date').datetimepicker({
                 format: 'YYYY-MM-DD'
@@ -112,6 +118,16 @@ var app = angular.module('app', [
                     return '';
                 }
             }
+        }
+
+        $scope.toggleCheckbox = function(value, person_id, day) {
+
+            $http.post('/api/operation/day', {
+                value: value,
+                person_id: person_id,
+                day: day
+            }).success(function(data) {
+            });
         }
 
         $scope.onMapClicked = function() {
@@ -232,6 +248,10 @@ var app = angular.module('app', [
                 // return fixed total amount
                 $scope.spinner = false;
             });
+        }
+
+        function replaceAt(string, index, replace) {
+            return string.substring(0, index) + replace + string.substring(index + 1);
         }
     }
 
