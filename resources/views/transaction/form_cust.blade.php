@@ -322,6 +322,11 @@
                 {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label']) !!}
                 <label for="required" class="control-label" style="color:red;">*</label>
                 {!! Form::text('requester_name', $transaction->deliveryorder->requester_name, ['class'=>'form-control', 'ng-model'=>'doform.requester_name', 'disabled' => $dodisable]) !!}
+{{--                 <select name="requester_name" class="select form-control" ng-model="doform.requester_name">
+                    <option ng-repeat="user in requesterSelection" value="@{{user.name}}" @{{doform.requester_name == user.name ? 'selected' : ''}}>
+                        @{{user.name}}
+                    </option>
+                </select> --}}
             </div>
             <div class="col-md-4 form-group">
                 {!! Form::label('requester_contact', 'Requester Contact', ['class'=>'control-label']) !!}

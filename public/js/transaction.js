@@ -67,6 +67,52 @@ function transactionController($scope, $http) {
             name: 'OnSite Troubleshooting'
         },
     ]
+
+    $scope.requesterSelection = [
+        {
+            id: 'Clement Chon',
+            name: 'Clement Chon',
+            contact: '97891437',
+            email: 'sookhui.choo@genmills.com'
+        },
+        {
+            id: 'Corrine Chong',
+            name: 'Corrine Chong',
+            contact: '90611680',
+            email: 'Corrine.Chong@genmills.com'
+        },
+        {
+            id: 'Eric Tay',
+            name: 'Eric Tay',
+            contact: '63056792',
+            email: 'Eric.Tay@genmills.com'
+        },
+        {
+            id: 'Jenny',
+            name: 'Jenny',
+            contact: '93886631',
+            email: 'Jenny.Sim@genmills.com'
+        },
+        {
+            id: 'Kian Poh',
+            name: 'Kian Poh',
+            contact: '91700759',
+            email: 'kianpoh.ng@genmills.com'
+        },
+        {
+            id: 'Sook Hui',
+            name: 'Sook Hui',
+            contact: '98008063',
+            email: 'sookhui.choo@genmills.com'
+        },
+        {
+            id: 'Xin Yi Seng',
+            name: 'Xin Yi Seng',
+            contact: '97750109',
+            email: 'Seng.xinyi@genmills.com'
+        }
+    ];
+
     $scope.showpersonassetSelection = true;
     $scope.hideSignature = true;
 

@@ -731,7 +731,10 @@ class TransactionController extends Controller
         $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
         $transactionpersonassets = DB::table('transactionpersonassets')
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
-            ->where('transactionpersonassets.transaction_id', $transaction->id)
+            ->where(function($query) use ($transaction) {
+                $query->where('transactionpersonassets.transaction_id', $transaction->id)
+                        ->orWhere('transactionpersonassets.to_transaction_id', $transaction->id);
+            })
             ->select(
                 'transactionpersonassets.id',
                 'transactionpersonassets.serial_no',
@@ -1840,7 +1843,7 @@ class TransactionController extends Controller
             'pickup_location_name' => request('pickup_location_name'),
             'pickup_address' => request('pickup_address'),
             'pickup_comment' => request('pickup_comment'),
-            'delivery_date1' => request('delivery_date1'),
+            'delivery_date1' => request('pickup_date'),
             'delivery_timerange' => request('delivery_timerange'),
             'delivery_attn' => request('delivery_attn'),
             'delivery_contact' => request('delivery_contact'),

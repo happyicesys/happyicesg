@@ -91,6 +91,7 @@
                                                 case 'franchisee':
                                                 case 'subfranchisee':
                                                 case 'watcher':
+                                                case 'hd_user':
                                                     $valid = false;
                                                     break;
                                                 default:
