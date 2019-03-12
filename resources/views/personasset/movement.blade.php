@@ -260,7 +260,6 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{data.dateout_week}}
-                                <br>
                                 <small>
                                     (@{{data.dateout_year}})
                                 </small>

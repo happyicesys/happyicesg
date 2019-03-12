@@ -288,7 +288,7 @@ function personassetMovementController($scope, $http, $window) {
       type: "application/vnd.ms-excel;charset=charset=utf-8"
     });
     var now = Date.now();
-    saveAs(blob, "Customer Asset Movement" + now + ".xls");
+    saveAs(blob, "Asset Movement" + now + ".xls");
   };
 
 

@@ -86,6 +86,7 @@
                                                 case 'account':
                                                 case 'supervisor':
                                                 case 'accountadmin':
+                                                case 'operation':
                                                     $valid = true;
                                                     break;
                                                 case 'franchisee':
