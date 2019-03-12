@@ -321,12 +321,31 @@
             <div class="col-md-4 form-group">
                 {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label']) !!}
                 <label for="required" class="control-label" style="color:red;">*</label>
-                {!! Form::text('requester_name', $transaction->deliveryorder->requester_name, ['class'=>'form-control', 'ng-model'=>'doform.requester_name', 'disabled' => $dodisable]) !!}
-{{--                 <select name="requester_name" class="select form-control" ng-model="doform.requester_name">
-                    <option ng-repeat="user in requesterSelection" value="@{{user.name}}" @{{doform.requester_name == user.name ? 'selected' : ''}}>
+{{--                 {!! Form::text('requester_name', $transaction->deliveryorder->requester_name, ['class'=>'form-control', 'ng-model'=>'doform.requester_name', 'disabled' => $dodisable]) !!}
+                <select name="requester_name" class="select form-control" ng-model="doform.requester_name">
+                    <option ng-repeat="user in requesterSelection" value="@{{user.name}}" ng-selected="doform.requester_name == user.name ? true : false">
                         @{{user.name}}
                     </option>
                 </select> --}}
+                {!! Form::select('requester_name',
+                    [
+                        ''=>null,
+                        'Clement Chon'=>'Clement Chon',
+                        'Corrine Chong'=>'Corrine Chong',
+                        'Eric Tay' => 'Eric Tay',
+                        'Jenny' => 'Jenny',
+                        'Kian Poh' => 'Kian Poh',
+                        'Sook Hui' => 'Sook Hui',
+                        'Xin Yi Seng' => 'Xin Yi Seng'
+                    ],
+                    $transaction->deliveryorder->requester_name,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'doform.requester_name',
+                        'ng-change' => 'requesterNameChanged()',
+                        'disabled' => $dodisable
+                    ])
+                !!}
             </div>
             <div class="col-md-4 form-group">
                 {!! Form::label('requester_contact', 'Requester Contact', ['class'=>'control-label']) !!}
@@ -695,7 +714,7 @@
                         {!! Form::label('transactionpersonasset_id', 'Asset from Happy Ice Warehouse', ['class'=>'control-label search-title']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
                         {!! Form::select('transactionpersonasset_id',
-                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->orderBy('code')->lists('full', 'id')->all(),
+                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->where('to_transaction_id', 0)->orderBy('code')->lists('full', 'id')->all(),
                             null,
                             [
                             'id'=>'transactionpersonasset_id',

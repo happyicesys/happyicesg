@@ -68,7 +68,7 @@ function transactionController($scope, $http) {
         },
     ]
 
-    $scope.requesterSelection = [
+    $scope.requesterSelections = [
         {
             id: 'Clement Chon',
             name: 'Clement Chon',
@@ -516,6 +516,18 @@ function transactionController($scope, $http) {
         $http.get('/transaction/signature/delete/' + $trans_id.val()).success(function(data) {
             loadDealTable();
         });
+    }
+
+    $scope.requesterNameChanged = function() {
+        var requester_name = $scope.doform.requester_name;
+        console.log(requester_name);
+        for(var i=0; i<$scope.requesterSelections.length; i++) {
+            var looprequester = $scope.requesterSelections[i];
+            if (looprequester.name == requester_name) {
+                $scope.doform.requester_contact = looprequester.contact;
+                $scope.doform.requester_notification_emails = looprequester.email;
+            }
+        }
     }
 
 }

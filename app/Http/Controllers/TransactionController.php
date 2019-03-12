@@ -1867,15 +1867,16 @@ class TransactionController extends Controller
         $transactionpersonassets = $transaction->transactionpersonassets;
 
         foreach($transactionpersonassets as $transactionpersonasset) {
-            if($transaction->deliveryorder->from_happyice) {
+            if($transaction->deliveryorder->from_happyice == 1 and $transaction->deliveryorder->to_happyice == 0) {
                 $transactionpersonasset->dateout = Carbon::now();
                 $transactionpersonasset->is_warehouse = 0;
+                $transactionpersonasset->save();
             }
-            if($transaction->deliveryorder->to_happyice) {
+            if($transaction->deliveryorder->to_happyice == 1 and $transaction->deliveryorder->from_happyice == 0) {
                 $transactionpersonasset->datein = Carbon::now();
                 $transactionpersonasset->is_warehouse = 1;
+                $transactionpersonasset->save();
             }
-            $transactionpersonasset->save();
         }
         if($transaction->deliveryorder->requester_notification_emails) {
             $this->sendDoDeliveredEmailAlert($transaction->id);

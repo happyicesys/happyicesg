@@ -60,7 +60,7 @@ class TransactionpersonassetController extends Controller
             $deliveryorder->from_happyice = 1;
             $deliveryorder->save();
 
-            if($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
+            if($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
                 $transactionpersonasset->dateout = $transaction->deliveryorder->pickup_date;
                 $transactionpersonasset->save();
             }
