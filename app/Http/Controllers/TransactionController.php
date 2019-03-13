@@ -1908,7 +1908,7 @@ class TransactionController extends Controller
 
         Mail::send('email.do_confirm_alert', $data, function ($message) use ($transaction, $email, $today, $sender) {
             $message->from($sender);
-            $message->subject('HaagenDaz Job Confirmed '.$today.' ['.$transaction->id.']');
+            $message->subject('HaagenDaz Job Confirmed '.$transaction->deliveryorder->pickup_date.' ['.$transaction->id.']');
             $message->setTo($email);
         });
     }
