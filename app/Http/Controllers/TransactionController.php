@@ -166,6 +166,8 @@ class TransactionController extends Controller
             $do = new Deliveryorder();
             $do->transaction_id = $transaction->id;
             $do->requester = auth()->user()->id;
+            $do->pickup_date = Carbon::today()->addDay()->toDateString();
+            $do->delivery_date1 = Carbon::today()->addDay()->toDateString();
             $do->save();
         }
 

@@ -459,9 +459,12 @@
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
                     {!! Form::label('pickup_date', 'Requested Pickup Date', ['class'=>'control-label']) !!}
                     <label for="required" class="control-label" style="color:red;">*</label>
-                    <div class="input-group date">
+                    {{-- <div class="input-group date"> --}}
                         {{-- {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_date ? $transaction->deliveryorder->pickup_date : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'pickup_date', 'ng-model'=>'doform.pickup_date']) !!} --}}
-                        <datepicker>
+                        <datepicker
+                        date-min-limit="{{\Carbon\Carbon::today()->toDateString()}}"
+                        date-format="yyyy-MM-dd"
+                        >
                             <input
                                 name = "pickup_date"
                                 type = "text"
@@ -472,8 +475,8 @@
                                 {{$dodisableStr}}
                             />
                         </datepicker>
-                        <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                    </div>
+                        {{-- <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span> --}}
+                    {{-- </div> --}}
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">

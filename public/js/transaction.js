@@ -503,6 +503,7 @@ function transactionController($scope, $http) {
     }
 
     $scope.onPickupDate = function(date) {
+        console.log('here');
         if(date) {
             $scope.doform.pickup_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
