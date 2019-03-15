@@ -48,10 +48,6 @@ if (document.querySelector('#d2dorderController')) {
           {
             'id': 2,
             'text': '12pm - 5pm'
-          },
-          {
-            'id': 3,
-            'text': '5pm - 9pm'
           }
         ]
       }

@@ -92,8 +92,7 @@ class D2dOnlineSaleController extends Controller
 
         $time_options = [
             1 => '8am - 12pm',
-            2 => '12pm - 5pm',
-            3 => '5pm - 9pm'
+            2 => '12pm - 5pm'
         ];
 
         $request->merge(array('del_date' => $date_options[$request->del_date]));
