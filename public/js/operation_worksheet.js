@@ -130,7 +130,7 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.onMapClicked = function() {
+        $scope.onMapClicked = function(singleperson = null) {
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
@@ -150,24 +150,92 @@ var app = angular.module('app', [
 
             var geocoder = new google.maps.Geocoder();
 
-            $scope.people.forEach(function (person) {
-                if(person.del_postcode) {
+            var markers = [];
+
+            if(singleperson) {
+                geocoder.geocode(
+                    {
+                        componentRestrictions: { country: location, postalCode: singleperson.del_postcode }
+                    }, function (results, status) {
+                        if (results[0]) {
+                            if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                setTimeout(3000);
+                            }
+                            var contentString = '<span style=font-size:10px;>' +
+                                '<b>' +
+                                singleperson.cust_id + ' - ' + singleperson.company +
+                                '</b>' +
+                                '<br>' +
+                                singleperson.del_address +
+                                '</span>';
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            var marker = new google.maps.Marker({
+                                position: results[0].geometry.location,
+                                map: map,
+                                title: singleperson.cust_id + ' - ' + singleperson.company
+                            });
+                            markers.push(marker);
+                            marker.addListener('click', function () {
+                                infowindow.open(map, marker);
+                            });
+                            var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
+                            var coord = {
+                                lat: jsondata.lat,
+                                lng: jsondata.lng
+                            };
+
+                            $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {});
+                        }
+                    });
+            }else {
+/*
+                var infowindow = new google.maps.InfoWindow({});
+                var marker, count, pos, contentString;
+
+                for(count=0; count<$scope.people.length; count++) {
+                    if($scope.people[count].del_lat && $scope.people[count].del_lng) {
+                        pos = new google.maps.LatLng($scope.people[count].del_lat, $scope.people[count].del_lng);
+                        marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: $scope.people[count].cust_id + ' - ' + $scope.people[count].company
+                        });
+
+                        contentString = '<span style=font-size:10px;>' +
+                            '<b>' +
+                            $scope.people[count].cust_id + ' - ' + $scope.people[count].company +
+                            '</b>' +
+                            '<br>' +
+                            $scope.people[count].del_address +
+                            '</span>';
+
+                        google.maps.event.addListener(marker, 'click', (function (marker) {
+                            return function () {
+                                infowindow.setContent(contentString);
+                                infowindow.open(map, marker);
+                            }
+                        })(marker, count));
+                    }
+                } */
+
+                $scope.people.forEach(function (person) {
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
-                                        '<b>' +
-                                        person.cust_id + ' - ' + person.company +
-                                        '</b>' +
-                                        '<br>'+
-                                        person.del_address +
-                                        '</span>';
+                        '<b>' +
+                        person.cust_id + ' - ' + person.company +
+                        '</b>' +
+                        '<br>' +
+                        person.del_address +
+                        '</span>';
 
                     var infowindow = new google.maps.InfoWindow({
                         content: contentString
                     });
 
-                    var markers = [];
-
-                    if(person.del_lat && person.del_lng) {
+                    if (person.del_lat && person.del_lng) {
                         var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                         var marker = new google.maps.Marker({
                             position: pos,
@@ -175,51 +243,53 @@ var app = angular.module('app', [
                             title: person.cust_id + ' - ' + person.company
                         });
                         markers.push(marker);
-                        marker.addListener('click', function() {
+                        marker.addListener('click', function () {
                             infowindow.open(map, marker);
                         });
                     }else {
                         geocoder.geocode(
-                                        {componentRestrictions: {country: location, postalCode: person.del_postcode},
-                                        address: person.del_address
-                                        }, function(results, status) {
-                            if(results[0]) {
-                                if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                                    setTimeout(3000);
-                                }
-                                var marker = new google.maps.Marker({
-                                    position: results[0].geometry.location,
-                                    map: map,
-                                    title: person.cust_id + ' - ' + person.company
-                                });
-                                markers.push(marker);
-                                marker.addListener('click', function() {
-                                    infowindow.open(map, marker);
-                                });
-                                var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
-                                var coord = {
-                                    lat: jsondata.lat,
-                                    lng: jsondata.lng
-                                };
+                            {
+                                componentRestrictions: { country: location, postalCode: person.del_postcode },
+                                address: person.del_address
+                            }, function (results, status) {
+                                if (results[0]) {
+                                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                        setTimeout(3000);
+                                    }
+                                    var marker = new google.maps.Marker({
+                                        position: results[0].geometry.location,
+                                        map: map,
+                                        title: person.cust_id + ' - ' + person.company
+                                    });
+                                    markers.push(marker);
+                                    marker.addListener('click', function () {
+                                        infowindow.open(map, marker);
+                                    });
+                                    var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
+                                    var coord = {
+                                        lat: jsondata.lat,
+                                        lng: jsondata.lng
+                                    };
 
-                                $http.post('/api/person/storelatlng/' + person.person_id, coord).success(function (data) {});
-                            }
-                        });
+                                    $http.post('/api/person/storelatlng/' + person.person_id, coord).success(function (data) { });
+                                }
+                            });
                     }
-                }
-            });
+                });
+            }
+
 
             $("#mapModal").on("shown.bs.modal", function () {
                 google.maps.event.trigger(map, "resize");
                 map.setCenter(locationLatLng);
             });
-            $('#mapModal').on('hidden.bs.modal', function () {
+/*             $('#mapModal').on('hidden.bs.modal', function () {
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setMap(null);
                 }
                 markers = [];
                 google.maps.event.trigger(map, "resize");
-            });
+            }); */
         }
 
         // retrieve page w/wo search

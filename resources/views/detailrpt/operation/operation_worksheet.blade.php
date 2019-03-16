@@ -287,6 +287,8 @@
                         <a href="/person/@{{ person.person_id }}">
                             @{{ person.cust_id[0] == 'D' || person.cust_id[0] == 'H' ? person.name : person.company }}
                         </a>
+                        <br>
+                        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person)"><i class="fa fa-map-o"></i></button>
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ person.custcategory }}
