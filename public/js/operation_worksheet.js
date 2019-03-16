@@ -249,8 +249,7 @@ var app = angular.module('app', [
                     }else {
                         geocoder.geocode(
                             {
-                                componentRestrictions: { country: location, postalCode: person.del_postcode },
-                                address: person.del_address
+                                componentRestrictions: { country: location, postalCode: person.del_postcode }
                             }, function (results, status) {
                                 if (results[0]) {
                                     if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
