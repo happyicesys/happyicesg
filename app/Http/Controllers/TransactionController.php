@@ -35,6 +35,7 @@ use App\Invattachment;
 use App\TransSubscription;
 use App\User;
 use App\Deliveryorder;
+use App\Transactionpersonasset;
 use Illuminate\Support\Facades\Storage;
 // use App\Ftransaction;
 
@@ -1866,11 +1867,13 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($transaction_id);
 
-        $transactionpersonassets = $transaction->transactionpersonassets;
+        // $transactionpersonassets = $transaction->transactionpersonassets;
+        $transactionpersonassets = Transactionpersonasset::where('to_transaction_id', $transaction_id)->get();
+        // dd($transaction, $transactionpersonassets);
 
         foreach($transactionpersonassets as $transactionpersonasset) {
             if($transaction->deliveryorder->from_happyice == 1 and $transaction->deliveryorder->to_happyice == 0) {
-                $transactionpersonasset->dateout = Carbon::now();
+                $transactionpersonasset->dateout = $transaction->delivery_date;
                 $transactionpersonasset->is_warehouse = 0;
                 $transactionpersonasset->save();
             }
