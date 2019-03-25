@@ -13,8 +13,7 @@
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.profile_id',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -40,8 +39,7 @@
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.id_prefix',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -138,6 +136,17 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-sm-6 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
+                <select name="area_groups" class="select form-control" ng-model="search.area_groups" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="1">West</option>
+                    <option value="2">East</option>
+                    <option value="3">Others</option>
+                </select>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4 col-sm-6 col-xs-6">
@@ -153,8 +162,7 @@
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.previous',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -172,8 +180,7 @@
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.future',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -192,8 +199,7 @@
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.color',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'ng-change'=>'searchDB()'
                     ])
                 !!}
             </div>
@@ -263,6 +269,9 @@
                 </th>
                 <th class="col-md-4 text-center">
                     Preferred Day(s)
+                </th>
+                <th class="col-md-2 text-center">
+                    Zone
                 </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
                     @{{date | date : "yy-MM-dd"}}
@@ -341,6 +350,30 @@
                                 <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.sunday" ng-change="toggleCheckbox(person.sunday, person.person_id, 'sunday')" ng-true-value="'1'" ng-false-value="'0'">
                                 <span style="margin-left: -5px; margin-top: 5px;">
                                     Sun
+                                </span>
+                            </label>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="col-md-2" style="min-width: 60px;">
+                        <div class="checkbox" style="margin-top: 0px;">
+                            <span class="col-md-4 pull-left" style="padding-left: 0px;">
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.west" ng-change="toggleZoneCheckbox(person.west, person.person_id, 'west')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    West
+                                </span>
+                            </label>
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.east" ng-change="toggleZoneCheckbox(person.east, person.person_id, 'east')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    East
+                                </span>
+                            </label>
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.others" ng-change="toggleZoneCheckbox(person.others, person.person_id, 'others')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    Others
                                 </span>
                             </label>
                             </span>

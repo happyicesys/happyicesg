@@ -72,7 +72,7 @@ class Person extends Baum\Node
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
-    'is_profit_percent', 'preferred_days'
+    'is_profit_percent', 'preferred_days', 'area_group'
     ];
 
     protected $dates = ['deleted_at'];

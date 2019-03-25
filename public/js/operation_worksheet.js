@@ -26,6 +26,7 @@ var app = angular.module('app', [
             color: '',
             del_postcode: '',
             preferred_days: '',
+            area_groups: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -126,6 +127,16 @@ var app = angular.module('app', [
                 value: value,
                 person_id: person_id,
                 day: day
+            }).success(function(data) {
+            });
+        }
+
+        $scope.toggleZoneCheckbox = function(value, person_id, area) {
+
+            $http.post('/api/operation/area', {
+                value: value,
+                person_id: person_id,
+                area: area
             }).success(function(data) {
             });
         }

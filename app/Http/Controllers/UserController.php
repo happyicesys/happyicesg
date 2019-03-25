@@ -94,7 +94,7 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
         $this->assignType($user);
-        return redirect()->action('UserController@edit', ['id' => $user->id]);        
+        return redirect()->action('UserController@edit', ['id' => $user->id]);
     }
 
     public function destroy($id)
@@ -171,7 +171,11 @@ class UserController extends Controller
     {
         $profiles = Profile::whereDoesntHave('users', function($query) use ($user_id) {
                         $query->where('id', $user_id);
-                    })->get();
+                    })
+                    ->select(
+                        'profiles.id AS profile_id', 'profiles.name AS profile_name'
+                    )
+                    ->get();
 
         return $profiles;
     }

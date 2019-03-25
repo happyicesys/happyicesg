@@ -181,7 +181,34 @@ class OperationWorksheetController extends Controller
                 break;
         }
         $dayStr = implode(",", $dayArr);
-        $person->preferred_days = $dayStr;
+        $person->preferred_days =$dayStr;
+        $person->save();
+    }
+
+    // update area group in ops worksheet()
+    public function updateAreaGroup()
+    {
+        $val = request('value');
+        $person_id = request('person_id');
+        $area = request('area');
+        $areaArr = [];
+
+        $person = Person::findOrFail($person_id);
+        $areaArr = explode(",", $person->area_group);
+
+        switch($area) {
+            case 'west':
+                $areaArr[0] = $val;
+                break;
+            case 'east':
+                $areaArr[1] = $val;
+                break;
+            case 'others':
+                $areaArr[2] = $val;
+                break;
+        }
+        $areaStr = implode(",", $areaArr);
+        $person->area_group = $areaStr;
         $person->save();
     }
 
@@ -437,6 +464,7 @@ class OperationWorksheetController extends Controller
         $color = request('color');
         $del_postcode = request('del_postcode');
         $preferred_days = request('preferred_days');
+        $area_groups = request('area_groups');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -518,6 +546,20 @@ class OperationWorksheetController extends Controller
             }
         }
 
+        if($area_groups) {
+            switch($area_groups) {
+                case 1:
+                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
+                    break;
+                case 2:
+                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
+                    break;
+                case 3:
+                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
+                    break;
+            }
+        }
+
         return $people;
     }
 
@@ -562,7 +604,10 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.preferred_days, 9, 1) AS friday'),
                             DB::raw('SUBSTRING(people.preferred_days, 11, 1) AS saturday'),
                             DB::raw('SUBSTRING(people.preferred_days, 13, 1) AS sunday'),
-                            'people.preferred_days',
+                            DB::raw('SUBSTRING(people.area_group, 1, 1) AS west'),
+                            DB::raw('SUBSTRING(people.area_group, 3, 1) AS east'),
+                            DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
+                            'people.preferred_days', 'people.area_group',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
                     );

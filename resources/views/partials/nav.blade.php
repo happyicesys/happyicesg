@@ -37,6 +37,7 @@
                 $access = false;
                 $transaction_access = false;
                 $person_access = false;
+                $hd_access = false;
                 $personasset_access = false;
                 $item_access = false;
                 $profile_access = false;
@@ -136,6 +137,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        // $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
                         $profile_access = true;
@@ -156,6 +158,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
+                        // $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
                         $detailrpt_access = true;
@@ -179,6 +182,18 @@
                 @if($person_access)
                     <li class="{{ Request::segment(1) == 'person' ? 'active' : '' }}">
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
+                    </li>
+                @endif
+                @if($hd_access)
+                    <li class="{{ Request::segment(1) == 'hdprofile' ? 'active' : '' }}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>
+                            HD Profile
+                        <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="text-left"><a href="/hdprofile/transation"> Transaction</a></li>
+                            {{-- <li class="text-left"><a href="/hdprofile/sales"> Sales</a></li> --}}
+                        </ul>
                     </li>
                 @endif
                 @if($personasset_access)

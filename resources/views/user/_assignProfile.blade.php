@@ -5,8 +5,8 @@
 					{!! Form::label('profile_id', 'Add Profile', ['class'=>'control-label']) !!}
 		            <select2 name="profile_id" class="select form-control" v-model="form.profile_id">
 		                <option value=""></option>
-						<option v-for="profile in profileselection" :value="profile.id">
-							@{{profile.name}}
+						<option v-for="profile in profileselection" :value="profile.profile_id">
+							@{{profile.profile_name}}
 						</option>
 		            </select2>
 				</div>

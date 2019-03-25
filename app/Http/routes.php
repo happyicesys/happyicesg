@@ -159,6 +159,7 @@ Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@chan
 Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');
 Route::post('/api/detailrpt/operation/note/{person_id}', 'OperationWorksheetController@updateOperationNoteApi');
 Route::post('/api/operation/day', 'OperationWorksheetController@updateWeekDay');
+Route::post('/api/operation/area', 'OperationWorksheetController@updateAreaGroup');
 Route::get('/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');

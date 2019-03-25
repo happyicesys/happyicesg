@@ -30,6 +30,7 @@ Vue.component('assignprofile', {
       this.$http.post('/user/' + this.user_id + '/addprofile', this.form)
                 .then((response) => {
                   this.form.profile_id = ''
+                  this.profileselection = ''
                   this.fetchProfileOption()
                   this.fetchTable()
                 })
@@ -37,6 +38,7 @@ Vue.component('assignprofile', {
     removeProfile(profile_id) {
       this.$http.delete('/user/' + this.user_id + '/removeprofile/' + profile_id)
                 .then((response) => {
+                  this.profileselection = ''
                   this.fetchProfileOption()
                   this.fetchTable()
                 })
