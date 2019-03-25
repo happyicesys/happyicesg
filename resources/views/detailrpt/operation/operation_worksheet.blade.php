@@ -260,7 +260,7 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('custcategory')">
-                    Category
+                    Cat
                     <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
@@ -303,7 +303,7 @@
                         @{{ person.custcategory }}
                     </td>
                     <td class="col-md-2">
-                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 160px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
+                        {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                     </td>
                     <td class="col-md-4" style="min-width: 120px;">
                         <div class="checkbox" style="margin-top: 0px;">
@@ -355,7 +355,7 @@
                             </span>
                         </div>
                     </td>
-                    <td class="col-md-2" style="min-width: 60px;">
+                    <td class="col-md-2" style="min-width: 50px;">
                         <div class="checkbox" style="margin-top: 0px;">
                             <span class="col-md-4 pull-left" style="padding-left: 0px;">
                             <label>
