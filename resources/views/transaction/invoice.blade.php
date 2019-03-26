@@ -308,6 +308,9 @@
                                     Tel No
                                 </th>
                                 <th class="col-xs-1 text-center">
+                                    Pickup Loc
+                                </th>
+                                <th class="col-xs-1 text-center">
                                     Pickup Postcode
                                 </th>
                                 <th class="col-xs-1 text-center">
@@ -326,6 +329,9 @@
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{$transaction->deliveryorder->pickup_contact}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->pickup_location_name}}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{$transaction->deliveryorder->pickup_postcode}}
@@ -375,6 +381,9 @@
                                         Tel No
                                     </th>
                                     <th class="col-xs-1 text-center">
+                                        Delivery Loc
+                                    </th>
+                                    <th class="col-xs-1 text-center">
                                         Delivery Postcode
                                     </th>
                                     <th class="col-xs-1 text-center">
@@ -393,6 +402,9 @@
                                     </td>
                                     <td class="col-xs-1 text-center">
                                         {{$transaction->deliveryorder->delivery_contact}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->delivery_location_name}}
                                     </td>
                                     <td class="col-xs-1 text-center">
                                         {{$transaction->deliveryorder->delivery_postcode}}
