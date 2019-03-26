@@ -292,40 +292,64 @@
                 </span>
                 </div>
                 <div class="row">
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_date', 'Pickup Date', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control input-sm']) !!}
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th class="col-xs-1 text-center">
+                                    Pickup Date
+                                </th>
+                                <th class="col-xs-1 text-center">
+                                    Time Range
+                                </th>
+                                <th class="col-xs-1 text-center">
+                                    Contact Person
+                                </th>
+                                <th class="col-xs-1 text-center">
+                                    Tel No
+                                </th>
+                                <th class="col-xs-1 text-center">
+                                    Pickup Postcode
+                                </th>
+                                <th class="col-xs-1 text-center">
+                                    From Happy Ice
+                                </th>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-1 text-center">
+                                    {{\Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->toDateString()}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->pickup_timerange}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->pickup_attn}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->pickup_contact}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->pickup_postcode}}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{$transaction->deliveryorder->from_happyice ? 'Yes' : 'No'}}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_timerange', 'Time Range', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_timerange, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_attn', 'Contact Person', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_attn', $transaction->deliveryorder->pickup_attn, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_contact', 'Tel No.', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_contact', $transaction->deliveryorder->pickup_contact, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_postcode', 'Pickup Postcode', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_postcode', $transaction->deliveryorder->pickup_postcode, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        <div class="form-group">
-                            {!! Form::label('from_happyice', 'From Happyice', ['class'=>'control-label']) !!}
-                            <br>
-                            {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['class'=>'form-control input-sm']) !!}
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                {!! Form::label('pickup_address', 'Pickup Add') !!}
+                                {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
-                        {!! Form::label('pickup_address', 'Pickup Address', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('pickup_address', $transaction->deliveryorder->pickup_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
-                        {!! Form::label('pickup_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                {!! Form::label('pickup_comment', 'Comment', ['class'=>'control-label']) !!}
+                                {!! Form::textarea('pickup_comment', $transaction->deliveryorder->pickup_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -334,44 +358,69 @@
                     Delivery Detail
                 </span>
                 </div>
-                <div class="row">
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('pickup_date', 'Delivery Date', ['class'=>'control-label']) !!}
-                        {!! Form::text('pickup_date', \Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->format('Y-m-d'), ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('delivery_timerange', 'Time Range', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_timerange', $transaction->deliveryorder->delivery_timerange, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('delivery_attn', 'Contact Person', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_attn', $transaction->deliveryorder->delivery_attn, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('delivery_contact', 'Tel No.', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_contact', $transaction->deliveryorder->delivery_contact, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        {!! Form::label('delivery_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-                        {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control input-sm']) !!}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-4 form-group">
-                        <div class="form-group">
-                            {!! Form::label('to_happyice', 'To Happyice', ['class'=>'control-label']) !!}
-                            <br>
-                            {!! Form::checkbox('to_happyice', 1, $transaction->deliveryorder->to_happyice ? true : false, ['class'=>'form-control input-sm']) !!}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-bordered table-condensed">
+                                <tr>
+                                    <th class="col-xs-1 text-center">
+                                        Delivery Date
+                                    </th>
+                                    <th class="col-xs-1 text-center">
+                                        Time Range
+                                    </th>
+                                    <th class="col-xs-1 text-center">
+                                        Contact Person
+                                    </th>
+                                    <th class="col-xs-1 text-center">
+                                        Tel No
+                                    </th>
+                                    <th class="col-xs-1 text-center">
+                                        Delivery Postcode
+                                    </th>
+                                    <th class="col-xs-1 text-center">
+                                        To Happy Ice
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td class="col-xs-1 text-center">
+                                        {{\Carbon\Carbon::parse($transaction->deliveryorder->pickup_date)->toDateString()}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->delivery_timerange}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->delivery_attn}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->delivery_contact}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->delivery_postcode}}
+                                    </td>
+                                    <td class="col-xs-1 text-center">
+                                        {{$transaction->deliveryorder->to_happyice ? 'Yes' : 'No'}}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
-                        {!! Form::label('delivery_address', 'Delivery Address', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 form-group">
-                        {!! Form::label('delivery_comment', 'Comment', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    {!! Form::label('delivery_address', 'Delivery Add') !!}
+                                    {!! Form::textarea('delivery_address', $transaction->deliveryorder->delivery_address, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    {!! Form::label('delivery_comment', 'Comment', ['class'=>'control-label']) !!}
+                                    {!! Form::textarea('delivery_comment', $transaction->deliveryorder->delivery_comment, ['class'=>'form-control input-sm', 'rows'=>'2']) !!}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             <div class="row" style="padding-top:20px;">
                 <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
