@@ -73,7 +73,7 @@ function transactionController($scope, $http) {
             id: 'Clement Chon',
             name: 'Clement Chon',
             contact: '97891437',
-            email: 'sookhui.choo@genmills.com'
+            email: 'Clement.Chon@genmills.com'
         },
         {
             id: 'Corrine Chong',

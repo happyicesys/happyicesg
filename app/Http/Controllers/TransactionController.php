@@ -131,7 +131,15 @@ class TransactionController extends Controller
         $request->merge(['created_by' => auth()->user()->id]);
 
         // haagen daz user logic, open delivery order
+/*
         if(auth()->user()->hasRole('hd_user')) {
+            $request->merge(array('is_deliveryorder' => 1));
+        } */
+
+        // temporary hard code to set haagen daz as DO
+        $person = Person::findOrFail(request('person_id'));
+
+        if($person->cust_id == 'B301') {
             $request->merge(array('is_deliveryorder' => 1));
         }
 
@@ -1866,26 +1874,34 @@ class TransactionController extends Controller
     private function updateIsWarehouseTransactionpersonassets($transaction_id)
     {
         $transaction = Transaction::findOrFail($transaction_id);
+        // dd(Transactionpersonasset::where('transaction_id', $transaction_id)->get()->toArray(), Transactionpersonasset::where('to_transaction_id', $transaction_id)->get()->toArray());
 
-        // $transactionpersonassets = $transaction->transactionpersonassets;
-        $transactionpersonassets = Transactionpersonasset::where('to_transaction_id', $transaction_id)->get();
-        // dd($transaction, $transactionpersonassets);
-
-        foreach($transactionpersonassets as $transactionpersonasset) {
-            if($transaction->deliveryorder->from_happyice == 1 and $transaction->deliveryorder->to_happyice == 0) {
+        if($transaction->deliveryorder->from_happyice == 1 and $transaction->deliveryorder->to_happyice == 0) {
+            // dd('here1');
+            $transactionpersonassets = Transactionpersonasset::where('to_transaction_id', $transaction_id)->get();
+            // dd( $transactionpersonassets->toArray(), $transaction->toArray());
+            foreach($transactionpersonassets as $transactionpersonasset) {
                 $transactionpersonasset->dateout = $transaction->delivery_date;
                 $transactionpersonasset->is_warehouse = 0;
                 $transactionpersonasset->save();
             }
-            if($transaction->deliveryorder->to_happyice == 1 and $transaction->deliveryorder->from_happyice == 0) {
+        }
+
+        if($transaction->deliveryorder->to_happyice == 1 and $transaction->deliveryorder->from_happyice == 0) {
+            // dd('here2');
+            $transactionpersonassets = Transactionpersonasset::where('transaction_id', $transaction_id)->get();
+            // dd( $transactionpersonassets->toArray(), $transaction->toArray());
+            foreach($transactionpersonassets as $transactionpersonasset) {
                 $transactionpersonasset->datein = Carbon::now();
                 $transactionpersonasset->is_warehouse = 1;
                 $transactionpersonasset->save();
             }
         }
+        // dd('here3');
+/*
         if($transaction->deliveryorder->requester_notification_emails) {
             $this->sendDoDeliveredEmailAlert($transaction->id);
-        }
+        } */
     }
 
     // send do confirmation email (int transaction_id)
