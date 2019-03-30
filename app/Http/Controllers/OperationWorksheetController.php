@@ -659,7 +659,7 @@ class OperationWorksheetController extends Controller
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
 
-        $people = $people->orderBy('cust_id');
+        $people = $people->orderBy('del_postcode');
 
         $pageNum = request('pageNum') ? request('pageNum') : 'All';
 
