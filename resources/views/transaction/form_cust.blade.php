@@ -77,7 +77,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group">
-                    <datepicker>
+                    <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
                             class = "form-control"
@@ -95,7 +95,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group">
-                    <datepicker>
+                    <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
                             class = "form-control"
@@ -113,7 +113,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
                 <div class="input-group">
-                    <datepicker>
+                    <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
                             name = "order_date"
@@ -132,7 +132,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group">
-                    <datepicker>
+                    <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
                             name = "delivery_date"
@@ -153,7 +153,7 @@
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
                 <div class="input-group">
-                    <datepicker>
+                    <datepicker datepicker-mobile="true">
                         <input
                             name = "delivery_date"
                             type = "text"
@@ -468,6 +468,7 @@
                         > --}}
                         <datepicker
                         date-format="yyyy-MM-dd"
+                        datepicker-mobile="true"
                         >
                             <input
                                 name = "pickup_date"
