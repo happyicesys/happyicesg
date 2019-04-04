@@ -12,8 +12,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.profile_id',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.profile_id'
                     ])
                 !!}
             </div>
@@ -38,8 +37,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.id_prefix',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.id_prefix'
                     ])
                 !!}
             </div>
@@ -51,8 +49,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.custcategory',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.custcategory'
                     ])
                 !!}
             </div>
@@ -67,9 +64,7 @@
                     [
                         'class'=>'form-control',
                         'ng-model'=>'search.cust_id',
-                        'placeholder'=>'Cust ID',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'placeholder'=>'Cust ID'
                     ])
                 !!}
             </div>
@@ -82,9 +77,7 @@
                     [
                         'class'=>'form-control',
                         'ng-model'=>'search.company',
-                        'placeholder'=>'ID Name',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'placeholder'=>'ID Name'
                     ])
                 !!}
             </div>
@@ -97,9 +90,7 @@
                     [
                         'class'=>'form-control',
                         'ng-model'=>'search.del_postcode',
-                        'placeholder'=>'Postcode',
-                        'ng-change'=>'searchDB()',
-                        'ng-model-options'=>'{ debounce: 500 }'
+                        'placeholder'=>'Postcode'
                     ])
                 !!}
             </div>
@@ -124,7 +115,7 @@
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('preferred_days', 'Preferred Day(s)', ['class'=>'control-label search-title']) !!}
-                <select name="preferred_days" class="select form-control" ng-model="search.preferred_days" ng-change="searchDB()">
+                <select name="preferred_days" class="select form-control" ng-model="search.preferred_days">
                     <option value="">All</option>
                     <option value="1">Mon</option>
                     <option value="2">Tues</option>
@@ -139,7 +130,7 @@
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
-                <select name="area_groups" class="select form-control" ng-model="search.area_groups" ng-change="searchDB()">
+                <select name="area_groups" class="select form-control" ng-model="search.area_groups">
                     <option value="">All</option>
                     <option value="1">West</option>
                     <option value="2">East</option>
@@ -161,8 +152,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.previous',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.previous'
                     ])
                 !!}
             </div>
@@ -179,8 +169,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.future',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.future'
                     ])
                 !!}
             </div>
@@ -198,8 +187,7 @@
                     null,
                     [
                         'class'=>'select form-control',
-                        'ng-model'=>'search.color',
-                        'ng-change'=>'searchDB()'
+                        'ng-model'=>'search.color'
                     ])
                 !!}
             </div>
@@ -209,6 +197,7 @@
 
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
+        <button type="submit" class="btn btn-info" ng-click="searchDB($event)"><i class="fa fa-search"></i><span class="hidden-xs"></span> Search</button>
         <button type="submit" class="btn btn-default" form="export_excel" name="excel_all" value="excel_all"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export All Excel</button>
         <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
 

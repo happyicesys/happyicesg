@@ -12,8 +12,7 @@
                     null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.profile_id',
-                    'ng-change'=>'searchDB()'
+                    'ng-model'=>'search.profile_id'
                     ])
                 !!}
             </div>
@@ -36,9 +35,7 @@
                                             [
                                                 'class'=>'form-control input-sm',
                                                 'ng-model'=>'search.cust_id',
-                                                'placeholder'=>'Cust ID',
-                                                'ng-change'=>'searchDB()',
-                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                'placeholder'=>'Cust ID'
                                             ])
                 !!}
             </div>
@@ -70,9 +67,7 @@
                                                 [
                                                     'class'=>'form-control input-sm',
                                                     'ng-model'=>'search.company',
-                                                    'placeholder'=>'ID Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                    'placeholder'=>'ID Name'
                                                 ])
                 !!}
             </div>
@@ -103,8 +98,7 @@
                 {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.status',
-                    'ng-change'=>'searchDB()'
+                    'ng-model'=>'search.status'
                     ])
                 !!}
             </div>
@@ -115,8 +109,7 @@
                 {!! Form::select('is_rental', [''=>'All', 'Rental'=>'Rental Based', 'Profit'=>'Profit Sharing', 'Others'=>'Others'], null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.is_rental',
-                    'ng-change'=>'searchDB()'
+                    'ng-model'=>'search.is_rental'
                     ])
                 !!}
             </div>
@@ -127,8 +120,7 @@
                 {!! Form::select('is_active', [''=>'All', 'Yes'=>'Active', 'No'=>'Deactive', 'Pending'=>'Pending'], null,
                     [
                     'class'=>'select form-control',
-                    'ng-model'=>'search.is_active',
-                    'ng-change'=>'searchDB()'
+                    'ng-model'=>'search.is_active'
                     ])
                 !!}
             </div>
@@ -180,9 +172,12 @@
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-6 col-sm-12 col-xs-12" style="padding-top: 20px;">
         <div class="row">
-            <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-            <button ng-disabled="search.begin_date || search.end_date" title="@{{(search.begin_date || search.end_date) ? 'Please clear the dates to enable batch generate': ''}}" type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
-            <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <button class="btn btn-info" ng-click="searchDB($event)"><i class="fa fa-search"></i><span class="hidden-xs"></span> Search</button>
+                <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                <button ng-disabled="search.begin_date || search.end_date" title="@{{(search.begin_date || search.end_date) ? 'Please clear the dates to enable batch generate': ''}}" type="submit" class="btn btn-danger" form="submit_generate" name="submit_generate" value="submit_generate" ><i class="fa fa-download"></i><span class="hidden-xs"></span> Batch Generate Invoice</button>
+                <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
+            </div>
         </div>
         <div class="row" style="padding-top: 10px;">
             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -467,7 +462,7 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{person.transactions[0].delivery_date}}
-                    </td>                    
+                    </td>
                     <td colspan="18"></td>
                 </tr>
                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage" pagination-id="generate_invoice" total-items="totalCount" current-page="currentPage" ng-style="{'background-color': getRowColor(transaction)}">

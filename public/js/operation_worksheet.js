@@ -32,7 +32,7 @@ var app = angular.module('app', [
             sortName: ''
         }
         // init page load
-        getPage(1, true);
+        // getPage(1, true);
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -59,7 +59,7 @@ var app = angular.module('app', [
             if(date){
                 $scope.search.chosen_date = moment(new Date(date)).format('YYYY-MM-DD');
             }
-            $scope.searchDB();
+            // $scope.searchDB();
         }
 
         // switching page
@@ -74,7 +74,8 @@ var app = angular.module('app', [
         };
 
           // when hitting search button
-        $scope.searchDB = function(){
+        $scope.searchDB = function(event){
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);

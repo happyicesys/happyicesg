@@ -36,7 +36,7 @@ var app = angular.module('app', [
             sortName: ''
         }
         // init page load
-        getPage(1, true);
+        // getPage(1, true);
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -78,7 +78,8 @@ var app = angular.module('app', [
         }
 
           // when hitting search button
-        $scope.searchDB = function(){
+        $scope.searchDB = function(event){
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
@@ -121,7 +122,6 @@ var app = angular.module('app', [
             if(moment(new Date($scope.search.begin_date)) > moment(new Date($scope.search.end_date))) {
                 $scope.search.end_date = moment(new Date($scope.search.begin_date)).add(1, 'month').format('YYYY-MM-DD');
             }
-            $scope.searchDB();
         }
 
         $scope.endDateChanged = function(date){
@@ -134,7 +134,6 @@ var app = angular.module('app', [
             if(moment(new Date($scope.search.end_date)) < moment(new Date($scope.search.begin_date))) {
                 $scope.search.begin_date = moment(new Date($scope.search.end_date)).subtract(1, 'month').format('YYYY-MM-DD');
             }
-            $scope.searchDB();
         }
 
         $scope.onPrevSingleClicked = function(scope_name, date) {
