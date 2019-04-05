@@ -1898,10 +1898,10 @@ class TransactionController extends Controller
             }
         }
         // dd('here3');
-/*
+
         if($transaction->deliveryorder->requester_notification_emails) {
             $this->sendDoDeliveredEmailAlert($transaction->id);
-        } */
+        }
     }
 
     // send do confirmation email (int transaction_id)

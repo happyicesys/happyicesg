@@ -318,13 +318,29 @@ class OperationWorksheetController extends Controller
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
         }
-
+/*
         if($id_prefix) {
             $transactions = $transactions->where('people.cust_id', 'LIKE', $id_prefix.'%');
-        }
+        } */
 
+        if($id_prefix) {
+            $prefixes = $id_prefix;
+            if (count($prefixes) == 1) {
+                $prefixes = [$prefixes];
+            }
+            $transactions = $transactions->whereIn('people.cust_id', $prefixes);
+        }
+/*
         if($custcategory) {
             $transactions = $transactions->where('custcategories.id', $custcategory);
+        } */
+
+        if($custcategory) {
+            $custcategories = $custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            $transactions = $transactions->whereIn('custcategories.id', $custcategories);
         }
 
         if($cust_id) {
@@ -470,13 +486,29 @@ class OperationWorksheetController extends Controller
         if($profile_id) {
             $people = $people->where('profiles.id', $profile_id);
         }
-
+/*
         if($id_prefix) {
             $people = $people->where('people.cust_id', 'LIKE', $id_prefix.'%');
         }
 
         if($custcategory) {
             $people = $people->where('custcategories.id', $custcategory);
+        }
+ */
+        if($id_prefix) {
+            $prefixes = $id_prefix;
+            if (count($prefixes) == 1) {
+                $prefixes = [$prefixes];
+            }
+            $people = $people->whereIn('people.cust_id', $prefixes);
+        }
+
+        if($custcategory) {
+            $custcategories = $custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            $people = $people->whereIn('custcategories.id', $custcategories);
         }
 
         if($cust_id) {

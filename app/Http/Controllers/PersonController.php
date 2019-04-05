@@ -697,9 +697,18 @@ class PersonController extends Controller
                 $query->where('people.contact', 'LIKE', '%' . $contact . '%')->orWhere('people.alt_contact', 'LIKE', '%' . $contact . '%');
             });
         }
-        if ($active) {
+/*         if ($active) {
             $people = $people->where('people.active', 'LIKE', '%' . $active . '%');
+        } */
+
+        if($active) {
+            $actives = $active;
+            if (count($actives) == 1) {
+                $actives = [$actives];
+            }
+            $people = $people->whereIn('people.active', $actives);
         }
+
         if ($profile_id) {
             $people = $people->where('profiles.id', $profile_id);
         }

@@ -20,7 +20,7 @@ function personController($scope, $http){
         custcategory: '',
         company: '',
         contact: '',
-        active: 'Yes',
+        active: '',
         pageNum: 100,
         profile_id: '',
         franchisee_id: ''

@@ -508,7 +508,7 @@
                     <div class="form-group">
                         {!! Form::label('pickup_attn', 'Contact Person', ['class'=>'control-label']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
-                        {!! Form::text('pickup_attn', null, ['class'=>'form-control', 'ng-model'=>'doform.pickup_attn', 'disabled' => $dodisable]) !!}
+                        {!! Form::text('pickup_attn', $transaction->deliveryorder->pickup_attn, ['class'=>'form-control', 'ng-model'=>'doform.pickup_attn', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">

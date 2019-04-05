@@ -36,8 +36,9 @@
                     ],
                     null,
                     [
-                        'class'=>'select form-control',
-                        'ng-model'=>'search.id_prefix'
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.id_prefix',
+                        'multiple' => 'multiple'
                     ])
                 !!}
             </div>
@@ -48,8 +49,9 @@
                 {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
                     null,
                     [
-                        'class'=>'select form-control',
-                        'ng-model'=>'search.custcategory'
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory',
+                        'multiple'=>'multiple'
                     ])
                 !!}
             </div>
