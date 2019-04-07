@@ -9,6 +9,7 @@
         <th>Postcode Singapore</th>
         <th>Postcode + Cust ID + ID Name</th>
         <th>Inv#</th>
+        <th>Zone</th>
         <th>Ops Note</th>
         @foreach($dates as $date)
         <th>
@@ -41,6 +42,23 @@
                 }
             @endphp
             <td>{{$transactionsStr}}</td>
+            @php
+                $zoneStrArr = [];
+                $zoneStr = '';
+                $zoneArr = explode(",",$person->area_group);
+                if($zoneArr[0] == 1) {
+                    $zoneStrArr[0] = 'West';
+                }
+                if($zoneArr[1] == 1) {
+                    $zoneStrArr[1] = 'East';
+                }
+                if($zoneArr[2] == 1) {
+                    $zoneStrArr[2] = 'Others';
+                }
+
+                $zoneStr = implode(",", $zoneStrArr);
+            @endphp
+            <td>{{$zoneStr}}</td>
             <td>{{$person->operation_note}}</td>
             @foreach($alldata[$indexpeople] as $data)
             @php
