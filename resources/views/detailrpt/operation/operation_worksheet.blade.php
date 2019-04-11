@@ -147,7 +147,7 @@
                 {!! Form::label('previous', 'Previous', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('previous',
                     [
-                        'Last 7 days' => 'Last 7 days',
+                        'Last 5 days' => 'Last 5 days',
                         '' => 'Nil',
                         'Last 14 days' => 'Last 14 days',
                     ],
@@ -264,6 +264,12 @@
                 <th class="col-md-2 text-center">
                     Zone
                 </th>
+                <th class="col-md-1 text-center">
+                    Last 2 Transac
+                </th>
+                <th class="col-md-1 text-center">
+                    Last Transac
+                </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
                     @{{date | date : "yy-MM-dd"}}
                     <br>
@@ -369,6 +375,28 @@
                             </label>
                             </span>
                         </div>
+                    </td>
+                    <td class="col-md-1 text-left">
+                        <span class="row">
+                            @{{person.ops2_deldate | date : "yy-MM-dd"}}
+                            <br>
+                            @{{person.ops2_day}}
+                            <br>
+                            @{{person.ops2_total_qty}}
+                            <br>
+                            @{{person.ops2_total}}
+                        </span>
+                    </td>
+                    <td class="col-md-1 text-left">
+                        <span class="row">
+                            @{{person.ops_deldate | date : "yy-MM-dd"}}
+                            <br>
+                            @{{person.ops_day}}
+                            <br>
+                            @{{person.ops_total_qty}}
+                            <br>
+                            @{{person.ops_total}}
+                        </span>
                     </td>
                     <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
                         &nbsp;@{{alldata.qty}}

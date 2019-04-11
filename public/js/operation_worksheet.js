@@ -21,7 +21,7 @@ var app = angular.module('app', [
             cust_id: '',
             company: '',
             chosen_date: moment().format('YYYY-MM-DD'),
-            previous: 'Last 7 days',
+            previous: 'Last 5 days',
             future: '2 days',
             color: '',
             del_postcode: '',
