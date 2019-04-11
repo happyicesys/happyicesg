@@ -344,12 +344,21 @@ function personassetMovementController($scope, $http, $window) {
 
   $scope.getWeekDifference = function(datein, dateout) {
     var delta = '';
+    var dateinvar = '';
+    var dateoutvar = '';
 
-    if(datein && dateout) {
-      var datein = moment(datein, 'YYYY-MM-DD');
-      var dateout = moment(dateout, 'YYYY-MM-DD');
-      delta = datein.diff(dateout, 'week');
+    if(datein) {
+      dateinvar = moment(datein, 'YYYY-MM-DD');
     }
+
+    if(dateout) {
+      dateoutvar = moment(dateout, 'YYYY-MM-DD');
+    }else {
+      dateoutvar = moment();
+    }
+
+    delta = dateinvar.diff(dateoutvar, 'week') + 1;
+
     return delta;
   }
 
