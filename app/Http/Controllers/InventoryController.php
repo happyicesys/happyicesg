@@ -386,11 +386,12 @@ class InventoryController extends Controller
                 $rec->qtyrec_after = $afterQty[$index];
 
                 // check whether the summation smaller than zero or not
+/*
                 if($currentQty[$index] + $incomingQty[$index] < 0){
 
                     return false;
 
-                }else{
+                }else{ */
 
                     $rec->save();
 
@@ -400,7 +401,7 @@ class InventoryController extends Controller
 
                     $item->save();
 
-                }
+                // }
             }
 
         }

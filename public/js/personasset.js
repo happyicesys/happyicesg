@@ -347,7 +347,6 @@ function personassetMovementController($scope, $http, $window) {
     var dateinvar = '';
     var dateoutvar = '';
 
-    console.log(datein);
     if(datein) {
       dateinvar = moment(datein, 'YYYY-MM-DD');
     }
