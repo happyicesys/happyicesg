@@ -102,6 +102,11 @@ class TransactionController extends Controller
         return view('transaction.index');
     }
 
+    public function hdprofileIndex()
+    {
+        return view('hdprofile.index');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -1656,7 +1661,9 @@ class TransactionController extends Controller
         if(request('custcategory')) {
             $transactions = $transactions->where('custcategories.id', request('custcategory'));
         }
+
         // add in franchisee checker
+
         if (auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('watcher')) {
             $transactions = $transactions->whereIn('people.franchisee_id', [auth()->user()->id]);
         } else if(auth()->user()->hasRole('subfranchisee')) {
@@ -1667,7 +1674,6 @@ class TransactionController extends Controller
             }else {
                 $transactions = $transactions->where('people.franchisee_id', 0);
             }
-
         }
 
         if (request('person_active')) {
@@ -1690,7 +1696,7 @@ class TransactionController extends Controller
             $transactions = $transactions->where('deliveryorders.delivery_location_name', 'LIKE', '%'.request('delivery_location_name').'%');
         }
 
-        if(auth()->user()->hasRole('hd_user')) {
+        // if(auth()->user()->hasRole('hd_user')) {
             if(request('requested_from') === request('requested_to')){
                 if(request('requested_from') != '' and request('requested_to') != ''){
                     $transactions = $transactions->where('deliveryorders.delivery_date1', '=', request('requested_from'));
@@ -1703,7 +1709,7 @@ class TransactionController extends Controller
                     $transactions = $transactions->where('deliveryorders.delivery_date1', '<=', request('requested_to'));
                 }
             }
-        }
+        // }
 
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');

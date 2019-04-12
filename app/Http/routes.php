@@ -365,6 +365,8 @@ Route::post('/transaction/signature/submit/{transaction_id}', 'TransactionContro
 Route::get('/transaction/signature/delete/{transaction_id}', 'TransactionController@deleteSignature');
 Route::resource('transaction', 'TransactionController');
 
+Route::get('/hdprofile/transation', 'TransactionController@hdprofileIndex');
+
 Route::delete('/api/deal/delete/{deal_id}', 'DealController@destroyAjax');
 Route::get('/deal/data/{transaction_id}', 'DealController@getData');
 Route::resource('deal', 'DealController');

@@ -149,7 +149,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber){
             $scope.spinner = true;
-            $http.post('transaction/data?page=' + pageNumber, $scope.search).success(function(data){
+            $http.post('/transaction/data?page=' + pageNumber, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
                     $scope.totalCount = data.transactions.total;

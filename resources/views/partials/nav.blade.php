@@ -137,7 +137,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
-                        // $hd_access = true;
+                        $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
                         $profile_access = true;
@@ -158,7 +158,7 @@
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
-                        // $hd_access = true;
+                        $hd_access = true;
                         $personasset_access = true;
                         $item_access = true;
                         $detailrpt_access = true;
