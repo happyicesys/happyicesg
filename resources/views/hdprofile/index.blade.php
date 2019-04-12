@@ -9,7 +9,7 @@ HD Transaction
 @stop
 @section('content')
 
-    <div ng-app="app" ng-controller="transController">
+    <div ng-app="app" ng-controller="hdtransController">
 
     <div class="row">
         <a class="title_hyper pull-left" href="/transaction"><h1> HD Transaction <i class="fa fa-briefcase"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>

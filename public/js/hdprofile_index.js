@@ -5,7 +5,7 @@ var app = angular.module('app', [
   '720kb.datepicker'
 ]);
 
-function transController($scope, $http) {
+function hdtransController($scope, $http) {
   // init the variables
   $scope.alldata = [];
   $scope.datasetTemp = {};
@@ -21,7 +21,7 @@ function transController($scope, $http) {
   $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
   $scope.search = {
     id: '',
-    cust_id: 'B301',
+    cust_id: '',
     company: '',
     status: '',
     statuses: '',
@@ -200,4 +200,4 @@ app.filter('delDate', [
   }
 ]);
 
-app.controller('transController', transController);
+app.controller('hdtransController', hdtransController);
