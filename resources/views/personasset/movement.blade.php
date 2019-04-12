@@ -261,11 +261,11 @@
                             <td class="col-md-1 text-center">
                                 @{{data.dateout_week}}
                                 <small>
-                                    (@{{data.dateout_year}})
+                                    <span ng-if="data.dateout_year">(</span>@{{data.dateout_year}} <span ng-if="data.dateout_year">)</span>
                                 </small>
                             </td>
                             <td class="col-md-1 text-center">
-                                @{{getWeekDifference(data.dateout, data.datein)}}
+                                @{{getWeekDifference(data.datein, data.dateout)}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver') or auth()->user()->hasRole('operation'))

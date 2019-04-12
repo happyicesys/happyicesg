@@ -347,6 +347,7 @@ function personassetMovementController($scope, $http, $window) {
     var dateinvar = '';
     var dateoutvar = '';
 
+    console.log(datein);
     if(datein) {
       dateinvar = moment(datein, 'YYYY-MM-DD');
     }
@@ -357,7 +358,7 @@ function personassetMovementController($scope, $http, $window) {
       dateoutvar = moment();
     }
 
-    delta = dateinvar.diff(dateoutvar, 'week') + 1;
+    delta = dateoutvar.diff(dateinvar, 'week') + 1;
 
     return delta;
   }
