@@ -21,7 +21,7 @@ function hdtransController($scope, $http) {
   $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
   $scope.search = {
     id: '',
-    cust_id: '',
+    cust_id: 'B301',
     company: '',
     status: '',
     statuses: '',

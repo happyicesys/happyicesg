@@ -1696,7 +1696,7 @@ class TransactionController extends Controller
             $transactions = $transactions->where('deliveryorders.delivery_location_name', 'LIKE', '%'.request('delivery_location_name').'%');
         }
 
-        // if(auth()->user()->hasRole('hd_user')) {
+        if(auth()->user()->hasRole('hd_user') or request('cust_id') == 'B301') {
             if(request('requested_from') === request('requested_to')){
                 if(request('requested_from') != '' and request('requested_to') != ''){
                     $transactions = $transactions->where('deliveryorders.delivery_date1', '=', request('requested_from'));
@@ -1709,7 +1709,7 @@ class TransactionController extends Controller
                     $transactions = $transactions->where('deliveryorders.delivery_date1', '<=', request('requested_to'));
                 }
             }
-        // }
+        }
 
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
