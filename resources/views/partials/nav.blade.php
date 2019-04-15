@@ -92,6 +92,7 @@
                         $access = true;
                         $transaction_access = true;
                         $franchisee_access = true;
+                        $hd_access = true;
                         $person_access = true;
                         $item_access = true;
                         $report_access = true;
