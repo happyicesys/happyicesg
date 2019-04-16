@@ -186,21 +186,20 @@
                     </li>
                 @endif
                 @if($hd_access)
-                    <li class="{{ Request::segment(1) == 'hdprofile' ? 'active' : '' }}">
+                    <li class="{{ Request::segment(1) == 'hdprofile' || Request::segment(1) == 'personasset' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>
                             HD Profile
                         <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/hdprofile/transation"> Transaction</a></li>
+                            <li class="text-left"><a href="/personasset">{{$PERSONASSET_TITLE}}</a></li>
                             {{-- <li class="text-left"><a href="/hdprofile/sales"> Sales</a></li> --}}
                         </ul>
                     </li>
                 @endif
                 @if($personasset_access)
-                    <li class="{{ Request::segment(1) == 'personasset' ? 'active' : '' }}">
-                        <a href="/personasset"><i class="fa fa-fw fa-cubes"></i> {{ $PERSONASSET_TITLE }}</a>
-                    </li>
+
                 @endif
                 @if($item_access)
                     <li class="{{ Request::segment(1) == 'item' ? 'active' : '' }}">

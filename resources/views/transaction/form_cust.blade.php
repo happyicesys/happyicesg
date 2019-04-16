@@ -398,10 +398,13 @@
         @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm === 1) and !$transaction->is_deliveryorder)
             <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
               <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
+                {{$transaction->person->is_vending ? 'Fun' : ''}}
+                {{$transaction->person->is_dvm ? 'Direct' : ''}}
                 Vending Machine
               </span>
             </div>
             <div class="row">
+                @if(!$transaction->person->is_dvm)
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('digital_clock', 'Digital Clocker', ['class'=>'control-label']) !!}
@@ -424,6 +427,8 @@
                     </div>
                     @endcannot
                 </div>
+                @endif
+
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('balance_coin', 'Balance Coin', ['class'=>'control-label']) !!}
