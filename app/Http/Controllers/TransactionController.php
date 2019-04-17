@@ -1133,7 +1133,10 @@ class TransactionController extends Controller
                                     'custcategories.name as custcategory',
                                     DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
                                     'deliveryorders.po_no AS do_po', 'deliveryorders.requester_name', 'deliveryorders.pickup_location_name',
-                                    'deliveryorders.delivery_location_name'
+                                    'deliveryorders.delivery_location_name',
+                                    DB::raw('SUBSTRING(people.area_group, 1, 1) AS west'),
+                                    DB::raw('SUBSTRING(people.area_group, 3, 1) AS east'),
+                                    DB::raw('SUBSTRING(people.area_group, 5, 1) AS others')
                                 );
 
         $transactions = $this->searchDBFilter($transactions);
@@ -1707,6 +1710,24 @@ class TransactionController extends Controller
                 }
                 if(request('requested_to')){
                     $transactions = $transactions->where('deliveryorders.delivery_date1', '<=', request('requested_to'));
+                }
+            }
+        }
+
+        if(request('area_groups')){
+            $area_groups = request('area_groups');
+
+            if ($area_groups) {
+                switch ($area_groups) {
+                    case 1:
+                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
+                        break;
+                    case 2:
+                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
+                        break;
+                    case 3:
+                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
+                        break;
                 }
             }
         }

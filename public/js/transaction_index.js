@@ -39,6 +39,7 @@ var app = angular.module('app', [
             requester_name: '',
             pickup_location_name: '',
             delivery_location_name: '',
+            area_groups: '',
             itemsPerPage: 100,
             sortName: '',
             sortBy: true

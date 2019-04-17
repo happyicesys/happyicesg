@@ -147,12 +147,12 @@ if (document.querySelector('#d2dorderController')) {
         if (this.totalqty >= 3 || this.totalqty == 0) {
           this.delivery = 0
         } else if (this.totalqty > 0 && this.totalqty < 3) {
-          this.delivery = 5
+          this.delivery = 0
         }
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
       },
       disableNext() {
-        if (this.total == 0 || (this.covered == false && this.totalqty <= 1)) {
+        if (this.total < 50) {
           return true
         } else {
           return false

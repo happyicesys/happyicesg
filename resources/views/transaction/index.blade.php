@@ -299,6 +299,15 @@
                 <div class="row">
                     <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
+                        <select name="area_groups" class="select form-control" ng-model="search.area_groups" ng-change="searchDB()">
+                            <option value="">All</option>
+                            <option value="1">West</option>
+                            <option value="2">East</option>
+                            <option value="3">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -464,6 +473,9 @@
                                     <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    Zone
+                                </th>
                                 @else
 
                                 <th class="col-md-1 text-center">
@@ -498,12 +510,6 @@
                                     <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
-                                <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('delivery_date1')">
-                                    Requested Delivery Date
-                                    <span ng-if="search.sortName == 'delivery_date1' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'delivery_date1' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
                                 @if(!auth()->user()->hasRole('hd_user'))
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('delivery_date')">
@@ -516,6 +522,13 @@
                                     Delivered By
                                     <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                @else
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('delivery_date1')">
+                                    Requested Delivery Date
+                                    <span ng-if="search.sortName == 'delivery_date1' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'delivery_date1' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 @endif
                                 <th class="col-md-1 text-center">
@@ -572,6 +585,13 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
+                                    <td class="col-md-1 text-left">
+                                        <ul class="text-left">
+                                            <li ng-if="transaction.west == 1">West</li>
+                                            <li ng-if="transaction.east == 1">East</li>
+                                            <li ng-if="transaction.others == 1">Others</li>
+                                        </ul>
+                                    </td>
                                     @else
                                     <td class="col-md-1 text-center">@{{ transaction.do_po }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.requester_name }} </td>
@@ -599,10 +619,11 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                                    @else
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                                     @endif
                                     <td class="col-md-1 text-right">
                                         @{{ transaction.total | currency: "": 2}}

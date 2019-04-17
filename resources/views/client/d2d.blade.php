@@ -68,7 +68,7 @@ Door To Door
                   - To order with more flavor, click <a href="" style="color:blue;" @click.prevent="covered = !covered">HERE</a>. Minimum purchase applied for free delivery
                 </p>
                 <p style="color:red;" v-if="!covered">**Promotion: buy any 3 boxes and above for FREE delivery</p> --}}
-                <p style="color:red;">**Promotion: buy any 3 boxes and above for FREE delivery</p>
+                <p style="color:red;">**Online Order only for $50 and above + Free Delivery</p>
                 {{-- <h3 style="color:#323299;">Step 2 / 3</h3> --}}
                 {{-- <div class="table-responsive"> --}}
                 <div class="">
@@ -87,20 +87,21 @@ Door To Door
                         Price
                       </th>
                     </tr>
-                      <tr is="sales-item"
-                        v-for="(item, number) in items"
-                        :number="number + 1"
-                        :item="item"
-                        :items="items"
-                        :subtotal="subtotal"
-                        :finalstep="step3"
-                        @beforeamount="deductTotal"
-                        @afteramount="addTotal"
-                        @beforeqty="deductQty"
-                        @afterqty="addQty"
-                        style="font-size: 16px;"
-                        >
-                      </tr>
+                    <tr is="sales-item"
+                      v-for="(item, number) in items"
+                      :number="number + 1"
+                      :item="item"
+                      :items="items"
+                      :subtotal="subtotal"
+                      :finalstep="step3"
+                      @beforeamount="deductTotal"
+                      @afteramount="addTotal"
+                      @beforeqty="deductQty"
+                      @afterqty="addQty"
+                      style="font-size: 16px;"
+                      >
+                    </tr>
+{{--
                     <tr v-if="!covered">
                       <td></td>
                       <td class="text-center">Delivery Fees</td>
@@ -108,7 +109,7 @@ Door To Door
                       <td>
                           <input type="text" name="delivery" v-model="delivery.toFixed(2)" class="input-sm form-control text-right" readonly="readonly">
                       </td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                       <td></td>
                       <td class="text-center"><strong>Total</strong></td>
