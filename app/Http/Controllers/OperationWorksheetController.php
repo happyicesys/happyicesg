@@ -526,6 +526,23 @@ class OperationWorksheetController extends Controller
 
         if($color) {
             if($color == 'Yellow & Green') {
+                $people = $people->whereIn('people.id', function ($q) use ($datesvar){
+                    $q->select('people.id')
+                        ->from('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                        ->leftJoin('operationdates', 'operationdates.person_id', '=', 'people.id')
+                        ->where(function($q) use ($datesvar){
+                            $q->orWhere(function($q) use ($datesvar){
+                                $q->whereDate('operationdates.delivery_date', '=', $datesvar['today'])
+                                    ->where('operationdates.color', 'Yellow');
+                            })->orWhere(function($q) use ($datesvar) {
+                                $q->whereDate('transactions.delivery_date', '=', $datesvar['today'])
+                                    ->where('deals.qty', '>', '0');
+                            });
+                        });
+                });
+/*
                 $people = $people->whereExists(function ($q) use ($datesvar) {
                     $q->select('*')
                         ->from('operationdates')
@@ -534,14 +551,15 @@ class OperationWorksheetController extends Controller
                         ->where('operationdates.color', 'Yellow');
 
                 });
+
                 $people = $people->orWhereExists(function($q) use ($datesvar) {
-                    $q->select('*')
-                        ->from('deals')
-                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->whereRaw('transactions.person_id = people.id')
-                        ->whereDate('transactions.delivery_date', '=', $datesvar['today'])
-                        ->where('deals.qty', '>', '0');
-                });
+                        $q->select('*')
+                            ->from('deals')
+                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                            ->whereRaw('transactions.person_id = people.id')
+                            ->whereDate('transactions.delivery_date', '=', $datesvar['today'])
+                            ->where('deals.qty', '>', '0');
+                }); */
             }else {
                 $people = $people->whereExists(function ($q) use ($datesvar, $color) {
                     $q->select('*')
@@ -624,48 +642,49 @@ class OperationWorksheetController extends Controller
             array_push($transactionsId, $transaction->transaction_id);
         }
 
-        $last2transac = DB::raw( "(SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id,
-                                    DATE_FORMAT(x.delivery_date, '%a') AS day,
-                                        ROUND((CASE WHEN x.gst=1 THEN (
-                                        CASE
-                                        WHEN x.is_gst_inclusive=0
-                                        THEN total*((100+x.gst_rate)/100)
-                                        ELSE x.total
-                                        END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total,
-                                        x.total_qty
-                                FROM transactions x
-                                LEFT JOIN people y ON x.person_id=y.id
-                                WHERE (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
-                                AND x.id = (SELECT a.id FROM transactions a WHERE a.person_id=y.id AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid') ORDER BY a.delivery_date DESC LIMIT 1,1)
-                                GROUP BY y.id
-                                HAVING MAX(x.delivery_date)
-                                ) last2transac");
+        $last2 = DB::raw( "(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1,1
+                )
+            GROUP BY y.id
+        ) last2");
 
-        $lasttransac = DB::raw( "(SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id,
-                                    DATE_FORMAT(x.delivery_date, '%a') AS day,
-                                        ROUND((CASE WHEN x.gst=1 THEN (
-                                        CASE
-                                        WHEN x.is_gst_inclusive=0
-                                        THEN total*((100+x.gst_rate)/100)
-                                        ELSE x.total
-                                        END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total,
-                                        x.total_qty
-                                FROM transactions x
-                                LEFT JOIN people y ON x.person_id=y.id
-                                WHERE (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
-                                AND x.id = (SELECT a.id FROM transactions a WHERE a.person_id=y.id AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid') ORDER BY a.delivery_date DESC LIMIT 1)
-                                GROUP BY y.id
-                                HAVING MAX(x.delivery_date)
-                                ) lasttransac");
+        $last = DB::raw("(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1
+                )
+            GROUP BY y.id
+        ) last");
 
-        // $lasttransac = DB::raw("(SELECT DISTINCT(people.id) AS person_id, transactions.delivery_date,  FROM transactions LEFT JOIN people ON people.id=transactions.person_id ORDER BY transactions.delivery_date DESC)");
-
-        // $people = DB::table('people')
         $people =   Person::with('personassets')
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                    // ->leftJoin($lasttransac, 'people.id', '=', 'lasttransac.person_id')
-                    // ->leftJoin($last2transac, 'people.id', '=', 'last2transac.person_id')
+                    ->leftJoin($last, 'people.id', '=', 'last.person_id')
+                    ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
@@ -680,10 +699,9 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
                             'people.preferred_days', 'people.area_group',
                         'profiles.id AS profile_id',
-                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
-/*
-                        'lasttransac.transaction_id AS ops_transac', 'lasttransac.delivery_date AS ops_deldate', 'lasttransac.day AS ops_day', 'lasttransac.total AS ops_total', 'lasttransac.total_qty AS ops_total_qty',
-                        'last2transac.transaction_id AS ops2_transac', 'last2transac.delivery_date AS ops2_deldate', 'last2transac.day AS ops2_day', 'last2transac.total AS ops2_total', 'last2transac.total_qty AS ops2_total_qty' */
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
+                        'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
+                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate'
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 

@@ -9,8 +9,8 @@
         <th>Postcode Singapore</th>
         <th>Postcode + Cust ID + ID Name</th>
         <th>Inv#</th>
-        <th>Zone</th>
         <th>Ops Note</th>
+        <th>Zone</th>
         @foreach($dates as $date)
         <th>
             {{\Carbon\Carbon::parse($date)->format('y-m-d')}} ({{\Carbon\Carbon::parse($date)->format('D')}})
@@ -58,8 +58,8 @@
 
                 $zoneStr = implode(",", $zoneStrArr);
             @endphp
-            <td>{{$zoneStr}}</td>
             <td>{{$person->operation_note}}</td>
+            <td>{{$zoneStr}}</td>
             @foreach($alldata[$indexpeople] as $data)
             @php
                 $color = $data['color'];
