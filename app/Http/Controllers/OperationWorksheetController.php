@@ -651,13 +651,13 @@ class OperationWorksheetController extends Controller
                     END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
             FROM transactions x
             LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
+            WHERE x.id = (SELECT * FROM (
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id
                 AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1,1
-                )
+                ))
             GROUP BY y.id
         ) last2");
 
@@ -670,13 +670,13 @@ class OperationWorksheetController extends Controller
                     END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
             FROM transactions x
             LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
+            WHERE x.id = (SELECT * FROM (
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id
                 AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1
-                )
+                ))
             GROUP BY y.id
         ) last");
 
