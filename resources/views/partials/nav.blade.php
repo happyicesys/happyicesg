@@ -61,6 +61,7 @@
                         $transaction_access = true;
                         $person_access = true;
                         $personasset_access = true;
+                        $hd_access = true;
                     }
 
                     if(auth()->user()->hasRole('watcher')) {
