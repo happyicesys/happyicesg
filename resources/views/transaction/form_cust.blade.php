@@ -406,7 +406,7 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('digital_clock', 'Digital Clocker', ['class'=>'control-label']) !!}
+                        {!! Form::label('digital_clock', 'Digital Clocker 电子码表', ['class'=>'control-label']) !!}
                         {!! Form::text('digital_clock', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
@@ -415,7 +415,7 @@
                     <div class="col-md-8 col-sm-8 col-xs-8">
                     @endcannot
                         <div class="form-group">
-                            {!! Form::label('analog_clock', 'Analog Clocker', ['class'=>'control-label']) !!}
+                            {!! Form::label('analog_clock', 'Analog Clocker 机械码表', ['class'=>'control-label']) !!}
                             {!! Form::text('analog_clock', null, ['class'=>'form-control']) !!}
                         </div>
                     @cannot('transaction_view')
@@ -429,7 +429,7 @@
 
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('balance_coin', 'Balance Coin', ['class'=>'control-label']) !!}
+                        {!! Form::label('balance_coin', 'Balance Coin 零钱', ['class'=>'control-label']) !!}
                         {!! Form::text('balance_coin', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
@@ -438,13 +438,13 @@
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('sales_count', 'Sales Count (pcs)', ['class'=>'control-label']) !!}
+                        {!! Form::label('sales_count', 'Sales Count(pcs) 销售(支)', ['class'=>'control-label']) !!}
                         {!! Form::text('sales_count', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
-                        {!! Form::label('sales_amount', 'Sales Amount ($)', ['class'=>'control-label']) !!}
+                        {!! Form::label('sales_amount', 'Sales Amount($) 销售额', ['class'=>'control-label']) !!}
                         {!! Form::text('sales_amount', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
