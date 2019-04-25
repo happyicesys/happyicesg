@@ -387,6 +387,10 @@
         placeholder: 'Please Select'
     });
 
+    $('.datepick').datetimepicker({
+       format: 'YYYY-MM-DD'
+    });
+
     $(document).ready(function() {
         Dropzone.autoDiscover = false;
         $('.dropzone').dropzone({

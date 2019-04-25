@@ -76,7 +76,9 @@
         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
+                <i class="glyphicon-calendar glyphicon"></i>
                 <div class="input-group">
+
                     <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
@@ -87,6 +89,8 @@
                             readonly
                         />
                     </datepicker>
+
+                    {{-- <input type="text" class="form-control datepick" placeholder="Order Date" ng-model="form.order_date" ng-change="dateChanged('order_date', form.order_date)" readonly> --}}
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
                 </div>
@@ -112,18 +116,20 @@
         @else
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
+                <i class="glyphicon-calendar glyphicon"></i>
                 <div class="input-group">
+
                     <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
-                            name = "order_date"
                             class = "form-control"
                             placeholder = "Order Date"
                             ng-model = "form.order_date"
                             ng-change = "dateChanged('order_date', form.order_date)"
-                            {{$disabledStr}}
+                            readonly
                         />
                     </datepicker>
+                    {{-- <input type="text" class="form-control datepick" placeholder="Order Date" ng-model="form.order_date" ng-change="dateChanged('order_date', form.order_date)" readonly> --}}
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
                 </div>
