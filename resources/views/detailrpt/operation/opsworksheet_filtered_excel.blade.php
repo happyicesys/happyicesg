@@ -8,6 +8,7 @@
         <th>Address Postcode Singapore</th>
         <th>Postcode Singapore</th>
         <th>Postcode + Cust ID + ID Name</th>
+        <th>Category</th>
         <th>Inv#</th>
         <th>Ops Note</th>
         <th>Zone</th>
@@ -26,6 +27,7 @@
             <td>{{$person->del_address}} {{$person->del_postcode}} Singapore</td>
             <td>{{$person->del_postcode}} Singapore</td>
             <td>{{$person->del_postcode}} {{$person->cust_id}} {{$person->company}}</td>
+            <td>{{$person->custcategory}}</td>
             @php
                 $transactionsStr = '';
                 $transArr = [];

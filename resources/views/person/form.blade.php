@@ -197,4 +197,13 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('tags', 'Tags', ['class'=>'control-label']) !!}
+            {!! Form::select('tags', [''=>null], null, ['class'=>'selectmultiple form-control', 'multiple'=>'multiple']) !!}
+
+        </div>
+    </div>
+</div>
 

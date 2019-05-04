@@ -59,6 +59,7 @@ var app = angular.module('app', [
                 placeholder: 'Select..',
                 allowClear: true
             });
+            $('.selectmultiple').select2({});
         });
         $scope.onDeliveryFromChanged = function(date){
             if(date){
