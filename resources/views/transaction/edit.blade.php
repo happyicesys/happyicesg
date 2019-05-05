@@ -178,7 +178,7 @@
 
                     <div class="pull-right">
                         @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
-                        @if(!auth()->user()->hasRole('franchisee') and $transaction->person->active != 'Pending')
+                        @if(!auth()->user()->hasRole('franchisee'))
                         {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                         {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         @endif
@@ -207,7 +207,7 @@
                     </div>
                     <div class="pull-right">
                         @if(!auth()->user()->hasRole('hd_user'))
-                        @if(!auth()->user()->hasRole('franchisee') and $transaction->person->active != 'Pending' and !auth()->user()->hasRole('watcher'))
+                        @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
                         {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         @endif
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
