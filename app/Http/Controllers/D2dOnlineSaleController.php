@@ -62,6 +62,7 @@ class D2dOnlineSaleController extends Controller
                             'items.product_id', 'd2d_online_sales.id', 'd2d_online_sales.caption',
                             'd2d_online_sales.qty_divisor', 'prices.quote_price'
                             )
+                        ->where('publish', 1)
                         ->orderBy('sequence')
                         ->get();
         // $salesitems = D2dOnlineSale::with(['item', 'person', 'person.prices'])->orderBy('sequence')->get();
