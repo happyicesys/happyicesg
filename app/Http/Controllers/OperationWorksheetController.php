@@ -697,7 +697,7 @@ class OperationWorksheetController extends Controller
             ) t ON t.person_id=y.id
             GROUP BY y.id
         ) last2");
-*/
+
         $last = DB::raw( "(
             SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
                     CASE
@@ -715,12 +715,13 @@ class OperationWorksheetController extends Controller
             ON t.person_id=y.id
             GROUP BY y.id
         ) last");
+*/
 
         $people =   Person::with('personassets')
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                    // ->leftJoin($last, 'people.id', '=', 'last.person_id')
-                    // ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
+                    ->leftJoin($last, 'people.id', '=', 'last.person_id')
+                    ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
@@ -735,11 +736,9 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
                             'people.preferred_days', 'people.area_group',
                         'profiles.id AS profile_id',
-                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory'
-/*
-                        'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty' */
-/*
-                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate' */
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
+                        'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
+                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate'
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
