@@ -19,7 +19,7 @@
         @php
             $dodisable = false;
             $dodisableStr = '';
-            if((auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') or ((!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('admin') and !auth()->user()->hasRole('operation')) and ($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid' or $transaction->status == 'Cancelled'))) {
+            if((auth()->user()->hasRole('hd_user') and $transaction->status != 'Pending') or ((!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('admin') and !auth()->user()->hasRole('operation') and !auth()->user()->hasRole('account') and !auth()->user()->hasRole('accountadmin')) and ($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid' or $transaction->status == 'Cancelled'))) {
                 $dodisable = true;
                 $dodisableStr = 'disabled';
             }
@@ -659,7 +659,7 @@
               </span>
             </div>
             <div ng-show="showpersonassetSelection">
-                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 <div class="row">
                     <div class="form-group col-md-7 col-sm-7 col-xs-12">
                         {!! Form::label('personasset_id', 'Add New Asset', ['class'=>'control-label search-title']) !!}
@@ -725,7 +725,7 @@
                 </div>
             </div>
             <div ng-show="!showpersonassetSelection">
-                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending'))
                 <div class="row">
                     <div class="form-group col-md-10 col-sm-10 col-xs-12">
                         {!! Form::label('transactionpersonasset_id', 'Asset from Happy Ice Warehouse', ['class'=>'control-label search-title']) !!}
@@ -817,7 +817,7 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#transactionpersonasset_modal" ng-click="editTransactionpersonassetModal($event, data)" ng-disabled="{{auth()->user()->hasRole('hd_user') && $transaction->status != 'Pending'}}"><i class="fa fa-pencil-square-o"></i></button>
-                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('operation'))
+                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('operation') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin'))
                                     <button class="btn btn-danger btn-sm" ng-click="removeTransactionpersonassetEntry($event, data.id, showpersonassetSelection)" ng-disabled="{{auth()->user()->hasRole('hd_user') && $transaction->status != 'Pending'}}"><i class="fa fa-times"></i></button>
                                 @endif
                             </td>
