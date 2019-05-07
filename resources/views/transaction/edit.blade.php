@@ -302,14 +302,25 @@
                             <td class="text-center" colspan="12">No Records Found</td>
                         @else
                             @foreach($invattachments as $index => $invattachment)
+
+                            @php
+                                $ext = pathinfo($invattachment->path, PATHINFO_EXTENSION);
+                            @endphp
+
                             <tr>
                                 <td class="col-md-1 text-center">
                                     {{ $index + 1 }}
                                 </td>
                                 <td class="col-md-10">
+                                    @if($ext == 'pdf')
+                                    <a href="{{$invattachment->path}}">
+                                        <embed src="{{$invattachment->path}}" type="pdf" style="max-width:350px; max-height:350px;">
+                                    </a>
+                                    @else
                                     <a href="{{$invattachment->path}}">
                                         <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
                                     </a>
+                                    @endif
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher'))
