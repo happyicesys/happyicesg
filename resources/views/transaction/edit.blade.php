@@ -315,6 +315,7 @@
                                     @if($ext == 'pdf')
                                     <a href="{{$invattachment->path}}">
                                         <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
+                                        <button class="btn btn-sm btn-info">Download</button>
                                     </a>
                                     @else
                                     <a href="{{$invattachment->path}}">
