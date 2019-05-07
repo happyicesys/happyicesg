@@ -314,7 +314,7 @@
                                 <td class="col-md-10">
                                     @if($ext == 'pdf')
                                     <a href="{{$invattachment->path}}">
-                                        <embed src="{{$invattachment->path}}" type="pdf" style="max-width:350px; max-height:350px;">
+                                        <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
                                     </a>
                                     @else
                                     <a href="{{$invattachment->path}}">
