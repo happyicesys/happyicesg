@@ -5,7 +5,7 @@ return array(
 
     'pdf' => array(
         'enabled' => true,
-        'binary' => '/usr/local/bin/wkhtmltopdf',
+        'binary' => '/usr/local/bin/wkhtmltopdf-amd64',
         'timeout' => false,
         'options' => array(
                             'print-media-type' => true,
@@ -17,7 +17,7 @@ return array(
     ),
     'image' => array(
         'enabled' => true,
-        'binary' => '/usr/local/bin/wkhtmltoimage',
+        'binary' => '/usr/local/bin/wkhtmltoimage-amd64',
         'timeout' => false,
         'options' => array(),
     ),
