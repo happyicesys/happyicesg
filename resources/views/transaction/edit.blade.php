@@ -313,17 +313,19 @@
                                 </td>
                                 <td class="col-md-10">
                                     @if($ext == 'pdf')
-                                    <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
-                                    <a href="{{$invattachment->path}}" class="btn btn-sm btn-info">Download</a>
+                                        <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
                                     @else
-                                    <a href="{{$invattachment->path}}">
-                                        <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
-                                    </a>
+                                        <a href="{{$invattachment->path}}">
+                                            <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
+                                        </a>
                                     @endif
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher'))
-                                    <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                        <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                        @if($ext == 'pdf')
+                                            <a href="{{$invattachment->path}}" class="btn btn-sm btn-info">Download</a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
