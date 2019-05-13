@@ -1,6 +1,7 @@
 @inject('custcategories', 'App\Custcategory')
 @inject('profiles', 'App\Profile')
 @inject('franchisees', 'App\User')
+@inject('persontags', 'App\Persontag')
 
 @extends('template')
 @section('title')
@@ -92,6 +93,17 @@
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
                                 @endif
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
+                            <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
+                                <option value="">All</option>
+                                @foreach($persontags::orderBy('name')->get() as $persontag)
+                                    <option value="{{$persontag->id}}">
+                                        {{$persontag->name}}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))

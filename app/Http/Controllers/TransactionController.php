@@ -788,6 +788,41 @@ class TransactionController extends Controller
         return view('transaction.log', compact('transaction', 'transHistory'));
     }
 
+    // replicate the transaction particulars(int $transaction_id)
+    public function replicateTransaction($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        $replicated_transaction = $transaction->replicate();
+        $replicated_transaction->order_date = Carbon::today()->toDateString();
+        $replicated_transaction->delivery_date = Carbon::today()->toDateString();
+        $replicated_transaction->status = 'Confirmed';
+        $replicated_transaction->pay_status = 'Owe';
+        $replicated_transaction->driver = '';
+        $replicated_transaction->paid_by = '';
+        $replicated_transaction->paid_at = '';
+        // dd($transaction->deals->toArray());
+
+        $replicated_transaction->save();
+
+        // replicate pricelist
+        foreach($transaction->deals as $deal) {
+            $replicated_deal = new Deal();
+            $replicated_deal->item_id = $deal->item_id;
+            $replicated_deal->transaction_id = $replicated_transaction->id;
+            $replicated_deal->qty = $deal->qty;
+            $replicated_deal->amount = $deal->amount;
+            $replicated_deal->unit_price = $deal->unit_price;
+            $replicated_deal->qty_status = $deal->qty_status;
+            $replicated_deal->dividend = $deal->dividend;
+            $replicated_deal->divisor = $deal->divisor;
+            $replicated_deal->unit_cost = $deal->unit_cost;
+            $replicated_deal->qty_before = $deal->qty_before;
+            $replicated_deal->qty_after = $deal->qty_after;
+            $replicated_deal->save();
+        }
+        return Redirect::action('TransactionController@edit', $replicated_transaction->id);
+    }
+
     // status changing to verified owe/ paid
     public function changeStatus($id)
     {

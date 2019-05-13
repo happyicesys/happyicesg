@@ -52,6 +52,9 @@
     {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
     {!! Form::close() !!}
 
+    {!! Form::model($transaction, ['id'=>'replicate', 'method'=>'POST', 'action'=>['TransactionController@replicateTransaction', $transaction->id]]) !!}
+    {!! Form::close() !!}
+
     {!! Form::model($transaction, ['id'=>'new_transaction', 'method'=>'POST', 'action'=>['TransactionController@store']]) !!}
         <input type="text" class="hidden" name="person_id" value="{{$transaction->person->id}}">
     {!! Form::close() !!}
@@ -63,6 +66,7 @@
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
                         {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
+                        {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
                         {{-- @endif --}}
                     @endif

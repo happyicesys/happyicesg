@@ -443,3 +443,15 @@ table.table-fixedheader>thead>tr>th, table.table-fixedheader>tbody>tr>td {
 .table-borderless > thead > tr > th {
     border: none;
 }
+
+angular jquery datepicker
+input[type=text]{
+  border-radius: 0px !important;
+}
+.ui-datepicker-trigger{
+  position: absolute;
+  margin-top: -28px;
+  right:15px;
+  border:none;
+  background-color:transparent;
+}

@@ -59,7 +59,20 @@ var app = angular.module('app', [
                 placeholder: 'Select..',
                 allowClear: true
             });
-            $('.selectmultiple').select2({});
+            $('.selectnotclear').select2({
+                placeholder: 'Select..'
+            });
+            // $('.selectmultiple').select2({});
+            $('.selectmultiple').select2({
+                tags: true,
+                createTag: function (params) {
+                    return {
+                        id: "New:" + params.term,
+                        text: params.term,
+                        newOption: true
+                    }
+                }
+            });
         });
         $scope.onDeliveryFromChanged = function(date){
             if(date){
@@ -125,6 +138,9 @@ var app = angular.module('app', [
                 $scope.total_owe = data.total_owe;
                 $scope.profileDealsGrossProfit = data.profileDealsGrossProfit;
                 $scope.spinner = false;
+            });
+            $http.get('/api/person/persontags/' + $('#person_id').val()).success(function(data) {
+                $scope.persontags_options = data;
             });
         }
 

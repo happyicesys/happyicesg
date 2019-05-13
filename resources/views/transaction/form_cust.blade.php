@@ -76,9 +76,7 @@
         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
-                <i class="glyphicon-calendar glyphicon"></i>
-                <div class="input-group">
-
+{{--
                     <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
@@ -88,16 +86,21 @@
                             ng-change = "dateChanged('order_date', form.order_date)"
                             readonly
                         />
-                    </datepicker>
+                    </datepicker> --}}
 
-                    {{-- <input type="text" class="form-control datepick" placeholder="Order Date" ng-model="form.order_date" ng-change="dateChanged('order_date', form.order_date)" readonly> --}}
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
+                <div class="input-group date">
+                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+{{--
                 <div class="input-group">
                     <datepicker datepicker-mobile="true">
                         <input
@@ -111,14 +114,12 @@
                     </datepicker>
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div>
+                </div> --}}
             </div>
         @else
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
-                <i class="glyphicon-calendar glyphicon"></i>
-                <div class="input-group">
-
+{{--
                     <datepicker datepicker-mobile="true">
                         <input
                             type = "text"
@@ -128,15 +129,27 @@
                             ng-change = "dateChanged('order_date', form.order_date)"
                             readonly
                         />
-                    </datepicker>
-                    {{-- <input type="text" class="form-control datepick" placeholder="Order Date" ng-model="form.order_date" ng-change="dateChanged('order_date', form.order_date)" readonly> --}}
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('order_date', form.order_date)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('order_date', form.order_date)"></span>
+                    </datepicker> --}}
+                <div class="input-group date">
+                    {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
+{{--
+                <input type=text
+                    placeholder='YYYY-MM-DD'
+                    maxlength="10"
+                    class='form-control'
+                    ng-model='form.order_date'
+                /> --}}
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+{{--
                 <div class="input-group">
                     <datepicker datepicker-mobile="true">
                         <input
@@ -151,13 +164,18 @@
                     </datepicker>
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div>
+                </div> --}}
             </div>
         @endif
         @else
             @if(!auth()->user()->hasRole('hd_user'))
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.delivery_date', 'Delivery On', ['class'=>'control-label']) !!}
+                <div class="input-group date">
+                    {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
+                    <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+{{--
                 <div class="input-group">
                     <datepicker datepicker-mobile="true">
                         <input
@@ -171,7 +189,7 @@
                     </datepicker>
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div>
+                </div> --}}
             </div>
             @endif
         @endif

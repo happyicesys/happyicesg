@@ -304,6 +304,7 @@ Route::delete('person/{id}/file', 'PersonController@removeFile');
 Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/api/person/getLatLng/{person_id}', 'PersonController@getDeliveryLatLng');
 Route::post('/api/person/storelatlng/{person_id}', 'PersonController@storeDeliveryLatLng');
+Route::get('/api/person/persontags/{person_id}', 'PersonController@getPersonTags');
 
 Route::get('/profile/data', 'ProfileController@getData');
 Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');
@@ -354,6 +355,7 @@ Route::get('/transaction/status/{transaction_id}', 'TransactionController@change
 Route::post('/transaction/singlestatus/{transaction_id}', 'TransactionController@changeSingleStatus');
 Route::post('/transaction/daterange', 'TransactionController@searchDateRange');
 Route::post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
+Route::post('/transaction/replicate/{transaction_id}', 'TransactionController@replicateTransaction');
 Route::get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 Route::post('/transaction/data', 'TransactionController@getData');
 Route::delete('/transaction/data/{id}', 'TransactionController@destroyAjax');

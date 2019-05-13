@@ -25,6 +25,8 @@ use App\Personmaintenance;
 use Auth;
 use DB;
 use App\HasProfileAccess;
+use App\Persontag;
+use App\Persontagattach;
 
 class PersonController extends Controller
 {
@@ -59,7 +61,9 @@ class PersonController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $people = DB::table('people')
+        $people = DB::table('persontagattaches')
+            ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
+            ->rightJoin('people', 'people.id', '=', 'persontagattaches.person_id')
             ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
             ->select(
@@ -92,6 +96,8 @@ class PersonController extends Controller
 
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
+
+        $people = $people->groupBy('people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm', 'custcategories.name', 'profiles.id', 'profiles.name');
 
         if ($pageNum == 'All') {
             $people = $people->orderBy('people.created_at', 'desc')->get();
@@ -257,6 +263,9 @@ class PersonController extends Controller
             $person->save();
         }
 
+        // tagging feature sync
+        $this->syncPersonTags($person, $request);
+
         return Redirect::action('PersonController@edit', $person->id);
     }
 
@@ -376,6 +385,26 @@ class PersonController extends Controller
         ];
 
         return $data;
+    }
+
+    // retrieve person tags
+    public function getPersonTags($person_id = null)
+    {
+
+        $persontagattaches = DB::table('persontagattaches')
+                            ->rightJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
+                            ->leftJoin('people', function($join) use ($person_id){
+                                $join->on('people.id', '=', 'persontagattaches.person_id');
+                                    $join->where('people.id', '=', $person_id);
+
+                            })
+                            ->select('persontags.id', 'persontags.name', 'people.id AS person_id');
+
+        $persontagattaches = $persontagattaches->get();
+
+        // $persontagattaches
+
+        return $persontagattaches;
     }
 
     public function generateLogs($id)
@@ -677,6 +706,7 @@ class PersonController extends Controller
         $company = $request->company;
         $contact = $request->contact;
         $active = $request->active;
+        $tags = $request->tags;
         $profile_id = $request->profile_id;
         $franchisee_id = $request->franchisee_id;
 
@@ -707,6 +737,13 @@ class PersonController extends Controller
                 $actives = [$actives];
             }
             $people = $people->whereIn('people.active', $actives);
+        }
+
+        if($tags) {
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $people = $people->whereIn('persontags.id', $tags);
         }
 
         if ($profile_id) {
@@ -815,5 +852,42 @@ class PersonController extends Controller
             'total_owe' => $total_owe
         ];
         return $totals;
+    }
+
+    // sync person tags(Person $person, Formrequest $request)
+    private function syncPersonTags($person, $request)
+    {
+        $tags = $request->tags;
+
+        if($tags) {
+            // dd($tags);
+/*
+            if(count($tags) == 1) {
+                $tags = [$tags];
+            } */
+            foreach($tags as $index => $tag) {
+                // dd($tags, $tag);
+                if(substr($tag, 0, 4) == 'New:') {
+                    $persontag = Persontag::create([
+                        'name' => substr($tag, strpos($tag, ":") + 1)
+                    ]);
+                    $persontagattach = Persontagattach::create([
+                        'person_id' => $person->id,
+                        'persontag_id' => $persontag->id
+                    ]);
+                    $tags[$index] = strval($persontag->id);
+                    // dd($persontag->toArray(), $persontagattach->toArray(), $tag[$index]);
+                }else {
+                    $persontagattach = Persontagattach::create([
+                        'person_id' => $person->id,
+                        'persontag_id' => $tag
+                    ]);
+                }
+            }
+            // dd($tags);
+
+            Persontagattach::whereNotIn('persontag_id', $tags)->where('person_id', $person->id)->delete();
+
+        }
     }
 }

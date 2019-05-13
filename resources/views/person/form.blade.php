@@ -2,6 +2,8 @@
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('persontags', 'App\Persontag')
+@inject('persontagattaches', 'App\Persontagattach')
 
 @php
     $disabled = false;
@@ -198,10 +200,20 @@
     </div>
 </div>
 <div class="row">
+{{--
+    @php
+        dd($persontagattaches::where('person_id', $person->id)->pluck('id')->all());
+    @endphp --}}
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="form-group">
             {!! Form::label('tags', 'Tags', ['class'=>'control-label']) !!}
-            {!! Form::select('tags', [''=>null], null, ['class'=>'selectmultiple form-control', 'multiple'=>'multiple']) !!}
+            {!! Form::select('tags[]', $persontags::pluck('name', 'id')->all(), $person ? $persontagattaches::where('person_id', $person->id)->pluck('persontag_id')->all() : null, ['class'=>'selectmultiple form-control', 'multiple'=>'multiple']) !!}
+{{--
+            <select name="persontag_ids" class="selectmultiple form-control" multiple>
+                <option ng-repeat="persontag in persontags_options" value="@{{persontag.id}}" ng-if="persontag.person_id ? 'selected' : ''">
+                    @{{persontag.name}}
+                </option>
+            </select> --}}
 
         </div>
     </div>
