@@ -103,6 +103,7 @@ class VendingController extends Controller
                 $transaction->gst_rate = $person->gst_rate;
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;
                 $remarkStr = '';
+                // dd($person->commission_type);
                 if($person->commission_type == 1) {
                     $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
                 }else if($person->is_dvm or $person->commission_type == 2) {
@@ -499,7 +500,7 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
