@@ -161,7 +161,8 @@
                     </div>
                     <div class="pull-right">
                         @if(auth()->user()->hasRole('hd_user'))
-                            {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust', 'ng-disabled'=>'alldata.length == 0']) !!}
+                            {{-- {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust', 'ng-disabled'=>'alldata.length == 0']) !!} --}}
+                            {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}
                             {!! Form::submit('Save Draft', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @else
                             {!! Form::submit('Confirm', ['name'=>'confirm', 'class'=> 'btn btn-primary', 'form'=>'form_cust']) !!}

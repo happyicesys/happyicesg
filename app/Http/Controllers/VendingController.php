@@ -106,7 +106,7 @@ class VendingController extends Controller
                 // dd($person->commission_type);
                 if($person->commission_type == 1) {
                     $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
-                }else if($person->is_dvm or $person->commission_type == 2) {
+                }else if($person->commission_type == 2) {
                     $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
                 }
                 $transaction->transremark = $remarkStr;

@@ -1182,6 +1182,9 @@ class TransactionController extends Controller
         // toll to check is franchisee or not
         $transactions = $this->filterFranchiseeTransactionDB($transactions);
 
+        // driver not able to see the invoices earlier than today
+        $transactions = $this->filterDriverView($transactions);
+
         return $transactions;
     }
 
@@ -1771,6 +1774,16 @@ class TransactionController extends Controller
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $transactions;
+    }
+
+    // logic applicable for driver on transactions view
+    private function filterDriverView($query)
+    {
+        if(auth()->user()->hasRole('driver')) {
+            $query = $query->whereDate('transactions.delivery_date', '>=', Carbon::today()->toDateString());
+        }
+
+        return $query;
     }
 
     // calculating gst and non for delivered total
