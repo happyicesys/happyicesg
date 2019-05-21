@@ -718,7 +718,7 @@ class VendingController extends Controller
         $sales_commission = Item::where('product_id', '055')->firstOrFail();
         $utility_subsidy = Item::where('product_id', 'V01')->firstOrFail();
 
-        if($person->is_vending) {
+        if($person->commission_type == 1) {
             $deal_comm = new Deal();
             $deal_comm->item_id = $sales_commission->id;
             $deal_comm->transaction_id = $transaction_id;
@@ -729,7 +729,7 @@ class VendingController extends Controller
             $deal_comm->unit_price = -$person->profit_sharing;
             $deal_comm->amount = -$person->subtotal_profit_sharing;
             $deal_comm->save();
-        }else if($person->is_dvm) {
+        }else if($person->commission_type == 2) {
             $deal_comm = new Deal();
             $deal_comm->item_id = $sales_commission->id;
             $deal_comm->transaction_id = $transaction_id;
