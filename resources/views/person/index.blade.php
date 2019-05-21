@@ -96,7 +96,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                            {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
                             <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
                                 <option value="">All</option>
                                 @foreach($persontags::orderBy('name')->get() as $persontag)

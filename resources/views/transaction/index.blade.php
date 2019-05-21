@@ -2,6 +2,7 @@
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('persontags', 'App\Persontag')
 
 @extends('template')
 @section('title')
@@ -298,59 +299,75 @@
                 @else
                 <div class="row">
                     <div class="row">
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
-                        <select name="area_groups" class="select form-control" ng-model="search.area_groups" ng-change="searchDB()">
-                            <option value="">All</option>
-                            <option value="1">West</option>
-                            <option value="2">East</option>
-                            <option value="3">Others</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
-                        <div class="input-group">
-                            <datepicker>
-                                <input
-                                    name = "delivery_from"
-                                    type = "text"
-                                    class = "form-control input-sm"
-                                    placeholder = "Delivery From"
-                                    ng-model = "search.delivery_from"
-                                    ng-change = "dateChange('delivery_from', search.delivery_from)"
-                                />
-                            </datepicker>
-                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
-                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
+                            <select name="area_groups" class="select form-control" ng-model="search.area_groups" ng-change="searchDB()">
+                                <option value="">All</option>
+                                <option value="1">West</option>
+                                <option value="2">East</option>
+                                <option value="3">Others</option>
+                            </select>
                         </div>
+{{--
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
+                            <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
+                                <option value="">All</option>
+                                @foreach($persontags::orderBy('name')->get() as $persontag)
+                                    <option value="{{$persontag->id}}">
+                                        {{$persontag->name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div> --}}
                     </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
-                        <div class="input-group">
-                            <datepicker>
-                                <input
-                                    name = "delivery_to"
-                                    type = "text"
-                                    class = "form-control input-sm"
-                                    placeholder = "Delivery To"
-                                    ng-model = "search.delivery_to"
-                                    ng-change = "dateChange('delivery_to', search.delivery_to)"
-                                />
-                            </datepicker>
-                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
-                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
+                            <div class="input-group">
+                                <datepicker>
+                                    <input
+                                        name = "delivery_from"
+                                        type = "text"
+                                        class = "form-control input-sm"
+                                        placeholder = "Delivery From"
+                                        ng-model = "search.delivery_from"
+                                        ng-change = "dateChange('delivery_from', search.delivery_from)"
+                                    />
+                                </datepicker>
+                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
+                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        <div class="row col-md-12 col-sm-12 col-xs-12">
-                            {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
+                            <div class="input-group">
+                                <datepicker>
+                                    <input
+                                        name = "delivery_to"
+                                        type = "text"
+                                        class = "form-control input-sm"
+                                        placeholder = "Delivery To"
+                                        ng-model = "search.delivery_to"
+                                        ng-change = "dateChange('delivery_to', search.delivery_to)"
+                                    />
+                                </datepicker>
+                                <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
+                                <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
+                            </div>
                         </div>
-                        <div class="btn-group">
-                            <a href="" ng-click="onPrevDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-backward"></i></a>
-                            <a href="" ng-click="onTodayDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-circle"></i></a>
-                            <a href="" ng-click="onNextDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            <div class="row col-md-12 col-sm-12 col-xs-12">
+                                {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
+                            </div>
+                            <div class="btn-group">
+                                <a href="" ng-click="onPrevDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-backward"></i></a>
+                                <a href="" ng-click="onTodayDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-circle"></i></a>
+                                <a href="" ng-click="onNextDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-forward"></i></a>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
                 @endif
