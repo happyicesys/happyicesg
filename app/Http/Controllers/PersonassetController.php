@@ -180,8 +180,8 @@ class PersonassetController extends Controller
                 'deliveryorders.pickup_address', 'deliveryorders.pickup_postcode',
                 'deliveryorders.pickup_location_name AS from_location_name',
                 'deliveryorders.delivery_location_name'
-            )
-            ->whereNotNull('transactionpersonassets.datein');
+            );
+            // ->whereNotNull('transactionpersonassets.datein');
 
         // reading whether search input is filled
         if ($datefrom) {
