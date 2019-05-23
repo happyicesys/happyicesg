@@ -158,12 +158,14 @@ class PersonassetController extends Controller
             ->select(
                 'transactionpersonassets.id AS id', 'transactionpersonassets.transaction_id', 'transactionpersonassets.personasset_id',
                 'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks',
+                'to_transactions.id AS to_transaction_id',
+/*
                 DB::raw(
                 'CASE WHEN to_transactions.status="Delivered" THEN to_transactions.id
                             WHEN to_transactions.status="Verified Owe" THEN to_transactions.id
                             WHEN to_transactions.status="Verified Paid" THEN to_transactions.id
                             ELSE "" END AS to_transaction_id'
-                ),
+                ), */
                 DB::raw(
                 'CASE WHEN to_transactions.status="Delivered" THEN to_deliveryorders.delivery_location_name
                             WHEN to_transactions.status="Verified Owe" THEN to_deliveryorders.delivery_location_name
@@ -283,7 +285,8 @@ class PersonassetController extends Controller
                 'personassets.brand',
                 'deliveryorders.pickup_address',
                 'deliveryorders.pickup_postcode',
-                'deliveryorders.pickup_location_name AS from_location_name'
+                'deliveryorders.pickup_location_name AS from_location_name',
+                'to_transactions.id AS to_transaction_id'
             )
             ->whereNotNull('transactionpersonassets.datein')
             ->whereNull('transactionpersonassets.dateout')

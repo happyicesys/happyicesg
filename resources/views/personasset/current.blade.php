@@ -161,6 +161,12 @@
                             <span ng-if="search.sortName == 'datein' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'datein' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('to_transaction_id')">
+                            Ordered?
+                            <span ng-if="search.sortName == 'to_transaction_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'to_transaction_id' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
                         {{-- <th class="col-md-1"></th> --}}
                     </tr>
                     <tbody>
@@ -196,6 +202,9 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{data.datein}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <i class="fa fa-check-circle" style="color: green;" ng-if="data.to_transaction_id"></i>
                             </td>
 {{--
                             <td class="col-md-1 text-center">

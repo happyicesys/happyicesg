@@ -608,6 +608,8 @@ class TransactionController extends Controller
 
             $this->dealDeleteMultiple($transaction->id);
 
+            // $this->doAssetsDeleteMultiple($transaction->id);
+
             return Redirect::action('TransactionController@edit', $transaction->id);
 
         }else if($request->input('form_wipe')){

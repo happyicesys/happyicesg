@@ -75,7 +75,7 @@ class TransactionpersonassetController extends Controller
                     'qty' => 1
                 ]);
 
-                if ($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
+                if($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
                     $transactionpersonasset->datein = $transaction->deliveryorder->pickup_date;
                     $transactionpersonasset->is_warehouse = 1;
                     $transactionpersonasset->save();
@@ -94,7 +94,9 @@ class TransactionpersonassetController extends Controller
         $deliveryorder = Deliveryorder::where('transaction_id', $transactionpersonasset->to_transaction_id)->first();
         if($deliveryorder) {
             // die(var_dump('here1'));
+            $transactionpersonasset->is_warehouse = 1;
             $transactionpersonasset->to_transaction_id = '';
+            $transactionpersonasset->dateout = null;
             $transactionpersonasset->save();
         }else {
             // die(var_dump('here2'));
