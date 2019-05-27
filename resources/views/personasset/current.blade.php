@@ -163,7 +163,7 @@
                         </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('to_transaction_id')">
-                            Ordered?
+                            Booked?
                             <span ng-if="search.sortName == 'to_transaction_id' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'to_transaction_id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>

@@ -749,7 +749,7 @@
                         {!! Form::label('transactionpersonasset_id', 'Asset from Happy Ice Warehouse', ['class'=>'control-label search-title']) !!}
                         <label for="required" class="control-label" style="color:red;">*</label>
                         {!! Form::select('transactionpersonasset_id',
-                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->where('to_transaction_id', 0)->orderBy('code')->lists('full', 'id')->all(),
+                            [''=>null] + $transactionpersonassets::leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')->select(DB::raw("CONCAT(code,' - ',name,'  [',brand,'] - ', serial_no, ' ', sticker) AS full, transactionpersonassets.id"))->where('is_warehouse', 1)->whereNotNull('datein')->where('to_transaction_id', 0)->orderBy('code')->lists('full', 'id')->all(),
                             null,
                             [
                             'id'=>'transactionpersonasset_id',
