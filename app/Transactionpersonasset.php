@@ -8,7 +8,8 @@ class Transactionpersonasset extends Model
 {
     protected $fillable = [
         'personasset_id', 'transaction_id', 'serial_no', 'sticker', 'qty',
-        'is_warehouse', 'datein', 'dateout', 'remarks', 'to_transaction_id'
+        'is_warehouse', 'datein', 'dateout', 'remarks', 'to_transaction_id',
+        'thru_warehouse'
     ];
 
     public function transaction()

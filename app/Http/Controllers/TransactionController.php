@@ -1960,6 +1960,7 @@ class TransactionController extends Controller
             foreach($transactionpersonassets as $transactionpersonasset) {
                 $transactionpersonasset->dateout = $transaction->delivery_date;
                 $transactionpersonasset->is_warehouse = 0;
+                $transactionpersonasset->thru_warehouse = 1;
                 $transactionpersonasset->save();
             }
         }
@@ -1971,6 +1972,7 @@ class TransactionController extends Controller
             foreach($transactionpersonassets as $transactionpersonasset) {
                 $transactionpersonasset->datein = Carbon::now();
                 $transactionpersonasset->is_warehouse = 1;
+                $transactionpersonasset->thru_warehouse = 1;
                 $transactionpersonasset->save();
             }
         }

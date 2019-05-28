@@ -157,7 +157,7 @@ class PersonassetController extends Controller
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
             ->select(
                 'transactionpersonassets.id AS id', 'transactionpersonassets.transaction_id', 'transactionpersonassets.personasset_id',
-                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks',
+                'transactionpersonassets.serial_no', 'transactionpersonassets.sticker', 'transactionpersonassets.remarks', 'transactionpersonassets.thru_warehouse',
                 'to_transactions.id AS to_transaction_id',
 /*
                 DB::raw(

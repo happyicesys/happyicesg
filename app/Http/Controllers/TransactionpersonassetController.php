@@ -56,12 +56,14 @@ class TransactionpersonassetController extends Controller
         if($transactionpersonasset_id) {
             $transactionpersonasset = Transactionpersonasset::findOrFail($transactionpersonasset_id);
             $transactionpersonasset->to_transaction_id = $transaction_id;
+            $transactionpersonasset->thru_warehouse = 1;
             $transactionpersonasset->save();
             $deliveryorder->from_happyice = 1;
             $deliveryorder->save();
 
             if($transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
                 $transactionpersonasset->dateout = $transaction->deliveryorder->pickup_date;
+                $transactionpersonasset->is_warehouse = 0;
                 $transactionpersonasset->save();
             }
         }else {
@@ -78,6 +80,7 @@ class TransactionpersonassetController extends Controller
                 if($transaction->status != 'Pending' and $transaction->status != 'Confirmed' and $transaction->status != 'Cancelled') {
                     $transactionpersonasset->datein = $transaction->deliveryorder->pickup_date;
                     $transactionpersonasset->is_warehouse = 1;
+                    $transactionpersonasset->thru_warehouse = 1;
                     $transactionpersonasset->save();
                 }
             }
@@ -94,7 +97,9 @@ class TransactionpersonassetController extends Controller
         $deliveryorder = Deliveryorder::where('transaction_id', $transactionpersonasset->to_transaction_id)->first();
         if($deliveryorder) {
             // die(var_dump('here1'));
-            $transactionpersonasset->is_warehouse = 1;
+            if($transactionpersonasset->thru_warehouse == 1) {
+                $transactionpersonasset->is_warehouse = 1;
+            }
             $transactionpersonasset->to_transaction_id = '';
             $transactionpersonasset->dateout = null;
             $transactionpersonasset->save();

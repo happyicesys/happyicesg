@@ -205,6 +205,12 @@
                             <span ng-if="search.sortName == 'total_week' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'total_week' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
+                        <th class="col-md-1 text-center">
+                            <a href="" ng-click="sortTable('thru_warehouse')">
+                            Thru Warehouse?
+                            <span ng-if="search.sortName == 'thru_warehouse' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'thru_warehouse' && search.sortBy" class="fa fa-caret-up"></span>
+                        </th>
                         <th class="col-md-1"></th>
                     </tr>
                     <tbody>
@@ -266,6 +272,9 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{getWeekDifference(data.datein, data.dateout)}}
+                            </td>
+                            <td class="col-md-1 text-center">
+                                <i class="fa fa-check-circle" style="color: green;" ng-if="data.thru_warehouse"></i>
                             </td>
                             <td class="col-md-1 text-center">
                                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver') or auth()->user()->hasRole('operation'))
