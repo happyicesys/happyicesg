@@ -96,9 +96,16 @@ class TransactionpersonassetController extends Controller
         // die(var_dump( $transactionpersonasset->toArray()));
         $deliveryorder = Deliveryorder::where('transaction_id', $transactionpersonasset->to_transaction_id)->first();
         if($deliveryorder) {
-            // die(var_dump('here1'));
-            if($transactionpersonasset->thru_warehouse == 1) {
+            if($deliveryorder->from_happyice or $deliveryorder->to_happyice) {
+                $transactionpersonasset->thru_warehouse = 1;
+            }else {
+                $transactionpersonasset->thru_warehouse = 0;
+            }
+
+            if($deliveryorder->from_happyice) {
                 $transactionpersonasset->is_warehouse = 1;
+            }else {
+                $transactionpersonasset->is_warehouse = 0;
             }
             $transactionpersonasset->to_transaction_id = '';
             $transactionpersonasset->dateout = null;
