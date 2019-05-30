@@ -1185,7 +1185,7 @@ class TransactionController extends Controller
         $transactions = $this->filterFranchiseeTransactionDB($transactions);
 
         // driver not able to see the invoices earlier than today
-        $transactions = $this->filterDriverView($transactions);
+        // $transactions = $this->filterDriverView($transactions);
 
         return $transactions;
     }

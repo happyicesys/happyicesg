@@ -346,7 +346,7 @@ class PersonController extends Controller
             }
         }
 
-        $transactions = $this->filterDriverView($transactions);
+        // $transactions = $this->filterDriverView($transactions);
 
         $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
 
