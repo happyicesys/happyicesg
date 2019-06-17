@@ -188,7 +188,7 @@
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                             </div>
                         </div>
-                        @if(!auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('driver'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('driver', null,

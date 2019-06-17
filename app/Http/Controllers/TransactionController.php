@@ -1185,7 +1185,7 @@ class TransactionController extends Controller
         $transactions = $this->filterFranchiseeTransactionDB($transactions);
 
         // driver not able to see the invoices earlier than today
-        // $transactions = $this->filterDriverView($transactions);
+        $transactions = $this->filterDriverView($transactions);
 
         return $transactions;
     }
@@ -1782,7 +1782,8 @@ class TransactionController extends Controller
     private function filterDriverView($query)
     {
         if(auth()->user()->hasRole('driver')) {
-            $query = $query->whereDate('transactions.delivery_date', '>=', Carbon::today()->toDateString());
+            $query = $query->where('transactions.driver', auth()->user()->name)->orWhere('transactions.driver', null);
+            // $query = $query->whereDate('transactions.delivery_date', '>=', Carbon::today()->toDateString());
         }
 
         return $query;
