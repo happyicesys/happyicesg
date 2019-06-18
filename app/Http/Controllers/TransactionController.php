@@ -2018,6 +2018,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::findOrFail($transaction_id);
         $today = Carbon::now()->format('Y-m-d');
+        $email_list = array();
         $email_list = explode(";", $transaction->deliveryorder->requester_notification_emails);
 
         $email = array_unique($email_list);
