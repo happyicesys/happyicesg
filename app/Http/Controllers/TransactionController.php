@@ -1701,8 +1701,16 @@ class TransactionController extends Controller
         if(request('profile_id')){
             $transactions = $transactions->where('profiles.id', request('profile_id'));
         }
+/*
         if(request('custcategory')) {
             $transactions = $transactions->where('custcategories.id', request('custcategory'));
+        } */
+        if (request('custcategory')) {
+            $custcategory = request('custcategory');
+            if (count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+            $transactions = $transactions->whereIn('custcategories.id', $custcategory);
         }
 
         // add in franchisee checker
