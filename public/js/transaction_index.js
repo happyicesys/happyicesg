@@ -34,7 +34,7 @@ var app = angular.module('app', [
             requested_to: $scope.requestto,
             driver: '',
             custcategory: '',
-            person_active: 'Yes',
+            person_active: ['Yes'],
             do_po: '',
             requester_name: '',
             pickup_location_name: '',

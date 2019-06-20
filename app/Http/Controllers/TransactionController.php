@@ -1718,9 +1718,16 @@ class TransactionController extends Controller
                 $transactions = $transactions->where('people.franchisee_id', 0);
             }
         }
-
+/*
         if (request('person_active')) {
             $transactions = $transactions->where('people.active', request('person_active'));
+        } */
+        if (request('person_active')) {
+            $personstatus = request('person_active');
+            if (count($personstatus) == 1) {
+                $personstatus = [$personstatus];
+            }
+            $transactions = $transactions->whereIn('people.active', $personstatus);
         }
 
         if(request('do_po')) {

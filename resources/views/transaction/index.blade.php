@@ -235,7 +235,7 @@
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
-                            <select name="person_active" id="person_active" class="select form-control" ng-model="search.person_active" ng-change="searchDB()">
+                            <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
                                 <option value="">All</option>
                                 <option value="Yes">Active</option>
                                 @if(!auth()->user()->hasRole('driver'))
