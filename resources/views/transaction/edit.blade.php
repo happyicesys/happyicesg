@@ -134,19 +134,20 @@
                             $state = 2;
                             break;
                         case 'Delivered':
+                            $state = 3;
                         case 'Verified Owe':
                         case 'Verified Paid':
                             if($pay_status === 'Paid') {
-                                $state = 5;
+                                $state = 6;
                             }else {
-                                $state = 3;
+                                $state = 4;
                             }
                             break;
                         case 'Cancelled':
-                            $state = 4;
+                            $state = 5;
                             break;
                         default:
-                            $state = 6;
+                            $state = 7;
                     }
                 }
             @endphp
@@ -198,7 +199,7 @@
                     </div>
                 </div>
             </div>
-            @elseif($state === 3)
+            @elseif($state === 3 or $state === 4)
             <div class="col-md-12">
                 <div class="row">
                     <div class="pull-left">
@@ -211,6 +212,11 @@
                         @endcan
                     </div>
                     <div class="pull-right">
+
+{{--                      disabled because complication, inventory changes
+                        @if($state === 3 and auth()->user()->hasRole('admin')) {
+                            <a href="/transaction/revert/confirm/{{$transaction->id}}" class="btn btn-warning">Un-Delivered</a>
+                        } --}}
                         @if(!auth()->user()->hasRole('hd_user'))
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher'))
                         {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
@@ -226,7 +232,7 @@
                     </div>
                 </div>
             </div>
-            @elseif($state === 4)
+            @elseif($state === 5)
             <div class="col-md-12">
                 <div class="row">
                     <div class="pull-right">
@@ -240,7 +246,7 @@
                     </div>
                 </div>
             </div>
-            @elseif($state === 5)
+            @elseif($state === 6)
             <div class="col-md-12">
                 <div class="row">
                     <div class="pull-left">
@@ -268,7 +274,7 @@
                     </div>
                 </div>
             </div>
-            @elseif($state === 6)
+            @elseif($state === 7)
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="row">
                     <div class="pull-right">

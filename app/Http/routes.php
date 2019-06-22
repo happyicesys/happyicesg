@@ -136,6 +136,7 @@ Route::delete('/api/variances/{id}/delete', 'FreportController@destroyVarianceAp
 Route::post('/api/franchisee/people', 'FreportController@getFranchiseePeopleApi');
 Route::match(['get', 'post'], '/franrpt', 'FreportController@getInvoiceBreakdownDetail');
 
+
 Route::post('/api/franchisee/edit/{ftransaction_id}', 'FtransactionController@editApi');
 Route::delete('/api/franchisee/entry/{id}/delete', 'FtransactionController@destroyApi');
 Route::post('/api/franchisee/submitEntry', 'FtransactionController@submitEntry');
@@ -335,6 +336,7 @@ Route::post('/api/pricematrix/costrate/edit', 'PriceController@editCostrateApi')
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::get('/transaction/revert/confirm/{transaction_id}', 'TransactionController@revertToConfirmStatus');
 Route::post('/transaction/export/accconsolidate/pdf', 'TransactionController@exportAccConsolidatePdf');
 Route::get('/transaction/email/subscription', 'TransactionController@subscibeTransactionEmail');
 Route::get('/api/transaction/email/subscription', 'TransactionController@subscibeTransactionEmailApi');

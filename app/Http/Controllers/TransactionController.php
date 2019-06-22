@@ -1141,8 +1141,17 @@ class TransactionController extends Controller
         File::delete(public_path().$transaction->sign_url);
         $transaction->sign_url = null;
         $transaction->save();
+    }
 
+    // revert transaction status to confirmed(int transaction_id)
+    public function revertToConfirmStatus($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        $transaction->status = 'Confirmed';
+        $transaction->pay_status = 'Owe';
+        $transaction->save();
 
+        return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
     // retrieve transactions data ()
