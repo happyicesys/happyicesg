@@ -3,6 +3,7 @@
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
 @inject('persontags', 'App\Persontag')
+@inject('users', 'App\User')
 
 @extends('template')
 @section('title')
@@ -191,6 +192,17 @@
                         @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('driver'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                                <option value="">All</option>
+                                @foreach($users::orderBy('name')->get() as $user)
+                                    @if($user->hasRole('driver') and count($user->profiles) > 0)
+                                        <option value="{{$user->name}}">
+                                            {{$user->name}}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+{{--
                             {!! Form::text('driver', null,
                                                             [
                                                                 'id'=>'updated_at',
@@ -199,7 +211,7 @@
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Delivered By',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
-                                                            ]) !!}
+                                                            ]) !!} --}}
                         </div>
                         @endif
                     </div>
