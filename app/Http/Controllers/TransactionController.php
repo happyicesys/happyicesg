@@ -1806,7 +1806,10 @@ class TransactionController extends Controller
     private function filterDriverView($query)
     {
         if(auth()->user()->hasRole('driver')) {
-            $query = $query->where('transactions.driver', auth()->user()->name)->orWhere('transactions.driver', null);
+            $query = $query->where(function($query) {
+                $query->where('transactions.driver', auth()->user()->name)
+                    ->orWhere('transactions.driver', null);
+            });
             // $query = $query->whereDate('transactions.delivery_date', '>=', Carbon::today()->toDateString());
         }
 
