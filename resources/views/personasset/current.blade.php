@@ -205,6 +205,11 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 <i class="fa fa-check-circle" style="color: green;" ng-if="data.to_transaction_id"></i>
+                                <span ng-if="data.to_transaction_id">
+                                    <a href="/transaction/@{{ data.to_transaction_id }}/edit">
+                                        @{{ data.to_transaction_id }}
+                                    </a>                                    
+                                </span>
                             </td>
 {{--
                             <td class="col-md-1 text-center">

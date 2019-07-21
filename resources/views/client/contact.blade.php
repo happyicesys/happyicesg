@@ -10,7 +10,7 @@ Healthier Life
             <strong>Happy Ice Logistics Pte Ltd</strong>
             <p>
             Blk 2021, #01-198, Bukit Batok St 23, 659526 <br>
-            TEL: 6563 1692 / 9777 3533
+            TEL: 9697 7973 / 9777 3533
             </p>
         </span>
 {{--         <iframe width="600" height="450" frameborder="1" style="border:0"
