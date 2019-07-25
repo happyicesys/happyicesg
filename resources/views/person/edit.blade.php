@@ -192,7 +192,7 @@
                         $disable = false;
 
                         if($person->cust_id[0] === 'H') {
-                            $disable = true;
+                            $disable = false;
                         }
 
                         if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB') {
