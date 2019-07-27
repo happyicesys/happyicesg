@@ -152,7 +152,7 @@ if (document.querySelector('#d2dorderController')) {
         return (parseFloat(this.subtotal) + parseFloat(this.delivery)).toFixed(2)
       },
       disableNext() {
-        if (this.total < 50) {
+        if (this.totalqty < 20) {
           return true
         } else {
           return false
