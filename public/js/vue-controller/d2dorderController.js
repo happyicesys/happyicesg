@@ -235,7 +235,29 @@ if (document.querySelector('#d2dorderController')) {
         }, {
           id: 10,
           text: '10'
+        }, {
+          id: 15,
+          text: '15'
+        }, {
+          id: 20,
+          text: '20'
+        }, {
+          id: 25,
+          text: '25'
+        }, {
+          id: 30,
+          text: '30'
+        }, {
+          id: 40,
+          text: '40'
+        }, {
+          id: 50,
+          text: '50'
+        }, {
+          id: 100,
+          text: '100'
         },
+        
         ],
         prev_amount: 0,
         amount: 0,
