@@ -80,7 +80,10 @@
                 <li>
                     <a class="page-scroll" style="color: white;" href="/d2d">Online Order</a>
                 </li>
-                @endif
+                <li>
+                    <a class="page-scroll" style="color: yellow;" href="https://form.jotform.me/kentzo/bobaicecream">Brown Sugar Pear Milk Tea Order</a>
+                </li>
+                @endif                
                 @if($recruitment_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>
