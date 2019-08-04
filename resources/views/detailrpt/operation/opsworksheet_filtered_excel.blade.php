@@ -12,6 +12,8 @@
         <th>Inv#</th>
         <th>Ops Note</th>
         <th>Zone</th>
+        <th>Lat</th>
+        <th>Lng</th>
         @foreach($dates as $date)
         <th>
             {{\Carbon\Carbon::parse($date)->format('y-m-d')}} ({{\Carbon\Carbon::parse($date)->format('D')}})
@@ -62,6 +64,12 @@
             @endphp
             <td>{{$person->operation_note}}</td>
             <td>{{$zoneStr}}</td>
+            <td>
+                {{$person->del_lat}}
+            </td>
+            <td>
+                {{$person->del_lng}}
+            </td>
             @foreach($alldata[$indexpeople] as $data)
             @php
                 $color = $data['color'];

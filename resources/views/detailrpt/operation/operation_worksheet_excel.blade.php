@@ -8,6 +8,8 @@
         <th>ID Name</th>
         <th>Category</th>
         <th>Note</th>
+        <th>Lat</th>
+        <th>Lng</th>
         @foreach($dates as $date)
         <th>
             {{\Carbon\Carbon::parse($date)->format('y-m-d')}} ({{\Carbon\Carbon::parse($date)->format('D')}})
@@ -25,6 +27,8 @@
             <td>{{$person->company}}</td>
             <td>{{$person->custcategory}}</td>
             <td>{{$person->operation_note}}</td>
+            <td>{{$person->del_lat}}</td>
+            <td>{{$person->del_lng}}</td>
 
         @foreach($alldata[$indexpeople] as $data)
 
