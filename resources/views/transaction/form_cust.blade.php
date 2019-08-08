@@ -10,7 +10,6 @@
                 {{$transaction->person->cust_id}} - {{$transaction->person->company}}
             </a>
         </label>
-{{--            @endif --}}
         {!! Form::text('person_id', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
         {!! Form::text('person_copyid', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
         {!! Form::text('person_code', '@{{form.cust_id}}', ['class'=>'hidden form-control']) !!}
@@ -76,18 +75,6 @@
         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
-{{--
-                    <datepicker datepicker-mobile="true">
-                        <input
-                            type = "text"
-                            class = "form-control"
-                            placeholder = "Order Date"
-                            ng-model = "form.order_date"
-                            ng-change = "dateChanged('order_date', form.order_date)"
-                            readonly
-                        />
-                    </datepicker> --}}
-
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
@@ -100,47 +87,14 @@
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
-{{--
-                <div class="input-group">
-                    <datepicker datepicker-mobile="true">
-                        <input
-                            type = "text"
-                            class = "form-control"
-                            placeholder = "Delivery Date"
-                            ng-model = "form.delivery_date"
-                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
-                            readonly
-                        />
-                    </datepicker>
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div> --}}
             </div>
         @else
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
                 {!! Form::label('form.order_date', 'Order On', ['class'=>'control-label']) !!}
-{{--
-                    <datepicker datepicker-mobile="true">
-                        <input
-                            type = "text"
-                            class = "form-control"
-                            placeholder = "Order Date"
-                            ng-model = "form.order_date"
-                            ng-change = "dateChanged('order_date', form.order_date)"
-                            readonly
-                        />
-                    </datepicker> --}}
                 <div class="input-group date">
                     {!! Form::text('order_date', null, ['class'=>'form-control', 'id'=>'order_date', 'disabled'=> $disabled, 'ng-model'=>'form.order_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
-{{--
-                <input type=text
-                    placeholder='YYYY-MM-DD'
-                    maxlength="10"
-                    class='form-control'
-                    ng-model='form.order_date'
-                /> --}}
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12 form-group">
@@ -149,22 +103,6 @@
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
-{{--
-                <div class="input-group">
-                    <datepicker datepicker-mobile="true">
-                        <input
-                            type = "text"
-                            name = "delivery_date"
-                            class = "form-control"
-                            placeholder = "Delivery Date"
-                            ng-model = "form.delivery_date"
-                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
-                            {{$disabledStr}}
-                        />
-                    </datepicker>
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div> --}}
             </div>
         @endif
         @else
@@ -175,21 +113,6 @@
                     {!! Form::text('delivery_date', null, ['class'=>'form-control', 'id'=>'delivery_date', 'disabled'=> $disabled, 'ng-model'=>'form.delivery_date']) !!}
                     <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
                 </div>
-{{--
-                <div class="input-group">
-                    <datepicker datepicker-mobile="true">
-                        <input
-                            name = "delivery_date"
-                            type = "text"
-                            class = "form-control"
-                            placeholder = "Delivery Date"
-                            ng-model = "form.delivery_date"
-                            ng-change = "dateChanged('delivery_date', form.delivery_date)"
-                        />
-                    </datepicker>
-                    <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_date', form.delivery_date)"></span>
-                    <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_date', form.delivery_date)"></span>
-                </div> --}}
             </div>
             @endif
         @endif
@@ -203,11 +126,6 @@
             </div>
 
             @if($transaction->is_deliveryorder)
-{{--
-                <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('created_by', 'Requested By', ['class'=>'control-label']) !!}
-                    {!! Form::text('created_by', \App\User::find($transaction->deliveryorder->requester)->name, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-                </div> --}}
 
                 @if($transaction->status != 'Pending')
                 <div class="col-md-3 col-xs-6 form-group">
@@ -345,12 +263,6 @@
             <div class="col-md-4 form-group">
                 {!! Form::label('requester_name', 'Requester Name', ['class'=>'control-label']) !!}
                 <label for="required" class="control-label" style="color:red;">*</label>
-{{--                 {!! Form::text('requester_name', $transaction->deliveryorder->requester_name, ['class'=>'form-control', 'ng-model'=>'doform.requester_name', 'disabled' => $dodisable]) !!}
-                <select name="requester_name" class="select form-control" ng-model="doform.requester_name">
-                    <option ng-repeat="user in requesterSelection" value="@{{user.name}}" ng-selected="doform.requester_name == user.name ? true : false">
-                        @{{user.name}}
-                    </option>
-                </select> --}}
                 {!! Form::select('requester_name',
                     [
                         ''=>null,
@@ -486,13 +398,6 @@
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
                     {!! Form::label('pickup_date', 'Requested Pickup Date', ['class'=>'control-label']) !!}
                     <label for="required" class="control-label" style="color:red;">*</label>
-                    {{-- <div class="input-group date"> --}}
-                        {{-- {!! Form::text('pickup_date', $transaction->deliveryorder->pickup_date ? $transaction->deliveryorder->pickup_date : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'pickup_date', 'ng-model'=>'doform.pickup_date']) !!} --}}
-{{--
-                        <datepicker
-                        date-min-limit="{{\Carbon\Carbon::today()->toDateString()}}"
-                        date-format="yyyy-MM-dd"
-                        > --}}
                         <datepicker
                         date-format="yyyy-MM-dd"
                         datepicker-mobile="true"
@@ -507,8 +412,6 @@
                                 {{$dodisableStr}}
                             />
                         </datepicker>
-                        {{-- <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span> --}}
-                    {{-- </div> --}}
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
@@ -556,7 +459,6 @@
                     <div class="form-group">
                         {!! Form::label('from_happyice', 'From Happyice Warehouse', ['class'=>'control-label']) !!}
                         <br>
-                        {{-- {!! Form::checkbox('from_happyice', $transaction->deliveryorder->from_happyice, null, ['ng-model'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!} --}}
                         {!! Form::checkbox('from_happyice', 1, $transaction->deliveryorder->from_happyice ? true : false, ['ng-model'=>'doform.from_happyice', 'ng-checked'=>'doform.from_happyice', 'ng-change'=>'onFromHappyiceChanged()', 'disabled' => $dodisable, 'ng-disabled'=>'alldata.length != 0']) !!}
                         <input type="hidden" name="from_happyice" ng-value="doform.from_happyice">
                     </div>
@@ -593,10 +495,6 @@
                 <div class="col-md-4 col-sm-4 col-xs-12 form-group">
                     {!! Form::label('delivery_date1', 'Requested Delivery Date', ['class'=>'control-label']) !!}
                     <input type="text" name="delivery_date1" class="form-control" ng-model="doform.pickup_date" readonly>
-{{--                     <div class="input-group date">
-                        {!! Form::text('delivery_date1', $transaction->deliveryorder->delivery_date1 ? $transaction->deliveryorder->delivery_date1 : \Carbon\Carbon::today(), ['class'=>'form-control', 'id'=>'delivery_date1']) !!}
-                        <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                    </div> --}}
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
@@ -637,9 +535,6 @@
                         {!! Form::text('delivery_postcode', $transaction->deliveryorder->delivery_postcode, ['class'=>'form-control', 'ng-model'=>'doform.delivery_postcode', 'disabled' => $dodisable]) !!}
                     </div>
                 </div>
-{{--                     @php
-                        dd($transaction->deliveryorder->to_happyice);
-                    @endphp --}}
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('to_happyice', 'To Happyice Warehouse', ['class'=>'control-label']) !!}
