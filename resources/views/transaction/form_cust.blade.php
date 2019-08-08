@@ -320,7 +320,7 @@
         <div class="row">
             <div class="col-md-12 form-group">
                 {!! Form::label('requester_name', 'Send Delivered Notification Email (Optional)', ['class'=>'control-label']) !!}
-                {!! Form::text('requester_notification_emails', $transaction->deliveryorder->requester_notification_emails, ['class'=>'form-control', 'ng-model'=>'doform.requester_notification_emails', 'disabled' => $dodisable]) !!}
+                {!! Form::text('requester_notification_emails', null, ['class'=>'form-control', 'ng-model'=>'doform.requester_notification_emails', 'disabled' => $dodisable]) !!}
                 <label for="required" class="control-label" style="color:black;">
                     <em>
                         **Please separate with ; if there's more than one email address
