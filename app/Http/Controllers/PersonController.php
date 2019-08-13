@@ -323,9 +323,9 @@ class PersonController extends Controller
             ->select(
                 DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                 DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
-                'transactions.delivery_fee', 'transactions.id AS id', 'transactions.status AS status', 'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver', 'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status', 'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at', 'transactions.created_at AS created_at', 'transactions.pay_method', DB::raw('DATE(transactions.delivery_date) AS del_date'),
-                'people.cust_id', 'people.company', 'people.del_postcode', 'people.id as person_id',
-                'profiles.name',
+                'transactions.delivery_fee', 'transactions.id AS id', 'transactions.status AS status', 'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver', 'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status', 'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at', 'transactions.created_at AS created_at', 'transactions.pay_method', DB::raw('DATE(transactions.delivery_date) AS del_date'), 'transactions.po_no', 'transactions.del_postcode', 'transactions.name', 'transactions.contact',
+                'people.cust_id', 'people.company', 'people.id as person_id',
+                'profiles.name AS profile_name',
                 'transactions.gst',
                 'transactions.gst_rate',
                 'people.is_vending',
@@ -338,7 +338,7 @@ class PersonController extends Controller
         // }
 
         // reading whether search input is filled
-        if ($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver) {
+        if ($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver or $request->po_no) {
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         } else {
             if ($request->sortName) {
@@ -762,6 +762,7 @@ class PersonController extends Controller
         $delivery_from = $request->delivery_from;
         $delivery_to = $request->delivery_to;
         $driver = $request->driver;
+        $po_no = $request->po_no;
 
         if($id) {
             $transactions = $transactions->where('transactions.id', 'LIKE', '%' . $id . '%');
@@ -780,6 +781,9 @@ class PersonController extends Controller
         }
         if($driver) {
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%' . $driver . '%');
+        }
+        if($po_no) {
+            $transactions = $transactions->where('transactions.po_no', 'LIKE', '%' . $po_no . '%');
         }
         return $transactions;
     }
