@@ -43,6 +43,7 @@
                 $profile_access = false;
                 $user_access = false;
                 $detailrpt_access = false;
+                $dailyreport_access = false;
                 $report_access = false;
                 $operation_access = false;
                 $dtd_access = false;
@@ -100,6 +101,7 @@
                         $dtd_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
+                        $dailyreport_access = true;
                     }
 
                     if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin')) {
@@ -114,6 +116,7 @@
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $vending_access = true;
+                        $dailyreport_access = true;
                     }
 
                     if(auth()->user()->hasRole('supervisor_msia')) {
@@ -127,6 +130,7 @@
                         $jobcard_access = true;
                         $vending_access = true;
                         $operation_access = true;
+                        $dailyreport_access = true;
                     }
 
                     if(auth()->user()->can_access_inv) {
@@ -154,6 +158,7 @@
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $vending_access = true;
+                        $dailyreport_access = true;
                     }
 
                     if(auth()->user()->hasRole('operation')) {
@@ -170,6 +175,7 @@
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
+                        $dailyreport_access = true;
                     }
                 }
             @endphp
@@ -230,6 +236,11 @@
                             <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
                             <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
                         </ul>
+                    </li>
+                @endif
+                @if($dailyreport_access)
+                    <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
+                        <a href="/dailyreport/index"><i class="fa fa-flag"></i> Daily Report</a>
                     </li>
                 @endif
                 @if($report_access)

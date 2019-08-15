@@ -445,6 +445,9 @@ Route::get('/api/transactionpersonasset/index/{transaction_id}', 'Transactionper
 Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
 
+Route::get('/dailyreport/index', 'DailyreportController@index');
+Route::post('/api/dailyreport/index', 'DailyreportController@indexApi');
+
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');
 Route::resource('freezer', 'FreezerController');

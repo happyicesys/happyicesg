@@ -169,6 +169,12 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
+        if($transaction->person->cust_id[0] === 'P'){
+            $this->validate($reqeust, [
+                'po_no' => 'unique'
+            ]);
+        }
+
         // check profile is vending then analog required
         if($transaction->person->is_vending) {
             $transaction->is_required_analog = 1;
