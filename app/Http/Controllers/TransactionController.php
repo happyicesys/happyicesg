@@ -1802,6 +1802,14 @@ class TransactionController extends Controller
             }
         }
 
+        if(request('po_no')) {
+            $transactions = $transactions->where('transactions.po_no', 'LIKE',  '%'.request('po_no').'%');
+        }
+
+        if(request('contact')) {
+            $transactions = $transactions->where('transactions.contact', 'LIKE',  '%'.request('contact').'%');
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

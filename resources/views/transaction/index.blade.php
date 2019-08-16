@@ -329,6 +329,28 @@
                                 <option value="3">Others</option>
                             </select>
                         </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('po_no', 'PO Num', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('po_no', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.po_no',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'PO Num',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('contact', 'Attn Contact', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('contact', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.contact',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Attn Contact',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
 {{--
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
