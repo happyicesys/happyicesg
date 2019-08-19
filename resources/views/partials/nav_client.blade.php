@@ -77,13 +77,15 @@
                 </li>
                 @endif
                 @if($online_order_access)
+{{--
                 <li>
                     <a class="page-scroll" style="color: white;" href="/d2d">Online Order</a>
-                </li>
+                </li> --}}
+
                 <li>
                     <a class="page-scroll" style="color: yellow;" href="https://form.jotform.me/kentzo/bobaicecream">Brown Sugar Pear Milk Tea Order</a>
                 </li>
-                @endif                
+                @endif
                 @if($recruitment_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>
@@ -125,7 +127,7 @@
                 @if($vend_complain_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/vendcomplain">Vending Complain</a>
-                </li>                
+                </li>
                 @endif
             </ul>
         </div>
