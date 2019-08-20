@@ -307,7 +307,13 @@
                 {!! Form::label('po_no', 'PO Number', ['class'=>'control-label']) !!}
                 <label for="required" class="control-label" style="color:red;">*</label>
                 {!! Form::select('po_no',
-                    [''=>null, '4505160978_(FSI)'=>'4505160978 (FSI)', '4505160966_(Retail)'=>'4505160966 (Retail)'],
+                    [
+                        ''=>null,
+                        '4505160978_(FSI)'=>' 4505160978 (FSI) (OLD)',
+                        '4505577932_(FSI)'=>' 4505577932 (FSI) (NEW)',
+                        '4505160966_(Retail)'=>'4505160966 (Retail) (OLD)',
+                        '4505577917_(Retail)'=>'4505577917 (Retail) (NEW)'
+                    ],
                     $transaction->deliveryorder->po_no,
                     [
                         'class'=>'select form-control',
