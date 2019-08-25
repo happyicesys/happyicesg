@@ -170,7 +170,7 @@ class TransactionController extends Controller
         }
 
         if($transaction->person->cust_id[0] === 'P'){
-            $this->validate($reqeust, [
+            $this->validate($request, [
                 'po_no' => 'unique'
             ]);
         }
