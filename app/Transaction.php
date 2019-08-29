@@ -22,7 +22,7 @@ class Transaction extends Model
     protected $dontKeepRevisionOf = array(
         'person_id', 'name', 'cancel_trace',
         'dtdtransaction_id', 'delivery_fee', 'is_required_analog', 'ftransaction_id', 'is_vending_generate',
-        'is_deliveryorder'
+        'is_deliveryorder', 'driver_id'
     );
 
     protected $revisionEnabled = true;
@@ -60,7 +60,8 @@ class Transaction extends Model
         'analog_clock' => 'Analog Clock',
         'balance_coin' => 'Balance Coin',
         'is_freeze' => 'Date Freeze',
-        'sign_url' => 'Signature'
+        'sign_url' => 'Signature',
+
     );
 
     protected $fillable=[
@@ -70,7 +71,8 @@ class Transaction extends Model
         'paid_at', 'cancel_trace', 'dtdtransaction_id', 'contact', 'del_postcode', 'delivery_fee',
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
-        'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url'
+        'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
+        'driver_id'
     ];
 
     protected $dates =[

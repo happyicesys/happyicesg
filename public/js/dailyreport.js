@@ -28,7 +28,10 @@ var app = angular.module('app', [
             status: 'Delivered',
             tag: '',
             driver: '',
-            user: ''
+            user: '',
+            pageNum: 100,
+            sortBy: true,
+            sortName: ''
         }
         // init page load
         getPage();
@@ -49,9 +52,28 @@ var app = angular.module('app', [
             saveAs(blob, "Daily Report"+ now + ".xls");
         };
 
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
           // when hitting search button
         $scope.searchDB = function(){
-            getPage();
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
+            getPage(1, false);
         }
 
         $scope.dateFromChanged = function(date){
@@ -77,15 +99,27 @@ var app = angular.module('app', [
         }
 
         // retrieve page w/wo search
-        function getPage(){
+        function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/dailyreport/index', $scope.search).success(function(data){
-                // return total amount
+            $http.post('/api/dailyreport/index?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.alldeals.data){
+                    $scope.alldata = data.alldeals.data;
+                    $scope.totalCount = data.alldeals.total;
+                    $scope.currentPage = data.alldeals.current_page;
+                    $scope.indexFrom = data.alldeals.from;
+                    $scope.indexTo = data.alldeals.to;
+                }else{
+                    $scope.alldata = data.alldeals;
+                    $scope.totalCount = data.alldeals.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.alldeals.length;
+                }
                 $scope.subtotal = data.subtotal;
                 $scope.today_total = data.today_total;
                 $scope.yesterday_total = data.yesterday_total;
                 $scope.last_two_day_total = data.last_two_day_total;
-                $scope.commission = data.commission;
+                $scope.totalcommission = data.totalcommission;
                 $scope.spinner = false;
             });
         }

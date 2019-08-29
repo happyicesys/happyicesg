@@ -136,20 +136,28 @@
             </div>
         </div>
         <div class="row">
-
             <div class="col-md-4 col-sm-6 col-xs-12">
                 {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" {{auth()->user()->hasRole('driver') ? 'readonly' : ''}}>
                     <option value="">All</option>
                     @foreach($users::orderBy('name')->get() as $user)
                         @if($user->hasRole('driver') and count($user->profiles) > 0)
-                            <option value="{{$user->name}}">
+
+                            <option value="{{$user->name}}" {{auth()->user()->hasRole('driver') && $user->name == auth()->user()->name ? 'selected' : ''}}>
                                 {{$user->name}}
                             </option>
                         @endif
                     @endforeach
                 </select>
             </div>
+{{--
+            @foreach($users::orderBy('name')->get() as $user)
+            @php
+                if($user->name == auth()->user()->name) {
+                    dd(auth()->user()->hasRole('driver'), $user->name, auth()->user()->name);
+                }
+            @endphp
+            @endforeach --}}
 {{--
             @unless(Auth::user()->hasRole('driver'))
                 <div class="col-md-4 col-sm-6 col-xs-12">
@@ -180,53 +188,98 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                Total
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ subtotal ? subtotal : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-12 col-xs-12" style="padding-top: 20px;">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                Today
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ today_total ? today_total : 0.00 | currency: "": 2}}</strong>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    <strong>
+                        SubTotal
+                    </strong>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ subtotal ? subtotal : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                Yesterday
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ yesterday_total ? yesterday_total : 0.00 | currency: "": 2}}</strong>
+
+        <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    <strong>
+                        Commission ($)
+                    </strong>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ totalcommission ? totalcommission : 0.00 | currency: "": 2}}</strong>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                Last 2 days
+
+        <div class="col-md-4 col-xs-12 text-right">
+            <div class="row">
+                <label for="display_num">Display</label>
+                <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+                    <option ng-value="100">100</option>
+                    <option ng-value="200">200</option>
+                    <option ng-value="All">All</option>
+                </select>
+                <label for="display_num2" style="padding-right: 20px">per Page</label>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ last_two_day_total ? last_two_day_total : 0.00 | currency: "": 2}}</strong>
+            <div class="row">
+                <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
             </div>
         </div>
     </div>
 
-    <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 50px;">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                <strong>
-                    Commission ($)
-                </strong>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ commission ? commission : 0.00 | currency: "": 2}}</strong>
-            </div>
+    <div id="" class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 20px;">
+        <table class="table table-list-search table-hover table-bordered">
+            <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    #
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('delivery_date')">
+                    Delivery Date
+                    <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('driver')">
+                    Delivered By
+                    <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('total')">
+                    Amount
+                    <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+            </tr>
+
+            <tbody>
+                <tr dir-paginate="deal in alldata | itemsPerPage:itemsPerPage" pagination-id="dailyreport" total-items="totalCount" current-page="currentPage">
+                    <td class="col-md-1 text-center">
+                        @{{ $index + indexFrom }}
+                    </td>
+                    <td class="col-md-1 text-left">
+                        @{{ deal.delivery_date }}
+                    </td>
+                    <td class="col-md-1 text-left">
+                        @{{ deal.driver }}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ deal.total | currency: "": 2}}
+                    </td>
+                </tr>
+                <tr ng-if="!alldata || alldata.length == 0">
+                    <td colspan="14" class="text-center">No Records Found</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <dir-pagination-controls max-size="5" pagination-id="dailyreport" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
     </div>
 </div>

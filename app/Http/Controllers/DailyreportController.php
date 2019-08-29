@@ -34,9 +34,9 @@ class DailyreportController extends Controller
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
             ->select(
-                'deals.amount'
+                'transactions.total', 'transactions.driver', 'transactions.status',
+                DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
             );
-
 
         if($request->profile_id) {
             $deals = $deals->where('profiles.id', $request->profile_id);
@@ -53,6 +53,10 @@ class DailyreportController extends Controller
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
         }
+        if($request->driver) {
+            $deals = $deals->where('transactions.driver', $request->driver);
+        }
+
         if ($request->custcategory) {
             $custcategory = $request->custcategory;
             if (count($custcategory) == 1) {
@@ -85,21 +89,26 @@ class DailyreportController extends Controller
             }
         }
 
+        $alldeals = clone $deals;
         $subtotal_query = clone $deals;
-        $today_query = clone $deals;
-        $yesterday_query = clone $deals;
-        $last_two_day_query = clone $deals;
         $commission_query = clone $deals;
         $commission_rate = 0;
         $commission = 0;
+        $totalcommission = 0;
+        $subtotal = 0;
 
-        $subtotal = $subtotal_query->sum('amount');
-        $today_total = $today_query->where('transactions.delivery_date', Carbon::today()->toDateString())->sum('amount');
-        $yesterday_total = $yesterday_query->where('transactions.delivery_date', Carbon::today()->subDay()->toDateString())->sum('amount');
-        $last_two_day_total = $last_two_day_query->where('transactions.delivery_date', Carbon::today()->subDays(2)->toDateString())->sum('amount');
+        $alldeals = $alldeals
+            ->groupBy('transactions.delivery_date')
+            ->groupBy('transactions.driver')
+            ->orderBy('transactions.delivery_date', 'desc')
+            ->orderBy('transactions.driver');
 
-        if($request->driver) {
-            $user = User::where('name', $request->driver)->first();
+        $subtotal_query = clone $alldeals;
+        $subtotalArr = $subtotal_query->get();
+
+        foreach($subtotalArr as $dealtotal) {
+
+            $user = User::where('name', $dealtotal->driver)->first();
 
             if($user) {
                 if($user->hasRole('driver')) {
@@ -114,17 +123,27 @@ class DailyreportController extends Controller
                     $commission_rate = 0.004;
                 }
 
-                $commission = $subtotal * $commission_rate;
+                $commission = $dealtotal->total * $commission_rate;
             }
+            $totalcommission += $commission;
+            $subtotal += $dealtotal->total;
+        }
+
+        if($request->sortName){
+            $alldeals = $alldeals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+        if($pageNum == 'All'){
+            $alldeals = $alldeals->get();
+        }else{
+            $alldeals = $alldeals->paginate($pageNum);
         }
 
         $data = [
+            'alldeals' => $alldeals,
             'subtotal' => $subtotal,
-            'today_total' => $today_total,
-            'yesterday_total' => $yesterday_total,
-            'last_two_day_total' => $last_two_day_total,
-            'yesterday_total' => $yesterday_total,
-            'commission' => $commission
+            'totalcommission' => $totalcommission
         ];
 
         return $data;
