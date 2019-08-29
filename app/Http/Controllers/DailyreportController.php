@@ -35,7 +35,7 @@ class DailyreportController extends Controller
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
             ->select(
                 'transactions.total', 'transactions.driver', 'transactions.status',
-                DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
+                DB::raw('DATE(transactions.delivery_date) AS delivery_date')
             );
 
         if($request->profile_id) {
