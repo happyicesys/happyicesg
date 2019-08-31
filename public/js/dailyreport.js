@@ -79,12 +79,14 @@ var app = angular.module('app', [
         $scope.dateFromChanged = function(date){
             if(date){
                 $scope.search.date_from = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.searchDB();
             }
         }
 
         $scope.dateToChanged = function(date){
             if(date){
                 $scope.search.date_to = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.searchDB();
             }
         }
 
