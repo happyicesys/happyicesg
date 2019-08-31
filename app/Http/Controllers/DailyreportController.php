@@ -27,15 +27,24 @@ class DailyreportController extends Controller
     // return daily report index api
     public function indexApi(Request $request)
     {
+
+        $totalRaw = DB::raw("(SELECT SUM(transactions.total) AS total, transactions.driver, transactions.delivery_date FROM transactions
+                    GROUP BY transactions.delivery_date, transactions.driver) totalRaw");
+
         $deals = DB::table('deals')
             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+            ->leftJoin($totalRaw, function($join) {
+                $join->on('totalRaw.driver', '=', 'transactions.driver');
+                $join->on('totalRaw.delivery_date', '=', 'transactions.delivery_date');
+            })
             ->select(
-                'transactions.total', 'transactions.driver', 'transactions.status',
-                DB::raw('DATE(transactions.delivery_date) AS delivery_date')
+                'transactions.driver', 'transactions.status',
+                DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
+                'totalRaw.total'
             );
 
         if($request->profile_id) {
@@ -80,7 +89,7 @@ class DailyreportController extends Controller
 
             }
         } */
-
+        // dd($deals->get());
         if($request->driver) {
             if(auth()->user()->hasRole('driver')) {
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
