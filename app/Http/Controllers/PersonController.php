@@ -886,7 +886,7 @@ class PersonController extends Controller
     // logic applicable for driver on transactions view
     private function filterDriverView($query)
     {
-        if (auth()->user()->hasRole('driver')) {
+        if (auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query = $query->whereDate('transactions.delivery_date', '>=', Carbon::today()->toDateString());
         }
 

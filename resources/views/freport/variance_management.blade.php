@@ -221,7 +221,7 @@
                                     <textarea name="reasons[@{{variance.id}}]" class="form-control" style='min-width: 200px; align-content: left; font-size: 12px;' rows="2" ng-model="variance.reason" ng-change="changeReasons(variance.id, variance.remarks)" ng-model-options="{ debounce: 600 }"></textarea>
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @if(!auth()->user()->hasRole('driver'))
+                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(ftransaction.id)"><i class="fa fa-times"></i></button>
                                     @endif
                                 </td>

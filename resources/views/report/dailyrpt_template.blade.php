@@ -78,7 +78,7 @@
                 !!}
             </div>
             {{-- driver can only view himself --}}
-            @unless(Auth::user()->hasRole('driver'))
+            @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                 <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
                     {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
@@ -124,7 +124,7 @@
         </div>
         <div class="row col-md-12 col-sm-12 col-xs-12">
             {{-- driver can only view himself --}}
-            @unless(Auth::user()->hasRole('driver'))
+            @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                 <div class="form-group col-md-2 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'User']) !!}
@@ -266,7 +266,7 @@
                         <td>Paid Date:</td>
                         <td>@{{paid_at}}</td>
                     </tr>
-                    @if(Auth::user()->hasRole('driver'))
+                    @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                         <tr class="hidden" data-tableexport-display="always">
                             <th></th>
                             <td>Pay Received By:</td>

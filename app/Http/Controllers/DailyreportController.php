@@ -91,7 +91,7 @@ class DailyreportController extends Controller
         } */
         // dd($deals->get());
         if($request->driver) {
-            if(auth()->user()->hasRole('driver')) {
+            if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
             }else {
                 $deals = $deals->where('transactions.driver', $request->driver);
@@ -100,11 +100,13 @@ class DailyreportController extends Controller
 
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
-        $commission_query = clone $deals;
+        $commission051_query = clone $deals;
+        $commission051 = 0;
         $commission_rate = 0;
-        $commission = 0;
         $totalcommission = 0;
         $subtotal = 0;
+
+        $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
 
         $alldeals = $alldeals
             ->groupBy('transactions.delivery_date')
@@ -116,26 +118,27 @@ class DailyreportController extends Controller
         $subtotalArr = $subtotal_query->get();
 
         foreach($subtotalArr as $dealtotal) {
-
-            $user = User::where('name', $dealtotal->driver)->first();
-
-            if($user) {
-                if($user->hasRole('driver')) {
-                    if($subtotal <= 40000) {
-                        $commission_rate = 0.006;
-                    }else {
-                        $commission_rate = 0.01;
-                    }
-                }
-
-                if($user->hasRole('technician')) {
-                    $commission_rate = 0.004;
-                }
-
-                $commission = $dealtotal->total * $commission_rate;
-            }
-            $totalcommission += $commission;
             $subtotal += $dealtotal->total;
+
+        }
+
+        if($request->driver) {
+            $user = User::where('name', $request->driver)->first();
+
+            if($user->hasRole('driver')) {
+                if($subtotal <= 40000) {
+                    $commission_rate = 0.006;
+                    $totalcommission = $subtotal * $commission_rate;
+                }else {
+                    $commission_rate = 0.01;
+                    $totalcommission = (40000 * 0.006) + ($subtotal - 40000) * $commission_rate;
+                }
+            }
+
+            if($user->hasRole('technician')) {
+                $commission_rate = 0.004;
+                $totalcommission = $commission051 * $commission_rate;
+            }
         }
 
         if($request->sortName){

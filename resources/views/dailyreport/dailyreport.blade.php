@@ -138,12 +138,12 @@
         <div class="row">
             <div class="col-md-4 col-sm-6 col-xs-12">
                 {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" {{auth()->user()->hasRole('driver') ? 'readonly' : ''}}>
+                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) ? 'readonly' : ''}}>
                     <option value="">All</option>
                     @foreach($users::orderBy('name')->get() as $user)
                         @if($user->hasRole('driver') and count($user->profiles) > 0)
 
-                            <option value="{{$user->name}}" {{auth()->user()->hasRole('driver') && $user->name == auth()->user()->name ? 'selected' : ''}}>
+                            <option value="{{$user->name}}" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) && $user->name == auth()->user()->name ? 'selected' : ''}}>
                                 {{$user->name}}
                             </option>
                         @endif
@@ -210,7 +210,12 @@
                     </strong>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                    <strong>@{{ totalcommission ? totalcommission : 0.00 | currency: "": 2}}</strong>
+                    <strong ng-if="search.driver">
+                        @{{ totalcommission ? totalcommission : 0.00 | currency: "": 2}}
+                    </strong>
+                    <span ng-if="!search.driver">
+                        Only Available when driver is selected
+                    </span>
                 </div>
             </div>
         </div>

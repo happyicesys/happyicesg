@@ -90,7 +90,7 @@
                         // $franchisee_access = true;
                     }
 
-                    if(auth()->user()->hasRole('driver')) {
+                    if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
                         $access = true;
                         $transaction_access = true;
                         $franchisee_access = true;

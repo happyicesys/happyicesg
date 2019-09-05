@@ -9,7 +9,7 @@
                             Asset Category
                         </span>
                         <span class="pull-right">
-                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('operation') or auth()->user()->hasRole('driver'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('operation') or (auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')))
                             <button class="btn btn-success" data-toggle="modal" data-target="#personasset_modal" ng-click="createPersonassetModal()">
                                 <i class="fa fa-plus"></i>
                                 Add Asset Category

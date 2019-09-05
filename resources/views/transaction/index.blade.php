@@ -189,13 +189,13 @@
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                             </div>
                         </div>
-                        @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('driver'))
+                        @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
                             <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                                 <option value="">All</option>
                                 @foreach($users::orderBy('name')->get() as $user)
-                                    @if($user->hasRole('driver') and count($user->profiles) > 0)
+                                    @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
                                         <option value="{{$user->name}}">
                                             {{$user->name}}
                                         </option>
@@ -259,7 +259,7 @@
                             <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
                                 <option value="">All</option>
                                 <option value="Yes">Active</option>
-                                @if(!auth()->user()->hasRole('driver'))
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
                                 @endif

@@ -89,7 +89,7 @@
                             <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB()" multiple>
                                 <option value="">All</option>
                                 <option value="Yes">Active</option>
-                                @if(!auth()->user()->hasRole('driver'))
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
                                 @endif

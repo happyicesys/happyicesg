@@ -277,7 +277,7 @@
                                 <i class="fa fa-check-circle" style="color: green;" ng-if="data.thru_warehouse"></i>
                             </td>
                             <td class="col-md-1 text-center">
-                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver') or auth()->user()->hasRole('operation'))
+                                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('operation'))
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personassetmovement_modal" ng-click="editPersonassetMovementModal(data)"><i class="fa fa-pencil-square-o"></i></button>
                                     <button class="btn btn-danger btn-sm" ng-click="removeEntry(data.id)"><i class="fa fa-times"></i></button>
                                 @endif

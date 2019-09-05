@@ -38,8 +38,9 @@ class DatabaseSeeder extends Seeder
         $this->call(UserRoleAccountAdmin::class);
         $this->call(SupervisorMsiaSeeder::class);
         $this->call(SubFranchiseeSeeder::class);
-         */
         $this->call(SupplierAdminRole::class);
+         */
+        $this->call(RoleSeeder::class);
         Model::reguard();
     }
 }

@@ -454,7 +454,7 @@ class RptController extends Controller
             $query = $query->whereDate('delivery_date', '=', $delivery_date);
         }
 
-        if (Auth::user()->hasRole('driver')) {
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query = $query->whereDriver(Auth::user()->name);
         } else if ($driver and $paid_by) {
             $query = $query->where('driver', 'LIKE', '%' . $driver . '%');
@@ -503,7 +503,7 @@ class RptController extends Controller
             $query1 = $query1->whereDate('delivery_date', '=', $delivery_date);
         }
 
-        if (Auth::user()->hasRole('driver')) {
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query1 = $query1->whereDriver(Auth::user()->name);
         } else if ($driver and $paid_by) {
             $query1 = $query1->where('driver', 'LIKE', '%' . $driver . '%');
@@ -552,7 +552,7 @@ class RptController extends Controller
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
         }
 
-        if (Auth::user()->hasRole('driver')) {
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query2 = $query2->wherePaidBy(Auth::user()->name);
         } else if ($driver and $paid_by) {
             $query2 = $query2->where('paid_by', 'LIKE', '%' . $paid_by . '%');
@@ -628,7 +628,7 @@ class RptController extends Controller
         }
 
         // if user is driver
-        if (Auth::user()->hasRole('driver')) {
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query1 = $query1->where('driver', Auth::user()->name);
         } else if ($driver) {
             $query1 = $query1->where('driver', 'like', '%' . $driver . '%');
@@ -649,7 +649,7 @@ class RptController extends Controller
         }
 
         // if user is driver
-        if (Auth::user()->hasRole('driver')) {
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query2 = $query2->where('paid_by', Auth::user()->name);
         }
 

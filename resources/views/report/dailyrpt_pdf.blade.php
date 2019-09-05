@@ -188,7 +188,7 @@
                     </div>
                 </div>
 
-                @unless(Auth::user()->hasRole('driver'))
+                @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                     <div class="col-xs-6" style="border: thin black solid;">
                         <div class="row">
                             <div class="col-xs-8">
@@ -280,7 +280,7 @@
                             <th class="col-xs-1 text-center">
                                 Pay Received Dt
                             </th>
-                            @unless(Auth::user()->hasRole('driver'))
+                            @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                                 <th class="col-xs-1 text-center">
                                     Payment Method
                                 </th>
@@ -334,7 +334,7 @@
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->paid_at }}
                                 </td>
-                                @unless(Auth::user()->hasRole('driver'))
+                                @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                                     @if($transaction->pay_method)
                                         <td class="col-xs-1 text-center">
                                             {{ $transaction->pay_method == 'cash' ? 'Cash' : 'Cheque/TT' }}
