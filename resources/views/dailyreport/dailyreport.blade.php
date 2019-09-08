@@ -141,7 +141,7 @@
                 <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) ? 'readonly' : ''}}>
                     <option value="">All</option>
                     @foreach($users::orderBy('name')->get() as $user)
-                        @if($user->hasRole('driver') and count($user->profiles) > 0)
+                        @if($user->hasRole('driver') or $user->hasRole('technician') and count($user->profiles) > 0)
 
                             <option value="{{$user->name}}" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) && $user->name == auth()->user()->name ? 'selected' : ''}}>
                                 {{$user->name}}

@@ -90,6 +90,11 @@ class DailyreportController extends Controller
             }
         } */
         // dd($deals->get());
+
+        $commission051_query = clone $deals;
+        $commission051 = 0;
+        $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
+
         if($request->driver) {
             if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
@@ -100,13 +105,10 @@ class DailyreportController extends Controller
 
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
-        $commission051_query = clone $deals;
-        $commission051 = 0;
+
         $commission_rate = 0;
         $totalcommission = 0;
         $subtotal = 0;
-
-        $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
 
         $alldeals = $alldeals
             ->groupBy('transactions.delivery_date')
@@ -126,6 +128,7 @@ class DailyreportController extends Controller
             $user = User::where('name', $request->driver)->first();
 
             if($user->hasRole('driver')) {
+                // dd('here1');
                 if($subtotal <= 40000) {
                     $commission_rate = 0.006;
                     $totalcommission = $subtotal * $commission_rate;
@@ -136,6 +139,7 @@ class DailyreportController extends Controller
             }
 
             if($user->hasRole('technician')) {
+                // dd('here2');
                 $commission_rate = 0.004;
                 $totalcommission = $commission051 * $commission_rate;
             }

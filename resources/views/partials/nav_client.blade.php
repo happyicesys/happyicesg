@@ -83,7 +83,7 @@
                 </li> --}}
 
                 <li>
-                    <a class="page-scroll" style="color: yellow;" href="https://www.jotform.com/kentzo/bobaicecream4">Brown Sugar Pear Milk Tea Order</a>
+                    <a class="page-scroll" style="color: yellow;" href="https://www.jotform.com/kentzo/bobaicecream4">Brown Sugar Boba Ice Cream Bar Order</a>
                 </li>
                 @endif
                 @if($recruitment_access)
