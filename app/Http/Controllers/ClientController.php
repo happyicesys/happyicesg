@@ -542,6 +542,12 @@ class ClientController extends Controller
         return Redirect::action('ClientController@getVendComplainIndex');
     }
 
+    // redirect to brown sugar boba milk tea page
+    public function brownsugarBobaInquiry()
+    {
+        return view('client.brownsugarboba');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {
