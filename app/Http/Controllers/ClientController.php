@@ -548,6 +548,12 @@ class ClientController extends Controller
         return view('client.brownsugarboba');
     }
 
+    // redirect to brown sugar boba milk tea page
+    public function brownsugarBobaPartyInquiry()
+    {
+        return view('client.bobaparty');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {
