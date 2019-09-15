@@ -62,8 +62,19 @@ class DailyreportController extends Controller
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
         }
+
+        // set logic to distinguish driver or technician role
+        $driver = '';
+
         if($request->driver) {
-            $deals = $deals->where('transactions.driver', $request->driver);
+            $driver_role = User::where('name', $request->driver)->first();
+            if($driver_role->hasRole('driver')) {
+                $driver = 'driver';
+                $deals = $deals->where('transactions.driver', $request->driver);
+            }else if($driver_role->hasRole('technician')) {
+                $driver = 'technician';
+                $deals = $deals->where('items.product_id', '051');
+            }
         }
 
         if ($request->custcategory) {
@@ -96,10 +107,8 @@ class DailyreportController extends Controller
         $commission051 = $commission051_query->where('items.product_id', '051')->sum('amount');
 
         if($request->driver) {
-            if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            if(auth()->user()->hasRole('driver')) {
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
-            }else {
-                $deals = $deals->where('transactions.driver', $request->driver);
             }
         }
 
@@ -159,7 +168,8 @@ class DailyreportController extends Controller
         $data = [
             'alldeals' => $alldeals,
             'subtotal' => $subtotal,
-            'totalcommission' => $totalcommission
+            'totalcommission' => $totalcommission,
+            'driver' => $driver
         ];
 
         return $data;

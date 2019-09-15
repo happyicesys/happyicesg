@@ -195,6 +195,9 @@
                     <strong>
                         SubTotal
                     </strong>
+                    <span ng-if="driver == 'technician'">
+                        (of all of 051)
+                    </span>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                     <strong>@{{ subtotal ? subtotal : 0.00 | currency: "": 2}}</strong>
@@ -202,7 +205,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;">
+        <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;" ng-if="driver == 'driver'">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
                     <strong>
