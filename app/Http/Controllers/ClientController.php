@@ -554,6 +554,12 @@ class ClientController extends Controller
         return view('client.bobaparty');
     }
 
+    // redirect to thanks your purchase page
+    public function thanksYourPurchase()
+    {
+        return view('client.thankspurchase');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {

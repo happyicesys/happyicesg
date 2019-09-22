@@ -261,6 +261,7 @@ Route::delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 Route::get('/inventory/data', 'InventoryController@getData');
 Route::resource('inventory', 'InventoryController');
 
+Route::get('/thankspurchase', 'ClientController@thanksYourPurchase');
 Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaInquiry');
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
 Route::get('/franchise', 'ClientController@franchiseIndex');
