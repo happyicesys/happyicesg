@@ -126,7 +126,7 @@
                     @endforeach
                 </select>
             </div>
-        </div>           
+        </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
@@ -181,7 +181,7 @@
     <div class="col-md-3 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>
-            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">
+            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
                 <option ng-value="100">100</option>
                 <option ng-value="200">200</option>
                 <option ng-value="All">All</option>

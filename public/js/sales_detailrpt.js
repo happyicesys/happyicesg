@@ -36,7 +36,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });            
+            });
         });
 
         $scope.exportData = function () {
@@ -123,7 +123,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });             
+            });
         });
         $scope.exportData = function () {
             var blob = new Blob(["\ufeff", document.getElementById('exportable_custsummary').innerHTML], {
@@ -280,7 +280,7 @@ var app = angular.module('app', [
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
-        $scope.itemsPerPage = 100;
+        $scope.itemsPerPage = 'All';
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.today = moment().format("YYYY-MM-DD");
@@ -292,10 +292,10 @@ var app = angular.module('app', [
             delivery_to: $scope.today,
             product_name: '',
             profile_id: '',
-            cust_category: '',
+            custcategory: '',
             status: 'Delivered',
             is_commission: '0',
-            pageNum: 100,
+            pageNum: 'All',
             sortBy: true,
             sortName: ''
         }
@@ -306,7 +306,7 @@ var app = angular.module('app', [
             $('.select').select2();
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
-            });            
+            });
         });
 
         $scope.onDeliveryFromChanged = function(date){

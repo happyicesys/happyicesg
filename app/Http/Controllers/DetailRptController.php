@@ -647,8 +647,25 @@ class DetailRptController extends Controller
         if($request->profile_id) {
             $amountstr = $amountstr." AND profiles.id =".$request->profile_id;
         }
-        if($request->cust_category) {
-            $amountstr = $amountstr." AND custcategories.id =".$request->cust_category;
+/*         dd($request->custcategory);
+        if (request('statuses')) {
+            $statuses = request('statuses');
+            if (count($statuses) == 1) {
+                $statuses = [$statuses];
+            }
+            $transactions = $transactions->whereIn('transactions.status', $statuses);
+        } */
+        if($request->custcategory) {
+            $custcategory = implode(",", $request->custcategory);
+            // dd($custcategory);
+/*
+            if(count($custcategory) == 1) {
+                dd($custcategory);
+                $custcategory = $custcategory;
+            }else {
+                $custcategory = implode($custcategory);
+            } */
+            $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
         }
         if($request->status) {
             if($request->status === 'Delivered') {
