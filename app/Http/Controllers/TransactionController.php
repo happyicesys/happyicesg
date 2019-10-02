@@ -168,12 +168,12 @@ class TransactionController extends Controller
             $transaction->dtdtransaction_id = $dtdtransaction->id;
             $transaction->save();
         }
-
+/*
         if($transaction->person->cust_id[0] === 'P'){
             $this->validate($request, [
                 'po_no' => 'unique'
             ]);
-        }
+        } */
 
         // check profile is vending then analog required
         if($transaction->person->is_vending) {
@@ -484,6 +484,13 @@ class TransactionController extends Controller
                 $this->vendingMachineValidation($request, $id);
             }
         }
+
+        // validate unique prefix for P
+/*         if($transaction->person->cust_id[0] === 'P'){
+            $this->validate($request, [
+                'po_no' => 'unique'
+            ]);
+        } */
 
         // filter delivery date if the invoice lock date is before request delivery date
         if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {
@@ -1174,6 +1181,7 @@ class TransactionController extends Controller
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                    'transactions.po_no', 'transactions.name', 'transactions.contact',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE

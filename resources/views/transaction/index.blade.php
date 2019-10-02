@@ -570,6 +570,24 @@
                                     <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('po_no')">
+                                    PO Num
+                                    <span ng-if="search.sortName == 'po_no' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'po_no' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('name')">
+                                    Attn Name
+                                    <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('contact')">
+                                    Contact
+                                    <span ng-if="search.sortName == 'contact' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'contact' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
                                 @if(!auth()->user()->hasRole('hd_user'))
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('delivery_date')">
@@ -679,6 +697,9 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
+                                    <td class="col-md-1 text-center">@{{ transaction.po_no}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.name}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>

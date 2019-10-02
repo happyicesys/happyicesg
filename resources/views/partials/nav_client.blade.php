@@ -88,7 +88,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:yellow;">Brown Sugar Boba Ice Cream Bar<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/brown-sugar-milk-boba-icecream">Online Order</a></li>
+                      <li><a target="_blank" href="https://www.jotform.com/kentzo/bobaicecream5">Online Order</a></li>
                       <li><a href="/brown-sugar-milk-boba-party">Party or Event Order</a></li>
                     </ul>
                   </li>
