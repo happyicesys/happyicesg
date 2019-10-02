@@ -153,9 +153,10 @@ class DailyreportController extends Controller
                 $totalcommission = $commission051 * $commission_rate;
             }
         }
-
+        // dd($request->sortName, $request->sortBy);
         if($request->sortName){
             $alldeals = $alldeals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+            dd($alldeals->get());
         }
 
         $pageNum = $request->pageNum ? $request->pageNum : 100;

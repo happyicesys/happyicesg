@@ -168,12 +168,13 @@ class TransactionController extends Controller
             $transaction->dtdtransaction_id = $dtdtransaction->id;
             $transaction->save();
         }
-/*
+
+
         if($transaction->person->cust_id[0] === 'P'){
             $this->validate($request, [
-                'po_no' => 'unique'
+                'po_no' => 'unique:transactions,po_no,'.$transaction->id
             ]);
-        } */
+        }
 
         // check profile is vending then analog required
         if($transaction->person->is_vending) {
@@ -486,11 +487,12 @@ class TransactionController extends Controller
         }
 
         // validate unique prefix for P
-/*         if($transaction->person->cust_id[0] === 'P'){
+        // dd($request->all(), $transaction->person->cust_id[0]);
+        if($transaction->person->cust_id[0] === 'P'){
             $this->validate($request, [
-                'po_no' => 'unique'
+                'po_no' => 'unique:transactions,po_no,'.$transaction->id
             ]);
-        } */
+        }
 
         // filter delivery date if the invoice lock date is before request delivery date
         if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {

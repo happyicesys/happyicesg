@@ -502,10 +502,10 @@
                                     #
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('id')">
+                                    <a href="" ng-click="sortTable('transactions.id')">
                                     INV #
-                                    <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.id' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 @if(!auth()->user()->hasRole('hd_user'))
 
@@ -528,10 +528,10 @@
                                     <span ng-if="search.sortName == 'custcategories.name' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('del_postcode')">
+                                    <a href="" ng-click="sortTable('transactions.del_postcode')">
                                     Del Postcode
-                                    <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Zone
@@ -571,22 +571,22 @@
                                     <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('po_no')">
+                                    <a href="" ng-click="sortTable('transactions.po_no')">
                                     PO Num
-                                    <span ng-if="search.sortName == 'po_no' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'po_no' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.po_no' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.po_no' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('name')">
+                                    <a href="" ng-click="sortTable('transactions.name')">
                                     Attn Name
-                                    <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.name' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    <a href="" ng-click="sortTable('contact')">
+                                    <a href="" ng-click="sortTable('transactions.contact')">
                                     Contact
-                                    <span ng-if="search.sortName == 'contact' && !search.sortBy" class="fa fa-caret-down"></span>
-                                    <span ng-if="search.sortName == 'contact' && search.sortBy" class="fa fa-caret-up"></span>
+                                    <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 @if(!auth()->user()->hasRole('hd_user'))
                                 <th class="col-md-1 text-center">

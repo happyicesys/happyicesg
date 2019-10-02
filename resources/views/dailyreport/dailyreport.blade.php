@@ -246,10 +246,10 @@
                     #
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('delivery_date')">
+                    <a href="" ng-click="sortTable('transactions.delivery_date')">
                     Delivery Date
-                    <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'transactions.delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('driver')">
