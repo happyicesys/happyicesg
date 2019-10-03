@@ -399,6 +399,22 @@ class TransactionController extends Controller
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
+        }elseif($request->input('del')) {
+            $this->vendingMachineValidation($request, $id);
+            $request->merge(array('status' => 'Delivered'));
+
+            if(! $request->driver){
+                $request->merge(array('driver'=>Auth::user()->name));
+            }
+
+            if($transaction->is_deliveryorder) {
+                $this->updateIsWarehouseTransactionpersonassets($transaction->id);
+            }
+
+            if(count($deals) == 0){
+                Flash::error('Please entry the list');
+                return Redirect::action('TransactionController@edit', $transaction->id);
+            }
         }elseif($request->input('paid')){
             $request->merge(array('pay_status' => 'Paid'));
 
