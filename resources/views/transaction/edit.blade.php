@@ -176,18 +176,20 @@
             @elseif($state === 2)
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pull-left">
+                    <div class="pull-left btn-toolbar col-xs-12" >
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @if($transaction->pay_status === 'Owe')
                                 {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
                             @else
-                                {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                @if(!auth()->user()->hasRole('driver'))
+                                    {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                @endif
                             @endif
                         @endif
                     </div>
 
-                    <div class="pull-right">
+                    <div class="pull-right btn-toolbar col-xs-12">
                         @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         @if(!auth()->user()->hasRole('franchisee'))
 {{--

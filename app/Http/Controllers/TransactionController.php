@@ -421,6 +421,9 @@ class TransactionController extends Controller
             if(! $request->paid_by){
                 $request->merge(array('paid_by' => Auth::user()->name));
             }
+            if($transaction->driver == null or $transaction->driver == '') {
+                $request->merge(array('driver' => null));
+            }
             $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
             if(count($deals) == 0){
