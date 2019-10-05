@@ -210,14 +210,14 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="pull-left">
-                        @can('transaction_deleteitem')
-                        @cannot('supervisor_view')
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                            @if($transaction->pay_status === 'Owe')
+                                {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
+                            @else
+                                {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            @endif
                         @endif
-                        @endcannot
-                        @endcan
                     </div>
                     <div class="pull-right">
 
