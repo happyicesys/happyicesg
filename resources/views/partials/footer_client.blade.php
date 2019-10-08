@@ -22,7 +22,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12 text-center">
                 <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
-                <p><a href="mailto:kent@happyice.com.sg">kent@happyice.com.sg</a></p>
+                <p><a href="mailto:kent@happyice.com.sg">enquiry@happyice.com.sg</a></p>
             </div>
         </div>
         <div class="row">

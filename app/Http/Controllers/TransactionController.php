@@ -494,12 +494,16 @@ class TransactionController extends Controller
         }elseif($request->input('update')){
             if($transaction->status === 'Confirmed'){
                 $request->merge(array('driver' => null));
-                $request->merge(array('paid_by' => null));
-                $request->merge(array('paid_at' => null));
+                if($transaction->pay_status == 'Owe') {
+                    $request->merge(array('paid_by' => null));
+                    $request->merge(array('paid_at' => null));
+                }
             }else if(($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe') and $transaction->pay_status === 'Owe'){
                 $this->vendingMachineValidation($request, $id);
-                $request->merge(array('paid_by' => null));
-                $request->merge(array('paid_at' => null));
+                if($transaction->pay_status == 'Owe') {
+                    $request->merge(array('paid_by' => null));
+                    $request->merge(array('paid_at' => null));
+                }
             }else {
                 $this->vendingMachineValidation($request, $id);
             }

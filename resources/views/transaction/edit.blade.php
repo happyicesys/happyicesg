@@ -176,7 +176,7 @@
             @elseif($state === 2)
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pull-left btn-toolbar col-xs-12" >
+                    <div class="pull-left btn-toolbar">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
                             @if($transaction->pay_status === 'Owe')
@@ -186,16 +186,18 @@
                                     {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                                 @endif
                             @endif
+
+                            {!! Form::submit('Delivered', ['name'=>'del', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
                         @endif
                     </div>
 
-                    <div class="pull-right btn-toolbar col-xs-12">
+                    <div class="pull-right btn-toolbar">
                         @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         @if(!auth()->user()->hasRole('franchisee'))
 {{--
                             {!! Form::submit('Delivered & Paid', ['name'=>'del_paid', 'class'=> 'btn btn-success', 'form'=>'form_cust', 'onclick'=>'clicked(event)' ]) !!}
                             {!! Form::submit('Delivered & Owe', ['name'=>'del_owe', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!} --}}
-                            {!! Form::submit('Delivered', ['name'=>'del', 'class'=> 'btn btn-default', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                            {{-- {!! Form::submit('Delivered', ['name'=>'del', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!} --}}
                         @endif
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>

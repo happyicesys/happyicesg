@@ -448,7 +448,11 @@ class RptController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
-        $query = $query->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
+        $query = $query->where(function ($q) {
+            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
+            $q->where('pay_status', 'Paid');
+        });
+
 
         if ($delivery_date and $paid_at) {
             $query = $query->whereDate('delivery_date', '=', $delivery_date);
@@ -498,7 +502,11 @@ class RptController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
-        $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Owe');
+        $query1 = $query1->where(function ($q) {
+            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
+            $q->where('pay_status', 'Owe');
+        });
+        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Owe');
         if ($delivery_date and $paid_at) {
             $query1 = $query1->whereDate('delivery_date', '=', $delivery_date);
         }
@@ -547,7 +555,11 @@ class RptController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
-        $query2 = $query2->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
+        $query2 = $query2->where(function ($q) {
+            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
+            $q->where('pay_status', 'Paid');
+        });
+        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
         if ($delivery_date and $paid_at) {
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
         }
@@ -593,13 +605,67 @@ class RptController extends Controller
             'transactions.is_gst_inclusive'
         );
 
-        $query2 = $query2
-            ->union($query)->union($query1)
+        $query3 = DB::table('transactions')
+            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+
+        $query3 = $query3->where(function ($q) {
+            $q->where('status', 'Confirmed');
+            $q->where('pay_status', 'Paid');
+        });
+        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
+        if ($delivery_date and $paid_at) {
+            $query3 = $query3->whereDate('paid_at', '=', $paid_at);
+        }
+
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            $query3 = $query3->wherePaidBy(Auth::user()->name);
+        } else if ($driver and $paid_by) {
+            $query3 = $query3->where('paid_by', 'LIKE', '%' . $paid_by . '%');
+        }
+
+        $query3 = $this->filterUserDbProfile($query3);
+
+        $query3 = $this->extraField($request, $query3);
+        $query3 = $this->filterUserDbProfile($query3);
+        $query3 = $query3->select(
+            'transactions.id',
+            'people.cust_id',
+            'people.company',
+            'people.id as person_id',
+            'transactions.status',
+            'transactions.delivery_date',
+            'transactions.driver',
+            'transactions.total_qty',
+            'transactions.pay_status',
+            'transactions.updated_by',
+            'transactions.updated_at',
+            'profiles.name',
+            'transactions.created_at',
+            'profiles.gst',
+            'people.gst_rate',
+            'transactions.pay_method',
+            'transactions.note',
+            'transactions.paid_by',
+            'transactions.paid_at',
+            'transactions.delivery_fee',
+            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
+                            CASE
+                            WHEN transactions.is_gst_inclusive=0
+                            THEN total*((100+transactions.gst_rate)/100)
+                            ELSE transactions.total
+                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+            'profiles.id as profile_id',
+            'transactions.is_gst_inclusive'
+        );
+
+        $query3 = $query3
+            ->union($query)->union($query1)->union($query2)
             ->orderBy('id', 'desc')
             ->get();
                 // dd($query2);
 
-        return $query2;
+        return $query3;
     }
 
     private function apiRec($request)
@@ -620,7 +686,7 @@ class RptController extends Controller
         $query1 = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
-        $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
+        $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
 
         // check whether delivery_date presence
         if ($delivery_date) {
@@ -644,6 +710,7 @@ class RptController extends Controller
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
         // check whether paid_at presence
+        // dd($paid_at);
         if ($paid_at) {
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
         }

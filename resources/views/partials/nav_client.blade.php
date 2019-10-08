@@ -106,7 +106,7 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:white;">Vending Machine <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="/vending/funv">Fun Vending Machine</a></li>
-                    <li><a href="/vending/honestv">HonestV</a></li>
+                    {{-- <li><a href="/vending/honestv">HonestV</a></li> --}}
                     <li><a href="/vending/directv">Direct Vending Machine</a></li>
                   </ul>
                 </li>
