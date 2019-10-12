@@ -161,7 +161,7 @@
                             Total Amount for 'Delivered'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.amt_del | currency: "": 2}}
+                            @{{del_amount ? del_amount : 0 | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -169,7 +169,7 @@
                             Total Qty for 'Delivered'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.qty_del | currency: "": 4}}
+                            @{{del_qty ? del_qty : 0 | currency: "": 4}}
                         </div>
                     </div>
                     <div class="row">
@@ -177,7 +177,7 @@
                             Total Amount for 'Paid'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.amt_mod | currency: "": 2}}
+                            @{{del_paid ? del_paid : 0  | currency: "": 2}}
                         </div>
                     </div>
                 </div>
@@ -188,8 +188,8 @@
                         <div class="col-md-5 col-sm-5 col-xs-5" style="margin-left: 15px;">
                             Total Amount for 'Paid'
                         </div>
-                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid" ng-style="{'background-color': matchTotal ? '#98FB98' : '#FF9999'}">
-                            @{{rptdata.amt_mod | currency: "": 2}}
+                        <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid" ng-style="{'background-color': paid_equals ? '#98FB98' : '#FF9999'}">
+                            @{{paid_amount ? paid_amount : 0 | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -197,7 +197,7 @@
                             Total Paid 'Cash'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.cash_mod | currency: "": 2}}
+                            @{{paid_cash ? paid_cash : 0 | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -205,7 +205,7 @@
                             Total Paid 'Cheque In'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.chequein_mod | currency: "": 2}}
+                            @{{paid_cheque_in ? paid_cheque_in : 0 | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -213,7 +213,7 @@
                             Total Paid 'Cheque Out'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.chequeout_mod | currency: "": 2}}
+                            @{{paid_cheque_out ? paid_cheque_out : 0 | currency: "": 2}}
                         </div>
                     </div>
                     <div class="row">
@@ -221,7 +221,7 @@
                             Total Paid 'TT'
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-3 text-right" style="border: thin black solid;">
-                            @{{rptdata.tt_mod | currency: "": 2}}
+                            @{{paid_tt ? paid_tt : 0 | currency: "": 2}}
                         </div>
                     </div>
                 </div>
@@ -345,70 +345,70 @@
                             #
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('id')">
                             INV #
-                            <span ng-if="sortType == 'id' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'id' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'cust_id'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('cust_id')">
                             ID
-                            <span ng-if="sortType == 'cust_id' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'cust_id' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'company'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('company')">
                             Company
-                            <span ng-if="sortType == 'company' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'company' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
-                            Status
-                            <span ng-if="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+                            <a href="" ng-click="sortTable('status')">
+                                Status
+                            <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'delivery_date'; sortReverse = !sortReverse">
-                            Delivery Date
-                            <span ng-if="sortType == 'delivery_date' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'delivery_date' && sortReverse" class="fa fa-caret-up"></span>
+                            <a href="" ng-click="sortTable('delivery_date')">
+                                Delivery Date
+                            <span ng-if="search.sortName == 'delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'driver'; sortReverse = !sortReverse">
-                            Delivered By
-                            <span ng-if="sortType == 'driver' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'driver' && sortReverse" class="fa fa-caret-up"></span>
+                            <a href="" ng-click="sortTable('driver')">
+                                Delivery By
+                            <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'total'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('total')">
                             Total Amount
-                            <span ng-if="sortType == 'total' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'total' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'total_qty'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('total_qty')">
                             Total Qty
-                            <span ng-if="sortType == 'total_qty' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'total_qty' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'pay_status'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('pay_status')">
                             Payment
-                            <span ng-if="sortType == 'pay_status' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'pay_status' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'paid_by'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('paid_by')">
                             Pay Received By
-                            <span ng-if="sortType == 'paid_by' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'paid_by' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'paid_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'paid_by' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         <th class="col-md-1 text-center">
-                            <a href="" ng-click="sortType = 'paid_at'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('paid_at')">
                             Pay Received Dt
-                            <span ng-if="sortType == 'paid_at' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-if="sortType == 'paid_at' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-if="search.sortName == 'paid_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'paid_at' && search.sortBy" class="fa fa-caret-up"></span>
                         </th>
                         @cannot('transaction_view')
                         <th class="col-md-1 text-center">

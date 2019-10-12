@@ -25,7 +25,9 @@ function rptController($scope, $http) {
         status: '',
         driver_id: '',
         pay_status: '',
-        profile_id: ''
+        profile_id: '',
+        sortName: '',
+        sortBy: true
     }
 
     $scope.exportData = function () {
@@ -67,19 +69,32 @@ function rptController($scope, $http) {
         getIndex();
 
         function getIndex() {
-            $http.post('/report/dailyrpt', $scope.indexData).success(function (transactions) {
-                $scope.transactions = transactions;
-                $scope.All = transactions.length;
-            });
+            $http.post('/report/dailyrpt', $scope.indexData).success(function (data) {
+                console.log(data);
+                if(data) {
+                    $scope.del_amount = data.del_amount;
+                    $scope.del_qty = data.del_qty;
+                    $scope.del_paid = data.del_paid;
+                    $scope.paid_amount = data.paid_amount;
+                    $scope.paid_cash = data.paid_cash;
+                    $scope.paid_cheque_in = data.paid_cheque_in;
+                    $scope.paid_cheque_out = data.paid_cheque_out;
+                    $scope.paid_tt = data.paid_tt;
+                    $scope.paid_equals = data.paid_equals;
 
-            $http.post('/report/dailyrec', $scope.indexData).success(function (rptdata) {
-                $scope.rptdata = rptdata;
-                if (rptdata.amt_mod == rptdata.cash_mod + rptdata.chequein_mod + rptdata.chequeout_mod + rptdata.tt_mod) {
-                    $scope.matchTotal = true;
-                } else {
-                    $scope.matchTotal = false;
+                    $scope.transactions = data.transactions;
+                    $scope.All = data.transactions.length;
                 }
             });
+
+            // $http.post('/report/dailyrec', $scope.indexData).success(function (rptdata) {
+            //     $scope.rptdata = rptdata;
+            //     if (rptdata.amt_mod == rptdata.cash_mod + rptdata.chequein_mod + rptdata.chequeout_mod + rptdata.tt_mod) {
+            //         $scope.matchTotal = true;
+            //     } else {
+            //         $scope.matchTotal = false;
+            //     }
+            // });
         }
 
         $scope.syncData = function () {
@@ -94,8 +109,11 @@ function rptController($scope, $http) {
                 company: $scope.search.company,
                 status: $scope.search.status,
                 pay_status: $scope.search.pay_status,
-                profile_id: $scope.search.profile_id
+                profile_id: $scope.search.profile_id,
+                sortName: $scope.search.sortName,
+                sortBy: $scope.search.sortBy
             }
+
         }
 
         $scope.dateChange = function (date) {
@@ -153,6 +171,13 @@ function rptController($scope, $http) {
 
         $scope.onRoleChanged = function (role) {
             $scope.role = role;
+            $scope.syncData();
+            getIndex();
+        }
+
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
             $scope.syncData();
             getIndex();
         }

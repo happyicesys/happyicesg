@@ -413,6 +413,105 @@ class RptController extends Controller
         return $total_amount;
     }
 
+    // calculating delivered total
+    private function calDelTransaction($query)
+    {
+        $transactionArr = $query->get();
+        $del_amount = 0.00;
+        $del_qty = 0.00;
+        $del_paid = 0.00;
+
+        foreach($transactionArr as $transaction) {
+            $del_amount += $transaction->total;
+            $del_qty += $transaction->total_qty;
+
+            if($transaction->pay_status == 'Paid') {
+                $del_paid += $transaction->total;
+            }
+        }
+
+        return [
+            'del_amount' => round($del_amount, 2),
+            'del_qty' => round($del_qty, 4),
+            'del_paid' => round($del_paid, 2)
+        ];
+    }
+
+    // calculating paid total
+    private function calTransaction($query, $request)
+    {
+        $transactionArr = $query->get();
+
+        $del_amount = 0;
+        $del_qty = 0;
+        $del_paid = 0;
+
+        $paid_amount = 0;
+        $paid_cash = 0;
+        $paid_cheque_in = 0;
+        $paid_cheque_out = 0;
+        $paid_tt = 0;
+        $paid_equals = false;
+
+        foreach($transactionArr as $transaction) {
+            // dd($transaction->delivery_date, $request->delivery_date);
+            if($transaction->delivery_date == $request->delivery_date) {
+                $del_amount += $transaction->total;
+                $del_qty += $transaction->total_qty;
+
+                if($transaction->pay_status == 'Paid') {
+                    $del_paid += $transaction->total;
+                }
+            }
+
+            if($transaction->paid_at == $request->paid_at) {
+                $paid_amount += $transaction->total;
+
+                switch($transaction->pay_method) {
+                    case 'cash':
+                       $paid_cash += $transaction->total;
+                       break;
+                    case 'cheque':
+                        if($transaction->total >= 0) {
+                            $paid_cheque_in += $transaction->total;
+                        }else if($transaction->total < 0) {
+                            $paid_cheque_out += $transaction->total;
+                        }
+                       break;
+                    case 'tt':
+                       $paid_tt += $transaction->total;
+                       break;
+                }
+            }
+        }
+
+        $del_amount = round($del_amount, 2);
+        $del_qty = round($del_qty, 4);
+        $del_paid = round($del_paid, 2);
+
+        $paid_amount = round($paid_amount, 2);
+        $paid_cash = round($paid_cash, 2);
+        $paid_cheque_in = round($paid_cheque_in, 2);
+        $paid_cheque_out = round($paid_cheque_out, 2);
+        $paid_tt = round($paid_tt, 2);
+
+        if($paid_amount == $paid_cash + $paid_cheque_in + $paid_cheque_out + $paid_tt) {
+            $paid_equals = true;
+        }
+
+        return [
+            'del_amount' => $del_amount,
+            'del_qty' => $del_qty,
+            'del_paid' => $del_paid,
+            'paid_amount' => $paid_amount,
+            'paid_cash' => $paid_cash,
+            'paid_cheque_in' => $paid_cheque_in,
+            'paid_cheque_out' => $paid_cheque_out,
+            'paid_tt' => $paid_tt,
+            'paid_equals' => $paid_equals
+        ];
+    }
+
     // calculating qty total
     private function calQtyTotal($arr)
     {
@@ -442,16 +541,13 @@ class RptController extends Controller
         $paid_by = $request->paid_by;
         $driver = $request->driver;
         $role = $request->role;
+        $sortName = $request->sortName;
+        $sortBy = $request->sortBy;
         // dd($request->all());
 
         $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
-
-        $query = $query->where(function ($q) {
-            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
-            $q->where('pay_status', 'Paid');
-        });
 
 
         if ($delivery_date and $paid_at) {
@@ -473,7 +569,7 @@ class RptController extends Controller
             'people.company',
             'people.id as person_id',
             'transactions.status',
-            'transactions.delivery_date',
+            DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
             'transactions.driver',
             'transactions.total_qty',
             'transactions.pay_status',
@@ -486,7 +582,7 @@ class RptController extends Controller
             'transactions.pay_method',
             'transactions.note',
             'transactions.paid_by',
-            'transactions.paid_at',
+            DB::raw('DATE(transactions.paid_at) AS paid_at'),
             'transactions.delivery_fee',
             DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                             CASE
@@ -498,174 +594,62 @@ class RptController extends Controller
             'transactions.is_gst_inclusive'
         );
 
-        $query1 = DB::table('transactions')
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+        $query1 = clone $query;
+        $query2 = clone $query;
+        $query3 = clone $query;
+        $query4 = clone $query;
 
         $query1 = $query1->where(function ($q) {
-            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
-            $q->where('pay_status', 'Owe');
+            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
+            $q->where('pay_status', 'Paid');
         });
-        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Owe');
-        if ($delivery_date and $paid_at) {
-            $query1 = $query1->whereDate('delivery_date', '=', $delivery_date);
-        }
-
-        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
-            $query1 = $query1->whereDriver(Auth::user()->name);
-        } else if ($driver and $paid_by) {
-            $query1 = $query1->where('driver', 'LIKE', '%' . $driver . '%');
-        }
-
-        $query1 = $this->filterUserDbProfile($query1);
-
-        $query1 = $this->extraField($request, $query1);
-        $query1 = $query1->select(
-            'transactions.id',
-            'people.cust_id',
-            'people.company',
-            'people.id as person_id',
-            'transactions.status',
-            'transactions.delivery_date',
-            'transactions.driver',
-            'transactions.total_qty',
-            'transactions.pay_status',
-            'transactions.updated_by',
-            'transactions.updated_at',
-            'profiles.name',
-            'transactions.created_at',
-            'profiles.gst',
-            'people.gst_rate',
-            'transactions.pay_method',
-            'transactions.note',
-            'transactions.paid_by',
-            'transactions.paid_at',
-            'transactions.delivery_fee',
-            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
-                            CASE
-                            WHEN transactions.is_gst_inclusive=0
-                            THEN total*((100+transactions.gst_rate)/100)
-                            ELSE transactions.total
-                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-            'profiles.id as profile_id',
-            'transactions.is_gst_inclusive'
-        );
-
-        $query2 = DB::table('transactions')
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
         $query2 = $query2->where(function ($q) {
             $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
-            $q->where('pay_status', 'Paid');
+            $q->where('pay_status', 'Owe');
         });
-        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
-        if ($delivery_date and $paid_at) {
-            $query2 = $query2->whereDate('paid_at', '=', $paid_at);
-        }
-
-        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
-            $query2 = $query2->wherePaidBy(Auth::user()->name);
-        } else if ($driver and $paid_by) {
-            $query2 = $query2->where('paid_by', 'LIKE', '%' . $paid_by . '%');
-        }
-
-        $query2 = $this->filterUserDbProfile($query2);
-
-        $query2 = $this->extraField($request, $query2);
-        $query2 = $this->filterUserDbProfile($query2);
-        $query2 = $query2->select(
-            'transactions.id',
-            'people.cust_id',
-            'people.company',
-            'people.id as person_id',
-            'transactions.status',
-            'transactions.delivery_date',
-            'transactions.driver',
-            'transactions.total_qty',
-            'transactions.pay_status',
-            'transactions.updated_by',
-            'transactions.updated_at',
-            'profiles.name',
-            'transactions.created_at',
-            'profiles.gst',
-            'people.gst_rate',
-            'transactions.pay_method',
-            'transactions.note',
-            'transactions.paid_by',
-            'transactions.paid_at',
-            'transactions.delivery_fee',
-            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
-                            CASE
-                            WHEN transactions.is_gst_inclusive=0
-                            THEN total*((100+transactions.gst_rate)/100)
-                            ELSE transactions.total
-                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-            'profiles.id as profile_id',
-            'transactions.is_gst_inclusive'
-        );
-
-        $query3 = DB::table('transactions')
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
         $query3 = $query3->where(function ($q) {
+            $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
+            $q->where('pay_status', 'Paid');
+        });
+
+        $query4 = $query4->where(function ($q) {
             $q->where('status', 'Confirmed');
             $q->where('pay_status', 'Paid');
         });
-        // ->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'))->where('pay_status', 'Paid');
-        if ($delivery_date and $paid_at) {
-            $query3 = $query3->whereDate('paid_at', '=', $paid_at);
+
+        $query4 = $query4->union($query1)->union($query2)->union($query3);
+
+        $calquery = clone $query4;
+
+        $calArr = $this->calTransaction($calquery, $request);
+
+
+        if($sortName){
+            // dd($sortName, $sortBy);
+            $query4 = $query4->orderBy($sortName, $sortBy ? 'asc' : 'desc');
+        }else {
+            // dd('default');
+            $query4 = $query4->orderBy('id', 'asc');
         }
 
-        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
-            $query3 = $query3->wherePaidBy(Auth::user()->name);
-        } else if ($driver and $paid_by) {
-            $query3 = $query3->where('paid_by', 'LIKE', '%' . $paid_by . '%');
-        }
+        $transactions = $query4->get();
 
-        $query3 = $this->filterUserDbProfile($query3);
+        $data = [
+            'transactions' => $transactions,
+            'del_amount' => $calArr['del_amount'],
+            'del_qty' => $calArr['del_qty'],
+            'del_paid' => $calArr['del_paid'],
+            'paid_amount' => $calArr['paid_amount'],
+            'paid_cash' => $calArr['paid_cash'],
+            'paid_cheque_in' => $calArr['paid_cheque_in'],
+            'paid_cheque_out' => $calArr['paid_cheque_out'],
+            'paid_tt' => $calArr['paid_tt'],
+            'paid_equals' => $calArr['paid_equals']
+        ];
 
-        $query3 = $this->extraField($request, $query3);
-        $query3 = $this->filterUserDbProfile($query3);
-        $query3 = $query3->select(
-            'transactions.id',
-            'people.cust_id',
-            'people.company',
-            'people.id as person_id',
-            'transactions.status',
-            'transactions.delivery_date',
-            'transactions.driver',
-            'transactions.total_qty',
-            'transactions.pay_status',
-            'transactions.updated_by',
-            'transactions.updated_at',
-            'profiles.name',
-            'transactions.created_at',
-            'profiles.gst',
-            'people.gst_rate',
-            'transactions.pay_method',
-            'transactions.note',
-            'transactions.paid_by',
-            'transactions.paid_at',
-            'transactions.delivery_fee',
-            DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
-                            CASE
-                            WHEN transactions.is_gst_inclusive=0
-                            THEN total*((100+transactions.gst_rate)/100)
-                            ELSE transactions.total
-                            END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-            'profiles.id as profile_id',
-            'transactions.is_gst_inclusive'
-        );
-
-        $query3 = $query3
-            ->union($query)->union($query1)->union($query2)
-            ->orderBy('id', 'desc')
-            ->get();
-                // dd($query2);
-
-        return $query3;
+        return $data;
     }
 
     private function apiRec($request)
@@ -683,9 +667,12 @@ class RptController extends Controller
         $paid_by = $request->paid_by;
         $driver = $request->driver;
 
-        $query1 = DB::table('transactions')
+        $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+
+        $query1 = clone $query;
+
         $query1 = $query1->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
 
         // check whether delivery_date presence
@@ -705,12 +692,8 @@ class RptController extends Controller
         $query1 = $this->extraField($request, $query1);
         $query1 = $query1->orderBy('transactions.id', 'desc');
 
-        $query2 = DB::table('transactions')
-            ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+        $query2 = clone $query;
 
-        // check whether paid_at presence
-        // dd($paid_at);
         if ($paid_at) {
             $query2 = $query2->whereDate('paid_at', '=', $paid_at);
         }
@@ -805,6 +788,8 @@ class RptController extends Controller
         $status = $request->status;
         $pay_status = $request->pay_status;
         $profile_id = $request->profile_id;
+        $sortName = $request->sortName;
+        $sortBy = $request->sortBy;
 
         // die(var_dump($request->all()));
         if ($transaction_id) {
@@ -832,6 +817,7 @@ class RptController extends Controller
         if ($profile_id) {
             $query = $query->where('profiles.id', $profile_id);
         }
+
         return $query;
     }
 

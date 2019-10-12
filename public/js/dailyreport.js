@@ -123,7 +123,6 @@ var app = angular.module('app', [
                 $scope.last_two_day_total = data.last_two_day_total;
                 $scope.totalcommission = data.totalcommission;
                 $scope.driver = data.driver;
-                console.log($scope.driver);
                 $scope.spinner = false;
             });
         }

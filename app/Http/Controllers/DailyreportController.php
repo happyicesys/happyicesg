@@ -118,12 +118,12 @@ class DailyreportController extends Controller
         $commission_rate = 0;
         $totalcommission = 0;
         $subtotal = 0;
-
+/*
         $alldeals = $alldeals
             ->groupBy('transactions.delivery_date')
             ->groupBy('transactions.driver')
             ->orderBy('transactions.delivery_date', 'desc')
-            ->orderBy('transactions.driver');
+            ->orderBy('transactions.driver'); */
 
         $subtotal_query = clone $alldeals;
         $subtotalArr = $subtotal_query->get();
@@ -153,10 +153,19 @@ class DailyreportController extends Controller
                 $totalcommission = $commission051 * $commission_rate;
             }
         }
-        // dd($request->sortName, $request->sortBy);
+        // $alldeals = $alldeals->orderBy('transactions.delivery_date', 'desc');
+
         if($request->sortName){
-            $alldeals = $alldeals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            dd($alldeals->get());
+            $alldeals = $alldeals
+            ->groupBy('transactions.delivery_date')
+            ->groupBy('transactions.driver')
+            ->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }else {
+            $alldeals = $alldeals
+            ->groupBy('transactions.delivery_date')
+            ->groupBy('transactions.driver')
+            ->orderBy('transactions.delivery_date', 'desc')
+            ->orderBy('transactions.driver');
         }
 
         $pageNum = $request->pageNum ? $request->pageNum : 100;
