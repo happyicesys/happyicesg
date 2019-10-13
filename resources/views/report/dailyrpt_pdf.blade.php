@@ -165,7 +165,7 @@
                             <strong>Total Amount for 'Delivered':</strong>
                         </div>
                         <div class="col-xs-4 text-right">
-                            {{ number_format($amt_del, 2, '.', ',') }}
+                            {{ number_format($del_amount, 2, '.', ',') }}
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@
                             <strong>Total Qty for 'Delivered':</strong>
                         </div>
                         <div class="col-xs-4 text-right">
-                            {{ number_format($qty_del, 4, '.', ',') }}
+                            {{ number_format($del_qty, 4, '.', ',') }}
                         </div>
                     </div>
 
@@ -183,7 +183,7 @@
                             <strong>Total Amount for 'Paid':</strong>
                         </div>
                         <div class="col-xs-4 text-right">
-                            {{ number_format($amt_mod, 2, '.', ',') }}
+                            {{ number_format($del_paid, 2, '.', ',') }}
                         </div>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                                 <strong>Total Amount for 'Paid':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($amt_mod, 2, '.', ',') }}
+                                {{ number_format($paid_amount, 2, '.', ',') }}
                             </div>
                         </div>
 
@@ -204,7 +204,7 @@
                                 <strong>Total Paid 'Cash':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($cash_mod, 2, '.', ',') }}
+                                {{ number_format($paid_cash, 2, '.', ',') }}
                             </div>
                         </div>
 
@@ -213,7 +213,7 @@
                                 <strong>Total Paid 'Cheque In':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($chequein_mod, 2, '.', ',') }}
+                                {{ number_format($paid_cheque_in, 2, '.', ',') }}
                             </div>
                         </div>
                         <div class="row">
@@ -221,7 +221,7 @@
                                 <strong>Total Paid 'Cheque Out':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($chequeout_mod, 2, '.', ',') }}
+                                {{ number_format($paid_cheque_out, 2, '.', ',') }}
                             </div>
                         </div>
                         <div class="row">
@@ -229,7 +229,7 @@
                                 <strong>Total Paid 'TT':</strong>
                             </div>
                             <div class="col-xs-4 text-right">
-                                {{ number_format($tt_mod, 2, '.', ',') }}
+                                {{ number_format($paid_tt, 2, '.', ',') }}
                             </div>
                         </div>
                     </div>
@@ -314,7 +314,7 @@
                                     {{ $transaction->status }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                    {{$transaction->delivery_date ? Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $transaction->delivery_date)->format('Y-m-d') : null}}
+                                    {{$transaction->delivery_date ? $transaction->delivery_date : null}}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->driver }}

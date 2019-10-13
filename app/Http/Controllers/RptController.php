@@ -57,8 +57,7 @@ class RptController extends Controller
         // dd($request->all());
         $now = Carbon::now()->format('d-m-Y H:i');
         $data = [];
-        $data = $this->apiRec($request);
-        $data['transactions'] = $this->apiTable($request);
+        $data = $this->apiTable($request);
         $data['now'] = $now;
 
         // insert the searched result
