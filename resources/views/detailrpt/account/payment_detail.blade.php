@@ -166,7 +166,7 @@
                     @endforeach
                 </select>
             </div>
-        </div>           
+        </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label search-title']) !!}
@@ -211,7 +211,7 @@
                 Total Inv Amount:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_inv_amount | currency: "": 2}}</strong>
+                <strong>@{{ total_inv_amount ? total_inv_amount : 0 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -219,7 +219,7 @@
                 Total GST:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_gst | currency: "": 2}}</strong>
+                <strong>@{{ total_gst ? total_gst : 0  | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -227,7 +227,7 @@
                 Total Amount:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                <strong>@{{ total_amount ? total_amount : 0 | currency: "": 2}}</strong>
             </div>
         </div>
     </div>
@@ -311,13 +311,13 @@
                     <span ng-if="search.sortName == 'delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('inv_amount')">
+                    <a href="" ng-click="sortTable('total')">
                     Inv Amount
                     <span ng-if="search.sortName == 'inv_amount' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'inv_amount' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('gst')">
+                    <a href="" ng-click="sortTable('total')">
                     GST
                     <span ng-if="search.sortName == 'gst' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'gst' && search.sortBy" class="fa fa-caret-up"></span>
@@ -341,10 +341,10 @@
                     <span ng-if="search.sortName == 'pay_method' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('note')">
+                    <a href="" ng-click="sortTable('transactions.note')">
                     Note
-                    <span ng-if="search.sortName == 'note' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'note' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'transactions.note' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.note' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 

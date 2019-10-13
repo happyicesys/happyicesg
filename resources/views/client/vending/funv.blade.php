@@ -80,7 +80,7 @@ Healthier Life
                                 Free machine delivery (round trip)
                             </td>
                             <td class="col-md-3 text-right">
-                                $388
+                                $399
                             </td>
                         </tr>
                         <tr>
