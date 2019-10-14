@@ -548,10 +548,10 @@ class RptController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
-
+/*
         if ($delivery_date and $paid_at) {
             $query = $query->whereDate('delivery_date', '=', $delivery_date);
-        }
+        } */
 
         if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query = $query->whereDriver(Auth::user()->name);
@@ -598,24 +598,28 @@ class RptController extends Controller
         $query3 = clone $query;
         $query4 = clone $query;
 
-        $query1 = $query1->where(function ($q) {
+        $query1 = $query1->where(function ($q) use ($delivery_date) {
             $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid', 'Confirmed'));
             $q->where('pay_status', 'Paid');
+            $q->whereDate('paid_at', '=', $delivery_date);
         });
 
-        $query2 = $query2->where(function ($q) {
+        $query2 = $query2->where(function ($q) use ($delivery_date) {
             $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
             $q->where('pay_status', 'Owe');
+            $q->whereDate('delivery_date', '=', $delivery_date);
         });
 
-        $query3 = $query3->where(function ($q) {
+        $query3 = $query3->where(function ($q) use ($delivery_date) {
             $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
             $q->where('pay_status', 'Paid');
+            $q->whereDate('paid_at', '=', $delivery_date);
         });
 
-        $query4 = $query4->where(function ($q) {
+        $query4 = $query4->where(function ($q) use ($delivery_date){
             $q->where('status', 'Confirmed');
             $q->where('pay_status', 'Paid');
+            $q->whereDate('paid_at', '=', $delivery_date);
         });
 
         $query4 = $query4->union($query1)->union($query2)->union($query3);
