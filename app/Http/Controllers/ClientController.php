@@ -142,7 +142,7 @@ class ClientController extends Controller
         $sendfrom = ['system@happyice.com.sg'];
 
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -291,7 +291,7 @@ class ClientController extends Controller
             }else{
                 $sendto = ['daniel.ma@happyice.com.sg'];
             }
-            array_push($sendto, 'jiahaur@happyice.com.sg');
+            array_push($sendto, 'enquiry@happyice.com.sg');
             //create transaction
         }
 
@@ -333,7 +333,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -374,7 +374,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -415,7 +415,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['leehongjie91@gmail.com'];
 
         // capture email sending date
@@ -460,7 +460,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['brianlee@happyice.com.my'];
 
         $countries = Country::all();
@@ -517,7 +517,7 @@ class ClientController extends Controller
         // email array send from
         $sendfrom = ['system@happyice.com.sg'];
         // email array send to
-        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'jiahaur@happyice.com.sg'];
+        $sendto = ['daniel.ma@happyice.com.sg', 'kent@happyice.com.sg', 'enquiry@happyice.com.sg'];
         $bcc = ['brianlee@happyice.com.my'];
 
         // capture email sending date
@@ -545,7 +545,7 @@ class ClientController extends Controller
     // redirect to brown sugar boba milk tea page
     public function brownsugarBobaInquiry()
     {
-        return view('client.brownsugarboba');
+        return Redirect::to('https://form.jotform.me/kentzo/bobaicecream6');
     }
 
     // redirect to brown sugar boba milk tea page
