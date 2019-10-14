@@ -634,7 +634,7 @@ class RptController extends Controller
             $query4 = $query4->orderBy($sortName, $sortBy ? 'asc' : 'desc');
         }else {
             // dd('default');
-            $query4 = $query4->orderBy('id', 'asc');
+            $query4 = $query4->orderBy('id', 'desc');
         }
 
         $transactions = $query4->get();
