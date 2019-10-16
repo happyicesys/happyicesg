@@ -128,6 +128,8 @@ class DailyreportController extends Controller
         $subtotal_query = clone $alldeals;
         $subtotalArr = $subtotal_query->get();
 
+        // dd($subtotalArr);
+
         foreach($subtotalArr as $dealtotal) {
             $subtotal += $dealtotal->total;
 

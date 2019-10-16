@@ -104,7 +104,7 @@
                         $dailyreport_access = true;
                     }
 
-                    if(auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin')) {
+                    if(auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin')) {
                         $access = true;
                         $transaction_access = true;
                         $person_access = true;
@@ -116,6 +116,18 @@
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $vending_access = true;
+                        $dailyreport_access = true;
+                    }
+
+                    if(auth()->user()->hasRole('supervisor')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $report_access = true;
+                        $ecommerce_access = true;
+                        $personmaintenance_access = true;
+                        $jobcard_access = true;
                         $dailyreport_access = true;
                     }
 
