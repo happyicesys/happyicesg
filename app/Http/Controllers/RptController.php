@@ -606,7 +606,7 @@ class RptController extends Controller
 
         $query2 = $query2->where(function ($q) use ($delivery_date) {
             $q->whereIn('status', array('Delivered', 'Verified Owe', 'Verified Paid'));
-            $q->where('pay_status', 'Owe');
+            // $q->where('pay_status', 'Owe');
             $q->whereDate('delivery_date', '=', $delivery_date);
         });
 
