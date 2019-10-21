@@ -1165,10 +1165,29 @@ class DetailRptController extends Controller
                     'people.cust_id AS cust_id', 'people.company AS company',
                     'custcategories.name AS custcategory_name',
                     'first_date.delivery_date AS first_date',
-                    DB::raw('ROUND(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND((SUM(deals.amount)/((100+transactions.gst_rate)/100)), 2) ELSE SUM(deals.amount) END) ELSE (SUM(deals.amount)) END, 2) AS total'),
+                    DB::raw('ROUND(
+                        CASE WHEN transactions.gst=1
+                        THEN (
+                            CASE WHEN transactions.is_gst_inclusive=1
+                            THEN ROUND((SUM(deals.amount)/((100+transactions.gst_rate)/100)), 2)
+                            ELSE SUM(deals.amount) END)
+                        ELSE (SUM(deals.amount)) END, 2) AS total'),
                     'transactions.gst AS gst',
-                    DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount) * (transactions.gst_rate/100), 2) ELSE (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100) ) END) ELSE NULL END) AS gsttotal'),
-                    DB::raw('ROUND(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN ROUND(SUM(deals.amount), 2) ELSE SUM(deals.amount) - (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100)) END) ELSE (SUM(deals.amount)) END, 2) AS subtotal'),
+                    DB::raw('(
+                        CASE WHEN transactions.gst=1
+                        THEN (
+                            CASE WHEN transactions.is_gst_inclusive=1
+                            THEN ROUND(SUM(deals.amount) * (transactions.gst_rate/100), 2)
+                            ELSE (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100) ) END)
+                        ELSE NULL END
+                        ) AS gsttotal'),
+                    DB::raw('ROUND(
+                        CASE WHEN transactions.gst=1
+                        THEN (
+                            CASE WHEN transactions.is_gst_inclusive=1
+                            THEN ROUND(SUM(deals.amount), 2)
+                            ELSE SUM(deals.amount) - (SUM(deals.amount) - SUM(deals.amount)/((100+transactions.gst_rate)/100)) END)
+                        ELSE (SUM(deals.amount)) END, 2) AS subtotal'),
                     DB::raw('ROUND(SUM(deals.unit_cost * deals.qty), 2) AS cost'),
                     DB::raw('(SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) AS gross_money'),
                     DB::raw('ROUND(CASE WHEN SUM(deals.amount)>0 THEN ((SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2))/ SUM(deals.amount) * 100) ELSE (SUM(deals.amount) - ROUND(SUM(deals.unit_cost * deals.qty), 2)) END, 2) AS gross_percent'),

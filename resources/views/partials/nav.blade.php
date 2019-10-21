@@ -129,6 +129,7 @@
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $dailyreport_access = true;
+                        $operation_access = true;
                     }
 
                     if(auth()->user()->hasRole('supervisor_msia')) {
