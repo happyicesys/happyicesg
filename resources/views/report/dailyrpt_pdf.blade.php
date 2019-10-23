@@ -188,7 +188,7 @@
                     </div>
                 </div>
 
-                @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                {{-- @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) --}}
                     <div class="col-xs-6" style="border: thin black solid;">
                         <div class="row">
                             <div class="col-xs-8">
@@ -233,7 +233,7 @@
                             </div>
                         </div>
                     </div>
-                @endunless
+                {{-- @endunless --}}
 
                 </div>
             </div>

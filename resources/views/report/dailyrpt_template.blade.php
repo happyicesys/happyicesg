@@ -225,7 +225,7 @@
                         </div>
                     </div>
                 </div>
-                @endcannot
+                {{-- @endcannot --}}
             </div>
         </div>
 
