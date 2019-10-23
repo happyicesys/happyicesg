@@ -181,7 +181,7 @@
                         </div>
                     </div>
                 </div>
-                @cannot('transaction_view')
+                {{-- @cannot('transaction_view') --}}
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     {!! Form::label('daily_rpt2', 'For This Paid Date: (@{{paid_at}})', ['class'=>'control-label']) !!}
                     <div class="row">
