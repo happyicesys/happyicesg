@@ -1831,6 +1831,12 @@ class TransactionController extends Controller
                     case 3:
                         $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
                         break;
+                    case 4:
+                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
+                        break;
+                    case 5:
+                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
+                        break;
                 }
             }
         }

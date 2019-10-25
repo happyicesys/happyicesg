@@ -327,6 +327,8 @@
                                 <option value="1">West</option>
                                 <option value="2">East</option>
                                 <option value="3">Others</option>
+                                <option value="4">Sup</option>
+                                <option value="5">Ops</option>
                             </select>
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
