@@ -46,6 +46,12 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    <input type="checkbox" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>
+                </label>
                 {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
                     null,
                     [
@@ -137,6 +143,8 @@
                     <option value="1">West</option>
                     <option value="2">East</option>
                     <option value="3">Others</option>
+                    <option value="4">Sup</option>
+                    <option value="5">Ops</option>
                 </select>
             </div>
         </div>
@@ -371,6 +379,18 @@
                                 <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.others" ng-change="toggleZoneCheckbox(person.others, person.person_id, 'others')" ng-true-value="'1'" ng-false-value="'0'">
                                 <span style="margin-left: -5px; margin-top: 5px;">
                                     Others
+                                </span>
+                            </label>
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.sup" ng-change="toggleZoneCheckbox(person.sup, person.person_id, 'sup')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    Sup
+                                </span>
+                            </label>
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.ops" ng-change="toggleZoneCheckbox(person.ops, person.person_id, 'ops')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    Ops
                                 </span>
                             </label>
                             </span>

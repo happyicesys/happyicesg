@@ -206,6 +206,12 @@ class OperationWorksheetController extends Controller
             case 'others':
                 $areaArr[2] = $val;
                 break;
+            case 'sup':
+                $areaArr[3] = $val;
+                break;
+            case 'ops':
+                $areaArr[4] = $val;
+                break;
         }
         $areaStr = implode(",", $areaArr);
         $person->area_group = $areaStr;
@@ -237,6 +243,7 @@ class OperationWorksheetController extends Controller
         $profile_id = request('profile_id');
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
+        // $exclude_custcategory = request('exclude_custcategory');
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
@@ -259,6 +266,7 @@ class OperationWorksheetController extends Controller
             });
         }
 
+        // dd($exclude_custcategory);
         if($custcategory) {
             $transactions = $transactions->whereHas('person', function($q) use ($custcategory) {
                 $q->whereHas('custcategory', function($q) use ($custcategory) {
@@ -306,6 +314,7 @@ class OperationWorksheetController extends Controller
         $profile_id = request('profile_id');
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
+        $exclude_custcategory = request('exclude_custcategory');
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
@@ -313,7 +322,6 @@ class OperationWorksheetController extends Controller
         $today = $datesVar['today'];
         $earliest = $datesVar['earliest'];
         $latest = $datesVar['latest'];
-
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -340,7 +348,11 @@ class OperationWorksheetController extends Controller
             if (count($custcategories) == 1) {
                 $custcategories = [$custcategories];
             }
-            $transactions = $transactions->whereIn('custcategories.id', $custcategories);
+            if($exclude_custcategory) {
+                $transactions = $transactions->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $transactions = $transactions->whereIn('custcategories.id', $custcategories);
+            }
         }
 
         if($cust_id) {
@@ -475,6 +487,7 @@ class OperationWorksheetController extends Controller
         $profile_id = request('profile_id');
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
+        $exclude_custcategory = request('exclude_custcategory');
         $cust_id = request('cust_id');
         $company = request('company');
         $color = request('color');
@@ -508,7 +521,11 @@ class OperationWorksheetController extends Controller
             if (count($custcategories) == 1) {
                 $custcategories = [$custcategories];
             }
-            $people = $people->whereIn('custcategories.id', $custcategories);
+            if($exclude_custcategory) {
+                $people = $people->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $people = $people->whereIn('custcategories.id', $custcategories);
+            }
         }
 
         if($cust_id) {
@@ -607,6 +624,12 @@ class OperationWorksheetController extends Controller
                     break;
                 case 3:
                     $people = $people->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
+                    break;
+                case 4:
+                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
+                    break;
+                case 5:
+                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
                     break;
             }
         }
@@ -734,6 +757,8 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.area_group, 1, 1) AS west'),
                             DB::raw('SUBSTRING(people.area_group, 3, 1) AS east'),
                             DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
+                            DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
+                            DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
                             'people.preferred_days', 'people.area_group',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',

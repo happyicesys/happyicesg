@@ -18,6 +18,7 @@ var app = angular.module('app', [
             profile_id: '',
             id_prefix: '',
             custcategory: '',
+            exclude_custcategory: 0,
             cust_id: '',
             company: '',
             chosen_date: moment().format('YYYY-MM-DD'),
