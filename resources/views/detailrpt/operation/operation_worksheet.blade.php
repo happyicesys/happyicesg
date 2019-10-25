@@ -47,7 +47,7 @@
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
-                    <input type="checkbox" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'">
+                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'">
                     <span style="margin-top: 5px;">
                         Exclude
                     </span>
