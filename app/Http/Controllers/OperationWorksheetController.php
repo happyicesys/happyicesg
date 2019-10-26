@@ -615,23 +615,34 @@ class OperationWorksheetController extends Controller
         }
 
         if($area_groups) {
-            switch($area_groups) {
-                case 1:
-                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
-                    break;
-                case 2:
-                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
-                    break;
-                case 3:
-                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
-                    break;
-                case 4:
-                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
-                    break;
-                case 5:
-                    $people = $people->where(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
-                    break;
+
+            if (count($area_groups) == 1) {
+                $area_groups = [$area_groups];
             }
+
+            $people = $people->where(function($query) use ($area_groups) {
+
+                foreach($area_groups as $key => $area) {
+                    // dd($area[0]);
+                    switch($area[0]) {
+                        case 1:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
+                            break;
+                        case 2:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
+                            break;
+                        case 3:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
+                            break;
+                        case 4:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
+                            break;
+                        case 5:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
+                            break;
+                    }
+                }
+            });
         }
 
         return $people;

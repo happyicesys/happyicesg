@@ -138,14 +138,21 @@
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
-                <select name="area_groups" class="select form-control" ng-model="search.area_groups">
-                    <option value="">All</option>
-                    <option value="1">West</option>
-                    <option value="2">East</option>
-                    <option value="3">Others</option>
-                    <option value="4">Sup</option>
-                    <option value="5">Ops</option>
-                </select>
+                {!! Form::select('area_groups',
+                    [
+                        '1' => 'West',
+                        '2' => 'East',
+                        '3' => 'Others',
+                        '4' => 'Sup',
+                        '5' => 'Ops'
+                    ],
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.area_groups',
+                        'multiple' => 'multiple'
+                    ])
+                !!}
             </div>
         </div>
     </div>

@@ -112,6 +112,8 @@ class DailyreportController extends Controller
             }
         }
 
+        $deals = $deals->groupBy('transactions.delivery_date')->groupBy('transactions.driver');
+
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
 
@@ -130,6 +132,7 @@ class DailyreportController extends Controller
 
         // dd($subtotalArr);
 
+        // dd($subtotalArr);
         foreach($subtotalArr as $dealtotal) {
             $subtotal += $dealtotal->total;
 
@@ -159,13 +162,9 @@ class DailyreportController extends Controller
 
         if($request->sortName){
             $alldeals = $alldeals
-            ->groupBy('transactions.delivery_date')
-            ->groupBy('transactions.driver')
             ->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }else {
             $alldeals = $alldeals
-            ->groupBy('transactions.delivery_date')
-            ->groupBy('transactions.driver')
             ->orderBy('transactions.delivery_date', 'desc')
             ->orderBy('transactions.driver');
         }

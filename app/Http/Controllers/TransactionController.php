@@ -1817,30 +1817,36 @@ class TransactionController extends Controller
             }
         }
 
-        if(request('area_groups')){
-            $area_groups = request('area_groups');
+        if($area_groups = request('area_groups')) {
 
-            if ($area_groups) {
-                switch ($area_groups) {
-                    case 1:
-                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
-                        break;
-                    case 2:
-                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
-                        break;
-                    case 3:
-                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
-                        break;
-                    case 4:
-                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
-                        break;
-                    case 5:
-                        $transactions = $transactions->where(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
-                        break;
-                }
+            if (count($area_groups) == 1) {
+                $area_groups = [$area_groups];
             }
-        }
 
+            $transactions = $transactions->where(function($query) use ($area_groups) {
+
+                foreach($area_groups as $key => $area) {
+                    // dd($area[0]);
+                    switch($area[0]) {
+                        case 1:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 1, 1)'), '1');
+                            break;
+                        case 2:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 3, 1)'), '1');
+                            break;
+                        case 3:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 5, 1)'), '1');
+                            break;
+                        case 4:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 7, 1)'), '1');
+                            break;
+                        case 5:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
+                            break;
+                    }
+                }
+            });
+        }
         if(request('po_no')) {
             $transactions = $transactions->where('transactions.po_no', 'LIKE',  '%'.request('po_no').'%');
         }
