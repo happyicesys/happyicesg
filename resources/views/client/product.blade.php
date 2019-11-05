@@ -43,7 +43,7 @@
                         <div class="panel-body">
                             <div class="row products">
                                 {{-- <div class="col-md-12 col-sm-12 col-xs-12"> --}}
-                                    <div v-for="(product, index) in products" class="col-md-4 col-sm-4 col-sx-12">
+                                    <div v-for="(product, index) in products" class="col-md-4 col-sm-4 col-sx-12" v-if="product.main_imgpath && product.name">
                                         <div class="thumbnail"  style="font-size:20px;">
                                             <img class="img-responsive center-block" :src="product.main_imgpath" :alt="product.main_imgcaption" style="max-height: 350px;">
 
