@@ -172,7 +172,7 @@ Healthier Life
         <div class="container text-center" style="padding-top: 30px;">
             <div class="call-to-action">
                 <h2>We Deliver to Your Doorstep too</h2>
-                <a href="/d2d" class="btn btn-primary btn-xl wow tada">Order Now!</a>
+                <a href="/brown-sugar-milk-boba-icecream" class="btn btn-primary btn-xl wow tada">Order Now!</a>
             </div>
         </div>
     </aside>
