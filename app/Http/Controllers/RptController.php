@@ -554,9 +554,15 @@ class RptController extends Controller
         } */
 
         if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
-            $query = $query->whereDriver(Auth::user()->name);
+            // $query = $query->whereDriver(Auth::user()->name);
+            $query = $query->where(function($q) {
+                $q->where('driver', Auth::user()->name)->orWhere('paid_by', Auth::user()->name);
+            });
         } else if ($driver and $paid_by) {
-            $query = $query->where('driver', 'LIKE', '%' . $driver . '%');
+            // $query = $query->where('driver', 'LIKE', '%' . $driver . '%');
+            $query = $query->where(function($q) use ($driver){
+                $q->where('driver', 'LIKE', '%'.$driver.'%')->orWhere('paid_by', 'LIKE', '%'.$driver.'%');
+            });
         }
 
         $query = $this->filterUserDbProfile($query);
