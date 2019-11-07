@@ -199,7 +199,8 @@ var app = angular.module('app', [
                                 lat: jsondata.lat,
                                 lng: jsondata.lng
                             };
-
+                            // console.log(singleperson.person_id);
+                            // console.log(coord);
                             $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {});
                         }
                     });

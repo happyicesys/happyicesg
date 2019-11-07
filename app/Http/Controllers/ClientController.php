@@ -545,7 +545,7 @@ class ClientController extends Controller
     // redirect to brown sugar boba milk tea page
     public function brownsugarBobaInquiry()
     {
-        return Redirect::to('https://form.jotform.me/kentzo/bobaicecream6');
+        return Redirect::to('https://form.jotform.me/kentzo/bobaicecream7');
     }
 
     // redirect to brown sugar boba milk tea page
