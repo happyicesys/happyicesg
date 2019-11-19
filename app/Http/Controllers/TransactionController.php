@@ -321,6 +321,7 @@ class TransactionController extends Controller
         $subtotal = number_format($subtotal, 2);
         $tax = number_format($tax, 2);
         $total = number_format($total, 2);
+        // dd($subtotal, $tax, $total);
 
         $delivery_fee = $transaction->delivery_fee;
 

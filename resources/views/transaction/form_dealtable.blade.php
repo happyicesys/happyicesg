@@ -126,10 +126,13 @@
                             </td>
                             <td colspan="3"></td>
                             <td class="col-md-1 text-right">
-                                <strong>@{{delivery | currency: ""}}</strong>
+                                <strong>@{{delivery}}</strong>
                             </td>
                         </tr>
                         @if($transaction->gst and $transaction->is_gst_inclusive)
+                        @php
+                            // dd('here1', $totalqtyModel, $totalModel, $subtotalModel);
+                        @endphp
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
@@ -142,7 +145,7 @@
                                 </td>
                                 <td colspan="1"></td>
                                 <td class="col-md-1 text-right">
-                                    <strong>@{{totalModel | currency: ""}}</strong>
+                                    <strong>@{{totalModel}}</strong>
                                 </td>
                             </tr>
                             <tr ng-if="deals.length>0">
@@ -152,7 +155,7 @@
                                 <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
-                                    @{{taxModel | currency: ""}}
+                                    @{{taxModel}}
                                 </td>
                             </tr>
                             <tr ng-if="deals.length>0">
@@ -162,10 +165,13 @@
                                 <td></td>
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
-                                    @{{subtotalModel | currency: ""}}
+                                    @{{subtotalModel}}
                                 </td>
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
+                        @php
+                            // dd('here2', $totalqtyModel, $totalModel, $subtotalModel);
+                        @endphp
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
@@ -202,6 +208,9 @@
                                 </td>
                             </tr>
                         @else
+                        @php
+                            // dd('here3');
+                        @endphp
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
