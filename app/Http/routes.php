@@ -264,6 +264,7 @@ Route::resource('inventory', 'InventoryController');
 Route::get('/thankspurchase', 'ClientController@thanksYourPurchase');
 Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaInquiry');
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
+Route::get('/warehouse-sales', 'ClientController@warehouseSales');
 Route::get('/franchise', 'ClientController@franchiseIndex');
 Route::post('/franchise', 'ClientController@franchiseInquiry');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');

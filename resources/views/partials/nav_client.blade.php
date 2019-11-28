@@ -85,13 +85,16 @@
                 <li>
                     <a class="page-scroll" style="color: yellow;" href="/brown-sugar-milk-boba-icecream">Brown Sugar Boba Ice Cream Bar Order</a>
                 </li> --}}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:yellow;">Brown Sugar Boba Ice Cream Bar<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a target="_blank" href="/brown-sugar-milk-boba-icecream">Online Order</a></li>
-                      <li><a href="/brown-sugar-milk-boba-party">Party or Event Order</a></li>
-                    </ul>
-                  </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:yellow;">Brown Sugar Boba Ice Cream Bar<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                        <li><a target="_blank" href="/brown-sugar-milk-boba-icecream">Online Order</a></li>
+                        <li><a href="/brown-sugar-milk-boba-party">Party or Event Order</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="page-scroll" style="color: yellow;" href="/warehouse-sales">Warehouse Sales</a>
+                    </li>
                 @endif
                 @if($recruitment_access)
                 <li>

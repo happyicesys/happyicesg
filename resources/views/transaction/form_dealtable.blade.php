@@ -133,21 +133,7 @@
                         @php
                             // dd('here1', $totalqtyModel, $totalModel, $subtotalModel);
                         @endphp
-                            <tr ng-if="deals.length>0">
-                                <td colspan="3" class="text-right">
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    @{{getTotalPieces()}}
-                                </td>
-                                <td class="col-md-1 text-right">
-                                    <strong>@{{totalqtyModel}}</strong>
-                                </td>
-                                <td colspan="1"></td>
-                                <td class="col-md-1 text-right">
-                                    <strong>@{{totalModel}}</strong>
-                                </td>
-                            </tr>
+
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
@@ -166,6 +152,21 @@
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
+                                </td>
+                            </tr>
+                            <tr ng-if="deals.length>0">
+                                <td colspan="3" class="text-right">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="col-md-1 text-right">
+                                    @{{getTotalPieces()}}
+                                </td>
+                                <td class="col-md-1 text-right">
+                                    <strong>@{{totalqtyModel}}</strong>
+                                </td>
+                                <td colspan="1"></td>
+                                <td class="col-md-1 text-right">
+                                    <strong>@{{totalModel}}</strong>
                                 </td>
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
@@ -228,7 +229,7 @@
                             </tr>
                         @endif
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
-                            <td colspan="12" class="text-center">No Records Found!</td>
+                            <td colspan="12" cltatuass="text-center">No Records Found!</td>
                         </tr>
 
                     </tbody>

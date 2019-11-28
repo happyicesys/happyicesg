@@ -655,18 +655,6 @@
                         @if($transaction->gst and $transaction->is_gst_inclusive)
                             <tr class="noBorder">
                                 <td colspan="2" class="text-right">
-                                    <strong>Total</strong>
-                                </td>
-                                <td class="col-xs-2 text-right">
-                                    {{$totalqty}}
-                                </td>
-                                <td></td>
-                                <td class="text-right">
-                                    <strong>{{$total}}</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="text-right">
                                     <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
                                 <td colspan="2"></td>
@@ -681,6 +669,18 @@
                                 <td colspan="2"></td>
                                 <td class="text-right">
                                     {{$subtotal}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-right">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="col-xs-2 text-right">
+                                    {{$totalqty}}
+                                </td>
+                                <td></td>
+                                <td class="text-right">
+                                    <strong>{{$total}}</strong>
                                 </td>
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
