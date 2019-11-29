@@ -6,14 +6,14 @@ Healthier Life
 @stop
 @section('content')
     <header>
-        <div class="header-content" style="padding-top: 0px;">
-            <div class="header-content-inner">
+        {{-- <div style="vertical-align: bottom;"> --}}
+            {{-- <div class="header-content-inner"> --}}
                 {{-- <span style="font-size: 70px; color: white;">Happy Ice, Healthier Life</span> --}}
                 {{-- <hr> --}}
                 {{-- <p style="color: black;">Oriental . Flavourful . Less Sweet</p> --}}
-                <a href="/client/product" class="btn btn-primary btn-xl page-scroll" style="margin-top: 250px;">Find Out More</a>
-            </div>
-        </div>
+                <a href="/warehouse-sales" class="btn btn-default btn-xl" style="border: black solid 2px; margin-top: 350px;" >Find Out More</a>
+            {{-- </div> --}}
+        {{-- </div> --}}
     </header>
 
     <section class="bg-primary" id="about">
