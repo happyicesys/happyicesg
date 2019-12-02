@@ -1207,7 +1207,7 @@ class TransactionController extends Controller
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                    'transactions.po_no', 'transactions.name', 'transactions.contact',
+                                    'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE

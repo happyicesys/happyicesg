@@ -640,6 +640,12 @@
                                     <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('del_address')">
+                                    Del Address
+                                    <span ng-if="search.sortName == 'del_address' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'del_address' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('updated_by')">
                                     Last Modified By
                                     <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -730,6 +736,7 @@
                                         @{{ transaction.pay_status }}
                                     </td>
                                     {{-- pay status ended --}}
+                                    <td class="col-md-1 text-center">@{{ transaction.del_address}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
                                     <td class="col-md-1 text-center">
@@ -748,7 +755,7 @@
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
-                                    <td colspan="18" class="text-center">No Records Found</td>
+                                    <td colspan="24" class="text-center">No Records Found</td>
                                 </tr>
                             </tbody>
                         </table>
