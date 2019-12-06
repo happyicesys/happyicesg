@@ -852,8 +852,9 @@ class PersonController extends Controller
     // sync person tags(Person $person, Formrequest $request)
     private function syncPersonTags($person, $request)
     {
-        $tags = $request->tags;
 
+        $tags = $request->tags;
+        // dd($request, $tags);
         if($tags) {
             // dd($tags);
 /*
@@ -882,6 +883,14 @@ class PersonController extends Controller
             // dd($tags);
 
             Persontagattach::whereNotIn('persontag_id', $tags)->where('person_id', $person->id)->delete();
+        }else {
+            $tags = Persontagattach::where('person_id', $person->id)->get();
+
+            if($tags) {
+                foreach($tags as $tag){
+                    $tag->delete();
+                }
+            }
 
         }
     }
