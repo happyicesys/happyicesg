@@ -92,9 +92,10 @@
                         <li><a href="/brown-sugar-milk-boba-party">Party or Event Order</a></li>
                         </ul>
                     </li>
+{{--
                     <li>
                         <a class="page-scroll" style="color: yellow;" href="/warehouse-sales">Warehouse Sales</a>
-                    </li>
+                    </li> --}}
                 @endif
                 @if($recruitment_access)
                 <li>
