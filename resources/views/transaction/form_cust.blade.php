@@ -25,7 +25,7 @@
         @endphp
 
         <div class="row">
-            <div class="col-md-4 form-group">
+            <div class="col-md-6 form-group">
                 {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
                 {!! Form::textarea('bill_address', null, ['class'=>'form-control',
                 'ng-model'=>'form.bill_address',
@@ -37,31 +37,18 @@
             {{-- haagen daz user disable --}}
             @if(!$transaction->is_deliveryorder)
                 @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-                    <div class="col-md-4 form-group">
+                    <div class="col-md-6 form-group">
                         {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control input-sm',
                         'ng-model'=>'form.del_address',
                         'readonly'=>'readonly',
                         'rows'=>'5']) !!}
                     </div>
-
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('transremark', null, ['class'=>'form-control', 'rows'=>'3', 'readonly'=>'readonly']) !!}
-                    </div>
                 @else
-                    <div class="col-md-4 form-group">
+                    <div class="col-md-6 form-group">
                         {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
                         {!! Form::textarea('del_address', null, ['class'=>'form-control',
                         'ng-model'=>'form.del_address',
-                        'disabled'=> $disabled,
-                        'rows'=>'5']) !!}
-                    </div>
-
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('transremark', null, ['class'=>'form-control',
-                        'ng-model'=>'form.transremark',
                         'disabled'=> $disabled,
                         'rows'=>'5']) !!}
                     </div>
@@ -335,6 +322,28 @@
             </div>
         </div>
         @endif
+
+        <div class="row">
+        @if(!$transaction->is_deliveryorder)
+            @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                <div class="col-md-12 form-group">
+                    {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-sm', 'rows'=>'5', 'readonly'=>'readonly']) !!}
+                </div>
+            @else
+                <div class="col-md-12 form-group">
+                    {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-sm',
+                    'ng-model'=>'form.transremark',
+                    'disabled'=> $disabled,
+                    'rows'=>'5']) !!}
+                </div>
+            @endif
+        @endif
+        </div>
+
+
+
 
 
         @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm === 1) and !$transaction->is_deliveryorder)
