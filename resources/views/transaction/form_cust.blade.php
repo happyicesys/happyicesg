@@ -328,12 +328,12 @@
             @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                 <div class="col-md-12 form-group">
                     {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-sm', 'rows'=>'5', 'readonly'=>'readonly']) !!}
+                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
                 </div>
             @else
                 <div class="col-md-12 form-group">
                     {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-sm',
+                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
                     'ng-model'=>'form.transremark',
                     'disabled'=> $disabled,
                     'rows'=>'5']) !!}
