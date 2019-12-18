@@ -78,15 +78,14 @@ Healthier Life
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
                         {{-- <img src="{{$item::whereProductId('005')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('005')->first()->main_imgcaption}}"> --}}
-                        <img src="../img/portfolio/a1.jpg" class="img-responsive" alt="chocolate pie with mango">
+                        <img src="../img/portfolio/a1.png" class="img-responsive center-block" alt="Brown Sugar Boba Ice Cream">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
 
                                 </div>
                                 <div class="project-name">
-                                    {{-- {{$item::whereProductId('005')->first()->name}} --}}
-                                    Chocolate Pie with Mango
+                                    Brown Sugar Boba Ice Cream
                                 </div>
                             </div>
                         </div>
@@ -95,13 +94,13 @@ Healthier Life
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
                         {{-- <img src="{{$item::whereProductId('004')->first()->main_imgpath}}" height="500" width="650" alt="{{$item::whereProductId('004')->first()->main_imgcaption}}"> --}}
-                        <img src="../img/portfolio/a2.png" class="img-responsive" alt="Strawberry Frozen Yogurt">
+                        <img src="../img/portfolio/a2.png" class="img-responsive center-block" alt="Milk Ice Bar">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    Strawberry Frozen Yogurt
+                                    Milk Ice Bar
                                 </div>
                             </div>
                         </div>
@@ -138,13 +137,13 @@ Healthier Life
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="/client/product" class="portfolio-box">
-                        <img src="../img/portfolio/a5.jpg" class="img-responsive" alt="OShare Mint Chocolate">
+                        <img src="../img/portfolio/a5.jpg" class="img-responsive center-block" alt="Green Mango and Lemon">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
                                 </div>
                                 <div class="project-name">
-                                    OShare Mint Chocolate
+                                    Green Mango and Lemon
                                 </div>
                             </div>
                         </div>
@@ -173,6 +172,17 @@ Healthier Life
             <div class="call-to-action">
                 <h2>We Deliver to Your Doorstep too</h2>
                 <a href="/brown-sugar-milk-boba-icecream" class="btn btn-primary btn-xl wow tada">Order Now!</a>
+            </div>
+        </div>
+    </aside>
+
+    <aside>
+        <div class="container text-center" style="padding-top: 30px;">
+            <div class="call-to-action">
+                <h2>Also Featuring...</h2>
+                <a href="https://www.foodline.sg/">
+                    <img src="../img/featuring/foodline.png" class="img-responsive center-block" alt="Foodline SG">
+                </a>
             </div>
         </div>
     </aside>
