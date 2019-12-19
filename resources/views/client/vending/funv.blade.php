@@ -66,7 +66,7 @@ Healthier Life
 
         <div class="row">
             <div class="col-md-12 col-xs-12" style="margin-top: 10px;">
-                <h3>Interested in renting this machine for your company corporate event or </h3>
+                <h3>Interested in renting this machine for your Company Corporate Event or Private Party</h3>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tr style="background-color: #d7d7d7;">
@@ -80,7 +80,7 @@ Healthier Life
                                 Free machine delivery (round trip)
                             </td>
                             <td class="col-md-3 text-right">
-                                $399
+                                $449
                             </td>
                         </tr>
                         <tr>
@@ -100,11 +100,11 @@ Healthier Life
                         </tr>
                         <tr>
                             <td class="col-md-9">
-                                200 pcs of ice cream<br>
+                                150 pcs of ice cream<br>
                                 Free machine delivery (round trip)
                             </td>
                             <td class="col-md-3 text-right">
-                                $499
+                                $539
                             </td>
                         </tr>
                         <tr>
@@ -127,8 +127,8 @@ Healthier Life
                                 Machine Rental Fees
                             </td>
                             <td class="col-md-3 text-right">
-                                $100/day<br>
-                                $200/week
+                                $150/day<br>
+                                $250/week
                             </td>
                         </tr>
                         <tr>
@@ -156,7 +156,7 @@ Healthier Life
                         </tr>
                         <tr>
                             <td class="col-md-9">
-                                Machine delivery on weekend<br>
+                                Machine delivery on weekend (before 7pm, for job after 7pm special arrangement needed)<br>
                                 <small><em>* There is no delivery fees for ice cream</em></small>
                             </td>
                             <td class="col-md-3 text-right">
