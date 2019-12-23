@@ -569,7 +569,7 @@ class ClientController extends Controller
     // show next day delivery page
     public function nextDayDelivery()
     {
-        return view('cleint.next-day-delivery');
+        return view('client.next-day-delivery');
     }
 
     // create H code customer process based on given postcode and assign to member
