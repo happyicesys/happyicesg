@@ -566,6 +566,12 @@ class ClientController extends Controller
         return view('client.thankspurchase');
     }
 
+    // show next day delivery page
+    public function nextDayDelivery()
+    {
+        return view('cleint.next-day-delivery');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {
