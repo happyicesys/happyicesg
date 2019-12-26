@@ -4,5 +4,5 @@ Healthier Life
 @stop
 @section('content')
 
-<script type="text/javascript" src="https://form.jotform.com/193574471190462"></script>
+<script type="text/javascript" src="https://form.jotform.com/jsform/193574471190462"></script>
 @stop
