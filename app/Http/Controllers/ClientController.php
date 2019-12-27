@@ -572,6 +572,18 @@ class ClientController extends Controller
         return view('client.nextdaydelivery');
     }
 
+    // return terms and conditions page
+    public function termsAndConditions()
+    {
+        return view('client.terms-and-conditions');
+    }
+
+    // return privacy policy page
+    public function privacyPolicy()
+    {
+        return view('client.privacy-policy');
+    }
+
     // create H code customer process based on given postcode and assign to member
     private function createDtdCustomer($request)
     {

@@ -266,6 +266,8 @@ Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaIn
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
 Route::get('/next-day-delivery', 'ClientController@nextDayDelivery');
 Route::get('/warehouse-sales', 'ClientController@warehouseSales');
+Route::get('/terms', 'ClientController@termsAndConditions');
+Route::get('/privacy', 'ClientController@privacyPolicy');
 Route::get('/franchise', 'ClientController@franchiseIndex');
 Route::post('/franchise', 'ClientController@franchiseInquiry');
 Route::get('/recruitment', 'ClientController@recruitmentIndex');
