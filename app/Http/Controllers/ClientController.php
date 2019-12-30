@@ -563,6 +563,7 @@ class ClientController extends Controller
     // redirect to thanks your purchase page
     public function thanksYourPurchase()
     {
+        dd(request()->all());
         return view('client.thankspurchase');
     }
 
