@@ -5,7 +5,7 @@ Healthier Life
 @section('content')
 <style>
     .title {
-        font-size: 85px;
+        font-size: 50px;
         margin: 0;
         display: table;
         font-weight: 100;
@@ -37,7 +37,7 @@ Healthier Life
     @if($pdf_url)
     <span class="col-xs-12">
         Please
-        <a href={{$pdf_url}}>
+        <a class="btn btn-default" href={{$pdf_url}}>
             download pdf
         </a>
         for your reference.
@@ -49,7 +49,7 @@ Healthier Life
     </p>
     @if($edit_link)
     <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 25px;">
-        Click <strong>{{$edit_link}}</strong> if you wish to modify your order. You are not allowed to modify your order online 24 hours before delivery timing.
+        Click <a class="btn btn-default" href={{$edit_link}}>HERE</a>{{$edit_link}}</strong> if you wish to modify your order. You are not allowed to modify your order online 24 hours before delivery timing.
     </p>
     @endif
     <div class="row">
