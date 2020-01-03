@@ -28,13 +28,13 @@ Healthier Life
     @if($order_id)
     <span class="col-xs-12">Order ID: {{$order_id}}</span>
     @endif
-    @if($pdf_link)
 
     @php
         $pdf_url = "https://www.jotform.com/server.php?action=getSubmissionPDF&sid=".$submission_id."&formID=".$form_id;
         $edit_link = "https://www.jotform.com/edit/".$submission_id;
     @endphp
 
+    @if($pdf_url)
     <span class="col-xs-12">
         Please
         <a href={{$pdf_url}}>
