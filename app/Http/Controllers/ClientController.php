@@ -563,8 +563,10 @@ class ClientController extends Controller
     // redirect to thanks your purchase page
     public function thanksYourPurchase()
     {
-        dd(request()->all());
-        return view('client.thankspurchase');
+        $order_id = request('orderid');
+        $submission_id = request('submission_id');
+        $form_id = request('formID');
+        return view('client.thankspurchase', compact('order_id', 'submission_id', 'form_id'));
     }
 
     // show next day delivery page
