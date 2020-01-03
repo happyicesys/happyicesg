@@ -168,6 +168,9 @@ class ClientController extends Controller
 
     public function d2dIndex()
     {
+
+        return redirect()->action('ClientController@brownsugarBobaInquiry');
+/*
         $lookupArr = [
             '1' => 'Red Bean Jelly (5pcs/ box)',
             '2' => 'Chocolate Pie with Mango (5pcs/ box)',
@@ -203,7 +206,7 @@ class ClientController extends Controller
             '2' => '12pm - 5pm'
         ];
 
-        return view('client.d2d', compact('lookupArr', 'priceArr', 'dayArr', 'timeArr'));
+        return view('client.d2d', compact('lookupArr', 'priceArr', 'dayArr', 'timeArr')); */
     }
 
     public function emailOrder(Request $request)
