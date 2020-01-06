@@ -5,11 +5,11 @@ Healthier Life
 @section('content')
 <style>
     .title {
-        font-size: 60px;
+        font-size: 40px;
         margin: 0;
         display: table;
         font-weight: 100;
-        font-family: 'Lato';
+        font-family: 'Verdana';
         padding-top: 100px;
         padding-bottom: 100px;
     }
@@ -37,23 +37,23 @@ Healthier Life
     @if($pdf_url)
     <span class="col-xs-12">
         Please
-        <a class="btn btn-default" href={{$pdf_url}}>
+        <a class="btn btn-lg btn-primary" href={{$pdf_url}}>
             download pdf
         </a>
         for your reference.
     </span>
     @endif
-    <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 25px;">
+    <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 20px;">
         Your order has been received and a confirmation email has been sent to you. Your order is only confirmed if you receive confirmation email. If you do not receive the confirmation email, do write to us
         <strong>onlineorder@happyice.com.sg</strong> or <strong>Whatsapp us at 98898718</strong> to confirm your order. to confirm your order.
     </p>
     @if($edit_link)
-    <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 25px;">
-        Click <a class="btn btn-default" href={{$edit_link}}>HERE</a> if you wish to modify your order. You are not allowed to modify your order online 24 hours before delivery timing.
+    <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 20px;">
+        Click <a class="btn btn-primary" href={{$edit_link}}>Here</a> if you wish to modify your order. You are not allowed to modify your order online 24 hours before delivery timing.
     </p>
     @endif
     <div class="row">
-    <a href="/next-day-delivery" class="btn btn-default">
+    <a href="/next-day-delivery" class="btn btn-primary">
         To Place Another Order, Click Here
     </a>
     </div>
