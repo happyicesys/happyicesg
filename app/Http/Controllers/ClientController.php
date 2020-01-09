@@ -560,7 +560,7 @@ class ClientController extends Controller
     // redirect to brown sugar boba milk tea page
     public function brownsugarBobaPartyInquiry()
     {
-        return view('client.bobaparty');
+        return Redirect::action('ClientController@iceCreamPartyPackage');
     }
 
     // redirect to thanks your purchase page
@@ -576,6 +576,12 @@ class ClientController extends Controller
     public function nextDayDelivery()
     {
         return view('client.nextdaydelivery');
+    }
+
+    // show party package page
+    public function iceCreamPartyPackage()
+    {
+        return view('client.icecreampartypackage');
     }
 
     // return terms and conditions page

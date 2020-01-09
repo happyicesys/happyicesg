@@ -261,10 +261,11 @@ Route::delete('/inventory/data/{id}', 'InventoryController@destroyAjax');
 Route::get('/inventory/data', 'InventoryController@getData');
 Route::resource('inventory', 'InventoryController');
 
-Route::post('/thankspurchase', 'ClientController@thanksYourPurchase');
+Route::any('/thankspurchase', 'ClientController@thanksYourPurchase');
 Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaInquiry');
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
 Route::get('/next-day-delivery', 'ClientController@nextDayDelivery');
+Route::get('/ice-cream-party-package', 'ClientController@iceCreamPartyPackage');
 Route::get('/warehouse-sales', 'ClientController@warehouseSales');
 Route::get('/terms', 'ClientController@termsAndConditions');
 Route::get('/privacy', 'ClientController@privacyPolicy');
