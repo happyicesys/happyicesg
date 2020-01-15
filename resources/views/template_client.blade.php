@@ -17,6 +17,7 @@
         <script>
             $('div.alert').not('.alert-important').delay(6000).fadeOut(350);
         </script>
+        <script src="https://www.w3counter.com/tracker.js?id=129734"></script>
     </body>
 </html>
 
