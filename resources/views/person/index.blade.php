@@ -92,6 +92,7 @@
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
+                                    <option value="New">New</option>
                                 @endif
                             </select>
                         </div>
@@ -203,7 +204,7 @@
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'active'; sortReverse = !sortReverse">
-                                Active
+                                Status
                                 <span ng-show="sortType == 'active' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'active' && sortReverse" class="fa fa-caret-up"></span>
                             </th>

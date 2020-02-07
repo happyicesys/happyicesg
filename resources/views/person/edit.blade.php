@@ -43,6 +43,9 @@
                                 case 'Pending':
                                     $statusStr = '[Pending]';
                                     break;
+                                case 'New':
+                                    $statusStr = '[New]';
+                                    break;
                             }
                         @endphp
                         {{$statusStr}}

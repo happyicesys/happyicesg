@@ -228,6 +228,9 @@ class PersonController extends Controller
             case 'Pending':
                 $request->merge(array('active' => 'Pending'));
                 break;
+            case 'New':
+                $request->merge(array('active' => 'New'));
+                break;
         }
         $input = $request->all();
         $person->update($input);

@@ -106,6 +106,22 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('active', 'Status', ['class'=>'control-label']) !!}
+            {!! Form::select('active',
+                    [
+                        'New' => 'New',
+                        'Pending' => 'Pending',
+                        'Yes' => 'Active',
+                        'No' => 'Inactive'
+
+                    ], null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
+</div>
+
 @php
     $franchisee = null;
     if(auth()->user()->hasRole('franchisee')) {

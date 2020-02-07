@@ -262,6 +262,7 @@
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <option value="No">Inactive</option>
                                     <option value="Pending">Pending</option>
+                                    <option value="New">New</option>
                                 @endif
                             </select>
                         </div>
