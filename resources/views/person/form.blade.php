@@ -112,9 +112,9 @@
             {!! Form::label('active', 'Status', ['class'=>'control-label']) !!}
             {!! Form::select('active',
                     [
+                        'Yes' => 'Active',
                         'New' => 'New',
                         'Pending' => 'Pending',
-                        'Yes' => 'Active',
                         'No' => 'Inactive'
 
                     ], null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
