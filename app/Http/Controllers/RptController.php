@@ -548,22 +548,38 @@ class RptController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
 
-/*
-        if ($delivery_date and $paid_at) {
-            $query = $query->whereDate('delivery_date', '=', $delivery_date);
-        } */
-
         if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
-            // $query = $query->whereDriver(Auth::user()->name);
             $query = $query->where(function($q) {
                 $q->where('driver', Auth::user()->name)->orWhere('paid_by', Auth::user()->name);
             });
         } else if ($driver and $paid_by) {
-            // $query = $query->where('driver', 'LIKE', '%' . $driver . '%');
             $query = $query->where(function($q) use ($driver){
                 $q->where('driver', 'LIKE', '%'.$driver.'%')->orWhere('paid_by', 'LIKE', '%'.$driver.'%');
             });
         }
+/*
+        if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+
+            $query = $query->where(function($q) {
+                $q->where(function($q) use ($delivery_date) {
+                    $q->where('transactions.driver', Auth::user()->name)->whereDate('transactions.delivery_date', '=', $delivery_date);
+                })->orWhere(function($q) use ($delivery_date) {
+                    $q->where('transactions.paid_by', Auth::user()->name)->whereDate('transactions.paid_at', '=', $delivery_date);
+                });
+            });
+
+        } else if ($driver and $paid_by) {
+
+            $query = $query->where(function($q) {
+                $q->where(function($q) use ($delivery_date, $driver) {
+                    $q->where('transactions.driver', 'LIKE', '%'.$driver.'%')->whereDate('transactions.delivery_date', '=', $delivery_date);
+                })->orWhere(function($q) use ($delivery_date, $driver) {
+                    $q->where('transactions.paid_by', 'LIKE', '%'.$driver.'%')->whereDate('transactions.paid_at', '=', $delivery_date);
+                });
+            });
+            // http_response_code(500);
+            // dd($driver, $query->toSql());
+        } */
 
         $query = $this->filterUserDbProfile($query);
 
