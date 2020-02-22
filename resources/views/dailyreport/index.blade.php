@@ -11,12 +11,12 @@ Daily Report
 
     <div ng-app="app">
         <div class="row">
-            <a class="title_hyper pull-left" href="/dailyreport/index"><h1> Daily Report <i class="fa fa-flag"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
+            <a class="title_hyper pull-left" href="/dailyreport/index"><h1> Performance <i class="fa fa-flag"></i> <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span></h1></a>
         </div>
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li class="active"><a href="#daily_report" role="tab" data-toggle="tab">Daily Report</a></li>
+                    <li class="active"><a href="#daily_report" role="tab" data-toggle="tab"> Driver Commission</a></li>
                     {{-- <li><a href="#monthly_summary" role="tab" data-toggle="tab">Monthly Summary</a></li> --}}
                 </ul>
             </div>

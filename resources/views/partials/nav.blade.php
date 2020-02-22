@@ -253,7 +253,7 @@
                 @endif
                 @if($dailyreport_access)
                     <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
-                        <a href="/dailyreport/index"><i class="fa fa-flag"></i> Daily Report</a>
+                        <a href="/dailyreport/index"><i class="fa fa-flag"></i> Performance</a>
                     </li>
                 @endif
                 @if($report_access)

@@ -206,7 +206,7 @@ var app = angular.module('app', [
             product_name: '',
             status: 'Delivered',
             is_commission: '0',
-            pageNum: 100,
+            pageNum: 'All',
             sortBy: true,
             sortName: ''
         }
