@@ -39,7 +39,7 @@ class PriceController extends Controller
         $quote_price = $request->quote;
 
         foreach ($quote_price as $index => $quote) {
-            if ($quote != null) {
+            if ($quote != null and ($quote != 0.00 and $retail_price[$index] != 0.00)) {
                 if (auth()->user()->hasRole('franchisee')) {
                     $price = Fprice::wherePersonId($person_id)->whereItemId($index)->first();
                 } else {
@@ -69,7 +69,7 @@ class PriceController extends Controller
                     $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
                 }
 
-                if ($retail_price[$index] == 0 or $retail_price[$index] == null) {
+                if ($retail_price[$index] == 0.00 or $retail_price[$index] == null) {
                     if ($price) {
                         $price->delete();
                     }
