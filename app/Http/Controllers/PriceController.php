@@ -69,17 +69,18 @@ class PriceController extends Controller
                     $price = Price::wherePersonId($person_id)->whereItemId($index)->first();
                 }
 
-                if ($retail_price[$index] == 0 or $retail_price[$index] == null) {
+                // if ($retail_price[$index] == 0 or $retail_price[$index] == null) {
                     if ($price) {
                         $price->delete();
                     }
+/*
                 } else {
                     $price->retail_price = $retail_price[$index];
                     $price->quote_price = $quote_price[$index];
                     $price->person_id = $person_id;
                     $price->item_id = $index;
                     $price->save();
-                }
+                } */
             }
         }
 /*
