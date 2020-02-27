@@ -28,8 +28,17 @@ class DailyreportController extends Controller
     public function indexApi(Request $request)
     {
 
-        $totalRaw = DB::raw("(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
-                    GROUP BY transactions.delivery_date, transactions.driver) totalRaw");
+        $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
+        LEFT JOIN people ON people.id = transactions.person_id
+        LEFT JOIN profiles ON profiles.id = people.profile_id ";
+
+        if($request->profile_id) {
+            $totalRaw .= " where profiles.id =".$request->profile_id." ";
+        }
+
+        $totalRaw .= " GROUP BY transactions.delivery_date, transactions.driver) totalRaw";
+
+        $totalRaw = DB::raw($totalRaw);
 
         $deals = DB::table('deals')
             ->leftJoin('items', 'items.id', '=', 'deals.item_id')

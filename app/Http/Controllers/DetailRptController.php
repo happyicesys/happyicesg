@@ -357,7 +357,7 @@ class DetailRptController extends Controller
         }
 
         $thistotal = DB::raw("(
-                            SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
+                            SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thistotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -370,7 +370,7 @@ class DetailRptController extends Controller
                                 AND ".$commissionStr."
                                 GROUP BY people.id) thistotal");
 
-        $prevtotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevtotal,
+        $prevtotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevtotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -383,7 +383,7 @@ class DetailRptController extends Controller
                                 AND ".$commissionStr."
                                 GROUP BY people.id) prevtotal");
 
-        $prev2total = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prev2total,
+        $prev2total = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prev2total,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -396,7 +396,7 @@ class DetailRptController extends Controller
                                 AND ".$commissionStr."
                                 GROUP BY people.id) prev2total");
 
-        $prevyeartotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevyeartotal,
+        $prevyeartotal = DB::raw("(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevyeartotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -428,7 +428,7 @@ class DetailRptController extends Controller
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
                                 );
 
-        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status or $request->franchisee_id){
+        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status or $request->franchisee_id or $request->exclude_custcategory){
             $transactions = $this->searchTransactionDBFilter($transactions, $request);
         }
 
@@ -475,7 +475,7 @@ class DetailRptController extends Controller
         $prevYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subYear();
         $profile_id = $request->profile_id;
 
-        $thistotal = "(SELECT ROUND(SUM(amount), 2) AS amount, ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
+        $thistotal = "(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS amount, ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
@@ -622,7 +622,7 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $amountstr = "SELECT ROUND(SUM(amount), 2) AS thisamount, ROUND(SUM(CASE WHEN items.is_inventory=1 THEN qty END), 4) AS thisqty, item_id, transaction_id
+        $amountstr = "SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thisamount, ROUND(SUM(CASE WHEN items.is_inventory=1 THEN qty END), 4) AS thisqty, item_id, transaction_id
                         FROM deals
                         LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
@@ -657,15 +657,13 @@ class DetailRptController extends Controller
         } */
         if($request->custcategory) {
             $custcategory = implode(",", $request->custcategory);
-            // dd($custcategory);
-/*
-            if(count($custcategory) == 1) {
-                dd($custcategory);
-                $custcategory = $custcategory;
+
+            if($request->exclude_custcategory) {
+                $amountstr = $amountstr." AND custcategories.id NOT IN (".$custcategory.")";
             }else {
-                $custcategory = implode($custcategory);
-            } */
-            $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
+                $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
+            }
+
         }
         if($request->status) {
             if($request->status === 'Delivered') {
@@ -848,7 +846,7 @@ class DetailRptController extends Controller
             $commissionStr = " AND items.is_commission='".$is_commission."' ";
         }
 
-        $thistotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS thistotal,
+        $thistotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thistotal,
                             people.profile_id, custcategories.id AS custcategory_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -859,7 +857,7 @@ class DetailRptController extends Controller
                             WHERE transactions.delivery_date>='".$delivery_from."'
                             AND transactions.delivery_date<='".$delivery_to."'";
 
-        $prevtotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevtotal,
+        $prevtotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevtotal,
                             people.profile_id, custcategories.id AS custcategory_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -870,7 +868,7 @@ class DetailRptController extends Controller
                             WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                             AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
 
-        $prev2total_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prev2total,
+        $prev2total_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prev2total,
                             people.profile_id, custcategories.id AS custcategory_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -881,7 +879,7 @@ class DetailRptController extends Controller
                             WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                             AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
 
-        $prevyeartotal_str = "(SELECT people.id AS person_id, ROUND(SUM(deals.amount), 2) AS prevyeartotal,
+        $prevyeartotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevyeartotal,
                                 people.profile_id, custcategories.id AS custcategory_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -1919,6 +1917,7 @@ class DetailRptController extends Controller
         $pay_method = $request->pay_method;
         $id_prefix = $request->id_prefix;
         $custcategory = $request->custcategory;
+        $exclude_custcategory = $request->exclude_custcategory;
         $bankin_from = $request->bankin_from;
         $bankin_to = $request->bankin_to;
         $franchisee_id = $request->franchisee_id;
@@ -1973,12 +1972,24 @@ class DetailRptController extends Controller
         }
 /*         if($custcategory) {
             $transactions = $transactions->where('custcategories.id', $custcategory);
-        } */
+        }
         if ($custcategory) {
             if (count($custcategory) == 1) {
                 $custcategory = [$custcategory];
             }
             $transactions = $transactions->whereIn('custcategories.id', $custcategory);
+        }*/
+
+        if($custcategory) {
+            $custcategories = $custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            if($exclude_custcategory) {
+                $transactions = $transactions->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $transactions = $transactions->whereIn('custcategories.id', $custcategories);
+            }
         }
         if($bankin_from) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
