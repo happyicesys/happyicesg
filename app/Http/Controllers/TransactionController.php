@@ -1856,6 +1856,10 @@ class TransactionController extends Controller
             $transactions = $transactions->where('transactions.contact', 'LIKE',  '%'.request('contact').'%');
         }
 
+        if(request('is_gst_inclusive')) {
+            $transactions = $transactions->where('transactions.is_gst_inclusive', request('is_gst_inclusive') == 'true' ? 1 : 0);
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

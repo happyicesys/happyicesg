@@ -29,6 +29,7 @@ var app = angular.module('app', [
             tag: '',
             driver: '',
             user: '',
+            person_active: ['Yes'],
             pageNum: 100,
             sortBy: true,
             sortName: ''

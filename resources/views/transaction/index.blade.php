@@ -362,6 +362,23 @@
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                         </div>
+
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('is_gst_inclusive',
+                            [
+                                '' => 'All',
+                                'true' => 'Inclusive',
+                                'false' => 'Exclusive'
+                            ],
+                            null,
+                            [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.is_gst_inclusive',
+                                'ng-change' => 'searchDB()'
+                            ])
+                        !!}
+                        </div>
 {{--
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}

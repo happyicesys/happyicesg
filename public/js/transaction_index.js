@@ -40,6 +40,7 @@ var app = angular.module('app', [
             pickup_location_name: '',
             delivery_location_name: '',
             area_groups: '',
+            is_gst_inclusive: '',
             itemsPerPage: 100,
             sortName: '',
             sortBy: true

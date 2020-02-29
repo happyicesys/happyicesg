@@ -30,11 +30,21 @@ class DailyreportController extends Controller
 
         $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
         LEFT JOIN people ON people.id = transactions.person_id
-        LEFT JOIN profiles ON profiles.id = people.profile_id ";
+        LEFT JOIN profiles ON profiles.id = people.profile_id
+        where 1=1";
 
         if($request->profile_id) {
-            $totalRaw .= " where profiles.id =".$request->profile_id." ";
+            $totalRaw .= " and profiles.id =".$request->profile_id." ";
         }
+
+        if ($request->person_active) {
+            $personstatus = $request->person_active;
+
+            $personstatus = implode("','",$personstatus);
+            $totalRaw .= " and people.active IN ('".$personstatus."')";
+            // dd($totalRaw);
+        }
+
 
         $totalRaw .= " GROUP BY transactions.delivery_date, transactions.driver) totalRaw";
 
@@ -70,6 +80,14 @@ class DailyreportController extends Controller
         }
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
+        }
+        if ($request->person_active) {
+            // dd($request->person_active);
+            $personstatus = $request->person_active;
+            if (count($personstatus) == 1) {
+                $personstatus = [$personstatus];
+            }
+            $deals = $deals->whereIn('people.active', $personstatus);
         }
 
         // set logic to distinguish driver or technician role
