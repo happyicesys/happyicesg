@@ -1236,6 +1236,8 @@ class TransactionController extends Controller
         // driver not able to see the invoices earlier than today
         $transactions = $this->filterDriverView($transactions);
 
+        // dd($transactions->toSql());
+
         return $transactions;
     }
 
@@ -1753,13 +1755,25 @@ class TransactionController extends Controller
 /*
         if(request('custcategory')) {
             $transactions = $transactions->where('custcategories.id', request('custcategory'));
-        } */
+        }
         if (request('custcategory')) {
             $custcategory = request('custcategory');
             if (count($custcategory) == 1) {
                 $custcategory = [$custcategory];
             }
             $transactions = $transactions->whereIn('custcategories.id', $custcategory);
+        }*/
+
+        if(request('custcategory')) {
+            $custcategories = request('custcategory');
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            if(request('exclude_custcategory')) {
+                $transactions = $transactions->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $transactions = $transactions->whereIn('custcategories.id', $custcategories);
+            }
         }
 
         // add in franchisee checker

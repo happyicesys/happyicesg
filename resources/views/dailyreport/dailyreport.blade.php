@@ -102,12 +102,21 @@
             <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                    <select name="custcategory[]" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
-                        <option value="">All</option>
-                        @foreach($custcategories::orderBy('name')->get() as $custcategory)
-                        <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
-                        @endforeach
-                    </select>
+                    <label class="pull-right">
+                        <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                        <span style="margin-top: 5px;">
+                            Exclude
+                        </span>
+                    </label>
+                    {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB()"
+                        ])
+                    !!}
                 </div>
             </div>
             <div class="col-md-4 col-sm-6 col-xs-12">
@@ -150,7 +159,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                     <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>

@@ -42,7 +42,14 @@ class DailyreportController extends Controller
 
             $personstatus = implode("','",$personstatus);
             $totalRaw .= " and people.active IN ('".$personstatus."')";
-            // dd($totalRaw);
+        }
+
+        if($request->status) {
+            if($request->status == 'Delivered') {
+                $totalRaw .= " and (transactions.status = 'Delivered' or transactions.status = 'Verified Owe' or transactions.status = 'Verified Paid') ";
+            }else {
+                $totalRaw .= " and (transactions.status = '".$request->status."') ";
+            }
         }
 
 
@@ -104,12 +111,16 @@ class DailyreportController extends Controller
             }
         }
 
-        if ($request->custcategory) {
-            $custcategory = $request->custcategory;
-            if (count($custcategory) == 1) {
-                $custcategory = [$custcategory];
+        if($request->custcategory) {
+            $custcategories = $request->custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
             }
-            $deals = $deals->whereIn('custcategories.id', $request->custcategory);
+            if($request->exclude_custcategory) {
+                $deals = $deals->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $deals = $deals->whereIn('custcategories.id', $custcategories);
+            }
         }
 
         if($request->status) {
@@ -196,6 +207,7 @@ class DailyreportController extends Controller
             ->orderBy('transactions.driver');
         }
 
+        // dd($alldeals->toSql());
         $pageNum = $request->pageNum ? $request->pageNum : 100;
         if($pageNum == 'All'){
             $alldeals = $alldeals->get();

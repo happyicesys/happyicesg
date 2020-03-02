@@ -25,6 +25,7 @@ var app = angular.module('app', [
             id_prefix: '',
             company: '',
             custcategory: '',
+            exclude_custcategory: '',
             status: 'Delivered',
             tag: '',
             driver: '',
