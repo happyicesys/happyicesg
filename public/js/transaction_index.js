@@ -42,6 +42,7 @@ var app = angular.module('app', [
             delivery_location_name: '',
             area_groups: '',
             is_gst_inclusive: '',
+            gst_rate: '',
             itemsPerPage: 100,
             sortName: '',
             sortBy: true

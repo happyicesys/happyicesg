@@ -1874,6 +1874,10 @@ class TransactionController extends Controller
             $transactions = $transactions->where('transactions.is_gst_inclusive', request('is_gst_inclusive') == 'true' ? 1 : 0);
         }
 
+        if(request('gst_rate')) {
+            $transactions = $transactions->where('transactions.gst_rate', request('gst_rate'));
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

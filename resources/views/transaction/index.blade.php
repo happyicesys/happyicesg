@@ -407,6 +407,17 @@
                 <div class="row">
                     <div class="row">
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('gst_rate', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.gst_rate',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'GST Rate',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
                                 <datepicker>
