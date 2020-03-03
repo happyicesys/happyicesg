@@ -31,6 +31,7 @@ class DailyreportController extends Controller
         $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
         LEFT JOIN people ON people.id = transactions.person_id
         LEFT JOIN profiles ON profiles.id = people.profile_id
+        LEFT JOIN custcategories ON custcategories.id = people.custcategory_id
         where 1=1";
 
         if($request->profile_id) {
@@ -49,6 +50,17 @@ class DailyreportController extends Controller
                 $totalRaw .= " and (transactions.status = 'Delivered' or transactions.status = 'Verified Owe' or transactions.status = 'Verified Paid') ";
             }else {
                 $totalRaw .= " and (transactions.status = '".$request->status."') ";
+            }
+        }
+
+        if($request->custcategory) {
+            $custcategories = $request->custcategory;
+            $custcategories = implode("','",$custcategories);
+
+            if($request->exclude_custcategory) {
+                $totalRaw .= " and custcategories.id NOT IN ('".$custcategories."')";
+            }else {
+                $totalRaw .= " and custcategories.id IN ('".$custcategories."')";
             }
         }
 

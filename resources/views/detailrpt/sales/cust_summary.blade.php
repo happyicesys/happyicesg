@@ -94,7 +94,22 @@
                 !!}
             </div>
         </div>
-
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
+                <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
+                    <option value="">All</option>
+                    <option value="Yes">Active</option>
+                    <option value="New">New</option>
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                        <option value="No">Inactive</option>
+                        <option value="Pending">Pending</option>
+                    @endif
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 

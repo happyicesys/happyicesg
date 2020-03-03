@@ -663,7 +663,6 @@ class DetailRptController extends Controller
             }else {
                 $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
             }
-
         }
         if($request->status) {
             if($request->status === 'Delivered') {
@@ -671,6 +670,12 @@ class DetailRptController extends Controller
             }else {
                 $amountstr .=" AND transactions.status='".$request->status."'";
             }
+        }
+        if ($request->person_active) {
+            $personstatus = $request->person_active;
+
+            $personstatus = implode("','",$personstatus);
+            $amountstr .= " AND people.active IN ('".$personstatus."')";
         }
 
         if(request('is_commission') != '') {
@@ -833,6 +838,7 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
         $status = $request->status;
+        // $person_status = $request->person_status;
         $is_commission = request('is_commission');
         if($status) {
             if($status == 'Delivered') {
@@ -841,6 +847,10 @@ class DetailRptController extends Controller
                 $statusStr = " AND transactions.status='".$status."'";
             }
         }
+/*
+        if($person_status) {
+            $personStatusStr = " AND people.status"
+        } */
 
         if($is_commission != '') {
             $commissionStr = " AND items.is_commission='".$is_commission."' ";
@@ -1912,6 +1922,7 @@ class DetailRptController extends Controller
         $payment_to = $request->payment_to;
         $company = $request->company;
         $status = $request->status;
+        $person_active = $request->person_active;
         $person_id = $request->person_id;
         $payment = $request->payment;
         $pay_method = $request->pay_method;
@@ -1948,6 +1959,13 @@ class DetailRptController extends Controller
             }else {
                 $transactions = $transactions->where('transactions.status', $status);
             }
+        }
+        if($person_active) {
+            if (count($person_active) == 1) {
+                $person_active = [$person_active];
+            }
+
+            $transactions = $transactions->whereIn('people.active', $person_active);
         }
         if($company) {
             $transactions = $transactions->where(function($query) use ($company){
