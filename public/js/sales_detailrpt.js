@@ -25,8 +25,10 @@ var app = angular.module('app', [
             custcategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
-            person_active: ['Yes'],
+            person_active: [],
             is_commission: '0',
+            is_gst_inclusive: '',
+            gst_rate: '',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -91,7 +93,9 @@ var app = angular.module('app', [
                     $scope.indexTo = data.transactions.length;
                 }
                 $scope.All = data.transactions.length;
-                $scope.total_amount = data.total_amount;
+                $scope.sales_total = data.sales_total;
+                $scope.tax_total = data.tax_total;
+                $scope.transaction_total = data.transaction_total;
                 $scope.spinner = false;
             });
         }
@@ -114,8 +118,10 @@ var app = angular.module('app', [
             custcategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
-            person_active: ['Yes'],
+            person_active: [],
             is_commission: '0',
+            is_gst_inclusive: '',
+            gst_rate: '',
             pageNum: 100,
             sortBy: true,
             sortName: '',
@@ -187,7 +193,7 @@ var app = angular.module('app', [
                 $scope.All = data.transactions.length;
 
                 // return total amount
-                $scope.total_amount = data.total_amount;
+                $scope.sales_total = data.sales_total;
                 $scope.spinner = false;
             });
         }
@@ -211,7 +217,7 @@ var app = angular.module('app', [
             custcategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
-            person_active: ['Yes'],
+            person_active: [],
             is_commission: '0',
             pageNum: 'All',
             sortBy: true,
@@ -301,7 +307,7 @@ var app = angular.module('app', [
             profile_id: '',
             custcategory: '',
             exclude_custcategory: '',
-            person_active: ['Yes'],
+            person_active: [],
             status: 'Delivered',
             is_commission: '0',
             pageNum: 'All',

@@ -111,7 +111,7 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.status',
@@ -159,6 +159,37 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_gst_inclusive',
+                [
+                    '' => 'All',
+                    'true' => 'Already added GST',
+                    'false' => 'To add GST'
+                ],
+                null,
+                [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.is_gst_inclusive',
+                    'ng-change' => 'searchDB()'
+                ])
+            !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('gst_rate', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.gst_rate',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'GST Rate',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ]) !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -168,11 +199,35 @@
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
     <div class="col-md-4 col-xs-12">
-        <div class="col-md-5 col-xs-5">
-            This Month Total:
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <strong> Current Month </strong>
+            </div>
         </div>
-        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-            <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
+        <div class="row">
+            <div class="col-md-5 col-xs-5">
+                Transaction Total:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ transaction_total ? transaction_total : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+{{--
+        <div class="row">
+            <div class="col-md-5 col-xs-5">
+                Tax Total:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ tax_total ? tax_total : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div> --}}
+        <div class="row">
+            <div class="col-md-5 col-xs-5">
+                Sales Total:
+            </div>
+            <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                <strong>@{{ sales_total ? sales_total : 0.00 | currency: "": 2}}</strong>
+            </div>
         </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">

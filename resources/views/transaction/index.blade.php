@@ -116,8 +116,7 @@
                             <option value="Pending">Pending</option>
                             <option value="Confirmed">Confirmed</option>
                             <option value="Delivered">Delivered</option>
-                            <option value="Verified Owe">Verified Owe</option>
-                            <option value="Verified Paid">Verified Paid</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
                     </div>
@@ -379,8 +378,8 @@
                             {!! Form::select('is_gst_inclusive',
                             [
                                 '' => 'All',
-                                'true' => 'Inclusive',
-                                'false' => 'Exclusive'
+                                'true' => 'Already added GST',
+                                'false' => 'To add GST'
                             ],
                             null,
                             [

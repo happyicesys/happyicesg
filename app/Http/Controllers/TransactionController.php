@@ -1716,9 +1716,10 @@ class TransactionController extends Controller
         }
         if (request('statuses')) {
             $statuses = request('statuses');
-            if (count($statuses) == 1) {
-                $statuses = [$statuses];
+            if(in_array("Delivered", $statuses)) {
+                array_push($statuses, 'Verified Owe', 'Verified Paid');
             }
+
             $transactions = $transactions->whereIn('transactions.status', $statuses);
         }
         if(request('pay_status')){

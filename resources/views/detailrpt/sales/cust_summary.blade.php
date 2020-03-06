@@ -33,7 +33,7 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
+                {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.status',
@@ -108,6 +108,37 @@
                         <option value="Pending">Pending</option>
                     @endif
                 </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_gst_inclusive',
+                [
+                    '' => 'All',
+                    'true' => 'Already added GST',
+                    'false' => 'To add GST'
+                ],
+                null,
+                [
+                    'class'=>'select form-control',
+                    'ng-model'=>'search.is_gst_inclusive',
+                    'ng-change' => 'searchDB()'
+                ])
+            !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('gst_rate', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.gst_rate',
+                                                    'ng-change'=>'searchDB()',
+                                                    'placeholder'=>'GST Rate',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ]) !!}
             </div>
         </div>
     </div>

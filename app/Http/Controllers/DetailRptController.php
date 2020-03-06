@@ -356,6 +356,54 @@ class DetailRptController extends Controller
             $commissionStr = " 1=1 ";
         }
 
+        $transactiontotal = DB::raw("(
+                            SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                AND transactions.delivery_date<='".$delivery_to."'
+                                AND ".$statusStr."
+                                AND ".$commissionStr."
+                                GROUP BY people.id) transactiontotal");
+
+/*
+        $taxtotal = DB::raw("(
+                            SELECT people.id AS person_id, ROUND((CASE WHEN transactions.gst=1 THEN (
+                                CASE
+                                WHEN transactions.is_gst_inclusive=0
+                                THEN deals.amount*((transactions.gst_rate)/100)
+                                ELSE deals.amount/(100+transactions.gst_rate)/100
+                                END) ELSE 0 END), 2) AS taxtotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                AND transactions.delivery_date<='".$delivery_to."'
+                                AND ".$statusStr."
+                                AND ".$commissionStr."
+                                GROUP BY people.id) taxtotal"); */
+
+        $taxtotal = DB::raw("(
+                            SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                                people.profile_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE transactions.delivery_date>='".$delivery_from."'
+                                AND transactions.delivery_date<='".$delivery_to."'
+                                AND ".$statusStr."
+                                AND ".$commissionStr."
+                                GROUP BY people.id) taxtotal");
+
         $thistotal = DB::raw("(
                             SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thistotal,
                                 people.profile_id
@@ -419,13 +467,15 @@ class DetailRptController extends Controller
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
                         ->leftJoin($prevyeartotal, 'people.id', '=', 'prevyeartotal.person_id')
+                        ->leftJoin($transactiontotal, 'people.id', '=', 'transactiontotal.person_id')
+                        ->leftJoin($taxtotal, 'people.id', '=', 'taxtotal.person_id')
                         ->select(
                                     'items.is_commission',
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
-                                    'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
+                                    'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal', 'taxtotal.taxtotal AS taxtotal', 'transactiontotal.transactiontotal AS transactiontotal'
                                 );
 
         if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status or $request->franchisee_id or $request->exclude_custcategory){
@@ -445,8 +495,8 @@ class DetailRptController extends Controller
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
-        $total_amount = $this->calTransactionTotalSql($transactions);
-
+        $totals = $this->calTransactionTotalSql($transactions);
+// dd($totals);
         if($pageNum == 'All'){
             $transactions = $transactions->get();
         }else{
@@ -454,7 +504,9 @@ class DetailRptController extends Controller
         }
 
         $data = [
-            'total_amount' => $total_amount,
+            'sales_total' => $totals['sales_total'],
+            'tax_total' => $totals['tax_total'],
+            'transaction_total' => $totals['transaction_total'],
             'transactions' => $transactions,
         ];
 
@@ -994,7 +1046,7 @@ class DetailRptController extends Controller
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
-        $total_amount = $this->calTransactionTotalSql($transactions);
+        $total_amount = $this->calTransactionTotalSql($transactions)['sales_total'];
 
         if($pageNum == 'All'){
             $transactions = $transactions->get();
@@ -1932,6 +1984,8 @@ class DetailRptController extends Controller
         $bankin_from = $request->bankin_from;
         $bankin_to = $request->bankin_to;
         $franchisee_id = $request->franchisee_id;
+        $is_gst_inclusive = $request->is_gst_inclusive;
+        $gst_rate = $request->gst_rate;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -2022,6 +2076,14 @@ class DetailRptController extends Controller
                 $transactions = $transactions->where('people.franchisee_id', 0);
             }
         }
+        if($is_gst_inclusive) {
+            $transactions = $transactions->where('transactions.is_gst_inclusive', $is_gst_inclusive == 'true' ? 1 : 0);
+        }
+
+        if($gst_rate) {
+            $transactions = $transactions->where('transactions.gst_rate', $gst_rate);
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -2085,12 +2147,25 @@ class DetailRptController extends Controller
     private function calTransactionTotalSql($query)
     {
         $total_amount = 0;
+        $transaction_total_amount = 0;
+        $tax_total_amount = 0;
         $query1 = clone $query;
         $totals = $query1->get();
+
         foreach($totals as $total) {
             $total_amount += $total->thistotal;
+            if($total->transactiontotal) {
+                $transaction_total_amount += $total->transactiontotal;
+            }
+            if($total->taxtotal) {
+                $tax_total_amount += $total->taxtotal;
+            }
         }
-        return $total_amount;
+        return [
+            'sales_total' => $total_amount,
+            'transaction_total' => $transaction_total_amount,
+            'tax_total' => $tax_total_amount
+        ];
     }
 
     // calculate account cust outstanding total
