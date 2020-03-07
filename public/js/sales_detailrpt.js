@@ -193,7 +193,7 @@ var app = angular.module('app', [
                 $scope.All = data.transactions.length;
 
                 // return total amount
-                $scope.sales_total = data.sales_total;
+                $scope.total_amount = data.total_amount;
                 $scope.spinner = false;
             });
         }

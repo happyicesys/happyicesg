@@ -2154,10 +2154,10 @@ class DetailRptController extends Controller
 
         foreach($totals as $total) {
             $total_amount += $total->thistotal;
-            if($total->transactiontotal) {
+            if(isset($total->transactiontotal)) {
                 $transaction_total_amount += $total->transactiontotal;
             }
-            if($total->taxtotal) {
+            if(isset($total->taxtotal)) {
                 $tax_total_amount += $total->taxtotal;
             }
         }

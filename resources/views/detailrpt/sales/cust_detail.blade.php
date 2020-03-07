@@ -212,7 +212,7 @@
                 <strong>@{{ transaction_total ? transaction_total : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
-{{--
+
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Tax Total:
@@ -220,7 +220,7 @@
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
                 <strong>@{{ tax_total ? tax_total : 0.00 | currency: "": 2}}</strong>
             </div>
-        </div> --}}
+        </div>
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Sales Total:
