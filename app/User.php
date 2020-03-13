@@ -120,6 +120,11 @@ class User extends Model implements AuthenticatableContract,
         return $query->whereIn('users.id', $userIdArr);
     }
 
+    public function scopeUserId($query, $value)
+    {
+        return $query->whereIn('id', $value);
+    }
+
     // get the current auth user and return it ownself expect admin
     private function searchUserFranchiseId()
     {

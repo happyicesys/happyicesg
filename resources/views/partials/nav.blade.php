@@ -125,6 +125,7 @@
                         $person_access = true;
                         $item_access = true;
                         $report_access = true;
+                        $detailrpt_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
@@ -240,14 +241,16 @@
                     <li class="{{ Request::segment(1) == 'detailrpt' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }} <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
-                            <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
-                            <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
-                            <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
-                            <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
-                            <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
-                            <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
-                            <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
-                            <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
+                                <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
+                            @if(!auth()->user()->hasRole('supervisor'))
+                                <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
+                                <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
+                                <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
+                                <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
+                                <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
+                                <li class="text-left"><a href="/detailrpt/stock/billing"> Stock (Billing)</a></li>
+                                <li class="text-left"><a href="/detailrpt/vending"> Vending Machine</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif

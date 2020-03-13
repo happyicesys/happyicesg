@@ -223,6 +223,11 @@ class Transaction extends Model
          return $query->where('id', 'LIKE', '%'.$id.'%');
     }
 
+    public function scopeId($query, $id)
+    {
+         return $query->where('id', 'LIKE', '%'.$id.'%');
+    }
+
     // (query, integer) [query]
     public function scopeSearchCustId($query, $cust_id)
     {
@@ -243,24 +248,34 @@ class Transaction extends Model
     }
 
     // (query, string) [query]
-    public function scopeSearchStatus($query, $status)
+    public function scopeStatus($query, $status)
     {
-         return $query->where('status', 'LIKE', '%'.$status.'%');
+        return $query->where('status', 'LIKE', '%'.$status.'%');
+    }
+
+    // filter status
+    public function scopeFullStatus($query, $status)
+    {
+        if($status == 'Delivered') {
+            return $query->whereIn('status', ['Delivered', 'Verified Owe', 'Verified Paid']);
+        }
+
+        return $query->where('status', 'LIKE', '%'.$status.'%');
     }
 
     // (query, string) [query]
-    public function scopeSearchPayStatus($query, $pay_status)
+    public function scopePayStatus($query, $pay_status)
     {
          return $query->where('pay_status', 'LIKE', '%'.$pay_status.'%');
     }
 
     // (query, string) [query]
-    public function scopeSearchUpdatedBy($query, $updated_by)
+    public function scopeUpdatedBy($query, $updated_by)
     {
          return $query->where('updated_by', 'LIKE', '%'.$updated_by.'%');
     }
 
-    public function scopeSearchUpdatedAt($query, $date)
+    public function scopeUpdatedAt($query, $date)
     {
         $date = Carbon::parse($date);
 
@@ -275,7 +290,7 @@ class Transaction extends Model
     }
 
     // (query, string) [query]
-    public function scopeSearchDriver($query, $driver)
+    public function scopeDriver($query, $driver)
     {
          return $query->where('driver', 'LIKE', '%'.$driver.'%');
     }
@@ -286,6 +301,41 @@ class Transaction extends Model
         return $query->whereHas('person.profile', function($query) use ($profile){
             return $query->where('id', $profile);
         });
+    }
+
+    public function scopePoNo($query, $value)
+    {
+        return $query->where('po_no', 'LIKE', '%'.$value.'%');
+    }
+
+    public function scopeContact($query, $value)
+    {
+        return $query->where('contact', 'LIKE', '%'.$value.'%');
+    }
+
+    public function scopeIsGst($query, $value)
+    {
+        return $query->where('gst', $value);
+    }
+
+    public function scopeIsGstInclusive($query, $value)
+    {
+        return $query->where('is_gst_inclusive', $value);
+    }
+
+    public function scopeGstRate($query, $value)
+    {
+        return $query->where('gst_rate', $value);
+    }
+
+    public function scopeDeliveryDateFrom($query, $value)
+    {
+        return $query->whereDate('delivery_date', '>=', $value);
+    }
+
+    public function scopeDeliveryDateTo($query, $value)
+    {
+        return $query->whereDate('delivery_date', '<=', $value);
     }
 
     public function scopeSearchDateRange($query, $datefrom, $dateto)

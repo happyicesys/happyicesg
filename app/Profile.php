@@ -63,6 +63,16 @@ class Profile extends Model
         return $query->whereIn('profiles.id', $profileIdArr);
     }
 
+    public function scopeId($query, $value)
+    {
+        return $query->where('id', $value);
+    }
+
+    public function scopeName($query, $value)
+    {
+        return $query->where('name', $value);
+    }
+
     // get the current auth user and return profiles id
     private function searchUserProfileId()
     {

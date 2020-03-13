@@ -1665,22 +1665,22 @@ class TransactionController extends Controller
             $transactions = $transactions->searchCompany($request->company);
         }
         if($request->status){
-            $transactions = $transactions->searchStatus($request->status);
+            $transactions = $transactions->status($request->status);
         }
         if($request->pay_status){
-            $transactions = $transactions->searchPayStatus($request->pay_status);
+            $transactions = $transactions->payStatus($request->pay_status);
         }
         if($request->updated_by){
-            $transactions = $transactions->searchUpdatedBy($request->updated_by);
+            $transactions = $transactions->updatedBy($request->updated_by);
         }
         if($request->updated_at){
-            $transactions = $transactions->searchUpdatedAt($request->updated_at);
+            $transactions = $transactions->updatedAt($request->updated_at);
         }
         if($request->delivery_date){
             $transactions = $transactions->searchDeliveryDate($request->delivery_date);
         }
         if($request->driver){
-            $transactions = $transactions->searchDriver($request->driver);
+            $transactions = $transactions->driver($request->driver);
         }
         if($request->profile){
             $transactions = $transactions->searchProfile($request->profile);

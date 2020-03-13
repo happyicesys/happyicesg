@@ -25,4 +25,25 @@ class Custcategory extends Model
     {
         return $this->hasMany('App\Bomvending');
     }
+
+    // scopes
+    public function scopeNames($query, $value)
+    {
+        return $query->whereIn('name', $value);
+    }
+
+    public function scopeExcludeNames($query, $value)
+    {
+        return $query->whereNotIn('name', $value);
+    }
+
+    public function scopeIds($query, $value)
+    {
+        return $query->whereIn('id', $value);
+    }
+
+    public function scopeExcludeIds($query, $value)
+    {
+        return $query->whereNotIn('id', $value);
+    }
 }

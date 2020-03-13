@@ -261,6 +261,18 @@ class Person extends Baum\Node
         return $query->where('name', 'like', "%$name%");
     }
 
+    // filter cust id
+    public function scopeCustId($query, $value)
+    {
+        return $query->where('cust_id', 'LIKE', '%'.$value.'%');
+    }
+
+    // filter company
+    public function scopeCompany($query, $value)
+    {
+        return $query->where('company', 'LIKE', '%'.$value.'%');
+    }
+
     public function scopeSearchContact($query, $contact)
     {
         return $query->where('contact', 'like', "%$contact%");

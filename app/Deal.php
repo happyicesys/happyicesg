@@ -49,6 +49,7 @@ class Deal extends Model
         'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after'
     ];
 
+    // relationships
     public function item()
     {
         return $this->belongsTo('App\Item');
@@ -59,6 +60,7 @@ class Deal extends Model
         return $this->belongsTo('App\Transaction');
     }
 
+    // setter
     public function setQtyAttribute($value)
     {
         if(strstr($value, '/')){
@@ -70,6 +72,7 @@ class Deal extends Model
         }
     }
 
+    // scopes
     public function scopeIsTransactionAnalog($query)
     {
         return $query->whereHas('transaction', function($query) {
@@ -77,6 +80,17 @@ class Deal extends Model
         });
     }
 
+    // filter transaction id
+    public function scopeTransactionId($query, $value, $like = false)
+    {
+        if($like) {
+            return $query->where('transaction_id', 'LIKE', '%'.$value.'%');
+        }
+        return $query->where('transaction_id', $value);
+    }
+
+
+    // local method
     private function fraction($frac)
     {
         $fraction = explode("/",$frac);
