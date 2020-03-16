@@ -52,7 +52,7 @@
                         {!! Form::text('invoice', null,
                                                         [
                                                             'class'=>'form-control input-sm',
-                                                            'ng-model'=>'search.id',
+                                                            'ng-model'=>'search.transaction_id',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Inv Num',
                                                             'ng-model-options'=>'{ debounce: 500 }'

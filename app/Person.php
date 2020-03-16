@@ -273,6 +273,47 @@ class Person extends Baum\Node
         return $query->where('company', 'LIKE', '%'.$value.'%');
     }
 
+    public function scopeAreaGroups($query, $value)
+    {
+
+        if (count($value) == 1) {
+            $value = [$value];
+        }
+
+        return $query->where(function($query) use ($value) {
+
+            foreach($value as $key => $area) {
+                // dd($area[0]);
+                switch($area[0]) {
+                    case 1:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 1, 1)'), '1');
+                        break;
+                    case 2:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 3, 1)'), '1');
+                        break;
+                    case 3:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 5, 1)'), '1');
+                        break;
+                    case 4:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 7, 1)'), '1');
+                        break;
+                    case 5:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 9, 1)'), '1');
+                        break;
+                }
+            }
+        });
+    }
+
+    public function scopeActive($query, $value)
+    {
+        if (count($value) == 1) {
+            $value = [$value];
+        }
+        return $query->whereIn('active', $value);
+    }
+
+
     public function scopeSearchContact($query, $contact)
     {
         return $query->where('contact', 'like', "%$contact%");

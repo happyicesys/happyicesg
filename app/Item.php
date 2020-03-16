@@ -66,4 +66,25 @@ class Item extends Model
         return $this->hasOne('App\Fprice');
     }
 
+    // scopes
+    public function scopeIsInventory($query, $value)
+    {
+        return $query->where('is_inventory', $value);
+    }
+
+    public function scopeIsCommission($query, $value)
+    {
+        return $query->where('is_commission', $value);
+    }
+
+    public function scopeProductId($query, $value)
+    {
+        return $query->where('product_id', 'LIKE', '%'.$value.'%');
+    }
+
+    public function scopeName($query, $value)
+    {
+        return $query->where('name', 'LIKE', '%'.$value.'%');
+    }
+
 }

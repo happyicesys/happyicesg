@@ -20,7 +20,7 @@ var app = angular.module('app', [
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
         $scope.search = {
-            id: '',
+            transaction_id: '',
             cust_id: '',
             company: '',
             status: '',

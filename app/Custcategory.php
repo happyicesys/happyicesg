@@ -46,4 +46,21 @@ class Custcategory extends Model
     {
         return $query->whereNotIn('id', $value);
     }
+
+    public function scopeCustcategory($query, $value)
+    {
+        if (count($value) == 1) {
+            $value = [$value];
+        }
+        return $query->whereIn('id', $custcategories);
+    }
+
+    public function scopeExcludeCustcategory($query, $value)
+    {
+        if (count($value) == 1) {
+            $value = [$value];
+        }
+        return $query->whereNotIn('id', $custcategories);
+    }
+
 }

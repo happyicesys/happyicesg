@@ -277,7 +277,7 @@
                                 }
 
                                 if($issuebillprofile->gst) {
-                                    $gstvar = $totalvar - $totalvar/1.07;
+                                    $gstvar = $totalvar - $totalvar/ ((100 + $issuebillprofile->gst_rate)/ 100);
                                     $subtotalvar = $totalvar - $gstvar;
                                 }
                             @endphp
@@ -293,7 +293,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="5" class="text-right">
-                                        <strong>GST (7%)</strong>
+                                        <strong>GST ({{number_format($issuebillprofile->gst_rate)}}%)</strong>
                                     </td>
                                     <td class="text-right">
                                         {{ number_format($gstvar, 2) }}

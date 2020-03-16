@@ -36,6 +36,7 @@ use App\TransSubscription;
 use App\User;
 use App\Deliveryorder;
 use App\Transactionpersonasset;
+use App\Services\DealService;
 use Illuminate\Support\Facades\Storage;
 // use App\Ftransaction;
 
@@ -54,20 +55,24 @@ class TransactionController extends Controller
         qty_status = 2 (Actual Stock Deducted/ Delivered)
         qty_status = 3 (Stock Removed/ Deleted || Cancelled)
     */
+    private $dealService;
+
 
     //auth-only login can see
-    public function __construct()
+    public function __construct(DealService $dealService)
     {
         $this->middleware('auth');
+        $this->dealService = $dealService;
     }
 
     // get transactions api data based on delivery date
-    public function getData()
+    public function getData(Request $request)
     {
         // showing total amount init
         $total_amount = 0;
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
+        // dd($this->dealService->getDeals($request));
 
         $transactions = $this->getTransactionsData();
 
@@ -90,6 +95,14 @@ class TransactionController extends Controller
             'transactions' => $transactions,
         ];
         return $data;
+/*
+        $transactionsArr = $this->dealService->getTransactions($request, $this->getPerPage, true);
+
+        $data = [
+            'total_amount' => $transactionsArr['total'],
+            'transactions' => $transactionsArr['transactions']
+        ];
+        return $data; */
     }
 
     /**
@@ -1695,8 +1708,8 @@ class TransactionController extends Controller
     private function searchDBFilter($transactions)
     {
         // dd(request()->all());
-        if(request('id')){
-            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.request('id').'%');
+        if(request('transaction_id')){
+            $transactions = $transactions->where('transactions.id', 'LIKE', '%'.request('transaction_id').'%');
         }
         if(request('cust_id')){
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
