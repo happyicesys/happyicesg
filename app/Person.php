@@ -329,8 +329,12 @@ class Person extends Baum\Node
         return $query->where('area','=', $area);
     }
 
-    public function scopeFilterFranchiseePeople($query)
+    public function scopeFilterFranchiseePeople($query, $value)
     {
+
+        return $query->where('franchisee_id', '=', $value);
+
+
         $peopleIdArr = [];
 
         if(auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user')) {

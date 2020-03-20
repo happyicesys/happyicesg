@@ -37,12 +37,12 @@ class Custcategory extends Model
         return $query->whereNotIn('name', $value);
     }
 
-    public function scopeIds($query, $value)
+    public function scopeCustId($query, $value)
     {
         return $query->whereIn('id', $value);
     }
 
-    public function scopeExcludeIds($query, $value)
+    public function scopeExcludeCustId($query, $value)
     {
         return $query->whereNotIn('id', $value);
     }

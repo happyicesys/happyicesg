@@ -256,11 +256,14 @@ class Transaction extends Model
     // filter status
     public function scopeFullStatus($query, $status)
     {
-        if($status == 'Delivered') {
-            return $query->whereIn('status', ['Delivered', 'Verified Owe', 'Verified Paid']);
+
+        if(in_array('Delivered', $status)) {
+            array_push($status, 'Verified Owe');
+            array_push($status, 'Verified Paid');
+            // return $query->whereIn('status', ['Delivered', 'Verified Owe', 'Verified Paid']);
         }
 
-        return $query->where('status', 'LIKE', '%'.$status.'%');
+        return $query->whereIn('status', $status);
     }
 
     // (query, string) [query]

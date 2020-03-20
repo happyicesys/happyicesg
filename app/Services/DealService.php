@@ -74,12 +74,18 @@ class DealService
 
                 $query->whereHas('custcategory', function($query) use ($request) {
                     if($request->custcategory) {
-                        $query->custId($request->custcategory);
-                    }
-                    if($request->exclude_custcategory) {
-                        $query->excludeCustId($request->custcategory);
+                        if($request->exclude_custcategory) {
+                            $query->excludeCustId($request->custcategory);
+                        }else {
+                            $query->custId($request->custcategory);
+                        }
                     }
                 });
+
+                if($request->franchisee_id) {
+                    $query->filterFranchiseePeople();
+                }
+
                 $query->whereHas('profile', function($query) use ($request) {
                     if($request->profile_id) {
                         $query->id($request->profile_id);
