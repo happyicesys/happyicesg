@@ -318,6 +318,7 @@ class OperationWorksheetController extends Controller
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
+        $tags = request('tags');
         // $del_postcode = request('del_postcode');
         $today = $datesVar['today'];
         $earliest = $datesVar['earliest'];
@@ -373,6 +374,13 @@ class OperationWorksheetController extends Controller
 
         if($latest) {
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $latest);
+        }
+
+        if($tags) {
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $transactions = $transactions->whereIn('persontags.id', $tags);
         }
 
         return $transactions;
@@ -659,6 +667,8 @@ class OperationWorksheetController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
+                            ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                             ->select(
                                 'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
                                 'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address',

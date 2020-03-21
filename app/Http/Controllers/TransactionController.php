@@ -76,7 +76,8 @@ class TransactionController extends Controller
 
         $transactions = $this->getTransactionsData();
 
-        $total_amount = $this->calDBTransactionTotal($transactions);
+
+        $total_amount = $this->calArrTransactionTotal($transactions);
         $delivery_total = $this->calDBDeliveryTotal($transactions);
 
         if(request('sortName')){
@@ -1214,7 +1215,9 @@ class TransactionController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
-                        ->select(
+                        ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
+                        ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id');
+        $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
@@ -1239,6 +1242,7 @@ class TransactionController extends Controller
                                 );
 
         $transactions = $this->searchDBFilter($transactions);
+        $transactions = $transactions->groupBy('transactions.id');
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
@@ -1892,6 +1896,14 @@ class TransactionController extends Controller
             $transactions = $transactions->where('transactions.gst_rate', request('gst_rate'));
         }
 
+        if(request('tags')) {
+            $tags = request('tags');
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $transactions = $transactions->whereIn('persontags.id', $tags);
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
@@ -1944,6 +1956,7 @@ class TransactionController extends Controller
     // calculating gst and non for delivered total
     private function calDBTransactionTotal($query)
     {
+        dd($query->select('transactions.total')->get());
         $total_amount = 0;
         $nonGst_amount = 0;
         $gst_exclusive = 0;
@@ -1955,10 +1968,27 @@ class TransactionController extends Controller
         $nonGst_amount = $query1->where('transactions.gst', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
         $gst_exclusive = $query2->where('transactions.gst', 1)->where('transactions.is_gst_inclusive', 0)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND((transactions.total * (100 + transactions.gst_rate)/100), 2)'));
         $gst_inclusive = $query3->where('transactions.gst', 1)->where('transactions.is_gst_inclusive', 1)->where('transactions.status', '!=', 'Cancelled')->sum(DB::raw('ROUND(transactions.total, 2)'));
+        dd($nonGst_amount, $gst_exclusive, $gst_inclusive);
 
         $total_amount = $nonGst_amount + $gst_exclusive + $gst_inclusive;
 
         return $total_amount;
+    }
+
+    // calculate total in arr
+    private function calArrTransactionTotal($query)
+    {
+        $total_query = clone $query;
+
+        $totalsArr = $total_query->get();
+
+        $total = 0;
+
+        foreach($totalsArr as $totalArr) {
+            $total += $totalArr->total;
+        }
+
+        return $total;
     }
 
     // calculate delivery fees total

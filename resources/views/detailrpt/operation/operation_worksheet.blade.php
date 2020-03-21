@@ -1,8 +1,10 @@
+@inject('persontags', 'App\Persontag')
+
 <div ng-app="app" ng-controller="operationWorksheetController" ng-cloak>
 {!! Form::open(['id'=>'export_excel', 'method'=>'POST', 'action'=>['OperationWorksheetController@exportOperationExcel']]) !!}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
@@ -17,7 +19,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('id_prefix',
@@ -43,7 +45,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
@@ -62,9 +64,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id',
@@ -77,7 +77,9 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company',
@@ -90,7 +92,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('del_postcode', 'Postcode', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('del_postcode',
@@ -103,9 +105,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('chosen_date', 'Today Date', ['class'=>'control-label search-title']) !!}
                 <datepicker selector="form-control">
@@ -120,7 +120,7 @@
                 </datepicker>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('preferred_days', 'Preferred Day(s)', ['class'=>'control-label search-title']) !!}
                 <select name="preferred_days" class="select form-control" ng-model="search.preferred_days">
@@ -135,7 +135,9 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('area_groups',
@@ -155,9 +157,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('previous', 'Previous', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('previous',
@@ -174,7 +174,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('future', 'Future', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('future',
@@ -191,7 +191,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('color', 'Show Color', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('color',
@@ -208,6 +208,19 @@
                     ])
                 !!}
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+            {!! Form::label('tags', 'Customer Tags', ['class'=>'control-label search-title']) !!}
+            <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
+                <option value="">All</option>
+                @foreach($persontags::orderBy('name')->get() as $persontag)
+                    <option value="{{$persontag->id}}">
+                        {{$persontag->name}}
+                    </option>
+                @endforeach
+            </select>
         </div>
     </div>
 </div>
