@@ -118,9 +118,9 @@ class DealService
         $query = $this->getDeals($request);
 
         if($tax) {
-            $total = $this->calculateAmountTotalWithTax(clone $query);
+            $total = $this->calculateAmountWithTaxFromArray(clone $query);
         }else {
-            $total = $this->calculateAmountWithoutTotalWithTax(clone $query);
+            $total = $this->calculateAmountWithoutTaxFromArray(clone $query);
         }
 
         $query = $query->groupBy('transactions.id')
@@ -207,6 +207,47 @@ class DealService
                 deals.amount
             END)
         , 2)'));
+
+        return $total;
+    }
+
+    // calculate total from array with tax
+    private function calculateAmountWithTaxFromArray($query)
+    {
+        $total = 0;
+
+        $totalArr = $query->get();
+
+        foreach($totalArr as $totalitem) {
+            if($totalitem->gst=='1') {
+                if($totalitem->is_gst_inclusive=='0') {
+                    $total += ($totalitem->amount * ((100 + $totalitem->gst_rate)/ 100));
+                }else {
+                    $total += $totalitem->amount;
+                }
+            }else {
+                $total += $totalitem->amount;
+            }
+        }
+
+        return $total;
+    }
+
+    // calculate total from array without tax
+    private function calculateAmountWithoutTaxFromArray($query)
+    {
+        $total = 0;
+        $totalArr = $query->get();
+
+        foreach($totalArr as $totalitem) {
+            if($totalitem->gst=='1') {
+                if($totalitem->is_gst_inclusive=='1') {
+                    $total += ($totalitem->amount/ ((100 + $totalitem->gst_rate)/ 100));
+                    continue;
+                }
+            }
+            $total += $totalitem->amount;
+        }
 
         return $total;
     }
