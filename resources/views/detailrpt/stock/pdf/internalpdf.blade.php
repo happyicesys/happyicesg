@@ -320,7 +320,7 @@
                                             <strong>Subtotal</strong>
                                         </td>
                                         <td class="text-right">
-                                            <strong>{{ number_format($subtotalvar, 2) }}</strong>
+                                            {{ number_format($subtotalvar, 2) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -336,7 +336,7 @@
                                             <strong>Total</strong>
                                         </td>
                                         <td class="text-right">
-                                            {{ number_format($totalvar, 2) }}
+                                            <strong>{{ number_format($totalvar, 2) }}</strong>
                                         </td>
                                     </tr>
                                 @endif
