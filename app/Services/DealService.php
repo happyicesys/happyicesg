@@ -170,17 +170,23 @@ class DealService
     {
         $total = 0;
 
-        $total = $query->sum(DB::raw('ROUND((
+        $total = $query->sum(DB::raw('
             CASE WHEN transactions.gst=1
             THEN
                 (CASE WHEN transactions.is_gst_inclusive=1
-                THEN deals.amount
-                ELSE deals.amount * (100 + transactions.gst_rate)/ 100
+                THEN deals.amount * 100
+                ELSE deals.amount * 100 * ((100 + transactions.gst_rate)/ 100)
                 END)
             ELSE
-                deals.amount
-            END)
-        , 2)'));
+                deals.amount * 100
+            END / 100'));
+/*
+            ROUND((CASE WHEN transactions.gst=1 THEN (
+                CASE
+                WHEN transactions.is_gst_inclusive=0
+                THEN total*((100+transactions.gst_rate)/100)
+                ELSE transactions.total
+                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total  */
 
         return $total;
     }
@@ -194,7 +200,7 @@ class DealService
             CASE WHEN transactions.gst=1
             THEN
                 (CASE WHEN transactions.is_gst_inclusive=1
-                THEN deals.amount / (100 + transactions.gst_rate)/ 100
+                THEN ROUND(deals.amount / (100 + transactions.gst_rate)/ 100, 2)
                 ELSE deals.amount
                 END)
             ELSE

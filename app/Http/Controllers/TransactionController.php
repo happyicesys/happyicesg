@@ -68,7 +68,7 @@ class TransactionController extends Controller
     // get transactions api data based on delivery date
     public function getData(Request $request)
     {
-        // showing total amount init
+/*         // showing total amount init
         $total_amount = 0;
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
@@ -94,15 +94,15 @@ class TransactionController extends Controller
             'total_amount' => $total_amount + $delivery_total,
             'transactions' => $transactions,
         ];
-        return $data;
-/*
+        return $data; */
+
         $transactionsArr = $this->dealService->getTransactions($request, $this->getPerPage, true);
 
         $data = [
             'total_amount' => $transactionsArr['total'],
             'transactions' => $transactionsArr['transactions']
         ];
-        return $data; */
+        return $data;
     }
 
     /**
