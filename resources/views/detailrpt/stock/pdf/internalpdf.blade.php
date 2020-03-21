@@ -277,51 +277,84 @@
                                 }
 
                                 if($issuebillprofile->gst) {
-                                    $gstvar = $totalvar - $totalvar/ ((100 + $issuebillprofile->gst_rate)/ 100);
-                                    $subtotalvar = $totalvar - $gstvar;
+                                    if($issuebillprofile->is_gst_inclusive) {
+                                        $gstvar = $totalvar - $totalvar/ ((100 + $issuebillprofile->gst_rate)/ 100);
+                                        $subtotalvar = $totalvar - $gstvar;
+                                    }else {
+                                        $gstvar = $totalvar * ($issuebillprofile->gst_rate/ 100);
+                                        $subtotalvar = $totalvar;
+                                        $totalvar = $subtotalvar + $gstvar;
+                                    }
                                 }
                             @endphp
 
                             @if($issuebillprofile->gst)
-                                <tr>
-                                    <td colspan="5" class="text-right">
-                                        <strong>Total</strong>
-                                    </td>
-                                    <td class="text-right">
-                                        <strong>{{ number_format($totalvar, 2) }}</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" class="text-right">
-                                        <strong>GST ({{number_format($issuebillprofile->gst_rate)}}%)</strong>
-                                    </td>
-                                    <td class="text-right">
-                                        {{ number_format($gstvar, 2) }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" class="text-right">
-                                        <strong>Exclude GST</strong>
-                                    </td>
-                                    <td class="text-right">
-                                        {{ number_format($subtotalvar, 2) }}
-                                    </td>
-                                </tr>
+                                @if($issuebillprofile->is_gst_inclusive)
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <strong>{{ number_format($totalvar, 2) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>GST ({{number_format($issuebillprofile->gst_rate)}}%)</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            {{ number_format($gstvar, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>Exclude GST</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            {{ number_format($subtotalvar, 2) }}
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>Subtotal</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            <strong>{{ number_format($subtotalvar, 2) }}</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>GST ({{number_format($issuebillprofile->gst_rate)}}%)</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            {{ number_format($gstvar, 2) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-right">
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td class="text-right">
+                                            {{ number_format($totalvar, 2) }}
+                                        </td>
+                                    </tr>
+                                @endif
                             @else
-                                <tr>
-                                    <td colspan="5" class="text-right">
-                                        <strong>Total</strong>
-                                    </td>
-                                    <td class="text-right">
-                                        <strong>{{ number_format($totalvar, 2) }}</strong>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td colspan="5" class="text-right">
                                         <strong>Subtotal</strong>
                                     </td>
                                     <td class="text-right">
-                                        {{ $totalvar }}
+                                        {{ number_format($totalvar, 2) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-right">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>{{ number_format($totalvar, 2) }}</strong>
                                     </td>
                                 </tr>
                             @endif
