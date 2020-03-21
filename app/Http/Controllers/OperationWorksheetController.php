@@ -318,7 +318,6 @@ class OperationWorksheetController extends Controller
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
-        $tags = request('tags');
         // $del_postcode = request('del_postcode');
         $today = $datesVar['today'];
         $earliest = $datesVar['earliest'];
@@ -374,13 +373,6 @@ class OperationWorksheetController extends Controller
 
         if($latest) {
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $latest);
-        }
-
-        if($tags) {
-            if (count($tags) == 1) {
-                $tags = [$tags];
-            }
-            $transactions = $transactions->whereIn('persontags.id', $tags);
         }
 
         return $transactions;
