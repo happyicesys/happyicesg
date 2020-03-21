@@ -502,6 +502,7 @@ class OperationWorksheetController extends Controller
         $del_postcode = request('del_postcode');
         $preferred_days = request('preferred_days');
         $area_groups = request('area_groups');
+        $tags = request('tags');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -653,6 +654,13 @@ class OperationWorksheetController extends Controller
             });
         }
 
+        if($tags) {
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $people = $people->whereIn('persontags.id', $tags);
+        }
+
         return $people;
     }
 
@@ -667,8 +675,6 @@ class OperationWorksheetController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                            ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
-                            ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                             ->select(
                                 'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
                                 'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address',
@@ -766,6 +772,8 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
                     ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
+                    ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
+                    ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
