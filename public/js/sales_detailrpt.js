@@ -310,6 +310,7 @@ var app = angular.module('app', [
             person_active: [],
             status: 'Delivered',
             is_commission: '0',
+            is_inventory: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''

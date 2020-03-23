@@ -4,7 +4,7 @@
 <div ng-controller="productDayDetailController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -18,7 +18,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_id', 'Product ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('product_id', null,
@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
@@ -66,7 +66,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_name', 'Product Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('product_name', null,
@@ -100,7 +100,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
@@ -116,7 +116,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
@@ -136,7 +136,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
@@ -150,7 +150,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes'], null,
@@ -162,7 +162,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                 <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
@@ -174,6 +174,19 @@
                         <option value="Pending">Pending</option>
                     @endif
                 </select>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_inventory', ['1'=>'Inventory Item', ''=>'All'],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.is_inventory',
+                        'ng-change'=>'searchDB()'
+                    ])
+                !!}
             </div>
         </div>
     </div>

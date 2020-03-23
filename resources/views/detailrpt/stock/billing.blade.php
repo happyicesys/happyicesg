@@ -16,6 +16,7 @@
 <div class="panel panel-primary" ng-app="app" ng-controller="stockBillingController" ng-cloak>
     <div class="panel-heading">
         Stock Billing (Bring Forward Stock Value)
+        <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
     <div class="panel-body">
@@ -187,7 +188,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_qty | currency: "": 2}}
+                            @{{total_qty ? total_qty : 0.00 | currency: "": 4}}
                         </strong>
                     </div>
                 </div>
@@ -197,7 +198,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_costs | currency: "": 2}}
+                            @{{total_costs ? total_costs : 0.00 | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -207,7 +208,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_sell_value | currency: "": 2}}
+                            @{{total_sell_value ? total_sell_value : 0.00 | currency: "": 2}}
                         </strong>
                     </div>
                 </div>
@@ -217,7 +218,7 @@
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                         <strong>
-                            @{{total_gross_profit | currency: "": 2}}
+                            @{{total_gross_profit ? total_gross_profit : 0.00 | currency: "": 2}}
                         </strong>
                     </div>
                 </div>

@@ -699,6 +699,10 @@ class DetailRptController extends Controller
         if($request->profile_id) {
             $amountstr = $amountstr." AND profiles.id =".$request->profile_id;
         }
+        if($request->is_inventory) {
+            $amountstr = $amountstr." AND items.is_inventory =".$request->is_inventory;
+        }
+
 /*         dd($request->custcategory);
         if (request('statuses')) {
             $statuses = request('statuses');
@@ -747,6 +751,10 @@ class DetailRptController extends Controller
                                     'items.name AS product_name', 'items.remark', 'items.product_id',
                                     'totals.thisamount AS amount', 'totals.thisqty AS qty'
                                 );
+
+        if($request->is_inventory) {
+            $items = $items->where('items.is_inventory', $request->is_inventory);
+        }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -2402,9 +2410,10 @@ class DetailRptController extends Controller
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
-                    DB::raw('ROUND(SUM(deals.amount), 2) AS amount'),
-                    DB::raw('ROUND(SUM(deals.amount) / SUM(deals.qty), 2) AS avg_sell_value'),
-                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (SUM(deals.amount) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE SUM(deals.amount) END, 2) AS gross')
+                    DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS amount'),
+
+                    DB::raw('ROUND(ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) / SUM(deals.qty), 2) AS avg_sell_value'),
+                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) END, 2) AS gross')
                 );
         if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
             $deals = $this->stockBillingFilters(request(), $deals);
