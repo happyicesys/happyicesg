@@ -19,7 +19,7 @@ class DailyreportController extends Controller
     }
 
     // return daily report index page
-    public function index()
+    public function commissionIndex()
     {
         return view('dailyreport.index');
     }

@@ -256,7 +256,11 @@
                 @endif
                 @if($dailyreport_access)
                     <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
-                        <a href="/dailyreport/index"><i class="fa fa-flag"></i> Performance</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-flag"></i> Performance <i class="fa fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="text-left"><a href="/dailyreport/commission"> Driver Commission</a></li>
+                            {{-- <li class="text-left"><a href="/dailyreport/number-of-location"> Driver # Location</a></li> --}}
+                        </ul>
                     </li>
                 @endif
                 @if($report_access)

@@ -453,7 +453,8 @@ Route::get('/api/transactionpersonasset/index/{transaction_id}', 'Transactionper
 Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetController@updateApi');
 Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
 
-Route::get('/dailyreport/index', 'DailyreportController@index');
+Route::get('/dailyreport/commission', 'DailyreportController@commissionIndex');
+Route::get('/dailyreport/number-of-location', 'DailyreportController@driverNumberOfLocationIndex');
 Route::post('/api/dailyreport/index', 'DailyreportController@indexApi');
 
 Route::get('/freezer/data', 'FreezerController@getData');
