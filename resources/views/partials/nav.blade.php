@@ -259,7 +259,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-flag"></i> Performance <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/dailyreport/commission"> Driver Commission</a></li>
-                            {{-- <li class="text-left"><a href="/dailyreport/number-of-location"> Driver # Location</a></li> --}}
+                            <li class="text-left"><a href="/dailyreport/driver-location-count"> Driver # Location</a></li>
                         </ul>
                     </li>
                 @endif

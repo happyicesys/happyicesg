@@ -454,8 +454,10 @@ Route::post('/api/transactionpersonasset/update', 'TransactionpersonassetControl
 Route::delete('/api/transactionpersonasset/{id}/delete', 'TransactionpersonassetController@destroyApi');
 
 Route::get('/dailyreport/commission', 'DailyreportController@commissionIndex');
-Route::get('/dailyreport/number-of-location', 'DailyreportController@driverNumberOfLocationIndex');
 Route::post('/api/dailyreport/index', 'DailyreportController@indexApi');
+Route::get('/dailyreport/driver-location-count', 'DailyreportController@driverNumberOfLocationIndex');
+Route::post('/api/dailyreport/driver-location-count/update', 'DailyreportController@updateLocationCountApi');
+
 
 Route::get('/freezer/data', 'FreezerController@getData');
 Route::delete('/freezer/data/{id}', 'FreezerController@destroyAjax');

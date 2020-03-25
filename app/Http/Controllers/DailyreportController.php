@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Deal;
+use App\DriverLocation;
 use App\User;
 use Carbon\Carbon;
 use DB;
@@ -21,7 +22,7 @@ class DailyreportController extends Controller
     // return daily report index page
     public function commissionIndex()
     {
-        return view('dailyreport.index');
+        return view('dailyreport.commission');
     }
 
     // return daily report index api
@@ -75,14 +76,19 @@ class DailyreportController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+            ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
             ->leftJoin($totalRaw, function($join) {
                 $join->on('totalRaw.driver', '=', 'transactions.driver');
                 $join->on('totalRaw.delivery_date', '=', 'transactions.delivery_date');
             })
+            ->leftJoin('driver_locations', function($join) {
+                $join->on('driver_locations.delivery_date', '=', 'transactions.delivery_date');
+                $join->on('driver_locations.user_id', '=', 'users.id');
+            })
             ->select(
                 'transactions.driver', 'transactions.status',
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
-                'totalRaw.total'
+                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count'
             );
 
         if($request->profile_id) {
@@ -99,6 +105,10 @@ class DailyreportController extends Controller
         }
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
+        }
+        if($request->is_commission != '') {
+            // dd('hrere');
+            $deals = $deals->where('items.is_commission', $request->is_commission);
         }
         if ($request->person_active) {
             // dd($request->person_active);
@@ -144,6 +154,7 @@ class DailyreportController extends Controller
                 $deals = $deals->where('transactions.status', $request->status);
             }
         }
+        // dd($deals->where('transactions.driver', 'LIKE', '%'.'iris'.'%')->get());
 /*
         if($request->tag) {
             if($request->tag == 'technician') {
@@ -163,6 +174,7 @@ class DailyreportController extends Controller
         }
 
         $deals = $deals->groupBy('transactions.delivery_date')->groupBy('transactions.driver');
+
 
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
@@ -235,5 +247,38 @@ class DailyreportController extends Controller
         ];
 
         return $data;
+    }
+
+    // return driver location count page
+    public function driverNumberOfLocationIndex()
+    {
+        return view('dailyreport.driver-location-count');
+    }
+
+    // update location count api
+    public function updateLocationCountApi()
+    {
+        $user_id = request('user_id');
+        $delivery_date = request('delivery_date');
+        $location_count = request('location_count');
+
+        $driverlocation = DriverLocation::where('user_id', $user_id)->whereDate('delivery_date', '=', $delivery_date)->first();
+
+        if($driverlocation) {
+            if($location_count) {
+                $driverlocation->location_count = $location_count;
+                $driverlocation->save();
+            }else {
+                $driverlocation->delete();
+            }
+        }else {
+            if($location_count) {
+                DriverLocation::create([
+                    'delivery_date' => $delivery_date,
+                    'location_count' =>$location_count,
+                    'user_id' => $user_id
+                ]);
+            }
+        }
     }
 }

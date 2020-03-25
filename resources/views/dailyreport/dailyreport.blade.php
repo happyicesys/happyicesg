@@ -173,6 +173,18 @@
                     </select>
                 </div>
             </div>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes', '1'=>'Only Commission'], null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.is_commission',
+                            'ng-change'=>'searchDB()'
+                        ])
+                    !!}
+                </div>
+            </div>
 {{--
             @foreach($users::orderBy('name')->get() as $user)
             @php
@@ -286,6 +298,12 @@
                     <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('location_count')">
+                    Location Count
+                    <span ng-if="search.sortName == 'location_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'location_count' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
             </tr>
 
             <tbody>
@@ -301,6 +319,9 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ deal.total | currency: "": 2}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ deal.location_count }}
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
