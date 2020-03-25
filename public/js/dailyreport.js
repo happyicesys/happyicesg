@@ -103,6 +103,10 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
+        $scope.driverInit = function(driver) {
+            $scope.search.driver = driver;
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -142,7 +146,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.search = {
             profile_id: '',
-            date_from: moment().format('YYYY-MM-DD'),
+            date_from: moment().startOf('month').format('YYYY-MM-DD'),
             date_to: moment().format('YYYY-MM-DD'),
             status: 'Delivered',
             driver: '',
@@ -220,6 +224,10 @@ var app = angular.module('app', [
         $scope.updateLocationCount = function(result) {
             $http.post('/api/dailyreport/driver-location-count/update', result).success(function(data) {
             });
+        }
+
+        $scope.driverInit = function(driver) {
+            $scope.search.driver = driver;
         }
 
         // retrieve page w/wo search

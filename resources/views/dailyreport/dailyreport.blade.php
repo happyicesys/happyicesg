@@ -147,17 +147,19 @@
         <div class="row">
             <div class="col-md-4 col-sm-6 col-xs-12">
                 {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) ? 'readonly' : ''}}>
-                    <option value="">All</option>
-                    @foreach($users::orderBy('name')->get() as $user)
-                        @if($user->hasRole('driver') or $user->hasRole('technician') and count($user->profiles) > 0)
-
-                            <option value="{{$user->name}}" {{(auth()->user()->hasRole('driver') || auth()->user()->hasRole('technician')) && $user->name == auth()->user()->name ? 'selected' : ''}}>
+                @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                    {{-- {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Delivered By', 'ng-model'=> 'search.driver', 'ng-init'=>"driverInit({{auth()->user()->name}})", 'readonly'=>'readonly']) !!} --}}
+                    <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly>
+                @else
+                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                        <option value="">All</option>
+                        @foreach($users::orderBy('name')->get() as $user)
+                            <option value="{{$user->name}}">
                                 {{$user->name}}
                             </option>
-                        @endif
-                    @endforeach
-                </select>
+                        @endforeach
+                    </select>
+                @endif
             </div>
             <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
@@ -173,6 +175,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
