@@ -77,6 +77,7 @@ class DailyreportController extends Controller
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
             ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
+            ->rightJoin('role_user', 'role_user.user_id', '=', 'users.id')
             ->leftJoin($totalRaw, function($join) {
                 $join->on('totalRaw.driver', '=', 'transactions.driver');
                 $join->on('totalRaw.delivery_date', '=', 'transactions.delivery_date');
@@ -85,11 +86,17 @@ class DailyreportController extends Controller
                 $join->on('driver_locations.delivery_date', '=', 'transactions.delivery_date');
                 $join->on('driver_locations.user_id', '=', 'users.id');
             })
+            ->leftJoin('users AS updater', 'updater.id', 'LIKE', 'driver_locations.updated_by')
             ->select(
                 'transactions.driver', 'transactions.status',
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
-                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count'
+                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
+                DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
+                'updater.name AS updated_by',
             );
+
+        // only include drivers
+        $deals = $deals->whereIn('role_user.role_id', [6, 16]);
 
         if($request->profile_id) {
             $deals = $deals->where('profiles.id', $request->profile_id);
@@ -267,6 +274,7 @@ class DailyreportController extends Controller
         if($driverlocation) {
             if($location_count) {
                 $driverlocation->location_count = $location_count;
+                $driverlocation->updated_by = auth()->user()->id;
                 $driverlocation->save();
             }else {
                 $driverlocation->delete();
@@ -276,7 +284,10 @@ class DailyreportController extends Controller
                 DriverLocation::create([
                     'delivery_date' => $delivery_date,
                     'location_count' =>$location_count,
-                    'user_id' => $user_id
+                    'user_id' => $user_id,
+                    'status' => 1,
+                    'submission_date' => Carbon::today()->toDateString(),
+                    'updated_by' => auth()->user()->id
                 ]);
             }
         }

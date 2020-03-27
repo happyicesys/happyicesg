@@ -155,7 +155,7 @@
             <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="form-group" style="padding-top: 25px;">
                     {!! Form::checkbox('is_gst_inclusive', $person->is_gst_inclusive, null, ['disabled'=>$disabled]) !!}
-                    {!! Form::label('is_gst_inclusive', 'GST (Default: '.($person->profile->is_gst_inclusive ? 'Already Added GST)' : 'To add GST)'), ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+                    {!! Form::label('is_gst_inclusive', 'Already Added GST? (Profile Default: '.($person->profile->is_gst_inclusive ? 'Already Added GST)' : 'To add GST)'), ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
                 </div>
             </div>
 
