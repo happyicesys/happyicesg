@@ -92,7 +92,7 @@ class DailyreportController extends Controller
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
                 'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
                 DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
-                'updater.name AS updated_by',
+                'updater.name AS updated_by'
             );
 
         // only include drivers
