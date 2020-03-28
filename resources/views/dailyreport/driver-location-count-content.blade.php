@@ -84,6 +84,7 @@
     </div>
 
     <div id="exportable_driver_location_count" class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 20px;">
+        <div class="table-responsive">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
@@ -102,10 +103,34 @@
                     <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('daily_limit')">
+                    Daily Limit #
+                    <span ng-if="search.sortName == 'daily_limit' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'daily_limit' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('location_count')">
-                    Location Count
+                    Location #
                     <span ng-if="search.sortName == 'location_count' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'location_count' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('extra_location')">
+                    Extra Location #
+                    <span ng-if="search.sortName == 'extra_location' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'extra_location' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('submission_date')">
+                    Submission Date
+                    <span ng-if="search.sortName == 'submission_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'submission_date' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    Action
+                </th>
+                <th class="col-md-1 text-center">
+                    Approval
                 </th>
             </tr>
 
@@ -121,14 +146,72 @@
                         @{{ deal.driver }}
                     </td>
                     <td class="col-md-1 text-right">
-                        {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'ng-change'=>'updateLocationCount(deal)', 'ng-model-options'=>'{ debounce: 600 }', 'placeholder'=>'Numbers only']) !!}
+                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
+                        @else
+                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only']) !!}
+                        @endif
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
+                        @else
+                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only']) !!}
+                        @endif
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @{{ deal.extra_location_count ? deal.extra_location_count : 0}}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{deal.updated_by}}
+                        <br>
+                        @{{ deal.submission_date}}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 2)" ng-if="deal.submission_status < 2">
+                                <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                Submit
+                            </button>
+                            <button class="btn btn-sm btn-warning" ng-click="onButtonClicked(deal, 0)" ng-if="deal.submission_status == 2">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                        @else
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-warning" ng-click="onButtonClicked(deal, 0)">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 3)" ng-if="deal.submission_status != 3 && deal.submission_status >= 2">
+                                    <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" ng-click="onButtonClicked(deal, 99)" ng-if="deal.submission_status != 99 && deal.submission_status >= 2">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        @endif
+                    </td>
+                    <td class="col-md-1 text-center" ng-if="deal.submission_status == 3" style="background-color: #a6f1a6;">
+                        @{{ deal.approved_by }}
+                        <br>
+                        @{{ deal.approved_at }}
+                    </td>
+                    <td class="col-md-1 text-center" ng-if="deal.submission_status == 99" style="background-color: #ffcccb;">
+                        @{{ deal.approved_by }}
+                        <br>
+                        @{{ deal.approved_at }}
+                    </td>
+                    <td class="col-md-1 text-center" ng-if="deal.submission_status != 3 && deal.submission_status != 99">
+                        @{{ deal.approved_by }}
+                        <br>
+                        @{{ deal.approved_at }}
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
-                    <td colspan="14" class="text-center">No Records Found</td>
+                    <td colspan="20" class="text-center">No Records Found</td>
                 </tr>
             </tbody>
         </table>
+        </div>
 
         <div>
             <dir-pagination-controls max-size="5" pagination-id="dailyreport" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>

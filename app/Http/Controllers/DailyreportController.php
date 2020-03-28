@@ -26,7 +26,7 @@ class DailyreportController extends Controller
     }
 
     // return daily report index api
-    public function indexApi(Request $request)
+    public function indexApi(Request $request, $type = 1)
     {
 
         $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
@@ -87,16 +87,22 @@ class DailyreportController extends Controller
                 $join->on('driver_locations.user_id', '=', 'users.id');
             })
             ->leftJoin('users AS updater', 'updater.id', 'LIKE', 'driver_locations.updated_by')
+            ->leftJoin('users AS approver', 'approver.id', 'LIKE', 'driver_locations.approved_by')
+
             ->select(
                 'transactions.driver', 'transactions.status',
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
                 'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
                 DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
-                'updater.name AS updated_by'
+                'updater.name AS updated_by', 'approver.name AS approved_by', 'driver_locations.approved_at', 'driver_locations.daily_limit',
+                'driver_locations.remarks',
+                DB::raw('(driver_locations.location_count - driver_locations.daily_limit) AS extra_location_count')
             );
 
         // only include drivers
-        $deals = $deals->whereIn('role_user.role_id', [6, 16]);
+        if($type == 2) {
+            $deals = $deals->whereIn('role_user.role_id', [6, 16]);
+        }
 
         if($request->profile_id) {
             $deals = $deals->where('profiles.id', $request->profile_id);
@@ -189,21 +195,16 @@ class DailyreportController extends Controller
         $commission_rate = 0;
         $totalcommission = 0;
         $subtotal = 0;
-/*
-        $alldeals = $alldeals
-            ->groupBy('transactions.delivery_date')
-            ->groupBy('transactions.driver')
-            ->orderBy('transactions.delivery_date', 'desc')
-            ->orderBy('transactions.driver'); */
+        $extra_location_total = 0;
 
         $subtotal_query = clone $alldeals;
         $subtotalArr = $subtotal_query->get();
-
-        // dd($subtotalArr);
-
         // dd($subtotalArr);
         foreach($subtotalArr as $dealtotal) {
             $subtotal += $dealtotal->total;
+            if($dealtotal->submission_status == DriverLocation::STATUS_APPROVED) {
+                $extra_location_total += $dealtotal->extra_location_count;
+            }
 
         }
 
@@ -250,7 +251,8 @@ class DailyreportController extends Controller
             'alldeals' => $alldeals,
             'subtotal' => $subtotal,
             'totalcommission' => $totalcommission,
-            'driver' => $driver
+            'driver' => $driver,
+            'extra_location_total' => $extra_location_total
         ];
 
         return $data;
@@ -263,33 +265,61 @@ class DailyreportController extends Controller
     }
 
     // update location count api
-    public function updateLocationCountApi()
+    public function updateLocationCountApi($status)
     {
         $user_id = request('user_id');
         $delivery_date = request('delivery_date');
         $location_count = request('location_count');
+        $daily_limit = request('daily_limit');
+        $status_button = $status;
 
         $driverlocation = DriverLocation::where('user_id', $user_id)->whereDate('delivery_date', '=', $delivery_date)->first();
 
-        if($driverlocation) {
-            if($location_count) {
-                $driverlocation->location_count = $location_count;
-                $driverlocation->updated_by = auth()->user()->id;
-                $driverlocation->save();
+        if($status == 2 or $status == 0) {
+            if($driverlocation) {
+                if($location_count) {
+                    $driverlocation->location_count = $location_count;
+                    $driverlocation->daily_limit = $daily_limit;
+                    $driverlocation->updated_by = auth()->user()->id;
+                    $driverlocation->save();
+                }else {
+                    $driverlocation->delete();
+                }
             }else {
-                $driverlocation->delete();
+                if($location_count or $daily_limit) {
+                    $driverlocation = DriverLocation::create([
+                        'delivery_date' => $delivery_date,
+                        'location_count' =>$location_count,
+                        'daily_limit' => $daily_limit,
+                        'user_id' => $user_id,
+                        'status' => 2,
+                        'submission_date' => Carbon::now(),
+                        'updated_by' => auth()->user()->id
+                    ]);
+                }
             }
         }else {
-            if($location_count) {
-                DriverLocation::create([
-                    'delivery_date' => $delivery_date,
-                    'location_count' =>$location_count,
-                    'user_id' => $user_id,
-                    'status' => 1,
-                    'submission_date' => Carbon::today()->toDateString(),
-                    'updated_by' => auth()->user()->id
-                ]);
-            }
+            $driverlocation->status = $status;
+            $driverlocation->approved_at = Carbon::now();
+            $driverlocation->approved_by = auth()->user()->id;
+            $driverlocation->save();
         }
+
+        return [
+            'driver' => $driverlocation->driver->name,
+            'delivery_date' => $driverlocation->delivery_date,
+            'delivery_day' => Carbon::parse($driverlocation->delivery_date)->format('l'),
+            'user_id' => $driverlocation->driver->id,
+            'location_count' => $driverlocation->location_count,
+            'submission_status' => $driverlocation->status,
+            'submission_date' => $driverlocation->submission_date,
+            'submission_day' => Carbon::parse($driverlocation->submission_date)->format('l'),
+            'delivery_date' => $driverlocation->delivery_date,
+            'updated_by' => $driverlocation->updater ? $driverlocation->updater->name : null,
+            'approved_by' =>  $driverlocation->approver ? $driverlocation->approver->name : null,
+            'approved_at' => $driverlocation->approved_at,
+            'daily_limit' => $driverlocation->daily_limit,
+            'extra_location_count' => $driverlocation->location_count - $driverlocation->daily_limit
+        ];
     }
 }

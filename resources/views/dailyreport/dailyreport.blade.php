@@ -243,6 +243,16 @@
                     <strong>@{{ subtotal ? subtotal : 0.00 | currency: "": 2}}</strong>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    <strong>
+                        Extra Location Total
+                    </strong>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ extra_location_total ? extra_location_total : 0}}</strong>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;" ng-if="driver == 'driver'">
@@ -305,9 +315,15 @@
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('location_count')">
-                    Location Count
+                    Location #
                     <span ng-if="search.sortName == 'location_count' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'location_count' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('extra_location')">
+                    Extra Location #
+                    <span ng-if="search.sortName == 'extra_location' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'extra_location' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
@@ -326,7 +342,14 @@
                         @{{ deal.total | currency: "": 2}}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ deal.location_count }}
+                        <span ng-if="deal.submission_status == 3">
+                            @{{ deal.location_count }}
+                        </span>
+                    </td>
+                    <td class="col-md-1 text-right">
+                        <span ng-if="deal.submission_status == 3">
+                            @{{ deal.extra_location_count }}
+                        </span>
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">

@@ -110,7 +110,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/dailyreport/index?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/dailyreport/index/1?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.alldeals.data){
                     $scope.alldata = data.alldeals.data;
                     $scope.totalCount = data.alldeals.total;
@@ -130,6 +130,7 @@ var app = angular.module('app', [
                 $scope.last_two_day_total = data.last_two_day_total;
                 $scope.totalcommission = data.totalcommission;
                 $scope.driver = data.driver;
+                $scope.extra_location_total = data.extra_location_total;
                 $scope.spinner = false;
             });
         }
@@ -230,10 +231,19 @@ var app = angular.module('app', [
             $scope.search.driver = driver;
         }
 
+
+        $scope.onButtonClicked = function(result, status) {
+            $http.post('/api/dailyreport/driver-location-count/update/' + status, result).success(function(data) {
+                var index = $scope.alldata.indexOf(result);
+                $scope.alldata.splice(index, 1, data);
+
+            });
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/dailyreport/index?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/dailyreport/index/2?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.alldeals.data){
                     $scope.alldata = data.alldeals.data;
                     $scope.totalCount = data.alldeals.total;
