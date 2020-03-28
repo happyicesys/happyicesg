@@ -92,6 +92,7 @@ class DailyreportController extends Controller
             ->select(
                 'transactions.driver', 'transactions.status',
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
+                DB::raw('DAYNAME(transactions.delivery_date) AS delivery_day'),
                 'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
                 DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
                 'updater.name AS updated_by', 'approver.name AS approved_by', 'driver_locations.approved_at', 'driver_locations.daily_limit',

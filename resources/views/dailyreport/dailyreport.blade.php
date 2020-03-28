@@ -332,8 +332,10 @@
                     <td class="col-md-1 text-center">
                         @{{ $index + indexFrom }}
                     </td>
-                    <td class="col-md-1 text-left">
+                    <td class="col-md-1 text-center">
                         @{{ deal.delivery_date }}
+                        <br>
+                        @{{ deal.delivery_day }}
                     </td>
                     <td class="col-md-1 text-left">
                         @{{ deal.driver }}
