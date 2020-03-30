@@ -195,7 +195,7 @@ class OperationWorksheetController extends Controller
 
         $person = Person::findOrFail($person_id);
         $areaArr = explode(",", $person->area_group);
-dd($person->area_group);
+dd($area, $person->area_group);
         switch($area) {
             case 'west':
                 $areaArr[0] = $val;
