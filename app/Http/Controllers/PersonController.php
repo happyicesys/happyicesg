@@ -207,24 +207,23 @@ class PersonController extends Controller
 
     public function update(PersonRequest $request, $id)
     {
+
+        if($request->is_gst_inclusive == 'true') {
+            $request->merge(array('is_gst_inclusive' => 1 ));
+        }else if($request->is_gst_inclusive == 'false'){
+            $request->merge(array('is_gst_inclusive' => 0 ));
+        }
+
         $person = Person::findOrFail($id);
 
         // detect if changing profile, will copy the original is gst inclusive
         if ($person->profile_id != $request->profile_id) {
             $newprofile = Profile::findOrFail($request->profile_id);
-            $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive));
+            $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive == 1 ? 1 : 0));
             $request->merge(array('gst_rate' => $newprofile->gst_rate ? $newprofile->gst_rate : 0));
         }
-/*
-        else {
-            $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive') ? 1 : 0));
-        } */
-// dd($request->all());
-        if($request->is_gst_inclusive == 'true') {
-            $request->merge(array('is_gst_inclusive' => 1 ));
-        }else {
-            $request->merge(array('is_gst_inclusive' => 0 ));
-        }
+        // dd($request->all(), $newprofile->toArray());
+
 
         switch ($request->active) {
             case 'Activate':
