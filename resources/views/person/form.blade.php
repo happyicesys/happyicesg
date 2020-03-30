@@ -153,10 +153,28 @@
     @if($person->profile)
         @if($person->profile->gst)
             <div class="col-md-4 col-sm-4 col-xs-6">
+                @php
+                    $gst_inclusive_name = 'Current : ';
+                    if($person->is_gst_inclusive) {
+                        $gst_inclusive_name .= 'Price is GST Inclusive';
+                    }else {
+                        $gst_inclusive_name .= 'Price to add GST';
+                    }
+                @endphp
+                {!! Form::label('is_gst_inclusive', $gst_inclusive_name, ['class'=>'control-label']) !!}
+                <div class="btn-group">
+                    <button name="is_gst_inclusive" value="true" class="btn btn-success btn-md" {{$person->is_gst_inclusive ? 'disabled' : ''}}>
+                        Price is GST Inclusive
+                    </button>
+                    <button name="is_gst_inclusive" value="false" class="btn btn-primary btn-md" {{!$person->is_gst_inclusive ? 'disabled' : ''}}>
+                        Price to add GST
+                    </button>
+                </div>
+{{--
                 <div class="form-group" style="padding-top: 25px;">
                     {!! Form::checkbox('is_gst_inclusive', $person->is_gst_inclusive, null, ['disabled'=>$disabled]) !!}
                     {!! Form::label('is_gst_inclusive', 'Already Added GST? (Profile Default: '.($person->profile->is_gst_inclusive ? 'Already Added GST)' : 'To add GST)'), ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
-                </div>
+                </div> --}}
             </div>
 
             <div class="col-md-4 col-sm-4 col-xs-6">

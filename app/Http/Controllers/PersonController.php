@@ -214,8 +214,16 @@ class PersonController extends Controller
             $newprofile = Profile::findOrFail($request->profile_id);
             $request->merge(array('is_gst_inclusive' => $newprofile->is_gst_inclusive));
             $request->merge(array('gst_rate' => $newprofile->gst_rate ? $newprofile->gst_rate : 0));
-        } else {
+        }
+/*
+        else {
             $request->merge(array('is_gst_inclusive' => $request->has('is_gst_inclusive') ? 1 : 0));
+        } */
+// dd($request->all());
+        if($request->is_gst_inclusive == 'true') {
+            $request->merge(array('is_gst_inclusive' => 1 ));
+        }else {
+            $request->merge(array('is_gst_inclusive' => 0 ));
         }
 
         switch ($request->active) {

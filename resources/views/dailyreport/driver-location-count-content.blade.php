@@ -194,25 +194,27 @@
                             </button>
                         @else
                             <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-warning" ng-click="onButtonClicked(deal, 0)">
+                                <button class="btn btn-sm btn-warning" ng-click="onButtonClicked(deal, 0)" data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 3)" ng-if="deal.submission_status != 3 && deal.submission_status >= 2">
+                                <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 3)" ng-if="deal.submission_status != 3 && deal.submission_status >= 2" data-toggle="tooltip" title="Approve">
                                     <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" ng-click="onButtonClicked(deal, 99)" ng-if="deal.submission_status != 99 && deal.submission_status >= 2">
+                                <button class="btn btn-sm btn-danger" ng-click="onButtonClicked(deal, 99)" ng-if="deal.submission_status != 99 && deal.submission_status >= 2" data-toggle="tooltip" title="Reject">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </button>
                             </div>
                         @endif
                     </td>
                     <td class="col-md-1 text-center" ng-if="deal.submission_status == 3" style="background-color: #a6f1a6;">
+                        [Approved]
                         @{{ deal.approved_at }}
                         <span ng-if="deal.approved_by">
                         (@{{ deal.approved_by }})
                         </span>
                     </td>
                     <td class="col-md-1 text-center" ng-if="deal.submission_status == 99" style="background-color: #ffcccb;">
+                        [Rejected]
                         @{{ deal.approved_at }}
                         <span ng-if="deal.approved_by">
                         (@{{ deal.approved_by }})
