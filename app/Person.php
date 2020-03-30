@@ -300,6 +300,9 @@ class Person extends Baum\Node
                     case 5:
                         $query->orWhere(DB::raw('SUBSTRING(area_group, 9, 1)'), '1');
                         break;
+                    case 6:
+                        $query->orWhere(DB::raw('SUBSTRING(area_group, 11, 1)'), '1');
+                        break;
                 }
             }
         });

@@ -146,7 +146,8 @@
                         '2' => 'East',
                         '3' => 'Others',
                         '4' => 'Sup',
-                        '5' => 'Ops'
+                        '5' => 'Ops',
+                        '6' => 'North'
                     ],
                     null,
                     [
@@ -411,6 +412,12 @@
                                 <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.ops" ng-change="toggleZoneCheckbox(person.ops, person.person_id, 'ops')" ng-true-value="'1'" ng-false-value="'0'">
                                 <span style="margin-left: -5px; margin-top: 5px;">
                                     Ops
+                                </span>
+                            </label>
+                            <label>
+                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.north" ng-change="toggleZoneCheckbox(person.north, person.person_id, 'north')" ng-true-value="'1'" ng-false-value="'0'">
+                                <span style="margin-left: -5px; margin-top: 5px;">
+                                    North
                                 </span>
                             </label>
                             </span>

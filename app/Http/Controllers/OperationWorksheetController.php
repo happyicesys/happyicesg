@@ -212,6 +212,9 @@ class OperationWorksheetController extends Controller
             case 'ops':
                 $areaArr[4] = $val;
                 break;
+            case 'north':
+                $areaArr[5] = $val;
+                break;
         }
         $areaStr = implode(",", $areaArr);
         $person->area_group = $areaStr;
@@ -609,9 +612,6 @@ class OperationWorksheetController extends Controller
                 case 6:
                     $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 11, 1)'), '1');
                     break;
-                case 7:
-                    $people = $people->where(DB::raw('SUBSTRING(people.preferred_days, 13, 1)'), '1');
-                    break;
             }
         }
 
@@ -640,6 +640,9 @@ class OperationWorksheetController extends Controller
                             break;
                         case 5:
                             $query->orWhere(DB::raw('SUBSTRING(people.area_group, 9, 1)'), '1');
+                            break;
+                        case 6:
+                            $query->orWhere(DB::raw('SUBSTRING(people.area_group, 11, 1)'), '1');
                             break;
                     }
                 }
