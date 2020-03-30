@@ -23,7 +23,7 @@
                         {!! Form::select('person_id',
                             [''=>null] + $people::whereHas('profile', function($q){
                                 $q->filterUserProfile();
-                            })->filterFranchiseePeople()->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereIn('active', ['Yes', 'Pending'])->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
+                            })->filterFranchiseePeople()->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereIn('active', ['Yes'])->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all(),
                             null,
                             [
                             'id'=>'person_id',
