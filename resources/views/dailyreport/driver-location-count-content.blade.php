@@ -156,9 +156,9 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
+                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
                         @else
-                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only']) !!}
+                            {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only']) !!}
                         @endif
                         <span class="hidden">
                             @{{ deal.daily_limit }}
@@ -166,9 +166,9 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
+                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
                         @else
-                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only']) !!}
+                            {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only']) !!}
                         @endif
                         <span class="hidden">
                             @{{ deal.location_count }}
