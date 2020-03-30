@@ -218,7 +218,7 @@ class OperationWorksheetController extends Controller
         }
 
         $areaStr = implode(",", $areaArr);
-        dd($area, $val, $person->area_group, $areaArr, $areaStr);
+        // dd($area, $val, $person->area_group, $areaArr, $areaStr);
         $person->area_group = $areaStr;
         $person->save();
     }
