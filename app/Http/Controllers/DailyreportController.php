@@ -204,7 +204,9 @@ class DailyreportController extends Controller
         foreach($subtotalArr as $dealtotal) {
             $subtotal += $dealtotal->total;
             if($dealtotal->submission_status == DriverLocation::STATUS_APPROVED) {
-                $extra_location_total += $dealtotal->extra_location_count;
+                if($dealtotal->extra_location_count > 0) {
+                    $extra_location_total += $dealtotal->extra_location_count;
+                }
             }
 
         }

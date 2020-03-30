@@ -302,6 +302,12 @@
                     <span ng-if="search.sortName == 'transactions.delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('transactions.delivery_day')">
+                    Delivery Day
+                    <span ng-if="search.sortName == 'transactions.delivery_day' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.delivery_day' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('driver')">
                     Delivered By
                     <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -334,7 +340,8 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ deal.delivery_date }}
-                        <br>
+                    </td>
+                    <td class="col-md-1 text-center">
                         @{{ deal.delivery_day }}
                     </td>
                     <td class="col-md-1 text-left">
@@ -350,7 +357,7 @@
                     </td>
                     <td class="col-md-1 text-right">
                         <span ng-if="deal.submission_status == 3">
-                            @{{ deal.extra_location_count }}
+                            @{{ deal.extra_location_count > 0 ? deal.extra_location_count : 0 }}
                         </span>
                     </td>
                 </tr>

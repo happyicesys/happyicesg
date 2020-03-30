@@ -97,6 +97,12 @@
                     <span ng-if="search.sortName == 'transactions.delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('transactions.delivery_day')">
+                    Delivery Day
+                    <span ng-if="search.sortName == 'transactions.delivery_day' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'transactions.delivery_day' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('driver')">
                     Delivered By
                     <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -141,7 +147,8 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ deal.delivery_date }}
-                        <br>
+                    </td>
+                    <td class="col-md-1 text-center">
                         @{{ deal.delivery_day }}
                     </td>
                     <td class="col-md-1 text-left">
@@ -153,6 +160,9 @@
                         @else
                             {!! Form::text('daily_limit[@{{deal.daily_limit}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.daily_limit', 'placeholder'=>'Numbers only']) !!}
                         @endif
+                        <span class="hidden">
+                            @{{ deal.daily_limit }}
+                        </span>
                     </td>
                     <td class="col-md-1 text-right">
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
@@ -160,14 +170,18 @@
                         @else
                             {!! Form::text('location_count[@{{deal.location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.location_count', 'placeholder'=>'Numbers only']) !!}
                         @endif
+                        <span class="hidden">
+                            @{{ deal.location_count }}
+                        </span>
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ deal.extra_location_count ? deal.extra_location_count : 0}}
                     </td>
                     <td class="col-md-1 text-center">
-                        @{{deal.updated_by}}
-                        <br>
                         @{{ deal.submission_date}}
+                        <span ng-if="deal.updated_by">
+                        (@{{deal.updated_by}})
+                        </span>
                     </td>
                     <td class="col-md-1 text-center">
                         @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
@@ -193,19 +207,22 @@
                         @endif
                     </td>
                     <td class="col-md-1 text-center" ng-if="deal.submission_status == 3" style="background-color: #a6f1a6;">
-                        @{{ deal.approved_by }}
-                        <br>
                         @{{ deal.approved_at }}
+                        <span ng-if="deal.approved_by">
+                        (@{{ deal.approved_by }})
+                        </span>
                     </td>
                     <td class="col-md-1 text-center" ng-if="deal.submission_status == 99" style="background-color: #ffcccb;">
-                        @{{ deal.approved_by }}
-                        <br>
                         @{{ deal.approved_at }}
+                        <span ng-if="deal.approved_by">
+                        (@{{ deal.approved_by }})
+                        </span>
                     </td>
                     <td class="col-md-1 text-center" ng-if="deal.submission_status != 3 && deal.submission_status != 99">
-                        @{{ deal.approved_by }}
-                        <br>
                         @{{ deal.approved_at }}
+                        <span ng-if="deal.approved_by">
+                        (@{{ deal.approved_by }})
+                        </span>
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
