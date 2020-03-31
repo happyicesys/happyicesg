@@ -70,8 +70,6 @@
                 }
 
                 $zoneStr = implode(",", $zoneStrArr);
-
-                dd($zoneStrArr, $zoneStr, $transactionsStr, $transArr);
             @endphp
             <td>{{$person->operation_note}}</td>
             <td>{{$zoneStr}}</td>
@@ -101,6 +99,7 @@
                     $data['qty'] = 0;
                 }
 
+                dd($data);
             @endphp
                 <td style="background-color: {{$color}}; border: thin solid #000000;">
                     {{$data['qty']}}
