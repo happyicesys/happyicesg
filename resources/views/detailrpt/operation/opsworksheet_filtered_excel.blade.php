@@ -50,14 +50,35 @@
                 $zoneStrArr = [];
                 $zoneStr = '';
                 $zoneArr = explode(",",$person->area_group);
-                if($zoneArr[0] == 1) {
-                    $zoneStrArr[0] = 'West';
+                if(isset($zoneArr[0])) {
+                    if($zoneArr[0] == 1) {
+                        $zoneStrArr[0] = 'West';
+                    }
                 }
-                if($zoneArr[1] == 1) {
-                    $zoneStrArr[1] = 'East';
+                if(isset($zoneArr[1])) {
+                    if($zoneArr[1] == 1) {
+                        $zoneStrArr[1] = 'East';
+                    }
                 }
-                if($zoneArr[2] == 1) {
-                    $zoneStrArr[2] = 'Others';
+                if(isset($zoneArr[2])) {
+                    if($zoneArr[2] == 1) {
+                        $zoneStrArr[2] = 'Others';
+                    }
+                }
+                if(isset($zoneArr[3])) {
+                    if($zoneArr[3] == 1) {
+                        $zoneStrArr[3] = 'Sup';
+                    }
+                }
+                if(isset($zoneArr[4])) {
+                    if($zoneArr[4] == 1) {
+                        $zoneStrArr[4] = 'Ops';
+                    }
+                }
+                if(isset($zoneArr[5])) {
+                    if($zoneArr[5] == 1) {
+                        $zoneStrArr[5] = 'North';
+                    }
                 }
 
                 $zoneStr = implode(",", $zoneStrArr);
