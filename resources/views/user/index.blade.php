@@ -17,6 +17,7 @@
             <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
             <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
             <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
+            <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
         </ul>
     </div>
 
@@ -368,6 +369,10 @@
                 @include('user.custcat_template')
             </div>
             {{-- end of fifth element --}}
+
+            <div class="tab-pane" id="cust_tags" ng-controller="custTagsController">
+                @include('user.cust_tags_template')
+            </div>
     </div>
 </div>
 

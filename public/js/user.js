@@ -131,6 +131,33 @@ var app = angular.module('app', [
         }
     }
 
+    function custTagsController($scope, $http) {
+        $scope.currentPage5 = 1;
+        $scope.itemsPerPage5 = 100;
+
+        $http.get('/custcat/data').success(function(custcats) {
+            $scope.custcats = custcats;
+        });
+
+        $scope.confirmDelete5 = function(id){
+            var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
+            if(isConfirmDelete){
+                $http({
+                    method: 'DELETE',
+                    url: '/custcat/data/' + id
+                })
+                .success(function(data){
+                    location.reload();
+                })
+                .error(function(data){
+                    alert('Unable to delete');
+                })
+            }else{
+                return false;
+            }
+        }
+    }
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;

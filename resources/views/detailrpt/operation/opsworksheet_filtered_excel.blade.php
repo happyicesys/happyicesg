@@ -65,9 +65,10 @@
                 if($zoneArr[4] == 1) {
                     $zoneStrArr[4] = 'Ops';
                 }
+/*
                 if($zoneArr[5] == 1) {
                     $zoneStrArr[5] = 'North';
-                }
+                } */
 
                 $zoneStr = implode(",", $zoneStrArr);
             @endphp
