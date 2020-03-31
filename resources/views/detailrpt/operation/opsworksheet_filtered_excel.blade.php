@@ -65,12 +65,13 @@
                 if($zoneArr[4] == 1) {
                     $zoneStrArr[4] = 'Ops';
                 }
-/*
                 if($zoneArr[5] == 1) {
                     $zoneStrArr[5] = 'North';
-                } */
+                }
 
                 $zoneStr = implode(",", $zoneStrArr);
+
+                dd($zoneStrArr, $zoneStr, $transactionsStr, $transArr);
             @endphp
             <td>{{$person->operation_note}}</td>
             <td>{{$zoneStr}}</td>
