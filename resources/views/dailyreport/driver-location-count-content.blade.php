@@ -197,10 +197,10 @@
                                 <button class="btn btn-sm btn-warning" ng-click="onButtonClicked(deal, 0)" data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 3)" ng-if="deal.submission_status != 3 && deal.submission_status >= 2" data-toggle="tooltip" title="Approve">
+                                <button class="btn btn-sm btn-success" ng-click="onButtonClicked(deal, 3)" ng-if="deal.submission_status != 3 && deal.submission_status >= 1" data-toggle="tooltip" title="Approve">
                                     <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" ng-click="onButtonClicked(deal, 99)" ng-if="deal.submission_status != 99 && deal.submission_status >= 2" data-toggle="tooltip" title="Reject">
+                                <button class="btn btn-sm btn-danger" ng-click="onButtonClicked(deal, 99)" ng-if="deal.submission_status != 99 && deal.submission_status >= 1" data-toggle="tooltip" title="Reject">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </button>
                             </div>
