@@ -198,27 +198,27 @@ class OperationWorksheetController extends Controller
 
         switch($area) {
             case 'west':
-                $areaArr[0] = $val ? $val : 0;
+                $areaArr[0] = $val;
                 break;
             case 'east':
-                $areaArr[1] = $val ? $val : 0;
+                $areaArr[1] = $val;
                 break;
             case 'others':
-                $areaArr[2] = $val ? $val : 0;
+                $areaArr[2] = $val;
                 break;
             case 'sup':
-                $areaArr[3] = $val ? $val : 0;
+                $areaArr[3] = $val;
                 break;
             case 'ops':
-                $areaArr[4] = $val ? $val : 0;
+                $areaArr[4] = $val;
                 break;
             case 'north':
-                $areaArr[5] = $val ? $val : 0;
+                $areaArr[5] = $val;
                 break;
         }
 
         for($i=0; $i<5; $i++) {
-            $areaArr[$i] = $areaArr[$i] ? $areaArr[$i] : 0;
+            $areaArr[$i] = isset($areaArr[$i]) ? $areaArr[$i] : 0;
         }
 
         ksort($areaArr);
