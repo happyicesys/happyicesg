@@ -217,8 +217,13 @@ class OperationWorksheetController extends Controller
                 break;
         }
 
+        for($i=0; $i<5; $i++) {
+            $areaArr[$i] = $areaArr[$i] ? $areaArr[$i] : 0;
+        }
+
+        ksort($areaArr);
+
         $areaStr = implode(",", $areaArr);
-        // dd($area, $val, $person->area_group, $areaArr, $areaStr);
         $person->area_group = $areaStr;
         $person->save();
     }
