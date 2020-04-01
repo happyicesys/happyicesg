@@ -29,7 +29,9 @@ class DailyreportController extends Controller
     public function indexApi(Request $request, $type = 1)
     {
 
-        $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total /(100 + transactions.gst_rate) * 100 END) ELSE transactions.total END) AS total, transactions.driver, transactions.delivery_date FROM transactions
+        $totalRaw = "(SELECT SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount /(100 + transactions.gst_rate) * 100 END) ELSE deals.amount END) AS total, transactions.driver, transactions.delivery_date FROM deals
+        LEFT JOIN transactions ON transactions.id = deals.transaction_id
+        LEFT JOIN items ON items.id = deals.item_id
         LEFT JOIN people ON people.id = transactions.person_id
         LEFT JOIN profiles ON profiles.id = people.profile_id
         LEFT JOIN custcategories ON custcategories.id = people.custcategory_id
@@ -65,6 +67,9 @@ class DailyreportController extends Controller
             }
         }
 
+        if($request->is_commission != '') {
+            $totalRaw .= "and items.is_commission = '".$request->is_commission."'";
+        }
 
         $totalRaw .= " GROUP BY transactions.delivery_date, transactions.driver) totalRaw";
 
@@ -121,7 +126,6 @@ class DailyreportController extends Controller
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
         }
         if($request->is_commission != '') {
-            // dd('hrere');
             $deals = $deals->where('items.is_commission', $request->is_commission);
         }
         if ($request->person_active) {

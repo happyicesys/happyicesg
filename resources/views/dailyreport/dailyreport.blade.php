@@ -223,6 +223,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     {{-- <button class="btn btn-info" ng-click="searchDB($event)"><i class="fa fa-search"></i><span class="hidden-xs"></span> Search</button> --}}
                     <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                    <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
                 </div>
             </div>
         </div>
