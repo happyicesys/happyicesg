@@ -709,6 +709,24 @@ class PersonController extends Controller
 
         $query = Persontag::with('persontagattaches.person');
 
+        if(request('tag_name')) {
+            $query = $query->where('name', 'LIKE', '%'.request('tag_name').'%');
+        }
+
+        if(request('cust_id')) {
+            $cust_id = request('cust_id');
+            $query = $query->whereHas('persontagattaches.person', function($query) use ($cust_id) {
+                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+            });
+        }
+
+        if(request('company')) {
+            $company = request('company');
+            $query = $query->whereHas('persontagattaches.person', function($query) use ($company) {
+                $query->where('company', 'LIKE', '%'.$company.'%');
+            });
+        }
+
         if(request('sortName')){
             $query = $query->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
