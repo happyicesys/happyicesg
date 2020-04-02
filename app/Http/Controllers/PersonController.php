@@ -699,6 +699,77 @@ class PersonController extends Controller
         $personmaintenance->delete();
     }
 
+    // get customer tags
+    public function getCustTagsIndexApi()
+    {
+        // showing total amount init
+        $total_amount = 0;
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        $query = Persontag::with('persontagattaches.person');
+
+        if(request('sortName')){
+            $query = $query->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if($pageNum == 'All'){
+            $query = $query->latest('created_at')->get();
+        }else{
+            $query = $query->latest('created_at')->paginate($pageNum);
+        }
+
+        return [
+            'custtags' => $query
+        ];
+    }
+
+    // destroy cust tags
+    public function deleteCustTagApi($id)
+    {
+        $persontag = Persontag::findOrFail($id);
+
+        if($persontag->persontagattaches) {
+            foreach($persontag->persontagattaches as $persontagattach) {
+                $persontagattach->delete();
+            }
+        }
+        $persontag->delete();
+    }
+
+    // unbind single cust tag attachment
+    public function unbindCustTagAttachment($id)
+    {
+        $persontagattach = Persontagattach::findOrFail($id);
+        $persontagattach->delete();
+    }
+
+    // add new persontag
+    public function createPersontagApi(Request $request)
+    {
+        $persontag_name = $request->persontag_name;
+
+        if($persontag_name) {
+            Persontag::create([
+                'name' => $persontag_name
+            ]);
+        }
+    }
+
+    // bind the personid and persontag
+    public function bindPersontagAttachesApi(Request $request)
+    {
+        $persontag_id = $request->persontag_id;
+        $person_id = $request->person_id;
+
+        if($persontag_id and $person_id) {
+            Persontagattach::create([
+                'person_id' => $person_id,
+                'persontag_id' => $persontag_id
+            ]);
+        }
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {

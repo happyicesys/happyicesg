@@ -1,6 +1,8 @@
 var app = angular.module('app', [
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
+    'ui.select',
+    'ngSanitize'
     ]);
 
     function userController($scope, $http){
@@ -134,6 +136,7 @@ var app = angular.module('app', [
     function custTagsController($scope, $http) {
         // init the variables
         $scope.alldata = [];
+        $scope.peopledata = [];
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -148,11 +151,18 @@ var app = angular.module('app', [
             sortBy: true,
             sortName: ''
         }
+        $scope.form = {
+            persontag_name: '',
+            persontag_id: '',
+            person_id: ''
+        }
         // init page load
         getPage();
 
         angular.element(document).ready(function () {
-            $('.select').select2();
+            $('.select').select2({
+                placeholder: 'Select..'
+            });
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
             });
@@ -191,22 +201,69 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.onTagDelete = function(tag) {
+            var isConfirmDelete = confirm('Are you sure you want to delete the tag with its binding(s)?');
+            if(isConfirmDelete){
+                $http({
+                    method: 'DELETE',
+                    url: '/api/person/custtag/' + tag.id + '/destroy'
+                })
+                .success(function(data){
+                    getPage(1, false);
+                })
+                .error(function(data){
+                    alert('Unable to delete');
+                })
+            }else{
+                return false;
+            }
+        }
+
+        $scope.onTagUnbind = function(persontagattach) {
+            $http({
+                method: 'POST',
+                url: '/api/person/custtagattach/' + persontagattach.id + '/unbind'
+            })
+            .success(function(data){
+                getPage(1, false);
+            })
+            .error(function(data){
+                alert('Unable to delete');
+            })
+        }
+
+        // create new tag name
+        $scope.onTagNameCreateClicked = function() {
+            $http.post('/api/persontag/create', $scope.form).success(function(data){
+                $scope.form.persontag_name = '';
+                getPage(1, false);
+            });
+        }
+
+        // bind user id and tag id
+        $scope.onTagBindingClicked = function() {
+            $http.post('/api/persontagattaches/bind', $scope.form).success(function(data) {
+                $scope.form.person_id = '';
+                getPage(1, false);
+            });
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/custtags/index/1?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-                if(data.alldeals.data){
-                    $scope.alldata = data.alldeals.data;
-                    $scope.totalCount = data.alldeals.total;
-                    $scope.currentPage = data.alldeals.current_page;
-                    $scope.indexFrom = data.alldeals.from;
-                    $scope.indexTo = data.alldeals.to;
+            $http.post('/api/person/custtags?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.custtags.data){
+                    $scope.alldata = data.custtags.data;
+                    $scope.totalCount = data.custtags.total;
+                    $scope.currentPage = data.custtags.current_page;
+                    $scope.indexFrom = data.custtags.from;
+                    $scope.indexTo = data.custtags.to;
                 }else{
-                    $scope.alldata = data.alldeals;
-                    $scope.totalCount = data.alldeals.length;
+                    $scope.alldata = data.custtags;
+                    $scope.totalCount = data.custtags.length;
                     $scope.currentPage = 1;
                     $scope.indexFrom = 1;
-                    $scope.indexTo = data.alldeals.length;
+                    $scope.indexTo = data.custtags.length;
                 }
                 $scope.spinner = false;
             });

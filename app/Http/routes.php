@@ -320,6 +320,12 @@ Route::get('/api/members/select', 'PersonController@getMemberSelectApi');
 Route::get('/api/person/getLatLng/{person_id}', 'PersonController@getDeliveryLatLng');
 Route::post('/api/person/storelatlng/{person_id}', 'PersonController@storeDeliveryLatLng');
 Route::get('/api/person/persontags/{person_id}', 'PersonController@getPersonTags');
+Route::post('/api/person/custtags', 'PersonController@getCustTagsIndexApi');
+Route::delete('/api/person/custtag/{id}/destroy', 'PersonController@deleteCustTagApi');
+Route::post('/api/person/custtagattach/{id}/unbind', 'PersonController@unbindCustTagAttachment');
+
+Route::post('/api/persontag/create', 'PersonController@createPersontagApi');
+Route::post('/api/persontagattaches/bind', 'PersonController@bindPersontagAttachesApi');
 
 Route::get('/profile/data', 'ProfileController@getData');
 Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');

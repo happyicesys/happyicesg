@@ -192,6 +192,11 @@ class Person extends Baum\Node
         return $this->hasMany('App\Personasset');
     }
 
+    public function persontagattaches()
+    {
+        return $this->hasMany(Persontagattach::class);
+    }
+
     // getter and setter
 
     public function setDobAttribute($date)
