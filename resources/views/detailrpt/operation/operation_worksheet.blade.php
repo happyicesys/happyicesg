@@ -435,7 +435,7 @@
                         </span>
                     </td>
                     <td class="col-md-1 text-left">
-                        <span class="row">
+                        <span class="row" ng-style="{'color': person.last_date_color}">
                             @{{person.ops_deldate | date : "yy-MM-dd"}}
                             <br>
                             @{{person.ops_day}}
