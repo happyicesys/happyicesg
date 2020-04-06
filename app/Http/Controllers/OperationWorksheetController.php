@@ -795,7 +795,15 @@ class OperationWorksheetController extends Controller
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
-                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate'
+                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
+                        DB::raw('CASE
+                                    WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
+                                    THEN "blue"
+                                    WHEN DATEDIFF(now(), last.delivery_date) >= 15
+                                    THEN "red"
+                                ELSE
+                                    "black"
+                                END AS last_date_color')
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
