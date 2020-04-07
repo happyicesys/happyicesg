@@ -953,15 +953,10 @@ class PersonController extends Controller
     {
 
         $tags = $request->tags;
-        // dd($request, $tags);
+
         if($tags) {
-            // dd($tags);
-/*
-            if(count($tags) == 1) {
-                $tags = [$tags];
-            } */
+
             foreach($tags as $index => $tag) {
-                // dd($tags, $tag);
                 if(substr($tag, 0, 4) == 'New:') {
                     $persontag = Persontag::create([
                         'name' => substr($tag, strpos($tag, ":") + 1)
@@ -971,12 +966,14 @@ class PersonController extends Controller
                         'persontag_id' => $persontag->id
                     ]);
                     $tags[$index] = strval($persontag->id);
-                    // dd($persontag->toArray(), $persontagattach->toArray(), $tag[$index]);
                 }else {
-                    $persontagattach = Persontagattach::create([
-                        'person_id' => $person->id,
-                        'persontag_id' => $tag
-                    ]);
+                    $persontagattach = Persontagattach::where('person_id', $person->id)->where('persontag_id', $tag)->first();
+                    if(!$persontagattach) {
+                        $persontagattach = Persontagattach::create([
+                            'person_id' => $person->id,
+                            'persontag_id' => $tag
+                        ]);
+                    }
                 }
             }
             // dd($tags);

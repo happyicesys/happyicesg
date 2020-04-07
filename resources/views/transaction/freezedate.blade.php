@@ -17,7 +17,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             {!! Form::open(['id'=>'form_submit', 'method'=>'POST','action'=>['TransactionController@freezeInvoiceDate']]) !!}
                 <div class="form-group">
-                    {!! Form::label('freeze_date', 'Invoice Freeze Date', ['class'=>'control-label']) !!}
+                    {!! Form::label('freeze_date', 'Invoice Freeze Date (Current Freezed Date: @{{form.freeze_date}})', ['class'=>'control-label']) !!}
                     <datepicker>
                         <input
                             type = "text"
