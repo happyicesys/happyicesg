@@ -104,6 +104,20 @@
                         $dailyreport_access = true;
                     }
 
+                    if(auth()->user()->hasRole('salesperson')) {
+                        $access = true;
+                        $transaction_access = true;
+                        $franchisee_access = true;
+                        $hd_access = true;
+                        $person_access = true;
+                        $item_access = true;
+                        $report_access = true;
+                        $dtd_access = true;
+                        $personmaintenance_access = true;
+                        $jobcard_access = true;
+                        $dailyreport_access = true;
+                    }
+
                     if(auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin')) {
                         $access = true;
                         $transaction_access = true;

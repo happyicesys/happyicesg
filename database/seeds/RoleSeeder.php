@@ -23,10 +23,16 @@ class RoleSeeder extends Seeder
             'label' => 'User',
             'remark' => '',
         ]); */
-
+/*
         Role::create([
             'name' => 'technician',
             'label' => 'Technician',
+            'remark' => '',
+        ]); */
+
+        Role::create([
+            'name' => 'salesperson',
+            'label' => 'Sales Person',
             'remark' => '',
         ]);
     }
