@@ -14,7 +14,13 @@ class CreateMonthlyInventoriesTable extends Migration
     {
         Schema::create('monthly_inventories', function (Blueprint $table) {
             $table->increments('id');
+            $table->datetime('cutoff_date');
+            $table->decimal('qty', 12, 4)->nullable();
+            $table->decimal('unit_price', 10, 2)->nullable();
+            $table->decimal('closing_value', 10, 2)->nullable();
             $table->timestamps();
+
+            $table->integer('item_id');
         });
     }
 
