@@ -121,10 +121,16 @@
                     <span ng-if="search.sortName == 'location_count' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('extra_location')">
+                    <a href="" ng-click="sortTable('extra_location_count')">
                     Extra Location #
-                    <span ng-if="search.sortName == 'extra_location' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'extra_location' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'extra_location_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'extra_location_count' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('online_location_count')">
+                    Online Location #
+                    <span ng-if="search.sortName == 'online_location_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'online_location_count' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('submission_date')">
@@ -176,6 +182,16 @@
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ deal.extra_location_count ? deal.extra_location_count : 0}}
+                    </td>
+                    <td class="col-md-1 text-right">
+                        @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            {!! Form::text('online_location_count[@{{deal.online_location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.online_location_count', 'placeholder'=>'Numbers only', 'ng-readonly'=>'deal.submission_status == 3']) !!}
+                        @else
+                            {!! Form::text('online_location_count[@{{deal.online_location_count}}]', null, ['class'=>'text-right form-control', 'style'=>'min-width: 110px; align-content: left; font-size: 12px;', 'ng-model'=>'deal.online_location_count', 'placeholder'=>'Numbers only']) !!}
+                        @endif
+                        <span class="hidden">
+                            @{{ deal.online_location_count }}
+                        </span>
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ deal.submission_date}}

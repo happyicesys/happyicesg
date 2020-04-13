@@ -14,7 +14,8 @@ class DriverLocation extends Model
 
     protected $fillable = [
         'delivery_date', 'location_count', 'user_id', 'status', 'updated_by',
-        'submission_date', 'daily_limit', 'remarks', 'approved_by', 'approved_at'
+        'submission_date', 'daily_limit', 'remarks', 'approved_by', 'approved_at',
+        'online_location_count'
     ];
 
     // relationships

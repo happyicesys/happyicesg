@@ -98,7 +98,7 @@ class DailyreportController extends Controller
                 'transactions.driver', 'transactions.status',
                 DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
                 DB::raw('DAYNAME(transactions.delivery_date) AS delivery_day'),
-                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
+                'totalRaw.total', 'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.online_location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
                 DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
                 'updater.name AS updated_by', 'approver.name AS approved_by', 'driver_locations.approved_at', 'driver_locations.daily_limit',
                 'driver_locations.remarks',
@@ -277,6 +277,7 @@ class DailyreportController extends Controller
         $user_id = request('user_id');
         $delivery_date = request('delivery_date');
         $location_count = request('location_count');
+        $online_location_count = request('online_location_count');
         $daily_limit = request('daily_limit');
         $status_button = $status;
 
@@ -286,6 +287,7 @@ class DailyreportController extends Controller
             if($driverlocation) {
                 if($location_count) {
                     $driverlocation->location_count = $location_count;
+                    $driverlocation->online_location_count = $online_location_count;
                     $driverlocation->daily_limit = $daily_limit;
                     $driverlocation->updated_by = auth()->user()->id;
                     $driverlocation->save();
@@ -297,6 +299,7 @@ class DailyreportController extends Controller
                     $driverlocation = DriverLocation::create([
                         'delivery_date' => $delivery_date,
                         'location_count' =>$location_count,
+                        'online_location_count' => $online_location_count,
                         'daily_limit' => $daily_limit,
                         'user_id' => $user_id,
                         'status' => 2,
@@ -318,6 +321,7 @@ class DailyreportController extends Controller
             'delivery_day' => Carbon::parse($driverlocation->delivery_date)->format('l'),
             'user_id' => $driverlocation->driver->id,
             'location_count' => $driverlocation->location_count,
+            'online_location_count' => $driverlocation->online_location_count,
             'submission_status' => $driverlocation->status,
             'submission_date' => $driverlocation->submission_date,
             'submission_day' => Carbon::parse($driverlocation->submission_date)->format('l'),

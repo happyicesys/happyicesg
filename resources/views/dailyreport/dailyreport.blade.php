@@ -327,10 +327,16 @@
                     <span ng-if="search.sortName == 'location_count' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('extra_location')">
+                    <a href="" ng-click="sortTable('extra_location_count')">
                     Extra Location #
-                    <span ng-if="search.sortName == 'extra_location' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'extra_location' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'extra_location_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'extra_location_count' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('online_location_count')">
+                    Online Location #
+                    <span ng-if="search.sortName == 'online_location_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'online_location_count' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
             </tr>
 
@@ -359,6 +365,11 @@
                     <td class="col-md-1 text-right">
                         <span ng-if="deal.submission_status == 3">
                             @{{ deal.extra_location_count > 0 ? deal.extra_location_count : 0 }}
+                        </span>
+                    </td>
+                    <td class="col-md-1 text-right">
+                        <span ng-if="deal.submission_status == 3">
+                            @{{ deal.online_location_count}}
                         </span>
                     </td>
                 </tr>
