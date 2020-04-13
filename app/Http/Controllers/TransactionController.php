@@ -1239,8 +1239,9 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
-                                    DB::raw('(CASE WHEN transactions.del_lat THEN transactions.del_lat ELSE people.del_lat END) AS del_lat'),
-                                    DB::raw('(CASE WHEN transactions.del_lng THEN transactions.del_lng ELSE people.del_lng END) AS del_lng'),
+                                    // DB::raw('(CASE WHEN transactions.del_lat != null THEN transactions.del_lat ELSE people.del_lat END) AS del_lat'),
+                                    // DB::raw('(CASE WHEN transactions.del_lng != null THEN transactions.del_lng ELSE people.del_lng END) AS del_lng'),
+                                    'transactions.del_lat', 'transactions.del_lng',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
