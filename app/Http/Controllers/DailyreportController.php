@@ -201,6 +201,7 @@ class DailyreportController extends Controller
         $totalcommission = 0;
         $subtotal = 0;
         $extra_location_total = 0;
+        $online_location_total = 0;
 
         $subtotal_query = clone $alldeals;
         $subtotalArr = $subtotal_query->get();
@@ -210,9 +211,9 @@ class DailyreportController extends Controller
             if($dealtotal->submission_status == DriverLocation::STATUS_APPROVED) {
                 if($dealtotal->extra_location_count > 0) {
                     $extra_location_total += $dealtotal->extra_location_count;
+                    $online_location_total += $dealtotal->online_location_count;
                 }
             }
-
         }
 
         if($request->driver) {
@@ -259,7 +260,8 @@ class DailyreportController extends Controller
             'subtotal' => $subtotal,
             'totalcommission' => $totalcommission,
             'driver' => $driver,
-            'extra_location_total' => $extra_location_total
+            'extra_location_total' => $extra_location_total,
+            'online_location_total' => $online_location_total
         ];
 
         return $data;

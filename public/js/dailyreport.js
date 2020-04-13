@@ -131,6 +131,7 @@ var app = angular.module('app', [
                 $scope.totalcommission = data.totalcommission;
                 $scope.driver = data.driver;
                 $scope.extra_location_total = data.extra_location_total;
+                $scope.online_location_total = data.online_location_total;
                 $scope.spinner = false;
             });
         }

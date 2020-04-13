@@ -254,6 +254,16 @@
                     <strong>@{{ extra_location_total ? extra_location_total : 0}}</strong>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                    <strong>
+                        Online Location Total
+                    </strong>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                    <strong>@{{ online_location_total ? online_location_total : 0}}</strong>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-4 col-sm-12 col-xs-12" style="padding-top: 20px;" ng-if="driver == 'driver'">
