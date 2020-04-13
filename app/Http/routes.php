@@ -356,6 +356,7 @@ Route::post('/api/pricematrix/costrate/edit', 'PriceController@editCostrateApi')
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::post('/api/transaction/storelatlng/{id}', 'TransactionController@storeDeliveryLatLng');
 Route::get('/transaction/revert/confirm/{transaction_id}', 'TransactionController@revertToConfirmStatus');
 Route::post('/transaction/export/accconsolidate/pdf', 'TransactionController@exportAccConsolidatePdf');
 Route::get('/transaction/email/subscription', 'TransactionController@subscibeTransactionEmail');

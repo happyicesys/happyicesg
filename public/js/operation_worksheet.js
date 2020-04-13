@@ -206,35 +206,6 @@ var app = angular.module('app', [
                         }
                     });
             }else {
-/*
-                var infowindow = new google.maps.InfoWindow({});
-                var marker, count, pos, contentString;
-
-                for(count=0; count<$scope.people.length; count++) {
-                    if($scope.people[count].del_lat && $scope.people[count].del_lng) {
-                        pos = new google.maps.LatLng($scope.people[count].del_lat, $scope.people[count].del_lng);
-                        marker = new google.maps.Marker({
-                            position: pos,
-                            map: map,
-                            title: $scope.people[count].cust_id + ' - ' + $scope.people[count].company
-                        });
-
-                        contentString = '<span style=font-size:10px;>' +
-                            '<b>' +
-                            $scope.people[count].cust_id + ' - ' + $scope.people[count].company +
-                            '</b>' +
-                            '<br>' +
-                            $scope.people[count].del_address +
-                            '</span>';
-
-                        google.maps.event.addListener(marker, 'click', (function (marker) {
-                            return function () {
-                                infowindow.setContent(contentString);
-                                infowindow.open(map, marker);
-                            }
-                        })(marker, count));
-                    }
-                } */
 
                 $scope.people.forEach(function (person) {
                     // var address = person.del_address.replace(/ /g, '+');
@@ -297,13 +268,7 @@ var app = angular.module('app', [
                 google.maps.event.trigger(map, "resize");
                 map.setCenter(locationLatLng);
             });
-/*             $('#mapModal').on('hidden.bs.modal', function () {
-                for (var i = 0; i < markers.length; i++) {
-                    markers[i].setMap(null);
-                }
-                markers = [];
-                google.maps.event.trigger(map, "resize");
-            }); */
+
         }
 
         // retrieve page w/wo search

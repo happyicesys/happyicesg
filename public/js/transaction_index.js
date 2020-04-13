@@ -195,6 +195,132 @@ var app = angular.module('app', [
                 return false;
             }
         }
+
+        $scope.onMapClicked = function(singleperson = null) {
+            var url = window.location.href;
+            var location = '';
+            var locationLatLng = {};
+
+            if(url.includes("my")) {
+                location = 'Malaysia';
+                locationLatLng = {lat: 1.4927, lng: 103.7414};
+            }else if(url.includes("sg")) {
+                location = 'Singapore';
+                locationLatLng = {lat: 1.3521, lng: 103.8198};
+            }
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: locationLatLng,
+                zoom: 12
+            });
+
+            var geocoder = new google.maps.Geocoder();
+
+            var markers = [];
+
+            if(singleperson) {
+                geocoder.geocode(
+                    {
+                        componentRestrictions: { country: location, postalCode: singleperson.del_postcode }
+                    }, function (results, status) {
+                        if (results[0]) {
+                            if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                setTimeout(3000);
+                            }
+                            var contentString = '<span style=font-size:10px;>' +
+                                '<b>' +
+                                singleperson.cust_id + ' - ' + singleperson.company +
+                                '</b>' +
+                                '<br>' +
+                                singleperson.del_address +
+                                '</span>';
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            var marker = new google.maps.Marker({
+                                position: results[0].geometry.location,
+                                map: map,
+                                title: singleperson.cust_id + ' - ' + singleperson.company
+                            });
+                            markers.push(marker);
+                            marker.addListener('click', function () {
+                                infowindow.open(map, marker);
+                            });
+                            var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
+                            var coord = {
+                                lat: jsondata.lat,
+                                lng: jsondata.lng
+                            };
+                            // console.log(singleperson.person_id);
+                            // console.log(coord);
+                            $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {});
+                        }
+                    });
+            }else {
+
+                $scope.alldata.forEach(function (person) {
+                    // var address = person.del_address.replace(/ /g, '+');
+                    var contentString = '<span style=font-size:10px;>' +
+                        '<b>' +
+                        person.cust_id + ' - ' + person.company +
+                        '</b>' +
+                        '<br>' +
+                        person.del_address +
+                        '</span>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    if (person.del_lat && person.del_lng) {
+                        var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: person.cust_id + ' - ' + person.company
+                        });
+                        markers.push(marker);
+                        marker.addListener('click', function () {
+                            infowindow.open(map, marker);
+                        });
+                    }else {
+                        geocoder.geocode(
+                            {
+                                componentRestrictions: { country: location, postalCode: person.del_postcode }
+                            }, function (results, status) {
+                                if (results[0]) {
+                                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                                        setTimeout(3000);
+                                    }
+                                    var marker = new google.maps.Marker({
+                                        position: results[0].geometry.location,
+                                        map: map,
+                                        title: person.cust_id + ' - ' + person.company
+                                    });
+                                    markers.push(marker);
+                                    marker.addListener('click', function () {
+                                        infowindow.open(map, marker);
+                                    });
+                                    var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
+                                    var coord = {
+                                        lat: jsondata.lat,
+                                        lng: jsondata.lng
+                                    };
+
+                                    $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) { });
+                                }
+                            });
+                    }
+                });
+            }
+
+
+            $("#mapModal").on("shown.bs.modal", function () {
+                google.maps.event.trigger(map, "resize");
+                map.setCenter(locationLatLng);
+            });
+        }
     }
 
 app.filter('delDate', [

@@ -183,7 +183,6 @@ class TransactionController extends Controller
             $transaction->save();
         }
 
-
         if($transaction->person->cust_id[0] === 'P'){
             $this->validate($request, [
                 'po_no' => 'unique:transactions,po_no,'.$transaction->id
@@ -193,6 +192,12 @@ class TransactionController extends Controller
         // check profile is vending then analog required
         if($transaction->person->is_vending) {
             $transaction->is_required_analog = 1;
+            $transaction->save();
+        }
+
+        if($transaction->del_postcode == $transaction->person->del_postcode) {
+            $transaction->del_lat = $transaction->person->del_lat;
+            $transaction->del_lng = $transaction->person->del_lng;
             $transaction->save();
         }
 
@@ -626,10 +631,11 @@ class TransactionController extends Controller
             $this->saveDoByTransactionid($transaction->id);
         }
 
-        // record the transactions to ftransaction when franchisee id is detected
-/*        if($transaction->person->franchisee_id) {
-            $this->syncFtransactionsAndTransactions($transaction);
-        }*/
+        if($transaction->del_postcode == $transaction->person->del_postcode) {
+            $transaction->del_lat = $transaction->person->del_lat;
+            $transaction->del_lng = $transaction->person->del_lng;
+            $transaction->save();
+        }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
 
@@ -1207,6 +1213,15 @@ class TransactionController extends Controller
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
+    // store delivery latlng whenever has chance(int transaction_id)
+    public function storeDeliveryLatLng($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->del_lat = request('lat');
+        $transaction->del_lng = request('lng');
+        $transaction->save();
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {
@@ -1224,6 +1239,8 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
+                                    DB::raw('(CASE WHEN transactions.del_lat THEN transactions.del_lat ELSE people.del_lat END) AS del_lat'),
+                                    DB::raw('(CASE WHEN transactions.del_lng THEN transactions.del_lng ELSE people.del_lng END) AS del_lng'),
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
