@@ -229,7 +229,7 @@ var app = angular.module('app', [
                             }
                             var contentString = '<span style=font-size:10px;>' +
                                 '<b>' +
-                                singleperson.cust_id + ' - ' + singleperson.company +
+                                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
                                 '</b>' +
                                 '<br>' +
                                 singleperson.del_address +
@@ -263,7 +263,7 @@ var app = angular.module('app', [
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
-                        person.cust_id + ' - ' + person.company +
+                        '(' + person.id + ') ' + person.cust_id + ' - ' + person.company +
                         '</b>' +
                         '<br>' +
                         person.del_address +
@@ -278,7 +278,7 @@ var app = angular.module('app', [
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: person.cust_id + ' - ' + person.company
+                            title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company
                         });
                         markers.push(marker);
                         marker.addListener('click', function () {
