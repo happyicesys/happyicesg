@@ -211,6 +211,8 @@ class DailyreportController extends Controller
             if($dealtotal->submission_status == DriverLocation::STATUS_APPROVED) {
                 if($dealtotal->extra_location_count > 0) {
                     $extra_location_total += $dealtotal->extra_location_count;
+                }
+                if($dealtotal->online_location_count > 0) {
                     $online_location_total += $dealtotal->online_location_count;
                 }
             }
