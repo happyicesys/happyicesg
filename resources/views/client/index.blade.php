@@ -9,7 +9,7 @@ Healthier Life
 
     <header>
         <img src="../img/mainslide.jpg" alt="ice cream online and offline order" class="img-responsive">
-        <a href="/brown-sugar-milk-boba-icecream" class="btn btn-success btn-xl text-center" style="margin-top: 10px;" >Find Out Now</a>
+        <a href="/delivery" class="btn btn-success btn-xl text-center" style="margin-top: 10px;" >Find Out Now</a>
     </header>
     {{-- </header> --}}
 
@@ -168,7 +168,7 @@ Healthier Life
         <div class="container text-center" style="padding-top: 30px;">
             <div class="call-to-action">
                 <h2>We Deliver to Your Doorstep too</h2>
-                <a href="/brown-sugar-milk-boba-icecream" class="btn btn-primary btn-xl wow tada">Order Now!</a>
+                <a href="/delivery" class="btn btn-primary btn-xl wow tada">Order Now!</a>
             </div>
         </div>
     </aside>
