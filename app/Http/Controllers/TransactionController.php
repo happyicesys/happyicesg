@@ -1239,6 +1239,8 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
+                                    'transactions.del_lat', 'transactions.del_lng',
+/*
                                     DB::raw('(
                                         CASE WHEN
                                             transactions.del_lat = null AND transactions.del_postcode = people.del_postcode
@@ -1254,7 +1256,7 @@ class TransactionController extends Controller
                                             people.del_lng
                                         ELSE
                                             transactions.del_lng
-                                        END) AS del_lng'),
+                                        END) AS del_lng'), */
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE

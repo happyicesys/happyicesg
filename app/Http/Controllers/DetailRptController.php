@@ -769,6 +769,7 @@ class DetailRptController extends Controller
             $items = $items->where('items.product_id', 'LIKE', '%'.$request->product_id.'%');
         }
         if($request->product_name) {
+            // dd($request->product_name);
             $items = $items->where('items.name', 'LIKE', '%'.$request->product_name.'%');
         }
         if($request->sortName){
