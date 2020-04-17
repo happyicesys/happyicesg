@@ -633,9 +633,7 @@ class DetailRptController extends Controller
                     );
 
         // reading whether search input is filled
-        if($request->profile_id or $request->current_month or $request->id_prefix or $request->cust_id or $request->company or $request->custcategory or $request->status) {
-            $items = $this->searchItemDBFilter($items, $request);
-        }
+        $items = $this->searchItemDBFilter($items, $request);
 
         // add user profile filters
         $items = $this->filterUserDbProfile($items);
@@ -707,6 +705,13 @@ class DetailRptController extends Controller
         if($request->is_inventory) {
             $amountstr = $amountstr." AND items.is_inventory =".$request->is_inventory;
         }
+        if($request->product_id) {
+            $amountstr = $amountstr." AND items.product_id LIKE '%".$request->product_id."%'";
+        }
+        if($request->product_name) {
+            $amountstr = $amountstr." AND items.name LIKE '%".$request->product_name."%'";
+        }
+
 
 /*         dd($request->custcategory);
         if (request('statuses')) {
