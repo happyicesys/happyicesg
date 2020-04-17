@@ -765,6 +765,12 @@ class DetailRptController extends Controller
         if($request->is_inventory) {
             $items = $items->where('items.is_inventory', $request->is_inventory);
         }
+        if($request->product_id) {
+            $items = $items->where('items.product_id', 'LIKE', '%'.$request->product_id.'%');
+        }
+        if($request->product_name) {
+            $items = $items->where('items.name', 'LIKE', '%'.$request->product_name.'%');
+        }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
