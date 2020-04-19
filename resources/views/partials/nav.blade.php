@@ -73,7 +73,7 @@
 
                     if(auth()->user()->type == 'marketer') {
                         $access = true;
-                        $dtd_access = true;
+                        // $dtd_access = true;
                     }
 
                     if(auth()->user()->hasRole('franchisee')) {
@@ -98,7 +98,7 @@
                         $person_access = true;
                         $item_access = true;
                         $report_access = true;
-                        $dtd_access = true;
+                        // $dtd_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $dailyreport_access = true;
@@ -112,7 +112,7 @@
                         $person_access = true;
                         $item_access = true;
                         $report_access = true;
-                        $dtd_access = true;
+                        // $dtd_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
                         $dailyreport_access = true;
@@ -125,7 +125,7 @@
                         $item_access = true;
                         $report_access = true;
                         $detailrpt_access = true;
-                        $dtd_access = true;
+                        // $dtd_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
                         $jobcard_access = true;
@@ -179,7 +179,7 @@
                         $detailrpt_access = true;
                         $report_access = true;
                         $operation_access = true;
-                        $dtd_access = true;
+                        // $dtd_access = true;
                         $franchisee_access = true;
                         $bom_access = true;
                         $ecommerce_access = true;

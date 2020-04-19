@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Inventory;
 use App\InvRecord;
 use Auth;
+use Log;
 use App\Item;
 use Laracasts\Flash\Flash;
 use Session;
@@ -401,6 +402,8 @@ class InventoryController extends Controller
 
                     $item->save();
 
+                    $this->loggingDebug($item, $rec);
+
                 // }
             }
 
@@ -449,4 +452,14 @@ class InventoryController extends Controller
             }
         }
     }
+
+    // Logging purpose
+    private function loggingDebug($item, $rec)
+    {
+        if($item->id === 356) {
+            Log::info('current: '.$item->qty_now.', Inv Current: '.$rec->qtyrec_current.', Inv Incoming: '.$rec->qtyrec_incoming.', Inv after: '.$rec->qtyrec_after);
+        }
+
+    }
+
 }

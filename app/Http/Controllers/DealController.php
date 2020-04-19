@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Deal;
 use App\Transaction;
 use App\Item;
+use Log;
 
 class DealController extends Controller
 {
@@ -95,7 +96,17 @@ class DealController extends Controller
             if($item->is_inventory === 1) {
                 $item->qty_now += $deal->qty;
                 $item->save();
+                $this->loggingDebug($item, $deal);
             }
         }
+    }
+
+    // Logging purpose
+    private function loggingDebug($item, $deal)
+    {
+        if($item->id === 356) {
+            Log::info($deal->transaction_id.', current: '.$item->qty_now.', qty: '.$deal->qty.', before: '.$deal->qty_before.', after: '.$deal->qty_after);
+        }
+
     }
 }

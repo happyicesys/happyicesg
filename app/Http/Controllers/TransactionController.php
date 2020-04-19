@@ -13,6 +13,7 @@ use Response;
 use App;
 use DB;
 use Auth;
+use Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Transaction;
@@ -298,7 +299,7 @@ class TransactionController extends Controller
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                     ->select(
-                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id',
+                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id',
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
                                 'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                 'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver',
@@ -1216,6 +1217,18 @@ class TransactionController extends Controller
     // store delivery latlng whenever has chance(int transaction_id)
     public function storeDeliveryLatLng($id)
     {
+        // dd($id, request()->all());
+        $transaction = Transaction::findOrFail($id);
+        $transaction->del_lat = request('lat');
+        $transaction->del_lng = request('lng');
+        $transaction->save();
+        // dd($transaction);
+    }
+
+    // store delivery latlng whenever has chance()
+    public function storeDeliveryLatLngArr(Request $request)
+    {
+        // dd($request->coordsArr);
         $transaction = Transaction::findOrFail($id);
         $transaction->del_lat = request('lat');
         $transaction->del_lng = request('lng');
@@ -1240,23 +1253,6 @@ class TransactionController extends Controller
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
                                     'transactions.del_lat', 'transactions.del_lng',
-/*
-                                    DB::raw('(
-                                        CASE WHEN
-                                            transactions.del_lat = null AND transactions.del_postcode = people.del_postcode
-                                        THEN
-                                            people.del_lat
-                                        ELSE
-                                            transactions.del_lat
-                                        END) AS del_lat'),
-                                    DB::raw('(
-                                        CASE WHEN
-                                            transactions.del_lng = null AND transactions.del_postcode = people.del_postcode
-                                        THEN
-                                            people.del_lng
-                                        ELSE
-                                            transactions.del_lng
-                                        END) AS del_lng'), */
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
@@ -1337,11 +1333,10 @@ class TransactionController extends Controller
 
                     $dividend = 0;
                     $divisor = 1;
-
                     if(strpos($qty, '/') !== false) {
                         $dividend = explode('/', $qty)[0];
                         $divisor = explode('/', $qty)[1];
-                        $qty = explode('/', $qty)[0]/ explode('/', $qty)[1];
+                        $qty = $this->fraction($qty);
                     }
 
                     if($qty != NULL or $qty != 0 ){
@@ -1364,54 +1359,30 @@ class TransactionController extends Controller
                             }
                         }
 
-                        // restrict picking negative stock & deduct/add actual/order if success
-                        if($status == 1){
-                            if($this->calOrderLimit($qty, $item)){
-                                array_push($errors, $item->product_id.' - '.$item->name);
-                            }else{
-                                $deal = new Deal();
-                                $deal->transaction_id = $transaction->id;
-                                $deal->item_id = $index;
-                                $deal->dividend = $dividend ? $dividend : $qty;
-                                $deal->divisor = $divisor;
-                                $deal->amount = $amounts[$index];
-                                $deal->unit_price = $quotes[$index];
-                                $deal->qty_status = $status;
-                                if($unitcost) {
-                                    $deal->unit_cost = $unitcost->unit_cost;
-                                }
-                                if($item->is_inventory) {
-                                    $deal->qty = $qty;
-                                }
-                                $deal->save();
-                                $this->dealSyncOrder($index);
+                        if($status == 1 and $this->calOrderLimit($qty, $item)) {
+                            array_push($errors, $item->product_id.' - '.$item->name);
+                        }else if($status == 2 and $this->calActualLimit($qty, $item)) {
+                            array_push($errors, $item->product_id.' - '.$item->name);
+                        }else {
+                            $deal = new Deal();
+                            $deal->transaction_id = $transaction->id;
+                            $deal->item_id = $index;
+                            $deal->dividend = $dividend ? $dividend : $qty;
+                            $deal->divisor = $divisor;
+                            $deal->amount = $amounts[$index];
+                            $deal->unit_price = $quotes[$index];
+                            $deal->qty_status = $status;
+                            $deal->unit_cost = $unitcost ? $unitcost->unit_cost : null;
+                            $deal->qty = $qty;
+                            if($status == 2 and $item->is_inventory === 1) {
+                                $deal->qty_before = $item->qty_now;
+                                $deal->qty_after = $item->qty_now - $qty;
+                                $item->qty_now = $item->qty_now - $qty;
+                                $item->save();
+                                $this->loggingDebug($item, $deal);
                             }
-                        }else if($status == 2){
-                            if($this->calActualLimit($qty, $item)){
-                                array_push($errors, $item->product_id.' - '.$item->name);
-                            }else{
-                                $deal = new Deal();
-                                $deal->transaction_id = $transaction->id;
-                                $deal->item_id = $index;
-                                $deal->dividend = $dividend ? $dividend : $qty;
-                                $deal->divisor = $divisor;
-                                $deal->amount = $amounts[$index];
-                                $deal->unit_price = $quotes[$index];
-                                $deal->qty_status = $status;
-                                if($unitcost) {
-                                    $deal->unit_cost = $unitcost->unit_cost;
-                                }
-                                if($item->is_inventory) {
-                                    $deal->qty = $qty;
-                                    $deal->qty_before = $item->qty_now;
-                                    $item->qty_now -= strstr($qty, '/') ? $this->fraction($qty) : $qty;
-                                    $item->save();
-                                    $deal->qty_after = $item->qty_now;
-                                }
-
-                                $deal->save();
-                                $this->dealSyncOrder($index);
-                            }
+                            $deal->save();
+                            $this->dealSyncOrder($index);
                         }
                     }
                 }
@@ -1497,14 +1468,14 @@ class TransactionController extends Controller
         foreach($deals as $deal){
             $item = Item::findOrFail($deal->item_id);
             $deal->qty_status = 2;
-            $deal->save();
             if($item->is_inventory === 1) {
                 $deal->qty_before = $item->qty_now;
-                $item->qty_now -= $deal->qty;
+                $deal->qty_after = $item->qty_now - $deal->qty;
+                $item->qty_now = $item->qty_now - $deal->qty;
                 $item->save();
-                $deal->qty_after = $item->qty_now;
-                $deal->save();
+                $this->loggingDebug($item, $deal);
             }
+            $deal->save();
             $this->dealSyncOrder($item->id);
         }
     }
@@ -1519,8 +1490,9 @@ class TransactionController extends Controller
                 $deal->save();
             }else if($deal->qty_status == '2'){
                 if($item->is_inventory === 1) {
-                    $item->qty_now += $deal->qty;
+                    $item->qty_now = $item->qty_now + $deal->qty;
                     $item->save();
+                    $this->loggingDebug($item, $deal);
                 }
                 $deal->qty_status = 3;
                 $deal->save();
@@ -1547,12 +1519,12 @@ class TransactionController extends Controller
                 $deal->save();
                 if($item->is_inventory === 1) {
                     $deal->qty_before = $item->qty_now;
-                    $item->qty_now -= $deal->qty;
+                    $deal->qty_after = $item->qty_now - $deal->qty;
+                    $item->qty_now = $item->qty_now - $deal->qty;
                     $item->save();
-                    $deal->qty_after = $item->qty_after;
                     $deal->save();
+                    $this->loggingDebug($item, $deal);
                 }
-                // $this->newDealFilter($deal->id);
             }
         }
     }
@@ -2228,5 +2200,14 @@ class TransactionController extends Controller
             $message->subject('HaagenDaz Job Delivered '.$today.' ['.$transaction->id.']');
             $message->setTo($email);
         });
+    }
+
+    // Logging purpose
+    private function loggingDebug($item, $deal)
+    {
+        if($item->id === 356) {
+            Log::info($deal->transaction_id.', current: '.$item->qty_now.', qty: '.$deal->qty.', before: '.$deal->qty_before.', after: '.$deal->qty_after);
+        }
+
     }
 }

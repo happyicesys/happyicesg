@@ -272,8 +272,9 @@ var app = angular.module('app', [
                     var infowindow = new google.maps.InfoWindow({
                         content: contentString
                     });
-
+                    console.log(person.del_lat);
                     if (person.del_lat && person.del_lng) {
+                        console.log(person.id);
                         var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                         var marker = new google.maps.Marker({
                             position: pos,
@@ -285,6 +286,7 @@ var app = angular.module('app', [
                             infowindow.open(map, marker);
                         });
                     }else {
+                        console.log(person.id);
                         geocoder.geocode(
                             {
                                 componentRestrictions: { country: location, postalCode: person.del_postcode }

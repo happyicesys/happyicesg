@@ -42,6 +42,8 @@
                         <th class="col-md-1 text-center">
                             Action
                         </th>
+                        {{-- <th>qty before</th> --}}
+                        {{-- <th>qty after</th> --}}
                     </tr>
 
                     <tbody>
@@ -118,6 +120,8 @@
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.deal_id)" disabled>Delete</button>
                                 @endif
                             </td>
+                        {{-- <td>@{{deal.qty_before}}</td> --}}
+                        {{-- <td>@{{deal.qty_after}}</td> --}}
                         </tr>
 
                         <tr ng-if="delivery">
