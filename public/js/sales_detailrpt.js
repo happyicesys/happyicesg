@@ -381,6 +381,11 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.driverInit = function(driver) {
+            $scope.search.driver = driver;
+            $scope.search.status = 'Confirmed';
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;

@@ -684,6 +684,7 @@ class DetailRptController extends Controller
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN users AS drivers ON drivers.name=transactions.driver
                         WHERE transactions.delivery_date>='".request('delivery_from')."'
                         AND transactions.delivery_date<='".request('delivery_to')."'";
 
@@ -710,6 +711,9 @@ class DetailRptController extends Controller
         }
         if($request->product_name) {
             $amountstr = $amountstr." AND items.name LIKE '%".$request->product_name."%'";
+        }
+        if($request->driver) {
+            $amountstr = $amountstr." AND drivers.name ='".$request->driver."'";
         }
 
 
@@ -752,6 +756,12 @@ class DetailRptController extends Controller
             $profileIdStr = implode(",", $profileIds);
             $amountstr .= " AND profiles.id IN (".$profileIdStr.")";
         }
+
+        // set driver and technician view
+        if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            $amountstr .= " AND DATE(transactions.delivery_date) >= '".Carbon::today()->toDateString()."'";
+        }
+
 
         $totals = DB::raw("(".$amountstr." GROUP BY item_id) totals");
 
@@ -2465,5 +2475,18 @@ class DetailRptController extends Controller
         ];
 
         return $data;
+    }
+
+    // logic applicable for driver on transactions view
+    private function filterDriverView($query)
+    {
+        if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            $query = $query->where(function($query) {
+                $query->where('transactions.driver', auth()->user()->name)
+                    ->orWhere('transactions.driver', null);
+            });
+        }
+
+        return $query;
     }
 }

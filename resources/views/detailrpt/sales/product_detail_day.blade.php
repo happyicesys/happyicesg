@@ -1,5 +1,6 @@
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
+@inject('users', 'App\User')
 
 <div ng-controller="productDayDetailController">
 <div class="col-md-12 col-xs-12">
@@ -190,6 +191,27 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
+                @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                    <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly>
+                @else
+                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                        <option value="">All</option>
+                        @foreach($users::orderBy('name')->get() as $user)
+                            @if($user->hasRole('driver') or $user->hasRole('technician'))
+                                <option value="{{$user->name}}">
+                                    {{$user->name}}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">
@@ -292,13 +314,13 @@
                     <td class="col-md-1 text-center">
                         @{{ item.product_id }}
                     </td>
-                    <td class="col-md-6 text-left">
+                    <td class="col-md-6 text-left" >
                         @{{ item.product_name }}
                         <span ng-if="item.remark">
                             - @{{ item.remark }}
                         </span>
                     </td>
-                    <td class="col-md-2 text-right">
+                    <td class="col-md-2 text-right" >
                         @{{ item.amount | currency: "": 2}}
                     </td>
                     <td class="col-md-2 text-right">

@@ -391,7 +391,7 @@ class TransactionController extends Controller
             }
             $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
-            if(! $request->driver){
+            if(!$request->driver){
                 $request->merge(array('driver'=>Auth::user()->name));
             }
 
@@ -514,7 +514,7 @@ class TransactionController extends Controller
             $request->merge(array('paid_at' => null));
         }elseif($request->input('update')){
             if($transaction->status === 'Confirmed'){
-                $request->merge(array('driver' => null));
+                // $request->merge(array('driver' => null));
                 if($transaction->pay_status == 'Owe') {
                     $request->merge(array('paid_by' => null));
                     $request->merge(array('paid_at' => null));
