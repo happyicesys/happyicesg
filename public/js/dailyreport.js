@@ -24,8 +24,8 @@ var app = angular.module('app', [
             cust_id: '',
             id_prefix: '',
             company: '',
-            custcategory: ['55'],
-            exclude_custcategory: '1',
+            custcategory: [],
+            exclude_custcategory: '',
             status: 'Delivered',
             tag: '',
             driver: '',
@@ -105,6 +105,8 @@ var app = angular.module('app', [
 
         $scope.driverInit = function(driver) {
             $scope.search.driver = driver;
+            $scope.search.custcategory = ['55'];
+            $scope.search.exclude_custcategory = '1';
         }
 
         // retrieve page w/wo search
