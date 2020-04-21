@@ -72,7 +72,7 @@ class TransactionController extends Controller
         // showing total amount init
         $total_amount = 0;
         // initiate the page num when null given
-        $pageNum = request('pageNum') ? request('pageNum') : 100;
+        $pageNum = request('pageNum') ? request('pageNum') : 200;
         // dd($this->dealService->getDeals($request));
 
         $transactions = $this->getTransactionsData();
@@ -87,7 +87,6 @@ class TransactionController extends Controller
 
         if($pageNum == 'All'){
             $transactions = $transactions->latest('transactions.created_at')->get();
-            // dd($transactions);
         }else{
             $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
         }
