@@ -44,7 +44,7 @@ var app = angular.module('app', [
             is_gst_inclusive: '',
             gst_rate: '',
             tags: [],
-            itemsPerPage: 100,
+            itemsPerPage: 200,
             sortName: '',
             sortBy: true
         }
