@@ -199,7 +199,7 @@
             @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
                 @cannot('transaction_view')
                     <div class="col-md-4 form-group">
-                        {!! Form::label('driver', 'Delivered By', ['class'=>'control-label']) !!}
+                        {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label']) !!}
                         {!! Form::select('driver',
                                 [''=>null]+$users::lists('name', 'name')->all(),
                                 null,

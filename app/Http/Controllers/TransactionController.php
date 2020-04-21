@@ -1234,6 +1234,18 @@ class TransactionController extends Controller
         $transaction->save();
     }
 
+    // api to quick update driver(Request $request)
+    public function driverQuickUpdate(Request $request)
+    {
+        $transaction = Transaction::findOrFail($request->id);
+        $transaction->driver = $request->driverchosen['name'];
+        $transaction->updated_at = Carbon::now();
+        $transaction->updated_by = auth()->user()->name;
+        $transaction->save();
+
+        return $transaction;
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {

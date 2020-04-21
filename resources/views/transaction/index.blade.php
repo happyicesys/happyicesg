@@ -190,7 +190,7 @@
                         </div>
                         @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
                             <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                                 <option value="">All</option>
                                 @foreach($users::orderBy('name')->get() as $user)
@@ -631,7 +631,7 @@
                                 </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('driver')">
-                                    Delivered By
+                                    Assigned Driver
                                     <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
@@ -743,7 +743,17 @@
                                     <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
+                                    <td class="col-md-1 text-center">
+                                        @{{ transaction.driver }}
+                                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                        <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, $index)">
+                                            <ui-select-match>@{{$select.user.name}}</ui-select-match>
+                                            <ui-select-choices repeat="user in users | filter: $select.search">
+                                                <div ng-bind-html="user.name | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                        @endif
+                                    </td>
                                     @else
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                                     @endif

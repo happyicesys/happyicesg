@@ -8,6 +8,7 @@ var app = angular.module('app', [
     function transController($scope, $http){
         // init the variables
         $scope.alldata = [];
+        $scope.users = [];
         $scope.datasetTemp = {};
         $scope.totalCountTemp = {};
         $scope.totalCount = 0;
@@ -54,6 +55,7 @@ var app = angular.module('app', [
             person_account: ''
         };
         // init page load
+        getUsersData();
         getPage(1);
 
         angular.element(document).ready(function () {
@@ -179,6 +181,12 @@ var app = angular.module('app', [
             });
         }
 
+        function getUsersData() {
+            $http.get('/user/data').success(function(data) {
+                $scope.users = data;
+            });
+        }
+
         //delete record
         $scope.confirmDelete = function(id){
             var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
@@ -194,6 +202,14 @@ var app = angular.module('app', [
             }else{
                 return false;
             }
+        }
+
+        $scope.onFormDriverChanged = function(transaction, index) {
+            $http.post('/api/transaction/driver/quickupdate', transaction).success(function(data) {
+                $scope.alldata[index].driver = data.driver;
+                $scope.alldata[index].updated_by = data.updated_by;
+                $scope.alldata[index].updated_at = data.updated_at;
+            });
         }
 
         $scope.onMapClicked = function(singleperson = null) {
