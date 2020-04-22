@@ -287,51 +287,32 @@ var app = angular.module('app', [
                     var infowindow = new google.maps.InfoWindow({
                         content: contentString
                     });
-                    if (person.del_lat && person.del_lng) {
-                        var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
-                        var marker = new google.maps.Marker({
-                            position: pos,
-                            map: map,
-                            title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company
-                        });
-                        markers.push(marker);
-                        marker.addListener('click', function () {
-                            infowindow.open(map, marker);
-                        });
-                    }else {
-                        let gcode = geocoder.geocode(
-                            {   address: person.del_address,
-                                componentRestrictions: { country: location, postalCode: person.del_postcode }
-                            }, function (results, status) {
-                                if (results[0]) {
-                                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                                        setTimeout(3000);
-                                    }
-                                    var marker = new google.maps.Marker({
-                                        position: results[0].geometry.location,
-                                        map: map,
-                                        title: person.cust_id + ' - ' + person.company
-                                    });
-                                    markers.push(marker);
-                                    marker.addListener('click', function () {
-                                        infowindow.open(map, marker);
-                                    });
-                                    var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
-                                    var coord = {
-                                        transaction_id: person.id,
-                                        lat: jsondata.lat,
-                                        lng: jsondata.lng
-                                    };
 
-                                    Promise.all([gcode]).then(function(values) {
-                                        $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
-                                            $scope.alldata[key].del_lat = data.del_lat;
-                                            $scope.alldata[key].del_lng = data.del_lng;
-                                        });
-                                    });
-                                }
+                    if(!person.del_lat && !person.del_lng) {
+                        $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
+                            let coord = {
+                                transaction_id: person.id,
+                                lat: data.results[0].LATITUDE,
+                                lng: data.results[0].LONGITUDE,
+                            }
+                            $scope.coordsArr.push(coord)
+                            $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
+                                $scope.alldata[key].del_lat = data.del_lat;
+                                $scope.alldata[key].del_lng = data.del_lng;
                             });
+                        });
                     }
+
+                    var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company
+                    });
+                    markers.push(marker);
+                    marker.addListener('click', function () {
+                        infowindow.open(map, marker);
+                    });
                 });
             }
 

@@ -6,8 +6,9 @@
     <tr>
         <th>#</th>
         <th>Address Postcode Singapore</th>
-        <th>Postcode Singapore</th>
-        <th>Postcode + Cust ID + ID Name</th>
+        <th>Postcode</th>
+        <th>Cust ID</th>
+        <th>ID Name</th>
         <th>Category</th>
         <th>Inv#</th>
         <th>Ops Note</th>
@@ -27,8 +28,9 @@
         <tr>
             <td>{{$indexpeople + 1}}</td>
             <td>{{$person->del_address}} {{$person->del_postcode}} Singapore</td>
-            <td>{{$person->del_postcode}} Singapore</td>
-            <td>{{$person->del_postcode}} {{$person->cust_id}} {{$person->company}}</td>
+            <td>{{$person->del_postcode}}</td>
+            <td>{{$person->cust_id}}</td>
+            <td>{{$person->company}}</td>
             <td>{{$person->custcategory}}</td>
             @php
                 $transactionsStr = '';
