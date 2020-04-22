@@ -18,6 +18,7 @@ var app = angular.module('app', [
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
         $scope.headerTemp = '';
+        $scope.driverOptionShowing = true;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
@@ -152,6 +153,11 @@ var app = angular.module('app', [
         $scope.enableAccConsolidate = function(event) {
             event.preventDefault();
             $scope.show_acc_consolidate_div = !$scope.show_acc_consolidate_div;
+        }
+
+        $scope.onDriverAssignToggleClicked = function(event) {
+            event.preventDefault();
+            $scope.driverOptionShowing = !$scope.driverOptionShowing;
         }
 
         // retrieve page w/wo search

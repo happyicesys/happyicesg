@@ -459,6 +459,14 @@
                             </button>
                         @endif
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        <button class="btn btn-default" ng-click="onDriverAssignToggleClicked($event)">
+                            <span ng-if="driverOptionShowing === true">
+                                Hide Driver Assign
+                            </span>
+                            <span ng-if="driverOptionShowing === false">
+                                Show Driver Assign
+                            </span>
+                        </button>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
@@ -753,7 +761,7 @@
                                     <td class="col-md-1 text-center">
                                         @{{ transaction.driver }}
                                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                                        <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, $index)">
+                                        <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, $index)" ng-if="driverOptionShowing">
                                             <ui-select-match allow-clear="true">
                                                 <span ng-bind="$select.driver.name"></span>
                                             </ui-select-match>
