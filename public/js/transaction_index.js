@@ -300,7 +300,7 @@ var app = angular.module('app', [
                         });
                     }else {
                         let gcode = geocoder.geocode(
-                            {
+                            {   address: person.del_address,
                                 componentRestrictions: { country: location, postalCode: person.del_postcode }
                             }, function (results, status) {
                                 if (results[0]) {
