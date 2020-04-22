@@ -273,7 +273,7 @@ var app = angular.module('app', [
                         }
                     });
             }else {
-
+                $scope.coordsArr = [];
                 $scope.alldata.forEach(function (person) {
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
@@ -288,7 +288,6 @@ var app = angular.module('app', [
                         content: contentString
                     });
                     if (person.del_lat && person.del_lng) {
-                        console.log(person.id);
                         var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                         var marker = new google.maps.Marker({
                             position: pos,
@@ -300,7 +299,7 @@ var app = angular.module('app', [
                             infowindow.open(map, marker);
                         });
                     }else {
-                        geocoder.geocode(
+                        let gcode = geocoder.geocode(
                             {
                                 componentRestrictions: { country: location, postalCode: person.del_postcode }
                             }, function (results, status) {
@@ -324,18 +323,13 @@ var app = angular.module('app', [
                                         lng: jsondata.lng
                                     };
 
-                                    // $scope.coordsArr.push(coord);
-                                    $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) { });
+                                    Promise.all([gcode]).then(function(values) {
+                                        $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) { });
+                                    });
                                 }
                             });
                     }
                 });
-/*
-                $scope.coordsArr = JSON.parse(JSON.stringify($scope.coordsArr));
-                console.log($scope.coordsArr);
-                axios.post('/api/transaction/storelatlngarr/' + $scope.coordsArr).then(function(response) {
-                    return true;
-                }); */
             }
 
 

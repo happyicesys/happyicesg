@@ -1228,7 +1228,7 @@ class TransactionController extends Controller
     // store delivery latlng whenever has chance(int transaction_id)
     public function storeDeliveryLatLng($id)
     {
-        // dd($id, request()->all());
+        dd($id, request()->all());
         $transaction = Transaction::findOrFail($id);
         $transaction->del_lat = request('lat');
         $transaction->del_lng = request('lng');
@@ -1239,7 +1239,8 @@ class TransactionController extends Controller
     // store delivery latlng whenever has chance()
     public function storeDeliveryLatLngArr(Request $request)
     {
-        dd($request->all());
+        dd($request->all()[0], request()->all());
+        // foreach()
         $transaction = Transaction::findOrFail($id);
         $transaction->del_lat = request('lat');
         $transaction->del_lng = request('lng');
