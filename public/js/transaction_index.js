@@ -9,6 +9,7 @@ var app = angular.module('app', [
         // init the variables
         $scope.alldata = [];
         $scope.users = [];
+        $scope.coordsArr = [];
         $scope.datasetTemp = {};
         $scope.totalCountTemp = {};
         $scope.totalCount = 0;
@@ -203,14 +204,14 @@ var app = angular.module('app', [
                 return false;
             }
         }
-/*
+
         $scope.onFormDriverChanged = function(transaction, index) {
             $http.post('/api/transaction/driver/quickupdate', transaction).success(function(data) {
                 $scope.alldata[index].driver = data.driver;
                 $scope.alldata[index].updated_by = data.updated_by;
                 $scope.alldata[index].updated_at = data.updated_at;
             });
-        } */
+        }
 
         $scope.onMapClicked = function(singleperson = null) {
             var url = window.location.href;
@@ -286,7 +287,6 @@ var app = angular.module('app', [
                     var infowindow = new google.maps.InfoWindow({
                         content: contentString
                     });
-                    console.log(person.del_lat);
                     if (person.del_lat && person.del_lng) {
                         console.log(person.id);
                         var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
@@ -300,7 +300,6 @@ var app = angular.module('app', [
                             infowindow.open(map, marker);
                         });
                     }else {
-                        console.log(person.id);
                         geocoder.geocode(
                             {
                                 componentRestrictions: { country: location, postalCode: person.del_postcode }
@@ -320,15 +319,23 @@ var app = angular.module('app', [
                                     });
                                     var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
                                     var coord = {
+                                        transaction_id: person.id,
                                         lat: jsondata.lat,
                                         lng: jsondata.lng
                                     };
 
+                                    // $scope.coordsArr.push(coord);
                                     $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) { });
                                 }
                             });
                     }
                 });
+/*
+                $scope.coordsArr = JSON.parse(JSON.stringify($scope.coordsArr));
+                console.log($scope.coordsArr);
+                axios.post('/api/transaction/storelatlngarr/' + $scope.coordsArr).then(function(response) {
+                    return true;
+                }); */
             }
 
 

@@ -199,6 +199,12 @@ class TransactionController extends Controller
             $transaction->del_lat = $transaction->person->del_lat;
             $transaction->del_lng = $transaction->person->del_lng;
             $transaction->save();
+        }else {
+            if(($transaction->del_lat == $transaction->person->del_lat) or ($transaction->del_lng == $transaction->person->del_lat)) {
+                $transaction->del_lat = null;
+                $transaction->del_lng = null;
+                $transaction->save();
+            }
         }
 
         // create delivery order if is delivery order
@@ -635,6 +641,12 @@ class TransactionController extends Controller
             $transaction->del_lat = $transaction->person->del_lat;
             $transaction->del_lng = $transaction->person->del_lng;
             $transaction->save();
+        }else {
+            if(($transaction->del_lat == $transaction->person->del_lat) or ($transaction->del_lng == $transaction->person->del_lat)) {
+                $transaction->del_lat = null;
+                $transaction->del_lng = null;
+                $transaction->save();
+            }
         }
 
         return Redirect::action('TransactionController@edit', $transaction->id);
@@ -1227,7 +1239,7 @@ class TransactionController extends Controller
     // store delivery latlng whenever has chance()
     public function storeDeliveryLatLngArr(Request $request)
     {
-        // dd($request->coordsArr);
+        dd($request->all());
         $transaction = Transaction::findOrFail($id);
         $transaction->del_lat = request('lat');
         $transaction->del_lng = request('lng');

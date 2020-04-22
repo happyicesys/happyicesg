@@ -755,7 +755,7 @@
                                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                         <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, $index)">
                                             <ui-select-match allow-clear="true">
-                                                <span ng-bind="$select.selected.name"></span>
+                                                <span ng-bind="$select.driver.name"></span>
                                             </ui-select-match>
                                             <ui-select-choices null-option="removeDriver" repeat="user in users | filter: $select.search">
                                                 <div ng-bind-html="user.name | highlight: $select.search"></div>
