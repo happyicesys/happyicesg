@@ -550,6 +550,8 @@ class PersonController extends Controller
         $person->del_lat = request('lat');
         $person->del_lng = request('lng');
         $person->save();
+
+        return $person;
     }
 
     // replicate the person particulars(int $person_id)

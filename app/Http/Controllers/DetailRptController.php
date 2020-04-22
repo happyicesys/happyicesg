@@ -689,10 +689,10 @@ class DetailRptController extends Controller
                         AND transactions.delivery_date<='".request('delivery_to')."'";
 
         if($request->delivery_from) {
-            $amountstr = $amountstr." AND delivery_date >= '".$request->delivery_from."'";
+            $amountstr = $amountstr." AND transactions.delivery_date >= '".$request->delivery_from."'";
         }
         if($request->delivery_to) {
-            $amountstr = $amountstr." AND delivery_date <= '".$request->delivery_to."'";
+            $amountstr = $amountstr." AND transactions.delivery_date <= '".$request->delivery_to."'";
         }
         if($request->cust_id) {
             $amountstr = $amountstr." AND people.cust_id LIKE '%".$request->cust_id."%'";
@@ -760,6 +760,10 @@ class DetailRptController extends Controller
         // set driver and technician view
         if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $amountstr .= " AND DATE(transactions.delivery_date) >= '".Carbon::today()->toDateString()."'";
+/*
+            if(request('driver') == '') {
+                $amountstr = $amountstr." AND (transactions.driver ='".$request->driver."' OR transactions2.driver IS NULL)";
+            } */
         }
 
 
@@ -782,6 +786,10 @@ class DetailRptController extends Controller
             // dd($request->product_name);
             $items = $items->where('items.name', 'LIKE', '%'.$request->product_name.'%');
         }
+
+        // hide null
+        $items = $items->where('totals.thisqty', '<>', null)->orWhere('totals.thisamount', '<>', null);
+
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }

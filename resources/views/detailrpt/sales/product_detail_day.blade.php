@@ -196,7 +196,13 @@
             <div class="form-group">
                 {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
                 @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                    <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly>
+                    {{-- <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly> --}}
+                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" ng-init="driverInit('{{auth()->user()->name}}')">
+                        {{-- <option value="">All</option> --}}
+                        <option value="{{auth()->user()->name}}">
+                            {{auth()->user()->name}}
+                        </option>
+                    </select>
                 @else
                     <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                         <option value="">All</option>
@@ -225,7 +231,7 @@
                 Total Amount:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                <strong>@{{ total_amount ? total_amount : 0 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -233,7 +239,7 @@
                 Total Qty:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_qty | currency: "": 4 }}</strong>
+                <strong>@{{ total_qty ? total_qty : 0 | currency: "": 4 }}</strong>
             </div>
         </div>
     </div>

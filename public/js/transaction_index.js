@@ -236,60 +236,43 @@ var app = angular.module('app', [
             var markers = [];
 
             if(singleperson) {
-/*
-                geocoder.geocode(
-                    {
-                        componentRestrictions: { country: location, postalCode: singleperson.del_postcode }
-                    }, function (results, status) {
-                        if (results[0]) {
-                            if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                                setTimeout(3000);
-                            } */
-                            var contentString = '<span style=font-size:10px;>' +
-                                '<b>' +
-                                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
-                                '</b>' +
-                                '<br>' +
-                                singleperson.del_address +
-                                '</span>';
+                var contentString = '<span style=font-size:10px;>' +
+                    '<b>' +
+                    '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                    '</b>' +
+                    '<br>' +
+                    singleperson.del_address +
+                    '</span>';
 
-                            var infowindow = new google.maps.InfoWindow({
-                                content: contentString
-                            });
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
 
-                            if(!singleperson.del_lat && !singleperson.del_lng) {
-                                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
-                                    let coord = {
-                                        transaction_id: singleperson.id,
-                                        lat: data.results[0].LATITUDE,
-                                        lng: data.results[0].LONGITUDE,
-                                    }
-                                    $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {
-                                        $scope.alldata[index].del_lat = data.del_lat;
-                                        $scope.alldata[index].del_lng = data.del_lng;
-                                    });
-                                });
-                            }
-
-                            var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                            var marker = new google.maps.Marker({
-                                position: pos,
-                                map: map,
-                                title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
-                            });
-                            markers.push(marker);
-                            marker.addListener('click', function () {
-                                infowindow.open(map, marker);
-                            });
-/*
-                            var jsondata = JSON.parse(JSON.stringify(results[0].geometry.location));
-                            var coord = {
-                                lat: jsondata.lat,
-                                lng: jsondata.lng
-                            };
-                            $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {});
+                if(!singleperson.del_lat && !singleperson.del_lng) {
+                    $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
+                        let coord = {
+                            transaction_id: singleperson.id,
+                            lat: data.results[0].LATITUDE,
+                            lng: data.results[0].LONGITUDE,
                         }
-                    }); */
+                        $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {
+                            $scope.alldata[index].del_lat = data.del_lat;
+                            $scope.alldata[index].del_lng = data.del_lng;
+                        });
+                    });
+                }
+
+                var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
+                });
+                markers.push(marker);
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+
             }else {
                 $scope.coordsArr = [];
                 $scope.alldata.forEach(function (person, key) {
