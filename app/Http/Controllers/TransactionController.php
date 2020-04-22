@@ -1239,7 +1239,7 @@ class TransactionController extends Controller
     // store delivery latlng whenever has chance()
     public function storeDeliveryLatLngArr(Request $request)
     {
-        dd($request->all()[0], request()->all());
+        // dd($request->all()[0], request()->all());
         // foreach()
         $transaction = Transaction::findOrFail($id);
         $transaction->del_lat = request('lat');
