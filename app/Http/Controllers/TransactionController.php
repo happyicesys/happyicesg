@@ -1233,6 +1233,8 @@ class TransactionController extends Controller
         $transaction->del_lat = request('lat');
         $transaction->del_lng = request('lng');
         $transaction->save();
+
+        return $transaction;
         // dd($transaction);
     }
 

@@ -274,7 +274,7 @@ var app = angular.module('app', [
                     });
             }else {
                 $scope.coordsArr = [];
-                $scope.alldata.forEach(function (person) {
+                $scope.alldata.forEach(function (person, key) {
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
@@ -324,7 +324,10 @@ var app = angular.module('app', [
                                     };
 
                                     Promise.all([gcode]).then(function(values) {
-                                        $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) { });
+                                        $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
+                                            $scope.alldata[key].del_lat = data.del_lat;
+                                            $scope.alldata[key].del_lng = data.del_lng;
+                                        });
                                     });
                                 }
                             });
