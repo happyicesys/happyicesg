@@ -29,6 +29,20 @@ class UserController extends Controller
         return $user;
     }
 
+    // return only active users
+    public function getActiveDriverData()
+    {
+        $user =  User::with('roles')
+                    ->where('is_active', 1)
+                    ->whereHas('roles', function($query) {
+                        $query->where('name', 'driver')->orWhere('name', 'technician');
+                    })
+                    ->whereIn('type', ['admin', 'staff'])
+                    ->get();
+
+        return $user;
+    }
+
     // get user id only api
     public function getUser($user_id)
     {

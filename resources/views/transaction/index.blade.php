@@ -556,6 +556,9 @@
                                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    Action
+                                </th>
+                                <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('custcategories.name')">
                                     Cust Cat
                                     <span ng-if="search.sortName == 'custcategories.name' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -681,9 +684,6 @@
                                     <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
-                                <th class="col-md-1 text-center">
-                                    Action
-                                </th>
                             </tr>
                             <tbody>
                                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
@@ -700,6 +700,13 @@
                                         <a href="/person/@{{ transaction.person_id }}">
                                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                                         </a>
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        {{-- print invoice         --}}
+                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        {{-- button view shown when cancelled --}}
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction)"><i class="fa fa-map-o"></i> Map</button>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
@@ -747,8 +754,10 @@
                                         @{{ transaction.driver }}
                                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                         <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, $index)">
-                                            <ui-select-match>@{{$select.user.name}}</ui-select-match>
-                                            <ui-select-choices repeat="user in users | filter: $select.search">
+                                            <ui-select-match allow-clear="true">
+                                                <span ng-bind="$select.selected.name"></span>
+                                            </ui-select-match>
+                                            <ui-select-choices null-option="removeDriver" repeat="user in users | filter: $select.search">
                                                 <div ng-bind-html="user.name | highlight: $select.search"></div>
                                             </ui-select-choices>
                                         </ui-select>
@@ -774,21 +783,6 @@
                                     <td class="col-md-1 text-center">@{{ transaction.del_address}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
-                                    <td class="col-md-1 text-center">
-                                        {{-- print invoice         --}}
-                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
-                                        {{-- button view shown when cancelled --}}
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction)"><i class="fa fa-map-o"></i> Map</button>
-
-                                        {{-- Payment Verification --}}
-{{--                                         @cannot('supervisor_view')
-                                        @cannot('transaction_view')
-                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
-                                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
-                                        @endcannot
-                                        @endcannot --}}
-                                    </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
                                     <td colspan="24" class="text-center">No Records Found</td>

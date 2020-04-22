@@ -402,6 +402,7 @@ Route::delete('/api/deal/delete/{deal_id}', 'DealController@destroyAjax');
 Route::get('/deal/data/{transaction_id}', 'DealController@getData');
 Route::resource('deal', 'DealController');
 
+Route::get('/user/driver/active', 'UserController@getActiveDriverData');
 Route::post('/user/activation/{user_id}', 'UserController@userActivationControl');
 Route::get('/user/data/{user_id}', 'UserController@getUser');
 Route::get('/user/data', 'UserController@getData');

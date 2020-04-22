@@ -182,7 +182,7 @@ var app = angular.module('app', [
         }
 
         function getUsersData() {
-            $http.get('/user/data').success(function(data) {
+            $http.get('/user/driver/active').success(function(data) {
                 $scope.users = data;
             });
         }
@@ -203,14 +203,14 @@ var app = angular.module('app', [
                 return false;
             }
         }
-
+/*
         $scope.onFormDriverChanged = function(transaction, index) {
             $http.post('/api/transaction/driver/quickupdate', transaction).success(function(data) {
                 $scope.alldata[index].driver = data.driver;
                 $scope.alldata[index].updated_by = data.updated_by;
                 $scope.alldata[index].updated_at = data.updated_at;
             });
-        }
+        } */
 
         $scope.onMapClicked = function(singleperson = null) {
             var url = window.location.href;
@@ -268,8 +268,6 @@ var app = angular.module('app', [
                                 lat: jsondata.lat,
                                 lng: jsondata.lng
                             };
-                            // console.log(singleperson.person_id);
-                            // console.log(coord);
                             $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {});
                         }
                     });

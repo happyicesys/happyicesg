@@ -2,6 +2,12 @@
 <html lang="en">
     <head>
         @include('partials.header')
+
+        <style>
+            .ui-select-bootstrap .ui-select-match-text .ui-select-allow-clear {
+                padding-right: 2.75px;
+            }
+        </style>
     </head>
 
     <body>
