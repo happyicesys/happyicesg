@@ -131,8 +131,6 @@ class OperationWorksheetController extends Controller
                 }
             }
         }
-
-        return true;
     }
 
     // export excel for operation worksheet ()
