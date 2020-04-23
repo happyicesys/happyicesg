@@ -357,6 +357,7 @@ Route::post('/api/pricematrix/costrate/edit', 'PriceController@editCostrateApi')
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::post('/api/transaction/is_important/{id}', 'TransactionController@isImportantChanged');
 Route::post('/api/transaction/driver/quickupdate', 'TransactionController@driverQuickUpdate');
 Route::post('/api/transaction/storelatlngarr', 'TransactionController@storeDeliveryLatLngArr');
 Route::post('/api/transaction/storelatlng/{id}', 'TransactionController@storeDeliveryLatLng');

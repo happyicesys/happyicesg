@@ -61,6 +61,7 @@ class Transaction extends Model
         'balance_coin' => 'Balance Coin',
         'is_freeze' => 'Date Freeze',
         'sign_url' => 'Signature',
+        'is_important' => 'Flag'
 
     );
 
@@ -72,7 +73,7 @@ class Transaction extends Model
         'bill_address', 'digital_clock', 'analog_clock', 'balance_coin', 'is_freeze',
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
         'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
-        'driver_id', 'del_lat', 'del_lng'
+        'driver_id', 'del_lat', 'del_lng', 'is_important'
     ];
 
     protected $dates =[

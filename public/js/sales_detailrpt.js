@@ -308,9 +308,9 @@ var app = angular.module('app', [
             custcategory: '',
             exclude_custcategory: '',
             person_active: [],
-            status: 'Delivered',
+            status: 'Confirmed',
             is_commission: '0',
-            is_inventory: '',
+            is_inventory: '1',
             pageNum: 'All',
             sortBy: true,
             sortName: ''

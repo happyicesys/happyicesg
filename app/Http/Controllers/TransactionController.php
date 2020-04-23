@@ -1261,6 +1261,16 @@ class TransactionController extends Controller
         return $transaction;
     }
 
+    // api for changing is important($id)
+    public function isImportantChanged($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->is_important = !$transaction->is_important;
+        $transaction->save();
+
+        return $transaction;
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {
@@ -1270,8 +1280,7 @@ class TransactionController extends Controller
                                 ->groupBy('dupes_transactions.del_postcode', 'people.id', 'dupes_transactions.contact')
                                 ->havingRaw('(COUNT(dupes_transactions.del_postcode) > 1 AND COUNT(people.id) > 1 AND COUNT(dupes_transactions.contact) > 1)')
                                 ->select(
-                                    DB::raw('COUNT(*) AS dupes'),
-                                    'dupes_transactions.id'
+                                    DB::raw('COUNT(*) AS dupes')
                                 ); */
 
         $transactions = DB::table('transactions')
@@ -1289,7 +1298,7 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
-                                    'transactions.del_lat', 'transactions.del_lng',
+                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE

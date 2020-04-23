@@ -219,6 +219,12 @@ var app = angular.module('app', [
             });
         }
 
+        $scope.onIsImportantClicked = function(transaction_id, index) {
+            $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
+                $scope.alldata[index].is_important = data.is_important;
+            });
+        }
+
         $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;
             var location = '';

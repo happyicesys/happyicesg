@@ -709,6 +709,8 @@
                                         <a href="/transaction/@{{ transaction.id }}/edit">
                                             @{{ transaction.id }}
                                         </a>
+                                        <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
+                                        <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
                                     </td>
 
                                     @if(!auth()->user()->hasRole('hd_user'))
