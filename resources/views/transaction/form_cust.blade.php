@@ -196,12 +196,12 @@
 
         @if(!auth()->user()->hasRole('hd_user'))
         <div class="row">
-            @if($transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
+            @if($transaction->status === 'Pending' or $transaction->status === 'Confirmed' or $transaction->status ==='Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid')
                 @cannot('transaction_view')
                     <div class="col-md-4 form-group">
                         {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label']) !!}
                         {!! Form::select('driver',
-                                [''=>null]+$users::lists('name', 'name')->all(),
+                                [''=>null]+$users::where('is_active', 1)->lists('name', 'name')->all(),
                                 null,
                                 ['class'=>'select form-control', 'disabled'=> $disabled,])
                         !!}
@@ -210,7 +210,7 @@
                     <div class="col-md-4 form-group">
                         {!! Form::label('paid_by', 'Payment Received By', ['class'=>'control-label']) !!}
                         {!! Form::select('paid_by',
-                                [''=>null]+$users::lists('name', 'name')->all(),
+                                [''=>null]+$users::where('is_active', 1)->lists('name', 'name')->all(),
                                 null,
                                 ['class'=>'select form-control', 'disabled'=> $disabled])
                         !!}

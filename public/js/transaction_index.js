@@ -247,7 +247,7 @@ var app = angular.module('app', [
                     '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
                     '</b>' +
                     '<br>' +
-                    singleperson.del_address +
+                    singleperson.del_postcode + ' ' + singleperson.del_address +
                     '</span>';
 
                 var infowindow = new google.maps.InfoWindow({
@@ -301,7 +301,7 @@ var app = angular.module('app', [
                         '(' + person.id + ') ' + person.cust_id + ' - ' + person.company +
                         '</b>' +
                         '<br>' +
-                        person.del_address +
+                        person.del_postcode + ' ' + person.del_address +
                         '</span>';
 
                     var infowindow = new google.maps.InfoWindow({
