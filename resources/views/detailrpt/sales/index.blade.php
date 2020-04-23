@@ -38,7 +38,7 @@
                         @include('detailrpt.sales.product_detail_month')
                     </div>
                     @endif
-                    <div class="tab-pane" id="product_detail_day">
+                    <div class="tab-pane {{(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) ? 'active' : ''}}" id="product_detail_day">
                         @include('detailrpt.sales.product_detail_day')
                     </div>
 {{--                     <div class="tab-pane" id="invoice_breakdown">
