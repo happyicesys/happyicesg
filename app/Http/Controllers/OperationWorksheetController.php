@@ -122,7 +122,7 @@ class OperationWorksheetController extends Controller
                 if($data['color'] === 'Yellow') {
                     Transaction::create([
                         'delivery_date' => $date,
-                        'person_id' => $person->id,
+                        'person_id' => $person->person_id,
                         'status' => 'Pending',
                         'pay_status' => 'Owe',
                         'updated_by' => auth()->user()->name,
