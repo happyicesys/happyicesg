@@ -185,41 +185,28 @@ var app = angular.module('app', [
                     content: contentString
                 });
 
-                if(!singleperson.del_lat && !singleperson.del_lng) {
-                    $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
-                        let coord = {
-                            transaction_id: singleperson.id,
-                            lat: data.results[0].LATITUDE,
-                            lng: data.results[0].LONGITUDE,
-                        }
-                        $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
-                            $scope.people[index].del_lat = data.del_lat;
-                            $scope.people[index].del_lng = data.del_lng;
+                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
+                    let coord = {
+                        transaction_id: singleperson.id,
+                        lat: data.results[0].LATITUDE,
+                        lng: data.results[0].LONGITUDE,
+                    }
+                    $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
+                        $scope.people[index].del_lat = data.del_lat;
+                        $scope.people[index].del_lng = data.del_lng;
 
-                            var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                            var marker = new google.maps.Marker({
-                                position: pos,
-                                map: map,
-                                title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
-                            });
-                            markers.push(marker);
-                            marker.addListener('click', function () {
-                                infowindow.open(map, marker);
-                            });
+                        var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
+                        });
+                        markers.push(marker);
+                        marker.addListener('click', function () {
+                            infowindow.open(map, marker);
                         });
                     });
-                }else {
-                    var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                    var marker = new google.maps.Marker({
-                        position: pos,
-                        map: map,
-                        title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
-                    });
-                    markers.push(marker);
-                    marker.addListener('click', function () {
-                        infowindow.open(map, marker);
-                    });
-                }
+                });
 
             }else {
                 $scope.coordsArr = [];
