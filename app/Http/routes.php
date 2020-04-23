@@ -161,6 +161,7 @@ Route::get('/franchisee/create', 'FtransactionController@create');
 Route::post('/api/franchisee', 'FtransactionController@indexApi');
 Route::get('/franchisee', 'FtransactionController@index');
 
+Route::post('/api/detailrpt/operation/batchinvoices', 'OperationWorksheetController@generateBatchInvoices');
 Route::post('/detailrpt/operation/excel', 'OperationWorksheetController@exportOperationExcel');
 Route::post('/api/detailrpt/operation/color', 'OperationWorksheetController@changeOperationWorksheetIndexColor');
 Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperationWorksheetIndexApi');

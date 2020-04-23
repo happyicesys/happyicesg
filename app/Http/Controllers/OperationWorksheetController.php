@@ -102,6 +102,39 @@ class OperationWorksheetController extends Controller
         return $operationdate;
     }
 
+    // generate batch invoices
+    public function generateBatchInvoices()
+    {
+        $date = request('chosen_date');
+        $datesVar = [
+            'today' => $date,
+            'earliest' => $date,
+            'latest' => $date
+        ];
+        $dataArr = $this->generateOperationWorksheetQuery($datesVar);
+
+        $people = $dataArr['people'];
+        $dates = $dataArr['dates'];
+        $alldata = $dataArr['alldata'];
+
+        foreach($people as $indexpeople => $person) {
+            foreach($alldata[$indexpeople] as $data) {
+                if($data['color'] === 'Yellow') {
+                    Transaction::create([
+                        'delivery_date' => $date,
+                        'person_id' => $person->id,
+                        'status' => 'Pending',
+                        'pay_status' => 'Owe',
+                        'updated_by' => auth()->user()->name,
+                        'created_by' => auth()->user()->id
+                    ]);
+                }
+            }
+        }
+
+        return true;
+    }
+
     // export excel for operation worksheet ()
     public function exportOperationExcel()
     {

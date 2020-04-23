@@ -144,6 +144,12 @@ var app = angular.module('app', [
             });
         }
 
+        $scope.exportTransactions = function() {
+            $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
+                alert('Invoices Created');
+            });
+        }
+
         $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;
             var location = '';

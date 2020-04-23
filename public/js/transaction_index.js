@@ -32,7 +32,7 @@ var app = angular.module('app', [
             updated_by: '',
             updated_at: '',
             delivery_from: $scope.today,
-            delivery_to: $scope.today,
+            delivery_to: $scope.today ,
             requested_from: $scope.requestfrom,
             requested_to: $scope.requestto,
             driver: '',
