@@ -257,10 +257,13 @@ function transactionController($scope, $http) {
         $scope.people = people;
     });
 
-    $scope.onIsImportantClicked = function(transaction_id, index) {
-        $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
-            location.reload();
-        });
+    $scope.onIsImportantClicked = function(transaction_id, index, driver_role = false) {
+        console.log(driver_role)
+        if(!driver_role) {
+            $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
+                location.reload();
+            });
+        }
     }
 
     function loadDealTable() {

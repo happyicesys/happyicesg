@@ -316,7 +316,7 @@ class TransactionController extends Controller
                                                     END)
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                 'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
-                                'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
+                                'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate', 'transactions.is_important',
                                 DB::raw('
                                     ROUND(CASE WHEN deals.divisor > 1
                                     THEN (items.base_unit * deals.dividend/deals.divisor)

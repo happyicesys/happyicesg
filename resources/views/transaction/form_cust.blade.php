@@ -324,21 +324,25 @@
         @endif
 
         <div class="row">
+
         @if(!$transaction->is_deliveryorder)
-            @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-                <div class="col-md-12 form-group">
-                    {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
-                </div>
-            @else
-                <div class="col-md-12 form-group">
-                    {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
-                    {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
-                    'ng-model'=>'form.transremark',
-                    'disabled'=> $disabled,
-                    'rows'=>'5']) !!}
-                </div>
-            @endif
+            <div class="col-md-12 form-group">
+                {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                @if($transaction->is_important)
+                    <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @else
+                    <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @endif
+
+                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
+                @else
+                {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
+                'ng-model'=>'form.transremark',
+                'disabled'=> $disabled,
+                'rows'=>'5']) !!}
+                @endif
+            </div>
         @endif
         </div>
 

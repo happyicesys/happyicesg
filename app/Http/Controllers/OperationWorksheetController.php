@@ -126,7 +126,10 @@ class OperationWorksheetController extends Controller
                         'status' => 'Pending',
                         'pay_status' => 'Owe',
                         'updated_by' => auth()->user()->name,
-                        'created_by' => auth()->user()->id
+                        'created_by' => auth()->user()->id,
+                        'del_postcode' => $person->del_postcode,
+                        'del_lat' => $person->del_lat,
+                        'del_lng' => $person->del_lng
                     ]);
                 }
             }
