@@ -11,9 +11,20 @@
         <div class="col-md-4">
         <h4>
             @if($transaction->status == 'Cancelled')
-            <del><strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}</del>
+            <del><strong>Invoice : {{$transaction->id}}</strong>
+                @if($transaction->is_important)
+                    <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @else
+                    <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @endif
             @else
-            <strong>Invoice : {{$transaction->id}}</strong> ({{$transaction->status}}) - {{$transaction->pay_status}}
+            <strong>Invoice : {{$transaction->id}}</strong>
+                @if($transaction->is_important)
+                    <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @else
+                    <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                @endif
+             ({{$transaction->status}}) - {{$transaction->pay_status}}
             @endif
             {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>

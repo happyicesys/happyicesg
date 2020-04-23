@@ -257,6 +257,12 @@ function transactionController($scope, $http) {
         $scope.people = people;
     });
 
+    $scope.onIsImportantClicked = function(transaction_id, index) {
+        $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
+            location.reload();
+        });
+    }
+
     function loadDealTable() {
         $http.get('/api/transaction/edit/' + $trans_id.val()).success(function (data) {
             // console.log(data);
