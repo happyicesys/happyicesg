@@ -1264,6 +1264,16 @@ class TransactionController extends Controller
     // retrieve transactions data ()
     private function getTransactionsData()
     {
+/*
+        $dupes_transaction = DB::table('transactions AS dupes_transactions')
+                                ->leftJoin('people', 'people.id', '=', 'dupes_transactions.person_id')
+                                ->groupBy('dupes_transactions.del_postcode', 'people.id', 'dupes_transactions.contact')
+                                ->havingRaw('(COUNT(dupes_transactions.del_postcode) > 1 AND COUNT(people.id) > 1 AND COUNT(dupes_transactions.contact) > 1)')
+                                ->select(
+                                    DB::raw('COUNT(*) AS dupes'),
+                                    'dupes_transactions.id'
+                                ); */
+
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
@@ -1271,6 +1281,7 @@ class TransactionController extends Controller
                         ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
                         ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                         ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id');
+                        // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'transactions.del_postcode',

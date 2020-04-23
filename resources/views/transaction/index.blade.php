@@ -470,10 +470,10 @@
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                         <button class="btn btn-default" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
-                                Hide Driver Assign
+                                Hide Map & Driver Assign
                             </span>
                             <span ng-if="driverOptionShowing === false">
-                                Show Driver Assign
+                                Show Map & Driver Assign
                             </span>
                         </button>
                     </div>
@@ -723,7 +723,7 @@
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
                                         {{-- button view shown when cancelled --}}
                                         <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, $index)"><i class="fa fa-map-o"></i> Map</button>
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, $index)" ng-if="driverOptionShowing"><i class="fa fa-map-o"></i> Map</button>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
