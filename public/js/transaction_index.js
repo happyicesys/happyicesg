@@ -219,7 +219,7 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.onMapClicked = function(singleperson = null) {
+        $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
@@ -253,7 +253,7 @@ var app = angular.module('app', [
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
                 });
-
+                console.log(singleperson)
                 if(!singleperson.del_lat && !singleperson.del_lng) {
                     $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
                         let coord = {
@@ -264,20 +264,33 @@ var app = angular.module('app', [
                         $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {
                             $scope.alldata[index].del_lat = data.del_lat;
                             $scope.alldata[index].del_lng = data.del_lng;
+
+                            var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                            var marker = new google.maps.Marker({
+                                position: pos,
+                                map: map,
+                                title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
+                            });
+                            markers.push(marker);
+                            marker.addListener('click', function () {
+                                infowindow.open(map, marker);
+                            });
                         });
+                    });
+                }else {
+                    var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
+                    });
+                    markers.push(marker);
+                    marker.addListener('click', function () {
+                        infowindow.open(map, marker);
                     });
                 }
 
-                var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                var marker = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
-                });
-                markers.push(marker);
-                marker.addListener('click', function () {
-                    infowindow.open(map, marker);
-                });
+
 
             }else {
                 $scope.coordsArr = [];
