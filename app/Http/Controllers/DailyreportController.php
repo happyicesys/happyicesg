@@ -289,22 +289,22 @@ class DailyreportController extends Controller
 
         if($status == 2 or $status == 0) {
             if($driverlocation) {
-                if($location_count) {
-                    $driverlocation->location_count = $location_count;
-                    $driverlocation->online_location_count = $online_location_count;
-                    $driverlocation->daily_limit = $daily_limit;
+                if($location_count != null or $online_location_count != null) {
+                    $driverlocation->location_count = $location_count ? $location_count : 0;
+                    $driverlocation->online_location_count = $online_location_count ? $online_location_count : 0;
+                    $driverlocation->daily_limit = $daily_limit ? $daily_limit : 0;
                     $driverlocation->updated_by = auth()->user()->id;
                     $driverlocation->save();
                 }else {
                     $driverlocation->delete();
                 }
             }else {
-                if($location_count or $daily_limit) {
+                if($location_count != null or $daily_limit != null or $online_location_count != null) {
                     $driverlocation = DriverLocation::create([
                         'delivery_date' => $delivery_date,
-                        'location_count' =>$location_count,
-                        'online_location_count' => $online_location_count,
-                        'daily_limit' => $daily_limit,
+                        'location_count' =>$location_count ? $location_count : 0,
+                        'online_location_count' => $online_location_count ? $online_location_count : 0,
+                        'daily_limit' => $daily_limit ? $daily_limit : 0,
                         'user_id' => $user_id,
                         'status' => 2,
                         'submission_date' => Carbon::now(),
