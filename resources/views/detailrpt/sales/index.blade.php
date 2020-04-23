@@ -27,6 +27,7 @@
             </div>
             <div class="panel-body">
                 <div class="tab-content">
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                     <div class="tab-pane active" id="cust_detail">
                         @include('detailrpt.sales.cust_detail')
                     </div>
@@ -36,6 +37,7 @@
                     <div class="tab-pane" id="product_detail_month">
                         @include('detailrpt.sales.product_detail_month')
                     </div>
+                    @endif
                     <div class="tab-pane" id="product_detail_day">
                         @include('detailrpt.sales.product_detail_day')
                     </div>
