@@ -201,7 +201,7 @@
                             @else
                                 <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                                     <option value="">All</option>
-                                    @foreach($users::orderBy('name')->get() as $user)
+                                    @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
                                         @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
                                             <option value="{{$user->name}}">
                                                 {{$user->name}}
