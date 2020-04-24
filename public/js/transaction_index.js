@@ -79,6 +79,7 @@ var app = angular.module('app', [
         $scope.dateChange = function(scope_from, date){
             if(date){
                 $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
+                $scope.compareDateChange(scope_from);
             }
             $scope.searchDB();
         }
@@ -117,12 +118,28 @@ var app = angular.module('app', [
 
         $scope.onPrevSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.compareDateChange(scope_name);
             $scope.searchDB();
         }
 
         $scope.onNextSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+            $scope.compareDateChange(scope_name);
             $scope.searchDB();
+        }
+
+        $scope.compareDateChange = function(scope_name) {
+            if(scope_name === 'delivery_from') {
+                if(moment($scope.search[scope_name]) > moment($scope.search.delivery_to)) {
+                    $scope.search.delivery_to = $scope.search[scope_name];
+                }
+            }
+
+            if(scope_name === 'delivery_to') {
+                if(moment($scope.search[scope_name]) < moment($scope.search.delivery_from)) {
+                    $scope.search.delivery_from = $scope.search[scope_name];
+                }
+            }
         }
 
         // switching page
