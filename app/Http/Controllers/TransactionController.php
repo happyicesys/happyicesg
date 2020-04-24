@@ -1448,9 +1448,11 @@ class TransactionController extends Controller
             $this->dealOrder2Actual($transaction->id);
         }
 
-        $deals = Deal::whereTransactionId($transaction->id)->get();
-        $deal_total = $deals->sum('amount');
-        $deal_totalqty = $deals->sum('qty');
+        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id')->whereTransactionId($transaction->id);
+        $deal_total = clone $deals;
+        $deal_totalqty = clone $deals;
+        $deal_total = $deal_total->sum('amount');
+        $deal_totalqty = $deal_totalqty->where('items.is_inventory', 1)->sum('qty');
         $transaction->total = $deal_total;
         $transaction->total_qty = $deal_totalqty;
         $transaction->save();
