@@ -315,7 +315,8 @@ class TransactionController extends Controller
                                                     ELSE transactions.total
                                                     END)
                                                 ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
-                                'transactions.total_qty', 'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
+                                DB::raw('(CASE WHEN items.is_inventory = 1 THEN deals.qty ELSE 0 END) AS qty'),
+                                'transactions.pay_status','transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                 'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate', 'transactions.is_important',
                                 DB::raw('
                                     ROUND(CASE WHEN deals.divisor > 1
@@ -325,11 +326,18 @@ class TransactionController extends Controller
                                 ')
                             )
                     ->where('deals.transaction_id', $transaction->id)
+                    ->orderBy('items.is_inventory', 'desc')
+                    ->orderBy('items.product_id', 'asc')
                     ->get();
 
         $subtotal = 0;
         $tax = 0;
         $total = $transaction->total;
+        $total_qty = 0;
+
+        foreach($deals as $deal) {
+            $total_qty += $deal->qty;
+        }
 
         if($transaction->gst) {
             if($transaction->is_gst_inclusive) {
@@ -361,6 +369,7 @@ class TransactionController extends Controller
             'subtotal' => $subtotal,
             'tax' => $tax,
             'total' => $total,
+            'total_qty' => $total_qty,
             'delivery_fee' => $delivery_fee
         ];
 

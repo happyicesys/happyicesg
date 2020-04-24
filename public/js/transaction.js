@@ -268,13 +268,12 @@ function transactionController($scope, $http) {
 
     function loadDealTable() {
         $http.get('/api/transaction/edit/' + $trans_id.val()).success(function (data) {
-            // console.log(data);
             $scope.delivery = data.delivery_fee;
             $scope.deals = data.deals;
             $scope.totalModel = data.total;
             $scope.subtotalModel = data.subtotal;
             $scope.taxModel = data.tax;
-            $scope.totalqtyModel = data.transaction.total_qty;
+            $scope.totalqtyModel = data.total_qty.toFixed(4);
 
             // console.log($scope.totalModel);
             // console.log($scope.subtotalModel);
