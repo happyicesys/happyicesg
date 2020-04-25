@@ -176,6 +176,16 @@ class TransactionController extends Controller
             }
         }
 
+        if($request->po_no) {
+            $request->merge(array('po_no' => trim($request->po_no)));
+
+            if($transaction->person->cust_id[0] === 'P'){
+                $this->validate($request, [
+                    'po_no' => 'unique:transactions,po_no,'.$transaction->id
+                ]);
+            }
+        }
+
         $transaction = Transaction::create($input);
         // create dtd transaction once detect person code is D
         if($transaction->person->cust_id[0] === 'D'){
@@ -185,12 +195,6 @@ class TransactionController extends Controller
             $dtdtransaction->save();
             $transaction->dtdtransaction_id = $dtdtransaction->id;
             $transaction->save();
-        }
-
-        if($transaction->person->cust_id[0] === 'P'){
-            $this->validate($request, [
-                'po_no' => 'unique:transactions,po_no,'.$transaction->id
-            ]);
         }
 
         // check profile is vending then analog required
@@ -550,10 +554,14 @@ class TransactionController extends Controller
 
         // validate unique prefix for P
         // dd($request->all(), $transaction->person->cust_id[0]);
-        if($transaction->person->cust_id[0] === 'P'){
-            $this->validate($request, [
-                'po_no' => 'unique:transactions,po_no,'.$transaction->id
-            ]);
+        if($request->po_no) {
+            $request->merge(array('po_no' => trim($request->po_no)));
+
+            if($transaction->person->cust_id[0] === 'P'){
+                $this->validate($request, [
+                    'po_no' => 'unique:transactions,po_no,'.$transaction->id
+                ]);
+            }
         }
 
         // filter delivery date if the invoice lock date is before request delivery date
