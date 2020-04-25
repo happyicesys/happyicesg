@@ -155,9 +155,13 @@ class TransactionController extends Controller
             $request->merge(array('is_deliveryorder' => 1));
         } */
 
-        // temporary hard code to set haagen daz as DO
-        $person = Person::findOrFail(request('person_id'));
 
+        $person = Person::findOrFail(request('person_id'));
+        $request->merge(['del_postcode' => $person->del_postcode]);
+        $request->merge(['del_lat' => $person->del_lat]);
+        $request->merge(['del_lng' => $person->del_lng]);
+
+        // temporary hard code to set haagen daz as DO
         if($person->cust_id == 'B301') {
             $request->merge(array('is_deliveryorder' => 1));
         }
