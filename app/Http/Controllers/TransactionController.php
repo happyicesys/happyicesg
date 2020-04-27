@@ -1292,6 +1292,29 @@ class TransactionController extends Controller
         return $transaction;
     }
 
+    // api for batch assign driver
+    public function batchAssignDriver(Request $request)
+    {
+        $transactions = $request->transactions;
+        $driver = $request->driver;
+
+        if($transactions) {
+            foreach($transactions as $transaction) {
+                if($transaction['check']) {
+                    $model = Transaction::findOrFail($transaction['id']);
+                    if($driver == '-1') {
+                        $model->driver = null;
+                    }else {
+                        $model->driver = $driver;
+                    }
+                    $model->updated_at = Carbon::now();
+                    $model->updated_by = auth()->user()->name;
+                    $model->save();
+                }
+            }
+        }
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {

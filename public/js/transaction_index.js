@@ -10,6 +10,7 @@ var app = angular.module('app', [
         $scope.alldata = [];
         $scope.users = [];
         $scope.coordsArr = [];
+        $scope.checkbox = [];
         $scope.datasetTemp = {};
         $scope.totalCountTemp = {};
         $scope.totalCount = 0;
@@ -19,6 +20,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.driverOptionShowing = true;
+        $scope.showBatchFunctionPanel = false;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
@@ -54,7 +56,8 @@ var app = angular.module('app', [
         $scope.updated_at = '';
         $scope.show_acc_consolidate_div = false;
         $scope.form = {
-            person_account: ''
+            person_account: '',
+            driver: '-1',
         };
         // init page load
         getUsersData();
@@ -182,9 +185,22 @@ var app = angular.module('app', [
             $scope.driverOptionShowing = !$scope.driverOptionShowing;
         }
 
-        // driver batch assign dropdown
-        $scope.onBatchAssignClicked = function() {
+        // driver batch button dropdown
+        $scope.onBatchFunctionClicked = function(event) {
+            event.preventDefault();
+            $scope.showBatchFunctionPanel = ! $scope.showBatchFunctionPanel;
+        }
 
+        $scope.onBatchAssignDriverClicked = function(event) {
+            event.preventDefault();
+            $http.post('/api/transaction/batchdriver',
+            {
+                transactions : $scope.alldata,
+                driver: $scope.form.driver
+            }).success(function(data) {
+                getPage(1);
+                $scope.form.checkall = false;
+            });
         }
 
         // retrieve page w/wo search
@@ -249,6 +265,15 @@ var app = angular.module('app', [
         $scope.onIsImportantClicked = function(transaction_id, index) {
             $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
                 $scope.alldata[index].is_important = data.is_important;
+            });
+        }
+
+        // checkbox all
+        $scope.onCheckAllChecked = function() {
+            var checked = $scope.form.checkall;
+
+            $scope.alldata.forEach(function (transaction, key) {
+                $scope.alldata[key].check = checked;
             });
         }
 

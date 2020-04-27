@@ -459,16 +459,16 @@
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export Excel</button>
                         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
-                            <button class="btn btn-default" ng-click="enableAccConsolidate($event)">
+                            <button class="btn btn-sm btn-default" ng-click="enableAccConsolidate($event)">
                                 Export Acc Consolidate
                                 <span ng-if="!show_acc_consolidate_div" class="fa fa-caret-down"></span>
                                 <span ng-if="show_acc_consolidate_div" class="fa fa-caret-up"></span>
                             </button>
                         @endif
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                        <button class="btn btn-default" ng-click="onDriverAssignToggleClicked($event)">
+                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
                                 Hide Map & Driver Assign
                             </span>
@@ -476,10 +476,12 @@
                                 Show Map & Driver Assign
                             </span>
                         </button>
-{{--
-                        <button class="btn btn-primary" ng-click="onBatchAssignClicked($event)">
-                            Batch Assign Driver
-                        </button> --}}
+
+                        <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                            Batch Function
+                            <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                            <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                        </button>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
@@ -531,14 +533,47 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="do" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export DO</button>
-                                    <button type="submit" class="btn btn-default" form="transaction_rpt" name="exportpdf" value="invoice" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export Tax Invoice</button>
+                                    <button type="submit" class="btn btn-sm btn-default" form="transaction_rpt" name="exportpdf" value="do" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export DO</button>
+                                    <button type="submit" class="btn btn-sm btn-default" form="transaction_rpt" name="exportpdf" value="invoice" ng-disabled="!form.person_account"><i class="fa fa-compress"></i> Export Tax Invoice</button>
                                 </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 <hr class="row">
+                </div>
+                <div ng-show="showBatchFunctionPanel">
+                    <hr class="row">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('batch_assign_driver', 'Batch Assign Driver', ['class'=>'control-label search-title']) !!}
+                                    <select name="driver" class="form-control select" ng-model="form.driver">
+                                        <option value="-1">
+                                            -- Clear --
+                                        </option>
+                                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                            @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                                <option value="{{$user->name}}">
+                                                    {{$user->name}}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Assign</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="row">
                 </div>
                 {!! Form::close() !!}
                     <div class="table-responsive" id="exportable" style="padding-top:20px;">
@@ -553,10 +588,11 @@
                                 <td></td>
                             </tr>
                             <tr style="background-color: #DDFDF8">
-{{--
+
                                 <th class="col-md-1 text-center">
-                                    <input type="checkbox" id="checkAll" />
-                                </th> --}}
+                                    {{-- <input type="checkbox" id="checkAll" /> --}}
+                                    <input type="checkbox" id="check_all" ng-model="form.checkall" ng-change="onCheckAllChecked()"/>
+                                </th>
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
@@ -712,8 +748,10 @@
                             </tr>
                             <tbody>
                                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
-{{--
-                                    <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td> --}}
+
+                                    <td class="col-md-1 text-center">
+                                        <input type="checkbox" name="checkbox" ng-model="transaction.check">
+                                    </td>
                                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">

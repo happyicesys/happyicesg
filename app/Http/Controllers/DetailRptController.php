@@ -1467,9 +1467,11 @@ class DetailRptController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $deals = $this->stockBillingSql()['deals'];
+        $stockbilling = $this->stockBillingSql();
 
-        $totals = $this->stockBillingSql()['totals'];
+        $deals = $stockbilling['deals'];
+
+        $totals = $stockbilling['totals'];
 /*
         if(request('consolidate_rpt')) {
             $this->exportConsolidateRpt($deals, $totals, request('bill_profile'));
@@ -1719,9 +1721,11 @@ class DetailRptController extends Controller
         $cust_id = request('cust_id');
         $company = request('company');
         $person_id = request('person_id');
-        $custcategory_id = request('custcategory_id');
+        $custcategory = request('custcategory');
+        $exclude_custcategory = request('exclude_custcategory');
         $is_inventory = request('is_inventory');
         $is_commission = request('is_commission');
+        $driver = request('driver');
 
         if($profile_id) {
             $deals = $deals->where('profiles.id', $profile_id);
@@ -1741,14 +1745,28 @@ class DetailRptController extends Controller
         if($person_id) {
             $deals = $deals->where('people.id', $person_id);
         }
-        if($custcategory_id) {
+/*         if($custcategory_id) {
             $deals = $deals->where('custcategories.id', $custcategory_id);
+        } */
+        if($custcategory) {
+            $custcategories = $custcategory;
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            if($exclude_custcategory) {
+                $deals = $deals->whereNotIn('custcategories.id', $custcategories);
+            }else {
+                $deals = $deals->whereIn('custcategories.id', $custcategories);
+            }
         }
         if($is_inventory) {
             $deals = $deals->where('items.is_inventory', $is_inventory);
         }
         if($is_commission != '') {
             $deals = $deals->where('items.is_commission', $is_commission);
+        }
+        if($driver) {
+            $deals = $deals->where('transactions.driver', 'LIKE', '%'.$driver.'%');
         }
         return $deals;
     }
@@ -2450,9 +2468,8 @@ class DetailRptController extends Controller
                     DB::raw('ROUND(ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) / SUM(deals.qty), 2) AS avg_sell_value'),
                     DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) END, 2) AS gross')
                 );
-        if(request('profile_id') or request('delivery_from') or request('delivery_to') or request('cust_id') or request('company') or request('person_id') or request('custcategory_id') or request('is_inventory') or request('is_commission')) {
-            $deals = $this->stockBillingFilters(request(), $deals);
-        }
+
+        $deals = $this->stockBillingFilters(request(), $deals);
 
         $deals = $deals->where(function($query) {
                         $query->where('transactions.status', 'Delivered')

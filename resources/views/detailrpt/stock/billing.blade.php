@@ -2,6 +2,7 @@
 @inject('sdeals', 'App\Deal')
 @inject('speople', 'App\Person')
 @inject('scustcategories', 'App\Custcategory')
+@inject('susers', 'App\User')
 
 @extends('template')
 @section('title')
@@ -135,13 +136,20 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('custcategory_id', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('custcategory_id', [''=>'All'] + $scustcategories::orderBy('name')->pluck('name', 'id')->all(),
+                    {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                    <label class="pull-right">
+                        <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                        <span style="margin-top: 5px;">
+                            Exclude
+                        </span>
+                    </label>
+                    {!! Form::select('custcategory', [''=>'All'] + $scustcategories::orderBy('name')->pluck('name', 'id')->all(),
                         null,
                         [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.custcategory_id',
-                            'ng-change'=>'searchDB()'
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB()"
                         ])
                     !!}
                 </div>
@@ -171,6 +179,21 @@
                             'ng-change'=>'searchDB()'
                         ])
                     !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('is_commission', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                        <option value="">All</option>
+                        @foreach($susers::where('is_active', 1)->orderBy('name')->get() as $user)
+                            @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                <option value="{{$user->name}}">
+                                    {{$user->name}}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
                 </div>
             </div>
 

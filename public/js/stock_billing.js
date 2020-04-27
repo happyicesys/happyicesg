@@ -28,7 +28,9 @@ var app = angular.module('app', [
             cust_id: '',
             company: '',
             person_id: '',
-            custcategory_id: '',
+            driver: '',
+            custcategory: '',
+            exclude_custcategory: '',
             is_inventory: '1',
             is_commission: '0',
             pageNum: 100,
@@ -42,6 +44,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
         });
 
         $scope.exportData = function ($event) {
