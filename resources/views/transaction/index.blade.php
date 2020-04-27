@@ -109,6 +109,7 @@
                     </div>
                     @endif
 
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
                         <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
@@ -119,8 +120,10 @@
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
+                    @endif
                     </div>
                     <div class="row">
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
@@ -188,6 +191,7 @@
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                             </div>
                         </div>
+                        @endif
                         @if(!auth()->user()->hasRole('hd_user'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
@@ -214,7 +218,7 @@
                         </div>
                         @endif
                     </div>
-                    @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher'))
+                    @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                     <div class="row">
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             <div class="form-group">
@@ -321,6 +325,7 @@
                 @else
                 <div class="row">
                     <div class="row">
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('area_groups',
@@ -341,6 +346,7 @@
                             ])
                         !!}
                         </div>
+                        @endif
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('po_no', 'PO Num', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('po_no', null,
@@ -352,6 +358,7 @@
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                         </div>
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('contact', 'Attn Contact', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('contact', null,
@@ -380,10 +387,12 @@
                             ])
                         !!}
                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
                     <div class="row">
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('gst_rate', null,
@@ -395,6 +404,7 @@
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
                         </div>
+                        @endif
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('tags', 'Customer Tags', ['class'=>'control-label search-title']) !!}
                             <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
