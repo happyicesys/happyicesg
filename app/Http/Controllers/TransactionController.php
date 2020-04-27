@@ -1864,8 +1864,14 @@ class TransactionController extends Controller
             }
         }
 
-        if(request('driver')){
-            $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.request('driver').'%');
+        if(request('driver') != ''){
+            if(request('driver') == '-1') {
+                $transactions = $transactions->where(function($query) {
+                    $query->whereNull('transactions.driver')->orWhere('transactions.driver', '=', '');
+                });
+            }else {
+                $transactions = $transactions->where('transactions.driver', 'LIKE', '%'.request('driver').'%');
+            }
         }
         if(request('profile_id')){
             $transactions = $transactions->where('profiles.id', request('profile_id'));

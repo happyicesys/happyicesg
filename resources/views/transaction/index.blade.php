@@ -201,6 +201,7 @@
                             @else
                                 <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                                     <option value="">All</option>
+                                    <option value="-1">Unassigned</option>
                                     @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
                                         @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
                                             <option value="{{$user->name}}">
@@ -468,6 +469,7 @@
                             </button>
                         @endif
                         <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
                                 Hide Map & Driver Assign
@@ -482,6 +484,7 @@
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                             <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                         </button>
+                        @endif
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
