@@ -476,6 +476,10 @@
                                 Show Map & Driver Assign
                             </span>
                         </button>
+{{--
+                        <button class="btn btn-primary" ng-click="onBatchAssignClicked($event)">
+                            Batch Assign Driver
+                        </button> --}}
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">
@@ -549,6 +553,10 @@
                                 <td></td>
                             </tr>
                             <tr style="background-color: #DDFDF8">
+{{--
+                                <th class="col-md-1 text-center">
+                                    <input type="checkbox" id="checkAll" />
+                                </th> --}}
                                 <th class="col-md-1 text-center">
                                     #
                                 </th>
@@ -704,6 +712,8 @@
                             </tr>
                             <tbody>
                                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
+{{--
+                                    <td class="col-md-1 text-center">{!! Form::checkbox('checkbox[@{{transaction.id}}]') !!}</td> --}}
                                     <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                     <td class="col-md-1 text-center">
                                         <a href="/transaction/@{{ transaction.id }}/edit">

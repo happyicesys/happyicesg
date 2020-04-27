@@ -65,6 +65,10 @@ var app = angular.module('app', [
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
             });
+            $('#checkAll').change(function(){
+                var all = this;
+                $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
+            });
         });
 
         $scope.exportData = function (event) {
@@ -172,9 +176,15 @@ var app = angular.module('app', [
             $scope.show_acc_consolidate_div = !$scope.show_acc_consolidate_div;
         }
 
+        // show hide transaction row assign driver dropdown and individual map button
         $scope.onDriverAssignToggleClicked = function(event) {
             event.preventDefault();
             $scope.driverOptionShowing = !$scope.driverOptionShowing;
+        }
+
+        // driver batch assign dropdown
+        $scope.onBatchAssignClicked = function() {
+
         }
 
         // retrieve page w/wo search
