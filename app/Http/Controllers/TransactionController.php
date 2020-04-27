@@ -1300,7 +1300,7 @@ class TransactionController extends Controller
 
         if($transactions) {
             foreach($transactions as $transaction) {
-                if($transaction['check']) {
+                if(isset($transaction['check'])) {
                     $model = Transaction::findOrFail($transaction['id']);
                     if($driver == '-1') {
                         $model->driver = null;
