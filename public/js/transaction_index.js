@@ -311,6 +311,7 @@ var app = angular.module('app', [
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
                 });
+                // console.log(singleperson)
                 $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
                     let coord = {
                         transaction_id: singleperson.id,
@@ -325,7 +326,8 @@ var app = angular.module('app', [
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company
+                            title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
+                            label: singleperson.custcategory
                         });
                         markers.push(marker);
                         marker.addListener('click', function () {
@@ -369,7 +371,8 @@ var app = angular.module('app', [
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company
+                        title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                        label: person.custcategory
                     });
                     markers.push(marker);
                     marker.addListener('click', function () {
