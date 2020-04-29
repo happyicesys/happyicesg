@@ -581,7 +581,8 @@ class ClientController extends Controller
     // show party package page
     public function iceCreamPartyPackage()
     {
-        return view('client.icecreampartypackage');
+        return Redirect::to('https://form.jotform.com/201190907893460');
+        // return view('client.icecreampartypackage');
     }
 
     // return terms and conditions page

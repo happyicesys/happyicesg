@@ -89,7 +89,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:yellow;">Brown Sugar Boba Ice Cream Bar<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                         <li><a target="_blank" href="/delivery">Online Order</a></li>
-                        <li><a href="/ice-cream-party-package">CNY Reunion Package</a></li>
+                        <li><a href="/ice-cream-party-package">Appreciation to Covid-19 Hero</a></li>
                         </ul>
                     </li>
 {{--
