@@ -35,6 +35,9 @@ class CustcategoryController extends Controller
         $input = $request->all();
         $custcat = Custcategory::create($input);
         return redirect('user');
+        return redirect()->action(
+            'CustcategoryController@edit', ['id' => $custcat->id]
+        );
     }
 
     // retrieve single custcategory api(int id)
@@ -58,7 +61,9 @@ class CustcategoryController extends Controller
         $custcat = Custcategory::findOrFail($id);
         $input = $request->all();
         $custcat->update($input);
-        return redirect('user');
+        return redirect()->action(
+            'CustcategoryController@edit', ['id' => $custcat->id]
+        );
     }
 
     // ajax destroy cust category (int $custcategory_id)

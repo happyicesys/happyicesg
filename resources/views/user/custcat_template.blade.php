@@ -1,3 +1,5 @@
+@inject('custcatindex', 'App\Custcategory')
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
@@ -22,7 +24,7 @@
 
     <div class="panel-body">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="form-group col-md-2 col-sm-4 col-xs-6">
+            <div class="form-group col-md-3 col-sm-4 col-xs-6">
                 {!! Form::label('name', 'Name:', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
             </div>
@@ -35,14 +37,21 @@
                     <th class="col-md-1 text-center">
                         #
                     </th>
-                    <th class="col-md-2">
+                    <th class="col-md-1 text-center">
+                        <a href="#" ng-click="sortType = 'map_icon_file'; sortReverse = !sortReverse">
+                        Map Icon
+                        <span ng-show="sortType == 'map_icon_file' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'map_icon_file' && sortReverse" class="fa fa-caret-up"></span>
+                        </a>
+                    </th>
+                    <th class="col-md-2 text-center">
                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                         Category
                         <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
                         <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
                         </a>
                     </th>
-                    <th class="col-md-7">
+                    <th class="col-md-6 text-center">
                         <a href="#" ng-click="sortType = 'desc'; sortReverse = !sortReverse">
                         Description
                         <span ng-show="sortType == 'desc' && !sortReverse" class="fa fa-caret-down"></span>
@@ -57,9 +66,11 @@
                 <tbody>
                      <tr dir-paginate="custcat in custcats | filter:search | orderBy:sortType:sortReverse | itemsPerPage:itemsPerPage5" pagination-id="custcat" current-page="currentPage5" ng-controller="repeatController5">
                         <td class="col-md-1 text-center">@{{ number }} </td>
+                        <td class="col-md-1 text-center">
+                            <img src="@{{custcat.map_icon_file}}">
+                        </td>
                         <td class="col-md-2">@{{ custcat.name }}</td>
-                        <td class="col-md-7">@{{ custcat.desc }}</td>
-
+                        <td class="col-md-6">@{{ custcat.desc }}</td>
                         <td class="col-md-2 text-center">
                             <a href="/custcat/@{{ custcat.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                             <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete5(custcat.id)">Delete</button>

@@ -7,7 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Custcategory extends Model
 {
     protected $fillable = [
-    	'name', 'desc'
+    	'name', 'desc', 'map_icon_file'
+    ];
+
+    const MAP_BASE_URL = 'http://maps.google.com/mapfiles/ms/micons/';
+
+    const MAP_ICON_FILE = [
+        'red' => 'red.png',
+        'blue' => 'blue.png',
+        'green' => 'green.png',
+        'light-blue' => 'lightblue.png',
+        'pink' => 'pink.png',
+        'purple' => 'purple.png',
+        'yellow' => 'yellow.png',
+        'orange' => 'orange.png'
     ];
 
     // relationships

@@ -281,6 +281,17 @@ var app = angular.module('app', [
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
+            let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
+            const MAP_ICON_FILE = {
+                'red': 'red.png',
+                'blue': 'blue.png',
+                'green': 'green.png',
+                'light-blue': 'lightblue.png',
+                'pink': 'pink.png',
+                'purple': 'purple.png',
+                'yellow': 'yellow.png',
+                'orange': 'orange.png'
+            };
 
             if(url.includes("my")) {
                 location = 'Malaysia';
@@ -322,12 +333,17 @@ var app = angular.module('app', [
                         $scope.alldata[index].del_lat = data.del_lat;
                         $scope.alldata[index].del_lng = data.del_lng;
 
+                        let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                         var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
                             title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
-                            label: singleperson.custcategory
+                            label: {fontSize: '10px', text: singleperson.custcategory, fontWeight: 'bold'},
+                            icon: {
+                                labelOrigin: new google.maps.Point(15,10),
+                                url: url
+                            }
                         });
                         markers.push(marker);
                         marker.addListener('click', function () {
@@ -367,12 +383,17 @@ var app = angular.module('app', [
                         });
                     }
 
+                    let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                     var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
                         title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                        label: person.custcategory
+                        label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
+                        icon: {
+                            labelOrigin: new google.maps.Point(15,10),
+                            url: url
+                        }
                     });
                     markers.push(marker);
                     marker.addListener('click', function () {

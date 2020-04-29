@@ -62,7 +62,7 @@ Healthier Life
     </p>
     @endif
     <div class="row">
-    <a href="/ice-cream-party-package" class="btn btn-primary">
+    <a href="/delivery" class="btn btn-primary">
         To Place Another Order, Click Here
     </a>
     </div>

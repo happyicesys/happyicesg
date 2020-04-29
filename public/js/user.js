@@ -110,8 +110,24 @@ var app = angular.module('app', [
         $scope.currentPage5 = 1;
         $scope.itemsPerPage5 = 100;
 
+        let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
+        const MAP_ICON_FILE = {
+            'red': 'red.png',
+            'blue': 'blue.png',
+            'green': 'green.png',
+            'light-blue': 'lightblue.png',
+            'pink': 'pink.png',
+            'purple': 'purple.png',
+            'yellow': 'yellow.png',
+            'orange': 'orange.png'
+        };
+
         $http.get('/custcat/data').success(function(custcats) {
             $scope.custcats = custcats;
+
+            angular.forEach($scope.custcats, function(value, key) {
+                $scope.custcats[key].map_icon_file = map_icon_base + MAP_ICON_FILE[value.map_icon_file]
+            });
         });
 
         $scope.confirmDelete5 = function(id){

@@ -1351,7 +1351,7 @@ class TransactionController extends Controller
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                     'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
-                                    'custcategories.name as custcategory',
+                                    'custcategories.name as custcategory', 'custcategories.map_icon_file',
                                     DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
                                     'deliveryorders.po_no AS do_po', 'deliveryorders.requester_name', 'deliveryorders.pickup_location_name',
                                     'deliveryorders.delivery_location_name',
