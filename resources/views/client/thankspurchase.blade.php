@@ -62,7 +62,7 @@ Healthier Life
     </p>
     @endif
     <div class="row">
-    <a href="/delivery" class="btn btn-primary">
+    <a href="http://form.jotform.me/kentzo/{{$form_id}}" class="btn btn-primary">
         To Place Another Order, Click Here
     </a>
     </div>
