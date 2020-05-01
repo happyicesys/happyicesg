@@ -121,6 +121,11 @@ class TransactionController extends Controller
         return view('hdprofile.index');
     }
 
+    public function jobAssignIndex()
+    {
+        return view('transaction.jobassign');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
