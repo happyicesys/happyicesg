@@ -8,7 +8,7 @@
         }else {
             $map_icon_file = 'red';
         }
-        $img_url = $custcat::MAP_BASE_URL.$custcat::MAP_ICON_FILE[$map_icon_file];
+        $img_url = $custcatform::MAP_BASE_URL.$custcatform::MAP_ICON_FILE[$map_icon_file];
     @endphp
     <img src="{{$img_url}}" alt="">
 </div>
