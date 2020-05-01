@@ -3,8 +3,7 @@
 <div class="form-group">
     @php
         $img_url = '';
-        if(isset($custcat)) {
-            dd('here');
+        if($custcat) {
             $img_url = $custcat::MAP_BASE_URL.$custcat::MAP_ICON_FILE[$custcat->map_icon_file];
         }
     @endphp
