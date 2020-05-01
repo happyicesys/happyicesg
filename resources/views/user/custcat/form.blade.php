@@ -3,8 +3,8 @@
 <div class="form-group">
     @php
         $img_url = '';
-        if(isset($custcat) and $custcat) {
-            $img_url = $custcat::MAP_BASE_URL.$custcat::MAP_ICON_FILE[$custcat->map_icon_file];
+        if(isset($custcat)) {
+            $img_url = $custcat::MAP_BASE_URL.$custcat::MAP_ICON_FILE[$custcat ? $custcat->map_icon_file : 'red'];
         }
     @endphp
     <img src="{{$img_url}}" alt="">
