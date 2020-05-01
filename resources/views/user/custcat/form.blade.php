@@ -4,11 +4,9 @@
     @php
         $img_url = '';
         if(isset($custcat)) {
-            $map_icon_file = $custcat->map_icon_file;
-        }else {
-            $map_icon_file = 'red';
+            dd('here');
+            $img_url = $custcat::MAP_BASE_URL.$custcat::MAP_ICON_FILE[$custcat->map_icon_file];
         }
-        $img_url = $custcatform::MAP_BASE_URL.$custcatform::MAP_ICON_FILE[$map_icon_file];
     @endphp
     <img src="{{$img_url}}" alt="">
 </div>
@@ -28,7 +26,7 @@
     {!! Form::label('map_icon_file', 'Map Icon', ['class'=>'control-label search-title']) !!}
     <select name="map_icon_file" id="map_icon" class="select form-control">
         @foreach($custcatform::MAP_ICON_FILE as $index => $map_icon)
-            <option value="{{$index}}" {{$map_icon_file == $index ? 'selected' : ''}}>
+            <option value="{{$index}}" {{$custcat->map_icon_file == $index ? 'selected' : ''}}>
                 {{$index}}
             </option>
         @endforeach
