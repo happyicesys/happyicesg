@@ -1315,6 +1315,27 @@ class TransactionController extends Controller
         }
     }
 
+    // api for batch update delivery_date
+    public function batchUpdateDeliveryDate(Request $request)
+    {
+        $transactions = $request->transactions;
+        $delivery_date = $request->delivery_date;
+
+        if($transactions) {
+            foreach($transactions as $transaction) {
+                if(isset($transaction['check'])) {
+                    $model = Transaction::findOrFail($transaction['id']);
+                    if($delivery_date) {
+                        $model->delivery_date = $delivery_date;
+                    }
+                    $model->updated_at = Carbon::now();
+                    $model->updated_by = auth()->user()->name;
+                    $model->save();
+                }
+            }
+        }
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {

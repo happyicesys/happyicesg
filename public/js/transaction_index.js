@@ -58,6 +58,7 @@ var app = angular.module('app', [
         $scope.form = {
             person_account: '',
             driver: '-1',
+            delivery_date: $scope.today
         };
         // init page load
         getUsersData();
@@ -89,6 +90,11 @@ var app = angular.module('app', [
                 $scope.compareDateChange(scope_from);
             }
             $scope.searchDB();
+        }
+        $scope.formDeliveryDateChange = function(scope, date){
+            if(date){
+                $scope.form[scope] = moment(new Date(date)).format('YYYY-MM-DD');
+            }
         }
 /*
         $scope.delToChange = function(scope_todate){
@@ -197,6 +203,18 @@ var app = angular.module('app', [
             {
                 transactions : $scope.alldata,
                 driver: $scope.form.driver
+            }).success(function(data) {
+                getPage(1);
+                $scope.form.checkall = false;
+            });
+        }
+
+        $scope.onBatchChangeDeliveryDateClicked = function(event) {
+            event.preventDefault();
+            $http.post('/api/transaction/batch/deliverydate',
+            {
+                transactions : $scope.alldata,
+                delivery_date: $scope.form.delivery_date
             }).success(function(data) {
                 getPage(1);
                 $scope.form.checkall = false;

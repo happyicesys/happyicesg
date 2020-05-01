@@ -585,6 +585,31 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('batch_change_delivery_date', 'Batch Change Delivery Date', ['class'=>'control-label search-title']) !!}
+                                    <datepicker>
+                                        <input
+                                            name = "delivery_date"
+                                            type = "text"
+                                            class = "form-control input-sm"
+                                            placeholder = "Delivery Date"
+                                            ng-model = "form.delivery_date"
+                                            ng-change = "formDeliveryDateChange('delivery_date', form.delivery_date)"
+                                        />
+                                    </datepicker>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_change_delivery_date" value="invoice" ng-click="onBatchChangeDeliveryDateClicked($event)"><i class="fa fa-calendar" aria-hidden="true"></i> Batch Change Delivery Date</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr class="row">
                 </div>
