@@ -34,7 +34,6 @@ class CustcategoryController extends Controller
     {
         $input = $request->all();
         $custcat = Custcategory::create($input);
-        return redirect('user');
         return redirect()->action(
             'CustcategoryController@edit', ['id' => $custcat->id]
         );
@@ -72,5 +71,14 @@ class CustcategoryController extends Controller
         $custcat = Custcategory::findOrFail($id);
         $custcat->delete();
         return $custcat->name . 'has been successfully deleted';
+        return redirect('user');
+    }
+
+    // ajax destroy cust category (int $custcategory_id)
+    public function destroy($id)
+    {
+        $custcat = Custcategory::findOrFail($id);
+        $custcat->delete();
+        return redirect('user');
     }
 }
