@@ -118,6 +118,7 @@ class TransactionController extends Controller
 
         $collections_table = [];
         foreach($driverarr as $index => $driver) {
+            dd($driverarr, $transactionarr);
             $drivertable = [
                 'name' => ($driver->driver == '' or $driver->driver) == null ? 'Unassigned' : $driver->driver
             ];
