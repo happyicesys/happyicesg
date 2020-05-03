@@ -195,18 +195,21 @@ var app = angular.module('app', [
             $scope.showBatchFunctionPanel = ! $scope.showBatchFunctionPanel;
         }
 
+        // batch assign driver
         $scope.onBatchAssignDriverClicked = function(event) {
             event.preventDefault();
-            $http.post('/api/transaction/batchdriver',
+            $http.post('/api/transaction/batch/jobdriver',
             {
-                transactions : $scope.alldata,
+                delivery_date: $scope.search.delivery_from,
+                drivers : $scope.drivers,
                 driver: $scope.form.driver
             }).success(function(data) {
-                getPage(1);
+                getPage();
                 $scope.form.checkall = false;
             });
         }
 
+        // batch delivery date change
         $scope.onBatchChangeDeliveryDateClicked = function(event) {
             event.preventDefault();
             $http.post('/api/transaction/batch/deliverydate',
@@ -219,28 +222,26 @@ var app = angular.module('app', [
             });
         }
 
-        // retrieve page w/wo search
-        function getPage(pageNumber){
-            $scope.spinner = true;
-            $http.post('/transaction/data?page=' + pageNumber, $scope.search).success(function(data){
-                if(data.transactions.data){
-                    $scope.alldata = data.transactions.data;
-                    $scope.totalCount = data.transactions.total;
-                    $scope.currentPage = data.transactions.current_page;
-                    $scope.indexFrom = data.transactions.from;
-                    $scope.indexTo = data.transactions.to;
-                }else{
-                    $scope.alldata = data.transactions;
-                    $scope.totalCount = data.transactions.length;
-                    $scope.currentPage = 1;
-                    $scope.indexFrom = 1;
-                    $scope.indexTo = data.transactions.length;
-                }
-                // get total count
-                $scope.All = data.transactions.length;
+        // change transaction sequence
+        $scope.onSequenceChanged = function(transaction, driverkey, transactionkey) {
+            $http.post('/api/transaction/sequence/' + transaction.id, transaction).success(function(data) {
+                getPage();
+            });
+        }
 
-                // return total amount
-                $scope.total_amount = data.total_amount;
+        $scope.onInitTransactionsSequence = function(event) {
+            event.preventDefault();
+            console.log($scope.drivers);
+            $http.post('/api/transaction/initsequence', {drivers: $scope.drivers}).success(function(data) {
+                getPage();
+            });
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber = null){
+            $scope.spinner = true;
+            $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
+                $scope.drivers = data;
                 $scope.spinner = false;
             }).error(function(data){
 
@@ -270,30 +271,32 @@ var app = angular.module('app', [
             }
         }
 
-        $scope.onFormDriverChanged = function(transaction, index) {
-            $http.post('/api/transaction/driver/quickupdate', transaction).success(function(data) {
-                $scope.alldata[index].driver = data.driver;
-                $scope.alldata[index].updated_by = data.updated_by;
-                $scope.alldata[index].updated_at = data.updated_at;
+        $scope.onFormDriverChanged = function(transaction, driverkey, transactionkey) {
+            $http.post('/api/transaction/driver/quickupdate', {transaction: transaction, delivery_date: $scope.delivery_from}).success(function(data) {
+                $scope.drivers[driverkey].transactions[transactionkey].driver = data.driver;
+                $scope.drivers[driverkey].transactions[transactionkey].updated_by = data.updated_by;
+                $scope.drivers[driverkey].transactions[transactionkey].updated_at = data.updated_at;
+
+                getPage();
             });
         }
 
-        $scope.onIsImportantClicked = function(transaction_id, index) {
+        $scope.onIsImportantClicked = function(transaction_id, driverkey, transactionkey) {
             $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
-                $scope.alldata[index].is_important = data.is_important;
+                $scope.drivers[driverkey].transactions[transactionkey].is_important = data.is_important;
             });
         }
 
         // checkbox all
-        $scope.onCheckAllChecked = function() {
-            var checked = $scope.form.checkall;
+        $scope.onCheckAllChecked = function(driverkey) {
+            var checked = $scope.form.checkall[driverkey];
 
-            $scope.alldata.forEach(function (transaction, key) {
-                $scope.alldata[key].check = checked;
+            angular.forEach($scope.drivers[driverkey].transactions, function(value, key) {
+                $scope.drivers[driverkey].transactions[key].check = checked;
             });
         }
 
-        $scope.onMapClicked = function(singleperson = null, index = null) {
+        $scope.onMapClicked = function(singleperson = null, driverkey = null, transactionkey = null) {
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
@@ -328,12 +331,11 @@ var app = angular.module('app', [
 
             if(singleperson) {
                 var contentString = '<span style=font-size:10px;>' +
-                    '<b>' +
-                    '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
-                    '</b>' +
+                    '<span style="font-size:13px">' + '<b>#' + singleperson.sequence + ', ' + singleperson.del_postcode + '</span>' + '</b>' +
                     '<br>' +
-                    '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
-                    '</span>';
+                    '<b>' + singleperson.id + '</b>' + ' ' + singleperson.cust_id + ', ' + singleperson.company +
+                    '<br>' +
+                    singleperson.del_address;
 
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
@@ -346,8 +348,8 @@ var app = angular.module('app', [
                         lng: data.results[0].LONGITUDE,
                     }
                     $http.post('/api/transaction/storelatlng/' + singleperson.id, coord).success(function (data) {
-                        $scope.alldata[index].del_lat = data.del_lat;
-                        $scope.alldata[index].del_lng = data.del_lng;
+                        $scope.drivers[driverkey].transactions[transactionkey].del_lat = data.del_lat;
+                        $scope.drivers[driverkey].transactions[transactionkey].del_lng = data.del_lng;
 
                         let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                         var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
@@ -367,55 +369,103 @@ var app = angular.module('app', [
                         });
                     });
                 });
-
             }else {
-                $scope.coordsArr = [];
-                $scope.alldata.forEach(function (person, key) {
-                    // var address = person.del_address.replace(/ /g, '+');
-                    var contentString = '<span style=font-size:10px;>' +
-                        '<b>' +
-                        '(' + person.id + ') ' + person.cust_id + ' - ' + person.company +
-                        '</b>' +
-                        '<br>' +
-                        '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
-                        '</span>';
+                if(driverkey !== null) {
+                    $scope.coordsArr = [];
+                    angular.forEach($scope.drivers[driverkey].transactions, function(person, pkey) {
+                        var contentString = '<span style=font-size:10px;>' +
+                            '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
+                            '<br>' +
+                            '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
+                            '<br>' +
+                            person.del_address;
 
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
+
+                        if(!person.del_lat && !person.del_lng) {
+                            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
+                                let coord = {
+                                    transaction_id: person.id,
+                                    lat: data.results[0].LATITUDE,
+                                    lng: data.results[0].LONGITUDE,
+                                }
+                                $scope.coordsArr.push(coord)
+                                $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
+                                    $scope.drivers[driverkey].transactions[pkey].del_lat = data.del_lat;
+                                    $scope.drivers[driverkey].transactions[pkey].del_lng = data.del_lng;
+                                });
+                            });
+                        }
+
+                        let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
+                        var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                            label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
+                            icon: {
+                                labelOrigin: new google.maps.Point(15,10),
+                                url: url
+                            }
+                        });
+                        markers.push(marker);
+                        marker.addListener('click', function () {
+                            infowindow.open(map, marker);
+                        });
                     });
 
-                    if(!person.del_lat && !person.del_lng) {
-                        $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
-                            let coord = {
-                                transaction_id: person.id,
-                                lat: data.results[0].LATITUDE,
-                                lng: data.results[0].LONGITUDE,
+                }else {
+                    $scope.coordsArr = [];
+                    angular.forEach($scope.drivers, function(driver, dkey) {
+                        angular.forEach($scope.drivers[dkey].transactions, function(person, pkey) {
+                            var contentString = '<span style=font-size:10px;>' +
+                                '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
+                                '<br>' +
+                                '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
+                                '<br>' +
+                                person.del_address;
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+                            if(!person.del_lat && !person.del_lng) {
+                                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
+                                    let coord = {
+                                        transaction_id: person.id,
+                                        lat: data.results[0].LATITUDE,
+                                        lng: data.results[0].LONGITUDE,
+                                    }
+                                    $scope.coordsArr.push(coord)
+                                    $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
+                                        $scope.drivers[dkey].transactions[pkey].del_lat = data.del_lat;
+                                        $scope.drivers[dkey].transactions[pkey].del_lng = data.del_lng;
+                                    });
+                                });
                             }
-                            $scope.coordsArr.push(coord)
-                            $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
-                                $scope.alldata[key].del_lat = data.del_lat;
-                                $scope.alldata[key].del_lng = data.del_lng;
+
+                            let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
+                            var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                            var marker = new google.maps.Marker({
+                                position: pos,
+                                map: map,
+                                title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                                label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
+                                icon: {
+                                    labelOrigin: new google.maps.Point(15,10),
+                                    url: url
+                                }
+                            });
+                            markers.push(marker);
+                            marker.addListener('click', function () {
+                                infowindow.open(map, marker);
                             });
                         });
-                    }
-
-                    let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
-                    var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
-                    var marker = new google.maps.Marker({
-                        position: pos,
-                        map: map,
-                        title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                        label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
-                        icon: {
-                            labelOrigin: new google.maps.Point(15,10),
-                            url: url
-                        }
                     });
-                    markers.push(marker);
-                    marker.addListener('click', function () {
-                        infowindow.open(map, marker);
-                    });
-                });
+                }
             }
 
 
@@ -433,5 +483,29 @@ app.filter('delDate', [
         };
     }
 ]);
+
+app.filter('cut', function () {
+    return function (value, wordwise, max, tail) {
+        if (!value) return '';
+
+        max = parseInt(max, 10);
+        if (!max) return value;
+        if (value.length <= max) return value;
+
+        value = value.substr(0, max);
+        if (wordwise) {
+            var lastspace = value.lastIndexOf(' ');
+            if (lastspace !== -1) {
+              //Also remove . and , so its gives a cleaner result.
+              if (value.charAt(lastspace-1) === '.' || value.charAt(lastspace-1) === ',') {
+                lastspace = lastspace - 1;
+              }
+              value = value.substr(0, lastspace);
+            }
+        }
+
+        return value + (tail || ' …');
+    };
+});
 
 app.controller('transController', transController);

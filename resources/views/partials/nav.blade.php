@@ -215,12 +215,12 @@
                         <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>
                     </li>
                 @endif
-{{--
+
                 @if($transaction_access)
                     <li class="{{ Request::segment(2) == 'jobassign' ? 'active' : '' }}">
                         <a href="/transaction/jobassign"><i class="fa fa-paper-plane" aria-hidden="true"></i> Job Assign</a>
                     </li>
-                @endif --}}
+                @endif
                 @if($person_access)
                     <li class="{{ Request::segment(1) == 'person' ? 'active' : '' }}">
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>

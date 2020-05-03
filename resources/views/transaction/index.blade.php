@@ -221,24 +221,22 @@
                     @if(!auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                     <div class="row">
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                                <label class="pull-right">
-                                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                                    <span style="margin-top: 5px;">
-                                        Exclude
-                                    </span>
-                                </label>
-                                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
-                                    null,
-                                    [
-                                        'class'=>'selectmultiple form-control',
-                                        'ng-model'=>'search.custcategory',
-                                        'multiple'=>'multiple',
-                                        'ng-change' => "searchDB()"
-                                    ])
-                                !!}
-                            </div>
+                            {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                            <label class="pull-right">
+                                <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                                <span style="margin-top: 5px;">
+                                    Exclude
+                                </span>
+                            </label>
+                            {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                                null,
+                                [
+                                    'class'=>'selectmultiple form-control',
+                                    'ng-model'=>'search.custcategory',
+                                    'multiple'=>'multiple',
+                                    'ng-change' => "searchDB()"
+                                ])
+                            !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}

@@ -106,6 +106,41 @@ class TransactionController extends Controller
         return $data; */
     }
 
+    // return job assign data api
+    public function getJobAssignData()
+    {
+        $transactions = $this->getTransactionsData();
+
+        $driverarr = clone $transactions;
+
+        $driverarr = $driverarr->distinct('transactions.driver')->orderBy('transactions.driver')->select('transactions.driver')->get();
+        $transactionarr = $transactions->orderBy('transactions.sequence')->get();
+
+        $collections_table = [];
+        foreach($driverarr as $index => $driver) {
+            $drivertable = [
+                'name' => $driver->driver == '' ? 'Unassigned' : $driver->driver
+            ];
+            $total_amount = 0;
+            $total_qty = 0;
+            $total_count = 0;
+            foreach($transactionarr as $key => $transaction) {
+                if($transaction->driver == $driver->driver) {
+                    $drivertable['transactions'][$key] = $transaction;
+                    $total_amount += $transaction->total;
+                    $total_qty += $transaction->total_qty;
+                    $total_count += 1;
+                    unset($transactionarr[$key]);
+                }
+            }
+            $drivertable['total_amount'] = $total_amount;
+            $drivertable['total_qty'] = $total_qty;
+            $drivertable['total_count'] = $total_count;
+            array_push($collections_table, $drivertable);
+        }
+        return $collections_table;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -1278,13 +1313,23 @@ class TransactionController extends Controller
     // api to quick update driver(Request $request)
     public function driverQuickUpdate(Request $request)
     {
-        $transaction = Transaction::findOrFail($request->id);
-        $transaction->driver = $request->driverchosen['name'];
-        $transaction->updated_at = Carbon::now();
-        $transaction->updated_by = auth()->user()->name;
-        $transaction->save();
+        $transaction = $request->transaction;
+        $chosendriver = $transaction['driverchosen']['name'];
+// dd($transaction, $chosendriver, $delivery_date);
+        $model = Transaction::findOrFail($transaction['id']);
+        $searchtransaction = Transaction::where('delivery_date', '=', $transaction['delivery_date'])->where('driver', $chosendriver)->max('sequence');
 
-        return $transaction;
+        $model->driver = $chosendriver;
+        $model->updated_at = Carbon::now();
+        $model->updated_by = auth()->user()->name;
+        if($searchtransaction) {
+            $model->sequence = $searchtransaction + 1;
+        }else {
+            $model->sequence = 1;
+        }
+        $model->save();
+
+        return $model;
     }
 
     // api for changing is important($id)
@@ -1320,6 +1365,41 @@ class TransactionController extends Controller
         }
     }
 
+    // api for batch job assign driver
+    public function batchJobAssignDriver(Request $request)
+    {
+        $drivers = $request->drivers;
+        $form_driver = $request->driver;
+        $delivery_date = $request->delivery_date;
+
+        if($drivers) {
+            foreach($drivers as $driverindex => $driver) {
+                foreach($driver['transactions'] as $transactionindex => $transaction) {
+                    if(isset($transaction['check'])) {
+                        $max_sequence = 0;
+                        $model = Transaction::findOrFail($transaction['id']);
+                        $max_sequence = Transaction::where('driver', $form_driver)->whereDate('delivery_date', '=', $delivery_date)->max('sequence');
+                        if($max_sequence) {
+                            $model->sequence = $max_sequence + 1;
+                        }else {
+                            $model->sequence = 1;
+                        }
+                        if($form_driver == '-1') {
+                            $model->driver = null;
+                        }else {
+                            $model->driver = $form_driver;
+                        }
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
+                    }
+                    unset($drivers[$driverindex]['transactions'][$transactionindex]);
+                }
+            }
+
+        }
+    }
+
     // api for batch update delivery_date
     public function batchUpdateDeliveryDate(Request $request)
     {
@@ -1336,6 +1416,44 @@ class TransactionController extends Controller
                     $model->updated_at = Carbon::now();
                     $model->updated_by = auth()->user()->name;
                     $model->save();
+                }
+            }
+        }
+    }
+
+    // api for update transaction sequence
+    public function updateTransactionSequence($id)
+    {
+        $sequence = request('sequence');
+        $transaction = Transaction::findOrFail($id);
+
+        $transaction->sequence = $sequence;
+        $transaction->save();
+/*
+        $referTransactionsArr = Transaction::where('driver', $transaction->driver)->where('delivery_date', $transaction->delivery_date)->orderBy('sequence')->get();
+
+        $collection = [];
+        if($referTransactionsArr) {
+            foreach($referTransactionsArr as $refertransaction) {
+                $collection[$refertransaction->id] = $refertransaction->sequence;
+            }
+        }
+        $collection[$transaction->id] = $sequence; */
+    }
+
+    // init transactions sequence
+    public function initTransactionsSequence()
+    {
+        $drivers = request('drivers');
+
+        if($drivers) {
+            foreach($drivers as $driver) {
+                $assignindex = 1;
+                foreach($driver['transactions'] as $transaction) {
+                    $trans = Transaction::findOrFail($transaction['id']);
+                    $trans->sequence = $assignindex;
+                    $trans->save();
+                    $assignindex ++;
                 }
             }
         }
@@ -1363,12 +1481,12 @@ class TransactionController extends Controller
                         // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'transactions.del_postcode',
-                                    'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                                    'people.name', 'people.id as person_id', 'people.operation_note',
+                                    'transactions.del_postcode','transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
-                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important',
+                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
