@@ -81,7 +81,7 @@ var app = angular.module('app', [
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "TransactionRpt"+ now + ".xls");
+            saveAs(blob, "JobAssign"+ now + ".xls");
         };
 
         $scope.dateChange = function(scope_from, date){
@@ -214,7 +214,7 @@ var app = angular.module('app', [
             event.preventDefault();
             $http.post('/api/transaction/batch/deliverydate',
             {
-                transactions : $scope.alldata,
+                drivers : $scope.drivers,
                 delivery_date: $scope.form.delivery_date
             }).success(function(data) {
                 getPage(1);
@@ -241,7 +241,10 @@ var app = angular.module('app', [
         function getPage(pageNumber = null){
             $scope.spinner = true;
             $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
-                $scope.drivers = data;
+                $scope.drivers = data.drivers;
+                $scope.grand_total = data.grand_total;
+                $scope.grand_qty = data.grand_qty;
+                $scope.grand_count = data.grand_count;
                 $scope.spinner = false;
             }).error(function(data){
 
@@ -331,9 +334,9 @@ var app = angular.module('app', [
 
             if(singleperson) {
                 var contentString = '<span style=font-size:10px;>' +
-                    '<span style="font-size:13px">' + '<b>#' + singleperson.sequence + ', ' + singleperson.del_postcode + '</span>' + '</b>' +
+                    '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '; ' + singleperson.custcategory + '</b>' + '</span>' +
                     '<br>' +
-                    '<b>' + singleperson.id + '</b>' + ' ' + singleperson.cust_id + ', ' + singleperson.company +
+                    '<b>' + singleperson.id + '</b>' + ', ' + singleperson.cust_id + ', ' + singleperson.company +
                     '<br>' +
                     singleperson.del_address;
 
@@ -357,7 +360,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
-                            label: {fontSize: '10px', text: singleperson.custcategory, fontWeight: 'bold'},
+                            label: {fontSize: '10px', text: '' + singleperson.sequence, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url
@@ -374,11 +377,11 @@ var app = angular.module('app', [
                     $scope.coordsArr = [];
                     angular.forEach($scope.drivers[driverkey].transactions, function(person, pkey) {
                         var contentString = '<span style=font-size:10px;>' +
-                            '<span style="font-size:13px">' + '<b>#' + person.sequence + ', ' + person.del_postcode + '</span>' + '</b>' +
-                            '<br>' +
-                            '<b>' + person.id + '</b>' + ' ' + person.cust_id + ', ' + person.company +
-                            '<br>' +
-                            person.del_address;
+                        '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
+                        '<br>' +
+                        '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
+                        '<br>' +
+                        person.del_address;
 
                         var infowindow = new google.maps.InfoWindow({
                             content: contentString
@@ -405,7 +408,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                            label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
+                            label: {fontSize: '11px', text: '' + person.sequence, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url

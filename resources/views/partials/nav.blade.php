@@ -36,6 +36,7 @@
             @php
                 $access = false;
                 $transaction_access = false;
+                $jobassign_access = false;
                 $person_access = false;
                 $hd_access = false;
                 $personasset_access = false;
@@ -136,6 +137,7 @@
                     if(auth()->user()->hasRole('supervisor')) {
                         $access = true;
                         $transaction_access = true;
+                        $jobassign_access = true;
                         $person_access = true;
                         $item_access = true;
                         $report_access = true;
@@ -170,6 +172,7 @@
                     if(auth()->user()->hasRole('admin')) {
                         $access = true;
                         $transaction_access = true;
+                        $jobassign_access = true;
                         $person_access = true;
                         $hd_access = true;
                         $personasset_access = true;
@@ -216,7 +219,7 @@
                     </li>
                 @endif
 
-                @if($transaction_access)
+                @if($jobassign_access)
                     <li class="{{ Request::segment(2) == 'jobassign' ? 'active' : '' }}">
                         <a href="/transaction/jobassign"><i class="fa fa-paper-plane" aria-hidden="true"></i> Job Assign</a>
                     </li>

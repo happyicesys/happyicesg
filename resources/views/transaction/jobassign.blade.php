@@ -18,6 +18,18 @@ Job Assign
     </div>
 
     <div class="panel panel-default" ng-cloak>
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="pull-right">
+                        <a href="/transaction/create" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                            <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="panel-body">
             {!! Form::open(['id'=>'transaction_rpt', 'method'=>'POST','action'=>['TransactionController@exportAccConsolidatePdf']]) !!}
                 <div class="row">
@@ -66,6 +78,8 @@ Job Assign
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('pay_status', 'Payment', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('pay_status', [''=>'All', 'Owe'=>'Owe', 'Paid'=>'Paid'], null,
@@ -76,6 +90,7 @@ Job Assign
                             ])
                         !!}
                     </div>
+{{--
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('updated_by', 'Last Modify By', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('updated_by', null,
@@ -103,7 +118,7 @@ Job Assign
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
@@ -128,8 +143,6 @@ Job Assign
                             </select>
                         @endif
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                         <label class="pull-right">
@@ -157,6 +170,9 @@ Job Assign
                             ])
                         !!}
                     </div>
+                </div>
+                <div class="row">
+{{--
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
@@ -177,7 +193,7 @@ Job Assign
                                 <option value="Pending">Pending</option>
                             @endif
                         </select>
-                    </div>
+                    </div> --}}
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('area_groups',
@@ -220,7 +236,18 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
                     </div>
-
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('tags', 'Customer Tags', ['class'=>'control-label search-title']) !!}
+                        <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
+                            <option value="">All</option>
+                            @foreach($persontags::orderBy('name')->get() as $persontag)
+                                <option value="{{$persontag->id}}">
+                                    {{$persontag->name}}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+{{--
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('is_gst_inclusive',
@@ -236,9 +263,10 @@ Job Assign
                             'ng-change' => 'searchDB()'
                         ])
                     !!}
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="row">
+{{--
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
                         {!! Form::text('gst_rate', null,
@@ -249,21 +277,11 @@ Job Assign
                                                             'placeholder'=>'GST Rate',
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ]) !!}
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('tags', 'Customer Tags', ['class'=>'control-label search-title']) !!}
-                        <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB()" multiple>
-                            <option value="">All</option>
-                            @foreach($persontags::orderBy('name')->get() as $persontag)
-                                <option value="{{$persontag->id}}">
-                                    {{$persontag->name}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    </div> --}}
+
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('delivery_from', 'Delivery Date', ['class'=>'control-label search-title']) !!}
-                        <div class="form-group">
+                        <div class="input-group">
                             <datepicker>
                                 <input
                                     name = "delivery_from"
@@ -274,6 +292,8 @@ Job Assign
                                     ng-change = "dateChange('delivery_from', search.delivery_from)"
                                 />
                             </datepicker>
+                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
+                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
                         </div>
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12 hidden">
@@ -291,16 +311,6 @@ Job Assign
                             </datepicker>
                             <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_to', search.delivery_to)"></span>
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        <div class="row col-md-12 col-sm-12 col-xs-12">
-                            {!! Form::label('delivery_shortcut', 'Date Shortcut', ['class'=>'control-label search-title']) !!}
-                        </div>
-                        <div class="btn-group">
-                            <a href="" ng-click="onPrevDateClicked('delivery_from', 'delivery_to')" class="btn btn-default btn-sm"><i class="fa fa-backward"></i></a>
-                            <a href="" ng-click="onTodayDateClicked('delivery_from', 'delivery_to')" class="btn btn-default btn-sm"><i class="fa fa-circle"></i></a>
-                            <a href="" ng-click="onNextDateClicked('delivery_from', 'delivery_to')" class="btn btn-default btn-sm"><i class="fa fa-forward"></i></a>
                         </div>
                     </div>
                 </div>
@@ -361,7 +371,7 @@ Job Assign
                                 </div>
                             </div>
                         </div>
-{{--
+
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
@@ -386,26 +396,50 @@ Job Assign
                                 </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <hr class="row">
                 </div>
+                <div class="row">
+                    <div class="col-md-5 col-sm-6 col-xs-12" style="padding: 10px 0px 10px 0px;">
+                        <div class="col-md-5 col-xs-5">
+                            Total Amount
+                        </div>
+                        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                            <strong>@{{grand_total ? grand_total : 0.00 | currency: "": 2}}</strong>
+                        </div>
+                        <div class="col-md-5 col-xs-5">
+                            Total Qty
+                        </div>
+                        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                            <strong>@{{grand_qty ? grand_qty : 0.00 | currency: "": 4}}</strong>
+                        </div>
+                        <div class="col-md-5 col-xs-5">
+                            Total Count
+                        </div>
+                        <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
+                            <strong>@{{grand_count ? grand_count : 0}}</strong>
+                        </div>
+                    </div>
+                </div>
                 {!! Form::close() !!}
-                <div class="table-responsive" id="exportable" style="padding-top:20px;">
+                <div class="alt-table-responsive" id="exportable">
                     <table class="table table-list-search table-hover table-bordered" ng-repeat="(driverkey, driver) in drivers">
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #009fe1">
-                            <th colspan="12">
+                            <th colspan="11">
                                 @{{driver.name}}
+                                <button type="button" class="btn btn-sm btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
+{{--
                                 <span class="pull-right">
-                                    <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
-                                </span>
+
+                                </span> --}}
                             </th>
                             <th class="text-center">
-                                (Count) @{{driver.total_count}}
+                                (Inv#) @{{driver.total_count}}
                             </th>
                             <th class="text-center">
-                                (Amount) @{{driver.total_amount.toFixed(2)}}
+                                (S$) @{{driver.total_amount.toFixed(2)}}
                             </th>
                             <th class="text-center">
                                 (Qty) @{{driver.total_qty.toFixed(4)}}
@@ -417,7 +451,7 @@ Job Assign
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('sequence')">
-                                Sequence #
+                                #
                                 <span ng-if="search.sortName == 'sequence' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'sequence' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
@@ -433,18 +467,19 @@ Job Assign
                                 <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+{{--
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('company')">
                                 ID Name
                                 <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
+                            </th> --}}
                             <th class="col-md-1 text-center">
                                 Action
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('transactions.del_postcode')">
-                                Del Postcode
+                                Postcode
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
@@ -453,7 +488,7 @@ Job Assign
                                     注释
                                 </span>
                                 <span class="col-md-12">
-                                    Remark
+                                    T.Remark
                                 </span>
                             </th>
                             <th class="col-md-2 text-center">
@@ -504,24 +539,32 @@ Job Assign
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <input type="text" class="form-control input-sm text-center" ng-model="transaction.sequence"  ng-model-options="{ debounce: 300 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-model-options="{ debounce: 300 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit">
                                         @{{ transaction.id }}
                                     </a>
-                                    <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
-                                    <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
+                                    <span class="col-md-12">
+                                        <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
+                                        <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
+                                    </span>
                                 </td>
 
                                 <td class="col-md-1 text-center">
-                                    @{{ transaction.cust_id }}
+                                    <span class="col-md-12">
+                                        @{{ transaction.cust_id }}
+                                    </span>
+                                    <span class="col-md-12">
+                                        <a href="/person/@{{ transaction.person_id }}">
+                                            @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
+                                        </a>
+                                    </span>
                                 </td>
+{{--
                                 <td class="col-md-1 text-center">
-                                    <a href="/person/@{{ transaction.person_id }}">
-                                        @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
-                                    </a>
-                                </td>
+
+                                </td> --}}
                                 <td class="col-md-1 text-center">
                                     {{-- print invoice         --}}
                                     <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
@@ -533,7 +576,7 @@ Job Assign
                                     @{{ transaction.del_postcode }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ transaction.transremark }}
+                                    @{{ transaction.is_important ? transaction.transremark : '' }}
                                 </td>
                                 <td class="col-md-2 text-center">
                                     @{{ transaction.operation_note | cut:true:40:'...' }}

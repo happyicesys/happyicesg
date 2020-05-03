@@ -469,13 +469,14 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export Excel</button>
+{{--
                         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                             <button class="btn btn-sm btn-default" ng-click="enableAccConsolidate($event)">
                                 Export Acc Consolidate
                                 <span ng-if="!show_acc_consolidate_div" class="fa fa-caret-down"></span>
                                 <span ng-if="show_acc_consolidate_div" class="fa fa-caret-up"></span>
                             </button>
-                        @endif
+                        @endif --}}
                         <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">

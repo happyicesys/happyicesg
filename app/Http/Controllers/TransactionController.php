@@ -116,7 +116,10 @@ class TransactionController extends Controller
         $driverarr = $driverarr->distinct('transactions.driver')->orderBy('transactions.driver')->select('transactions.driver')->get();
         $transactionarr = $transactions->orderBy('transactions.sequence')->get();
 
-        $collections_table = [];
+        $collections = [];
+        $grand_total = 0;
+        $grand_qty = 0;
+        $grand_count = 0;
         foreach($driverarr as $index => $driver) {
             // dd($driverarr, $transactionarr);
             $drivertable = [
@@ -129,17 +132,25 @@ class TransactionController extends Controller
                 if($transaction->driver == $driver->driver) {
                     $drivertable['transactions'][$key] = $transaction;
                     $total_amount += $transaction->total;
+                    $grand_total += $transaction->total;
                     $total_qty += $transaction->total_qty;
+                    $grand_qty += $transaction->total_qty;
                     $total_count += 1;
+                    $grand_count += 1;
                     unset($transactionarr[$key]);
                 }
             }
             $drivertable['total_amount'] = $total_amount;
             $drivertable['total_qty'] = $total_qty;
             $drivertable['total_count'] = $total_count;
-            array_push($collections_table, $drivertable);
+            // array_push($collections['drivers'], $drivertable);
+            $collections['drivers'][$index] = $drivertable;
         }
-        return $collections_table;
+        $collections['grand_total'] = $grand_total;
+        $collections['grand_qty'] = $grand_qty;
+        $collections['grand_count'] = $grand_count;
+
+        return $collections;
     }
 
     /**
@@ -1397,26 +1408,30 @@ class TransactionController extends Controller
                     unset($drivers[$driverindex]['transactions'][$transactionindex]);
                 }
             }
-
         }
     }
 
     // api for batch update delivery_date
     public function batchUpdateDeliveryDate(Request $request)
     {
-        $transactions = $request->transactions;
+        $drivers = $request->drivers;
         $delivery_date = $request->delivery_date;
 
-        if($transactions) {
-            foreach($transactions as $transaction) {
-                if(isset($transaction['check'])) {
-                    $model = Transaction::findOrFail($transaction['id']);
-                    if($delivery_date) {
-                        $model->delivery_date = $delivery_date;
+        if($drivers) {
+            foreach($drivers as $driverindex => $driver) {
+                foreach($driver['transactions'] as $transactionindex => $transaction) {
+                    if(isset($transaction['check'])) {
+                        $model = Transaction::findOrFail($transaction['id']);
+                        if($delivery_date) {
+                            $model->delivery_date = $delivery_date;
+                        }
+                        $model->driver = null;
+                        $model->sequence = null;
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
                     }
-                    $model->updated_at = Carbon::now();
-                    $model->updated_by = auth()->user()->name;
-                    $model->save();
+                    unset($drivers[$driverindex]['transactions'][$transactionindex]);
                 }
             }
         }

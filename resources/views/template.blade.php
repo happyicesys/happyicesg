@@ -7,6 +7,17 @@
             .ui-select-bootstrap .ui-select-match-text .ui-select-allow-clear {
                 padding-right: 2.75px;
             }
+            /* @media screen and (max-width: 767px) { */
+            .alt-table-responsive {
+                width: 100%;
+                margin-bottom: 5px;
+                overflow-y: hidden;
+                overflow-x: auto;
+                -ms-overflow-style: -ms-autohiding-scrollbar;
+                border: 1px solid #dddddd;
+                -webkit-overflow-scrolling: touch;
+            }
+            /* } */
         </style>
     </head>
 
