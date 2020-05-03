@@ -590,6 +590,11 @@ Job Assign
                             </tr>
                         </tbody>
                     </table>
+                    <table class="table table-list-search table-hover table-bordered" ng-if="!drivers || drivers.length == 0">
+                        <tr>
+                            <td colspan="24" class="text-center">No Records Found</td>
+                        </tr>
+                    </table>
                 </div>
         </div>
     </div>
