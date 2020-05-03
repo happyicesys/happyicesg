@@ -127,6 +127,11 @@ class Transaction extends Model
         $this->attributes['balance_coin'] = $value ?: null;
     }
 
+    public function setDriverAttribute($value)
+    {
+        $this->attributes['driver'] = $value ?: null;
+    }
+
     public function getCreatedAtAttribute($date)
     {
         return Carbon::parse($date)->format('d M y');

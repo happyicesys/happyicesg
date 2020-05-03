@@ -932,7 +932,7 @@ class TransactionController extends Controller
         $replicated_transaction->delivery_date = Carbon::today()->toDateString();
         $replicated_transaction->status = 'Confirmed';
         $replicated_transaction->pay_status = 'Owe';
-        $replicated_transaction->driver = '';
+        $replicated_transaction->driver = null;
         $replicated_transaction->paid_by = '';
         $replicated_transaction->paid_at = '';
         // dd($transaction->deals->toArray());
