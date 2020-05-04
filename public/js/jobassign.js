@@ -225,16 +225,20 @@ var app = angular.module('app', [
         // change transaction sequence
         $scope.onSequenceChanged = function(transaction, driverkey, transactionkey) {
             $http.post('/api/transaction/sequence/' + transaction.id, transaction).success(function(data) {
-                getPage();
+                // getPage();
             });
         }
 
         $scope.onInitTransactionsSequence = function(event) {
             event.preventDefault();
-            console.log($scope.drivers);
-            $http.post('/api/transaction/initsequence', {drivers: $scope.drivers}).success(function(data) {
-                getPage();
-            });
+            let isConfirm = confirm('Are you sure to generate sequence based on this arrangement?')
+            if(isConfirm) {
+                $http.post('/api/transaction/initsequence', {drivers: $scope.drivers}).success(function(data) {
+                    getPage();
+                });
+            }else {
+                return false;
+            }
         }
 
         $scope.onDriverRowToggleClicked = function(event, driverkey) {
@@ -520,5 +524,13 @@ app.filter('cut', function () {
         return value + (tail || ' …');
     };
 });
+
+app.filter('myTrimFraction', ['$filter', function($filter) {
+    return function(input) {
+        input = parseFloat(input);
+        input = input.toFixed(input % 1 === 0 ? 0 : 2);
+        return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+}]);
 
 app.controller('transController', transController);

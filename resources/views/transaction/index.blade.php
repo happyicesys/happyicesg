@@ -800,11 +800,7 @@
 
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-                                    <td class="col-md-1 text-center">
-                                        <a href="/person/@{{ transaction.person_id }}">
-                                            @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
-                                        </a>
-                                    </td>
+                                    <td class="col-md-1 text-center"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
                                         <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
