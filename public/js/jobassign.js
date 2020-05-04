@@ -285,7 +285,7 @@ var app = angular.module('app', [
         }
 
         $scope.onFormDriverChanged = function(transaction, driverkey, transactionkey) {
-            $http.post('/api/transaction/driver/quickupdate', {transaction: transaction, delivery_date: $scope.delivery_from}).success(function(data) {
+            $http.post('/api/transaction/driver/quickupdate/jobassign', {transaction: transaction, delivery_date: $scope.delivery_from}).success(function(data) {
                 $scope.drivers[driverkey].transactions[transactionkey].driver = data.driver;
                 $scope.drivers[driverkey].transactions[transactionkey].updated_by = data.updated_by;
                 $scope.drivers[driverkey].transactions[transactionkey].updated_at = data.updated_at;

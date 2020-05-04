@@ -1322,12 +1322,32 @@ class TransactionController extends Controller
         $transaction->save();
     }
 
+
     // api to quick update driver(Request $request)
     public function driverQuickUpdate(Request $request)
     {
+        $chosendriver = $request->driverchosen['name'];
+        $model = Transaction::findOrFail($request->id);
+        $searchtransaction = Transaction::where('delivery_date', '=', $request->delivery_date)->where('driver', $chosendriver)->max('sequence');
+
+        $model->driver = $chosendriver;
+        $model->updated_at = Carbon::now();
+        $model->updated_by = auth()->user()->name;
+        if($searchtransaction) {
+            $model->sequence = $searchtransaction + 1;
+        }else {
+            $model->sequence = 1;
+        }
+        $model->save();
+
+        return $model;
+    }
+
+    // api to quick update driver(Request $request)
+    public function driverQuickUpdateJobAssign(Request $request)
+    {
         $transaction = $request->transaction;
         $chosendriver = $transaction['driverchosen']['name'];
-// dd($transaction, $chosendriver, $delivery_date);
         $model = Transaction::findOrFail($transaction['id']);
         $searchtransaction = Transaction::where('delivery_date', '=', $transaction['delivery_date'])->where('driver', $chosendriver)->max('sequence');
 
