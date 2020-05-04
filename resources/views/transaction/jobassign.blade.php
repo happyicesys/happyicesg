@@ -573,11 +573,7 @@ Job Assign
                                     <span class="col-md-12">
                                         @{{ transaction.cust_id }}
                                     </span>
-                                    <span class="col-md-12">
-                                        <a href="/person/@{{ transaction.person_id }}">
-                                            @{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}
-                                        </a>
-                                    </span>
+                                    <span class="col-md-12"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></span>
                                 </td>
 {{--
                                 <td class="col-md-1 text-center">
