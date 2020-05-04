@@ -324,10 +324,17 @@
         @endif
 
         <div class="row">
+            <div class="col-md-12 form-group">
+                {!! Form::label('person_remark', 'Customer Remarks', ['class'=>'control-label']) !!}
+                {!! Form::textarea('person_remark', null, ['class'=>'form-control text-xs',
+                'ng-model'=>'form.person_remark',
+                'disabled'=> 'disabled',
+                'rows'=>'5']) !!}
+            </div>
 
         @if(!$transaction->is_deliveryorder)
             <div class="col-md-12 form-group">
-                {!! Form::label('transremark', 'Remark', ['class'=>'control-label']) !!}
+                {!! Form::label('transremark', 'Transaction Remarks', ['class'=>'control-label']) !!}
                 @if($transaction->is_important)
                     <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
                 @else

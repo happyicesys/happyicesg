@@ -237,6 +237,12 @@ var app = angular.module('app', [
             });
         }
 
+        $scope.onDriverRowToggleClicked = function(event, driverkey) {
+            event.preventDefault();
+
+            $scope.showDriverRow[driverkey] = !$scope.showDriverRow[driverkey];
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber = null){
             $scope.spinner = true;
@@ -245,6 +251,10 @@ var app = angular.module('app', [
                 $scope.grand_total = data.grand_total;
                 $scope.grand_qty = data.grand_qty;
                 $scope.grand_count = data.grand_count;
+/*
+                angular.forEach($scope.drivers, function(value, key) {
+                    $scope.showDriverRow[key] = true;
+                }); */
                 $scope.spinner = false;
             }).error(function(data){
 

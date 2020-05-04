@@ -429,6 +429,11 @@ Job Assign
                         <tr style="background-color: #009fe1">
                             <th colspan="11">
                                 @{{driver.name}}
+{{--
+                                <button type="button" class="btn btn-sm btn-default" ng-click="onDriverRowToggleClicked($event, driverkey)">
+                                    <span ng-if="!showDriverRow[driverkey]" class="fa fa-caret-down"></span>
+                                    <span ng-if="showDriverRow[driverkey]" class="fa fa-caret-up"></span>
+                                </button> --}}
                                 <button type="button" class="btn btn-sm btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
 {{--
                                 <span class="pull-right">
@@ -484,6 +489,12 @@ Job Assign
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('transactions.contact')">
+                                Contact
+                                <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <span class="col-md-12">
                                     注释
                                 </span>
@@ -499,27 +510,25 @@ Job Assign
                                     Ops
                                 </span>
                             </th>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th class="col-md-1 text-center">
                                 Zone
                             </th>
+                            @endif
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('status')">
                                 Status
                                 <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.contact')">
-                                Contact
-                                <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('driver')">
                                 Assigned Driver
                                 <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+                            @endif
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('total')">
                                 Total Amount
@@ -542,9 +551,11 @@ Job Assign
                                     <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-model-options="{ debounce: 300 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <a href="/transaction/@{{ transaction.id }}/edit">
-                                        @{{ transaction.id }}
-                                    </a>
+                                    <span class="col-md-12">
+                                        <a href="/transaction/@{{ transaction.id }}/edit">
+                                            @{{ transaction.id }}
+                                        </a>
+                                    </span>
                                     <span class="col-md-12">
                                         <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
                                         <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
@@ -567,13 +578,16 @@ Job Assign
                                 </td> --}}
                                 <td class="col-md-1 text-center">
                                     {{-- print invoice         --}}
-                                    <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                    <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-xs" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
                                     {{-- button view shown when cancelled --}}
-                                    <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, driverkey, transactionkey)" ng-if="driverOptionShowing"><i class="fa fa-map-o"></i> Map</button>
+                                    <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-xs btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
+                                    <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, driverkey, transactionkey)" ng-if="driverOptionShowing"><i class="fa fa-map-o fa-xs"></i> Map</button>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.del_postcode }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ transaction.contact}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.is_important ? transaction.transremark : '' }}
@@ -581,6 +595,7 @@ Job Assign
                                 <td class="col-md-2 text-center">
                                     @{{ transaction.operation_note | cut:true:40:'...' }}
                                 </td>
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <td class="col-md-1 text-left">
                                     <span ng-if="transaction.west == 1">West</span>
                                     <span ng-if="transaction.east == 1">East</span>
@@ -589,6 +604,7 @@ Job Assign
                                     <span ng-if="transaction.sup == 1">Sup</span>
                                     <span ng-if="transaction.ops == 1">Ops</span>
                                 </td>
+                                @endif
                                 {{-- status by color --}}
                                 <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                     @{{ transaction.status }}
@@ -609,7 +625,7 @@ Job Assign
                                     <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                 </td>
                                 {{-- status by color ended --}}
-                                <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.driver }}
                                     @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -623,6 +639,7 @@ Job Assign
                                     </ui-select>
                                     @endif
                                 </td>
+                                @endif
                                 <td class="col-md-1 text-right">
                                     @{{ transaction.total | currency: "": 2}}
                                 </td>

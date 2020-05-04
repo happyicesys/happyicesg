@@ -745,6 +745,9 @@
                         <div class="form-group">
                             @if($transaction->transremark)
                                 <label class="control-label">Remarks:</label>
+                                @if($person->remark)
+                                    <pre>{{ $person->remark }}</pre>
+                                @endif
                                 <pre>{{ $transaction->transremark }}</pre>
                             @endif
                         </div>
