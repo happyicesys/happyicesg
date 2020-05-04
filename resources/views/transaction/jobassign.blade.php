@@ -434,20 +434,29 @@ Job Assign
                                     <span ng-if="!showDriverRow[driverkey]" class="fa fa-caret-down"></span>
                                     <span ng-if="showDriverRow[driverkey]" class="fa fa-caret-up"></span>
                                 </button> --}}
-                                <button type="button" class="btn btn-sm btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
+                                <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
 {{--
                                 <span class="pull-right">
 
                                 </span> --}}
                             </th>
                             <th class="text-center">
-                                (Inv#) @{{driver.total_count}}
+                                (Inv#)
+                                <span class="col-md-12">
+                                    @{{driver.total_count}}
+                                </span>
                             </th>
                             <th class="text-center">
-                                (S$) @{{driver.total_amount.toFixed(2)}}
+                                (S$)
+                                <span class="col-md-12">
+                                    @{{driver.total_amount.toFixed(2)}}
+                                </span>
                             </th>
                             <th class="text-center">
-                                (Qty) @{{driver.total_qty.toFixed(4)}}
+                                (Qty)
+                                <span class="col-md-12">
+                                    @{{driver.total_qty.toFixed(4)}}
+                                </span>
                             </th>
                         </tr>
                         <tr style="background-color: #DDFDF8; font-size: 12px;">
@@ -551,11 +560,9 @@ Job Assign
                                     <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-model-options="{ debounce: 300 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <span class="col-md-12">
-                                        <a href="/transaction/@{{ transaction.id }}/edit">
-                                            @{{ transaction.id }}
-                                        </a>
-                                    </span>
+                                    <a href="/transaction/@{{ transaction.id }}/edit">
+                                        @{{ transaction.id }}
+                                    </a>
                                     <span class="col-md-12">
                                         <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
                                         <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
