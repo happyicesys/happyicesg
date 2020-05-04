@@ -317,7 +317,7 @@ Job Assign
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
                         <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
@@ -557,7 +557,7 @@ Job Assign
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-model-options="{ debounce: 300 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 500 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit">

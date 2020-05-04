@@ -1486,10 +1486,12 @@ class TransactionController extends Controller
             foreach($drivers as $driver) {
                 $assignindex = 1;
                 foreach($driver['transactions'] as $transaction) {
-                    $trans = Transaction::findOrFail($transaction['id']);
-                    $trans->sequence = $assignindex;
-                    $trans->save();
-                    $assignindex ++;
+                    if(isset($transaction['check'])) {
+                        $trans = Transaction::findOrFail($transaction['id']);
+                        $trans->sequence = $assignindex;
+                        $trans->save();
+                        $assignindex ++;
+                    }
                 }
             }
         }

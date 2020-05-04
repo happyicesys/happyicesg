@@ -468,7 +468,7 @@
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
 {{--
                         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                             <button class="btn btn-sm btn-default" ng-click="enableAccConsolidate($event)">

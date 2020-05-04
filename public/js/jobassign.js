@@ -235,6 +235,7 @@ var app = angular.module('app', [
             if(isConfirm) {
                 $http.post('/api/transaction/initsequence', {drivers: $scope.drivers}).success(function(data) {
                     getPage();
+                    $scope.form.checkall = false;
                 });
             }else {
                 return false;
