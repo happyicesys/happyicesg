@@ -625,7 +625,7 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    {{-- <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Upload</button> --}}
+
                                     <button ng-click="uploadExcel($event)" class="btn btn-warning"> <i class="fa fa-upload" aria-hidden="true"></i>
                                         Upload Excel
                                     </button>
