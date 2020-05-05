@@ -1437,7 +1437,6 @@ class TransactionController extends Controller
     {
         $drivers = $request->drivers;
         $delivery_date = $request->delivery_date;
-        dd($drivers,$delivery_date);
 
         if($drivers) {
             foreach($drivers as $driverindex => $driver) {
