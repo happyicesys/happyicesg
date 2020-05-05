@@ -528,7 +528,7 @@ class TransactionController extends Controller
 
         }elseif($request->input('confirm')){
             // confirmation must with the entries start
-            if(!$transaction->is_deliveryorder) {
+            if(!$transaction->is_deliveryorder and $quantities and $amounts) {
                 if(array_filter($quantities) != null and array_filter($amounts) != null) {
                     $request->merge(array('status' => 'Confirmed'));
                 }else{

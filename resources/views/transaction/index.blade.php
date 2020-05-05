@@ -609,6 +609,34 @@
                                 </div>
                             </div>
                         </div>
+{{--
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('batch_assign_driver', 'Batch Upload Excel', ['class'=>'control-label search-title']) !!}
+                                    <select name="driver" class="form-control select" ng-model="form.driver">
+                                        <option value="-1">
+                                            -- Clear --
+                                        </option>
+                                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                            @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                                <option value="{{$user->name}}">
+                                                    {{$user->name}}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Upload</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div> --}}
                     </div>
                     <hr class="row">
                 </div>
