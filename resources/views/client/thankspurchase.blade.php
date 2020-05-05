@@ -56,11 +56,13 @@ Healthier Life
         If you do not receive the confirmation email, do write to us at
         <strong>onlineorder@happyice.com.sg</strong> or <strong>Whatsapp us at 98898718</strong> to confirm your order.
     </p>
+{{--
     @if($edit_link)
     <p class="col-md-12 col-sm-12 col-xs-12" style="font-size: 20px;">
         Click <a class="btn btn-primary" href={{$edit_link}}>Here</a> if you wish to modify your order. You are allowed to modify your order within 30 mins after your order submission.
     </p>
-    @endif
+    @endif --}}
+
     <div class="row">
     <a href="/delivery" class="btn btn-primary">
     {{-- <a href="http://form.jotform.me/kentzo/{{$form_id}}" class="btn btn-primary"> --}}

@@ -358,6 +358,7 @@ Route::post('/api/pricematrix/costrate/edit', 'PriceController@editCostrateApi')
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::post('/api/transaction/jobassign/refreshdriver', 'TransactionController@jobAssignRefreshDriver');
 Route::post('/api/transaction/initsequence', 'TransactionController@initTransactionsSequence');
 Route::post('/api/transaction/sequence/{id}', 'TransactionController@updateTransactionSequence');
 Route::post('/api/transaction/batch/jobdriver', 'TransactionController@batchJobAssignDriver');

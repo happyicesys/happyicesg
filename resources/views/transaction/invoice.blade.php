@@ -743,12 +743,14 @@
                     </div>
                     <div class="col-xs-12" style="padding-top:10px">
                         <div class="form-group">
-                            @if($transaction->transremark)
+                            @if($transaction->transremark or $person->remark)
                                 <label class="control-label">Remarks:</label>
                                 @if($person->remark)
                                     <pre>{{ $person->remark }}</pre>
                                 @endif
-                                <pre>{{ $transaction->transremark }}</pre>
+                                @if($transaction->transremark)
+                                    <pre>{{ $transaction->transremark }}</pre>
+                                @endif
                             @endif
                         </div>
                     </div>

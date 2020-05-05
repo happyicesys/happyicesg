@@ -429,12 +429,13 @@ Job Assign
                         <tr style="background-color: #009fe1">
                             <th colspan="11">
                                 @{{driver.name}}
-{{--
+
                                 <button type="button" class="btn btn-sm btn-default" ng-click="onDriverRowToggleClicked($event, driverkey)">
-                                    <span ng-if="!showDriverRow[driverkey]" class="fa fa-caret-down"></span>
-                                    <span ng-if="showDriverRow[driverkey]" class="fa fa-caret-up"></span>
-                                </button> --}}
+                                    <span ng-if="!driver.showrow" class="fa fa-caret-down"></span>
+                                    <span ng-if="driver.showrow" class="fa fa-caret-up"></span>
+                                </button>
                                 <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
+                                <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
 {{--
                                 <span class="pull-right">
 
@@ -459,7 +460,7 @@ Job Assign
                                 </span>
                             </th>
                         </tr>
-                        <tr style="background-color: #DDFDF8; font-size: 12px;">
+                        <tr style="background-color: #DDFDF8; font-size: 12px;" ng-show="driver.showrow">
                             <th class="col-md-1 text-center">
                                 <input type="checkbox" id="check_all" ng-model="form.checkall[driverkey]" ng-change="onCheckAllChecked(driverkey)"/>
                             </th>
@@ -551,7 +552,7 @@ Job Assign
                                 <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                         </tr>
-                        <tbody>
+                        <tbody ng-show="driver.showrow">
                             <tr ng-repeat="(transactionkey, transaction) in driver.transactions" style="font-size: 14px;">
                                 <td class="col-md-1 text-center">
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">

@@ -244,8 +244,14 @@ var app = angular.module('app', [
 
         $scope.onDriverRowToggleClicked = function(event, driverkey) {
             event.preventDefault();
+            $scope.drivers[driverkey].showrow = !$scope.drivers[driverkey].showrow;
+        }
 
-            $scope.showDriverRow[driverkey] = !$scope.showDriverRow[driverkey];
+        $scope.onDriverRefreshClicked = function(event, driverkey) {
+            event.preventDefault();
+            $http.post('/api/transaction/jobassign/refreshdriver', {driverkey: driverkey, drivers: $scope.drivers}).success(function(data) {
+                $scope.drivers = data;
+            });
         }
 
         // retrieve page w/wo search
@@ -253,6 +259,9 @@ var app = angular.module('app', [
             $scope.spinner = true;
             $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
                 $scope.drivers = data.drivers;
+                angular.forEach($scope.drivers, function(value, key) {
+                    $scope.drivers[key].showrow = true;
+                })
                 $scope.grand_total = data.grand_total;
                 $scope.grand_qty = data.grand_qty;
                 $scope.grand_count = data.grand_count;

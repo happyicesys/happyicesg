@@ -1497,6 +1497,21 @@ class TransactionController extends Controller
         }
     }
 
+    // refresh individual driver array job assign
+    public function jobAssignRefreshDriver(Request $request)
+    {
+
+        $newarr = [];
+        $drivers = $request->drivers;
+        $driverkey = $request->driverkey;
+
+        if($drivers[$driverkey]) {
+            $keys = array_column($drivers[$driverkey]['transactions'], 'sequence');
+            array_multisort($keys, SORT_ASC, $drivers[$driverkey]['transactions']);
+        }
+        return $drivers;
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {
