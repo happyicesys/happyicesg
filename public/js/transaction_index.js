@@ -20,7 +20,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.driverOptionShowing = true;
-        $scope.showBatchFunctionPanel = false;
+        $scope.showBatchFunctionPanel = true;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
@@ -293,6 +293,11 @@ var app = angular.module('app', [
             $scope.alldata.forEach(function (transaction, key) {
                 $scope.alldata[key].check = checked;
             });
+        }
+
+        // upload excel batch generate invoice
+        $scope.uploadExcel = function(event) {
+            event.preventDefault();
         }
 
         $scope.onMapClicked = function(singleperson = null, index = null) {

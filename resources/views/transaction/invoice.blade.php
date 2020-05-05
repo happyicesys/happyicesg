@@ -265,6 +265,20 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($transaction->driver)
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group" style="margin-bottom: 0px;">
+                                        <span class="inline" style="font-size: 85%;"><strong>Delivered By:</strong></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group" style="margin-bottom: 0px;">
+                                        <span class="inline">{{$transaction->driver}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                             @if($transaction->is_deliveryorder)
                                 <div class="row">
                                     <div class="col-xs-6">

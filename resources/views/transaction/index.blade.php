@@ -613,26 +613,22 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    {!! Form::label('batch_assign_driver', 'Batch Upload Excel', ['class'=>'control-label search-title']) !!}
-                                    <select name="driver" class="form-control select" ng-model="form.driver">
-                                        <option value="-1">
-                                            -- Clear --
-                                        </option>
-                                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                                            @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
-                                                <option value="{{$user->name}}">
-                                                    {{$user->name}}
-                                                </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
+                                    <label for="files">Upload Excel Batch Create Invoice</label>
+                                    <input type="file" ng-files="setTheFiles($files)" id="image_file"  class="form-control">
+                                    <span class="text-muted small">
+                                        ** Please make sure the excel headers is same with this
+                                        <a href="">template</a>
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Upload</button>
+                                    {{-- <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Upload</button> --}}
+                                    <button ng-click="uploadExcel($event)" class="btn btn-warning"> <i class="fa fa-upload" aria-hidden="true"></i>
+                                        Upload Excel
+                                    </button>
                                 </div>
                                 </div>
                             </div>
@@ -652,7 +648,7 @@
                             <tr class="hidden" data-tableexport-display="always">
                                 <td></td>
                             </tr>
-                            <tr style="background-color: #bebed4">
+                            <tr style="background-color: #FED8F1">
 
                                 <th class="col-md-1 text-center">
                                     {{-- <input type="checkbox" id="checkAll" /> --}}
