@@ -652,7 +652,7 @@
                             <tr class="hidden" data-tableexport-display="always">
                                 <td></td>
                             </tr>
-                            <tr style="background-color: #DDFDF8">
+                            <tr style="background-color: #bebed4">
 
                                 <th class="col-md-1 text-center">
                                     {{-- <input type="checkbox" id="checkAll" /> --}}

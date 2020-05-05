@@ -365,6 +365,7 @@ Route::post('/api/transaction/batch/jobdriver', 'TransactionController@batchJobA
 Route::get('/transaction/jobassign', 'TransactionController@jobAssignIndex');
 Route::post('/api/transaction/jobassign', 'TransactionController@getJobAssignData');
 Route::post('/api/transaction/batch/deliverydate', 'TransactionController@batchUpdateDeliveryDate');
+Route::post('/api/transaction/batch/deliverydate/jobassign', 'TransactionController@batchUpdateDeliveryDateJobAssign');
 Route::post('/api/transaction/batchdriver', 'TransactionController@batchAssignDriver');
 Route::post('/api/transaction/is_important/{id}', 'TransactionController@isImportantChanged');
 Route::post('/api/transaction/driver/quickupdate', 'TransactionController@driverQuickUpdate');

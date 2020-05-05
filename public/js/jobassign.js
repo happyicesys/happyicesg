@@ -212,7 +212,7 @@ var app = angular.module('app', [
         // batch delivery date change
         $scope.onBatchChangeDeliveryDateClicked = function(event) {
             event.preventDefault();
-            $http.post('/api/transaction/batch/deliverydate',
+            $http.post('/api/transaction/batch/deliverydate/jobassign',
             {
                 drivers : $scope.drivers,
                 delivery_date: $scope.form.delivery_date

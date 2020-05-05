@@ -528,6 +528,7 @@ class TransactionController extends Controller
 
         }elseif($request->input('confirm')){
             // confirmation must with the entries start
+
             if(!$transaction->is_deliveryorder and $quantities and $amounts) {
                 if(array_filter($quantities) != null and array_filter($amounts) != null) {
                     $request->merge(array('status' => 'Confirmed'));
@@ -1432,10 +1433,11 @@ class TransactionController extends Controller
     }
 
     // api for batch update delivery_date
-    public function batchUpdateDeliveryDate(Request $request)
+    public function batchUpdateDeliveryDateJobAssign(Request $request)
     {
         $drivers = $request->drivers;
         $delivery_date = $request->delivery_date;
+        dd($drivers,$delivery_date);
 
         if($drivers) {
             foreach($drivers as $driverindex => $driver) {
@@ -1452,6 +1454,29 @@ class TransactionController extends Controller
                         $model->save();
                     }
                     unset($drivers[$driverindex]['transactions'][$transactionindex]);
+                }
+            }
+        }
+    }
+
+    // api for batch update delivery_date
+    public function batchUpdateDeliveryDate(Request $request)
+    {
+        $transactions = $request->transactions;
+        $delivery_date = $request->delivery_date;
+
+        if($transactions) {
+            foreach($transactions as $index => $transaction) {
+                if(isset($transaction['check'])) {
+                    $model = Transaction::findOrFail($transaction['id']);
+                    if($delivery_date) {
+                        $model->delivery_date = $delivery_date;
+                    }
+                    $model->driver = null;
+                    $model->sequence = null;
+                    $model->updated_at = Carbon::now();
+                    $model->updated_by = auth()->user()->name;
+                    $model->save();
                 }
             }
         }
