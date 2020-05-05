@@ -114,7 +114,7 @@ class TransactionController extends Controller
         $driverarr = clone $transactions;
 
         $driverarr = $driverarr->distinct('transactions.driver')->orderBy('transactions.driver')->select('transactions.driver')->get();
-        $transactionarr = $transactions->orderBy('transactions.sequence')->get();
+        $transactionarr = $transactions->orderBy('transactions.sequence')->orderBy('transactions.id', 'desc')->get();
 
         $collections = [];
         $grand_total = 0;
@@ -528,15 +528,15 @@ class TransactionController extends Controller
 
         }elseif($request->input('confirm')){
             // confirmation must with the entries start
-
-            if(!$transaction->is_deliveryorder and $quantities and $amounts) {
-                if(array_filter($quantities) != null and array_filter($amounts) != null) {
+/*
+            if(!$transaction->is_deliveryorder) {
+                if($quantities and $amounts) {
                     $request->merge(array('status' => 'Confirmed'));
                 }else{
                     Flash::error('The list cannot be empty upon confirmation');
                     return Redirect::action('TransactionController@edit', $transaction->id);
-                }
-            }else {
+                } */
+            if($transaction->is_deliveryorder){
                 $this->saveDoByTransactionid($transaction->id);
                 $this->validate($request, [
                     'job_type' => 'required',
@@ -581,6 +581,8 @@ class TransactionController extends Controller
                 $transaction->save();
 
                 $this->sendDoConfirmEmailAlert($transaction->id);
+            }else {
+                $request->merge(array('status' => 'Confirmed'));
             }
 
         }elseif($request->input('unpaid')){
@@ -923,7 +925,7 @@ class TransactionController extends Controller
             // 'profile'       =>  $profile,
         ];
 
-        $name = 'Inv('.$transaction->id.')_'.$person->cust_id.'_'.$person->company.'.pdf';
+        $name = $transaction->del_postcode.'_'.$transaction->id.'_'.$person->cust_id.'_'.$person->company.'.pdf';
         $pdf = PDF::loadView('transaction.invoice', $data);
         return $pdf->download($name);
     }

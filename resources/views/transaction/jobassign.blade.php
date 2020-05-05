@@ -558,7 +558,7 @@ Job Assign
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 500 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit">
