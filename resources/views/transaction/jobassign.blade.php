@@ -513,9 +513,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #009fe1">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="11">
+                            <th colspan="12">
                             @else
-                            <th colspan="9">
+                            <th colspan="10">
                             @endif
                                 @{{driver.name}}
 
@@ -588,6 +588,9 @@ Job Assign
                                 Postcode
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Address
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('transactions.contact', driverkey)">
@@ -684,6 +687,9 @@ Job Assign
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.del_postcode }}
+                                </td>
+                                <td class="col-md-2 text-left">
+                                    @{{transaction.del_address}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.contact}}
