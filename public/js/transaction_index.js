@@ -58,8 +58,10 @@ var app = angular.module('app', [
         $scope.form = {
             person_account: '',
             driver: '-1',
-            delivery_date: $scope.today
+            delivery_date: $scope.today,
+            excel_file: []
         };
+        let formData = new FormData();
         // init page load
         getUsersData();
         getPage(1);
@@ -298,7 +300,18 @@ var app = angular.module('app', [
         // upload excel batch generate invoice
         $scope.uploadExcel = function(event) {
             event.preventDefault();
+            console.log($scope.form.excel_file);
+            $http.post('/api/transaction/excel/import', $scope.form.excel_file).success(function(data) {
+
+            });
         }
+
+        $scope.setTheFiles = function ($files) {
+            console.log($files);
+            angular.forEach($files, function (value, key) {
+                $scope.form.excel_file[key] = value
+            });
+        };
 
         $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;
@@ -440,5 +453,18 @@ app.filter('delDate', [
         };
     }
 ]);
+
+app.directive('ngFiles', ['$parse', function ($parse) {
+
+    function file_links(scope, element, attrs) {
+        var onChange = $parse(attrs.ngFiles);
+        element.on('change', function (event) {
+            onChange(scope, {$files: event.target.files});
+        });
+    }
+    return {
+        link: file_links
+    }
+}]);
 
 app.controller('transController', transController);

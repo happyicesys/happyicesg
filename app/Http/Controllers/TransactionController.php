@@ -925,7 +925,16 @@ class TransactionController extends Controller
             // 'profile'       =>  $profile,
         ];
 
-        $name = $transaction->del_postcode.'_'.$transaction->id.'_'.$person->cust_id.'_'.$person->company.'.pdf';
+        $seq = 0;
+        $driver = 'unassigned';
+        if($transaction->sequence) {
+            $seq = $transaction->sequence * 1;
+        }
+        if($transaction->driver) {
+            $driver = $transaction->driver;
+        }
+
+        $name = $driver.'_'.$seq.'_'.$transaction->del_postcode.'_'.$transaction->id.'_'.$person->cust_id.'_'.$person->company.'.pdf';
         $pdf = PDF::loadView('transaction.invoice', $data);
         return $pdf->download($name);
     }
@@ -1524,7 +1533,6 @@ class TransactionController extends Controller
     // refresh individual driver array job assign
     public function jobAssignRefreshDriver(Request $request)
     {
-
         $newarr = [];
         $drivers = $request->drivers;
         $driverkey = $request->driverkey;
@@ -1534,6 +1542,37 @@ class TransactionController extends Controller
             array_multisort($keys, SORT_ASC, $drivers[$driverkey]['transactions']);
         }
         return $drivers;
+    }
+
+    // sort driver array job assign table locally
+    public function sortJobAssignDriverTable(Request $request)
+    {
+        $driver = $request->driver;
+        $sort_name = $request->sortName;
+        $sort_by = $request->sortBy;
+        $sort = 'SORT_ASC';
+
+        if($sort_name) {
+            if(strpos($sort_name, '.')) {
+                $sort_name = explode('.', $sort_name)[1];
+            }
+        }
+        if($sort_by) {
+            $sort = 'SORT_ASC';
+        }else {
+            $sort = 'SORT_DESC';
+        }
+
+        $keys = array_column($driver['transactions'], $sort_name);
+        array_multisort($keys, $sort, $driver['transactions']);
+
+        return $driver;
+    }
+
+    // import excel to generate batch invoices
+    public function importExcelTransaction(Request $request)
+    {
+        dd($request->all());
     }
 
     // retrieve transactions data ()

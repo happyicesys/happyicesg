@@ -556,19 +556,19 @@ Job Assign
                                 <input type="checkbox" id="check_all" ng-model="form.checkall[driverkey]" ng-change="onCheckAllChecked(driverkey)"/>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('sequence')">
+                                <a href="" ng-click="sortTable('sequence', driverkey)">
                                 #
                                 <span ng-if="search.sortName == 'sequence' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'sequence' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.id')">
+                                <a href="" ng-click="sortTable('transactions.id', driverkey)">
                                 INV #
                                 <span ng-if="search.sortName == 'transactions.id' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'transactions.id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('cust_id')">
+                                <a href="" ng-click="sortTable('cust_id', driverkey)">
                                 ID
                                 <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
@@ -584,13 +584,13 @@ Job Assign
                                 Action
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.del_postcode')">
+                                <a href="" ng-click="sortTable('transactions.del_postcode', driverkey)">
                                 Postcode
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.contact')">
+                                <a href="" ng-click="sortTable('transactions.contact', driverkey)">
                                 Contact
                                 <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
@@ -617,27 +617,27 @@ Job Assign
                             </th>
                             @endif
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('status')">
+                                <a href="" ng-click="sortTable('status', driverkey)">
                                 Status
                                 <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('driver')">
+                                <a href="" ng-click="sortTable('driver', driverkey)">
                                 Assigned Driver
                                 <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             @endif
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('total')">
+                                <a href="" ng-click="sortTable('total', driverkey)">
                                 Total Amount
                                 <span ng-if="search.sortName == 'total' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'total' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('total_qty')">
+                                <a href="" ng-click="sortTable('total_qty', driverkey)">
                                 Total Qty
                                 <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>

@@ -274,7 +274,12 @@
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline">{{$transaction->driver}}</span>
+                                        <span class="inline">
+                                            {{$transaction->driver}}
+                                            @if($transaction->sequence)
+                                                ({{$transaction->sequence * 1}})
+                                            @endif
+                                        </span>
                                     </div>
                                 </div>
                             </div>

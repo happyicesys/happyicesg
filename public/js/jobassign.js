@@ -63,6 +63,7 @@ var app = angular.module('app', [
         // init page load
         getUsersData();
         getPage(1);
+        setShowRowFalseInit();
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -164,10 +165,10 @@ var app = angular.module('app', [
             getPage(1)
         };
 
-        $scope.sortTable = function(sortName) {
+        $scope.sortTable = function(sortName, driverkey) {
             $scope.search.sortName = sortName;
             $scope.search.sortBy = ! $scope.search.sortBy;
-            getPage(1);
+            sortDriverTable(driverkey);
         }
 
           // when hitting search button
@@ -259,12 +260,6 @@ var app = angular.module('app', [
             $scope.spinner = true;
             $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
                 $scope.drivers = data.drivers;
-                angular.forEach($scope.drivers, function(value, key) {
-                    $scope.drivers[key].showrow = false;
-                    if(value['name'] == $scope.search.driver) {
-                        $scope.drivers[key].showrow = true;
-                    }
-                })
                 $scope.grand_total = data.grand_total;
                 $scope.grand_qty = data.grand_qty;
                 $scope.grand_count = data.grand_count;
@@ -276,6 +271,30 @@ var app = angular.module('app', [
             }).error(function(data){
 
             });
+        }
+
+        function sortDriverTable(driverkey) {
+            $scope.spinner = true;
+            console.log($scope.search.sortBy)
+            $http.post('/api/transaction/jobassign/sortdrivertable', {
+                driver: $scope.drivers[driverkey],
+                sortName: $scope.search.sortName,
+                sortBy: $scope.search.sortBy,
+                driverKey: driverkey
+            }).success(function(data) {
+                console.log(data);
+                $scope.drivers[driverkey] = data;
+            });
+            $scope.spinner = false;
+        }
+
+        function setShowRowFalseInit() {
+            angular.forEach($scope.drivers, function(value, key) {
+                $scope.drivers[key].showrow = false;
+                if(value['name'] == $scope.search.driver) {
+                    $scope.drivers[key].showrow = true;
+                }
+            })
         }
 
         function getUsersData() {
