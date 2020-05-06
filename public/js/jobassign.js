@@ -384,7 +384,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
-                            label: {fontSize: '10px', text: '' + singleperson.sequence, fontWeight: 'bold'},
+                            label: {fontSize: '14px', text: '' + singleperson.sequence, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url
@@ -432,7 +432,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                            label: {fontSize: '11px', text: '' + person.sequence, fontWeight: 'bold'},
+                            label: {fontSize: '14px', text: '' + person.sequence, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url
@@ -480,7 +480,7 @@ var app = angular.module('app', [
                                 position: pos,
                                 map: map,
                                 title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                                label: {fontSize: '11px', text: person.custcategory, fontWeight: 'bold'},
+                                label: {fontSize: '14px', text: person.custcategory, fontWeight: 'bold'},
                                 icon: {
                                     labelOrigin: new google.maps.Point(15,10),
                                     url: url
