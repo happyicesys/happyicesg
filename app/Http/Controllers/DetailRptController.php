@@ -712,8 +712,11 @@ class DetailRptController extends Controller
         if($request->product_name) {
             $amountstr = $amountstr." AND items.name LIKE '%".$request->product_name."%'";
         }
+        // dd($request->driver);
         if($request->driver) {
-            $amountstr = $amountstr." AND drivers.name ='".$request->driver."'";
+            $drivers = implode("','", $request->driver);
+            // dd($drivers);
+            $amountstr = $amountstr." AND drivers.name IN ('".$drivers."')";
         }
 
 

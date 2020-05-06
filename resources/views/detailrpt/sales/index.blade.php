@@ -16,7 +16,7 @@
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('driver-supervisor'))
                     <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
                     <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li>
                     <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail (Month)</a></li>
@@ -27,7 +27,7 @@
             </div>
             <div class="panel-body">
                 <div class="tab-content">
-                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('driver-supervisor'))
                     <div class="tab-pane active" id="cust_detail">
                         @include('detailrpt.sales.cust_detail')
                     </div>
@@ -38,7 +38,7 @@
                         @include('detailrpt.sales.product_detail_month')
                     </div>
                     @endif
-                    <div class="tab-pane {{(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) ? 'active' : ''}}" id="product_detail_day">
+                    <div class="tab-pane {{(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('driver-supervisor')) ? 'active' : ''}}" id="product_detail_day">
                         @include('detailrpt.sales.product_detail_day')
                     </div>
 {{--                     <div class="tab-pane" id="invoice_breakdown">

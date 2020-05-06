@@ -32,6 +32,7 @@ Job Assign
         </div>
         <div class="panel-body">
             {!! Form::open(['id'=>'transaction_rpt', 'method'=>'POST','action'=>['TransactionController@exportAccConsolidatePdf']]) !!}
+                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                 <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
@@ -265,6 +266,87 @@ Job Assign
                     !!}
                     </div> --}}
                 </div>
+                @else
+                    <div class="row">
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('invoice', 'Invoice', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('invoice', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.transaction_id',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Inv Num',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                            <label class="pull-right">
+                                <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                                <span style="margin-top: 5px;">
+                                    Exclude
+                                </span>
+                            </label>
+                            {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                                null,
+                                [
+                                    'class'=>'selectmultiple form-control',
+                                    'ng-model'=>'search.custcategory',
+                                    'multiple'=>'multiple',
+                                    'ng-change' => "searchDB()"
+                                ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('po_no', 'PO Num', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('po_no', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.po_no',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'PO Num',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('contact', 'Attn Contact', ['class'=>'control-label search-title']) !!}
+                            {!! Form::text('contact', null,
+                                                            [
+                                                                'class'=>'form-control input-sm',
+                                                                'ng-model'=>'search.contact',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'Attn Contact',
+                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                            ]) !!}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
+                            @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" ng-init="search.driver = '{{auth()->user()->name}}'">
+                                    <option value="">All</option>
+                                    <option value="{{auth()->user()->name}}">
+                                        {{auth()->user()->name}}
+                                    </option>
+                                </select>
+                            @else
+                                <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                                    <option value="">All</option>
+                                    <option value="-1">-- Unassigned --</option>
+                                    @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                        @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                            <option value="{{$user->name}}">
+                                                {{$user->name}}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
                 <div class="row">
 {{--
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -315,6 +397,7 @@ Job Assign
                     </div>
                 </div>
 
+                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
@@ -422,12 +505,18 @@ Job Assign
                         </div>
                     </div>
                 </div>
+                @endif
+
                 {!! Form::close() !!}
                 <div class="alt-table-responsive" id="exportable">
                     <table class="table table-list-search table-hover table-bordered" ng-repeat="(driverkey, driver) in drivers">
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #009fe1">
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th colspan="11">
+                            @else
+                            <th colspan="9">
+                            @endif
                                 @{{driver.name}}
 
                                 <button type="button" class="btn btn-sm btn-default" ng-click="onDriverRowToggleClicked($event, driverkey)">
@@ -435,7 +524,9 @@ Job Assign
                                     <span ng-if="driver.showrow" class="fa fa-caret-up"></span>
                                 </button>
                                 <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
-                                <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                    <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
+                                @endif
 {{--
                                 <span class="pull-right">
 

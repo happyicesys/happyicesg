@@ -18,7 +18,7 @@
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">
-                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
+                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user')and !auth()->user()->hasRole('driver-supervisor'))
                         @cannot('transaction_view')
                             <a href="/person/create" class="btn btn-sm btn-success">+ New {{ $PERSON_TITLE }}</a>
                             @if(!auth()->user()->hasRole('franchisee'))

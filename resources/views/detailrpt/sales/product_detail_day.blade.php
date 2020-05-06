@@ -197,15 +197,15 @@
                 {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
                 @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                     {{-- <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly> --}}
-                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" ng-init="driverInit('{{auth()->user()->name}}')">
+                    <select name="driver" class="form-control selectmultiple" ng-model="search.driver" ng-change="searchDB()" ng-init="driverInit('{{auth()->user()->name}}')" multiple disabled>
                         {{-- <option value="">All</option> --}}
                         <option value="{{auth()->user()->name}}">
                             {{auth()->user()->name}}
                         </option>
                     </select>
                 @else
-                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
-                        <option value="">All</option>
+                    <select name="driver" class="form-control selectmultiple" ng-model="search.driver" ng-change="searchDB()" multiple>
+                        {{-- <option value="">All</option> --}}
                         @foreach($users::orderBy('name')->get() as $user)
                             @if($user->hasRole('driver') or $user->hasRole('technician'))
                                 <option value="{{$user->name}}">

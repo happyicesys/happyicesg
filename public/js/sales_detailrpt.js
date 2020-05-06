@@ -311,6 +311,7 @@ var app = angular.module('app', [
             status: 'Confirmed',
             is_commission: '0',
             is_inventory: '1',
+            driver: [],
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -382,7 +383,7 @@ var app = angular.module('app', [
         }
 
         $scope.driverInit = function(driver) {
-            $scope.search.driver = driver;
+            $scope.search.driver = [driver];
             $scope.search.status = 'Confirmed';
         }
 
