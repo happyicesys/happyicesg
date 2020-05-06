@@ -20,7 +20,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.headerTemp = '';
         $scope.driverOptionShowing = true;
-        $scope.showBatchFunctionPanel = false;
+        $scope.showBatchFunctionPanel = true;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
@@ -61,7 +61,6 @@ var app = angular.module('app', [
             delivery_date: $scope.today,
             excel_file: []
         };
-        let formData = new FormData();
         // init page load
         getUsersData();
         getPage(1);
@@ -297,21 +296,39 @@ var app = angular.module('app', [
             });
         }
 
-        // upload excel batch generate invoice
-        $scope.uploadExcel = function(event) {
-            event.preventDefault();
-            console.log($scope.form.excel_file);
-            $http.post('/api/transaction/excel/import', $scope.form.excel_file).success(function(data) {
+        $scope.errors = [];
+        $scope.files = [];
+        var formData = new FormData();
 
-            });
-        }
+        $scope.uploadExcel = function (event) {
+            event.preventDefault();
+            var request = {
+                method: 'POST',
+                url: '/api/transaction/excel/import',
+                data: formData,
+                headers: {
+                    'Content-Type': undefined
+                }
+            };
+            $http(request)
+                .then(function success(e) {
+                    $scope.files = e.data.files;
+                    $scope.errors = [];
+                    // clear uploaded file
+                    var fileElement = angular.element('#excel_file');
+                    fileElement.value = '';
+                    alert("Excel file uploaded and transactions loaded");
+                }, function error(e) {
+                    $scope.errors = e.data.errors;
+                });
+        };
 
         $scope.setTheFiles = function ($files) {
-            console.log($files);
             angular.forEach($files, function (value, key) {
-                $scope.form.excel_file[key] = value
+                formData.append('excel_file', value);
             });
         };
+
 
         $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;

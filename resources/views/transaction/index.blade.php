@@ -566,7 +566,7 @@
                                             -- Clear --
                                         </option>
                                         @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                                            @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor'))  and count($user->profiles) > 0)
                                                 <option value="{{$user->name}}">
                                                     {{$user->name}}
                                                 </option>
@@ -625,7 +625,6 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-
                                     <button ng-click="uploadExcel($event)" class="btn btn-warning"> <i class="fa fa-upload" aria-hidden="true"></i>
                                         Upload Excel
                                     </button>

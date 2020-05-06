@@ -1572,7 +1572,29 @@ class TransactionController extends Controller
     // import excel to generate batch invoices
     public function importExcelTransaction(Request $request)
     {
-        dd($request->all());
+        $file = '';
+        if($file = request()->file('excel_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $file = $file->move('import_excel', $name);
+            Excel::load($file, function($reader) {
+                $results = $reader->get();
+                foreach($results as $result) {
+                    $model = new Transaction();
+                    if($cust_id = $result->customer_id) {
+                        $person = Person::where('cust_id', $cust_id)->first();
+                        $model->person_id = $person->id;
+                    }
+                    if($order_date = $result->order_date) {
+                        $model->order_date = $order_date;
+                    }
+                    if($delivery_date = $result->delivery_date) {
+                        $model->delivery_date = $delivery_date;
+                    }
+                    dd($result->order_date, $result->delivery_date, $result);
+                }
+
+            })->selectSheetsByIndex(0);
+        }
     }
 
     // retrieve transactions data ()
