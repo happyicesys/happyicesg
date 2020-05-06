@@ -324,7 +324,7 @@ Job Assign
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
                             @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
-                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" ng-init="search.driver = '{{auth()->user()->name}}'">
+                            <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()" ng-init="onDriverInit('{{auth()->user()->name}}')">
                                     <option value="">All</option>
                                     <option value="{{auth()->user()->name}}">
                                         {{auth()->user()->name}}
@@ -649,7 +649,11 @@ Job Assign
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                    @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                                        @{{transaction.sequence ? transaction.sequence * 1 : ''}}
+                                    @else
+                                        <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                    @endif
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <a href="/transaction/@{{ transaction.id }}/edit">

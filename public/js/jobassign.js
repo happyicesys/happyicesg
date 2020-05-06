@@ -260,7 +260,10 @@ var app = angular.module('app', [
             $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
                 $scope.drivers = data.drivers;
                 angular.forEach($scope.drivers, function(value, key) {
-                    $scope.drivers[key].showrow = true;
+                    $scope.drivers[key].showrow = false;
+                    if(value['name'] == $scope.search.driver) {
+                        $scope.drivers[key].showrow = true;
+                    }
                 })
                 $scope.grand_total = data.grand_total;
                 $scope.grand_qty = data.grand_qty;
@@ -321,6 +324,12 @@ var app = angular.module('app', [
             angular.forEach($scope.drivers[driverkey].transactions, function(value, key) {
                 $scope.drivers[driverkey].transactions[key].check = checked;
             });
+        }
+
+        // on driver init
+        $scope.onDriverInit = function(driver_name) {
+            $scope.search.driver = driver_name;
+            // console.log($scope.drivers);
         }
 
         $scope.onMapClicked = function(singleperson = null, driverkey = null, transactionkey = null) {
@@ -384,7 +393,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company,
-                            label: {fontSize: '15px', text: '' + singleperson.sequence, fontWeight: 'bold'},
+                            label: {fontSize: '15px', text: '' + singleperson.sequence * 1, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url
@@ -432,7 +441,7 @@ var app = angular.module('app', [
                             position: pos,
                             map: map,
                             title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
-                            label: {fontSize: '15px', text: '' + person.sequence, fontWeight: 'bold'},
+                            label: {fontSize: '15px', text: '' + person.sequence * 1, fontWeight: 'bold'},
                             icon: {
                                 labelOrigin: new google.maps.Point(15,10),
                                 url: url
