@@ -1448,7 +1448,6 @@ class TransactionController extends Controller
                         if($delivery_date) {
                             $model->delivery_date = $delivery_date;
                         }
-                        $model->driver = null;
                         $model->sequence = null;
                         $model->updated_at = Carbon::now();
                         $model->updated_by = auth()->user()->name;
@@ -1473,7 +1472,6 @@ class TransactionController extends Controller
                     if($delivery_date) {
                         $model->delivery_date = $delivery_date;
                     }
-                    $model->driver = null;
                     $model->sequence = null;
                     $model->updated_at = Carbon::now();
                     $model->updated_by = auth()->user()->name;
