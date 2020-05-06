@@ -1550,7 +1550,7 @@ class TransactionController extends Controller
         $driver = $request->driver;
         $sort_name = $request->sortName;
         $sort_by = $request->sortBy;
-        $sort = 'SORT_ASC';
+        $sort = SORT_ASC;
 
         if($sort_name) {
             if(strpos($sort_name, '.')) {
@@ -1558,9 +1558,9 @@ class TransactionController extends Controller
             }
         }
         if($sort_by) {
-            $sort = 'SORT_ASC';
+            $sort = SORT_ASC;
         }else {
-            $sort = 'SORT_DESC';
+            $sort = SORT_DESC;
         }
 
         $keys = array_column($driver['transactions'], $sort_name);
