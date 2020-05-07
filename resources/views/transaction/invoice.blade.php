@@ -161,51 +161,51 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="row" style="font-size: 120%;">
-                                <div class="col-xs-5">
+                            <div class="row" style="font-size: 110%;">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline"><strong>DO/Inv No:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$inv_id}}</span>
                                     </div>
                                 </div>
                             </div>
                             @if(!$transaction->is_deliveryorder)
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Order On:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->order_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y') : ''}}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Delivery On:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->delivery_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $transaction->delivery_date)->format('d M y') : ''}}</span>
                                         </div>
                                     </div>
                                 </div>
                             @else
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Submitted On:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->deliveryorder ? $transaction->deliveryorder->submission_datetime->format('d M y') : ''}}</span>
                                             <br>
@@ -214,65 +214,65 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="row" style="font-size: 120%;">
-                                <div class="col-xs-5">
+                            <div class="row" style="font-size: 110%;">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline"><strong>Term:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$person->payterm}}</span>
                                     </div>
                                 </div>
                             </div>
                             @if(!$transaction->is_deliveryorder)
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Updated By:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->updated_by}}</span>
                                         </div>
                                     </div>
                                 </div>
                             @else
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Requested By:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{\App\User::find($transaction->deliveryorder->requester)->name}}</span>
                                         </div>
                                     </div>
                                 </div>
                             @endif
-                            <div class="row" style="font-size: 120%;">
-                                <div class="col-xs-5">
+                            <div class="row" style="font-size: 110%;">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline"><strong>PO#:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">{{$transaction->po_no}}</span>
                                     </div>
                                 </div>
                             </div>
                             @if($transaction->driver)
-                            <div class="row" style="font-size: 120%;">
-                                <div class="col-xs-5">
+                            <div class="row" style="font-size: 110%;">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline" ><strong>Delivered By:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7">
+                                <div class="col-xs-6">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline">
                                             {{$transaction->driver}}
@@ -285,13 +285,13 @@
                             </div>
                             @endif
                             @if($transaction->is_deliveryorder)
-                                <div class="row" style="font-size: 120%;">
-                                    <div class="col-xs-5">
+                                <div class="row" style="font-size: 110%;">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline"><strong>Job Type:</strong></span>
                                         </div>
                                     </div>
-                                    <div class="col-xs-7">
+                                    <div class="col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <span class="inline">{{$transaction->deliveryorder->job_type}}</span>
                                         </div>
