@@ -261,7 +261,7 @@
                                         <span class="inline"><strong>PO#:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7" style="font-size: 110%;">
+                                <div class="col-xs-7" style="font-size: 100%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <strong>
                                             <span class="inline">{{$transaction->po_no}}</span>
