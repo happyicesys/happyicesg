@@ -207,7 +207,7 @@
                                     <option value="">All</option>
                                     <option value="-1">-- Unassigned --</option>
                                     @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                                        @if(($user->hasRole('driver') or $user->hasRole('technician')) and count($user->profiles) > 0)
+                                        @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor')) and count($user->profiles) > 0)
                                             <option value="{{$user->name}}">
                                                 {{$user->name}}
                                             </option>

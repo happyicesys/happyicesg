@@ -21,14 +21,14 @@
             <div class="row">
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('user_id', 'Worker', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('user_id', [''=>'All']+$users::orderBy('name')->pluck('name', 'id')->all(), null,
+                    {!! Form::select('user_id', [''=>'All']+$users::where('is_active', 1)->orderBy('name')->pluck('name', 'id')->all(), null,
                         [
                         'class'=>'select form-control',
                         'ng-model'=>'search.user_id',
                         'ng-change'=>'searchDB()'
                         ])
                     !!}
-                </div>                                        
+                </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('overtime_from', 'From', ['class'=>'control-label search-title']) !!}
                     <div class="input-group">
@@ -45,7 +45,7 @@
                         <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('overtime_from', search.overtime_from)"></span>
                         <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('overtime_from', search.overtime_from)"></span>
                     </div>
-                </div>                        
+                </div>
                 <div class="form-group col-md-3 col-sm-6 col-xs-12">
                     {!! Form::label('overtime_to', 'To', ['class'=>'control-label search-title']) !!}
                     <div class="input-group">
@@ -62,7 +62,7 @@
                         <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('overtime_to', search.overtime_to)"></span>
                         <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('overtime_to', search.overtime_to)"></span>
                     </div>
-                </div>                                                                                    
+                </div>
             </div>
 
             <div class="row">
@@ -97,7 +97,7 @@
                             Date
                             <span ng-if="search.sortName == 'overtime_date' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'overtime_date' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>                                
+                        </th>
                         <th class="col-md-2 text-center">
                             <a href="" ng-click="sortTable('user_id')">
                             Worker
@@ -109,19 +109,19 @@
                             Hours
                             <span ng-if="search.sortName == 'hours' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'hours' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>                        
+                        </th>
                         <th class="col-md-3 text-center">
                             <a href="" ng-click="sortTable('remarks')">
                             Remarks
                             <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>      
+                        </th>
                         <th class="col-md-1 text-center">
                             <a href="" ng-click="sortTable('created_by')">
                             Created By
                             <span ng-if="search.sortName == 'created_by' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'created_by' && search.sortBy" class="fa fa-caret-up"></span>
-                        </th>                                                                                        
+                        </th>
                         <th class="col-md-1"></th>
                     </tr>
                     <tbody>
@@ -131,19 +131,19 @@
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{overtime.overtime_date}}
-                            </td>                                    
+                            </td>
                             <td class="col-md-2 text-left">
                                 @{{overtime.user.name}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{overtime.hours}}
-                            </td>                            
+                            </td>
                             <td class="col-md-3 text-left">
                                 @{{overtime.remarks}}
                             </td>
                             <td class="col-md-1 text-center">
                                 @{{overtime.creator.name}}
-                            </td>                                                                                                                                                                                  
+                            </td>
                             <td class="col-md-1 text-center">
                                 <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#job_modal" ng-click="editOvertimeModal(ovetime)"><i class="fa fa-pencil-square-o"></i></button>
                                 <button class="btn btn-danger btn-sm" ng-click="removeEntry(overtime.id)"><i class="fa fa-times"></i></button>
@@ -176,8 +176,8 @@
                             <label class="control-label">
                                 Task Name
                             </label>
-                            <input type="text" name="task_name" class="form-control" ng-model="form.task_name">                                                                      
-                        </div>      
+                            <input type="text" name="task_name" class="form-control" ng-model="form.task_name">
+                        </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
                                 Date
@@ -191,20 +191,20 @@
                                     ng-model = "form.task_date"
                                     ng-change = "taskDateChanged(form.task_date)"
                                 />
-                            </datepicker>                                    
-                        </div>   
+                            </datepicker>
+                        </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
                                 Remarks
                             </label>
                             <textarea name="remarks" rows="5" class="form-control" ng-model="form.remarks"></textarea>
-                        </div>    
+                        </div>
                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
                                 Progress (%)
                             </label>
                             <input type="text" name="progress" class="form-control" ng-model="form.progress" placeholder="Numbers only">
-                        </div>                                                            
+                        </div>
 {{--                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                             <label class="control-label">
                                 Workers
@@ -214,11 +214,11 @@
                                 <ui-select-choices repeat="person.id as person in people | filter: $select.search">
                                     <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
                                 </ui-select-choices>
-                            </ui-select>                                                                        
-                        </div>  --}}                                                                                         
-                    </div>                           
+                            </ui-select>
+                        </div>  --}}
+                    </div>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-click="createJob()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
                     <button type="button" class="btn btn-success" ng-click="editJob()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>

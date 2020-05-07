@@ -46,8 +46,8 @@
                 @else
                     <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
                         <option value="">All</option>
-                        @foreach($users::orderBy('name')->get() as $user)
-                            @if($user->hasRole('driver') or $user->hasRole('technician'))
+                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                            @if($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor'))
                                 <option value="{{$user->name}}">
                                     {{$user->name}}
                                 </option>
