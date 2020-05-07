@@ -93,7 +93,7 @@
 
                     if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
                         $access = true;
-                        $transaction_access = true;
+                        // $transaction_access = true;
                         $jobassign_access = true;
                         $franchisee_access = true;
                         $hd_access = true;

@@ -58,6 +58,10 @@ class AuthController extends Controller
             return '/franchisee';
         }
 
+        if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            return '/transaction/jobassign';
+        }
+
         return '/transaction';
     }
 
