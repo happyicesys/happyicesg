@@ -128,6 +128,7 @@ class OperationWorksheetController extends Controller
                         'updated_by' => auth()->user()->name,
                         'created_by' => auth()->user()->id,
                         'del_postcode' => $person->del_postcode,
+                        'del_address' => $person->del_address,
                         'del_lat' => $person->del_lat,
                         'del_lng' => $person->del_lng
                     ]);

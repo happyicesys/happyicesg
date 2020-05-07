@@ -1579,18 +1579,67 @@ class TransactionController extends Controller
             Excel::load($file, function($reader) {
                 $results = $reader->get();
                 foreach($results as $result) {
-                    $model = new Transaction();
-                    if($cust_id = $result->customer_id) {
-                        $person = Person::where('cust_id', $cust_id)->first();
-                        $model->person_id = $person->id;
+                    if($person = Person::where('cust_id', $request->customer_id)->first()) {
+                        $model = new Transaction();
+                        if($cust_id = $result->customer_id) {
+                            $model->person_id = $person->id;
+                            $model->person_code = $person->cust_id;
+                            $model->gst = $person->gst;
+                            $model->gst_rate = $person->gst_rate;
+                            $model->is_gst_inclusive = $person->is_gst_inclusive;
+                        }
+                        if($del_postcode = $result->del_postcode) {
+                            $model->del_postcode = $del_postcode;
+                        }else {
+                            $model->del_postcode = $person->del_postcode;
+                        }
+                        if($del_address = $result->del_address) {
+                            $model->del_address = $del_address;
+                        }else {
+                            $model->del_address = $person->del_address;
+                        }
+                        if($order_date = $result->order_date) {
+                            $model->order_date = $order_date;
+                        }
+                        if($delivery_date = $result->delivery_date) {
+                            $model->delivery_date = $delivery_date;
+                        }
+                        if($po_no = $result->po_no) {
+                            $model->po_no = $po_no;
+                        }
+                        if($total_amount = $result->total_amount) {
+                            $model->total = $total_amount;
+                        }
+                        if($delivery_fee = $result->delivery_fee) {
+                            $model->delivery_fee = $delivery_fee;
+                        }
+                        if($attn_name = $result->attn_name) {
+                            $model->name = $attn_name;
+                        }
+                        if($attn_contact = $result->attn_contact) {
+                            $model->contact = $attn_contact;
+                        }
+                        if($attn_email = $result->attn_email) {
+                            $model->email = $attn_email;
+                        }
+                        if($transremark = $result->transremark) {
+                            $model->transremark = $transremark;
+                            $model->is_important = 1;
+                        }
+                        if($payment_date = $result->payment_date) {
+                            $model->paid_at = $payment_date;
+                            $model->paid_by = auth()->user()->name;
+                            $model->pay_method = 'cash';
+                            $model->pay_status = 'Paid';
+                        }
+                        $model->status = 'Confirmed';
+                        $model->save();
+
+
+                        // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
                     }
-                    if($order_date = $result->order_date) {
-                        $model->order_date = $order_date;
-                    }
-                    if($delivery_date = $result->delivery_date) {
-                        $model->delivery_date = $delivery_date;
-                    }
-                    dd($result->order_date, $result->delivery_date, $result);
+
+
                 }
 
             })->selectSheetsByIndex(0);

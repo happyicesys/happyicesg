@@ -5,7 +5,7 @@ var app = angular.module('app', [
                                     '720kb.datepicker'
                                 ]);
 
-    function transController($scope, $http){
+    function transController($scope, $http, $window){
         // init the variables
         $scope.alldata = [];
         $scope.users = [];
@@ -255,6 +255,17 @@ var app = angular.module('app', [
             });
         }
 
+        // driver whatsapp button clicked
+        $scope.onWhatsappClicked = function(transaction) {
+            let contactnumber = ''
+            let text = ''
+            if(transaction.contact) {
+                contactnumber = transaction.contact.split(" ").join("")
+                po_no = transaction.po_no
+                $window.open(encodeURI('https://wa.me/65' + contactnumber + '?text=This is Happy Ice, we are delivering your ice cream order PO "' + po_no + '" in 90 mins time.'), '_blank');
+            }
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber = null){
             $scope.spinner = true;
@@ -263,10 +274,7 @@ var app = angular.module('app', [
                 $scope.grand_total = data.grand_total;
                 $scope.grand_qty = data.grand_qty;
                 $scope.grand_count = data.grand_count;
-/*
-                angular.forEach($scope.drivers, function(value, key) {
-                    $scope.showDriverRow[key] = true;
-                }); */
+                setShowRowDriverTrue();
                 $scope.spinner = false;
             }).error(function(data){
 
@@ -291,6 +299,14 @@ var app = angular.module('app', [
         function setShowRowFalseInit() {
             angular.forEach($scope.drivers, function(value, key) {
                 $scope.drivers[key].showrow = false;
+                if(value['name'] == $scope.search.driver) {
+                    $scope.drivers[key].showrow = true;
+                }
+            })
+        }
+
+        function setShowRowDriverTrue() {
+            angular.forEach($scope.drivers, function(value, key) {
                 if(value['name'] == $scope.search.driver) {
                     $scope.drivers[key].showrow = true;
                 }
