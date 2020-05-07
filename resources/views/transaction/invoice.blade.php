@@ -276,7 +276,7 @@
                                         <span class="inline" ><strong>DeliverBy:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7" style="font-size: 120%;">
+                                <div class="col-xs-7" style="font-size: 140%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <strong>
                                         <span class="inline">
