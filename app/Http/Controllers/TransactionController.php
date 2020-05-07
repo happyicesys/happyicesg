@@ -941,6 +941,10 @@ class TransactionController extends Controller
                 ->setOption('javascript-delay', 3000)
                 ->setOption('enable-smart-shrinking', false)
                 ->setOption('print-media-type', true)
+                ->setOption('margin-top', 0)
+                ->setOption('margin-right', 0)
+                ->setOption('margin-bottom', 0)
+                ->setOption('margin-left', 0)
                 ->loadView('transaction.invoice', $data);
         return $pdf->download($name);
     }
