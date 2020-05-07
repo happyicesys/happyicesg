@@ -935,7 +935,13 @@ class TransactionController extends Controller
         }
 
         $name = $driver.'_'.$seq.'_'.$transaction->del_postcode.'_'.$transaction->id.'_'.$person->cust_id.'_'.$person->company.'.pdf';
-        $pdf = PDF::loadView('transaction.invoice', $data);
+        $pdf = PDF::setOption('dpi', 100)
+                ->setOption('page-size', 'A4')
+                ->setOption('enable-javascript', true)
+                ->setOption('javascript-delay', 3000)
+                ->setOption('enable-smart-shrinking', false)
+                ->setOption('print-media-type', true)
+                ->loadView('transaction.invoice', $data);
         return $pdf->download($name);
     }
 
