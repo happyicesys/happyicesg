@@ -893,7 +893,7 @@ class TransactionController extends Controller
         $person = Person::findOrFail($transaction->person_id);
         $deals = Deal::whereTransactionId($transaction->id)->get();
         $totalprice = DB::table('deals')->whereTransactionId($transaction->id)->sum('amount');
-        $totalqty = DB::table('deals')->whereTransactionId($transaction->id)->sum('qty');
+        $totalqty = DB::table('deals')->leftJoin('items', 'items.id', '=', 'deals.item_id')->where('items.is_inventory', 1)->whereTransactionId($transaction->id)->sum('qty');
         $transactionpersonassets = DB::table('transactionpersonassets')
             ->leftJoin('personassets', 'personassets.id', '=', 'transactionpersonassets.personasset_id')
             ->where(function($query) use ($transaction) {
