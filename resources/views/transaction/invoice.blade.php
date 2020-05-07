@@ -164,7 +164,7 @@
                             <div class="row">
                                 <div class="col-xs-5" style="font-size: 110%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline"><strong>DO/Inv No:</strong></span>
+                                        <span class="inline"><strong>DO/Inv#:</strong></span>
                                     </div>
                                 </div>
                                 <div class="col-xs-7" style="font-size: 120%;">
