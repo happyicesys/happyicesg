@@ -11,7 +11,7 @@ return array(
                             'print-media-type' => true,
                             'outline' => true,
                             // 'dpi' => 96,
-                            'dpi' => 85,
+                            'dpi' => 100,
                             'page-size' => 'A4',
                         ),
     ),
