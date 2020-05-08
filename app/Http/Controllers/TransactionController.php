@@ -114,7 +114,12 @@ class TransactionController extends Controller
         $driverarr = clone $transactions;
 
         $driverarr = $driverarr->distinct('transactions.driver')->orderBy('transactions.driver')->select('transactions.driver')->get();
-        $transactionarr = $transactions->orderBy('transactions.sequence')->orderBy('transactions.id', 'desc')->get();
+        $transactionarr = $transactions;
+        if(request('transactions_row')) {
+            $transaction_rows = implode(',', array_map('trim',explode("\n", request('transactions_row'))));
+            $transactionarr = $transactionarr->orderByRaw('FIELD(transactions.id, '.$transaction_rows.')');
+        }
+        $transactionarr = $transactionarr->orderBy('transactions.sequence')->orderBy('transactions.id', 'desc')->get();
 
         $collections = [];
         $grand_total = 0;
@@ -2194,6 +2199,10 @@ class TransactionController extends Controller
         // dd(request()->all());
         if(request('transaction_id')){
             $transactions = $transactions->where('transactions.id', 'LIKE', '%'.request('transaction_id').'%');
+        }
+        if(request('transactions_row')) {
+            $transaction_rows = array_map('trim',explode("\n", request('transactions_row')));
+            $transactions = $transactions->whereIn('transactions.id', $transaction_rows);
         }
         if(request('cust_id')){
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');

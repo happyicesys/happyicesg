@@ -42,7 +42,7 @@ Job Assign
                                                             'ng-model'=>'search.transaction_id',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Inv Num',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -53,7 +53,7 @@ Job Assign
                                                         'ng-model'=>'search.cust_id',
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Cust ID',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                        'ng-model-options'=>'{ debounce: 700 }'
                                                     ])
                         !!}
                     </div>
@@ -65,7 +65,7 @@ Job Assign
                                                             'ng-model'=>'search.company',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'ID Name',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ])
                         !!}
                     </div>
@@ -223,7 +223,7 @@ Job Assign
                                                             'ng-model'=>'search.po_no',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'PO Num',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -234,7 +234,7 @@ Job Assign
                                                             'ng-model'=>'search.contact',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Attn Contact',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -276,7 +276,7 @@ Job Assign
                                                                 'ng-model'=>'search.transaction_id',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Inv Num',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -305,7 +305,7 @@ Job Assign
                                                                 'ng-model'=>'search.po_no',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'PO Num',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -316,7 +316,7 @@ Job Assign
                                                                 'ng-model'=>'search.contact',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Attn Contact',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
                     </div>
@@ -395,6 +395,25 @@ Job Assign
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_to', search.delivery_to)"></span>
                         </div>
                     </div>
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        <label class="control-label">
+                            Row Search Invoices#
+                        </label>
+                        <span class="text-muted small">
+                            (separated by new line)
+                        </span>
+                        {!! Form::textarea('transactions_row', null,
+                                                        [
+                                                            'class'=>'form-control input-xs',
+                                                            'ng-model'=>'search.transactions_row',
+                                                            'ng-change'=>'searchDB()',
+                                                            'placeholder'=>'',
+                                                            'ng-model-options'=>'{ debounce: 1000 }',
+                                                            'rows' => '3'
+                                                        ]) !!}
+                    </div>
+                    @endif
                 </div>
 
                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -405,10 +424,10 @@ Job Assign
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
-                                Hide Map & Driver Assign
+                                Hide Extra Buttons
                             </span>
                             <span ng-if="driverOptionShowing === false">
-                                Show Map & Driver Assign
+                                Show Extra Buttons
                             </span>
                         </button>
 
@@ -511,7 +530,7 @@ Job Assign
                 <div class="alt-table-responsive" id="exportable">
                     <table class="table table-list-search table-hover table-bordered" ng-repeat="(driverkey, driver) in drivers">
                         {{-- hidden table for excel export --}}
-                        <tr style="background-color: #009fe1">
+                        <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th colspan="14">
                             @else
@@ -708,7 +727,7 @@ Job Assign
                                     {{-- button view shown when cancelled --}}
                                     <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-xs btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
                                     <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, driverkey, transactionkey)" ng-if="driverOptionShowing"><i class="fa fa-map-o fa-xs"></i> Map</button>
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="onWhatsappClicked(transaction)"><i class="fa fa-whatsapp" aria-hidden="true"></i> Whatsapp</button>
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="onWhatsappClicked(transaction)" ng-if="driverOptionShowing"><i class="fa fa-whatsapp" aria-hidden="true"></i> Whatsapp</button>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.del_postcode }}
