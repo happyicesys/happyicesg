@@ -1592,6 +1592,7 @@ class TransactionController extends Controller
         }else {
             $sort = SORT_DESC;
         }
+        // dd($sort_name, $driver['transactions']);
 
         $keys = array_column($driver['transactions'], $sort_name);
         array_multisort($keys, $sort, $driver['transactions']);
@@ -1611,64 +1612,61 @@ class TransactionController extends Controller
                 $headers = $reader->first()->toArray();
                 $items = [];
                 foreach($headers as $index => $header) {
-                    dd($index, strpos($index, '['), strpos($index, ']'), $headers[0], $headers, $results);
-                    if(strpos($header, '[') and strpos($header, ']')) {
-                        $product_id = preg_match('(?<=\[)(.*?)(?=\])', $header);
-                        dd($product_id);
-                        $items[$index] = trim($product_id);
+                    if(strpos($index, '[') and strpos($index, ']')) {
+                        $product_id = $this->getStringBetween($index, '[', ']');
+                        $items[$index] = $product_id;
                     }
                 }
-                dd($headers, $items);
                 if($headers)
                 foreach($results as $result) {
                     if($person = Person::where('cust_id', $request->customer_id)->first()) {
                         $model = new Transaction();
-                        if($cust_id = $result->customer_id) {
+                        if($cust_id = $result['customer_id']) {
                             $model->person_id = $person->id;
                             $model->person_code = $person->cust_id;
                             $model->gst = $person->gst;
                             $model->gst_rate = $person->gst_rate;
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
                         }
-                        if($del_postcode = $result->del_postcode) {
+                        if($del_postcode = $result['del_postcode']) {
                             $model->del_postcode = $del_postcode;
                         }else {
                             $model->del_postcode = $person->del_postcode;
                         }
-                        if($del_address = $result->del_address) {
+                        if($del_address = $result['del_address']) {
                             $model->del_address = $del_address;
                         }else {
                             $model->del_address = $person->del_address;
                         }
-                        if($order_date = $result->order_date) {
+                        if($order_date = $result['order_date']) {
                             $model->order_date = $order_date;
                         }
-                        if($delivery_date = $result->delivery_date) {
+                        if($delivery_date = $result['delivery_date']) {
                             $model->delivery_date = $delivery_date;
                         }
-                        if($po_no = $result->po_no) {
+                        if($po_no = $result['po_no']) {
                             $model->po_no = $po_no;
                         }
-                        if($total_amount = $result->total_amount) {
+                        if($total_amount = $result['total_amount']) {
                             $model->total = $total_amount;
                         }
-                        if($delivery_fee = $result->delivery_fee) {
+                        if($delivery_fee = $result['delivery_fee']) {
                             $model->delivery_fee = $delivery_fee;
                         }
-                        if($attn_name = $result->attn_name) {
+                        if($attn_name = $result['attn_name']) {
                             $model->name = $attn_name;
                         }
-                        if($attn_contact = $result->attn_contact) {
+                        if($attn_contact = $result['attn_contact']) {
                             $model->contact = $attn_contact;
                         }
-                        if($attn_email = $result->attn_email) {
+                        if($attn_email = $result['attn_email']) {
                             $model->email = $attn_email;
                         }
-                        if($transremark = $result->transremark) {
+                        if($transremark = $result['transremark']) {
                             $model->transremark = $transremark;
                             $model->is_important = 1;
                         }
-                        if($payment_date = $result->payment_date) {
+                        if($payment_date = $result['payment_date']) {
                             $model->paid_at = $payment_date;
                             $model->paid_by = auth()->user()->name;
                             $model->pay_method = 'cash';
@@ -1677,7 +1675,16 @@ class TransactionController extends Controller
                         $model->status = 'Confirmed';
                         $model->save();
 
+                        $quantities = [];
+                        $amounts = [];
+                        foreach($items as $itemindex => $item) {
+                            if($result[$itemindex]) {
+                                $item = Item::where('product_id', $item)->first();
+                                if($item) {
 
+                                }
+                            }
+                        }
                         // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
                     }
 
@@ -2680,5 +2687,15 @@ class TransactionController extends Controller
             Log::info($deal->transaction_id.', current: '.$item->qty_now.', qty: '.$deal->qty.', before: '.$deal->qty_before.', after: '.$deal->qty_after);
         }
 
+    }
+
+    // return string between two symbols or char
+    private function getStringBetween($string, $start, $end){
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
     }
 }

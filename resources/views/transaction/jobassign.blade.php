@@ -513,7 +513,7 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #009fe1">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="12">
+                            <th colspan="14">
                             @else
                             <th colspan="10">
                             @endif
@@ -655,6 +655,20 @@ Job Assign
                                 <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('updated_by', driverkey)">
+                                Last Modified By
+                                <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('transactions.updated_at', driverkey)">
+                                Last Modified Time
+                                <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            @endif
                         </tr>
                         <tbody ng-show="driver.showrow">
                             <tr ng-repeat="(transactionkey, transaction) in driver.transactions" style="font-size: 14px;">
@@ -760,6 +774,10 @@ Job Assign
                                     @{{ transaction.total | currency: "": 2}}
                                 </td>
                                 <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
+                                <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
+                                @endif
                             </tr>
                             <tr ng-if="!driver.transactions || driver.transactions.length == 0">
                                 <td colspan="24" class="text-center">No Records Found</td>

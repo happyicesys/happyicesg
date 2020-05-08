@@ -55,7 +55,7 @@
                                                             'ng-model'=>'search.transaction_id',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Inv Num',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ]) !!}
                     </div>
 
@@ -68,7 +68,7 @@
                                                         'ng-model'=>'search.cust_id',
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Cust ID',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                        'ng-model-options'=>'{ debounce: 700 }'
                                                     ])
                         !!}
                     </div>
@@ -80,7 +80,7 @@
                                                             'ng-model'=>'search.company',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'ID Name',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ])
                         !!}
                     </div>
@@ -103,7 +103,7 @@
                                                             'ng-model'=>'search.requester_name',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Requester Name',
-                                                            'ng-model-options'=>'{ debounce: 500 }'
+                                                            'ng-model-options'=>'{ debounce: 700 }'
                                                         ])
                         !!}
                     </div>
@@ -144,7 +144,7 @@
                                                                     'ng-model'=>'search.updated_by',
                                                                     'ng-change'=>'searchDB()',
                                                                     'placeholder'=>'Last Modified By',
-                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                    'ng-model-options'=>'{ debounce: 700 }'
                                                                 ])
                             !!}
                         </div>
@@ -157,7 +157,7 @@
                                                                     'ng-model'=>'search.pickup_location_name',
                                                                     'ng-change'=>'searchDB()',
                                                                     'placeholder'=>'Pickup Loc Name',
-                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                    'ng-model-options'=>'{ debounce: 700 }'
                                                                 ])
                             !!}
                         </div>
@@ -169,7 +169,7 @@
                                                                     'ng-model'=>'search.delivery_location_name',
                                                                     'ng-change'=>'searchDB()',
                                                                     'placeholder'=>'Delivery Loc Name',
-                                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                                    'ng-model-options'=>'{ debounce: 700 }'
                                                                 ])
                             !!}
                         </div>
@@ -353,7 +353,7 @@
                                                                 'ng-model'=>'search.po_no',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'PO Num',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -365,7 +365,7 @@
                                                                 'ng-model'=>'search.contact',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Attn Contact',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
 
@@ -399,7 +399,7 @@
                                                                 'ng-model'=>'search.gst_rate',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'GST Rate',
-                                                                'ng-model-options'=>'{ debounce: 500 }'
+                                                                'ng-model-options'=>'{ debounce: 700 }'
                                                             ]) !!}
                         </div>
                         @endif
