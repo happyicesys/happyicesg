@@ -135,7 +135,7 @@ class TransactionController extends Controller
                 if($transaction->driver == $driver->driver) {
                     $drivertable['transactions'][$key] = $transaction;
                     $total_amount += $transaction->total;
-                    if($transaction->status == 'Cancelled' or $transaction->status == 'Delivered' or $transacion->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
+                    if($transaction->status == 'Cancelled' or $transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
                         $delivered_amount += $transaction->total;
                         $delivered_qty += $transaction->total_qty;
                         $delivered_count += 1;
