@@ -489,13 +489,13 @@ Job Assign
                             Total Amount
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{grand_total ? grand_total : 0.00 | currency: "": 2}}</strong>
+                            <strong>@{{grand_total ? grand_total : 0.00}}</strong>
                         </div>
                         <div class="col-md-5 col-xs-5">
                             Total Qty
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{grand_qty ? grand_qty : 0.00 | currency: "": 4}}</strong>
+                            <strong>@{{grand_qty ? grand_qty : 0.00}}</strong>
                         </div>
                         <div class="col-md-5 col-xs-5">
                             Total Count
@@ -535,20 +535,29 @@ Job Assign
                             </th>
                             <th class="text-center">
                                 (Inv#)
-                                <span class="col-md-12">
+                                <span class="col-md-12 col-sm-12 col-xs-12">
+                                    @{{driver.delivered_count}}/
+                                </span>
+                                <span class="col-md-12 col-sm-12 col-xs-12">
                                     @{{driver.total_count}}
                                 </span>
                             </th>
                             <th class="text-center">
                                 (S$)
-                                <span class="col-md-12">
-                                    @{{driver.total_amount.toFixed(2)}}
+                                <span class="col-md-12 col-sm-12 col-xs-12">
+                                    @{{driver.delivered_amount}}/
+                                </span>
+                                <span class="col-md-12 col-sm-12 col-xs-12">
+                                    @{{driver.total_amount}}
                                 </span>
                             </th>
                             <th class="text-center">
                                 (Qty)
-                                <span class="col-md-12">
-                                    @{{driver.total_qty.toFixed(4)}}
+                                <span class="col-md-12 col-sm-12 col-xs-12">
+                                    @{{driver.delivered_qty}}/
+                                </span>
+                                <span class="col-md-12 col-sm-12 col-xs-12">
+                                    @{{driver.total_qty}}
                                 </span>
                             </th>
                         </tr>

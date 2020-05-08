@@ -128,10 +128,18 @@ class TransactionController extends Controller
             $total_amount = 0;
             $total_qty = 0;
             $total_count = 0;
+            $delivered_amount = 0;
+            $delivered_qty = 0;
+            $delivered_count = 0;
             foreach($transactionarr as $key => $transaction) {
                 if($transaction->driver == $driver->driver) {
                     $drivertable['transactions'][$key] = $transaction;
                     $total_amount += $transaction->total;
+                    if($transaction->status == 'Cancelled' or $transaction->status == 'Delivered' or $transacion->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
+                        $delivered_amount += $transaction->total;
+                        $delivered_qty += $transaction->total_qty;
+                        $delivered_count += 1;
+                    }
                     $grand_total += $transaction->total;
                     $total_qty += $transaction->total_qty;
                     $grand_qty += $transaction->total_qty;
@@ -140,14 +148,17 @@ class TransactionController extends Controller
                     unset($transactionarr[$key]);
                 }
             }
-            $drivertable['total_amount'] = $total_amount;
-            $drivertable['total_qty'] = $total_qty;
+            $drivertable['total_amount'] = number_format($total_amount, 2);
+            $drivertable['total_qty'] = number_format($total_qty, 4);
             $drivertable['total_count'] = $total_count;
+            $drivertable['delivered_amount'] = number_format($delivered_amount, 2);
+            $drivertable['delivered_qty'] = number_format($delivered_qty, 4);
+            $drivertable['delivered_count'] = $delivered_count;
             // array_push($collections['drivers'], $drivertable);
             $collections['drivers'][$index] = $drivertable;
         }
-        $collections['grand_total'] = $grand_total;
-        $collections['grand_qty'] = $grand_qty;
+        $collections['grand_total'] = number_format($grand_total, 2);
+        $collections['grand_qty'] = number_format($grand_qty, 4);
         $collections['grand_count'] = $grand_count;
 
         return $collections;
@@ -1587,7 +1598,19 @@ class TransactionController extends Controller
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file = $file->move('import_excel', $name);
             Excel::load($file, function($reader) {
-                $results = $reader->get();
+                $results = $reader->toArray();
+                $headers = $reader->first()->toArray();
+                $items = [];
+                foreach($headers as $index => $header) {
+                    dd($index, strpos($index, '['), strpos($index, ']'), $headers[0], $headers, $results);
+                    if(strpos($header, '[') and strpos($header, ']')) {
+                        $product_id = preg_match('(?<=\[)(.*?)(?=\])', $header);
+                        dd($product_id);
+                        $items[$index] = trim($product_id);
+                    }
+                }
+                dd($headers, $items);
+                if($headers)
                 foreach($results as $result) {
                     if($person = Person::where('cust_id', $request->customer_id)->first()) {
                         $model = new Transaction();
@@ -1652,7 +1675,7 @@ class TransactionController extends Controller
 
                 }
 
-            })->selectSheetsByIndex(0);
+            });
         }
     }
 
