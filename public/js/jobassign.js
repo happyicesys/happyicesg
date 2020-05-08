@@ -271,9 +271,12 @@ var app = angular.module('app', [
             $scope.spinner = true;
             $http.post('/api/transaction/jobassign', $scope.search).success(function(data){
                 $scope.drivers = data.drivers;
-                $scope.grand_total = data.grand_total;
-                $scope.grand_qty = data.grand_qty;
-                $scope.grand_count = data.grand_count;
+                $scope.grand_total = data.grand_total ? data.grand_total : 0.00;
+                $scope.grand_qty = data.grand_qty ? data.grand_qty : 0.00;
+                $scope.grand_count = data.grand_count ? data.grand_count : 0;
+                $scope.grand_delivered_total = data.grand_delivered_total ? data.grand_delivered_total : 0.00;
+                $scope.grand_delivered_qty = data.grand_delivered_qty ? data.grand_delivered_qty : 0.00;
+                $scope.grand_delivered_count = data.grand_delivered_count ? data.grand_delivered_count : 0;
                 setShowRowDriverTrue();
                 $scope.spinner = false;
             }).error(function(data){

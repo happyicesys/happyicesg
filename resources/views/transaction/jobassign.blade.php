@@ -489,19 +489,19 @@ Job Assign
                             Total Amount
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{grand_total ? grand_total : 0.00}}</strong>
+                            <strong>@{{grand_delivered_total + ' / ' + grand_total}}</strong>
                         </div>
                         <div class="col-md-5 col-xs-5">
                             Total Qty
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{grand_qty ? grand_qty : 0.00}}</strong>
+                            <strong>@{{grand_delivered_qty + ' / ' + grand_qty}}</strong>
                         </div>
                         <div class="col-md-5 col-xs-5">
                             Total Count
                         </div>
                         <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                            <strong>@{{grand_count ? grand_count : 0}}</strong>
+                            <strong>@{{grand_delivered_count + ' / ' + grand_count}}</strong>
                         </div>
                     </div>
                 </div>

@@ -120,6 +120,9 @@ class TransactionController extends Controller
         $grand_total = 0;
         $grand_qty = 0;
         $grand_count = 0;
+        $grand_delivered_total = 0;
+        $grand_delivered_qty = 0;
+        $grand_delivered_count = 0;
         foreach($driverarr as $index => $driver) {
             // dd($driverarr, $transactionarr);
             $drivertable = [
@@ -139,6 +142,9 @@ class TransactionController extends Controller
                         $delivered_amount += $transaction->total;
                         $delivered_qty += $transaction->total_qty;
                         $delivered_count += 1;
+                        $grand_delivered_total += $transaction->total;
+                        $grand_delivered_qty += $transaction->total_qty;
+                        $grand_delivered_count += 1;
                     }
                     $grand_total += $transaction->total;
                     $total_qty += $transaction->total_qty;
@@ -149,17 +155,20 @@ class TransactionController extends Controller
                 }
             }
             $drivertable['total_amount'] = number_format($total_amount, 2);
-            $drivertable['total_qty'] = number_format($total_qty, 4);
+            $drivertable['total_qty'] = number_format($total_qty, 2);
             $drivertable['total_count'] = $total_count;
             $drivertable['delivered_amount'] = number_format($delivered_amount, 2);
-            $drivertable['delivered_qty'] = number_format($delivered_qty, 4);
+            $drivertable['delivered_qty'] = number_format($delivered_qty, 2);
             $drivertable['delivered_count'] = $delivered_count;
             // array_push($collections['drivers'], $drivertable);
             $collections['drivers'][$index] = $drivertable;
         }
         $collections['grand_total'] = number_format($grand_total, 2);
-        $collections['grand_qty'] = number_format($grand_qty, 4);
+        $collections['grand_qty'] = number_format($grand_qty, 2);
         $collections['grand_count'] = $grand_count;
+        $collections['grand_delivered_total'] = number_format($grand_delivered_total, 2);
+        $collections['grand_delivered_qty'] = number_format($grand_delivered_qty, 2);
+        $collections['grand_delivered_count'] = $grand_delivered_count;
 
         return $collections;
     }
