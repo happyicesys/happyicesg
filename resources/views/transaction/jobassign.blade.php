@@ -702,7 +702,7 @@ Job Assign
                                     @endif
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <a href="/transaction/@{{ transaction.id }}/edit" ng-style="{'color': transaction.label_color}">
+                                    <a href="/transaction/@{{ transaction.id }}/edit" ng-style="{'color': transaction.label_color, 'background-color': transaction.back_color}">
                                         @{{ transaction.id }}
                                     </a>
                                     <span class="col-md-12">

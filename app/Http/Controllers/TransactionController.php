@@ -142,9 +142,33 @@ class TransactionController extends Controller
             foreach($transactionarr as $key => $transaction) {
                 if($transaction->driver == $driver->driver) {
                     $total_amount += $transaction->total;
-                    $transaction->label_color = 'red';
+                    $transaction->label_color = '';
+                    $transaction->back_color = '';
+                    $status = $transaction->status;
+                    switch($status) {
+                        case 'Cancelled' :
+                            $transaction->label_color = 'white';
+                            $transaction->back_color = 'red';
+                            break;
+                        case 'Pending':
+                            $transaction->label_color = 'red';
+                            $transaction->back_color = '';
+                            break;
+                        case 'Confirmed':
+                            $transaction->back_color = '';
+                            $transaction->label_color = '';
+                            if($transaction->total_qty == 0) {
+                                $transaction->label_color = 'red';
+                            }
+                            break;
+                        case 'Delivered':
+                        case 'Verified Owe':
+                        case 'Verified Paid':
+                            $transaction->label_color = 'white';
+                            $transaction->back_color = 'green';
+                            break;
+                    }
                     if($transaction->status == 'Cancelled' or $transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
-                        $transaction->label_color = 'green';
                         $delivered_amount += $transaction->total;
                         $delivered_qty += $transaction->total_qty;
                         $delivered_count += 1;
