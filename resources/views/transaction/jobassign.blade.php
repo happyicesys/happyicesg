@@ -42,7 +42,7 @@ Job Assign
                                                             'ng-model'=>'search.transaction_id',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Inv Num',
-                                                            'ng-model-options'=>'{ debounce: 700 }'
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -53,7 +53,7 @@ Job Assign
                                                         'ng-model'=>'search.cust_id',
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Cust ID',
-                                                        'ng-model-options'=>'{ debounce: 700 }'
+                                                        'ng-model-options'=>'{ debounce: 1000 }'
                                                     ])
                         !!}
                     </div>
@@ -65,7 +65,7 @@ Job Assign
                                                             'ng-model'=>'search.company',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'ID Name',
-                                                            'ng-model-options'=>'{ debounce: 700 }'
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
                                                         ])
                         !!}
                     </div>
@@ -223,7 +223,7 @@ Job Assign
                                                             'ng-model'=>'search.po_no',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'PO Num',
-                                                            'ng-model-options'=>'{ debounce: 700 }'
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -234,7 +234,7 @@ Job Assign
                                                             'ng-model'=>'search.contact',
                                                             'ng-change'=>'searchDB()',
                                                             'placeholder'=>'Attn Contact',
-                                                            'ng-model-options'=>'{ debounce: 700 }'
+                                                            'ng-model-options'=>'{ debounce: 1000 }'
                                                         ]) !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -276,7 +276,7 @@ Job Assign
                                                                 'ng-model'=>'search.transaction_id',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Inv Num',
-                                                                'ng-model-options'=>'{ debounce: 700 }'
+                                                                'ng-model-options'=>'{ debounce: 1000 }'
                                                             ]) !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -305,7 +305,7 @@ Job Assign
                                                                 'ng-model'=>'search.po_no',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'PO Num',
-                                                                'ng-model-options'=>'{ debounce: 700 }'
+                                                                'ng-model-options'=>'{ debounce: 1000 }'
                                                             ]) !!}
                         </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
@@ -316,7 +316,7 @@ Job Assign
                                                                 'ng-model'=>'search.contact',
                                                                 'ng-change'=>'searchDB()',
                                                                 'placeholder'=>'Attn Contact',
-                                                                'ng-model-options'=>'{ debounce: 700 }'
+                                                                'ng-model-options'=>'{ debounce: 1000 }'
                                                             ]) !!}
                         </div>
                     </div>
