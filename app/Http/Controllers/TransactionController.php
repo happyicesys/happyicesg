@@ -141,9 +141,10 @@ class TransactionController extends Controller
             $delivered_count = 0;
             foreach($transactionarr as $key => $transaction) {
                 if($transaction->driver == $driver->driver) {
-                    $drivertable['transactions'][$key] = $transaction;
                     $total_amount += $transaction->total;
+                    $transaction->label_color = 'red';
                     if($transaction->status == 'Cancelled' or $transaction->status == 'Delivered' or $transaction->status == 'Verified Owe' or $transaction->status == 'Verified Paid') {
+                        $transaction->label_color = 'green';
                         $delivered_amount += $transaction->total;
                         $delivered_qty += $transaction->total_qty;
                         $delivered_count += 1;
@@ -156,6 +157,7 @@ class TransactionController extends Controller
                     $grand_qty += $transaction->total_qty;
                     $total_count += 1;
                     $grand_count += 1;
+                    $drivertable['transactions'][$key] = $transaction;
                     unset($transactionarr[$key]);
                 }
             }
