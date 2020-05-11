@@ -223,6 +223,10 @@
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                             <label class="pull-right">
+                                <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                                <span style="margin-top: 5px; margin-right: 5px;">
+                                    P
+                                </span>
                                 <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
                                 <span style="margin-top: 5px;">
                                     Exclude
@@ -231,10 +235,10 @@
                             {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
                                 null,
                                 [
-                                    'class'=>'selectmultiple form-control',
+                                    'class'=>'selectmultiplecustcat form-control',
                                     'ng-model'=>'search.custcategory',
                                     'multiple'=>'multiple',
-                                    'ng-change' => "searchDB()"
+                                    'ng-change' => "onCustCategoryChanged()"
                                 ])
                             !!}
                         </div>

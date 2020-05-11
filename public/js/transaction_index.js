@@ -38,8 +38,9 @@ var app = angular.module('app', [
             requested_from: $scope.requestfrom,
             requested_to: $scope.requestto,
             driver: '',
-            custcategory: '',
+            custcategory: [],
             exclude_custcategory: '',
+            p_category: '',
             person_active: [],
             do_po: '',
             requester_name: '',
@@ -68,6 +69,9 @@ var app = angular.module('app', [
         angular.element(document).ready(function () {
             $('.select').select2();
             $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
+            $('.selectmultiplecustcat').select2({
                 placeholder: 'Choose one or many..'
             });
             $('#checkAll').change(function(){
@@ -241,7 +245,9 @@ var app = angular.module('app', [
                 }
                 // get total count
                 $scope.All = data.transactions.length;
-
+                $('.selectmultiplecustcat').select2({
+                    placeholder: 'Choose one or many..'
+                });
                 // return total amount
                 $scope.total_amount = data.total_amount;
                 $scope.spinner = false;
@@ -328,6 +334,24 @@ var app = angular.module('app', [
                 formData.append('excel_file', value);
             });
         };
+
+        $scope.onCustCategoryChanged = function() {
+            if($scope.search.custcategory.includes("55")) {
+                $scope.search.p_category = true;
+            }else {
+                $scope.search.p_category = false;
+            }
+            $scope.searchDB();
+        }
+
+        $scope.onPCategoryChanged = function() {
+            if($scope.search.p_category) {
+                $scope.search.custcategory.push("55");
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("55"), 1 );
+            }
+            $scope.searchDB();
+        }
 
 
         $scope.onMapClicked = function(singleperson = null, index = null) {

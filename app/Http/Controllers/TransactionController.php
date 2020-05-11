@@ -734,6 +734,7 @@ class TransactionController extends Controller
 
         //Qty insert to on order upon confirmed(1) transaction status
         if($transaction->status === 'Confirmed'){
+            // dd($quantities, $amounts, $quotes);
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
@@ -1648,14 +1649,17 @@ class TransactionController extends Controller
                         $items[$index] = $product_id;
                     }
                 }
+
                 if($headers)
                 foreach($results as $result) {
-                    if($person = Person::where('cust_id', $request->customer_id)->first()) {
+
+                    if($person = Person::where('cust_id', $result['customer_id'])->first()) {
+                        // dd($person->toArray());
                         $model = new Transaction();
                         if($cust_id = $result['customer_id']) {
                             $model->person_id = $person->id;
                             $model->person_code = $person->cust_id;
-                            $model->gst = $person->gst;
+                            $model->gst = $person->profile->gst;
                             $model->gst_rate = $person->gst_rate;
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
                         }
@@ -1706,16 +1710,48 @@ class TransactionController extends Controller
                         $model->status = 'Confirmed';
                         $model->save();
 
-                        $quantities = [];
-                        $amounts = [];
+                        $dealArr = [];
+                        $invoice_amount = 0;
                         foreach($items as $itemindex => $item) {
-                            if($result[$itemindex]) {
+                            $priceObj = 0;
+                            $inputArr = [];
+                            if($deal = $result[$itemindex]) {
                                 $item = Item::where('product_id', $item)->first();
-                                if($item) {
+                                $price = Price::where('item_id', $item->id)->where('person_id', $person->id)->first();
+                                if(strpos($deal, ';')) {
+                                    $inputArr = explode(';', $deal);
+                                    $qtyObj = $inputArr[0].'/'.$item->base_unit;
+                                }else {
+                                    $qty = $deal.'/'.$item->base_unit;
+                                }
+                                $qty = $this->fraction($qtyObj);
 
+                                $priceObj = $qty * $price->quote_price;
+
+                                if($inputArr[1]) {
+                                    $priceObj = $inputArr[1];
+                                }
+                                $invoice_amount += $priceObj;
+
+                                if($item) {
+                                    $dealArr[$item->id] = [
+                                        'qty' => $qty,
+                                        'quote' => $price->quote_price,
+                                        'amount' => $priceObj
+                                    ];
                                 }
                             }
                         }
+                        if($total_amount) {
+                            if($invoice_amount != $total_amount) {
+
+                                $dealArr[21] = [
+                                    'qty' => 1,
+                                ];
+                            }
+                        }
+
+                        dd($dealArr);
                         // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
                     }
 
