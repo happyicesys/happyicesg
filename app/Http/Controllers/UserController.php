@@ -35,7 +35,7 @@ class UserController extends Controller
         $user =  User::with('roles')
                     ->where('is_active', 1)
                     ->whereHas('roles', function($query) {
-                        $query->where('name', 'driver')->orWhere('name', 'technician');
+                        $query->where('name', 'driver')->orWhere('name', 'technician')->orWhere('name', 'driver-supervisor');
                     })
                     ->whereIn('type', ['admin', 'staff'])
                     ->get();
