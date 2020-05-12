@@ -1674,10 +1674,10 @@ class TransactionController extends Controller
                             $model->del_address = $person->del_address;
                         }
                         if($order_date = $result['order_date']) {
-                            $model->order_date = $order_date;
+                            $model->order_date = Carbon::parse($order_date)->toDateString();
                         }
                         if($delivery_date = $result['delivery_date']) {
-                            $model->delivery_date = $delivery_date;
+                            $model->delivery_date = Carbon::parse($delivery_date)->toDateString();
                         }
                         if($po_no = $result['po_no']) {
                             $model->po_no = $po_no;
@@ -1702,7 +1702,7 @@ class TransactionController extends Controller
                             $model->is_important = 1;
                         }
                         if($payment_date = $result['payment_date']) {
-                            $model->paid_at = $payment_date;
+                            $model->paid_at = Carbon::parse($payment_date)->toDateString();
                             $model->paid_by = auth()->user()->name;
                             $model->pay_method = 'cash';
                             $model->pay_status = 'Paid';
@@ -1712,9 +1712,13 @@ class TransactionController extends Controller
 
                         $dealArr = [];
                         $invoice_amount = 0;
+                        $quantityArr = [];
+                        $quoteArr = [];
+                        $amountArr = [];
                         foreach($items as $itemindex => $item) {
                             $priceObj = 0;
                             $inputArr = [];
+                            $qty = 0;
                             if($deal = $result[$itemindex]) {
                                 $item = Item::where('product_id', $item)->first();
                                 $price = Price::where('item_id', $item->id)->where('person_id', $person->id)->first();
@@ -1722,7 +1726,7 @@ class TransactionController extends Controller
                                     $inputArr = explode(';', $deal);
                                     $qtyObj = $inputArr[0].'/'.$item->base_unit;
                                 }else {
-                                    $qty = $deal.'/'.$item->base_unit;
+                                    $qtyObj = $deal.'/'.$item->base_unit;
                                 }
                                 $qty = $this->fraction($qtyObj);
 
@@ -1735,23 +1739,29 @@ class TransactionController extends Controller
 
                                 if($item) {
                                     $dealArr[$item->id] = [
-                                        'qty' => $qty,
+                                        'qty' => $qtyObj,
                                         'quote' => $price->quote_price,
                                         'amount' => $priceObj
                                     ];
+                                    $quantityArr[$item->id] = $qtyObj;
+                                    $quoteArr[$item->id] = $price->quote_price;
+                                    $amountArr[$item->id] = $priceObj;
                                 }
                             }
                         }
                         if($total_amount) {
                             if($invoice_amount != $total_amount) {
-
                                 $dealArr[21] = [
                                     'qty' => 1,
+                                    'quote' => 0,
+                                    'amount' => $total_amount - $invoice_amount
                                 ];
+                                $quantityArr[21] = 1;
+                                $quoteArr[21] = 0;
+                                $amountArr[21] = $total_amount - $invoice_amount;
                             }
                         }
-
-                        dd($dealArr);
+                        $this->syncDeal($model, $quantityArr, $amountArr, $quoteArr, 1);
                         // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
                     }
 

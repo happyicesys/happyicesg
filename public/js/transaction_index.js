@@ -324,6 +324,7 @@ var app = angular.module('app', [
                     var fileElement = angular.element('#excel_file');
                     fileElement.value = '';
                     alert("Excel file uploaded and transactions loaded");
+                    $scope.searchDB();
                 }, function error(e) {
                     $scope.errors = e.data.errors;
                 });

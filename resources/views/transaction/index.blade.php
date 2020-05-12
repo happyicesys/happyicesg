@@ -613,7 +613,7 @@
                                 </div>
                             </div>
                         </div>
-{{--
+
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
@@ -623,7 +623,7 @@
                                     <input type="file" ng-files="setTheFiles($files)" id="excel_file"  class="form-control">
                                     <span class="text-muted small">
                                         ** Please make sure the excel headers is same with this
-                                        <a href="">template</a>
+                                        <a href="/template/batch_upload_excel.xlsx">template</a>
                                     </span>
                                 </div>
                             </div>
@@ -637,7 +637,7 @@
                                 </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <hr class="row">
                 </div>
