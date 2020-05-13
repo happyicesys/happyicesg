@@ -1732,7 +1732,7 @@ class TransactionController extends Controller
 
                                 $priceObj = $qty * $price->quote_price;
 
-                                if($inputArr[1]) {
+                                if($inputArr) {
                                     $priceObj = $inputArr[1];
                                 }
                                 $invoice_amount += $priceObj;
@@ -1769,6 +1769,29 @@ class TransactionController extends Controller
                 }
 
             });
+        }
+    }
+
+    // batch update payment status
+    public function batchUpdatePaymentStatus()
+    {
+        $transactions = $request->transactions;
+        $chosenArr = $request->chosen;
+
+        if($transactions) {
+            foreach($transactions as $index => $transaction) {
+                if(isset($transaction['check'])) {
+                    $model = Transaction::findOrFail($transaction['id']);
+                    if($chosenArr[''])
+                    if($delivery_date) {
+                        $model->delivery_date = $delivery_date;
+                    }
+                    $model->sequence = null;
+                    $model->updated_at = Carbon::now();
+                    $model->updated_by = auth()->user()->name;
+                    $model->save();
+                }
+            }
         }
     }
 

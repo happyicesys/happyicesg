@@ -583,7 +583,7 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Assign</button>
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Assign</button>
                                 </div>
                                 </div>
                             </div>
@@ -608,7 +608,7 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_change_delivery_date" value="invoice" ng-click="onBatchChangeDeliveryDateClicked($event)"><i class="fa fa-calendar" aria-hidden="true"></i> Batch Change Delivery Date</button>
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_change_delivery_date" value="invoice" ng-click="onBatchChangeDeliveryDateClicked($event)" style="margin-top: 9px;"><i class="fa fa-calendar" aria-hidden="true"></i> Batch Change Delivery Date</button>
                                 </div>
                                 </div>
                             </div>
@@ -631,15 +631,57 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button ng-click="uploadExcel($event)" class="btn btn-warning"> <i class="fa fa-upload" aria-hidden="true"></i>
+                                    <button ng-click="uploadExcel($event)" class="btn btn-warning" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
                                         Upload Excel
                                     </button>
                                 </div>
                                 </div>
                             </div>
                         </div>
+                        <hr class="row">
+{{--
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('pay_status', 'Payment Date & Status', ['class'=>'control-label search-title']) !!}
+                                    <select name="pay_status" class="form-control select" ng-model="form.pay_status">
+                                        <option value="-1">
+                                            -- Clear --
+                                        </option>
+                                        <option value="Paid">
+                                            Paid
+                                        </option>
+                                        <option value="Owe">
+                                            Owe
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group" ng-show="form.pay_status == 'Paid'">
+                                    {!! Form::label('paid_at', 'Paid Date', ['class'=>'control-label search-title']) !!}
+                                    <datepicker>
+                                        <input
+                                            name = "paid_at"
+                                            type = "text"
+                                            class = "form-control input-sm"
+                                            placeholder = "Paid Date"
+                                            ng-model = "form.paid_at"
+                                            ng-change = "formDeliveryDateChange('paid_at', form.paid_at)"
+                                        />
+                                    </datepicker>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                    <div class="btn-group-control">
+                                        <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchSetPaymentClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Set Payment Status</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
                     </div>
                     <hr class="row">
+
                 </div>
                 {!! Form::close() !!}
                     <div class="table-responsive" id="exportable" style="padding-top:20px;">

@@ -60,7 +60,9 @@ var app = angular.module('app', [
             person_account: '',
             driver: '-1',
             delivery_date: $scope.today,
-            excel_file: []
+            excel_file: [],
+            pay_status: '-1',
+            paid_at: $scope.today
         };
         // init page load
         getUsersData();
@@ -224,6 +226,18 @@ var app = angular.module('app', [
                 getPage(1);
                 $scope.form.checkall = false;
             });
+        }
+
+        // batch payment status and paid at
+        $scope.onBatchSetPaymentClicked = function(event) {
+            event.preventDefault();
+            $http.post('/api/transaction/batch/paymentstatus', {
+                transactions: $scope.alldata,
+                chosen: $scope.form
+            }).success(function(data) {
+                $scope.searchDB();
+                $scope.form.checkall = false;
+            })
         }
 
         // retrieve page w/wo search
