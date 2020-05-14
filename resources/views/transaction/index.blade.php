@@ -639,15 +639,13 @@
                             </div>
                         </div>
                         <hr class="row">
-{{--
+
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('pay_status', 'Payment Date & Status', ['class'=>'control-label search-title']) !!}
-                                    <select name="pay_status" class="form-control select" ng-model="form.pay_status">
-                                        <option value="-1">
-                                            -- Clear --
-                                        </option>
+                                    <select name="pay_status" class="form-control selectform" ng-model="form.pay_status">
+                                        <option value=""></option>
                                         <option value="Paid">
                                             Paid
                                         </option>
@@ -678,7 +676,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <hr class="row">
 

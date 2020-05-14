@@ -61,7 +61,7 @@ var app = angular.module('app', [
             driver: '-1',
             delivery_date: $scope.today,
             excel_file: [],
-            pay_status: '-1',
+            pay_status: '',
             paid_at: $scope.today
         };
         // init page load
@@ -70,6 +70,9 @@ var app = angular.module('app', [
 
         angular.element(document).ready(function () {
             $('.select').select2();
+            $('.selectform').select2({
+                placeholder: 'Select...'
+            });
             $('.selectmultiple').select2({
                 placeholder: 'Choose one or many..'
             });

@@ -703,6 +703,9 @@ Job Assign
                                         @{{transaction.sequence ? transaction.sequence * 1 : ''}}
                                     @else
                                         <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
+                                        <span class="hidden">
+                                            @{{transaction.sequence ? transaction.sequence * 1 : ''}}
+                                        </span>
                                     @endif
                                 </td>
                                 <td class="col-md-1 text-center">

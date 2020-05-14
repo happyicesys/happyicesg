@@ -1639,6 +1639,10 @@ class TransactionController extends Controller
         if($file = request()->file('excel_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file = $file->move('import_excel', $name);
+            $importStatusArr = [
+                'success' => [],
+                'failure' => []
+            ];
             Excel::load($file, function($reader) {
                 $results = $reader->toArray();
                 $headers = $reader->first()->toArray();
@@ -1654,7 +1658,26 @@ class TransactionController extends Controller
                 foreach($results as $result) {
 
                     if($person = Person::where('cust_id', $result['customer_id'])->first()) {
-                        // dd($person->toArray());
+                        if($po_no = $result['po_no']) {
+                            $po_no = trim($po_no);
+
+                            if($person->cust_id[0] == 'P') {
+                                $searchTransactionPo = Transaction::where('po_no', $po_no)->first();
+                                if($searchTransactionPo) {
+
+                                }
+                            }
+                        }
+                        if($result['po_no']) {
+                            $request->merge(array('po_no' => trim($request->po_no)));
+
+                            if($transaction->person->cust_id[0] === 'P'){
+                                $this->validate($request, [
+                                    'po_no' => 'unique:transactions,po_no,'.$transaction->id
+                                ]);
+                            }
+                        }
+
                         $model = new Transaction();
                         if($cust_id = $result['customer_id']) {
                             $model->person_id = $person->id;
@@ -1678,9 +1701,6 @@ class TransactionController extends Controller
                         }
                         if($delivery_date = $result['delivery_date']) {
                             $model->delivery_date = Carbon::parse($delivery_date)->toDateString();
-                        }
-                        if($po_no = $result['po_no']) {
-                            $model->po_no = $po_no;
                         }
                         if($total_amount = $result['total_amount']) {
                             $model->total = $total_amount;
@@ -1773,23 +1793,26 @@ class TransactionController extends Controller
     }
 
     // batch update payment status
-    public function batchUpdatePaymentStatus()
+    public function batchUpdatePaymentStatus(Request $request)
     {
         $transactions = $request->transactions;
         $chosenArr = $request->chosen;
-
         if($transactions) {
             foreach($transactions as $index => $transaction) {
                 if(isset($transaction['check'])) {
                     $model = Transaction::findOrFail($transaction['id']);
-                    if($chosenArr[''])
-                    if($delivery_date) {
-                        $model->delivery_date = $delivery_date;
+                    if($chosenArr['pay_status']) {
+                        if($chosenArr['pay_status'] == 'Paid') {
+                            $model->pay_status = 'Paid';
+                            $model->paid_at = $chosenArr['paid_at'];
+                        }else {
+                            $model->pay_status = 'Owe';
+                            $model->paid_at = null;
+                        }
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
                     }
-                    $model->sequence = null;
-                    $model->updated_at = Carbon::now();
-                    $model->updated_by = auth()->user()->name;
-                    $model->save();
                 }
             }
         }
