@@ -1639,43 +1639,45 @@ class TransactionController extends Controller
         if($file = request()->file('excel_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $file = $file->move('import_excel', $name);
-            $importStatusArr = [
-                'success' => [],
-                'failure' => []
-            ];
+
             Excel::load($file, function($reader) {
                 $results = $reader->toArray();
                 $headers = $reader->first()->toArray();
                 $items = [];
                 foreach($headers as $index => $header) {
                     if(strpos($index, '[') and strpos($index, ']')) {
-                        $product_id = $this->getStringBetween($index, '[', ']');
-                        $items[$index] = $product_id;
+                        $product = $this->getStringBetween($index, '[', ']');
+                        if(strpos($product, ';')) {
+                            $productArr = explode(';', $product);
+                            $items[$index] = [
+                                'product_id' => $productArr[0],
+                                'multiplier' => isset($productArr[1]) ? $productArr[1] : 1,
+                                'divisor' => isset($productArr[2]) ? $productArr[2] : 1,
+                                'price' => isset($productArr[3]) ? $productArr[3] : ''
+                            ];
+                        }
                     }
                 }
 
+                $importStatusArr = [
+                    'success' => [],
+                    'failure' => []
+                ];
                 if($headers)
                 foreach($results as $result) {
-
                     if($person = Person::where('cust_id', $result['customer_id'])->first()) {
+
                         if($po_no = $result['po_no']) {
                             $po_no = trim($po_no);
-
+/*
                             if($person->cust_id[0] == 'P') {
                                 $searchTransactionPo = Transaction::where('po_no', $po_no)->first();
                                 if($searchTransactionPo) {
-
+                                    array_push($importStatusArr['failure'], $result);
+                                    dd($importStatusArr);
+                                    continue;
                                 }
-                            }
-                        }
-                        if($result['po_no']) {
-                            $request->merge(array('po_no' => trim($request->po_no)));
-
-                            if($transaction->person->cust_id[0] === 'P'){
-                                $this->validate($request, [
-                                    'po_no' => 'unique:transactions,po_no,'.$transaction->id
-                                ]);
-                            }
+                            } */
                         }
 
                         $model = new Transaction();
@@ -1685,6 +1687,7 @@ class TransactionController extends Controller
                             $model->gst = $person->profile->gst;
                             $model->gst_rate = $person->gst_rate;
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
+                            $model->po_no = $po_no;
                         }
                         if($del_postcode = $result['del_postcode']) {
                             $model->del_postcode = $del_postcode;
@@ -1735,36 +1738,39 @@ class TransactionController extends Controller
                         $quantityArr = [];
                         $quoteArr = [];
                         $amountArr = [];
-                        foreach($items as $itemindex => $item) {
+                        foreach($items as $itemindex => $itemExcel) {
+                            // dd($del_postcode, $index,  $item, $result[$index], $items);
                             $priceObj = 0;
-                            $inputArr = [];
+                            $inputQty = 0;
                             $qty = 0;
                             if($deal = $result[$itemindex]) {
-                                $item = Item::where('product_id', $item)->first();
+                                $item = Item::where('product_id', $itemExcel['product_id'])->first();
                                 $price = Price::where('item_id', $item->id)->where('person_id', $person->id)->first();
-                                if(strpos($deal, ';')) {
-                                    $inputArr = explode(';', $deal);
-                                    $qtyObj = $inputArr[0].'/'.$item->base_unit;
+
+                                $inputQty = $deal * $itemExcel['multiplier'].'/'.$itemExcel['divisor'];
+
+                                $qty = $this->fraction($inputQty);
+
+                                $item_price = 0;
+                                if($itemExcel['price'] == '' or $itemExcel['price'] == null) {
+                                    $item_price = $price->quote_price;
                                 }else {
-                                    $qtyObj = $deal.'/'.$item->base_unit;
+                                    $item_price = $itemExcel['price'];
                                 }
-                                $qty = $this->fraction($qtyObj);
 
-                                $priceObj = $qty * $price->quote_price;
+                                $priceObj = $qty * $item_price;
 
-                                if($inputArr) {
-                                    $priceObj = $inputArr[1];
-                                }
                                 $invoice_amount += $priceObj;
+                                // dd($inputQty, $qty, $priceObj, $del_postcode);
 
                                 if($item) {
                                     $dealArr[$item->id] = [
-                                        'qty' => $qtyObj,
-                                        'quote' => $price->quote_price,
+                                        'qty' => $inputQty,
+                                        'quote' => $item_price,
                                         'amount' => $priceObj
                                     ];
-                                    $quantityArr[$item->id] = $qtyObj;
-                                    $quoteArr[$item->id] = $price->quote_price;
+                                    $quantityArr[$item->id] = $inputQty;
+                                    $quoteArr[$item->id] = $item_price;
                                     $amountArr[$item->id] = $priceObj;
                                 }
                             }
@@ -1773,11 +1779,11 @@ class TransactionController extends Controller
                             if($invoice_amount != $total_amount) {
                                 $dealArr[21] = [
                                     'qty' => 1,
-                                    'quote' => 0,
+                                    'quote' => $total_amount - $invoice_amount,
                                     'amount' => $total_amount - $invoice_amount
                                 ];
                                 $quantityArr[21] = 1;
-                                $quoteArr[21] = 0;
+                                $quoteArr[21] = $total_amount - $invoice_amount;
                                 $amountArr[21] = $total_amount - $invoice_amount;
                             }
                         }
