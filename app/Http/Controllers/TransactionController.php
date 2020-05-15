@@ -1669,15 +1669,15 @@ class TransactionController extends Controller
 
                         if($po_no = $result['po_no']) {
                             $po_no = trim($po_no);
-/*
+
                             if($person->cust_id[0] == 'P') {
                                 $searchTransactionPo = Transaction::where('po_no', $po_no)->first();
                                 if($searchTransactionPo) {
                                     array_push($importStatusArr['failure'], $result);
-                                    dd($importStatusArr);
+                                    // dd($importStatusArr);
                                     continue;
                                 }
-                            } */
+                            }
                         }
 
                         $model = new Transaction();
