@@ -737,13 +737,19 @@ class DetailRptController extends Controller
                 $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
             }
         }
+/*
         if($request->status) {
             if($request->status === 'Delivered') {
                 $amountstr .= " AND (transactions.status='Delivered' OR transactions.status='Verified Owe' OR transactions.status='Verified Paid')";
             }else {
                 $amountstr .=" AND transactions.status='".$request->status."'";
             }
+        } */
+        if($statuses = $request->statuses) {
+            $statuses = implode("','",$statuses);
+            $amountstr .= " AND transactions.status IN ('".$statuses."')";
         }
+
         if ($request->person_active) {
             $personstatus = $request->person_active;
 

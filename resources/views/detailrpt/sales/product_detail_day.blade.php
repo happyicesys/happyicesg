@@ -140,13 +140,21 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+{{--
                 {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.status',
                     'ng-change'=>'searchDB()'
                     ])
-                !!}
+                !!} --}}
+                <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
             </div>
         </div>
     </div>
