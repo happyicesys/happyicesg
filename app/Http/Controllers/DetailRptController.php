@@ -746,6 +746,11 @@ class DetailRptController extends Controller
             }
         } */
         if($statuses = $request->statuses) {
+
+            if(in_array('Delivered', $statuses)) {
+                array_push($statuses, 'Verified Owe', 'Verified Paid');
+            }
+
             $statuses = implode("','",$statuses);
             $amountstr .= " AND transactions.status IN ('".$statuses."')";
         }
