@@ -358,6 +358,7 @@ Route::post('/api/pricematrix/costrate/edit', 'PriceController@editCostrateApi')
 Route::get('/api/prices/{item_id}/{person_id}', 'PriceController@lookupPrices');
 Route::resource('price', 'PriceController');
 
+Route::get('/api/transaction/excel/histories', 'TransactionController@getLatestImportExcelHistory');
 Route::post('/api/transaction/batch/paymentstatus', 'TransactionController@batchUpdatePaymentStatus');
 Route::post('/api/transaction/excel/import', 'TransactionController@importExcelTransaction');
 Route::post('/api/transaction/jobassign/refreshdriver', 'TransactionController@jobAssignRefreshDriver');

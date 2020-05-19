@@ -11,6 +11,7 @@ var app = angular.module('app', [
         $scope.users = [];
         $scope.coordsArr = [];
         $scope.checkbox = [];
+        $scope.excelHistories = [];
         $scope.datasetTemp = {};
         $scope.totalCountTemp = {};
         $scope.totalCount = 0;
@@ -269,8 +270,11 @@ var app = angular.module('app', [
                 $scope.total_amount = data.total_amount;
                 $scope.spinner = false;
             }).error(function(data){
-
             });
+
+        $http.get('/api/transaction/excel/histories').success(function(data) {
+            $scope.excelHistories = data;
+        });
         }
 
         function getUsersData() {

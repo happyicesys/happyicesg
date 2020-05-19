@@ -4,6 +4,7 @@
 @inject('franchisees', 'App\User')
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
+@inject('imports', 'App\ImportTransactionExcel')
 
 @extends('template')
 @section('title')
@@ -613,7 +614,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        <hr class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
@@ -625,16 +626,30 @@
                                         ** Please make sure the excel headers is same with this
                                         <a href="/template/batch_upload_excel.xlsx">template</a>
                                     </span>
+                                    <div class="btn-group-control">
+                                        <button ng-click="uploadExcel($event)" class="btn btn-primary" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
+                                            Upload Excel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                <label class="control-label"></label>
-                                <div class="btn-group-control">
-                                    <button ng-click="uploadExcel($event)" class="btn btn-warning" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
-                                        Upload Excel
-                                    </button>
-                                </div>
+                                    <label for="history">
+                                        Latest 5 Upload Histories
+                                    </label>
+                                    <ul>
+                                            <li ng-repeat="import in excelHistories">
+                                                <a href="@{{import.file_url}}">
+                                                    @{{import.file_name}}
+                                                </a>
+                                                (<a href="@{{import.result_url}}">Result</a>)
+                                                <small>
+                                                    @{{import.created_at}}
+                                                    @{{import.uploader.name}}
+                                                </small>
+                                            </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>

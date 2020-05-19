@@ -32,6 +32,7 @@ use App\DtdPrice;
 use App\DtdTransaction;
 use App\DtdDeal;
 use App\GeneralSetting;
+use App\ImportTransactionExcel;
 use App\Invattachment;
 use App\TransSubscription;
 use App\User;
@@ -1638,9 +1639,18 @@ class TransactionController extends Controller
         $file = '';
         if($file = request()->file('excel_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-            $file = $file->move('import_excel', $name);
+            $resultfilename = 'Imported_'.$name;
+            $loadfile = $file->move('import_excel', $name);
+            // dd($resultfilename);
 
-            Excel::load($file, function($reader) {
+            $importStatusArr = [
+                'success' => [],
+                'item_failure' => [],
+                'failure' => []
+            ];
+
+            // $excel = Excel::load($loadfile, function($reader) use ($name, $importStatusArr){
+            $reader = Excel::load($loadfile, function($reader){})->get();
                 $results = $reader->toArray();
                 $headers = $reader->first()->toArray();
                 $items = [];
@@ -1658,13 +1668,9 @@ class TransactionController extends Controller
                         }
                     }
                 }
-
-                $importStatusArr = [
-                    'success' => [],
-                    'failure' => []
-                ];
                 if($headers)
-                foreach($results as $result) {
+                  foreach($results as $result) {
+                      $po_no = '';
                     if($person = Person::where('cust_id', $result['customer_id'])->first()) {
 
                         if($po_no = $result['po_no']) {
@@ -1673,8 +1679,12 @@ class TransactionController extends Controller
                             if($person->cust_id[0] == 'P') {
                                 $searchTransactionPo = Transaction::where('po_no', $po_no)->first();
                                 if($searchTransactionPo) {
-                                    array_push($importStatusArr['failure'], $result);
-                                    // dd($importStatusArr);
+                                    array_push($importStatusArr['failure'], [
+                                        'po_no' => $po_no,
+                                        'cust_id' => $result['customer_id'],
+                                        'del_postcode' => $result['del_postcode'],
+                                        'reason' => 'Duplicated PO'
+                                    ]);
                                     continue;
                                 }
                             }
@@ -1733,6 +1743,13 @@ class TransactionController extends Controller
                         $model->status = 'Confirmed';
                         $model->save();
 
+                        array_push($importStatusArr['success'], [
+                            'transaction_id' => $model->id,
+                            'cust_id' => $result['customer_id'],
+                            'del_postcode' => $result['del_postcode'],
+                            'po_no' => $po_no
+                        ]);
+
                         $dealArr = [];
                         $invoice_amount = 0;
                         $quantityArr = [];
@@ -1746,6 +1763,19 @@ class TransactionController extends Controller
                             if($deal = $result[$itemindex]) {
                                 $item = Item::where('product_id', $itemExcel['product_id'])->first();
                                 $price = Price::where('item_id', $item->id)->where('person_id', $person->id)->first();
+
+                                if(!$item) {
+                                    array_push($importStatusArr['item_failure'], [
+                                        'transaction_id' => $model ? $model->id : '',
+                                        'cust_id' => $result['customer_id'],
+                                        'del_postcode' => $result['del_postcode'],
+                                        'po_no' => $po_no,
+                                        'item' => $itemExcel['product_id'],
+                                        'qty' => $deal,
+                                        'reason' => 'Product ID error'
+                                    ]);
+                                    continue;
+                                }
 
                                 $inputQty = $deal * $itemExcel['multiplier'].'/'.$itemExcel['divisor'];
 
@@ -1761,7 +1791,6 @@ class TransactionController extends Controller
                                 $priceObj = $qty * $item_price;
 
                                 $invoice_amount += $priceObj;
-                                // dd($inputQty, $qty, $priceObj, $del_postcode);
 
                                 if($item) {
                                     $dealArr[$item->id] = [
@@ -1789,13 +1818,60 @@ class TransactionController extends Controller
                         }
                         $this->syncDeal($model, $quantityArr, $amountArr, $quoteArr, 1);
                         // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
+                    }else {
+                        array_push($importStatusArr['failure'], [
+                            'po_no' => $po_no,
+                            'cust_id' => $result['customer_id'],
+                            'del_postcode' => $result['del_postcode'],
+                            'reason' => 'Invalid Customer ID'
+                        ]);
                     }
-
-
                 }
+/*
+                $excel = Excel::create($resultfilename, function ($excel) use ($importStatusArr) {
+                    $excel->sheet('sheet1', function ($sheet) use ($importStatusArr) {
+                        $sheet->setAutoSize(true);
+                        $sheet->setColumnFormat(array(
+                            'A:T' => '@'
+                        ));
+                        $sheet->loadView('transaction.upload_excel_result', compact('importStatusArr'));
+                    });
+                })->store('xls', public_path('/import_excel_result/')); */
+            // });
 
-            });
+            // dd($importStatusArr, $reader);
+
+            Excel::create($resultfilename, function($excel) use ($importStatusArr) {
+                $excel->sheet('sheet1', function($sheet) use ($importStatusArr) {
+                    $sheet->setColumnFormat(array('A:P' => '@'));
+                    $sheet->getPageSetup()->setPaperSize('A4');
+                    $sheet->setAutoSize(true);
+                    $sheet->loadView('transaction.upload_excel_result', compact('importStatusArr'));
+                });
+            })->store('xlsx', public_path('import_excel_result'));
+
+            // if($excel) {
+                // dd($excel);
+                ImportTransactionExcel::create([
+                    'upload_date' => Carbon::today()->toDateString(),
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_url' => '/import_excel/'.$name,
+                    'result_url' => '/import_excel_result/'.$resultfilename.'.xlsx',
+                    'uploaded_by' => auth()->user()->id
+                ]);
+            // }
         }
+    }
+
+    // retrieve upload excel history
+    public function getLatestImportExcelHistory()
+    {
+        $histories = ImportTransactionExcel::with('uploader')
+                    ->latest()
+                    ->limit(5)
+                    ->get();
+
+        return $histories;
     }
 
     // batch update payment status
@@ -2578,7 +2654,7 @@ class TransactionController extends Controller
     // calculating gst and non for delivered total
     private function calDBTransactionTotal($query)
     {
-        dd($query->select('transactions.total')->get());
+        // dd($query->select('transactions.total')->get());
         $total_amount = 0;
         $nonGst_amount = 0;
         $gst_exclusive = 0;

@@ -13,5 +13,7 @@ Homestead.json
 Vagrantfile
 .DS_Store
 /public/import_excel
+/public/import_excel_result
+/storage/import_excel_result
 
 
