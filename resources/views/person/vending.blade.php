@@ -61,12 +61,20 @@
             </div>
         </div>
         @endif
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('serial_number', 'Serial Number', ['class'=>'control-label']) !!}
-                {!! Form::text('serial_number', null, ['class'=>'form-control']) !!}
+        {{-- <div class="col-md-12 col-sm-12 col-xs-12"> --}}
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('serial_number', 'Serial Number', ['class'=>'control-label']) !!}
+                    {!! Form::text('serial_number', null, ['class'=>'form-control']) !!}
+                </div>
             </div>
-        </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('terminal_id', 'Terminal ID', ['class'=>'control-label']) !!}
+                    {!! Form::text('terminal_id', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+        {{-- </div> --}}
         @if($person->vending)
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
