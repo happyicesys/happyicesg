@@ -1,3 +1,4 @@
+@inject('payterms', 'App\Payterm')
 @inject('people', 'App\Person')
 @inject('users', 'App\User')
 @inject('personassets', 'App\Personasset')
@@ -106,6 +107,8 @@
 
             <div class="col-md-3 col-xs-6 form-group">
                 {!! Form::label('payterm', 'Pay Term', ['class'=>'control-label']) !!}
+                {{-- {!! Form::select('payterm', $payterms::lists('name', 'name'), null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!} --}}
+
                 {!! Form::textarea('payterm', null, ['class'=>'form-control',
                 'ng-model'=>'form.payterm',
                 'readonly'=>'readonly',
@@ -237,7 +240,7 @@
                 </div>
 
                 <div class="col-md-4 form-group">
-                    {!! Form::label('note', 'Note', ['class'=>'control-label']) !!}
+                    {!! Form::label('note', 'Payment Ref', ['class'=>'control-label']) !!}
                     {!! Form::text('note', null, ['class'=>'form-control', 'disabled'=> $disabled]) !!}
                 </div>
             @endif

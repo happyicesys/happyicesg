@@ -1,3 +1,5 @@
+
+@inject('payterms', 'App\Payterm')
 @inject('profiles', 'App\Profile')
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
@@ -669,25 +671,46 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="form-group" ng-show="form.pay_status == 'Paid'">
-                                    {!! Form::label('paid_at', 'Paid Date', ['class'=>'control-label search-title']) !!}
-                                    <datepicker>
-                                        <input
-                                            name = "paid_at"
-                                            type = "text"
-                                            class = "form-control input-sm"
-                                            placeholder = "Paid Date"
-                                            ng-model = "form.paid_at"
-                                            ng-change = "formDeliveryDateChange('paid_at', form.paid_at)"
-                                        />
-                                    </datepicker>
-                                </div>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                     <div class="btn-group-control">
                                         <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchSetPaymentClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Set Payment Status</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="form.pay_status == 'Paid'">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group" >
+                                        {!! Form::label('paid_at', 'Paid Date', ['class'=>'control-label search-title']) !!}
+                                        <datepicker>
+                                            <input
+                                                name = "paid_at"
+                                                type = "text"
+                                                class = "form-control input-sm"
+                                                placeholder = "Paid Date"
+                                                ng-model = "form.paid_at"
+                                                ng-change = "formDeliveryDateChange('paid_at', form.paid_at)"
+                                            />
+                                        </datepicker>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group" >
+                                        {!! Form::label('pay_method', 'Pay Method', ['class'=>'control-label search-title']) !!}
+                                        <select name="pay_method" class="form-control selectform" ng-model="form.pay_method">
+                                            <option value=""></option>
+                                            <option value="cash">Cash</option>
+                                            <option value="cheque">Cheque</option>
+                                            <option value="tt">TT</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group" >
+                                        {!! Form::label('note', 'Payment Ref', ['class'=>'control-label search-title']) !!}
+                                        <input type="text" class="form-control" ng-model="form.note" placeholder="Blank to remains same">
                                     </div>
                                 </div>
                             </div>

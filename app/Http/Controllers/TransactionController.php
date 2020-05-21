@@ -1887,9 +1887,12 @@ class TransactionController extends Controller
                         if($chosenArr['pay_status'] == 'Paid') {
                             $model->pay_status = 'Paid';
                             $model->paid_at = $chosenArr['paid_at'];
+                            $model->pay_method = $chosenArr['pay_method'];
+                            $model->note = $chosenArr['note'];
                         }else {
                             $model->pay_status = 'Owe';
                             $model->paid_at = null;
+                            $model->pay_method = null;
                         }
                         $model->updated_at = Carbon::now();
                         $model->updated_by = auth()->user()->name;

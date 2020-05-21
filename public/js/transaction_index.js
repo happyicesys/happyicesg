@@ -63,7 +63,9 @@ var app = angular.module('app', [
             delivery_date: $scope.today,
             excel_file: [],
             pay_status: '',
-            paid_at: $scope.today
+            paid_at: $scope.today,
+            pay_method: '',
+            note: ''
         };
         // init page load
         getUsersData();
