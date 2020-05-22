@@ -396,6 +396,12 @@ var app = angular.module('app', [
             // console.log($scope.drivers);
         }
 
+        // on transaction remarks change
+        $scope.onTransRemarkChanged = function(transaction_id, driverkey, transactionkey) {
+            $http.post('/api/transaction/transremark/' + transaction_id, {transremark: $scope.drivers[driverkey].transactions[transactionkey].transremark}).success(function(data) {
+            });
+        }
+
         $scope.onMapClicked = function(singleperson = null, driverkey = null, transactionkey = null) {
             var url = window.location.href;
             var location = '';

@@ -746,7 +746,19 @@ Job Assign
                                     @{{ transaction.contact}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ transaction.is_important ? transaction.transremark : '' }}
+                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                        <textarea name="transremark" rows="3" style="max-width: 120px;" ng-model='transaction.transremark' ng-change="onTransRemarkChanged(transaction.id, driverkey, transactionkey)" ng-model-options="{debounce: 500}" ng-if="driverOptionShowing"></textarea>
+                                        <span ng-if="!driverOptionShowing">
+                                            @{{transaction.transremark}}
+                                        </span>
+                                    @else
+                                        <span v-if="transaction.is_important">
+                                            @{{transaction.transremark}}
+                                        </span>
+                                        <span v-if="!transaction.is_important">
+                                            @{{transaction.transremark | cut:true:30:'...'}}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="col-md-2 text-center">
                                     @{{ transaction.operation_note | cut:true:40:'...' }}

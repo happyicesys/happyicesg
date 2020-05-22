@@ -1903,6 +1903,14 @@ class TransactionController extends Controller
         }
     }
 
+    // update individual trans remark
+    public function updateTransremarkById($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->transremark = request('transremark');
+        $transaction->save();
+    }
+
     // retrieve transactions data ()
     private function getTransactionsData()
     {
