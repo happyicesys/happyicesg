@@ -1671,6 +1671,7 @@ class TransactionController extends Controller
                 if($headers)
                   foreach($results as $result) {
                       $po_no = '';
+                    //   dd($headers);
                     if($person = Person::where('cust_id', $result['customer_id'])->first()) {
 
                         if($po_no = $result['po_no']) {
@@ -1699,43 +1700,50 @@ class TransactionController extends Controller
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
                             $model->po_no = $po_no;
                         }
-                        if($del_postcode = $result['del_postcode']) {
+                        $del_postcode = isset($result['del_postcode']) ? $result['del_postcode'] : $person->del_postcode;
+                        $del_address = isset($result['del_address']) ? $result['del_address'] : $person->del_address;
+                        $order_date = isset($result['order_date']) ? Carbon::parse($result['order_date'])->toDateString() : Carbon::today()->toDateString();
+                        $delivery_date = isset($result['delivery_date']) ? Carbon::parse($result['delivery_date'])->toDateString() : Carbon::today()->toDateString();
+                        $total_amount = isset($result['total_amount']) ? $result['total_amount'] : '';
+                        $delivery_fee = isset($result['delivery_fee']) ? $result['delivery_fee'] : '';
+                        $attn_name = isset($result['attn_name']) ? $result['attn_name'] : $person->name;
+                        $attn_contact = isset($result['attn_contact']) ? $result['attn_contact'] : $person->contact;
+                        $attn_email = isset($result['attn_email']) ? $result['attn_email'] : $person->email;
+                        $transremark = isset($result['transremark']) ? $result['transremark'] : '';
+                        $payment_date = isset($result['payment_date']) ? $result['payment_date'] : '';
+                        if($del_postcode) {
                             $model->del_postcode = $del_postcode;
-                        }else {
-                            $model->del_postcode = $person->del_postcode;
                         }
-                        if($del_address = $result['del_address']) {
+                        if($del_address) {
                             $model->del_address = $del_address;
-                        }else {
-                            $model->del_address = $person->del_address;
                         }
-                        if($order_date = $result['order_date']) {
-                            $model->order_date = Carbon::parse($order_date)->toDateString();
+                        if($order_date) {
+                            $model->order_date = $order_date;
                         }
-                        if($delivery_date = $result['delivery_date']) {
-                            $model->delivery_date = Carbon::parse($delivery_date)->toDateString();
+                        if($delivery_date) {
+                            $model->delivery_date = $delivery_date;
                         }
-                        if($total_amount = $result['total_amount']) {
+                        if($total_amount) {
                             $model->total = $total_amount;
                         }
-                        if($delivery_fee = $result['delivery_fee']) {
+                        if($delivery_fee) {
                             $model->delivery_fee = $delivery_fee;
                         }
-                        if($attn_name = $result['attn_name']) {
+                        if($attn_name) {
                             $model->name = $attn_name;
                         }
-                        if($attn_contact = $result['attn_contact']) {
+                        if($attn_contact) {
                             $model->contact = $attn_contact;
                         }
-                        if($attn_email = $result['attn_email']) {
+                        if($attn_email) {
                             $model->email = $attn_email;
                         }
-                        if($transremark = $result['transremark']) {
+                        if($transremark) {
                             $model->transremark = $transremark;
                             $model->is_important = 1;
                         }
-                        if($payment_date = $result['payment_date']) {
-                            $model->paid_at = Carbon::parse($payment_date)->toDateString();
+                        if($payment_date) {
+                            $model->paid_at = $payment_date;
                             $model->paid_by = auth()->user()->name;
                             $model->pay_method = 'cash';
                             $model->pay_status = 'Paid';
@@ -1768,7 +1776,7 @@ class TransactionController extends Controller
                                     array_push($importStatusArr['item_failure'], [
                                         'transaction_id' => $model ? $model->id : '',
                                         'cust_id' => $result['customer_id'],
-                                        'del_postcode' => $result['del_postcode'],
+                                        'del_postcode' => $del_postcode,
                                         'po_no' => $po_no,
                                         'item' => $itemExcel['product_id'],
                                         'qty' => $deal,
