@@ -7,10 +7,44 @@ Healthier Life
 @section('content')
     {{-- <header> --}}
 
-    <header>
-        <img src="../img/mainslide.jpg" alt="ice cream online and offline order" class="img-responsive">
-        <a href="/delivery" class="btn btn-success btn-xl text-center" style="margin-top: 10px;" >Find Out Now</a>
-    </header>
+<style>
+    .img-wrapper {
+    position: relative;
+    }
+
+    .img-responsive {
+    width: 100%;
+    height: auto;
+    }
+
+    .img-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    }
+
+    .img-overlay:before {
+    content: ' ';
+    display: block;
+    /* adjust 'height' to position overlay content vertically */
+    height: 50%;
+    }
+</style>
+
+    {{-- <header> --}}
+        <div class="img-wrapper">
+            <img src="../img/mainslide.jpg" alt="ice cream online and offline order" class="img-responsive">
+            <div class="img-overlay">
+                <a href="/delivery" class="btn btn-danger btn-xl text-center">
+                    Online Order Now
+                </a>
+            </div>
+        </div>
+
+    {{-- </header> --}}
     {{-- </header> --}}
 
     <section class="bg-primary" id="about">
