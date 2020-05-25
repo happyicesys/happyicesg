@@ -12,6 +12,7 @@ class Profile extends Model
         'contact', 'alt_contact', 'roc_no',
         'header', 'logo', 'footer',
         'gst', 'acronym', 'attn', 'is_gst_inclusive', 'gst_rate',
+        'paynow_uen',
 
         'payterm_id', 'currency_id'
     ];

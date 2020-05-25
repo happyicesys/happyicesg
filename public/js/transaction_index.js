@@ -350,6 +350,7 @@ var app = angular.module('app', [
                     $scope.searchDB();
                 }, function error(e) {
                     $scope.errors = e.data.errors;
+                    alert('Upload unsuccessful, please make sure only have one excel sheet, check the customer id, and try again')
                 });
         };
 

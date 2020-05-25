@@ -766,6 +766,11 @@
                             Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
                         @endunless
                     </div>
+                    <div class="col-xs-12">
+                        @if($person->profile->paynow_uen)
+                            {{$person->profile->name}} : Paynow UEN : {{$person->profile->paynow_uen}}
+                        @endif
+                    </div>
                     <div class="col-xs-12" style="padding-top:10px">
                         <div class="form-group">
                             @if($transaction->transremark or $person->remark)
