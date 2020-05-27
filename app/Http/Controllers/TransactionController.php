@@ -1699,6 +1699,7 @@ class TransactionController extends Controller
                             $model->gst_rate = $person->gst_rate;
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
                             $model->po_no = $po_no;
+                            $model->updated_by = 'system';
                         }
                         $del_postcode = isset($result['del_postcode']) ? $result['del_postcode'] : $person->del_postcode;
                         $del_address = isset($result['del_address']) ? $result['del_address'] : $person->del_address;

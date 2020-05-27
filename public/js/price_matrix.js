@@ -25,6 +25,10 @@ function pricematrixController($scope, $http) {
         sortBy: true,
         sortName: ''
     }
+    $scope.form = {
+        retail_price: '',
+        quote_price: ''
+    }
     $scope.spinner = false;
     // init page load
 
@@ -72,6 +76,14 @@ function pricematrixController($scope, $http) {
 
     $scope.onPriceChanged = function (price) {
         $http.post('/api/pricematrix/edit', price).success(function (data) {});
+    }
+
+    // on individual override button clicked
+    $scope.onOverrideButtonClicked = function(retail_price, quote_price, itemindex) {
+        console.log(retail_price);
+        console.log(quote_price);
+        console.log(itemindex);
+        console.log($scope.items[itemindex]);
     }
 
     // retrieve page w/wo search

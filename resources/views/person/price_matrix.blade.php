@@ -5,6 +5,51 @@
 @section('content')
 
 @inject('custcategories', 'App\Custcategory')
+{{--
+    <style>
+        body {
+        margin: 0;
+        }
+        th, td {
+            text-align: center;
+            background-color: white
+        }
+        table {
+        position: relative;
+        width: 400px;
+        overflow: hidden;
+        }
+        thead {
+        position: relative;
+        display: block;
+        width: 400px;
+        overflow: visible;
+        }
+        thead th {
+        min-width: 80px;
+        height: 40px;
+        }
+        thead th:nth-child(1) {
+        position: relative;
+        display: block;
+        height: 40px;
+        padding-top: 20px;
+        }
+        tbody {
+        position: relative;
+        display: block;
+        width: 400px;
+        height: 90px;
+        overflow: scroll;
+        }
+        tbody td {
+        min-width: 80px;
+        }
+        tbody tr td:nth-child(1) {
+        position: relative;
+        display: block;
+        }
+    </style> --}}
 
     <div class="row">
         <a class="title_hyper pull-left" href="/detailrpt/operation"><h1>Price Matrix <i class="fa fa-book"></i></h1></a>
@@ -128,8 +173,12 @@
                         <th class="col-md-1 text-center">
                             Cost Rate (%)
                         </th>
-                        <th class="col-md-1 text-center" ng-repeat="item in items">
+                        <th class="col-md-1 text-center" ng-repeat="(itemindex, item) in items">
                             (@{{item.product_id}}) @{{item.name}}
+{{--
+                            <input type="text" class="input-xs text-right" ng-model="form.retail_price[itemindex]" placeholder="Retail Price">
+                            <input type="text" class="input-xs text-right" ng-model="form.quote_price[itemindex]" placeholder="Quote Price">
+                            <button class="btn btn-xs btn-warning" ng-click="onOverrideButtonClicked(form.retail_price[itemindex], form.quote_price[item_index], itemindex)">Override</button> --}}
                         </th>
                     </tr>
                     </thead>
