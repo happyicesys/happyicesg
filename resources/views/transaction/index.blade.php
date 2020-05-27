@@ -704,6 +704,7 @@
                                             <option value="cash">Cash</option>
                                             <option value="cheque">Cheque</option>
                                             <option value="tt">TT</option>
+                                            <option value="creditcard">Credit Card</option>
                                         </select>
                                     </div>
                                 </div>

@@ -102,7 +102,7 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('pay_method', 'Pay Method', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('pay_method', [''=>'All', 'cash' => 'Cash', 'cheque' => 'Cheque', 'tt' => 'T/t'],
+                {!! Form::select('pay_method', [''=>'All', 'cash' => 'Cash', 'cheque' => 'Cheque', 'tt' => 'T/t', 'creditcard' => 'Credit Card'],
                     null,
                     [
                     'class'=>'select form-control',

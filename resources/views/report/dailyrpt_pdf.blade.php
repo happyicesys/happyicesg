@@ -336,8 +336,25 @@
                                 </td>
                                 @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                                     @if($transaction->pay_method)
+                                    @php
+                                        $paymethod = '';
+                                        switch($transaction->pay_method) {
+                                            case 'cash':
+                                                $paymethod = 'Cash';
+                                                break;
+                                            case 'cheque':
+                                                $paymethod = 'Cheque';
+                                                break;
+                                            case 'tt':
+                                                $paymethod = 'TT';
+                                                break;
+                                            case 'creditcard':
+                                                $paymethod = 'Credit Card';
+                                                break;
+                                        }
+                                    @endphp
                                         <td class="col-xs-1 text-center">
-                                            {{ $transaction->pay_method == 'cash' ? 'Cash' : 'Cheque/TT' }}
+                                            {{$paymethod}}
                                         </td>
                                     @else
                                         <td class="col-xs-1 text-center">

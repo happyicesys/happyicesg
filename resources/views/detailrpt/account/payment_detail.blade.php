@@ -171,7 +171,7 @@
             <div class="form-group">
                 {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('pay_method',
-                    [''=>'All', 'cash'=>'Cash', 'cheque'=>'Cheque', 'tt'=>'TT'],
+                    [''=>'All', 'cash'=>'Cash', 'cheque'=>'Cheque', 'tt'=>'TT', 'creditcard'=>'Credit Card'],
                     null,
                     [
                     'class'=>'select form-control',
