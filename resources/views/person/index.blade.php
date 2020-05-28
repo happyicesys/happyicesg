@@ -24,7 +24,7 @@
                             @if(!auth()->user()->hasRole('franchisee'))
                             <a href="/onlineprice/create" class="btn btn-sm btn-default">+ Ecommerce Price Setup</a>
                             @endif
-                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation') or auth()->user()->hasRole('supervisor'))
                                 <a href="/pricematrix" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Price Matrix</a>
                             @endif
                         @endcannot
