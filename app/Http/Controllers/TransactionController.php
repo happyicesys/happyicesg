@@ -1700,6 +1700,7 @@ class TransactionController extends Controller
                             $model->is_gst_inclusive = $person->is_gst_inclusive;
                             $model->po_no = $po_no;
                             $model->updated_by = 'system';
+                            $model->created_by = 100129;
                         }
                         $del_postcode = isset($result['del_postcode']) ? $result['del_postcode'] : $person->del_postcode;
                         $del_address = isset($result['del_address']) ? $result['del_address'] : $person->del_address;
@@ -1728,7 +1729,15 @@ class TransactionController extends Controller
                             $model->total = $total_amount;
                         }
                         if($delivery_fee) {
-                            $model->delivery_fee = $delivery_fee;
+                            // $model->delivery_fee = $delivery_fee;
+                            $dealArr[308] = [
+                                'qty' => 1,
+                                'quote' => $delivery_fee,
+                                'amount' => $delivery_fee
+                            ];
+                            $quantityArr[308] = 1;
+                            $quoteArr[308] = $delivery_fee;
+                            $amountArr[308] = $delivery_fee;
                         }
                         if($attn_name) {
                             $model->name = $attn_name;
@@ -1938,7 +1947,8 @@ class TransactionController extends Controller
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
                         ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
-                        ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id');
+                        ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
+                        ->leftJoin('users AS creator', 'creator.id', '=', 'transactions.created_by');
                         // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
@@ -1965,7 +1975,8 @@ class TransactionController extends Controller
                                     DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
                                     DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
                                     DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
-                                    DB::raw('SUBSTRING(people.area_group, 11, 1) AS north')
+                                    DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
+                                    'creator.id AS creator_id', 'creator.name AS creator_name'
                                 );
 
         $transactions = $this->searchDBFilter($transactions);
@@ -2114,6 +2125,7 @@ class TransactionController extends Controller
         }else{
             Flash::success('Successfully Added');
         }
+
     }
 
     // email alert for stock insufficient
@@ -2620,6 +2632,10 @@ class TransactionController extends Controller
                 $tags = [$tags];
             }
             $transactions = $transactions->whereIn('persontags.id', $tags);
+        }
+
+        if(request('creator_id')) {
+            $transactions = $transactions->where('creator.id', request('creator_id'));
         }
 
         if(request('sortName')){

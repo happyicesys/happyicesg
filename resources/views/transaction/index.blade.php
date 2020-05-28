@@ -421,6 +421,17 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('driver', 'Created By', ['class'=>'control-label search-title']) !!}
+                            <select name="creator_id" class="form-control select" ng-model="search.creator_id" ng-change="searchDB()">
+                                <option value="">All</option>
+                                @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                    <option value="{{$user->id}}">
+                                        {{$user->name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -890,6 +901,12 @@
                                     <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+                                <th class="col-md-1 text-center">
+                                    <a href="" ng-click="sortTable('creator_name')">
+                                    Created By
+                                    <span ng-if="search.sortName == 'creator_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                    <span ng-if="search.sortName == 'creator_name' && search.sortBy" class="fa fa-caret-up"></span>
+                                </th>
                             </tr>
                             <tbody>
                                 <tr dir-paginate="transaction in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
@@ -991,6 +1008,7 @@
                                     <td class="col-md-1 text-center">@{{ transaction.del_address}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.creator_name }}</td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
                                     <td colspan="24" class="text-center">No Records Found</td>

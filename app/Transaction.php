@@ -61,7 +61,8 @@ class Transaction extends Model
         'balance_coin' => 'Balance Coin',
         'is_freeze' => 'Date Freeze',
         'sign_url' => 'Signature',
-        'is_important' => 'Flag'
+        'is_important' => 'Flag',
+        'created_by' => 'Created By'
 
     );
 
