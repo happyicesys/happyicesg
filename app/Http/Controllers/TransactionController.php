@@ -2162,7 +2162,7 @@ class TransactionController extends Controller
             Flash::success('Successfully Added');
         }
 
-        return $errors;
+        return isset($errors) ? $errors : '';
     }
 
     // email alert for stock insufficient
