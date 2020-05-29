@@ -1637,17 +1637,16 @@ class TransactionController extends Controller
     public function importExcelTransaction(Request $request)
     {
         $file = '';
+        $importStatusArr = [
+            'success' => [],
+            'item_failure' => [],
+            'failure' => []
+        ];
         if($file = request()->file('excel_file')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $resultfilename = 'Imported_'.$name;
             $loadfile = $file->move('import_excel', $name);
             // dd($resultfilename);
-
-            $importStatusArr = [
-                'success' => [],
-                'item_failure' => [],
-                'failure' => []
-            ];
 
             // $excel = Excel::load($loadfile, function($reader) use ($name, $importStatusArr){
             $reader = Excel::load($loadfile, function($reader){})->get();
@@ -1669,9 +1668,14 @@ class TransactionController extends Controller
                     }
                 }
                 if($headers)
-                  foreach($results as $result) {
-                      $po_no = '';
-                    //   dd($headers);
+                  foreach($results as $resultindex => $result) {
+                    $po_no = '';
+
+                    if(!$result['customer_id'] and !$result['delivery_date']) {
+                        // dd($result['customer_id'], $result['delivery_date']);
+                        continue;
+                    }
+
                     if($person = Person::where('cust_id', $result['customer_id'])->first()) {
 
                         if($po_no = $result['po_no']) {
@@ -1684,7 +1688,8 @@ class TransactionController extends Controller
                                         'po_no' => $po_no,
                                         'cust_id' => $result['customer_id'],
                                         'del_postcode' => $result['del_postcode'],
-                                        'reason' => 'Duplicated PO'
+                                        'reason' => 'Duplicated PO',
+                                        'row_number' => $resultindex + 2
                                     ]);
                                     continue;
                                 }
@@ -1713,6 +1718,12 @@ class TransactionController extends Controller
                         $attn_email = isset($result['attn_email']) ? $result['attn_email'] : $person->email;
                         $transremark = isset($result['transremark']) ? $result['transremark'] : '';
                         $payment_date = isset($result['payment_date']) ? $result['payment_date'] : '';
+                        $dealArr = [];
+                        $invoice_amount = 0;
+                        $quantityArr = [];
+                        $quoteArr = [];
+                        $amountArr = [];
+
                         if($del_postcode) {
                             $model->del_postcode = $del_postcode;
                         }
@@ -1727,17 +1738,6 @@ class TransactionController extends Controller
                         }
                         if($total_amount) {
                             $model->total = $total_amount;
-                        }
-                        if($delivery_fee) {
-                            // $model->delivery_fee = $delivery_fee;
-                            $dealArr[308] = [
-                                'qty' => 1,
-                                'quote' => $delivery_fee,
-                                'amount' => $delivery_fee
-                            ];
-                            $quantityArr[308] = 1;
-                            $quoteArr[308] = $delivery_fee;
-                            $amountArr[308] = $delivery_fee;
                         }
                         if($attn_name) {
                             $model->name = $attn_name;
@@ -1768,11 +1768,6 @@ class TransactionController extends Controller
                             'po_no' => $po_no
                         ]);
 
-                        $dealArr = [];
-                        $invoice_amount = 0;
-                        $quantityArr = [];
-                        $quoteArr = [];
-                        $amountArr = [];
                         foreach($items as $itemindex => $itemExcel) {
                             // dd($del_postcode, $index,  $item, $result[$index], $items);
                             $priceObj = 0;
@@ -1822,26 +1817,61 @@ class TransactionController extends Controller
                                 }
                             }
                         }
-                        if($total_amount) {
-                            if($invoice_amount != $total_amount) {
-                                $dealArr[21] = [
+
+                        if($delivery_fee) {
+                            if($delivery_fee != 0) {
+                                $dealArr[308] = [
                                     'qty' => 1,
-                                    'quote' => $total_amount - $invoice_amount,
-                                    'amount' => $total_amount - $invoice_amount
+                                    'quote' => $delivery_fee,
+                                    'amount' => $delivery_fee
                                 ];
-                                $quantityArr[21] = 1;
-                                $quoteArr[21] = $total_amount - $invoice_amount;
-                                $amountArr[21] = $total_amount - $invoice_amount;
+                                $quantityArr[308] = 1;
+                                $quoteArr[308] = $delivery_fee;
+                                $amountArr[308] = $delivery_fee;
+                                $invoice_amount += $delivery_fee;
                             }
                         }
-                        $this->syncDeal($model, $quantityArr, $amountArr, $quoteArr, 1);
+
+                        if($total_amount) {
+                            $total_amount = number_format($total_amount, 2);
+                            $invoice_amount = number_format($invoice_amount, 2);
+                            $diff_amount = $total_amount - $invoice_amount;
+
+                            if($invoice_amount != $total_amount and $diff_amount != 0) {
+                                $dealArr[21] = [
+                                    'qty' => 1,
+                                    'quote' => $diff_amount,
+                                    'amount' => $diff_amount
+                                ];
+                                $quantityArr[21] = 1;
+                                $quoteArr[21] = $diff_amount;
+                                $amountArr[21] = $diff_amount;
+                            }
+                        }
+
+                        $itemArrErrors = $this->syncDeal($model, $quantityArr, $amountArr, $quoteArr, 1);
+
+                        if(count($itemArrErrors) > 0) {
+                            foreach($itemArrErrors as $errorItem) {
+                                array_push($importStatusArr['item_failure'], [
+                                    'transaction_id' => $model ? $model->id : '',
+                                    'cust_id' => $result['customer_id'],
+                                    'del_postcode' => $del_postcode,
+                                    'po_no' => $po_no,
+                                    'item' => $errorItem,
+                                    'reason' => 'Insufficient Stock'
+                                ]);
+                            }
+                        }
                         // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
                     }else {
                         array_push($importStatusArr['failure'], [
                             'po_no' => $po_no,
                             'cust_id' => $result['customer_id'],
                             'del_postcode' => $result['del_postcode'],
-                            'reason' => 'Invalid Customer ID'
+                            'reason' => 'Invalid Customer ID',
+                            'syntax' => $result,
+                            'row_number' => $resultindex + 2
                         ]);
                     }
                 }
@@ -1878,6 +1908,12 @@ class TransactionController extends Controller
                     'uploaded_by' => auth()->user()->id
                 ]);
             // }
+        }
+
+        if(count($importStatusArr['failure']) > 0 or count($importStatusArr['item_failure']) > 0 or count($importStatusArr['success']) == 0) {
+            return 'false';
+        }else {
+            return 'true';
         }
     }
 
@@ -2126,6 +2162,7 @@ class TransactionController extends Controller
             Flash::success('Successfully Added');
         }
 
+        return $errors;
     }
 
     // email alert for stock insufficient

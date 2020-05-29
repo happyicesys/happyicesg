@@ -347,7 +347,11 @@ var app = angular.module('app', [
                     // clear uploaded file
                     var fileElement = angular.element('#excel_file');
                     fileElement.value = '';
-                    alert("Excel file uploaded and transactions loaded");
+                    if(e.data === 'true') {
+                        alert("Excel file uploaded and transactions loaded");
+                    }else {
+                        alert("Invoice or Item creation failure, please refer to the Result file");
+                    }
                     $scope.searchDB();
                 }, function error(e) {
                     $scope.errors = e.data.errors;

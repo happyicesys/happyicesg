@@ -14,6 +14,8 @@
         <th>Cust ID</th>
         <th>Del Postcode</th>
         <th>Reason</th>
+        <th>Row Number</th>
+
     </tr>
     @foreach($importStatusArr['failure'] as $index => $data)
         <tr>
@@ -22,6 +24,7 @@
             <td>{{$data['cust_id']}}</td>
             <td>{{$data['del_postcode']}}</td>
             <td>{{$data['reason']}}</td>
+            <td>{{$data['row_number']}}</td>
         </tr>
     @endforeach
     @endif
@@ -44,7 +47,9 @@
         <th>Cust ID</th>
         <th>Del Postcode</th>
         <th>Item</th>
-        <th>Qty</th>
+        @if($data['qty'])
+            <th>Qty</th>
+        @endif
         <th>Reason</th>
     </tr>
     @foreach($importStatusArr['item_failure'] as $index => $data)
@@ -55,7 +60,9 @@
             <td>{{$data['cust_id']}}</td>
             <td>{{$data['del_postcode']}}</td>
             <td>{{$data['item']}}</td>
-            <td>{{$data['qty']}}</td>
+            @if($data['qty'])
+                <td>{{$data['qty']}}</td>
+            @endif
             <td>{{$data['reason']}}</td>
         </tr>
     @endforeach
