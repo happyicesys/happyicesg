@@ -47,9 +47,7 @@
         <th>Cust ID</th>
         <th>Del Postcode</th>
         <th>Item</th>
-        @if($data['qty'])
-            <th>Qty</th>
-        @endif
+        <th>Qty</th>
         <th>Reason</th>
     </tr>
     @foreach($importStatusArr['item_failure'] as $index => $data)
@@ -60,9 +58,7 @@
             <td>{{$data['cust_id']}}</td>
             <td>{{$data['del_postcode']}}</td>
             <td>{{$data['item']}}</td>
-            @if($data['qty'])
-                <td>{{$data['qty']}}</td>
-            @endif
+            <td>{{isset($data['qty']) ? $data['qty'] : ''}}</td>
             <td>{{$data['reason']}}</td>
         </tr>
     @endforeach
