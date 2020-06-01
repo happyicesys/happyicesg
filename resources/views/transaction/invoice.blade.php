@@ -87,8 +87,8 @@
                                     <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
                                     <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
                                 @else --}}
-                                    <span class="col-xs-12"> {{$person->cust_id}}</span>
-                                    <span class="col-xs-12">{{$person->company}}</span>
+                                    {{-- <span class="col-xs-12"> {{$person->cust_id}}</span> --}}
+                                    {{-- <span class="col-xs-12">{{$person->company}}</span> --}}
                                     <span class="col-xs-12">{{$person->com_remark}}</span>
                                     <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
                                 {{-- @endif --}}
@@ -768,7 +768,7 @@
                     </div>
                     <div class="col-xs-12">
                         @if($person->profile->paynow_uen)
-                            {{$person->profile->name}} : Paynow UEN : {{$person->profile->paynow_uen}}
+                            {{$person->profile->name}} PayNow UEN : {{$person->profile->paynow_uen}}
                         @endif
                     </div>
                     <div class="col-xs-12" style="padding-top:10px">
@@ -825,9 +825,11 @@
                                 <span class="text-center col-xs-12" style="margin-bottom:-1px; padding-top:40px">
                                     _______________________________
                                 </span>
+                                @if(!$transaction->is_vending_generate)
                                 <span class="text-center col-xs-12" style="margin-top:0px">
                                     <strong>Payment Collected By</strong>
                                 </span>
+                                @endif
                             </div>
                         </div>
                         @endif
