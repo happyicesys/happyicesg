@@ -760,7 +760,7 @@ class OperationWorksheetController extends Controller
             WHERE x.id = (
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1
                 )
