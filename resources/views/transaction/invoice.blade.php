@@ -87,8 +87,10 @@
                                     <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
                                     <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
                                 @else --}}
-                                    {{-- <span class="col-xs-12"> {{$person->cust_id}}</span> --}}
-                                    {{-- <span class="col-xs-12">{{$person->company}}</span> --}}
+                                    @if(!$person->is_subsidiary)
+                                        <span class="col-xs-12"> {{$person->cust_id}}</span>
+                                        <span class="col-xs-12">{{$person->company}}</span>
+                                    @endif
                                     <span class="col-xs-12">{{$person->com_remark}}</span>
                                     <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
                                 {{-- @endif --}}
@@ -132,6 +134,11 @@
                             <div class="form-group" style="padding: 3px 0px 0px 10px">
                                 <div style="font-size:14px"><strong>Send To:</strong></div>
                                 <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+
+                                    @if($person->is_subsidiary)
+                                        <span class="col-xs-12"> {{$person->cust_id}}</span>
+                                        <span class="col-xs-12">{{$person->company}}</span>
+                                    @endif
                                     @if($person->site_name)
                                         <span class="col-xs-12">{{$person->site_name}}</span>
                                     @endif

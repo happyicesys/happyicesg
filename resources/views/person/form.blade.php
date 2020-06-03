@@ -197,17 +197,24 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-6">
+    <div class="col-md-4 col-sm-4 col-xs-6">
         <div class="form-group" style="padding-top: 25px;">
             {!! Form::checkbox('is_dvm', $person->is_dvm, null, ['disabled'=>$disabled]) !!}
             {!! Form::label('is_dvm', 'Direct Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 
-    <div class="col-md-6 col-sm-6 col-xs-6">
+    <div class="col-md-4 col-sm-4 col-xs-6">
         <div class="form-group" style="padding-top: 25px;">
             {!! Form::checkbox('is_vending', $person->is_vending, null, ['disabled'=>$disabled]) !!}
             {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-6">
+        <div class="form-group" style="padding-top: 25px;">
+            {!! Form::checkbox('is_subsidiary', $person->is_subsidiary, null, ['disabled'=>$disabled]) !!}
+            {!! Form::label('is_subsidiary', 'Freezer Point (Supermarket)', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 {{--
