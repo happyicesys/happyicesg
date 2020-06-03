@@ -139,7 +139,7 @@
                                         <span class="col-xs-12"> {{$person->cust_id}}</span>
                                         <span class="col-xs-12">{{$person->company}}</span>
                                     @endif
-                                    @if($person->site_name)
+                                    @if($person->site_name and !$person->is_subsidiary)
                                         <span class="col-xs-12">{{$person->site_name}}</span>
                                     @endif
 
