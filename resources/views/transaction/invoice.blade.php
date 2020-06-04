@@ -69,87 +69,89 @@
 
             <div class="row" style="padding-top: 5px">
                 <div class="row no-gutter">
-                    <div class="col-xs-4">
-                        @if($person->cust_id[0] == 'H')
+                    <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
-                                <div style="font-size:14px"><strong>Send To:</strong></div>
-                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
-                                <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
-                                <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
+                                <div style="font-size:14px"><strong>Cust ID:</strong></div>
+                                <div style="border: solid thin; height:20px; padding-bottom: 10px;">
+                                <span class="col-xs-12">{{$person->cust_id}} - {{$person->company}}</span>
                                 </div>
-                            </div>
-                        @else
-                            <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
-                                <div style="font-size:14px"><strong>Bill To:</strong></div>
-                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-{{--                                 @if($person->franchisee)
-                                    <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
-                                    <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
-                                @else --}}
-                                    @if(!$person->is_subsidiary)
-                                        <span class="col-xs-12"> {{$person->cust_id}}</span>
-                                        <span class="col-xs-12">{{$person->company}}</span>
-                                    @endif
-                                    <span class="col-xs-12">{{$person->com_remark}}</span>
-                                    <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
-                                {{-- @endif --}}
-                                </div>
-                            </div>
-                        @endif
-
-                        @if(!$transaction->is_deliveryorder)
-                        <div style="padding-top:20px">
-                            <div class="form-group" style="margin-bottom: 0px">
-                                <div class="inline"><strong>Attn:</strong></div>
-                                <div class="inline col-xs-offset-1">
-                                    @if($person->cust_id[0] == 'H')
-                                        {{$person->cust_id}} - {{$transaction->name ? $transaction->name : $person->name}}
-                                    @else
-                                        {{$transaction->name ? $transaction->name : $person->name}}
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="inline"><strong>Tel:</strong></div>
-                                <div class="inline" style="padding-left: 20px">{{$transaction->contact ? $transaction->contact : $person->contact}}</div>
                             </div>
                         </div>
-                        @endif
-                    </div>
-                    <div class="col-xs-4">
-                        @unless($person->cust_id[0] == 'H' or $transaction->is_deliveryorder)
-{{--                             @if($person->franchisee)
-                            <div class="form-group" style="padding: 3px 0px 0px 10px">
-                                <div style="font-size:14px"><strong>Send To:</strong></div>
-                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-                                    @if($person->site_name)
-                                        <span class="col-xs-12"> {{$person->cust_id}}</span>
-                                        <span class="col-xs-12">{{$person->site_name}}</span>
-                                        <span class="col-xs-12">{{$person->com_remark}}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            @else --}}
-                            <div class="form-group" style="padding: 3px 0px 0px 10px">
-                                <div style="font-size:14px"><strong>Send To:</strong></div>
-                                <div style="border: solid thin; height:120px; padding-bottom: 15px;">
-
-                                    @if($person->is_subsidiary)
-                                        <span class="col-xs-12"> {{$person->cust_id}}</span>
-                                        <span class="col-xs-12">{{$person->company}}</span>
-                                    @endif
-                                    @if($person->site_name and !$person->is_subsidiary)
-                                        <span class="col-xs-12">{{$person->site_name}}</span>
-                                    @endif
-
+                        <div class="col-xs-6">
+                            @if($person->cust_id[0] == 'H')
+                                <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
+                                    <div style="font-size:14px"><strong>Send To:</strong></div>
+                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                    {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
                                     <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
-
                                     <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
+                                    <div style="font-size:14px"><strong>Bill To:</strong></div>
+                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+    {{--                                 @if($person->franchisee)
+                                        <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
+                                        <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
+                                    @else --}}
+                                        <span class="col-xs-12">{{$person->com_remark}}</span>
+                                        <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
+                                    {{-- @endif --}}
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if(!$transaction->is_deliveryorder)
+                            <div style="padding-top:20px">
+                                <div class="form-group" style="margin-bottom: 0px">
+                                    <div class="inline"><strong>Attn:</strong></div>
+                                    <div class="inline col-xs-offset-1">
+                                        @if($person->cust_id[0] == 'H')
+                                            {{$person->cust_id}} - {{$transaction->name ? $transaction->name : $person->name}}
+                                        @else
+                                            {{$transaction->name ? $transaction->name : $person->name}}
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="inline"><strong>Tel:</strong></div>
+                                    <div class="inline" style="padding-left: 20px">{{$transaction->contact ? $transaction->contact : $person->contact}}</div>
                                 </div>
                             </div>
-                            {{-- @endif --}}
-                        @endunless
+                            @endif
+                        </div>
+                        <div class="col-xs-6">
+                            @unless($person->cust_id[0] == 'H' or $transaction->is_deliveryorder)
+    {{--                             @if($person->franchisee)
+                                <div class="form-group" style="padding: 3px 0px 0px 10px">
+                                    <div style="font-size:14px"><strong>Send To:</strong></div>
+                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                        @if($person->site_name)
+                                            <span class="col-xs-12"> {{$person->cust_id}}</span>
+                                            <span class="col-xs-12">{{$person->site_name}}</span>
+                                            <span class="col-xs-12">{{$person->com_remark}}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                @else --}}
+                                <div class="form-group" style="padding: 3px 0px 0px 10px">
+                                    <div style="font-size:14px"><strong>Send To:</strong></div>
+                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+
+                                        @if($person->site_name)
+                                            <span class="col-xs-12">{{$person->site_name}}</span>
+                                        @endif
+
+                                        <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
+
+                                        <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
+                                    </div>
+                                </div>
+                                {{-- @endif --}}
+                            @endunless
+                        </div>
                     </div>
                     <div class="col-xs-4">
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">

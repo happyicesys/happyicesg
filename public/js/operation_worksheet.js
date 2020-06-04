@@ -109,19 +109,19 @@ var app = angular.module('app', [
         }
 
         $scope.getBackgroundColor = function(alldata, parent_index, index) {
-
+/*
             if(alldata.bool_transaction) {
                 if(!alldata.qty) {
                     $scope.alldata[parent_index][index]['qty'] = 0;
                 }
                 return '#77d867';
-            }else {
+            }else { */
                 if(alldata.color) {
                     return alldata.color;
                 }else {
                     return '';
                 }
-            }
+            // }
         }
 
         $scope.toggleCheckbox = function(value, person_id, day) {
@@ -147,6 +147,7 @@ var app = angular.module('app', [
         $scope.exportTransactions = function() {
             $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
                 alert('Invoices Created');
+                searchDB();
             });
         }
 

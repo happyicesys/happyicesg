@@ -34,6 +34,7 @@ use App\DtdDeal;
 use App\GeneralSetting;
 use App\ImportTransactionExcel;
 use App\Invattachment;
+use App\Operationdate;
 use App\TransSubscription;
 use App\User;
 use App\Deliveryorder;
@@ -270,6 +271,7 @@ class TransactionController extends Controller
             $request->merge(array('is_deliveryorder' => 1));
         }
 
+        $request->merge(['status' => 'Pending']);
         $input = $request->all();
 
         // filter delivery date if the invoice lock date is before request delivery date
@@ -328,6 +330,24 @@ class TransactionController extends Controller
             $do->delivery_date1 = Carbon::today()->addDay()->toDateString();
             $do->save();
         }
+
+        // operation worksheet management
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->first();
+
+        if($prevOpsDate) {
+            $opsdate = $prevOpsDate;
+        }else {
+            $opsdate = new Operationdate;
+        }
+
+        switch($transaction->status) {
+            case 'Pending':
+                $opsdate->color = 'Orange';
+                break;
+        }
+        $opsdate->person_id = $transaction->person->id;
+        $opsdate->delivery_date = $transaction->delivery_date;
+        $opsdate->save();
 
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
@@ -733,7 +753,34 @@ class TransactionController extends Controller
         $request->merge(array('gst_rate' => $transaction->person->gst_rate));
         $transaction->update($request->all());
 
-        //Qty insert to on order upon confirmed(1) transaction status
+        // operation worksheet management
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->first();
+
+        if($prevOpsDate) {
+            $opsdate = $prevOpsDate;
+        }else {
+            $opsdate = new Operationdate;
+        }
+
+        switch($transaction->status) {
+            case 'Pending':
+            case 'Confirmed':
+                $opsdate->color = 'Orange';
+                break;
+            case 'Delivered':
+            case 'Verified Owe':
+            case 'Verified Paid':
+                $opsdate->color = 'Green';
+                break;
+            case 'Cancelled':
+                $opsdate->color = 'Red';
+                break;
+        }
+        $opsdate->person_id = $transaction->person->id;
+        $opsdate->delivery_date = $transaction->delivery_date;
+        $opsdate->save();
+
+        // sync deals
         if($transaction->status === 'Confirmed'){
             // dd($quantities, $amounts, $quotes);
             $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
@@ -797,6 +844,24 @@ class TransactionController extends Controller
             $transaction->status = 'Cancelled';
             $transaction->updated_by = auth()->user()->name;
             $transaction->save();
+
+        // operation worksheet management
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->first();
+
+        if($prevOpsDate) {
+            $opsdate = $prevOpsDate;
+        }else {
+            $opsdate = new Operationdate;
+        }
+
+        switch($transaction->status) {
+            case 'Cancelled':
+                $opsdate->color = 'Red';
+                break;
+        }
+        $opsdate->person_id = $transaction->person->id;
+        $opsdate->delivery_date = $transaction->delivery_date;
+        $opsdate->save();
 
             if($transaction->dtdtransaction_id){
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);

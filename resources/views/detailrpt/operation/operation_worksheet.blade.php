@@ -199,8 +199,9 @@
                     [
                         '' => 'All',
                         'Yellow' => 'Yellow',
-                        'Yellow & Green' => 'Yellow & Green',
-                        'Red' => 'Red',
+                        'Orange' => 'Orange (Pending or Confimed)',
+                        'Green' => 'Green (Delivered)',
+                        'Red' => 'Red (Cancelled)',
                     ],
                     null,
                     [
