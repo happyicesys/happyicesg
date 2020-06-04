@@ -61,20 +61,40 @@
             </div>
         </div>
         @endif
-        {{-- <div class="col-md-12 col-sm-12 col-xs-12"> --}}
-            <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="row col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('serial_number', 'Serial Number', ['class'=>'control-label']) !!}
                     {!! Form::text('serial_number', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('terminal_id', 'Terminal ID', ['class'=>'control-label']) !!}
+                    {!! Form::label('terminal_id', 'Cashless Terminal ID', ['class'=>'control-label']) !!}
                     {!! Form::text('terminal_id', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
-        {{-- </div> --}}
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('terminal_provider', 'Terminal Provider', ['class'=>'control-label']) !!}
+                    {!! Form::select('terminal_provider',
+                    [
+                        ''=>'',
+                        '1'=>'Nayax',
+                        '2'=>'Castle',
+                        '3'=>'XVend',
+                        '4'=>'Auresys',
+                        '5'=>'Beeptech'
+                    ], null, ['class'=>'select form-control', 'disabled'=>$disabled]) !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('cms_serial_number', 'CMS Serial Number', ['class'=>'control-label']) !!}
+                    {!! Form::text('cms_serial_number', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+        </div>
         @if($person->vending)
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">

@@ -24,7 +24,7 @@ class Person extends Baum\Node
         'cust_id', 'profile_id', 'salutation',
         'user_id', 'parent_name', 'parent_id',
         'block', 'floor', 'unit', 'operation_note', 'del_lat',
-        'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary'
+        'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary', 'terminal_provider'
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
@@ -74,7 +74,7 @@ class Person extends Baum\Node
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
-    'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number'
+    'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider'
     ];
 
     protected $dates = ['deleted_at'];
