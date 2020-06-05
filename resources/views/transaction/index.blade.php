@@ -432,6 +432,23 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            <label class="control-label">
+                                Row Search PO#
+                            </label>
+                            <span class="text-muted small">
+                                (separated by new line)
+                            </span>
+                            {!! Form::textarea('po_row', null,
+                                                            [
+                                                                'class'=>'form-control input-xs',
+                                                                'ng-model'=>'search.po_row',
+                                                                'ng-change'=>'searchDB()',
+                                                                'placeholder'=>'',
+                                                                'ng-model-options'=>'{ debounce: 1000 }',
+                                                                'rows' => '3'
+                                                            ]) !!}
+                        </div>
                     </div>
                 </div>
                 <div class="row">

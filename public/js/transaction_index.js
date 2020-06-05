@@ -52,6 +52,7 @@ var app = angular.module('app', [
             gst_rate: '',
             tags: [],
             creator_id: '',
+            po_row: '',
             itemsPerPage: 200,
             sortName: '',
             sortBy: true

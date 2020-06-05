@@ -780,12 +780,32 @@ class TransactionController extends Controller
         $opsdate->delivery_date = $transaction->delivery_date;
         $opsdate->save();
 
+
+        if($quantities and $amounts) {
+            // dd($quantities, $quotes, $amounts);
+            $dealArr = [];
+            if(array_filter($quantities) != null and array_filter($amounts) != null) {
+                foreach($quantities as $index => $qty) {
+                    if($qty) {
+                        array_push($dealArr, [
+                            'item_id' => $index,
+                            'qty' => $qty,
+                            'quote' => $quotes[$index],
+                            'amount' => $amounts[$index]
+                        ]);
+                    }
+                }
+            }
+        }
+
         // sync deals
         if($transaction->status === 'Confirmed'){
             // dd($quantities, $amounts, $quotes);
-            $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
+            // $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
+            $this->syncDeal($transaction, $dealArr, 1);
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
-            $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
+            // $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
+            $this->syncDeal($transaction, $dealArr, 2);
         }
 
         if($transaction->person->cust_id[0] === 'D'){
@@ -1924,30 +1944,25 @@ class TransactionController extends Controller
                                 $invoice_amount += $priceObj;
 
                                 if($item) {
-                                    $dealArr[$item->id] = [
+                                    array_push($dealArr, [
+                                        'item_id' => $item->id,
                                         'qty' => $inputQty,
                                         'quote' => $item_price,
                                         'amount' => $priceObj
-                                    ];
-                                    $quantityArr[$item->id] = $inputQty;
-                                    $quoteArr[$item->id] = $item_price;
-                                    $amountArr[$item->id] = $priceObj;
+                                    ]);
                                     // dd($item, $dealArr, $quantityArr, $quoteArr, $amountArr);
                                 }
                             }
                         }
 
-
                         if($delivery_fee) {
                             if($delivery_fee != 0) {
-                                $dealArr[308] = [
+                                array_push($dealArr, [
+                                    'item_id' => 308,
                                     'qty' => 1,
                                     'quote' => $delivery_fee,
                                     'amount' => $delivery_fee
-                                ];
-                                $quantityArr[308] = 1;
-                                $quoteArr[308] = $delivery_fee;
-                                $amountArr[308] = $delivery_fee;
+                                ]);
                                 $invoice_amount += $delivery_fee;
                             }
                         }
@@ -1958,18 +1973,16 @@ class TransactionController extends Controller
                             $diff_amount = $total_amount - $invoice_amount;
 
                             if($invoice_amount != $total_amount and $diff_amount != 0) {
-                                $dealArr[21] = [
+                                array_push($dealArr, [
+                                    'item_id' => 21,
                                     'qty' => 1,
                                     'quote' => $diff_amount,
                                     'amount' => $diff_amount
-                                ];
-                                $quantityArr[21] = 1;
-                                $quoteArr[21] = $diff_amount;
-                                $amountArr[21] = $diff_amount;
+                                ]);
                             }
                         }
 
-                        $itemArrErrors = $this->syncDeal($model, $quantityArr, $amountArr, $quoteArr, 1);
+                        $itemArrErrors = $this->syncDeal($model, $dealArr, 1);
 
                         if(count($itemArrErrors) > 0) {
                             foreach($itemArrErrors as $errorItem) {
@@ -2185,8 +2198,72 @@ class TransactionController extends Controller
     }
 
     // sync deals with email alert, deals and inventory deduction
-    private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
+    // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
+    private function syncDeal($transaction, $dealArr, $status)
     {
+
+        if($dealArr) {
+            foreach($dealArr as $dealObj) {
+                $qty = $dealObj['qty'];
+
+                $dividend = 0;
+                $divisor = 1;
+                if(strpos($qty, '/') !== false) {
+                    $dividend = explode('/', $qty)[0];
+                    $divisor = explode('/', $qty)[1];
+                    $qty = $this->fraction($qty);
+                }
+
+                if($qty != NULL or $qty != 0 ){
+                    // inventory lookup before saving to deals
+                    $item = Item::findOrFail($dealObj['item_id']);
+                    // dd($dealObj['item_id'], $dealObj, $item);
+                    $unitcost = Unitcost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
+                    // inventory email notification for stock running low
+                    if($item->email_limit and !$item->is_vending and $item->is_inventory){
+                        if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
+                            if(! $item->emailed){
+                                $this->sendEmailAlert($item);
+                                // restrict only send 1 mail if insufficient
+                                $item->emailed = true;
+                                $item->save();
+                            }
+                        }else{
+                            // reactivate email alert
+                            $item->emailed = false;
+                            $item->save();
+                        }
+                    }
+
+                    if($status == 1 and $this->calOrderLimit($qty, $item)) {
+                        array_push($errors, $item->product_id.' - '.$item->name);
+                    }else if($status == 2 and $this->calActualLimit($qty, $item)) {
+                        array_push($errors, $item->product_id.' - '.$item->name);
+                    }else {
+                        $deal = new Deal();
+                        $deal->transaction_id = $transaction->id;
+                        $deal->item_id = $dealObj['item_id'];
+                        $deal->dividend = $dividend ? $dividend : $qty;
+                        $deal->divisor = $divisor;
+                        $deal->amount = $dealObj['amount'];
+                        $deal->unit_price = $dealObj['quote'];
+                        $deal->qty_status = $status;
+                        $deal->unit_cost = $unitcost ? $unitcost->unit_cost : null;
+                        $deal->qty = $qty;
+                        if($status == 2 and $item->is_inventory === 1) {
+                            $deal->qty_before = $item->qty_now;
+                            $deal->qty_after = $item->qty_now - $qty;
+                            $item->qty_now = $item->qty_now - $qty;
+                            $item->save();
+                            $this->loggingDebug($item, $deal);
+                        }
+                        $deal->save();
+                        $this->dealSyncOrder($dealObj['item_id']);
+                    }
+                }
+            }
+        }
+/*
         if($quantities and $amounts){
             if(array_filter($quantities) != null and array_filter($amounts) != null){
                 // create array of errors to fetch errors from loop if any
@@ -2249,7 +2326,7 @@ class TransactionController extends Controller
                     }
                 }
             }
-        }
+        } */
 
         if($status == 2){
             $this->dealOrder2Actual($transaction->id);
@@ -2592,6 +2669,10 @@ class TransactionController extends Controller
         if(request('transactions_row')) {
             $transaction_rows = array_map('trim',explode("\n", request('transactions_row')));
             $transactions = $transactions->whereIn('transactions.id', $transaction_rows);
+        }
+        if(request('po_row')) {
+            $po_row = array_map('trim',explode("\n", request('po_row')));
+            $transactions = $transactions->whereIn('transactions.po_no', $po_row);
         }
         if(request('cust_id')){
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
