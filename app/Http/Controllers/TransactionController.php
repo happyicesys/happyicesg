@@ -780,10 +780,9 @@ class TransactionController extends Controller
         $opsdate->delivery_date = $transaction->delivery_date;
         $opsdate->save();
 
-
+        $dealArr = [];
         if($quantities and $amounts) {
             // dd($quantities, $quotes, $amounts);
-            $dealArr = [];
             if(array_filter($quantities) != null and array_filter($amounts) != null) {
                 foreach($quantities as $index => $qty) {
                     if($qty) {
