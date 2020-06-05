@@ -1583,6 +1583,32 @@ class TransactionController extends Controller
                     if(isset($transaction['check'])) {
                         $model = Transaction::findOrFail($transaction['id']);
                         if($delivery_date) {
+                            $prevOpsDate = Operationdate::where('person_id', $model->person->id)->where('delivery_date', $model->delivery_date)->first();
+
+                            if($prevOpsDate) {
+                                $opsdate = $prevOpsDate;
+                            }else {
+                                $opsdate = new Operationdate;
+                            }
+
+                            switch($model->status) {
+                                case 'Pending':
+                                case 'Confirmed':
+                                    $opsdate->color = 'Orange';
+                                    break;
+                                case 'Delivered':
+                                case 'Verified Owe':
+                                case 'Verified Paid':
+                                    $opsdate->color = 'Green';
+                                    break;
+                                case 'Cancelled':
+                                    $opsdate->color = 'Red';
+                                    break;
+                            }
+                            $opsdate->person_id = $model->person->id;
+                            $opsdate->delivery_date = $delivery_date;
+                            $opsdate->save();
+
                             $model->delivery_date = $delivery_date;
                         }
                         $model->sequence = null;
@@ -1607,6 +1633,32 @@ class TransactionController extends Controller
                 if(isset($transaction['check'])) {
                     $model = Transaction::findOrFail($transaction['id']);
                     if($delivery_date) {
+                        $prevOpsDate = Operationdate::where('person_id', $model->person->id)->where('delivery_date', $model->delivery_date)->first();
+
+                        if($prevOpsDate) {
+                            $opsdate = $prevOpsDate;
+                        }else {
+                            $opsdate = new Operationdate;
+                        }
+
+                        switch($model->status) {
+                            case 'Pending':
+                            case 'Confirmed':
+                                $opsdate->color = 'Orange';
+                                break;
+                            case 'Delivered':
+                            case 'Verified Owe':
+                            case 'Verified Paid':
+                                $opsdate->color = 'Green';
+                                break;
+                            case 'Cancelled':
+                                $opsdate->color = 'Red';
+                                break;
+                        }
+                        $opsdate->person_id = $model->person->id;
+                        $opsdate->delivery_date = $delivery_date;
+                        $opsdate->save();
+
                         $model->delivery_date = $delivery_date;
                     }
                     $model->sequence = null;
@@ -1833,7 +1885,7 @@ class TransactionController extends Controller
                             'del_postcode' => $result['del_postcode'],
                             'po_no' => $po_no
                         ]);
-// dd('here');
+// dd($items);
                         foreach($items as $itemindex => $itemExcel) {
                             // dd($del_postcode, $index,  $item, $result[$index], $items);
                             $priceObj = 0;

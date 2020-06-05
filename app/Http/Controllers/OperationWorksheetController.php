@@ -75,10 +75,9 @@ class OperationWorksheetController extends Controller
 
             switch($color) {
                 case 'Red':
-                    break;
                 case 'Green':
-                    break;
                 case 'Orange':
+                    $exists = true;
                     break;
                 case 'Yellow':
                     $prevOpsDate->delete();
