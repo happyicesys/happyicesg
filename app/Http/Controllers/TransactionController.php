@@ -1732,6 +1732,7 @@ class TransactionController extends Controller
                         }
                     }
                 }
+
                 if($headers)
                   foreach($results as $resultindex => $result) {
                     $po_no = '';
@@ -1832,7 +1833,7 @@ class TransactionController extends Controller
                             'del_postcode' => $result['del_postcode'],
                             'po_no' => $po_no
                         ]);
-
+// dd('here');
                         foreach($items as $itemindex => $itemExcel) {
                             // dd($del_postcode, $index,  $item, $result[$index], $items);
                             $priceObj = 0;
@@ -1879,9 +1880,11 @@ class TransactionController extends Controller
                                     $quantityArr[$item->id] = $inputQty;
                                     $quoteArr[$item->id] = $item_price;
                                     $amountArr[$item->id] = $priceObj;
+                                    // dd($item, $dealArr, $quantityArr, $quoteArr, $amountArr);
                                 }
                             }
                         }
+
 
                         if($delivery_fee) {
                             if($delivery_fee != 0) {
