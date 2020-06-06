@@ -2202,6 +2202,7 @@ class TransactionController extends Controller
     {
 
         if($dealArr) {
+            $errors = [];
             foreach($dealArr as $dealObj) {
                 $qty = $dealObj['qty'];
 
