@@ -3224,7 +3224,7 @@ class TransactionController extends Controller
         // operation worksheet management
         $opsdate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->where('color', 'Red')->first();
 
-        if($prevOpsDate) {
+        if($opsdate) {
             $opsdate->delete();
         }
     }
