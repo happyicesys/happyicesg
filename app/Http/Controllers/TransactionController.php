@@ -511,6 +511,11 @@ class TransactionController extends Controller
         // find out deals created
         $deals = Deal::where('transaction_id', $transaction->id)->get();
 
+        $delivery_date = $transaction->delivery_date;
+        if($transaction->delivery_date != $request->delivery_date) {
+            $delivery_date = $request->delivery_date;
+        }
+
         if($request->input('save')){
             $request->merge(array('status' => 'Pending'));
         }else if($request->input('del_paid')){
@@ -739,7 +744,7 @@ class TransactionController extends Controller
         $transaction->update($request->all());
 
         // operation worksheet management
-        $this->operationDatesSync($transaction->id);
+        $this->operationDatesSync($transaction->id, $delivery_date);
 
         $dealArr = [];
         if($quantities and $amounts) {
