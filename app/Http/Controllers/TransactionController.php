@@ -512,6 +512,7 @@ class TransactionController extends Controller
         $deals = Deal::where('transaction_id', $transaction->id)->get();
 
         $delivery_date = $transaction->delivery_date;
+        $previous_delivery_date = $transaction->delivery_date;
         if($transaction->delivery_date != $request->delivery_date) {
             $delivery_date = $request->delivery_date;
         }
@@ -744,7 +745,7 @@ class TransactionController extends Controller
         $transaction->update($request->all());
 
         // operation worksheet management
-        $this->operationDatesSync($transaction->id, $delivery_date);
+        $this->operationDatesSync($transaction->id, $delivery_date, $previous_delivery_date);
 
         $dealArr = [];
         if($quantities and $amounts) {
@@ -3087,12 +3088,16 @@ class TransactionController extends Controller
         return substr($string, $ini, $len);
     }
 
-    private function operationDatesSync($transaction_id, $newdate = null)
+    private function operationDatesSync($transaction_id, $newdate = null, $prevdate = null)
     {
         $transaction = Transaction::findOrFail($transaction_id);
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
+        if($prevdate) {
+            $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $prevdate)->first();
+        }else {
+            $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
+        }
 
         if($prevOpsDate) {
             $opsdate = $prevOpsDate;
