@@ -957,4 +957,40 @@ class OperationWorksheetController extends Controller
             'alldata' => $alldata
         ];
     }
+
+    private function operationDatesSync($transaction_id, $newdate = null)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        // operation worksheet management
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
+
+        if($prevOpsDate) {
+            $opsdate = $prevOpsDate;
+        }else {
+            $opsdate = new Operationdate;
+        }
+
+        switch($transaction->status) {
+            case 'Pending':
+            case 'Confirmed':
+                $opsdate->color = 'Orange';
+                break;
+            case 'Delivered':
+            case 'Verified Owe':
+            case 'Verified Paid':
+                $opsdate->color = 'Green';
+                break;
+            case 'Cancelled':
+                $opsdate->color = 'Red';
+                break;
+        }
+        $opsdate->person_id = $transaction->person->id;
+        if($newdate) {
+            $opsdate->delivery_date = $newdate;
+        }else {
+            $opsdate->delivery_date = $transaction->delivery_date;
+        }
+        $opsdate->save();
+    }
 }

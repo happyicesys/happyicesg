@@ -332,22 +332,7 @@ class TransactionController extends Controller
         }
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
-
-        if($prevOpsDate) {
-            $opsdate = $prevOpsDate;
-        }else {
-            $opsdate = new Operationdate;
-        }
-
-        switch($transaction->status) {
-            case 'Pending':
-                $opsdate->color = 'Orange';
-                break;
-        }
-        $opsdate->person_id = $transaction->person->id;
-        $opsdate->delivery_date = $transaction->delivery_date;
-        $opsdate->save();
+        $this->operationDatesSync($transaction->id);
 
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
@@ -754,31 +739,7 @@ class TransactionController extends Controller
         $transaction->update($request->all());
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
-
-        if($prevOpsDate) {
-            $opsdate = $prevOpsDate;
-        }else {
-            $opsdate = new Operationdate;
-        }
-
-        switch($transaction->status) {
-            case 'Pending':
-            case 'Confirmed':
-                $opsdate->color = 'Orange';
-                break;
-            case 'Delivered':
-            case 'Verified Owe':
-            case 'Verified Paid':
-                $opsdate->color = 'Green';
-                break;
-            case 'Cancelled':
-                $opsdate->color = 'Red';
-                break;
-        }
-        $opsdate->person_id = $transaction->person->id;
-        $opsdate->delivery_date = $transaction->delivery_date;
-        $opsdate->save();
+        $this->operationDatesSync($transaction->id);
 
         $dealArr = [];
         if($quantities and $amounts) {
@@ -865,22 +826,7 @@ class TransactionController extends Controller
             $transaction->save();
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
-
-        if($prevOpsDate) {
-            $opsdate = $prevOpsDate;
-        }else {
-            $opsdate = new Operationdate;
-        }
-
-        switch($transaction->status) {
-            case 'Cancelled':
-                $opsdate->color = 'Red';
-                break;
-        }
-        $opsdate->person_id = $transaction->person->id;
-        $opsdate->delivery_date = $transaction->delivery_date;
-        $opsdate->save();
+            $this->operationDatesSync($transaction->id);
 
             if($transaction->dtdtransaction_id){
                 $dtdtransaction = DtdTransaction::findOrFail($transaction->dtdtransaction_id);
@@ -1605,32 +1551,7 @@ class TransactionController extends Controller
                     if(isset($transaction['check'])) {
                         $model = Transaction::findOrFail($transaction['id']);
                         if($delivery_date) {
-                            $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', '=', $model->delivery_date)->first();
-
-                            if($prevOpsDate) {
-                                $opsdate = $prevOpsDate;
-                            }else {
-                                $opsdate = new Operationdate;
-                            }
-
-                            switch($model->status) {
-                                case 'Pending':
-                                case 'Confirmed':
-                                    $opsdate->color = 'Orange';
-                                    break;
-                                case 'Delivered':
-                                case 'Verified Owe':
-                                case 'Verified Paid':
-                                    $opsdate->color = 'Green';
-                                    break;
-                                case 'Cancelled':
-                                    $opsdate->color = 'Red';
-                                    break;
-                            }
-                            $opsdate->person_id = $model->person->id;
-                            $opsdate->delivery_date = $delivery_date;
-                            $opsdate->save();
-
+                            $this->operationDatesSync($model->id, $delivery_date);
                             $model->delivery_date = $delivery_date;
                         }
                         $model->sequence = null;
@@ -1654,33 +1575,9 @@ class TransactionController extends Controller
             foreach($transactions as $index => $transaction) {
                 if(isset($transaction['check'])) {
                     $model = Transaction::findOrFail($transaction['id']);
+
                     if($delivery_date) {
-                        $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', '=', $model->delivery_date)->first();
-
-                        if($prevOpsDate) {
-                            $opsdate = $prevOpsDate;
-                        }else {
-                            $opsdate = new Operationdate;
-                        }
-
-                        switch($model->status) {
-                            case 'Pending':
-                            case 'Confirmed':
-                                $opsdate->color = 'Orange';
-                                break;
-                            case 'Delivered':
-                            case 'Verified Owe':
-                            case 'Verified Paid':
-                                $opsdate->color = 'Green';
-                                break;
-                            case 'Cancelled':
-                                $opsdate->color = 'Red';
-                                break;
-                        }
-                        $opsdate->person_id = $model->person->id;
-                        $opsdate->delivery_date = $delivery_date;
-                        $opsdate->save();
-
+                        $this->operationDatesSync($model->id, $delivery_date);
                         $model->delivery_date = $delivery_date;
                     }
                     $model->sequence = null;
@@ -3185,7 +3082,7 @@ class TransactionController extends Controller
         return substr($string, $ini, $len);
     }
 
-    private function operationDatesSync($transaction_id)
+    private function operationDatesSync($transaction_id, $newdate = null)
     {
         $transaction = Transaction::findOrFail($transaction_id);
 
@@ -3213,7 +3110,11 @@ class TransactionController extends Controller
                 break;
         }
         $opsdate->person_id = $transaction->person->id;
-        $opsdate->delivery_date = $transaction->delivery_date;
+        if($newdate) {
+            $opsdate->delivery_date = $newdate;
+        }else {
+            $opsdate->delivery_date = $transaction->delivery_date;
+        }
         $opsdate->save();
     }
 
