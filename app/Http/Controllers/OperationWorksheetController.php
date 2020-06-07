@@ -68,7 +68,7 @@ class OperationWorksheetController extends Controller
         $delivery_date = explode(",", $id)[1];
         $exists = false;
 
-        $prevOpsDate = Operationdate::where('person_id', $person_id)->whereDate('delivery_date', $delivery_date)->first();
+        $prevOpsDate = Operationdate::where('person_id', $person_id)->whereDate('delivery_date', '=', $delivery_date)->first();
 
         if($prevOpsDate) {
             $color = $prevOpsDate->color;
@@ -133,7 +133,7 @@ class OperationWorksheetController extends Controller
                         'del_lng' => $person->del_lng
                     ]);
 
-                    $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', $date)->first();
+                    $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', '=', $date)->first();
 
                     if($prevOpsDate) {
                         $prevOpsDate->color = 'Orange';

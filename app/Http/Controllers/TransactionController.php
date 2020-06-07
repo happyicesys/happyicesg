@@ -332,7 +332,7 @@ class TransactionController extends Controller
         }
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', $transaction->delivery_date)->first();
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
 
         if($prevOpsDate) {
             $opsdate = $prevOpsDate;
@@ -754,7 +754,7 @@ class TransactionController extends Controller
         $transaction->update($request->all());
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', $transaction->delivery_date)->first();
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
 
         if($prevOpsDate) {
             $opsdate = $prevOpsDate;
@@ -865,7 +865,7 @@ class TransactionController extends Controller
             $transaction->save();
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', $transaction->delivery_date)->first();
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
 
         if($prevOpsDate) {
             $opsdate = $prevOpsDate;
@@ -1605,7 +1605,7 @@ class TransactionController extends Controller
                     if(isset($transaction['check'])) {
                         $model = Transaction::findOrFail($transaction['id']);
                         if($delivery_date) {
-                            $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', $model->delivery_date)->first();
+                            $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', '=', $model->delivery_date)->first();
 
                             if($prevOpsDate) {
                                 $opsdate = $prevOpsDate;
@@ -1655,7 +1655,7 @@ class TransactionController extends Controller
                 if(isset($transaction['check'])) {
                     $model = Transaction::findOrFail($transaction['id']);
                     if($delivery_date) {
-                        $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', $model->delivery_date)->first();
+                        $prevOpsDate = Operationdate::where('person_id', $model->person->id)->whereDate('delivery_date', '=', $model->delivery_date)->first();
 
                         if($prevOpsDate) {
                             $opsdate = $prevOpsDate;
@@ -3190,7 +3190,7 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($transaction_id);
 
         // operation worksheet management
-        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', $transaction->delivery_date)->first();
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->whereDate('delivery_date', '=', $transaction->delivery_date)->first();
 
         if($prevOpsDate) {
             $opsdate = $prevOpsDate;
