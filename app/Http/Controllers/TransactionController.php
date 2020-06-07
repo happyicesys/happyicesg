@@ -898,6 +898,7 @@ class TransactionController extends Controller
 
         }else if($request->input('form_wipe')){
             $transaction = Transaction::findOrFail($id);
+            $this->removeOperationDates($transaction->id);
             if($transaction->dtdtransaction_id){
                 $dtdtransaction = DtdTransaction::find($transaction->dtdtransaction_id);
                 if($dtdtransaction){
@@ -1196,6 +1197,8 @@ class TransactionController extends Controller
         }
 
         $transaction->save();
+
+        $this->operationDatesSync($transaction->id);
         return Redirect::action('TransactionController@edit', $transaction->id);
     }
 
@@ -3180,5 +3183,49 @@ class TransactionController extends Controller
         $ini += strlen($start);
         $len = strpos($string, $end, $ini) - $ini;
         return substr($string, $ini, $len);
+    }
+
+    private function operationDatesSync($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        // operation worksheet management
+        $prevOpsDate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->first();
+
+        if($prevOpsDate) {
+            $opsdate = $prevOpsDate;
+        }else {
+            $opsdate = new Operationdate;
+        }
+
+        switch($transaction->status) {
+            case 'Pending':
+            case 'Confirmed':
+                $opsdate->color = 'Orange';
+                break;
+            case 'Delivered':
+            case 'Verified Owe':
+            case 'Verified Paid':
+                $opsdate->color = 'Green';
+                break;
+            case 'Cancelled':
+                $opsdate->color = 'Red';
+                break;
+        }
+        $opsdate->person_id = $transaction->person->id;
+        $opsdate->delivery_date = $transaction->delivery_date;
+        $opsdate->save();
+    }
+
+    private function removeOperationDates($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        // operation worksheet management
+        $opsdate = Operationdate::where('person_id', $transaction->person->id)->where('delivery_date', $transaction->delivery_date)->where('color', 'Red')->first();
+
+        if($prevOpsDate) {
+            $opsdate->delete();
+        }
     }
 }
