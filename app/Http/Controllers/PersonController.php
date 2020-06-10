@@ -141,6 +141,7 @@ class PersonController extends Controller
                 $person->is_dvm = 1;
             }
         }
+
         // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report')? 1 : 0;
         $person->save();
 
@@ -240,6 +241,7 @@ class PersonController extends Controller
                 $request->merge(array('active' => 'New'));
                 break;
         }
+
         $input = $request->all();
         $person->update($input);
 

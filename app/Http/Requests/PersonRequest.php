@@ -27,6 +27,7 @@ class PersonRequest extends Request
 
         return [
             'cust_id' => 'required|unique:people,cust_id,'.$person,
+            'company' => 'required',
             'name'=>'min:3',
             'roc_no' => 'unique:people,roc_no,'.$person,
             'contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
@@ -39,8 +40,9 @@ class PersonRequest extends Request
     public function messages()
     {
         return [
-            'cust_id.required' => 'Please fill in the ID',
+            'cust_id.required' => 'Please fill in the Customer ID',
             'cust_id.unique' => 'The ID has been taken',
+            'company.required' => 'Please fill in the Customer ID Name',
             'name.min' => 'Attn To must more than 3 words',
             'roc_no.unique' => 'The ROC No has been taken',
             'contact.regex' => 'The contact number only accepts 0-9, +, -',

@@ -375,26 +375,6 @@ class DetailRptController extends Controller
                                 AND ".$commissionStr."
                                 GROUP BY people.id) transactiontotal");
 
-/*
-        $taxtotal = DB::raw("(
-                            SELECT people.id AS person_id, ROUND((CASE WHEN transactions.gst=1 THEN (
-                                CASE
-                                WHEN transactions.is_gst_inclusive=0
-                                THEN deals.amount*((transactions.gst_rate)/100)
-                                ELSE deals.amount/(100+transactions.gst_rate)/100
-                                END) ELSE 0 END), 2) AS taxtotal,
-                                people.profile_id
-                                FROM deals
-                                LEFT JOIN items ON items.id=deals.item_id
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$delivery_from."'
-                                AND transactions.delivery_date<='".$delivery_to."'
-                                AND ".$statusStr."
-                                AND ".$commissionStr."
-                                GROUP BY people.id) taxtotal"); */
-
         $taxtotal = DB::raw("(
                             SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                                 people.profile_id

@@ -19,7 +19,16 @@
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::text('cust_id', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('company', 'ID Name', ['class'=>'control-label']) !!}
+            {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
+            {!! Form::text('company', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 
@@ -27,13 +36,6 @@
         <div class="form-group">
             {!! Form::label('site_name', 'Site Name', ['class'=>'control-label']) !!}
             {!! Form::text('site_name', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
-        </div>
-    </div>
-
-    <div class="col-md-4 col-sm-4 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('company', 'ID Name', ['class'=>'control-label']) !!}
-            {!! Form::text('company', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 </div>
