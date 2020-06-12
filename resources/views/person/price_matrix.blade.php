@@ -164,6 +164,10 @@
                 <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                     <thead style="font-size: 11px;">
                     <tr style="background-color: #DDFDF8">
+{{--
+                        <th class="col-md-1 text-center">
+                            <input type="checkbox" id="check_all" ng-model="form.checkall" ng-change="onCheckAllChecked()"/>
+                        </th> --}}
                         <th class="col-md-1 text-center">
                             #
                         </th>
@@ -185,6 +189,10 @@
 
                     <tbody style="font-size: 11px;">
                         <tr ng-repeat="person in people">
+{{--
+                            <td class="col-md-1 text-center">
+                                <input type="checkbox" name="checkbox" ng-model="person.check">
+                            </td> --}}
                             <td class="col-md-1 text-center">
                                 @{{$index + 1}}
                             </td>

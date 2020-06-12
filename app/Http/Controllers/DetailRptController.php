@@ -461,11 +461,16 @@ class DetailRptController extends Controller
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
                                     'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal', 'taxtotal.taxtotal AS taxtotal', 'transactiontotal.transactiontotal AS transactiontotal'
-                                );
+                        );
+/*
+                        ->where(function($query) use ($delivery_from, $delivery_to, $prevMonth, $prev2Months, $prevYear) {
+                            $query->whereBetween(DB::raw('DATE(transactions.delivery_date)'), [$delivery_from, $delivery_to])
+                                ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString()])
+                                ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString()])
+                                ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString()]);
+                        }); */
 
-        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status or $request->franchisee_id or $request->exclude_custcategory){
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }
+        $transactions = $this->searchTransactionDBFilter($transactions, $request);
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);

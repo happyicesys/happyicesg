@@ -37,6 +37,7 @@ class UserController extends Controller
                     ->whereHas('roles', function($query) {
                         $query->where('name', 'driver')->orWhere('name', 'technician')->orWhere('name', 'driver-supervisor');
                     })
+                    ->orWhere('id', 100010)
                     ->whereIn('type', ['admin', 'staff'])
                     ->get();
 

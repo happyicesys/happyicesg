@@ -36,25 +36,6 @@ function pricematrixController($scope, $http) {
     angular.element(document).ready(function () {
         $('.select').select2();
     });
-/*
-    $scope.exportData = function ($event) {
-        $event.preventDefault();
-        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
-            type: "application/vnd.ms-excel;charset=utf-8"
-        });
-        var now = Date.now();
-        saveAs(blob, "Operation Worksheet" + now + ".xls");
-    }; */
-/*
-    $scope.pageChanged = function (newPage) {
-        getPage(newPage, false);
-    };
-
-    $scope.pageNumChanged = function () {
-        $scope.search['pageNum'] = $scope.itemsPerPage
-        $scope.currentPage = 1
-        getPage(1, false)
-    }; */
 
     // when hitting search button
     $scope.searchDB = function (event) {
@@ -63,12 +44,6 @@ function pricematrixController($scope, $http) {
         $scope.search.sortBy = true;
         getPage();
     }
-/*
-    $scope.sortTable = function (sortName) {
-        $scope.search.sortName = sortName;
-        $scope.search.sortBy = !$scope.search.sortBy;
-        getPage(1, false);
-    } */
 
     $scope.onCostrateChanged = function (person) {
         $http.post('/api/pricematrix/costrate/edit', person).success(function (data) { });
@@ -84,6 +59,15 @@ function pricematrixController($scope, $http) {
         console.log(quote_price);
         console.log(itemindex);
         console.log($scope.items[itemindex]);
+    }
+
+    // checkbox all
+    $scope.onCheckAllChecked = function() {
+        var checked = $scope.form.checkall;
+
+        $scope.people.forEach(function (transaction, key) {
+            $scope.people[key].check = checked;
+        });
     }
 
     // retrieve page w/wo search
