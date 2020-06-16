@@ -1497,15 +1497,17 @@ class TransactionController extends Controller
         if($transactions) {
             foreach($transactions as $transaction) {
                 if(isset($transaction['check'])) {
-                    $model = Transaction::findOrFail($transaction['id']);
-                    if($driver == '-1') {
-                        $model->driver = null;
-                    }else {
-                        $model->driver = $driver;
+                    if($transaction['check']) {
+                        $model = Transaction::findOrFail($transaction['id']);
+                        if($driver == '-1') {
+                            $model->driver = null;
+                        }else {
+                            $model->driver = $driver;
+                        }
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
                     }
-                    $model->updated_at = Carbon::now();
-                    $model->updated_by = auth()->user()->name;
-                    $model->save();
                 }
             }
         }
@@ -1522,22 +1524,24 @@ class TransactionController extends Controller
             foreach($drivers as $driverindex => $driver) {
                 foreach($driver['transactions'] as $transactionindex => $transaction) {
                     if(isset($transaction['check'])) {
-                        $max_sequence = 0;
-                        $model = Transaction::findOrFail($transaction['id']);
-                        $max_sequence = Transaction::where('driver', $form_driver)->whereDate('delivery_date', '=', $delivery_date)->max('sequence');
-                        if($max_sequence) {
-                            $model->sequence = $max_sequence + 1;
-                        }else {
-                            $model->sequence = 1;
+                        if($transaction['check']) {
+                            $max_sequence = 0;
+                            $model = Transaction::findOrFail($transaction['id']);
+                            $max_sequence = Transaction::where('driver', $form_driver)->whereDate('delivery_date', '=', $delivery_date)->max('sequence');
+                            if($max_sequence) {
+                                $model->sequence = $max_sequence + 1;
+                            }else {
+                                $model->sequence = 1;
+                            }
+                            if($form_driver == '-1') {
+                                $model->driver = null;
+                            }else {
+                                $model->driver = $form_driver;
+                            }
+                            $model->updated_at = Carbon::now();
+                            $model->updated_by = auth()->user()->name;
+                            $model->save();
                         }
-                        if($form_driver == '-1') {
-                            $model->driver = null;
-                        }else {
-                            $model->driver = $form_driver;
-                        }
-                        $model->updated_at = Carbon::now();
-                        $model->updated_by = auth()->user()->name;
-                        $model->save();
                     }
                     unset($drivers[$driverindex]['transactions'][$transactionindex]);
                 }
@@ -1555,15 +1559,17 @@ class TransactionController extends Controller
             foreach($drivers as $driverindex => $driver) {
                 foreach($driver['transactions'] as $transactionindex => $transaction) {
                     if(isset($transaction['check'])) {
-                        $model = Transaction::findOrFail($transaction['id']);
-                        if($delivery_date) {
-                            $this->operationDatesSync($model->id, $delivery_date);
-                            $model->delivery_date = $delivery_date;
+                        if($transaction['check']) {
+                            $model = Transaction::findOrFail($transaction['id']);
+                            if($delivery_date) {
+                                $this->operationDatesSync($model->id, $delivery_date);
+                                $model->delivery_date = $delivery_date;
+                            }
+                            $model->sequence = null;
+                            $model->updated_at = Carbon::now();
+                            $model->updated_by = auth()->user()->name;
+                            $model->save();
                         }
-                        $model->sequence = null;
-                        $model->updated_at = Carbon::now();
-                        $model->updated_by = auth()->user()->name;
-                        $model->save();
                     }
                     unset($drivers[$driverindex]['transactions'][$transactionindex]);
                 }
@@ -1580,16 +1586,18 @@ class TransactionController extends Controller
         if($transactions) {
             foreach($transactions as $index => $transaction) {
                 if(isset($transaction['check'])) {
-                    $model = Transaction::findOrFail($transaction['id']);
+                    if($transaction['check']) {
+                        $model = Transaction::findOrFail($transaction['id']);
 
-                    if($delivery_date) {
-                        $this->operationDatesSync($model->id, $delivery_date);
-                        $model->delivery_date = $delivery_date;
+                        if($delivery_date) {
+                            $this->operationDatesSync($model->id, $delivery_date);
+                            $model->delivery_date = $delivery_date;
+                        }
+                        $model->sequence = null;
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
                     }
-                    $model->sequence = null;
-                    $model->updated_at = Carbon::now();
-                    $model->updated_by = auth()->user()->name;
-                    $model->save();
                 }
             }
         }
@@ -1625,10 +1633,12 @@ class TransactionController extends Controller
                 $assignindex = 1;
                 foreach($driver['transactions'] as $transaction) {
                     if(isset($transaction['check'])) {
-                        $trans = Transaction::findOrFail($transaction['id']);
-                        $trans->sequence = $assignindex;
-                        $trans->save();
-                        $assignindex ++;
+                        if($transaction['check']) {
+                            $trans = Transaction::findOrFail($transaction['id']);
+                            $trans->sequence = $assignindex;
+                            $trans->save();
+                            $assignindex ++;
+                        }
                     }
                 }
             }
@@ -1974,21 +1984,23 @@ class TransactionController extends Controller
         if($transactions) {
             foreach($transactions as $index => $transaction) {
                 if(isset($transaction['check'])) {
-                    $model = Transaction::findOrFail($transaction['id']);
-                    if($chosenArr['pay_status']) {
-                        if($chosenArr['pay_status'] == 'Paid') {
-                            $model->pay_status = 'Paid';
-                            $model->paid_at = $chosenArr['paid_at'];
-                            $model->pay_method = $chosenArr['pay_method'];
-                            $model->note = $chosenArr['note'];
-                        }else {
-                            $model->pay_status = 'Owe';
-                            $model->paid_at = null;
-                            $model->pay_method = null;
+                    if($transaction['check']) {
+                        $model = Transaction::findOrFail($transaction['id']);
+                        if($chosenArr['pay_status']) {
+                            if($chosenArr['pay_status'] == 'Paid') {
+                                $model->pay_status = 'Paid';
+                                $model->paid_at = $chosenArr['paid_at'];
+                                $model->pay_method = $chosenArr['pay_method'];
+                                $model->note = $chosenArr['note'];
+                            }else {
+                                $model->pay_status = 'Owe';
+                                $model->paid_at = null;
+                                $model->pay_method = null;
+                            }
+                            $model->updated_at = Carbon::now();
+                            $model->updated_by = auth()->user()->name;
+                            $model->save();
                         }
-                        $model->updated_at = Carbon::now();
-                        $model->updated_by = auth()->user()->name;
-                        $model->save();
                     }
                 }
             }

@@ -26,6 +26,7 @@ var app = angular.module('app', [
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
         $scope.search = {
+            edited: false,
             transaction_id: '',
             cust_id: '',
             company: '',
@@ -189,6 +190,12 @@ var app = angular.module('app', [
 
           // when hitting search button
         $scope.searchDB = function(){
+            $scope.search.edited = true;
+        }
+
+        // search button transaction index
+        $scope.onSearchButtonClicked = function(event) {
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1);
@@ -243,7 +250,7 @@ var app = angular.module('app', [
                 transactions: $scope.alldata,
                 chosen: $scope.form
             }).success(function(data) {
-                $scope.searchDB();
+                getPage(1);
                 $scope.form.checkall = false;
             })
         }

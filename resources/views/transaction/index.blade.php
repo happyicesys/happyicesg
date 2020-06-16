@@ -503,6 +503,14 @@
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
+                        <span class="row" ng-if="search.edited">
+                            <small>You have edited the filter, search?</small>
+                        </span>
+                        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+                            Search
+                            <i class="fa fa-search" ng-show="!spinner"></i>
+                            <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                        </button>
                         <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
 {{--
                         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
