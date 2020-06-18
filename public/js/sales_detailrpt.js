@@ -92,10 +92,9 @@ var app = angular.module('app', [
                     $scope.indexFrom = 1;
                     $scope.indexTo = data.transactions.length;
                 }
+                console.log($scope.alldata)
+                $scope.totals = data.totals;
                 $scope.All = data.transactions.length;
-                $scope.sales_total = data.sales_total;
-                $scope.tax_total = data.tax_total;
-                $scope.transaction_total = data.transaction_total;
                 $scope.spinner = false;
             });
         }
