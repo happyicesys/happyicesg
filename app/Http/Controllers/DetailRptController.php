@@ -412,6 +412,7 @@ class DetailRptController extends Controller
                         SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
                             people.profile_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -429,6 +430,7 @@ class DetailRptController extends Controller
                         SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
                             people.profile_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -446,6 +448,7 @@ class DetailRptController extends Controller
                             SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                            ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -463,6 +466,7 @@ class DetailRptController extends Controller
                             SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                            ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -492,7 +496,7 @@ class DetailRptController extends Controller
                             'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
-                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal', 'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal', 'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal', 'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal'
+                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal', 'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal', 'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal', 'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal', 'thistotal.commtotal AS this_commtotal', 'prevtotal.commtotal AS prev_commtotal', 'prev2total.commtotal AS prev2_commtotal', 'prevyeartotal.commtotal AS prevyear_commtotal'
                         );
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
@@ -515,12 +519,12 @@ class DetailRptController extends Controller
                 ->orWhere('prev2total.salestotal', '<>', null)
                 ->orWhere('prevyeartotal.salestotal', '<>', null);
         });
-/*
-        if(request('cust_id')){
-            $transaction = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
-        } */
 
-        $transactions = $transactions->orderBy('people.cust_id')
+        if(request('is_commission') != ''){
+            $transaction = $transactions->where('items.is_commission', request('is_commission'));
+        }
+
+        $transactions = $transactions->orderBy('thistotal.salestotal', 'desc')
                             ->groupBy('people.id');
 
         if($request->sortName){
@@ -532,15 +536,19 @@ class DetailRptController extends Controller
             'this_salestotal',
             'this_taxtotal',
             'this_transactiontotal',
+            'this_commtotal',
             'prev_salestotal',
             'prev_taxtotal',
             'prev_transactiontotal',
+            'prev_commtotal',
             'prev2_salestotal',
             'prev2_taxtotal',
             'prev2_transactiontotal',
+            'prev2_commtotal',
             'prevyear_salestotal',
             'prevyear_taxtotal',
-            'prevyear_transactiontotal'
+            'prevyear_transactiontotal',
+            'prevyear_commtotal'
         ]);
 
         if($pageNum == 'All'){
@@ -2228,6 +2236,7 @@ class DetailRptController extends Controller
         $franchisee_id = $request->franchisee_id;
         $is_gst_inclusive = $request->is_gst_inclusive;
         $gst_rate = $request->gst_rate;
+        $is_commission = $request->is_commision;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -2315,9 +2324,11 @@ class DetailRptController extends Controller
         if($is_gst_inclusive) {
             $transactions = $transactions->where('transactions.is_gst_inclusive', $is_gst_inclusive == 'true' ? 1 : 0);
         }
-
         if($gst_rate) {
             $transactions = $transactions->where('transactions.gst_rate', $gst_rate);
+        }
+        if($is_commission != '') {
+            $transactions = $transactions->where('items.is_commission', $is_commission);
         }
 
         if($request->sortName){
@@ -2343,10 +2354,12 @@ class DetailRptController extends Controller
         $pay_method = $request->pay_method;
         $id_prefix = $request->id_prefix;
         $status = $request->status;
-        $is_commission = $request->is_commission;
+        // $is_commission = $request->is_commission;
         $franchisee_id = $request->franchisee_id;
         $is_gst_inclusive = $request->is_gst_inclusive;
         $gst_rate = $request->gst_rate;
+        $sortName = $request->sortName;
+        $sortBy = $request->sortBy;
 
         if($profile_id){
             $query .= " AND profiles.id='".$profile_id."' ";
@@ -2397,9 +2410,10 @@ class DetailRptController extends Controller
                 $query .= " AND transactions.status='".$status."'";
             }
         }
+/*
         if($is_commission != '') {
             $query .= " AND items.is_commission='".$is_commission."' ";
-        }
+        } */
         if($franchisee_id != null) {
             if($franchisee_id != 0) {
                 $query .= " AND people.franchisee_id='".$franchisee_id."' ";
@@ -2414,6 +2428,12 @@ class DetailRptController extends Controller
         if($gst_rate) {
             $query .= " AND transactions.gst_rate='".$gst_rate."' ";
         }
+/*
+        if($sortName){
+            $sortByOrder = $sortBy ? 'ASC' : 'DESC';
+            // dd($sortName, $sortBy, $sortByOrder);
+            $query .= " ORDER BY ".$sortName." ".$sortByOrder." ";
+        } */
         return $query;
     }
 

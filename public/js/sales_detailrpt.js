@@ -92,7 +92,6 @@ var app = angular.module('app', [
                     $scope.indexFrom = 1;
                     $scope.indexTo = data.transactions.length;
                 }
-                console.log($scope.alldata)
                 $scope.totals = data.totals;
                 $scope.All = data.transactions.length;
                 $scope.spinner = false;
@@ -482,7 +481,6 @@ var app = angular.module('app', [
         function getPage(pageNumber, first){
             $scope.spinner = true;
             $http.post('/api/detailrpt/sales/invbreakdown', $scope.search).success(function(data){
-                console.log(data);
                 $scope.transactions = data;
                 $scope.spinner = false;
             });
