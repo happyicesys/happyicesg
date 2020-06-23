@@ -742,7 +742,7 @@ class DetailRptController extends Controller
             $amountstr = $amountstr." AND transactions.delivery_date <= '".$request->delivery_to."'";
         }
         if($request->cust_id) {
-            $amountstr = $amountstr." AND people.cust_id LIKE '%".$request->cust_id."%'";
+            $amountstr = $amountstr." AND people.cust_id LIKE '".$request->cust_id."%'";
         }
         if($request->company) {
             $amountstr = $amountstr." AND people.company LIKE '%".$request->company."%'";
@@ -1755,7 +1755,7 @@ class DetailRptController extends Controller
             $deals = $deals->whereDate('transactions.delivery_date', '<=', $delivery_to);
         }
         if($cust_id) {
-            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $deals = $deals->where('people.cust_id', 'LIKE', $cust_id.'%');
         }
         if($company) {
             $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
@@ -1798,7 +1798,7 @@ class DetailRptController extends Controller
             $deals = $deals->whereDate('transactions.delivery_date', '<=', $delivery_to);
         }
         if($cust_id) {
-            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $deals = $deals->where('people.cust_id', 'LIKE', $cust_id.'%');
         }
         if($company) {
             $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
@@ -1906,7 +1906,7 @@ class DetailRptController extends Controller
             }
         }
         if($cust_id) {
-            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $deals = $deals->where('people.cust_id', 'LIKE', $cust_id.'%');
         }
         if($company) {
             $deals = $deals->where('people.company', 'LIKE', '%'.$company.'%');
@@ -2119,7 +2119,7 @@ class DetailRptController extends Controller
             $transactions = $transactions->whereDate('transactions.paid_at', '>=', $payment_from);
         }
         if($cust_id){
-            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $transactions = $transactions->where('people.cust_id', 'LIKE', $cust_id.'%');
         }
         if($delivery_to){
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
@@ -2245,7 +2245,7 @@ class DetailRptController extends Controller
             $transactions = $transactions->whereDate('transactions.paid_at', '>=', $payment_from);
         }
         if($cust_id){
-            $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            $transactions = $transactions->where('people.cust_id', 'LIKE', $cust_id.'%');
         }
         if($payment_to){
             $transactions = $transactions->whereDate('transactions.paid_at', '<=', $payment_to);
@@ -2372,7 +2372,7 @@ class DetailRptController extends Controller
             $query .= " AND DATE(transactions.paid_at) >= '".$payment_from."' ";
         }
         if($cust_id){
-            $query .= " AND people.cust_id LIKE '%".$cust_id."%' ";
+            $query .= " AND people.cust_id LIKE '".$cust_id."%' ";
         }
 /*
         if($delivery_to){

@@ -120,7 +120,7 @@ class DailyreportController extends Controller
             $deals = $deals->whereDate('transactions.delivery_date', '<=', $request->date_to);
         }
         if($request->cust_id) {
-            $deals = $deals->where('people.cust_id', 'LIKE', '%'.$request->cust_id.'%');
+            $deals = $deals->where('people.cust_id', 'LIKE', $request->cust_id.'%');
         }
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');

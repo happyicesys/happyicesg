@@ -821,7 +821,7 @@ class RptController extends Controller
             $query = $query->where('transactions.id', 'LIKE', '%' . $transaction_id . '%');
         }
         if ($cust_id) {
-            $query = $query->where('people.cust_id', 'LIKE', '%' . $cust_id . '%');
+            $query = $query->where('people.cust_id', 'LIKE', $cust_id . '%');
         }
         if ($company) {
             $query = $query->where('people.company', 'LIKE', '%' . $company . '%');

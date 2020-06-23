@@ -722,7 +722,7 @@ class PersonController extends Controller
         if(request('cust_id')) {
             $cust_id = request('cust_id');
             $query = $query->whereHas('persontagattaches.person', function($query) use ($cust_id) {
-                $query->where('cust_id', 'LIKE', '%'.$cust_id.'%');
+                $query->where('cust_id', 'LIKE', $cust_id.'%');
             });
         }
 
@@ -807,7 +807,7 @@ class PersonController extends Controller
         $franchisee_id = $request->franchisee_id;
 
         if ($cust_id) {
-            $people = $people->where('people.cust_id', 'LIKE', '%' . $cust_id . '%');
+            $people = $people->where('people.cust_id', 'LIKE', $cust_id . '%');
         }
         if ($custcategory) {
             if (count($custcategory) == 1) {
