@@ -236,16 +236,15 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.onInitTransactionsSequence = function(event) {
+        $scope.onInitTransactionsSequence = function(event, driverkey) {
             event.preventDefault();
             let isConfirm = confirm('Are you sure to generate sequence based on this arrangement?')
             if(isConfirm) {
-                $http.post('/api/transaction/initsequence', {drivers: $scope.drivers}).success(function(data) {
-                    getPage();
+                $http.post('/api/transaction/initsequence', {driverkey: driverkey, drivers: $scope.drivers}).success(function(data) {
+                    $scope.drivers = data;
+                    console.log(data)
                     $scope.form.checkall = false;
                 });
-            }else {
-                return false;
             }
         }
 

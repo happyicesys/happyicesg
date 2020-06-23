@@ -1627,28 +1627,35 @@ class TransactionController extends Controller
     public function initTransactionsSequence()
     {
         $drivers = request('drivers');
+        $driverkey = request('driverkey');
 
         if($drivers) {
-            foreach($drivers as $driver) {
-                $assignindex = 1;
-                foreach($driver['transactions'] as $transaction) {
-                    if(isset($transaction['check'])) {
-                        if($transaction['check']) {
-                            $trans = Transaction::findOrFail($transaction['id']);
-                            $trans->sequence = $assignindex;
-                            $trans->save();
-                            $assignindex ++;
-                        }
-                    }
-                }
+            $assignindex = 1;
+            foreach($drivers[$driverkey]['transactions'] as $index => $transaction) {
+                $trans = Transaction::findOrFail($transaction['id']);
+                $trans->sequence = $assignindex;
+                $trans->save();
+                $drivers[$driverkey]['transactions'][$index]['sequence'] = $assignindex;
+                // dd($transaction, $transaction['sequence']);
+                $assignindex ++;
             }
         }
+        return $drivers;
+/*
+        $newarr = [];
+        $drivers = $request->drivers;
+        $driverkey = $request->driverkey;
+
+        if($drivers[$driverkey]) {
+            $keys = array_column($drivers[$driverkey]['transactions'], 'sequence');
+            array_multisort($keys, SORT_ASC, $drivers[$driverkey]['transactions']);
+        }
+        return $drivers; */
     }
 
     // refresh individual driver array job assign
     public function jobAssignRefreshDriver(Request $request)
     {
-        $newarr = [];
         $drivers = $request->drivers;
         $driverkey = $request->driverkey;
 

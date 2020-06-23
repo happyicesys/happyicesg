@@ -457,9 +457,6 @@ Job Assign
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                             <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                         </button>
-                        <button class="btn btn-sm btn-warning" ng-click="onInitTransactionsSequence($event)">
-                            Initiate Sequence
-                        </button>
                         @endif
                     </div>
 
@@ -567,6 +564,9 @@ Job Assign
                                 <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                     <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</button>
+                                    <button class="btn btn-xs btn-default" ng-click="onInitTransactionsSequence($event, driverkey)">
+                                        Sort Sequence
+                                    </button>
                                 @endif
 {{--
                                 <span class="pull-right">
