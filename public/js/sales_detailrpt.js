@@ -189,9 +189,7 @@ var app = angular.module('app', [
                 }
                 // get total count
                 $scope.All = data.transactions.length;
-
-                // return total amount
-                $scope.total_amount = data.total_amount;
+                $scope.totals = data.totals;
                 $scope.spinner = false;
             });
         }

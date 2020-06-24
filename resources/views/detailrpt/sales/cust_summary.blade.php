@@ -145,20 +145,11 @@
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">
-    <div class="col-md-4 col-xs-12">
+    <div class="col-md-8 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
-    <div class="col-md-4 col-xs-12">
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                Total Amount:
-            </div>
-            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount ? total_amount : 0.00 | currency: "": 2}}</strong>
-            </div>
-        </div>
-    </div>
+
     <div class="col-md-4 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>
@@ -205,35 +196,106 @@
                     <span ng-if="search.sortName == 'custcategory_desc' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('thistotal')">
-                    Total<br>
-                    (This Month)
-                    <span ng-if="search.sortName == 'thistotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'thistotal' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('thistotal.salestotal')">
+                    This Month
+                    <span ng-if="search.sortName == 'thistotal.salestotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'thistotal.salestotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('prevtotal')">
-                    Total<br>
-                    (Last Month)
-                    <span ng-if="search.sortName == 'prevtotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prevtotal' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('prevtotal.salestotal')">
+                    Last Month
+                    <span ng-if="search.sortName == 'prevtotal.salestotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevtotal.salestotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('prev2total')">
-                    Total<br>
-                    (Last 2 Month)
-                    <span ng-if="search.sortName == 'prev2total' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prev2total' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('prev2total.salestotal')">
+                    Last 2 Month
+                    <span ng-if="search.sortName == 'prev2total.salestotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prev2total.salestotal' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
 
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('prevyeartotal')">
-                    Total<br>
-                    (Last Yr Same Mth)
-                    <span ng-if="search.sortName == 'prevyeartotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prevyeartotal' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('prevyeartotal.salestotal')">
+                    Last Yr Same Mth
+                    <span ng-if="search.sortName == 'prevyeartotal.salestotal' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevyeartotal.salestotal' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+            </tr>
+            <tr style="background-color: #DDFDF8">
+                <th colspan="3"></th>
+                <th class="col-md-1 text-right" style="font-size: 13px;">
+                    <span class="pull-left">
+                        Trans:
+                    </span>
+                    @{{ totals.this_transactiontotal ? totals.this_transactiontotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Tax:
+                    </span>
+                    @{{ totals.this_taxtotal ? totals.this_taxtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Sales:
+                    </span>
+                    @{{ totals.this_salestotal ? totals.this_salestotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Comm:
+                    </span>
+                    @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}}
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 13px;">
+                    <span class="pull-left">
+                        Trans:
+                    </span>
+                    @{{ totals.prev_transactiontotal ? totals.prev_transactiontotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Tax:
+                    </span>
+                    @{{ totals.prev_taxtotal ? totals.prev_taxtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Sales:
+                    </span>
+                    @{{ totals.prev_salestotal ? totals.prev_salestotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Comm:
+                    </span>
+                    @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}}
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 13px;">
+                    <span class="pull-left">
+                        Trans:
+                    </span>
+                    @{{ totals.prev2_transactiontotal ? totals.prev2_transactiontotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Tax:
+                    </span>
+                    @{{ totals.prev2_taxtotal ? totals.prev2_taxtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Sales:
+                    </span>
+                    @{{ totals.prev2_salestotal ? totals.prev2_salestotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Comm:
+                    </span>
+                    @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}}
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 13px;">
+                    <span class="pull-left">
+                        Trans:
+                    </span>
+                    @{{ totals.prevyear_transactiontotal ? totals.prevyear_transactiontotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Tax:
+                    </span>
+                    @{{ totals.prevyear_taxtotal ? totals.prevyear_taxtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Sales:
+                    </span>
+                    @{{ totals.prevyear_salestotal ? totals.prevyear_salestotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left">
+                        Comm:
+                    </span>
+                    @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}}
                 </th>
             </tr>
 
@@ -249,16 +311,16 @@
                         @{{ transaction.custcategory_desc }}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.thistotal | currency: "": 2 }}
+                        @{{ transaction.this_salestotal | currency: "": 2 }}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prevtotal | currency: "": 2 }}
+                        @{{ transaction.prev_salestotal | currency: "": 2 }}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prev2total | currency: "": 2 }}
+                        @{{ transaction.prev2_salestotal | currency: "": 2 }}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.prevyeartotal | currency: "": 2 }}
+                        @{{ transaction.prevyear_salestotal | currency: "": 2 }}
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">

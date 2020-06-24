@@ -500,10 +500,6 @@ class DetailRptController extends Controller
                 ->orWhere('prevyeartotal.salestotal', '<>', null);
         });
 
-        if(request('is_commission') != ''){
-            $transaction = $transactions->where('items.is_commission', request('is_commission'));
-        }
-
         $transactions = $transactions->orderBy('thistotal.salestotal', 'desc')
                             ->groupBy('people.id');
 
@@ -973,107 +969,137 @@ class DetailRptController extends Controller
         $profile_id = $request->profile_id;
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
-        $status = $request->status;
-        // $person_status = $request->person_status;
-        $is_commission = request('is_commission');
-        if($status) {
-            if($status == 'Delivered') {
-                $statusStr = " AND (transactions.status='Delivered' or transactions.status='Verified Owe' or transactions.status='Verified Paid')";
-            }else {
-                $statusStr = " AND transactions.status='".$status."'";
-            }
-        }
-/*
-        if($person_status) {
-            $personStatusStr = " AND people.status"
-        } */
 
-        if($is_commission != '') {
-            $commissionStr = " AND items.is_commission='".$is_commission."' ";
-        }
 
-        $thistotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thistotal,
-                            people.profile_id, custcategories.id AS custcategory_id
+        $thistotalStr = "(
+                    SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                    ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                        people.profile_id,
+                        custcategories.id AS custcategory_id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON transactions.person_id=people.id
+                        LEFT JOIN profiles ON people.profile_id=profiles.id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        WHERE 1=1 ";
+
+        $prevtotalStr = "(
+                    SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                    ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                        people.profile_id,
+                        custcategories.id AS custcategory_id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON transactions.person_id=people.id
+                        LEFT JOIN profiles ON people.profile_id=profiles.id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        WHERE 1=1 ";
+
+        $prev2totalStr = "(
+                        SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                            people.profile_id,
+                            custcategories.id AS custcategory_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$delivery_from."'
-                            AND transactions.delivery_date<='".$delivery_to."'";
+                            WHERE 1=1 ";
 
-        $prevtotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevtotal,
-                            people.profile_id, custcategories.id AS custcategory_id
+        $prevyeartotalStr = "(
+                        SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                            people.profile_id,
+                            custcategories.id AS custcategory_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
-                            AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
+                            WHERE 1=1 ";
 
-        $prev2total_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prev2total,
-                            people.profile_id, custcategories.id AS custcategory_id
-                            FROM deals
-                            LEFT JOIN items ON items.id=deals.item_id
-                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                            LEFT JOIN people ON transactions.person_id=people.id
-                            LEFT JOIN profiles ON people.profile_id=profiles.id
-                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
-                            AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
+        $thistotalStr =  $this->searchTransactionRawFilter($thistotalStr, $request);
+        $prevtotalStr =  $this->searchTransactionRawFilter($prevtotalStr, $request);
+        $prev2totalStr =  $this->searchTransactionRawFilter($prev2totalStr, $request);
+        $prevyeartotalStr =  $this->searchTransactionRawFilter($prevyeartotalStr, $request);
 
-        $prevyeartotal_str = "(SELECT people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS prevyeartotal,
-                                people.profile_id, custcategories.id AS custcategory_id
-                                FROM deals
-                                LEFT JOIN items ON items.id=deals.item_id
-                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                                WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
+        $thiscommtotalStr = $thistotalStr;
+        $prevcommtotalStr = $prevtotalStr;
+        $prev2commtotalStr = $prev2totalStr;
+        $prevyearcommtotalStr = $prevyeartotalStr;
 
-        if($status) {
-            $thistotal_str .= $statusStr;
-            $prevtotal_str .= $statusStr;
-            $prev2total_str .= $statusStr;
-            $prevyeartotal_str .= $statusStr;
+        if($request->is_commission != '') {
+            $thistotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $prevtotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $prev2totalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $prevyeartotalStr .= " AND items.is_commission='".$request->is_commission."' ";
         }
 
-        if($is_commission != '') {
-            $thistotal_str .= $commissionStr;
-            $prevtotal_str .= $commissionStr;
-            $prev2total_str .= $commissionStr;
-            $prevyeartotal_str .= $commissionStr;
-        }
+        $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
+        $thiscommtotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
+        $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
+        $prevcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevcommtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
+        $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
+        $prev2commtotalStr = $this->filterTransactionDeliveryDateRaw($prev2commtotalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
+        $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
+        $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
+
+
 
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
-            $thistotal_str .= " AND profiles.id IN (".$profileIdStr.")";
-            $prevtotal_str .= " AND profiles.id IN (".$profileIdStr.")";
-            $prev2total_str .= " AND profiles.id IN (".$profileIdStr.")";
-            $prevyeartotal_str .= " AND profiles.id IN (".$profileIdStr.")";
+            $thistotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $thiscommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevcommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prev2totalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prev2commtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevyeartotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevyearcommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
         }
 
         if($profile_id) {
-            $thistotal_str .= " GROUP BY profiles.id, custcategories.id) thistotal";
-            $prevtotal_str .= " GROUP BY profiles.id, custcategories.id) prevtotal";
-            $prev2total_str .= " GROUP BY profiles.id, custcategories.id) prev2total";
-            $prevyeartotal_str .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+            $thistotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
+            $prevtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
+            $prev2totalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
+            $prevyeartotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
         }else  {
-            $thistotal_str .= " GROUP BY custcategories.id) thistotal";
-            $prevtotal_str .= " GROUP BY custcategories.id) prevtotal";
-            $prev2total_str .= " GROUP BY custcategories.id) prev2total";
-            $prevyeartotal_str .= " GROUP BY custcategories.id) prevyeartotal";
+            $thistotalStr .= " GROUP BY custcategories.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY custcategories.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY custcategories.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY custcategories.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY custcategories.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY custcategories.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY custcategories.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY custcategories.id) prevyearcommtotal";
         }
 
-        $thistotal = DB::raw($thistotal_str);
-        $prevtotal = DB::raw($prevtotal_str);
-        $prev2total = DB::raw($prev2total_str);
-        $prevyeartotal = DB::raw($prevyeartotal_str);
+        $thistotal = DB::raw($thistotalStr);
+        $thiscommtotal = DB::raw($thiscommtotalStr);
+        $prevtotal = DB::raw($prevtotalStr);
+        $prevcommtotal = DB::raw($prevcommtotalStr);
+        $prev2total = DB::raw($prev2totalStr);
+        $prev2commtotal = DB::raw($prev2commtotalStr);
+        $prevyeartotal = DB::raw($prevyeartotalStr);
+        $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
+
 
         $transactions = DB::table('deals')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -1087,11 +1113,23 @@ class DetailRptController extends Controller
                             }
                             $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
                         })
+                        ->leftJoin($thiscommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thiscommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thiscommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
                         ->leftJoin($prevtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevtotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevcommtotal.custcategory_id', '=', 'custcategories.id');
                         })
                         ->leftJoin($prev2total, function($join) use ($profile_id) {
                             if($profile_id) {
@@ -1099,38 +1137,85 @@ class DetailRptController extends Controller
                             }
                             $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
                         })
+                        ->leftJoin($prev2commtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2commtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2commtotal.custcategory_id', '=', 'custcategories.id');
+                        })
                         ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
                         })
+                        ->leftJoin($prevyearcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
-                                    'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevyeartotal.prevyeartotal AS prevyeartotal'
+                                    'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
+                                    'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
+                                    'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
+                                    'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
+                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal'
                                 );
 
-        if($request->id or $request->current_month or $request->cust_id or $request->company or $request->delivery_from or $request->delivery_to or $request->profile_id or $request->id_prefix or $request->custcategory or $request->status){
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }
+        $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
+
+        $transactions = $transactions->where(function($query) use ($delivery_from, $delivery_to, $prevMonth, $prev2Months, $prevYear) {
+
+                            $query->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$delivery_from, $delivery_to])
+                                    ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString()])
+                                    ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString()])
+                                     ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString()]);
+                        });
+
+        $transactions = $transactions->where(function($query) {
+            $query->where('thistotal.salestotal', '<>', null)
+                ->orWhere('prevtotal.salestotal', '<>', null)
+                ->orWhere('prev2total.salestotal', '<>', null)
+                ->orWhere('prevyeartotal.salestotal', '<>', null);
+        });
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
 
+
         if($profile_id) {
-            $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id', 'profiles.id');
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id', 'profiles.id');
         }else {
-            $transactions = $transactions->orderBy('custcategories.name')->groupBy('custcategories.id');
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id');
         }
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
-        $total_amount = $this->calTransactionTotalSql($transactions)['sales_total'];
+        $totals = $this->multipleTotalFields($transactions, [
+            'this_salestotal',
+            'this_taxtotal',
+            'this_transactiontotal',
+            'this_commtotal',
+            'prev_salestotal',
+            'prev_taxtotal',
+            'prev_transactiontotal',
+            'prev_commtotal',
+            'prev2_salestotal',
+            'prev2_taxtotal',
+            'prev2_transactiontotal',
+            'prev2_commtotal',
+            'prevyear_salestotal',
+            'prevyear_taxtotal',
+            'prevyear_transactiontotal',
+            'prevyear_commtotal'
+        ]);
 
         if($pageNum == 'All'){
             $transactions = $transactions->get();
@@ -1139,7 +1224,7 @@ class DetailRptController extends Controller
         }
 
         $data = [
-            'total_amount' => $total_amount,
+            'totals' => $totals,
             'transactions' => $transactions,
         ];
 
@@ -2759,9 +2844,33 @@ class DetailRptController extends Controller
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),
                     DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS amount'),
-
                     DB::raw('ROUND(ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) / SUM(deals.qty), 2) AS avg_sell_value'),
-                    DB::raw('ROUND(CASE WHEN items.is_inventory=1 THEN (ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) - SUM(CASE WHEN deals.unit_cost IS NOT NULL THEN deals.unit_cost ELSE unitcosts.unit_cost END * qty)) ELSE ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) END, 2) AS gross')
+                    DB::raw('ROUND(
+                        CASE WHEN items.is_inventory=1
+                        THEN (ROUND(SUM(
+                            CASE WHEN transactions.gst=1
+                            THEN(
+                                CASE WHEN transactions.is_gst_inclusive=0
+                                THEN deals.amount
+                                ELSE deals.amount/ (100 + transactions.gst_rate) * 100
+                                END)
+                            ELSE deals.amount
+                            END), 2) - SUM(
+                            CASE WHEN deals.unit_cost IS NOT NULL
+                            THEN deals.unit_cost
+                            ELSE unitcosts.unit_cost
+                            END * qty))
+                        ELSE ROUND(SUM(
+                            CASE WHEN transactions.gst=1
+                            THEN(
+                                CASE WHEN transactions.is_gst_inclusive=0
+                                THEN deals.amount
+                                ELSE deals.amount/ (100 + transactions.gst_rate) * 100
+                                END)
+                            ELSE deals.amount
+                            END), 2)
+                        END, 2)
+                        AS gross')
                 );
 
         $deals = $this->stockBillingFilters(request(), $deals);
