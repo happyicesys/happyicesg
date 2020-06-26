@@ -121,7 +121,7 @@
                     @endforeach
                 </select>
             </div>
-        </div>           
+        </div>
     </div>
 </div>
 
@@ -132,10 +132,10 @@
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">
-                This Month Total:
+                Total Last 3 Mths:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount | currency: "": 2}}</strong>
+                <strong>@{{ totals.last3total ? totals.last3total : 0 | currency: "": 2}}</strong>
             </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
@@ -156,8 +156,8 @@
             {{-- hidden table for excel export --}}
             <tr class="hidden">
                 <td></td>
-                <td data-tableexport-display="always">Total Outstanding</td>
-                <td data-tableexport-display="always" class="text-right">@{{total_amount | currency: "": 2}}</td>
+                <td data-tableexport-display="always">Total Last 3 Mths</td>
+                <td data-tableexport-display="always" class="text-right">@{{ totals.last3total ? totals.last3total : 0 | currency: "": 2}}</td>
             </tr>
             <tr class="hidden" data-tableexport-display="always">
                 <td></td>
@@ -186,28 +186,44 @@
                     <span ng-if="search.sortName == 'custcategories.id' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('thistotal')">
-                    Outstanding (This Month)
-                    <span ng-if="search.sortName == 'thistotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'thistotal' && search.sortBy" class="fa fa-caret-up"></span>
+                    <a href="" ng-click="sortTable('thistotal.outstanding')">
+                    This Month
+                    <span ng-if="search.sortName == 'thistotal.outstanding' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'thistotal.outstanding' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('prevtotal')">
-                    Outstanding (Last Month)
-                    <span ng-if="search.sortName == 'prevtotal' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prevtotal' && search.sortBy" class="fa fa-caret-up"></span>
+                    Last Month
+                    <span ng-if="search.sortName == 'prevtotal.outstanding' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevtotal.outstanding' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('prev2total')">
-                    Outstanding (Last 2 Months)
-                    <span ng-if="search.sortName == 'prev2total' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prev2total' && search.sortBy" class="fa fa-caret-up"></span>
+                    Last 2 Months
+                    <span ng-if="search.sortName == 'prev2total.outstanding' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prev2total.outstanding' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('prevmore3total')">
-                    Outstanding (>3 Months)
-                    <span ng-if="search.sortName == 'prevmore3total' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'prevmore3total' && search.sortBy" class="fa fa-caret-up"></span>
+                    >3 Months
+                    <span ng-if="search.sortName == 'prevmore3total.outstanding' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'prevmore3total.outstanding' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+            </tr>
+
+            <tr style="background-color: #DDFDF8">
+                <th colspan="4"></th>
+                <th class="col-md-1 text-right" style="font-size: 14px;">
+                    @{{ totals.thistotal ? totals.thistotal : 0.00 | currency: "": 2}} <br>
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 14px;">
+                    @{{ totals.prevtotal ? totals.prevtotal : 0.00 | currency: "": 2}} <br>
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 14px;">
+                    @{{ totals.prev2total ? totals.prev2total : 0.00 | currency: "": 2}} <br>
+                </th>
+                <th class="col-md-1 text-right" style="font-size: 14px;">
+                    @{{ totals.prevmore3total ? totals.prevmore3total : 0.00 | currency: "": 2}} <br>
                 </th>
             </tr>
 

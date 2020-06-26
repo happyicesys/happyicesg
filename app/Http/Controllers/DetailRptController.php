@@ -133,40 +133,40 @@ class DetailRptController extends Controller
         $prev2Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(2);
         $prev3Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(3);
 
-        $thistotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS thistotal, people.id AS person_id, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$carbondate->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$carbondate->endOfMonth()->toDateString()."'
-                                AND pay_status='Owe'
-                                AND (status='Delivered' OR status='Verified Owe')
-                                GROUP BY people.id) thistotal");
+        $queryStr = "(
+            SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS outstanding,
+            people.id AS person_id, people.profile_id FROM transactions
+            LEFT JOIN people ON transactions.person_id=people.id
+            LEFT JOIN profiles ON people.profile_id=profiles.id
+            WHERE 1=1 ";
 
-        $prevtotal = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevtotal, people.id AS person_id, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'
-                                AND pay_status='Owe'
-                                AND (status='Delivered' OR status='Verified Owe')
-                                GROUP BY people.id) prevtotal");
+        $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
 
-        $prev2total = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+people.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prev2total, people.id AS person_id, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
-                                AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'
-                                AND pay_status='Owe'
-                                AND (status='Delivered' OR status='Verified Owe')
-                                GROUP BY people.id) prev2total");
+        $queryStr .= " AND pay_status='Owe' AND (status='Delivered' OR status='Verified Owe') ";
 
-        $prevmore3total = DB::raw("(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN total*(100+transactions.gst_rate)/100 ELSE total END) ELSE total END) + (CASE WHEN delivery_fee>0 THEN delivery_fee ELSE 0 END), 2) AS prevmore3total, people.id AS person_id, people.profile_id FROM transactions
-                                LEFT JOIN people ON transactions.person_id=people.id
-                                LEFT JOIN profiles ON people.profile_id=profiles.id
-                                WHERE transactions.delivery_date<='".$prev3Months->endOfMonth()->toDateString()."'
-                                AND pay_status='Owe'
-                                AND (status='Delivered' OR status='Verified Owe')
-                                GROUP BY people.id) prevmore3total");
+        $thistotalStr = $queryStr;
+        $prevtotalStr = $queryStr;
+        $prev2totalStr = $queryStr;
+        $prevmore3totalStr = $queryStr;
+        $last3totalStr = $queryStr;
+
+        $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $carbondate->startOfMonth()->toDateString(), $carbondate->endOfMonth()->toDateString());
+        $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
+        $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
+        $prevmore3totalStr = $this->filterTransactionDeliveryDateRaw($prevmore3totalStr, null, $prev3Months->endOfMonth()->toDateString());
+        $last3totalStr = $this->filterTransactionDeliveryDateRaw($last3totalStr, $prev3Months->startOfMonth()->toDateString(), $carbondate->endOfMonth()->toDateString());
+
+        $thistotalStr .= " GROUP BY people.id) thistotal";
+        $prevtotalStr .= " GROUP BY people.id) prevtotal";
+        $prev2totalStr .= " GROUP BY people.id) prev2total";
+        $prevmore3totalStr .= " GROUP BY people.id) prevmore3total";
+        $last3totalStr .= " GROUP BY people.id) last3total";
+
+        $thistotal = DB::raw($thistotalStr);
+        $prevtotal = DB::raw($prevtotalStr);
+        $prev2total = DB::raw($prev2totalStr);
+        $prevmore3total = DB::raw($prevmore3totalStr);
+        $last3total = DB::raw($last3totalStr);
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -176,29 +176,34 @@ class DetailRptController extends Controller
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
                         ->leftJoin($prevmore3total, 'people.id', '=', 'prevmore3total.person_id')
+                        ->leftJoin($last3total, 'people.id', '=', 'last3total.person_id')
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst',
                                     'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
-                                    'thistotal.thistotal AS thistotal', 'prevtotal.prevtotal AS prevtotal', 'prev2total.prev2total AS prev2total', 'prevmore3total.prevmore3total AS prevmore3total'
+                                    'thistotal.outstanding AS thistotal', 'prevtotal.outstanding AS prevtotal', 'prev2total.outstanding AS prev2total', 'prevmore3total.outstanding AS prevmore3total', 'last3total.outstanding AS last3total'
                                 );
 
-        if($request->id or $request->cust_id or $request->company or $request->status or $request->pay_status or $request->updated_by or $request->updated_at or $request->driver or $request->profile){
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        }
+        $transactions = $this->searchTransactionDBFilter($transactions, $request);
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
 
-        $transactions = $transactions->latest('transactions.created_at')->groupBy('people.id');
+        $transactions = $transactions->latest('thistotal.outstanding', 'DESC')->groupBy('people.id');
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
-        $total_amount = $this->calCustoutstandingTotal($transactions);
+        $totals = $this->multipleTotalFields($transactions, [
+            'thistotal',
+            'prevtotal',
+            'prev2total',
+            'prevmore3total',
+            'last3total'
+        ]);
 
         if($pageNum == 'All'){
             $transactions = $transactions->get();
@@ -207,7 +212,7 @@ class DetailRptController extends Controller
         }
 
         $data = [
-            'total_amount' => $total_amount,
+            'totals' => $totals,
             'transactions' => $transactions,
         ];
 
@@ -964,6 +969,7 @@ class DetailRptController extends Controller
         $prevMonth = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonth();
         $prev2Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(2);
         $prevYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subYear();
+        $thisYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month);
         $delivery_from = $carbondate->startOfMonth()->toDateString();
         $delivery_to = $carbondate->endOfMonth()->toDateString();
         $profile_id = $request->profile_id;
@@ -971,7 +977,7 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_to' => $delivery_to));
 
 
-        $thistotalStr = "(
+        $queryStr = "(
                     SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                     ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                     ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
@@ -986,67 +992,28 @@ class DetailRptController extends Controller
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                         WHERE 1=1 ";
 
-        $prevtotalStr = "(
-                    SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
-                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
-                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
-                    ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
-                        people.profile_id,
-                        custcategories.id AS custcategory_id
-                        FROM deals
-                        LEFT JOIN items ON items.id=deals.item_id
-                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                        LEFT JOIN people ON transactions.person_id=people.id
-                        LEFT JOIN profiles ON people.profile_id=profiles.id
-                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                        WHERE 1=1 ";
+        $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
 
-        $prev2totalStr = "(
-                        SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
-                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
-                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
-                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
-                            people.profile_id,
-                            custcategories.id AS custcategory_id
-                            FROM deals
-                            LEFT JOIN items ON items.id=deals.item_id
-                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                            LEFT JOIN people ON transactions.person_id=people.id
-                            LEFT JOIN profiles ON people.profile_id=profiles.id
-                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE 1=1 ";
+        if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
+            $profileIdStr = implode(",", $profileIds);
+            $queryStr .= " AND profiles.id IN (".$profileIdStr.")";
+        }
 
-        $prevyeartotalStr = "(
-                        SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
-                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
-                        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
-                        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
-                            people.profile_id,
-                            custcategories.id AS custcategory_id
-                            FROM deals
-                            LEFT JOIN items ON items.id=deals.item_id
-                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
-                            LEFT JOIN people ON transactions.person_id=people.id
-                            LEFT JOIN profiles ON people.profile_id=profiles.id
-                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
-                            WHERE 1=1 ";
-
-        $thistotalStr =  $this->searchTransactionRawFilter($thistotalStr, $request);
-        $prevtotalStr =  $this->searchTransactionRawFilter($prevtotalStr, $request);
-        $prev2totalStr =  $this->searchTransactionRawFilter($prev2totalStr, $request);
-        $prevyeartotalStr =  $this->searchTransactionRawFilter($prevyeartotalStr, $request);
-
-        $thiscommtotalStr = $thistotalStr;
-        $prevcommtotalStr = $prevtotalStr;
-        $prev2commtotalStr = $prev2totalStr;
-        $prevyearcommtotalStr = $prevyeartotalStr;
+        $queryStrNoComm = $queryStr;
 
         if($request->is_commission != '') {
-            $thistotalStr .= " AND items.is_commission='".$request->is_commission."' ";
-            $prevtotalStr .= " AND items.is_commission='".$request->is_commission."' ";
-            $prev2totalStr .= " AND items.is_commission='".$request->is_commission."' ";
-            $prevyeartotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $queryStr .= " AND items.is_commission='".$request->is_commission."' ";
         }
+
+        $thistotalStr = $queryStr;
+        $prevtotalStr = $queryStr;
+        $prev2totalStr = $queryStr;
+        $prevyeartotalStr = $queryStr;
+        $thiscommtotalStr = $queryStrNoComm;
+        $prevcommtotalStr = $queryStrNoComm;
+        $prev2commtotalStr = $queryStrNoComm;
+        $prevyearcommtotalStr = $queryStrNoComm;
+        $thisyeartotalStr = $queryStrNoComm;
 
         $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
         $thiscommtotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
@@ -1057,8 +1024,8 @@ class DetailRptController extends Controller
         $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
         $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
 
-
-
+        $thisyeartotalStr = $this->filterTransactionDeliveryDateRaw($thisyeartotalStr, $thisYear->startOfYear()->toDateString(), $thisYear->endOfYear()->toDateString());
+/*
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
             $thistotalStr .= " AND profiles.id IN (".$profileIdStr.")";
@@ -1069,7 +1036,7 @@ class DetailRptController extends Controller
             $prev2commtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
             $prevyeartotalStr .= " AND profiles.id IN (".$profileIdStr.")";
             $prevyearcommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
-        }
+        } */
 
         if($profile_id) {
             $thistotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
@@ -1080,6 +1047,7 @@ class DetailRptController extends Controller
             $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
             $prevyeartotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
             $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+            $thisyeartotalStr .= " GROUP BY profiles.id, custcategories.id) thisyeartotal";
         }else  {
             $thistotalStr .= " GROUP BY custcategories.id) thistotal";
             $thiscommtotalStr .= " GROUP BY custcategories.id) thiscommtotal";
@@ -1089,6 +1057,7 @@ class DetailRptController extends Controller
             $prev2commtotalStr .= " GROUP BY custcategories.id) prev2commtotal";
             $prevyeartotalStr .= " GROUP BY custcategories.id) prevyeartotal";
             $prevyearcommtotalStr .= " GROUP BY custcategories.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY custcategories.id) thisyeartotal";
         }
 
         $thistotal = DB::raw($thistotalStr);
@@ -1099,6 +1068,7 @@ class DetailRptController extends Controller
         $prev2commtotal = DB::raw($prev2commtotalStr);
         $prevyeartotal = DB::raw($prevyeartotalStr);
         $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
+        $thisyeartotal = DB::raw($thisyeartotalStr);
 
 
         $transactions = DB::table('deals')
@@ -1155,6 +1125,12 @@ class DetailRptController extends Controller
                             }
                             $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
                         })
+                        ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
+                        })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
@@ -1164,7 +1140,8 @@ class DetailRptController extends Controller
                                     'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
                                     'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
                                     'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
-                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal'
+                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                                    'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
                                 );
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
@@ -1214,7 +1191,11 @@ class DetailRptController extends Controller
             'prevyear_salestotal',
             'prevyear_taxtotal',
             'prevyear_transactiontotal',
-            'prevyear_commtotal'
+            'prevyear_commtotal',
+            'thisyear_salestotal',
+            'thisyear_taxtotal',
+            'thisyear_transactiontotal',
+            'thisyear_commtotal'
         ]);
 
         if($pageNum == 'All'){
@@ -2503,10 +2484,14 @@ class DetailRptController extends Controller
     }
 
     // filter raw delivery date
-    private function filterTransactionDeliveryDateRaw($str, $delivery_from, $delivery_to)
+    private function filterTransactionDeliveryDateRaw($str, $delivery_from = null, $delivery_to = null)
     {
-        $str .= " AND DATE(transactions.delivery_date) >= '".$delivery_from."'
-                            AND DATE(transactions.delivery_date)<='".$delivery_to."'";
+        if($delivery_from) {
+            $str .= " AND DATE(transactions.delivery_date) >= '".$delivery_from."'";
+        }
+        if($delivery_to) {
+            $str .= " AND DATE(transactions.delivery_date) <= '".$delivery_to."'";
+        }
 
         return $str;
     }

@@ -145,11 +145,51 @@
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">
-    <div class="col-md-8 col-xs-12">
+    <div class="col-md-4 col-xs-12">
         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
-
+    <div class="col-md-4 col-xs-12">
+        <div class="row">
+            <div class="col-md-12 col-xs-12 text-center">
+                <strong>
+                    This Year
+                </strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Transac:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals.thisyear_transactiontotal ? totals.thisyear_transactiontotal : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Tax:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals.thisyear_taxtotal ? totals.thisyear_taxtotal : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Sales:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals.thisyear_salestotal ? totals.thisyear_salestotal : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Comm:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals.thisyear_commtotal ? totals.thisyear_commtotal : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
+    </div>
     <div class="col-md-4 col-xs-12 text-right">
         <div class="row">
             <label for="display_num">Display</label>

@@ -474,6 +474,8 @@ var app = angular.module('app', [
                             infowindow.open(map, marker);
                         });
                     });
+                    $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
+                    });
                 });
             }else {
                 if(driverkey !== null) {
