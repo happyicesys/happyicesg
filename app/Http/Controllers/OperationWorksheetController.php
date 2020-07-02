@@ -276,6 +276,12 @@ class OperationWorksheetController extends Controller
         $person->save();
     }
 
+    public function getAllZoneApi()
+    {
+        $zones = Zone::all();
+        return $zones;
+    }
+
     // ops worksheet update zone
     public function updatePersonZone()
     {

@@ -161,8 +161,7 @@ Route::get('/franchisee/create', 'FtransactionController@create');
 Route::post('/api/franchisee', 'FtransactionController@indexApi');
 Route::get('/franchisee', 'FtransactionController@index');
 
-Route::get('/api/zones', 'ZoneController@getAllApi');
-
+Route::get('/api/zones', 'OperationWorksheetController@getAllZoneApi');
 Route::post('/api/detailrpt/operation/zone', 'OperationWorksheetController@updatePersonZone');
 Route::post('/api/detailrpt/operation/batchinvoices', 'OperationWorksheetController@generateBatchInvoices');
 Route::post('/detailrpt/operation/excel', 'OperationWorksheetController@exportOperationExcel');
