@@ -1177,13 +1177,13 @@ class DetailRptController extends Controller
 
         if($profile_id) {
             $thistotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
-            $thiscommtotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY profiles.id, custcategories.id) thiscommtotal";
             $prevtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
-            $prevcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevcommtotal";
             $prev2totalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
-            $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2commtotal";
             $prevyeartotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
-            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyearcommtotal";
             $thisyeartotalStr .= " GROUP BY profiles.id, custcategories.id) thisyeartotal";
         }else  {
             $thistotalStr .= " GROUP BY custcategories.id) thistotal";

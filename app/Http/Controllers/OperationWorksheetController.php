@@ -835,7 +835,7 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
                             DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
                             DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
-                            'people.preferred_days', 'people.area_group',
+                            'people.preferred_days', 'people.area_group', 'people.zone_id',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',

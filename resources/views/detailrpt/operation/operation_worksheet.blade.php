@@ -1,4 +1,5 @@
 @inject('persontags', 'App\Persontag')
+@inject('zones', 'App\Zone')
 
 <div ng-app="app" ng-controller="operationWorksheetController" ng-cloak>
 {!! Form::open(['id'=>'export_excel', 'method'=>'POST', 'action'=>['OperationWorksheetController@exportOperationExcel']]) !!}
@@ -386,42 +387,14 @@
                     <td class="col-md-2" style="min-width: 50px;">
                         <div class="checkbox" style="margin-top: 0px;">
                             <span class="col-md-4 pull-left" style="padding-left: 0px;">
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.west" ng-change="toggleZoneCheckbox(person.west, person.person_id, 'west')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    West
-                                </span>
-                            </label>
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.east" ng-change="toggleZoneCheckbox(person.east, person.person_id, 'east')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    East
-                                </span>
-                            </label>
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.north" ng-change="toggleZoneCheckbox(person.north, person.person_id, 'north')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    North
-                                </span>
-                            </label>
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.others" ng-change="toggleZoneCheckbox(person.others, person.person_id, 'others')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    Others
-                                </span>
-                            </label>
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.sup" ng-change="toggleZoneCheckbox(person.sup, person.person_id, 'sup')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    Sup
-                                </span>
-                            </label>
-                            <label>
-                                <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.ops" ng-change="toggleZoneCheckbox(person.ops, person.person_id, 'ops')" ng-true-value="'1'" ng-false-value="'0'">
-                                <span style="margin-left: -5px; margin-top: 5px;">
-                                    Ops
-                                </span>
-                            </label>
+                                <select name="" class="select" ng-model="person.zone_id">
+                                    <option value=""></option>
+                                    @foreach($zones::all() as $zone)
+                                        <option value="{{$zone->id}}">
+                                            {{$zone->name}}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </span>
                         </div>
                     </td>
