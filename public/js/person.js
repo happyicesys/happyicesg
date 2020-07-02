@@ -21,6 +21,8 @@ function personController($scope, $http){
         company: '',
         contact: '',
         active: ['Yes'],
+        account_manager: '',
+        zone_id: '',
         pageNum: 100,
         profile_id: '',
         franchisee_id: ''

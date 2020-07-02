@@ -2,6 +2,8 @@
 @inject('profiles', 'App\Profile')
 @inject('franchisees', 'App\User')
 @inject('persontags', 'App\Persontag')
+@inject('users', 'App\User')
+@inject('zones', 'App\Zone')
 
 @extends('template')
 @section('title')
@@ -126,6 +128,30 @@
                                 ])
                             !!}
                         </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+                            {!! Form::select('account_manager',
+                                    [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'search.account_manager',
+                                        'ng-change'=>'searchDB()'
+                                    ])
+                            !!}
+                        </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                            {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
+                            {!! Form::select('zone_id',
+                                    [''=>'All']+ $zones::lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'search.zone_id',
+                                        'ng-change'=>'searchDB()'
+                                    ])
+                            !!}
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -176,6 +202,12 @@
                                 <span ng-show="sortType == 'custcategory' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'account_manager'; sortReverse = !sortReverse">
+                                Acc Manager
+                                <span ng-show="sortType == 'account_manager' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'account_manager' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                 Att. To
                                 <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -195,6 +227,12 @@
                                 Postcode
                                 <span ng-show="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                                 <span ng-show="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortType = 'zone_id'; sortReverse = !sortReverse">
+                                Zone
+                                <span ng-show="sortType == 'zone_id' && !sortReverse" class="fa fa-caret-down"></span>
+                                <span ng-show="sortType == 'zone_id' && sortReverse" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortType = 'payterm'; sortReverse = !sortReverse">
@@ -224,6 +262,9 @@
                                 <td class="col-md-1 text-center">
                                     @{{ person.custcategory }}
                                 </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ person.account_manager_name }}
+                                </td>
                                 <td class="col-md-1">@{{ person.name }}</td>
                                 <td class="col-md-1">
                                     @{{ person.contact }}
@@ -233,6 +274,9 @@
                                 </td>
                                 <td class="col-md-3">@{{ person.del_address }}</td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
+                                <td class="col-md-1 text-center">
+                                    @{{ person.zone_name }}
+                                </td>
                                 <td class="col-md-1 text-center">@{{person.payterm}}</td>
                                 <td class="col-md-1 text-center">@{{ person.active }}</td>
                             </tr>

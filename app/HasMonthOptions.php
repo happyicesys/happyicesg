@@ -21,4 +21,20 @@ trait HasMonthOptions{
         return $month_options;
     }
 
+    // get years options
+    public function getYearOptions($year = 3)
+    {
+        // past year till now months option
+        $yearOptions = array();
+        $pastYears = Carbon::today()->subYears($year);
+        $diffInYears = Carbon::today()->diffInYears($pastYears);
+        $yearOptions[Carbon::today()->year] = Carbon::today()->year;
+
+        for($i=1; $i<=$diffInYears; $i++) {
+            $yearOptions[Carbon::today()->subYears($i)->year] = Carbon::today()->subYears($i)->year;
+        }
+
+        return $yearOptions;
+    }
+
 }

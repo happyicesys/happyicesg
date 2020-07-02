@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Month extends Model
 {
     protected $fillable = [
-    	'name'
+    	'name', 'short_name'
     ];
 }

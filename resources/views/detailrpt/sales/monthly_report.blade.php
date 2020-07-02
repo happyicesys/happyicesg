@@ -1,0 +1,313 @@
+<div ng-controller="monthlyReportController">
+  <div class="col-md-12 col-xs-12">
+      <div class="row">
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
+                  {!! Form::select('profile_id', [''=>'All']+
+                      $profiles::filterUserProfile()
+                          ->pluck('name', 'id')
+                          ->all(), null,
+                      [
+                      'class'=>'select form-control',
+                      'ng-model'=>'search.profile_id',
+                      'ng-change'=>'searchDB()'
+                      ])
+                  !!}
+              </div>
+          </div>
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('current_year', 'Current Year', ['class'=>'control-label search-title']) !!}
+                  <select class="select form-control" name="current_year" ng-model="search.current_year" ng-change="searchDB()">
+                      @foreach($yearOptions as $key => $value)
+                          <option value="{{$key}}">{{$value}}</option>
+                      @endforeach
+                  </select>
+              </div>
+          </div>
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                  {!! Form::text('cust_id', null,
+                                              [
+                                                  'class'=>'form-control input-sm',
+                                                  'ng-model'=>'search.cust_id',
+                                                  'placeholder'=>'Cust ID',
+                                                  'ng-change'=>'searchDB()',
+                                                  'ng-model-options'=>'{ debounce: 500 }'
+                                              ])
+                  !!}
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                  <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                      <option value="">All</option>
+                      <option value="C">C</option>
+                      <option value="D">D</option>
+                      <option value="E">E</option>
+                      <option value="F">F</option>
+                      <option value="G">G</option>
+                      <option value="H">H</option>
+                      <option value="R">R</option>
+                      <option value="S">S</option>
+                      <option value="V">V</option>
+                      <option value="W">W</option>
+                  </select>
+              </div>
+          </div>
+
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                  {!! Form::text('company', null,
+                                                  [
+                                                      'class'=>'form-control input-sm',
+                                                      'ng-model'=>'search.company',
+                                                      'placeholder'=>'ID Name',
+                                                      'ng-change'=>'searchDB()',
+                                                      'ng-model-options'=>'{ debounce: 500 }'
+                                                  ])
+                  !!}
+              </div>
+          </div>
+          <div class="col-md-4 col-xs-6">
+  {{--
+              <div class="form-group">
+                  {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                  <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
+                      <option value="">All</option>
+                      @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                      <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
+                      @endforeach
+                  </select>
+              </div> --}}
+              <div class="form-group">
+                  {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                  <label class="pull-right">
+                      <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                      <span style="margin-top: 5px;">
+                          Exclude
+                      </span>
+                  </label>
+                  {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                      null,
+                      [
+                          'class'=>'selectmultiple form-control',
+                          'ng-model'=>'search.custcategory',
+                          'multiple'=>'multiple',
+                          'ng-change' => 'searchDB()'
+                      ])
+                  !!}
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                  {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
+                      [
+                      'class'=>'select form-control',
+                      'ng-model'=>'search.status',
+                      'ng-change'=>'searchDB()'
+                      ])
+                  !!}
+              </div>
+          </div>
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                  {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes', '1'=>'Only Commission'], null,
+                      [
+                          'class'=>'select form-control',
+                          'ng-model'=>'search.is_commission',
+                          'ng-change'=>'searchDB()'
+                      ])
+                  !!}
+              </div>
+          </div>
+          <div class="col-md-4 col-xs-6">
+              <div class="form-group">
+                  {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
+                  {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
+                      'class'=>'select form-control',
+                      'ng-model'=>'search.franchisee_id',
+                      'ng-change' => 'searchDB()'
+                      ])
+                  !!}
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                  {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
+                  <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
+                      <option value="">All</option>
+                      <option value="Yes">Active</option>
+                      <option value="New">New</option>
+                      @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                          <option value="No">Inactive</option>
+                          <option value="Pending">Pending</option>
+                      @endif
+                  </select>
+              </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                  {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
+                  {!! Form::select('is_gst_inclusive',
+                  [
+                      '' => 'All',
+                      'true' => 'Already added GST',
+                      'false' => 'To add GST'
+                  ],
+                  null,
+                  [
+                      'class'=>'select form-control',
+                      'ng-model'=>'search.is_gst_inclusive',
+                      'ng-change' => 'searchDB()'
+                  ])
+              !!}
+              </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+              <div class="form-group">
+                  {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
+                  {!! Form::text('gst_rate', null,
+                                                  [
+                                                      'class'=>'form-control input-sm',
+                                                      'ng-model'=>'search.gst_rate',
+                                                      'ng-change'=>'searchDB()',
+                                                      'placeholder'=>'GST Rate',
+                                                      'ng-model-options'=>'{ debounce: 500 }'
+                                                  ]) !!}
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="row" style="padding-left: 15px; padding-top:20px;">
+      <div class="col-md-8 col-xs-12">
+          <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+          <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
+      </div>
+  </div>
+
+      <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
+          <table class="table table-list-search table-hover table-bordered">
+              <tr style="background-color: #DDFDF8">
+                  <th class="col-md-1 text-center">
+                      #
+                  </th>
+                  <th class="col-md-1 text-center">
+                      <a href="" ng-click="sortTable('month')">
+                      Month
+                      <span ng-if="search.sortName == 'month' && !search.sortBy" class="fa fa-caret-down"></span>
+                      <span ng-if="search.sortName == 'month' && search.sortBy" class="fa fa-caret-up"></span>
+                  </th>
+                  <th class="col-md-2 text-center" colspan="2">
+                      <a href="" ng-click="sortTable('this_year')">
+                      Current Year
+                      <span ng-if="search.sortName == 'this_year' && !search.sortBy" class="fa fa-caret-down"></span>
+                      <span ng-if="search.sortName == 'this_year' && search.sortBy" class="fa fa-caret-up"></span>
+                  </th>
+                  <th class="col-md-1 text-center" colspan="2">
+                      <a href="" ng-click="sortTable('last_year')">
+                      Last Year
+                      <span ng-if="search.sortName == 'last_year' && !search.sortBy" class="fa fa-caret-down"></span>
+                      <span ng-if="search.sortName == 'last_year' && search.sortBy" class="fa fa-caret-up"></span>
+                  </th>
+                  <th class="col-md-1 text-center" colspan="2">
+                      <a href="" ng-click="sortTable('last_two_year')">
+                      Last 2 Years
+                      <span ng-if="search.sortName == 'last_two_year' && !search.sortBy" class="fa fa-caret-down"></span>
+                      <span ng-if="search.sortName == 'last_two_year' && search.sortBy" class="fa fa-caret-up"></span>
+                  </th>
+              </tr>
+
+              <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                </th>
+                <th class="col-md-1 text-center">
+                    Amt (S$)
+                </th>
+                <th class="col-md-1 text-center">
+                    YoY (%)
+                </th>
+                <th class="col-md-1 text-center">
+                    Amt (S$)
+                </th>
+                <th class="col-md-1 text-center">
+                    YoY (%)
+                </th>
+                <th class="col-md-1 text-center">
+                    Amt (S$)
+                </th>
+                <th class="col-md-1 text-center">
+                    YoY (%)
+                </th>
+              </tr>
+
+              <tbody>
+                  <tr ng-repeat="transaction in alldata | orderBy:sortType:sortReverse">
+                      <td class="col-md-1 text-center">
+                          @{{ $index + indexFrom }}
+                      </td>
+                      <td class="col-md-1 text-center">
+                          @{{ transaction.month }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.this_month_amount | currency: "": 2 }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.this_month_yoy | currency: "": 2 }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.last_month_amount | currency: "": 2 }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.last_month_yoy | currency: "": 2  }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.last_two_month_amount | currency: "": 2 }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ transaction.last_two_month_yoy| currency: "": 2 }}
+                      </td>
+                  </tr>
+                  <tr ng-if="alldata || alldata.length > 0">
+                      <th class="col-md-1 text-center" colspan="2">
+                        Total
+                      </th>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.this_year_amount }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.this_year_yoy }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.last_year_amount }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.last_year_yoy }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.last_two_year_amount }}
+                      </td>
+                      <td class="col-md-1 text-right">
+                        @{{ totals.last_two_year_yoy }}
+                      </td>
+                  </tr>
+                  <tr ng-if="!alldata || alldata.length == 0">
+                      <td colspan="14" class="text-center">No Records Found</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>

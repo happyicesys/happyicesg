@@ -66,29 +66,21 @@ class PersonController extends Controller
             ->rightJoin('people', 'people.id', '=', 'persontagattaches.person_id')
             ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+            ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
+            ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
             ->select(
-                'people.id',
-                'people.cust_id',
-                'people.company',
-                'people.name',
-                'people.contact',
-                'people.alt_contact',
-                'people.del_address',
-                'people.del_postcode',
-                'people.active',
-                'people.payterm',
+                'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm',
                 'custcategories.name as custcategory',
-                'profiles.id AS profile_id',
-                'profiles.name AS profile_name'
+                'profiles.id AS profile_id', 'profiles.name AS profile_name',
+                'account_managers.name AS account_manager_name',
+                'zones.name AS zone_name'
             );
 
         // reading whether search input is filled
-        if ($request->cust_id or $request->custcategory or $request->company or $request->contact or $request->active or $request->franchisee_id) {
-            $people = $this->searchPeopleDBFilter($people, $request);
-        } else {
-            if ($request->sortName) {
-                $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
+        $people = $this->searchPeopleDBFilter($people, $request);
+
+        if ($request->sortName) {
+            $people = $people->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
         // add user profile filters
@@ -805,6 +797,8 @@ class PersonController extends Controller
         $tags = $request->tags;
         $profile_id = $request->profile_id;
         $franchisee_id = $request->franchisee_id;
+        $accountManager = $request->account_manager;
+        $zoneId = $request->zone_id;
 
         if ($cust_id) {
             $people = $people->where('people.cust_id', 'LIKE', $cust_id . '%');
@@ -856,6 +850,13 @@ class PersonController extends Controller
             }else {
                 $people = $people->where('people.francisee_id', 0);
             }
+        }
+
+        if($accountManager) {
+            $people = $people->where('people.account_manager', $accountManager);
+        }
+        if($zoneId) {
+            $people = $people->where('people.zone_id', $zoneId);
         }
 
         return $people;

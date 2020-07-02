@@ -62,7 +62,9 @@ class Person extends Baum\Node
         'gst_rate' => 'GST Rate',
         'serial_number' => 'Serial Number',
         'terminal_id' => 'Cashless Terminal ID',
-        'cms_serial_number' => 'CMS Serial Number'
+        'cms_serial_number' => 'CMS Serial Number',
+        'account_manager' => 'Account Manager',
+        'zone_id' => 'Zone'
     );
 
     protected $fillable = [
@@ -74,7 +76,8 @@ class Person extends Baum\Node
     'custcategory_id', 'is_vending', 'vending_piece_price', 'vending_monthly_rental', 'vending_profit_sharing',
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
-    'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider'
+    'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider',
+    'account_manager', 'zone_id'
     ];
 
     protected $dates = ['deleted_at'];
@@ -197,6 +200,16 @@ class Person extends Baum\Node
     public function persontagattaches()
     {
         return $this->hasMany(Persontagattach::class);
+    }
+
+    public function accountManager()
+    {
+        return $this->belongsTo('App\User', 'account_manager');
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo('App\Zone');
     }
 
     // getter and setter

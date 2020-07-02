@@ -283,6 +283,99 @@ var app = angular.module('app', [
         }
     }
 
+    function monthlyReportController($scope, $http){
+        // init the variables
+        $scope.alldata = [];
+        $scope.totalCount = 0;
+        $scope.totalPages = 0;
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.indexFrom = 0;
+        $scope.indexTo = 0;
+        $scope.today = moment().format("YYYY-MM-DD");
+        $scope.search = {
+            profile_id: '',
+            current_month: moment().year(),
+            id_prefix: '',
+            cust_id: '',
+            company: '',
+            custcategory: '',
+            exclude_custcategory: '',
+            status: 'Delivered',
+            person_active: [],
+            is_commission: '0',
+            is_gst_inclusive: '',
+            gst_rate: '',
+            pageNum: 100,
+            sortName: '',
+            sortBy: true
+        }
+        // init page load
+        getPage(1, true);
+
+        angular.element(document).ready(function () {
+            $('.select').select2();
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
+        });
+
+        $scope.exportData = function () {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_monthlyreport').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "Monthly Report"+ now + ".xls");
+        };
+
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
+          // when hitting search button
+        $scope.searchDB = function(){
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
+            getPage(1, false);
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber, first){
+            $scope.spinner = true;
+            $http.post('/api/detailrpt/sales/monthly-report?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.transactions.data){
+                    $scope.alldata = data.transactions.data;
+                    $scope.totalCount = data.transactions.total;
+                    $scope.currentPage = data.transactions.current_page;
+                    $scope.indexFrom = data.transactions.from;
+                    $scope.indexTo = data.transactions.to;
+                }else{
+                    $scope.alldata = data.transactions;
+                    $scope.totalCount = data.transactions.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.transactions.length;
+                }
+                $scope.totals = data.totals;
+                $scope.All = data.transactions.length;
+                $scope.spinner = false;
+            });
+        }
+    }
+
     function productDayDetailController($scope, $http){
         // init the variables
         $scope.alldata = [];
@@ -512,5 +605,6 @@ app.config(function ($provide){
 app.controller('custDetailController', custDetailController);
 app.controller('custSummaryController', custSummaryController);
 app.controller('productMonthDetailController', productMonthDetailController);
+app.controller('monthlyReportController', monthlyReportController);
 app.controller('productDayDetailController', productDayDetailController);
 app.controller('invoiceBreakdownController', invoiceBreakdownController);

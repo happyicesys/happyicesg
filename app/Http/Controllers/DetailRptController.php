@@ -45,7 +45,8 @@ class DetailRptController extends Controller
     public function salesIndex()
     {
         $month_options = $this->getMonthOptions();
-        return view('detailrpt.sales.index', compact('month_options'));
+        $yearOptions = $this->getYearOptions(5);
+        return view('detailrpt.sales.index', compact('month_options', 'yearOptions'));
     }
 
     // retrieve the account cust detail rpt(FormRequest $request)
@@ -149,24 +150,28 @@ class DetailRptController extends Controller
         $prev2totalStr = $queryStr;
         $prevmore3totalStr = $queryStr;
         $last3totalStr = $queryStr;
+        $allTotalStr = $queryStr;
 
         $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $carbondate->startOfMonth()->toDateString(), $carbondate->endOfMonth()->toDateString());
         $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
         $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
         $prevmore3totalStr = $this->filterTransactionDeliveryDateRaw($prevmore3totalStr, null, $prev3Months->endOfMonth()->toDateString());
         $last3totalStr = $this->filterTransactionDeliveryDateRaw($last3totalStr, $prev3Months->startOfMonth()->toDateString(), $carbondate->endOfMonth()->toDateString());
+        $allTotalStr = $this->filterTransactionDeliveryDateRaw($allTotalStr, null, $carbondate->toDateString());
 
         $thistotalStr .= " GROUP BY people.id) thistotal";
         $prevtotalStr .= " GROUP BY people.id) prevtotal";
         $prev2totalStr .= " GROUP BY people.id) prev2total";
         $prevmore3totalStr .= " GROUP BY people.id) prevmore3total";
         $last3totalStr .= " GROUP BY people.id) last3total";
+        $allTotalStr .= " GROUP BY people.id) alltotal";
 
         $thistotal = DB::raw($thistotalStr);
         $prevtotal = DB::raw($prevtotalStr);
         $prev2total = DB::raw($prev2totalStr);
         $prevmore3total = DB::raw($prevmore3totalStr);
         $last3total = DB::raw($last3totalStr);
+        $alltotal = DB::raw($allTotalStr);
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -177,13 +182,14 @@ class DetailRptController extends Controller
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
                         ->leftJoin($prevmore3total, 'people.id', '=', 'prevmore3total.person_id')
                         ->leftJoin($last3total, 'people.id', '=', 'last3total.person_id')
+                        ->leftJoin($alltotal, 'people.id', '=', 'alltotal.person_id')
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst',
                                     'transactions.is_gst_inclusive', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
-                                    'thistotal.outstanding AS thistotal', 'prevtotal.outstanding AS prevtotal', 'prev2total.outstanding AS prev2total', 'prevmore3total.outstanding AS prevmore3total', 'last3total.outstanding AS last3total'
+                                    'thistotal.outstanding AS thistotal', 'prevtotal.outstanding AS prevtotal', 'prev2total.outstanding AS prev2total', 'prevmore3total.outstanding AS prevmore3total', 'last3total.outstanding AS last3total', 'alltotal.outstanding AS alltotal'
                                 );
 
         $transactions = $this->searchTransactionDBFilter($transactions, $request);
@@ -202,7 +208,8 @@ class DetailRptController extends Controller
             'prevtotal',
             'prev2total',
             'prevmore3total',
-            'last3total'
+            'last3total',
+            'alltotal'
         ]);
 
         if($pageNum == 'All'){
@@ -536,6 +543,136 @@ class DetailRptController extends Controller
             $transactions = $transactions->get();
         }else{
             $transactions = $transactions->paginate($pageNum);
+        }
+
+        $data = [
+            'totals' => $totals,
+            'transactions' => $transactions
+        ];
+
+        return $data;
+    }
+
+    // retrieve the sales monthly report report api(FormRequest $request)
+    public function getSalesMonthlyReportApi(Request $request)
+    {
+        $thisYearDate = Carbon::today();
+        $lastYearDate = Carbon::today()->subYears(1);
+        $lastTwoYearDate = Carbon::today()->subYears(2);
+        $lastThreeYearDate = Carbon::today()->subYears(3);
+/*
+        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,    */
+
+        $queryStr = "(
+                        SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                            people.profile_id
+                            FROM deals
+                            LEFT JOIN items ON items.id=deals.item_id
+                            LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                            LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN profiles ON people.profile_id=profiles.id
+                            WHERE 1=1 ";
+        $queryStr =  $this->searchTransactionRawFilter($queryStr, $request);
+
+        if($request->is_commission != '') {
+            $queryStr .= " AND items.is_commission='".$request->is_commission."' ";
+        }
+        $thisYearStr = $queryStr;
+        $lastYearStr = $queryStr;
+        $lastTwoYearStr = $queryStr;
+        $lastThreeYearStr = $queryStr;
+
+        $thisYearStr = $this->filterTransactionDeliveryDateRaw($thisYearStr, $thisYearDate->copy()->startOfYear()->toDateString(), $thisYearDate->copy()->endOfYear()->toDateString());
+        $lastYearStr = $this->filterTransactionDeliveryDateRaw($lastYearStr, $lastYearDate->copy()->startOfYear()->toDateString(), $lastYearDate->copy()->endOfYear()->toDateString());
+        $lastTwoYearStr = $this->filterTransactionDeliveryDateRaw($lastTwoYearStr, $lastTwoYearDate->copy()->startOfYear()->toDateString(), $lastTwoYearDate->copy()->endOfYear()->toDateString());
+        $lastThreeYearStr = $this->filterTransactionDeliveryDateRaw($lastThreeYearStr, $lastThreeYearDate->copy()->startOfYear()->toDateString(), $lastThreeYearDate->copy()->endOfYear()->toDateString());
+
+        $thisYearStr .= " GROUP BY people.id) this_year";
+        $lastYearStr .= " GROUP BY people.id) last_year";
+        $lastTwoYearStr .= " GROUP BY people.id) last_two_year";
+        $lastThreeYearStr .= " GROUP BY people.id) last_three_year";
+
+        $thisYear = DB::raw($thisYearStr);
+        $lastYear = DB::raw($lastYearStr);
+        $lastTwoYear = DB::raw($lastTwoYearStr);
+        $lastThreeYear = DB::raw($lastThreeYearStr);
+
+
+        $transactions = DB::table('deals')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin($thisYear, 'people.id', '=', 'this_year.person_id')
+                        ->leftJoin($lastYear, 'people.id', '=', 'last_year.person_id')
+                        ->leftJoin($lastTwoYear, 'people.id', '=', 'last_two_year.person_id')
+                        ->leftJoin($lastThreeYear, 'people.id', '=', 'last_three_year.person_id')
+                        ->select(
+                            'items.is_commission',
+                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                            'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
+                            'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                            'custcategories.name as custcategory',
+                            'this_year.salestotal AS this_year_salestotal',
+                            'last_year.salestotal AS last_year_salestotal',
+                            'last_two_year.salestotal AS last_two_year_salestotal',
+                            'last_three_year.salestotal AS last_three_year_salestotal',
+                            DB::raw('((this_year.salestotal - last_year.salestotal)/ CASE WHEN last_year.salestotal THEN last_year.salestotal ELSE 1 END) * 100 AS this_year_yoy'),
+                            DB::raw('((last_year.salestotal - last_two_year.salestotal)/ CASE WHEN last_two_year.salestotal THEN last_two_year.salestotal ELSE 1 END) * 100 AS last_year_yoy'),
+                            DB::raw('((last_two_year.salestotal - last_three_year.salestotal)/ CASE WHEN last_three_year.salestotal THEN last_three_year.salestotal ELSE 1 END) * 100 AS last_two_year_yoy'),
+                            DB::raw('MONTH(transactions.delivery_date) AS month'),
+                            DB::raw('YEAR(transactions.delivery_date) AS year')
+                        );
+
+        $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
+/*
+        $transactions = $transactions->whereDate('transactions.delivery_date', '=>', $lastTwoYearDate->copy()->startOfYear()->toDateString())
+                                    ->whereDate('transactions.delivery_date', '<=', $thisYearDate->copy()->endOfYear()->toDateString()); */
+
+        $transactions = $transactions->where(function($query) use ($lastThreeYearDate, $thisYearDate) {
+
+                            $query->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$lastThreeYearDate->copy()->startOfYear()->toDateString(), $thisYearDate->copy()->endOfYear()->toDateString()]);
+                        });
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+
+        $transactions = $transactions->where(function($query) {
+            $query->where('this_year.salestotal', '<>', null)
+                ->orWhere('last_year.salestotal', '<>', null)
+                ->orWhere('last_two_year.salestotal', '<>', null);
+        });
+
+        $transactions = $transactions->orderBy('year', 'desc')->orderBy('month', 'asc')
+                            ->groupBy('year', 'month');
+
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        // $totals = $this->calTransactionTotalSql($transactions);
+        $totals = $this->multipleTotalFields($transactions, [
+            'this_year_salestotal',
+            'last_year_salestotal',
+            'last_two_year_salestotal'
+        ]);
+
+        $transactions = $transactions->get();
+        // dd($transactions);
+
+        $dataArr = [];
+        $years = [$thisYearDate->copy()->year, $lastYearDate->copy()->year, $lastTwoYearDate->copy()->year];
+        $months = Month::all();
+        foreach($years as $indexYear => $year) {
+            $dataArr[$indexYear]['year'] = $year;
+
+            foreach($months as $indexMonth => $month) {
+
+                $dataArr[$indexYear][$month->id] = $month;
+            }
         }
 
         $data = [

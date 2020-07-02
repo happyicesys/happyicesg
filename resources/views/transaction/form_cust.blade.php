@@ -247,6 +247,17 @@
         </div>
         @endif
 
+        <div class="row">
+            <div class="col-md-4 form-group">
+                {!! Form::label('merchandiser', 'Merchandiser', ['class'=>'control-label']) !!}
+                {!! Form::select('merchandiser',
+                        [''=>null]+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                        null,
+                        ['class'=>'select form-control', 'disabled'=> $disabled])
+                !!}
+            </div>
+        </div>
+
 
         @if($transaction->is_deliveryorder)
         <div class="row">

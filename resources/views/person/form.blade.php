@@ -2,8 +2,10 @@
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('users', 'App\User')
 @inject('persontags', 'App\Persontag')
 @inject('persontagattaches', 'App\Persontagattach')
+@inject('zones', 'App\Zone')
 
 @php
     $disabled = false;
@@ -175,10 +177,32 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-8">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('custcategory_id', 'Customer Category', ['class'=>'control-label']) !!}
             {!! Form::select('custcategory_id', [null=>''] + $custcategories::orderBy('name')->pluck('name', 'id')->all(), null, ['class'=>'select form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+            {!! Form::select('account_manager',
+                    [''=>null]+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                    null,
+                    ['class'=>'select form-control', 'disabled'=> $disabled])
+            !!}
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
+            {!! Form::select('zone_id',
+                    [''=>null]+ $zones::lists('name', 'id')->all(),
+                    null,
+                    ['class'=>'select form-control', 'disabled'=> $disabled])
+            !!}
         </div>
     </div>
 </div>

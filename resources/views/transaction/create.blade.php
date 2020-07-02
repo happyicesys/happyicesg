@@ -50,6 +50,9 @@
                                             INV #
                                         </th>
                                         <th class="col-md-1 text-center">
+                                            PO#
+                                        </th>
+                                        <th class="col-md-1 text-center">
                                             Status
                                         </th>
                                         <th class="col-md-1 text-center">
@@ -84,6 +87,9 @@
                                             @{{ transaction.id }}
                                         </a>
                                     </td>
+                                    <td class="col-md-1 text-center">
+                                        @{{transaction.po_no}}
+                                    </td>
                                     {{-- status by color --}}
                                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">
                                         @{{ transaction.status }}
@@ -104,7 +110,7 @@
                                         <span style="color: white; background-color: red;" > @{{ transaction.status }} </span>
                                     </td>
                                     {{-- status by color ended --}}
-                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date | delDate: "yyyy-MM-dd"}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.delivery_date }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.driver }}</td>
                                     <td class="col-md-1 text-center">@{{ transaction.total }}</td>
                                     {{-- pay status --}}

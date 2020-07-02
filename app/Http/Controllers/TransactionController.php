@@ -253,6 +253,7 @@ class TransactionController extends Controller
         $request->merge(array('updated_by' => Auth::user()->name));
         $request->merge(['delivery_date' => Carbon::today()]);
         $request->merge(['created_by' => auth()->user()->id]);
+        $request->merge(['merchandiser' => auth()->user()->id]);
 
         // haagen daz user logic, open delivery order
 /*
@@ -1110,7 +1111,7 @@ class TransactionController extends Controller
                 ->select(
                             'people.cust_id', 'people.company',
                             'people.name', 'people.id as person_id', 'transactions.del_postcode',
-                            'transactions.status', 'transactions.delivery_date', 'transactions.driver',
+                            'transactions.status', 'transactions.driver', 'transactions.po_no',
                             'transactions.total_qty', 'transactions.pay_status',
                             'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                             DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
@@ -1120,6 +1121,7 @@ class TransactionController extends Controller
                                                 ELSE transactions.total
                                                 END)
                                             ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
+                            DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
                             'profiles.id as profile_id', 'transactions.gst', 'transactions.is_gst_inclusive', 'transactions.gst_rate',
                              'custcategories.name as custcategory'
                         )

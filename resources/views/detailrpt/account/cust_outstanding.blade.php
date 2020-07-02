@@ -132,10 +132,10 @@
     </div>
     <div class="col-md-4 col-xs-12" style="padding-top: 20px;">
             <div class="col-md-5 col-xs-5">
-                Total Last 3 Mths:
+                Total Outstanding:
             </div>
             <div class="col-md-7 col-xs-7 text-right" style="border: thin black solid">
-                <strong>@{{ totals.last3total ? totals.last3total : 0 | currency: "": 2}}</strong>
+                <strong>@{{ totals.alltotal ? totals.alltotal : 0 | currency: "": 2}}</strong>
             </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
