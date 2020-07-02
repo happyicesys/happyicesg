@@ -387,7 +387,7 @@
                     <td class="col-md-2" style="min-width: 50px;">
                         <div class="checkbox" style="margin-top: 0px;">
                             <span class="col-md-4 pull-left" style="padding-left: 0px;">
-                                <select name="" class="select" ng-model="person.zone_id">
+                                <select name="" class="form-control select" ng-model="person.zone_id">
                                     <option value=""></option>
                                     @foreach($zones::all() as $zone)
                                         <option value="{{$zone->id}}">

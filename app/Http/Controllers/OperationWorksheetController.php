@@ -703,7 +703,7 @@ class OperationWorksheetController extends Controller
                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                             ->select(
                                 'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
-                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address',
+                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.zone_id',
                                 'profiles.id AS profile_id',
                                 'custcategories.id AS custcategory_id',
                                 'items.id AS item_id', 'items.is_inventory'
