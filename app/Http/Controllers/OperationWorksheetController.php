@@ -279,7 +279,7 @@ class OperationWorksheetController extends Controller
 
     public function getAllZoneApi()
     {
-        $zones = Zone::all();
+        $zones = \App\Zone::all();
         return $zones;
     }
 
