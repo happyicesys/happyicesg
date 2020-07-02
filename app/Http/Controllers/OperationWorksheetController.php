@@ -276,6 +276,12 @@ class OperationWorksheetController extends Controller
         $person->save();
     }
 
+    // ops worksheet update zone
+    public function updatePersonZone()
+    {
+        dd(request()->all());
+    }
+
     // return each of the dates in array given start and end (String $startDate, String $endDate)
     private function generateDateRange($startDate, $endDate)
     {
@@ -701,9 +707,10 @@ class OperationWorksheetController extends Controller
                             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                             ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                            ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
                             ->select(
                                 'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
-                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.zone_id',
+                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.zone_id', 'zones.name AS zone_name',
                                 'profiles.id AS profile_id',
                                 'custcategories.id AS custcategory_id',
                                 'items.id AS item_id', 'items.is_inventory'
@@ -820,8 +827,9 @@ class OperationWorksheetController extends Controller
                     ->leftJoin($last_deliver_cancel, 'people.id', '=', 'last_deliver_cancel.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
+                    ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
                     ->select(
-                            'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng',
+                            'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
                             DB::raw('SUBSTRING(people.preferred_days, 3, 1) AS tuesday'),
                             DB::raw('SUBSTRING(people.preferred_days, 5, 1) AS wednesday'),

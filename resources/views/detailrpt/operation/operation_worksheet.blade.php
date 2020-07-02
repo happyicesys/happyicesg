@@ -387,6 +387,16 @@
                     <td class="col-md-2" style="min-width: 50px;">
                         <div class="checkbox" style="margin-top: 0px;">
                             <span class="col-md-4 pull-left" style="padding-left: 0px;">
+                                @{{person.zone_name}}
+                                <ui-select ng-model="person.zone_id" on-select="onPersonZoneChanged(person, $index)">
+                                    <ui-select-match allow-clear="true">
+                                        <span ng-bind="$select.name"></span>
+                                    </ui-select-match>
+                                    <ui-select-choices null-option="removeDriver" repeat="zone in zones | filter: $select.search">
+                                        <div ng-bind-html="zone.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+{{--
                                 <select name="" class="form-control select" ng-model="person.zone_id">
                                     <option value=""></option>
                                     @foreach($zones::all() as $zone)
@@ -394,7 +404,7 @@
                                             {{$zone->name}}
                                         </option>
                                     @endforeach
-                                </select>
+                                </select> --}}
                             </span>
                         </div>
                     </td>

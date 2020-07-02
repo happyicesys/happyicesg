@@ -33,8 +33,10 @@ var app = angular.module('app', [
             sortBy: true,
             sortName: ''
         }
+        $scope.zones = [];
         // init page load
         // getPage(1, true);
+        getZoneOptions();
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -125,7 +127,6 @@ var app = angular.module('app', [
         }
 
         $scope.toggleCheckbox = function(value, person_id, day) {
-
             $http.post('/api/operation/day', {
                 value: value,
                 person_id: person_id,
@@ -147,6 +148,12 @@ var app = angular.module('app', [
         $scope.exportTransactions = function() {
             $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
                 alert('Invoices Created');
+                searchDB();
+            });
+        }
+
+        $scope.onPersonZoneChanged = function(person, index) {
+            $http.post('/api/detailrpt/operation/zone', person).success(function(data) {
                 searchDB();
             });
         }
@@ -291,6 +298,12 @@ var app = angular.module('app', [
 
         function replaceAt(string, index, replace) {
             return string.substring(0, index) + replace + string.substring(index + 1);
+        }
+
+        function getZoneOptions() {
+            $http.get('/api/zones').success(function(data) {
+                $scope.zones = data;
+            });
         }
     }
 
