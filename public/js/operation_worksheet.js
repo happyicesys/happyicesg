@@ -154,7 +154,8 @@ var app = angular.module('app', [
 
         $scope.onPersonZoneChanged = function(person, index) {
             $http.post('/api/detailrpt/operation/zone', person).success(function(data) {
-                searchDB();
+                $scope.people[index]['zone_name'] = person.zone_id['name'];
+                $scope.people[index]['zone_id'] = person.zone_id['id'];
             });
         }
 

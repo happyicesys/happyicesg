@@ -284,9 +284,20 @@ class OperationWorksheetController extends Controller
     }
 
     // ops worksheet update zone
-    public function updatePersonZone()
+    public function updatePersonZone(Request $request)
     {
-        dd(request()->all());
+        $personId = $request->person_id;
+        $zoneId = $request->zone_id['id'];
+        $zoneName = $request->zone_id['name'];
+
+        $person = Person::findOrFail($personId);
+        $person->zone_id = $zoneId;
+        $person->save();
+
+        $request->merge(['zone_id' => $zoneId]);
+        $request->merge(['zone_name' => $zoneName]);
+
+        return $request;
     }
 
     // return each of the dates in array given start and end (String $startDate, String $endDate)
