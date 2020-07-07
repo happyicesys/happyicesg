@@ -212,27 +212,10 @@
                       <span ng-if="search.sortName == 'month' && !search.sortBy" class="fa fa-caret-down"></span>
                       <span ng-if="search.sortName == 'month' && search.sortBy" class="fa fa-caret-up"></span> --}}
                   </th>
-                  <th class="col-md-2 text-center" colspan="2">
-                      {{-- <a href="" ng-click="sortTable('this_year')"> --}}
-                      Current Year
-{{--
-                      <span ng-if="search.sortName == 'this_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'this_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
-                  </th>
-                  <th class="col-md-1 text-center" colspan="2">
-                      {{-- <a href="" ng-click="sortTable('last_year')"> --}}
-                      Last Year
-{{--
-                      <span ng-if="search.sortName == 'last_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'last_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
-                  </th>
-                  <th class="col-md-1 text-center" colspan="2">
-                      {{-- <a href="" ng-click="sortTable('last_two_year')"> --}}
-                      Last 2 Years
-{{--
-                      <span ng-if="search.sortName == 'last_two_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'last_two_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
-                  </th>
+                <th ng-repeat="transaction in alldata | limitTo:3" class="col-md-2 text-center" colspan="2">
+                    @{{transaction.title}} <br>
+                    @{{transaction.year}}
+                </th>
               </tr>
 
               <tr style="background-color: #DDFDF8">

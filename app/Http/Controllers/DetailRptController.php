@@ -556,10 +556,12 @@ class DetailRptController extends Controller
     // retrieve the sales monthly report report api(FormRequest $request)
     public function getSalesMonthlyReportApi(Request $request)
     {
-        $thisYearDate = Carbon::today();
-        $lastYearDate = Carbon::today()->subYears(1);
-        $lastTwoYearDate = Carbon::today()->subYears(2);
-        $lastThreeYearDate = Carbon::today()->subYears(3);
+        $thisYearDate = Carbon::createFromFormat('Y', $request->current_year);
+        $lastYearDate = $thisYearDate->copy()->subYears(1);
+        $lastTwoYearDate = $thisYearDate->copy()->subYears(2);
+        $lastThreeYearDate = $thisYearDate->copy()->subYears(3);
+
+        // dd($thisYearDate->year, $lastYearDate->year, $lastTwoYearDate->year, $lastThreeYearDate->year);
 /*
         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
@@ -722,7 +724,7 @@ class DetailRptController extends Controller
                     $lastSales = $dataArr[$index + 1]['data'][$monthIndex]['sales'];
                 }
                 $yoy = ($thisSales - $lastSales)/ ($lastSales != 0 ? $lastSales : 1) * 100;
-                $yoyTotalYear += $yoyTotalYear;
+                $yoyTotalYear += $yoy;
 
                 if($yoy == -100) {
                     $yoy = '';
