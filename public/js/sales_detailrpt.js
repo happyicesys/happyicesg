@@ -295,7 +295,7 @@ var app = angular.module('app', [
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
             profile_id: '',
-            current_month: moment().year(),
+            current_year: moment().format('YYYY'),
             id_prefix: '',
             cust_id: '',
             company: '',
@@ -355,6 +355,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
+            $scope.search.current_year;
             $http.post('/api/detailrpt/sales/monthly-report?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.transactions.data){
                     $scope.alldata = data.transactions.data;
