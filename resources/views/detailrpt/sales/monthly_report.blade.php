@@ -199,40 +199,44 @@
       </div>
   </div>
 
-      <div class="table-responsive" id="exportable_custdetail" style="padding-top: 20px;">
+      <div class="table-responsive" id="exportable_monthlyreport" style="padding-top: 20px;">
           <table class="table table-list-search table-hover table-bordered">
               <tr style="background-color: #DDFDF8">
                   <th class="col-md-1 text-center">
                       #
                   </th>
                   <th class="col-md-1 text-center">
-                      <a href="" ng-click="sortTable('month')">
+                      {{-- <a href="" ng-click="sortTable('month')"> --}}
                       Month
+{{--
                       <span ng-if="search.sortName == 'month' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'month' && search.sortBy" class="fa fa-caret-up"></span>
+                      <span ng-if="search.sortName == 'month' && search.sortBy" class="fa fa-caret-up"></span> --}}
                   </th>
                   <th class="col-md-2 text-center" colspan="2">
-                      <a href="" ng-click="sortTable('this_year')">
+                      {{-- <a href="" ng-click="sortTable('this_year')"> --}}
                       Current Year
+{{--
                       <span ng-if="search.sortName == 'this_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'this_year' && search.sortBy" class="fa fa-caret-up"></span>
+                      <span ng-if="search.sortName == 'this_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
                   </th>
                   <th class="col-md-1 text-center" colspan="2">
-                      <a href="" ng-click="sortTable('last_year')">
+                      {{-- <a href="" ng-click="sortTable('last_year')"> --}}
                       Last Year
+{{--
                       <span ng-if="search.sortName == 'last_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'last_year' && search.sortBy" class="fa fa-caret-up"></span>
+                      <span ng-if="search.sortName == 'last_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
                   </th>
                   <th class="col-md-1 text-center" colspan="2">
-                      <a href="" ng-click="sortTable('last_two_year')">
+                      {{-- <a href="" ng-click="sortTable('last_two_year')"> --}}
                       Last 2 Years
+{{--
                       <span ng-if="search.sortName == 'last_two_year' && !search.sortBy" class="fa fa-caret-down"></span>
-                      <span ng-if="search.sortName == 'last_two_year' && search.sortBy" class="fa fa-caret-up"></span>
+                      <span ng-if="search.sortName == 'last_two_year' && search.sortBy" class="fa fa-caret-up"></span> --}}
                   </th>
               </tr>
 
               <tr style="background-color: #DDFDF8">
-                <th class="col-md-1 text-center">
+                <th class="col-md-1 text-center" colspan="2">
                 </th>
                 <th class="col-md-1 text-center">
                     Amt (S$)
@@ -255,54 +259,31 @@
               </tr>
 
               <tbody>
-                  <tr ng-repeat="transaction in alldata | orderBy:sortType:sortReverse">
-                      <td class="col-md-1 text-center">
-                          @{{ $index + indexFrom }}
-                      </td>
-                      <td class="col-md-1 text-center">
-                          @{{ transaction.month }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.this_month_amount | currency: "": 2 }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.this_month_yoy | currency: "": 2 }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.last_month_amount | currency: "": 2 }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.last_month_yoy | currency: "": 2  }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.last_two_month_amount | currency: "": 2 }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ transaction.last_two_month_yoy| currency: "": 2 }}
-                      </td>
+                  <tr ng-repeat="month in months">
+                    <td class="col-md-1 text-center">
+                        @{{month.id}}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{month.short_name}}
+                    </td>
+                    <td ng-repeat-start="transaction in alldata | limitTo:3" class="col-md-1 text-right">
+                        @{{transaction.data[month.id].sales | currency: "": 2 }}
+                    </td>
+                    <td ng-repeat-end class="col-md-1 text-right">
+                        @{{transaction.data[month.id].yoy | currency: "": 2 }}
+                    </td>
                   </tr>
+
                   <tr ng-if="alldata || alldata.length > 0">
                       <th class="col-md-1 text-center" colspan="2">
                         Total
                       </th>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.this_year_amount }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.this_year_yoy }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.last_year_amount }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.last_year_yoy }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.last_two_year_amount }}
-                      </td>
-                      <td class="col-md-1 text-right">
-                        @{{ totals.last_two_year_yoy }}
-                      </td>
+                      <th ng-repeat-start="transaction in alldata | limitTo:3" class="col-md-1 text-right">
+                          @{{transaction.salesTotalYear | currency: "": 2}}
+                      </th>
+                      <th ng-repeat-end class="col-md-1 text-right">
+                        @{{transaction.yoyTotalYear | currency: "": 2}}
+                      </th>
                   </tr>
                   <tr ng-if="!alldata || alldata.length == 0">
                       <td colspan="14" class="text-center">No Records Found</td>

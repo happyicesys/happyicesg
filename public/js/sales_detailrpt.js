@@ -369,7 +369,7 @@ var app = angular.module('app', [
                     $scope.indexFrom = 1;
                     $scope.indexTo = data.transactions.length;
                 }
-                $scope.totals = data.totals;
+                $scope.months = data.months;
                 $scope.All = data.transactions.length;
                 $scope.spinner = false;
             });

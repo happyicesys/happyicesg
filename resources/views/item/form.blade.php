@@ -104,17 +104,23 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_id', 'ID', ['class'=>'control-label']) !!}
                 {!! Form::text('product_id', null, ['class'=>'form-control']) !!}
             </div>
         </div>
 
-        <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group">
                 {!! Form::label('name', 'Product', ['class'=>'control-label']) !!}
                 {!! Form::text('name', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('barcode', 'Barcode', ['class'=>'control-label']) !!}
+                {!! Form::text('barcode', null, ['class'=>'form-control']) !!}
             </div>
         </div>
     </div>

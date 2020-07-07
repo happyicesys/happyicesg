@@ -27,7 +27,7 @@ var app = angular.module('app', [
             color: '',
             del_postcode: '',
             preferred_days: '',
-            area_groups: '',
+            zones: '',
             tags: [],
             pageNum: 'All',
             sortBy: true,

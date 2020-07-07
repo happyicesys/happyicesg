@@ -140,20 +140,13 @@
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('area_groups',
-                    [
-                        '1' => 'West',
-                        '2' => 'East',
-                        '6' => 'North',
-                        '3' => 'Others',
-                        '4' => 'Sup',
-                        '5' => 'Ops'
-                    ],
+                {!! Form::label('zones', 'Zone', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('zones',
+                    $zones::lists('name', 'id')->all(),
                     null,
                     [
                         'class'=>'selectmultiple form-control',
-                        'ng-model'=>'search.area_groups',
+                        'ng-model'=>'search.zones',
                         'multiple' => 'multiple'
                     ])
                 !!}

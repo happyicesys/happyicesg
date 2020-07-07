@@ -568,6 +568,7 @@ class OperationWorksheetController extends Controller
         $del_postcode = request('del_postcode');
         $preferred_days = request('preferred_days');
         $area_groups = request('area_groups');
+        $zones = request('zones');
         $tags = request('tags');
         // die(var_dump($preferred_days));
 
@@ -702,6 +703,13 @@ class OperationWorksheetController extends Controller
                     }
                 }
             });
+        }
+
+        if($zones) {
+            if (count($zones) == 1) {
+                $zones = [$zones];
+            }
+            $people = $people->whereIn('people.zone_id', $zones);
         }
 
         if($tags) {
