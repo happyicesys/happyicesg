@@ -710,29 +710,30 @@ class DetailRptController extends Controller
 
         // calculate yoy
         foreach($dataArr as $index => $data) {
-            $salesTotalYear = 0;
-            $yoyTotalYear = 0;
+            $thisSalesTotalYear = 0;
+            $lastSalesTotalYear = 0;
             foreach($dataArr[$index]['data'] as $monthIndex => $month) {
                 $yoy = 0;
                 $thisSales = 0;
                 $lastSales = 0;
                 if(isset($month['sales'])) {
                     $thisSales = $month['sales'];
-                    $salesTotalYear += $thisSales;
+                    $thisSalesTotalYear += $thisSales;
                 }
                 if(isset($dataArr[$index + 1]['data'][$monthIndex]['sales'])) {
                     $lastSales = $dataArr[$index + 1]['data'][$monthIndex]['sales'];
+                    $lastSalesTotalYear += $lastSales;
                 }
                 $yoy = ($thisSales - $lastSales)/ ($lastSales != 0 ? $lastSales : 1) * 100;
-                $yoyTotalYear += $yoy;
 
                 if($yoy == -100) {
                     $yoy = '';
                 }
                 $dataArr[$index]['data'][$monthIndex]['yoy'] = $yoy;
             }
-            $dataArr[$index]['salesTotalYear'] = $salesTotalYear;
-            $dataArr[$index]['yoyTotalYear'] = $yoyTotalYear;
+            $dataArr[$index]['thisSalesTotalYear'] = $thisSalesTotalYear;
+            $thisYoyTotalYear = ($thisSalesTotalYear - $lastSalesTotalYear)/ ($lastSalesTotalYear != 0 ? $lastSalesTotalYear : 1) * 100;
+            $dataArr[$index]['thisYoyTotalYear'] = $thisYoyTotalYear;
         }
         $data = [
             'transactions' => $dataArr,

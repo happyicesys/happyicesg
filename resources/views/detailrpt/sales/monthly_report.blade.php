@@ -262,10 +262,10 @@
                         Total
                       </th>
                       <th ng-repeat-start="transaction in alldata | limitTo:3" class="col-md-1 text-right">
-                          @{{transaction.salesTotalYear | currency: "": 2}}
+                          @{{transaction.thisSalesTotalYear | currency: "": 2}}
                       </th>
                       <th ng-repeat-end class="col-md-1 text-right">
-                        @{{transaction.yoyTotalYear | currency: "": 2}}
+                        @{{transaction.thisYoyTotalYear | currency: "": 2}}
                       </th>
                   </tr>
                   <tr ng-if="!alldata || alldata.length == 0">
