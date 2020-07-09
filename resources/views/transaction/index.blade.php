@@ -65,6 +65,12 @@
                     @if(!auth()->user()->hasRole('hd_user'))
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
+                        <label class="pull-right">
+                            <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
+                            <span style="margin-top: 5px; margin-right: 5px;">
+                                Strict
+                            </span>
+                        </label>
                         {!! Form::text('id', null,
                                                     [
                                                         'class'=>'form-control input-sm',

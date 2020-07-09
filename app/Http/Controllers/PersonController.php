@@ -790,6 +790,7 @@ class PersonController extends Controller
     private function searchPeopleDBFilter($people, $request)
     {
         $cust_id = $request->cust_id;
+        $strictCustId = $request->strictCustId;
         $custcategory = $request->custcategory;
         $company = $request->company;
         $contact = $request->contact;
@@ -801,7 +802,11 @@ class PersonController extends Controller
         $zoneId = $request->zone_id;
 
         if ($cust_id) {
-            $people = $people->where('people.cust_id', 'LIKE', $cust_id . '%');
+            if($strictCustId) {
+                $people = $people->where('people.cust_id', 'LIKE', $cust_id . '%');
+            }else {
+                $people = $people->where('people.cust_id', 'LIKE', '%'. $cust_id . '%');
+            }
         }
         if ($custcategory) {
             if (count($custcategory) == 1) {

@@ -40,6 +40,12 @@
                     <div class="row">
                         <div class="form-group col-md-2 col-sm-4 col-xs-12">
                             {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                            <label class="pull-right">
+                                <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB()">
+                                <span style="margin-top: 5px; margin-right: 5px;">
+                                    Strict
+                                </span>
+                            </label>
                             {!! Form::text('cust_id', null,
                                                             [
                                                                 'class'=>'form-control input-sm',

@@ -2602,7 +2602,11 @@ class TransactionController extends Controller
             $transactions = $transactions->whereIn('transactions.po_no', $po_row);
         }
         if(request('cust_id')){
-            $transactions = $transactions->where('people.cust_id', 'LIKE', request('cust_id').'%');
+            if(request('strictCustId')) {
+                $transactions = $transactions->where('people.cust_id', 'LIKE', request('cust_id').'%');
+            }else {
+                $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.request('cust_id').'%');
+            }
         }
         if(request('company')){
             $com = request('company');

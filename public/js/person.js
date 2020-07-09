@@ -17,6 +17,7 @@ function personController($scope, $http){
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
         cust_id: '',
+        strictCustId: '',
         custcategory: '',
         company: '',
         contact: '',
