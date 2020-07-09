@@ -1,3 +1,4 @@
+@inject('banks', 'App\Bank')
 @inject('payterm', 'App\Payterm')
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
@@ -267,6 +268,25 @@
                 </option>
             </select> --}}
 
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('bank_id', 'Bank', ['class'=>'control-label']) !!}
+            {!! Form::select('bank_id',
+                    [''=>null]+ $banks::lists('name', 'id')->all(),
+                    null,
+                    ['class'=>'select form-control', 'disabled'=> $disabled])
+            !!}
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('account_number', 'Bank Account Number', ['class'=>'control-label']) !!}
+            {!! Form::text('account_number', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 </div>
