@@ -370,6 +370,7 @@ Route::post('/api/transaction/sequence/{id}', 'TransactionController@updateTrans
 Route::post('/api/transaction/batch/jobdriver', 'TransactionController@batchJobAssignDriver');
 Route::get('/transaction/jobassign', 'TransactionController@jobAssignIndex');
 Route::post('/api/transaction/jobassign', 'TransactionController@getJobAssignData');
+Route::post('/api/transaction/jobassign/pdf', 'TransactionController@getJobAssignPdf');
 Route::post('/api/transaction/jobassign/sortdrivertable', 'TransactionController@sortJobAssignDriverTable');
 Route::post('/api/transaction/batch/deliverydate', 'TransactionController@batchUpdateDeliveryDate');
 Route::post('/api/transaction/batch/deliverydate/jobassign', 'TransactionController@batchUpdateDeliveryDateJobAssign');

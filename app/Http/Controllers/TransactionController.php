@@ -206,6 +206,25 @@ class TransactionController extends Controller
         return $collections;
     }
 
+    public function getJobAssignPdf(Request $request)
+    {
+        // dd($request->all());
+        $now = Carbon::now()->format('d-m-Y H:i');
+        $data = [];
+        $data = $this->getJobAssignData();
+        $data['request'] = $request->all();
+        // dd($data['grand_delivered_total'], $data['drivers']);
+        $filename = 'JobAssign_' . $now . '.pdf';
+        $pdf = PDF::loadView('transaction.jobassign_pdf', $data);
+        $pdf->setPaper('a4');
+        $pdf->setOption('enable-javascript', true);
+        $pdf->setOption('javascript-delay', 8000);
+        $pdf->setOption('enable-smart-shrinking', true);
+        $pdf->setOption('no-stop-slow-scripts', true);
+
+        return $pdf->download($filename);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -457,7 +457,13 @@ Job Assign
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                             <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                         </button>
+
+                        <button class="btn btn-sm btn-primary" ng-click="onExportPdfClicked($event)">
+                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                            Export PDF
+                        </button>
                         @endif
+                        <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
                     </div>
 
                 </div>

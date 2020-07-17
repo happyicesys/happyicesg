@@ -196,6 +196,34 @@ var app = angular.module('app', [
             $scope.driverOptionShowing = !$scope.driverOptionShowing;
         }
 
+        $scope.onExportPdfClicked = function(event) {
+            $scope.spinner = true;
+            event.preventDefault();
+            $http({
+                method: 'POST',
+                responseType: 'arraybuffer',
+                url: '/api/transaction/jobassign/pdf',
+                data: $scope.search
+            })
+            .then(function(response) {
+                var file = new Blob([response.data], {
+                  type: 'application/pdf'
+                });
+                var fileURL = URL.createObjectURL(file);
+                var a = document.createElement('a');
+                var now = Date.now();
+                a.href = fileURL;
+                a.target = '_blank';
+                a.download = 'JobAssignPdf' + now + '.pdf';
+                document.body.appendChild(a);
+                a.click();
+                $scope.spinner = false;
+              }, function(response) {
+                alert('Failed, please try again');
+                $scope.spinner = false;
+              });
+        }
+
         // driver batch button dropdown
         $scope.onBatchFunctionClicked = function(event) {
             event.preventDefault();

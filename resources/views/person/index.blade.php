@@ -160,9 +160,10 @@
                         @endif
                     </div>
 
-                <div class="row" style="padding-left: 15px; padding-top: 20px;">
+                <div class="row" style="padding-top: 20px;">
                     <div class="col-md-4 col-xs-12">
                         <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                     </div>
                     <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
                         <div class="row" style="padding-right:18px;">
@@ -294,6 +295,25 @@
                 <div class="panel-footer">
                     <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                 </div>
+        </div>
+    </div>
+
+
+    <div id="mapModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Plotted Map</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="map"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
