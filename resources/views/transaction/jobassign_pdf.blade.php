@@ -181,7 +181,7 @@
                                     {{ $transaction->contact }}
                                 </td>
                                 <td class="col-xs-1 text-center">
-                                    {{ $transaction->is_important ?? $transaction->transremark }}
+                                    {{ $transaction->transremark }}
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->operation_note }}
