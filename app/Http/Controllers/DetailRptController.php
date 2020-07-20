@@ -358,7 +358,7 @@ class DetailRptController extends Controller
         $request->merge(array('delivery_to' => $delivery_to));
 
         $thistotalStr = "(
-                        SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                        SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                         ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
@@ -474,6 +474,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
@@ -485,7 +486,7 @@ class DetailRptController extends Controller
                         ->select(
                             'items.is_commission',
                             'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                            'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
+                            'profiles.name as profile_name', 'profiles.id as profile_id', 'account_manager.name AS account_manager_name', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
                             'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal', 'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal', 'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal', 'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal', 'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal'
@@ -1330,7 +1331,8 @@ class DetailRptController extends Controller
                         })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                    'profiles.name as profile_name', 'profiles.id as profile_id', 'transactions.gst', 'transactions.gst_rate',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id',
+                                    'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
                                     'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
@@ -2480,6 +2482,7 @@ class DetailRptController extends Controller
         $is_gst_inclusive = $request->is_gst_inclusive;
         $gst_rate = $request->gst_rate;
         $is_commission = $request->is_commision;
+        $account_manager = $request->account_manager;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -2574,6 +2577,10 @@ class DetailRptController extends Controller
             $transactions = $transactions->where('items.is_commission', $is_commission);
         }
 
+        if($account_manager) {
+            $transactions = $transactions->where('people.account_manager', $account_manager);
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -2600,6 +2607,7 @@ class DetailRptController extends Controller
         $is_commission = $request->is_commission;
         $franchisee_id = $request->franchisee_id;
         $is_gst_inclusive = $request->is_gst_inclusive;
+        $account_manager = $request->account_manager;
         $gst_rate = $request->gst_rate;
         $sortName = $request->sortName;
         $sortBy = $request->sortBy;
@@ -2670,6 +2678,9 @@ class DetailRptController extends Controller
         }
         if($gst_rate) {
             $query .= " AND transactions.gst_rate='".$gst_rate."' ";
+        }
+        if($account_manager) {
+            $query .= " AND people.account_manager='".$account_manager."' ";
         }
 /*
         if($sortName){

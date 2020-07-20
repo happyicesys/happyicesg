@@ -29,6 +29,7 @@ var app = angular.module('app', [
             preferred_days: '',
             zones: '',
             tags: [],
+            account_manager: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''

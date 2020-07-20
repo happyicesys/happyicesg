@@ -570,6 +570,7 @@ class OperationWorksheetController extends Controller
         $area_groups = request('area_groups');
         $zones = request('zones');
         $tags = request('tags');
+        $account_manager = request('account_manager');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -719,6 +720,10 @@ class OperationWorksheetController extends Controller
             $people = $people->whereIn('persontags.id', $tags);
         }
 
+        if($account_manager) {
+            $people = $people->where('people.account_manager', $account_manager);
+        }
+
         return $people;
     }
 
@@ -854,6 +859,7 @@ class OperationWorksheetController extends Controller
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
+                    ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
@@ -869,7 +875,7 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
                             DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
                             DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
-                            'people.preferred_days', 'people.area_group', 'people.zone_id',
+                            'people.preferred_days', 'people.area_group', 'people.zone_id', 'account_manager.name AS account_manager_name',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',

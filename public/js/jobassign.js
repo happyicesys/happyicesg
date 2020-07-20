@@ -38,6 +38,7 @@ var app = angular.module('app', [
             requested_from: $scope.requestfrom,
             requested_to: $scope.requestto,
             driver: '',
+            selected_driver: '',
             custcategory: [],
             exclude_custcategory: '',
             p_category: '',
@@ -196,9 +197,10 @@ var app = angular.module('app', [
             $scope.driverOptionShowing = !$scope.driverOptionShowing;
         }
 
-        $scope.onExportPdfClicked = function(event) {
+        $scope.onExportPdfClicked = function(event, driverName) {
             $scope.spinner = true;
             event.preventDefault();
+            $scope.search.driver = driverName;
             $http({
                 method: 'POST',
                 responseType: 'arraybuffer',
@@ -222,6 +224,7 @@ var app = angular.module('app', [
                 alert('Failed, please try again');
                 $scope.spinner = false;
               });
+
         }
 
         // driver batch button dropdown

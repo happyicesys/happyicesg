@@ -2,6 +2,7 @@
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('users', 'App\User')
 
 @extends('template')
 @section('title')

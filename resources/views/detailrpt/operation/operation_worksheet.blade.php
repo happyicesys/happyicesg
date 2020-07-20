@@ -1,4 +1,5 @@
 @inject('persontags', 'App\Persontag')
+@inject('users', 'App\User')
 @inject('zones', 'App\Zone')
 
 <div ng-app="app" ng-controller="operationWorksheetController" ng-cloak>
@@ -218,6 +219,18 @@
                 @endforeach
             </select>
         </div>
+        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+            {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+            {!! Form::select('account_manager',
+                    [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.account_manager',
+                        'ng-change'=>'searchDB()'
+                    ])
+            !!}
+        </div>
     </div>
 </div>
 
@@ -275,6 +288,12 @@
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('account_manager')">
+                    Acc Manager
+                    <span ng-if="search.sortName == 'account_manager' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('custcategory')">
                     Cat
                     <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -323,6 +342,9 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ person.custcategory }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ person.account_manager }}
                     </td>
                     <td class="col-md-2">
                         {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 150px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}

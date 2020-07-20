@@ -147,6 +147,7 @@
     <div class="row">
         <div class="col-md-4 col-sm-6">
             <div class="form-group">
+{{--
                 {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                 <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
                     <option value="">All</option>
@@ -156,7 +157,17 @@
                         <option value="No">Inactive</option>
                         <option value="Pending">Pending</option>
                     @endif
-                </select>
+                </select> --}}
+                {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+                {!! Form::select('account_manager',
+                        [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.account_manager',
+                            'ng-change'=>'searchDB()'
+                        ])
+                !!}
             </div>
         </div>
         <div class="col-md-4 col-sm-6">
@@ -236,6 +247,12 @@
                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <th class="col-md-2 text-center">
+                    <a href="" ng-click="sortTable('people.account_manager')">
+                    Acc Manager
+                    <span ng-if="search.sortName == 'account_manager' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('custcategory')">
                     Category
@@ -272,7 +289,7 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-                <th colspan="4"></th>
+                <th colspan="5"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left">
                         Trans:
@@ -360,6 +377,9 @@
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{transaction.account_manager_name}}
                     </td>
                     <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     <td class="col-md-1 text-right">

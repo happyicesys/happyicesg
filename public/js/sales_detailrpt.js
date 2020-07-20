@@ -29,6 +29,7 @@ var app = angular.module('app', [
             is_commission: '0',
             is_gst_inclusive: '',
             gst_rate: '',
+            account_manager: '',
             pageNum: 100,
             sortName: '',
             sortBy: true

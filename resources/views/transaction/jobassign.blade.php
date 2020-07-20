@@ -575,6 +575,11 @@ Job Assign
                                     </button>
                                 @endif
 {{--
+                                <button class="btn btn-xs btn-primary" ng-click="onExportPdfClicked($event, driver.name)">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    Export PDF
+                                </button> --}}
+{{--
                                 <span class="pull-right">
 
                                 </span> --}}
