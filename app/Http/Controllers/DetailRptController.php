@@ -484,7 +484,7 @@ class DetailRptController extends Controller
                         ->leftJoin($prev2commtotal, 'people.id', '=', 'prev2commtotal.person_id')
                         ->leftJoin($prevyearcommtotal, 'people.id', '=', 'prevyearcommtotal.person_id')
                         ->select(
-                            'items.is_commission',
+                            'items.is_commission', 'items.product_id', 'items.name AS item_name',
                             'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                             'profiles.name as profile_name', 'profiles.id as profile_id', 'account_manager.name AS account_manager_name', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
@@ -758,25 +758,33 @@ class DetailRptController extends Controller
         $prevYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subYear();
         $profile_id = $request->profile_id;
 
-        $thistotal = "(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS amount, ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id FROM deals
+        $thistotal = "(SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS amount, ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id AS id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
                         AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'";
-        $prevqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+        $prevqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
+                    FROM deals
+                    LEFT JOIN items ON items.id=deals.item_id
                     LEFT JOIN transactions ON transactions.id=deals.transaction_id
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
                     WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
-        $prev2qty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+        $prev2qty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
+                    FROM deals
+                    LEFT JOIN items ON items.id=deals.item_id
                     LEFT JOIN transactions ON transactions.id=deals.transaction_id
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
                     WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
-        $prevyrqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id FROM deals
+        $prevyrqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
@@ -1275,6 +1283,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('thistotal.profile_id', '=', 'profiles.id');
@@ -1331,6 +1340,7 @@ class DetailRptController extends Controller
                         })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'account_manager.name AS account_manager_name',
                                     'profiles.name as profile_name', 'profiles.id as profile_id',
                                     'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
@@ -2483,6 +2493,9 @@ class DetailRptController extends Controller
         $gst_rate = $request->gst_rate;
         $is_commission = $request->is_commision;
         $account_manager = $request->account_manager;
+        $product_id = $request->product_id;
+        $item_name = $request->item_name;
+        $item_id = $request->item_id;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -2581,6 +2594,18 @@ class DetailRptController extends Controller
             $transactions = $transactions->where('people.account_manager', $account_manager);
         }
 
+        if($product_id) {
+            $transactions = $transactions->where('items.product_id', 'LIKE', '%'.$product_id.'%');
+        }
+
+        if($item_name) {
+            $transactions = $transactions->where('items.name', 'LIKE', '%'.$item_name.'%');
+        }
+
+        if($item_id) {
+            $transactions = $transactions->where('items.id', $item_id);
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -2609,6 +2634,9 @@ class DetailRptController extends Controller
         $is_gst_inclusive = $request->is_gst_inclusive;
         $account_manager = $request->account_manager;
         $gst_rate = $request->gst_rate;
+        $product_id = $request->product_id;
+        $item_name = $request->item_name;
+        $item_id = $request->item_id;
         $sortName = $request->sortName;
         $sortBy = $request->sortBy;
 
@@ -2681,6 +2709,15 @@ class DetailRptController extends Controller
         }
         if($account_manager) {
             $query .= " AND people.account_manager='".$account_manager."' ";
+        }
+        if($product_id) {
+            $query .= " AND items.product_id LIKE '%".$product_id."%' ";
+        }
+        if($item_name) {
+            $query .= " AND items.name LIKE '%".$item_name."%' ";
+        }
+        if($item_id) {
+            $query .= " AND items.id='".$item_id."' ";
         }
 /*
         if($sortName){
@@ -2841,6 +2878,7 @@ class DetailRptController extends Controller
         $product_name = $request->product_name;
         $profile_id = $request->profile_id;
         $status = $request->status;
+        $item_id = $request->item_id;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -2859,6 +2897,9 @@ class DetailRptController extends Controller
             }else {
                 $items = $items->where('transactions.status', $status);
             }
+        }
+        if($item_id) {
+            $items = $items->where('items.id', $item_id);
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');

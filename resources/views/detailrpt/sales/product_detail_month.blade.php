@@ -44,29 +44,15 @@
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('product_id', 'Product ID', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('product_id', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.product_id',
-                                                    'placeholder'=>'Product ID',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('product_name', 'Product Name', ['class'=>'control-label search-title']) !!}
-                {!! Form::text('product_name', null,
-                                                [
-                                                    'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.product_name',
-                                                    'placeholder'=>'Product Name',
-                                                    'ng-change'=>'searchDB()',
-                                                    'ng-model-options'=>'{ debounce: 500 }'
-                                                ])
+                {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
+                {!! Form::select('item_id',
+                        [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.item_id',
+                            'ng-change'=>'searchDB()'
+                        ])
                 !!}
             </div>
         </div>
@@ -82,8 +68,6 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-4 col-sm-6">
             <div class="form-group">
                 {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
@@ -98,6 +82,9 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div class="row">
+
     </div>
 </div>
 

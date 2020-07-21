@@ -30,6 +30,8 @@ var app = angular.module('app', [
             is_gst_inclusive: '',
             gst_rate: '',
             account_manager: '',
+            product_id: '',
+            item_name: '',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -121,6 +123,7 @@ var app = angular.module('app', [
             is_commission: '0',
             is_gst_inclusive: '',
             gst_rate: '',
+            item_id: '',
             pageNum: 100,
             sortBy: true,
             sortName: '',
@@ -216,6 +219,7 @@ var app = angular.module('app', [
             status: 'Delivered',
             person_active: [],
             is_commission: '0',
+            item_id: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -307,6 +311,11 @@ var app = angular.module('app', [
             is_commission: '0',
             is_gst_inclusive: '',
             gst_rate: '',
+            account_manager: '',
+            item_id: '',
+            product_id: '',
+            item_name: '',
+            item_id: '',
             pageNum: 100,
             sortName: '',
             sortBy: true
