@@ -306,7 +306,11 @@
                 @endif
                 @if($operation_access)
                     <li class="{{ Request::segment(1) == 'operation' ? 'active' : '' }}">
-                        <a href="/operation"><i class="fa fa-sticky-note-o"></i> Ops Worksheet</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sticky-note-o"></i> Operations <i class="fa fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="text-left"><a href="/operation/worksheet"> Worksheet</a></li>
+                            <li class="text-left"><a href="/operation/merchandiser"> Merchandiser</a></li>
+                        </ul>
                     </li>
                 @endif
 

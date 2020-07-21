@@ -170,7 +170,8 @@ Route::post('/api/detailrpt/operation', 'OperationWorksheetController@getOperati
 Route::post('/api/detailrpt/operation/note/{person_id}', 'OperationWorksheetController@updateOperationNoteApi');
 Route::post('/api/operation/day', 'OperationWorksheetController@updateWeekDay');
 Route::post('/api/operation/area', 'OperationWorksheetController@updateAreaGroup');
-Route::get('/operation', 'OperationWorksheetController@getOperationWorksheetIndex');
+Route::get('/operation/worksheet', 'OperationWorksheetController@getOperationWorksheetIndex');
+Route::get('/operation/merchandiser', 'OperationWorksheetController@getMerchandiserIndex');
 
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');

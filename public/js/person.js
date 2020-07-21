@@ -57,6 +57,12 @@ function personController($scope, $http){
         getPage(1, false)
     };
 
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage(1);
+    }
+
       // when hitting search button
     $scope.searchDB = function(){
         $scope.sortName = '';
