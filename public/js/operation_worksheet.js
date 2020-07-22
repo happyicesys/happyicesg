@@ -476,8 +476,7 @@ var app = angular.module('app', [
             event.preventDefault();
             $http.post('/api/outletvisits/person/' + person.person_id).success(function(data) {
                 $scope.form = {
-                    person: person,
-                    outletvisits: data,
+                    person: data,
                     date: $scope.todayDate,
                     day: $scope.todayDay,
                     outcome: 1
