@@ -472,6 +472,7 @@ var app = angular.module('app', [
 
         $scope.onOutletVisitClicked = function(event, person) {
             event.preventDefault();
+            console.log(person)
             $scope.form = {
                 person: person,
                 date: $scope.todayDate,
