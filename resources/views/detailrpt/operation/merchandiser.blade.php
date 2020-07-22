@@ -363,7 +363,7 @@
                                 <td class="col-md-1 text-center" style="min-width: 75px; font-size: 12px;">
                                     <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
-                                        @{{person.outletvisit_date}}<br>
+                                        @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
                                         @{{person.outletvisit_day}}<br>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -414,7 +414,7 @@
                                         @{{person.ops_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
+                                <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index); 'color': getBackgroundColor(alldata, $parent.$index, $index) == 'Green' ? 'white' : 'black';}">
 
                                     <span ng-if="alldata.items">
                                         <span ng-repeat="item in alldata.items">
