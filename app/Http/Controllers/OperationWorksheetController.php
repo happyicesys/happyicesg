@@ -833,8 +833,8 @@ class OperationWorksheetController extends Controller
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
-                    ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
-/*                     ->select(
+                    ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
+                    ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
                             DB::raw('SUBSTRING(people.preferred_days, 3, 1) AS tuesday'),
@@ -862,7 +862,7 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color')
-                    ); */
+                    );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
