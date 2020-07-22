@@ -812,10 +812,12 @@ class PersonController extends Controller
     public function destroyOutletVisitPersonApi($outletVisitId)
     {
         $outletVisit = OutletVisit::findOrFail($outletVisitId);
-        $person = $outletVisit->person;
+        $person = Person::with(['outletVisits' => function($query) {
+            $query->latest('date');
+        }, 'outletVisits.creator'])->find($outletVisit->person->id);
         $outletVisit->delete();
 
-        return $person->outletVisits;
+        return $person;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
