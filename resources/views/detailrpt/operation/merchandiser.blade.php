@@ -12,31 +12,6 @@
 @stop
 @section('content')
 
-<style>
-    .table-responsive::-webkit-scrollbar {
-    -webkit-appearance: none;
-    }
-
-    .table-responsive::-webkit-scrollbar:vertical {
-        width: 12px;
-    }
-
-    .table-responsive::-webkit-scrollbar:horizontal {
-        height: 12px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, .5);
-        border-radius: 10px;
-        border: 2px solid #ffffff;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        border-radius: 10px;
-        background-color: #ffffff;
-    }
-</style>
-
     <div class="row">
         <a class="title_hyper pull-left" href="/operation/worksheet"><h1>Merchandiser - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i></h1></a>
     </div>
@@ -386,14 +361,14 @@
                                     @{{ person.account_manager_name }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <span ng-if="person.outletVisits[0]">
+                                    <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
-                                        @{{person.outletVisits[0].date}}<br>
-                                        @{{person.outletVisits[0].day}}<br>
+                                        @{{person.outletvisit_date}}<br>
+                                        @{{person.outletvisit_day}}<br>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
-                                <td class="col-md-1" style="max-width: 40px;">
+                                <td class="col-md-1" style="max-width: 45px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                             @{{person.zone_name}}

@@ -844,6 +844,7 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
                     ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
+                    ->leftJoin(DB::raw('(SELECT date, day, person_id FROM outlet_visits LIMIT 1 AS x)'), 'x.person_id', '=', 'people.id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
@@ -871,7 +872,8 @@ class OperationWorksheetController extends Controller
                                     THEN "red"
                                 ELSE
                                     "black"
-                                END AS last_date_color')
+                                END AS last_date_color'),
+                        'x.date AS outletvisit_date', 'x.day AS outletvisit_day'
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
