@@ -175,7 +175,7 @@
                             {!! Form::label('previous', 'Previous', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('previous',
                                 [
-                                    'Last 5 days' => 'Last 5 days',
+                                    'Last 7 days' => 'Last 7 days',
                                     '' => 'Nil',
                                     'Last 14 days' => 'Last 14 days',
                                 ],
@@ -316,6 +316,9 @@
                                 <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
+                                Outlet Visit
+                            </th>
+                            <th class="col-md-2 text-center">
                                 Zone
                             </th>
                             <th class="col-md-1 text-center">
@@ -355,6 +358,14 @@
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ person.account_manager_name }}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    <span ng-if="person.outletVisits[0]">
+                                        Last Visit<br>
+                                        @{{person.outletVisits[0].date}}<br>
+                                        @{{person.outletVisits[0].day}}<br>
+                                    </span>
+                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked(person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
                                 <td class="col-md-2" style="min-width: 50px;">
                                     <div class="checkbox" style="margin-top: 0px;">
@@ -413,7 +424,8 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="alldata.qty">
-                                                Qty @{{alldata.qty}} <br>
+
+                                                <br> Qty @{{alldata.qty}} <br>
                                             </span>
                                             <span ng-if="alldata.total[0]['total']">
                                                 Amt @{{alldata.total[0]['total']}}
@@ -451,6 +463,70 @@
                 </div>
 
               </div>
+            </div>
+
+            <div class="modal fade" id="outletVisitModal" role="dialog">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">
+                            Outlet Visit (@{{form.cust_id}} - @{{form.company}})
+                        </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Category ID
+                                    </label>
+                                    <input type="text" name="category_id" class="form-control" ng-model="categoryform.category_id">
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Name
+                                    </label>
+                                    <input type="text" name="name" class="form-control" ng-model="categoryform.name">
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Remark
+                                    </label>
+                                    <textarea name="remark" class="form-control" ng-model="categoryform.remark" rows="2"></textarea>
+                                </div>
+                                <hr>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        Drawing #
+                                    </label>
+                                    <input type="text" name="drawing_id" class="form-control" ng-model="categoryform.drawing_id">
+                                </div>
+
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="files">Upload Drawing</label>
+                                        <input type="file" name="files" id="files" ng-files="setTheFiles($files)" id="image_file" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success" ng-click="uploadFile(categoryform.id)"><i class="fa fa-upload"></i> Upload File</button>
+                                        <button class="btn btn-danger" ng-click="deleteBomcategoryDrawing(categoryform.id)"><i class="fa fa-times"></i> Remove File</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <a ng-href="@{{categoryform.drawing_path}}" ng-if="categoryform.drawing_path">
+                                        <img ng-src="@{{categoryform.drawing_path}}" height="250" width="250" style="border:2px solid black">
+                                    </a>
+                                    <img src="#" alt="No photo found" ng-if="!categoryform.drawing_path" height="250" width="250" style="border:2px solid black">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" ng-click="editCategory()" data-dismiss="modal">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <script src="/js/operation_worksheet.js"></script>

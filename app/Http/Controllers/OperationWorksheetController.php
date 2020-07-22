@@ -516,7 +516,7 @@ class OperationWorksheetController extends Controller
         $latest = '';
         if(request()->isMethod('get')) {
             $today = Carbon::today()->toDateString();
-            request()->merge(array('previous' => 'Last 7 days'));
+            request()->merge(array('previous' => 'Last 14 days'));
         }else {
             $today = request('chosen_date');
         }
@@ -526,6 +526,9 @@ class OperationWorksheetController extends Controller
         switch($previous) {
             case 'Last 5 days':
                 $earliest = Carbon::parse($today)->subDays(5);
+                break;
+            case 'Last 7 days':
+                $earliest = Carbon::parse($today)->subDays(7);
                 break;
             case 'Last 14 days':
                 $earliest = Carbon::parse($today)->subDays(14);
@@ -819,7 +822,9 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last_deliver_cancel");
 
-        $people =   Person::with('personassets')
+        $people =   Person::with(['personassets', 'outletVisits' => function($query) {
+                        $query->latest();
+                    }])
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
@@ -935,7 +940,7 @@ class OperationWorksheetController extends Controller
                 $items = clone $deals;
                 $qty = $qty->sum('deals.qty');
                 $total = $total->select(DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS total'))->get();
-                $items = $items->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 2) AS qty'))->groupBy('items.id')->get();
+                $items = $items->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))->groupBy('items.id')->get();
 
                 $transactions =  DB::table('transactions')
                         ->where('transactions.person_id', $person->person_id)

@@ -326,7 +326,7 @@ var app = angular.module('app', [
             cust_id: '',
             company: '',
             chosen_date: moment().format('YYYY-MM-DD'),
-            previous: 'Last 5 days',
+            previous: 'Last 14 days',
             future: '2 days',
             color: '',
             del_postcode: '',
@@ -338,6 +338,10 @@ var app = angular.module('app', [
             sortBy: true,
             sortName: ''
         }
+        $scope.form = {
+            cust_id: '',
+            company: ''
+        };
         $scope.zones = [];
         // init page load
         // getPage(1, true);

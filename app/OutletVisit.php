@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class OutletVisit extends Model
 {
@@ -17,7 +18,7 @@ class OutletVisit extends Model
     ];
 
     protected $fillable = [
-        'date', 'day', 'outcome', 'remarks', 'created_by', 'updated_by'
+        'date', 'day', 'outcome', 'remarks', 'created_by', 'updated_by', 'person_id'
     ];
 
     // relationships
@@ -29,5 +30,16 @@ class OutletVisit extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
+    }
+
+    // getter setter
+    public function getDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
     }
 }
