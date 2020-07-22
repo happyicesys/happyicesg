@@ -571,10 +571,11 @@
                                             </td>
                                             <td class="col-md-1 text-center">
                                                 <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr ng-if="!form.person.outletVisits">
+                                        <tr ng-if="form.person.outletVisits.length == 0">
                                             <td class="text-center" colspan="18">
                                                 No Results Found
                                             </td>
