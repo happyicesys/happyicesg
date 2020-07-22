@@ -790,10 +790,18 @@ class PersonController extends Controller
     public function saveOutletVisitPersonApi($person_id)
     {
         $person = Person::findOrFail($person_id);
-
         $outletVisit = OutletVisit::create(request()->all());
-
         $person->outletVisits()->save($outletVisit);
+
+        return $person->outletVisits;
+    }
+
+    // delete outlet visit form by outletvisit id
+    public function destroyOutletVisitPersonApi($outletVisitId)
+    {
+        $outletVisit = OutletVisit::findOrFail($outletVisitId);
+        $person = $outletVisit->person;
+        $outletVisit->delete();
 
         return $person->outletVisits;
     }

@@ -471,7 +471,7 @@
                         <div class="modal-header">
                           <button type="button" class="close" data-dismiss="modal">&times;</button>
                           <h4 class="modal-title">
-                            Outlet Visit (@{{form.person.cust_id}} - @{{form.person.company}})
+                            Outlet Visit "@{{form.person.cust_id}} - @{{form.person.company}}"
                         </h4>
                         </div>
                         <div class="modal-body">
@@ -503,7 +503,7 @@
                                     </label>
                                     <select name="outcome" class="form-control select" ng-model="form.outcome">
                                         @foreach($outletVisits::OUTCOMES as $index => $outcome)
-                                            <option value="{{$index}}" ng-selected="form.outcome == {{$index}}">
+                                            <option value="{{$index}}">
                                                 {{$outcome}}
                                             </option>
                                         @endforeach
@@ -572,6 +572,11 @@
                                             <td class="col-md-1 text-center">
                                                 <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
                                                 </button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="!form.person.outletVisits">
+                                            <td class="text-center" colspan="18">
+                                                No Results Found
                                             </td>
                                         </tr>
                                     </tbody>
