@@ -34,6 +34,16 @@ class OperationWorksheetController extends Controller
     // return vending machine page()
     public function getMerchandiserIndex()
     {
+/*
+        $people =   Person::with(['personassets', 'outletVisits' => function($query) {
+            $query->latest('date');
+        }, 'outletVisits.creator'])
+        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+        ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+        ->where('people.id', '=', 3832)
+        ->get();
+
+        dd($people->toArray()); */
         return view('detailrpt.operation.merchandiser');
     }
 
