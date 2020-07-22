@@ -811,8 +811,6 @@ class PersonController extends Controller
     {
         $outletVisit = OutletVisit::findOrFail($outletVisitId);
         $outletVisit->delete();
-
-        return $person;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
