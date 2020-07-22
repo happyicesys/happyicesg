@@ -20,7 +20,7 @@
             Merchandiser
         </div>
         <div class="panel-body" style="font-size: 13px;">
-          <div ng-app="app" ng-controller="merchandiserController" ng-cloak>
+        <div ng-app="app" ng-controller="merchandiserController" ng-cloak>
             {!! Form::open(['id'=>'export_excel', 'method'=>'POST', 'action'=>['OperationWorksheetController@exportOperationExcel']]) !!}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="row">
@@ -568,6 +568,9 @@
                                                 @{{ visit.remarks }}
                                             </td>
                                             <td class="col-md-1 text-center">
+                                                @{{ visit.creator.name }}
+                                            </td>
+                                            <td class="col-md-1 text-center">
                                                 <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
                                                 </button>
                                             </td>
@@ -581,6 +584,7 @@
             </div>
 
             <script src="/js/operation_worksheet.js"></script>
+        </div>
         </div>
     </div>
 @stop

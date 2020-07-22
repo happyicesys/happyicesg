@@ -824,7 +824,7 @@ class OperationWorksheetController extends Controller
 
         $people =   Person::with(['personassets', 'outletVisits' => function($query) {
                         $query->latest();
-                    }])
+                    }, 'outletVisits.creator'])
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')

@@ -471,6 +471,7 @@ var app = angular.module('app', [
         }
 
         $scope.onOutletVisitClicked = function(event, person) {
+            console.log(person)
             event.preventDefault();
             $scope.form = {
                 person: person,
