@@ -406,13 +406,13 @@
 
                                     <span ng-if="alldata.items">
                                         <span ng-repeat="item in alldata.items">
-                                            @{{item.product_id}}(@{{item.qty}})
+                                            @{{item.product_id}} (@{{item.qty}})
                                             <br>
                                         </span>
                                     </span>
                                     <strong>
                                         @{{alldata.qty}} <br>
-                                        @{{alldata.total}}
+                                        @{{alldata.total['total']}}
                                     </strong>
                                 </td>
                             </tr>
