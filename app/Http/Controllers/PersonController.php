@@ -787,6 +787,14 @@ class PersonController extends Controller
         }
     }
 
+    // get outlet visits by person id
+    public function getOutletVisitsApi($personId)
+    {
+        $person = Person::findOrFail($personId);
+
+        return $person->outletVisits;
+    }
+
     // save outlet visit form by person id
     public function saveOutletVisitPersonApi($person_id)
     {

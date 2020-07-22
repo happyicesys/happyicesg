@@ -549,7 +549,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="visit in form.person.outletVisits">
+                                        <tr ng-repeat="visit in form.outletvisits">
                                             <td class="col-md-1 text-center">
                                                 @{{ $index + 1 }}
                                             </td>
@@ -574,7 +574,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr ng-if="!form.person.outletVisits || form.person.outletVisits.length == 0">
+                                        <tr ng-if="!form.outletvisits || form.outletvisits.length == 0">
                                             <td class="text-center" colspan="18">
                                                 No Results Found
                                             </td>

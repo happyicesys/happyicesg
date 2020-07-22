@@ -474,13 +474,16 @@ var app = angular.module('app', [
 
         $scope.onOutletVisitClicked = function(event, person) {
             event.preventDefault();
-            console.log(person)
-            $scope.form = {
-                person: person,
-                date: $scope.todayDate,
-                day: $scope.todayDay,
-                outcome: 1
-            }
+            $http.post('/api/outletvisits/person/' + person.person_id).success(function(data) {
+                $scope.form = {
+                    person: person,
+                    outletvisits: data,
+                    date: $scope.todayDate,
+                    day: $scope.todayDay,
+                    outcome: 1
+                }
+            });
+
         }
 
         $scope.onOutletVisitDateChanged = function(date) {
