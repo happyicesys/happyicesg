@@ -471,13 +471,14 @@ var app = angular.module('app', [
         }
 
         $scope.onOutletVisitClicked = function(event, person) {
-            console.log(person)
             event.preventDefault();
             $scope.form = {
                 person: person,
                 date: $scope.todayDate,
                 day: $scope.todayDay
             }
+            console.log(person)
+            console.log(JSON.parse(JSON.stringify($scope.form)))
         }
 
         $scope.onOutletVisitDateChanged = function(date) {
