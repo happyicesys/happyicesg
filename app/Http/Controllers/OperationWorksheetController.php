@@ -867,7 +867,7 @@ class OperationWorksheetController extends Controller
 
         // only active customers
         $people = $people->where('active', 'Yes');
-        $people = $people->load(['outletVisits', 'outletVisits.creator']);
+        // $people = $people->load(['outletVisits', 'outletVisits.creator']);
 
         $dtdpeople = clone $people;
         $dtdmember = clone $people;
