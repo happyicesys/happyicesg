@@ -792,7 +792,7 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($personId);
 
-        return $person->with('creator')->outletVisits;
+        return $person->outletVisits->with('creator');
     }
 
     // save outlet visit form by person id
