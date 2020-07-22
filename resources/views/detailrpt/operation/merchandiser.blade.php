@@ -360,7 +360,7 @@
                                 <td class="col-md-1 text-center">
                                     @{{ person.account_manager_name }}
                                 </td>
-                                <td class="col-md-1 text-center">
+                                <td class="col-md-1 text-center" style="min-width: 75px; font-size: 12px;">
                                     <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
                                         @{{person.outletvisit_date}}<br>
@@ -368,7 +368,7 @@
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
-                                <td class="col-md-1" style="max-width: 45px;">
+                                <td class="col-md-1" style="max-width: 50px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                             @{{person.zone_name}}
@@ -392,7 +392,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td class="col-md-1 text-left" style="min-width: 80px; font-size: 12px;">
+                                <td class="col-md-1 text-left" style="min-width: 75px; font-size: 12px;">
                                     <span class="row">
                                         @{{person.ops2_deldate | date : "yy-MM-dd"}}
                                         <br>
@@ -403,7 +403,7 @@
                                         @{{person.ops2_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-left" style="min-width: 80px; font-size: 12px;">
+                                <td class="col-md-1 text-left" style="min-width: 75px; font-size: 12px;">
                                     <span class="row" ng-style="{'color': person.last_date_color}">
                                         @{{person.ops_deldate | date : "yy-MM-dd"}}
                                         <br>
