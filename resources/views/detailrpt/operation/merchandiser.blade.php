@@ -12,6 +12,31 @@
 @stop
 @section('content')
 
+<style>
+    .table-responsive::-webkit-scrollbar {
+    -webkit-appearance: none;
+    }
+
+    .table-responsive::-webkit-scrollbar:vertical {
+        width: 12px;
+    }
+
+    .table-responsive::-webkit-scrollbar:horizontal {
+        height: 12px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, .5);
+        border-radius: 10px;
+        border: 2px solid #ffffff;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+</style>
+
     <div class="row">
         <a class="title_hyper pull-left" href="/operation/worksheet"><h1>Merchandiser - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i></h1></a>
     </div>
@@ -368,7 +393,7 @@
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
-                                <td class="col-md-2" style="min-width: 50px;">
+                                <td class="col-md-2" style="min-width: 40px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                             @{{person.zone_name}}
@@ -392,7 +417,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td class="col-md-1 text-left">
+                                <td class="col-md-1 text-left" style="min-width: 80px; font-size: 12px;">
                                     <span class="row">
                                         @{{person.ops2_deldate | date : "yy-MM-dd"}}
                                         <br>
@@ -403,7 +428,7 @@
                                         @{{person.ops2_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-left">
+                                <td class="col-md-1 text-left" style="min-width: 80px; font-size: 12px;">
                                     <span class="row" ng-style="{'color': person.last_date_color}">
                                         @{{person.ops_deldate | date : "yy-MM-dd"}}
                                         <br>
@@ -414,7 +439,7 @@
                                         @{{person.ops_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-center td_edit" style="min-width: 90px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
+                                <td class="col-md-1 text-center td_edit" style="min-width: 80px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
 
                                     <span ng-if="alldata.items">
                                         <span ng-repeat="item in alldata.items">
