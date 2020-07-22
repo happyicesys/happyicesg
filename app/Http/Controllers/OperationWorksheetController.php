@@ -822,9 +822,7 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last_deliver_cancel");
 
-        $people =   Person::with(['personassets', 'outletVisits' => function($query) {
-                        $query->latest('date');
-                    }, 'outletVisits.creator'])
+        $people =   Person::with(['personassets', 'outletVisits', 'outletVisits.creator'])
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
