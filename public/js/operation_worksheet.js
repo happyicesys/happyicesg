@@ -497,14 +497,14 @@ var app = angular.module('app', [
                 $scope.form.day = $scope.todayDay
                 $scope.form.outcome = 1
                 $scope.form.remarks = ''
-                searchDB();
+                $scope.searchDB();
             });
         }
 
         $scope.deleteOutletVisitEntry = function(id) {
             $http.delete('/api/person/outletvisit/' + id).success(function(data) {
                 $scope.form.person.outletVisits = data
-                searchDB();
+                $scope.searchDB();
             });
         }
 
