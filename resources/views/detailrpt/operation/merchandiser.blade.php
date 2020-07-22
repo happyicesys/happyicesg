@@ -575,7 +575,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr ng-if="form.person.outletVisits.length == 0">
+                                        <tr ng-if="!form.person.outletVisits || form.person.outletVisits.length == 0">
                                             <td class="text-center" colspan="18">
                                                 No Results Found
                                             </td>

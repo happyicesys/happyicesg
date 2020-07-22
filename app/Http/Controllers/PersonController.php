@@ -791,6 +791,7 @@ class PersonController extends Controller
     public function saveOutletVisitPersonApi($person_id)
     {
         $person = Person::findOrFail($person_id);
+        request()->merge(array('created_by' => auth()->user->id));
         $outletVisit = OutletVisit::create(request()->all());
         $person->outletVisits()->save($outletVisit);
 

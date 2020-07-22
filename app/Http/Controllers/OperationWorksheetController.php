@@ -823,7 +823,7 @@ class OperationWorksheetController extends Controller
         ) last_deliver_cancel");
 
         $people =   Person::with(['personassets', 'outletVisits' => function($query) {
-                        $query->latest();
+                        $query->latest('date');
                     }, 'outletVisits.creator'])
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
