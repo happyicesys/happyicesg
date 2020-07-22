@@ -474,15 +474,7 @@ var app = angular.module('app', [
 
         $scope.onOutletVisitClicked = function(event, person) {
             event.preventDefault();
-            $http.post('/api/outletvisits/person/' + person.person_id).success(function(data) {
-                $scope.form = {
-                    person: data,
-                    date: $scope.todayDate,
-                    day: $scope.todayDay,
-                    outcome: 1
-                }
-            });
-
+            $scope.getOutletVisitPerson(person.id)
         }
 
         $scope.onOutletVisitDateChanged = function(date) {
@@ -496,19 +488,27 @@ var app = angular.module('app', [
 
         $scope.saveOutletVisitForm = function(person) {
             $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
-                $scope.form.person = data
-                $scope.form.date = $scope.todayDate
-                $scope.form.day = $scope.todayDay
-                $scope.form.outcome = 1
+                $scope.getOutletVisitPerson(person.id)
                 $scope.form.remarks = ''
                 $scope.searchDB();
             });
         }
 
-        $scope.deleteOutletVisitEntry = function(id) {
+        $scope.deleteOutletVisitEntry = function(id, person) {
             $http.delete('/api/person/outletvisit/' + id).success(function(data) {
-                $scope.form.person = data
+                $scope.getOutletVisitPerson(person.id)
                 $scope.searchDB();
+            });
+        }
+
+        $scope.getOutletVisitPerson = function(person_id) {
+            $http.post('/api/outletvisits/person/' + person_id).success(function(data) {
+                $scope.form = {
+                    person: data,
+                    date: $scope.todayDate,
+                    day: $scope.todayDay,
+                    outcome: 1
+                }
             });
         }
 

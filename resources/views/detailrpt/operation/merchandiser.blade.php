@@ -569,7 +569,7 @@
                                                 @{{ visit.creator.name }}
                                             </td>
                                             <td class="col-md-1 text-center">
-                                                <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
+                                                <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id, form.person)">
                                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </td>
