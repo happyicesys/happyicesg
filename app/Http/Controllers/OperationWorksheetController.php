@@ -818,43 +818,6 @@ class OperationWorksheetController extends Controller
                 )
             GROUP BY y.id
         ) last_deliver_cancel");
-/*
-        $last2 = DB::raw( "(
-            SELECT x.id AS transaction_id, DATE(t.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            LEFT JOIN (
-                SELECT id, person_id, delivery_date FROM transactions
-                WHERE (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
-                ORDER BY delivery_date
-                DESC LIMIT 1,1
-            ) t ON t.person_id=y.id
-            GROUP BY y.id
-        ) last2");
-
-        $last = DB::raw( "(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN x.total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            LEFT JOIN (
-                SELECT id, person_id, delivery_date, total, total_qty FROM transactions
-                WHERE (status='Delivered' OR status='Verified Owe' OR status='Verified Paid')
-                ORDER BY delivery_date DESC LIMIT 1
-            ) AS t
-            ON t.person_id=y.id
-            GROUP BY y.id
-        ) last");
-*/
 
         $people =   Person::with('personassets')
                     ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
@@ -960,12 +923,16 @@ class OperationWorksheetController extends Controller
 
                 $id = $person->person_id.','.$date;
 
-                $qty =  DB::table('deals')
+                $deals =  DB::table('deals')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->whereIn('transaction_id', $transactionsId)
                         ->where('transactions.person_id', $person->person_id)
-                        ->whereDate('transactions.delivery_date', '=', $date)
-                        ->sum('deals.qty');
+                        ->whereDate('transactions.delivery_date', '=', $date);
+
+                $qty = clone $deals;
+                $total = clone $deals;
+                $qty = $qty->sum('deals.qty');
+                $total = $total->sum('(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END) AS total');
 
                 $transactions =  DB::table('transactions')
                         ->where('transactions.person_id', $person->person_id)
@@ -991,6 +958,7 @@ class OperationWorksheetController extends Controller
                 $alldata[$index1][$index2] = [
                     'id' => $id,
                     'qty' => $qty,
+                    'total' => $total,
                     'color' => $color,
                     'bool_transaction' => $bool_transaction,
                 ];
