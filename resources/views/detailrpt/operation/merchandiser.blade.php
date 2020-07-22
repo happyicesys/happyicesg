@@ -393,7 +393,7 @@
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
-                                <td class="col-md-2" style="min-width: 40px;">
+                                <td class="col-md-1" style="width: 40px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                             @{{person.zone_name}}
@@ -439,7 +439,7 @@
                                         @{{person.ops_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-center td_edit" style="min-width: 80px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
+                                <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
 
                                     <span ng-if="alldata.items">
                                         <span ng-repeat="item in alldata.items">
