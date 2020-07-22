@@ -412,8 +412,12 @@
                                     </span>
                                     <span class="text-right">
                                         <strong>
-                                            Qty @{{alldata.qty}} <br>
-                                            Amt @{{alldata.total[0]['total']}}
+                                            <span ng-if="alldata.qty">
+                                                Qty @{{alldata.qty}} <br>
+                                            </span>
+                                            <span ng-if="alldata.total[0]['total']">
+                                                Amt @{{alldata.total[0]['total']}}
+                                            </span>
                                         </strong>
                                     </span>
                                 </td>
