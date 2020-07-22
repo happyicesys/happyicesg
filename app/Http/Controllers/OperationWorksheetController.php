@@ -924,6 +924,7 @@ class OperationWorksheetController extends Controller
                 $id = $person->person_id.','.$date;
 
                 $deals =  DB::table('deals')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->whereIn('transaction_id', $transactionsId)
                         ->where('transactions.person_id', $person->person_id)
@@ -931,8 +932,10 @@ class OperationWorksheetController extends Controller
 
                 $qty = clone $deals;
                 $total = clone $deals;
+                $items = clone $deals;
                 $qty = $qty->sum('deals.qty');
-                $total = $total->select(DB::raw('SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END) AS total'))->get();
+                $total = $total->select(DB::raw('SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END) AS total'))->get('total');
+                $items = $items->sum('deals.qty')->groupBy('items.id')->get();
 
                 $transactions =  DB::table('transactions')
                         ->where('transactions.person_id', $person->person_id)
@@ -959,6 +962,7 @@ class OperationWorksheetController extends Controller
                     'id' => $id,
                     'qty' => $qty,
                     'total' => $total,
+                    'items' => $items,
                     'color' => $color,
                     'bool_transaction' => $bool_transaction,
                 ];
