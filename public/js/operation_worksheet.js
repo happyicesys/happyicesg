@@ -389,8 +389,10 @@ var app = angular.module('app', [
         };
 
           // when hitting search button
-        $scope.searchDB = function(event){
-            event.preventDefault();
+        $scope.searchDB = function(event = null){
+            if(event) {
+                event.preventDefault();
+            }
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
