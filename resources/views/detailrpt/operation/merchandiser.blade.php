@@ -344,7 +344,7 @@
                             <th class="col-md-2 text-center">
                                 Outlet Visit
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 Zone
                             </th>
                             <th class="col-md-1 text-center">
@@ -393,7 +393,7 @@
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
-                                <td class="col-md-1" max-style="width: 40px;">
+                                <td class="col-md-1" style="max-width: 40px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                             @{{person.zone_name}}
