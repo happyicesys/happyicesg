@@ -474,7 +474,7 @@ var app = angular.module('app', [
 
         $scope.onOutletVisitClicked = function(event, person) {
             event.preventDefault();
-            $scope.getOutletVisitPerson(person.id)
+            $scope.getOutletVisitPerson(person.person_id)
         }
 
         $scope.onOutletVisitDateChanged = function(date) {
