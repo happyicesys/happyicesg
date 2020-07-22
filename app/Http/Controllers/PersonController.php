@@ -786,6 +786,18 @@ class PersonController extends Controller
         }
     }
 
+    // save outlet visit form by person id
+    public function saveOutletVisitPersonApi($person_id)
+    {
+        $person = Person::findOrFail($person_id);
+
+        $outletVisit = OutletVisit::create(request()->all());
+
+        $person->outletVisits()->save($outletVisit);
+
+        return $person->outletVisits;
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {

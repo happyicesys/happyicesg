@@ -173,6 +173,7 @@ Route::post('/api/operation/area', 'OperationWorksheetController@updateAreaGroup
 Route::get('/operation/worksheet', 'OperationWorksheetController@getOperationWorksheetIndex');
 Route::get('/operation/merchandiser', 'OperationWorksheetController@getMerchandiserIndex');
 
+
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');
 Route::get('/detailrpt/vending', 'VendingController@getVendingIndex');
@@ -297,6 +298,7 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::post('/api/person/outletvisit/{person_id}', 'PersonController@saveOutletVisitPersonApi');
 Route::get('/api/people/options', 'PersonController@getPeopleOptionsApi');
 Route::post('/api/person/file/remove', 'PersonController@removeFileApi');
 Route::post('/person/files/update/{person_id}', 'PersonController@updateFilesName');

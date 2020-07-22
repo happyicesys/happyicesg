@@ -1,6 +1,7 @@
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
+@inject('outletVisits', 'App\OutletVisit')
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
@@ -365,7 +366,7 @@
                                         @{{person.outletVisits[0].date}}<br>
                                         @{{person.outletVisits[0].day}}<br>
                                     </span>
-                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked(person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
                                 <td class="col-md-2" style="min-width: 50px;">
                                     <div class="checkbox" style="margin-top: 0px;">
@@ -471,59 +472,109 @@
                         <div class="modal-header">
                           <button type="button" class="close" data-dismiss="modal">&times;</button>
                           <h4 class="modal-title">
-                            Outlet Visit (@{{form.cust_id}} - @{{form.company}})
+                            Outlet Visit (@{{form.person.cust_id}} - @{{form.person.company}})
                         </h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
-                                        Category ID
+                                        Date
                                     </label>
-                                    <input type="text" name="category_id" class="form-control" ng-model="categoryform.category_id">
+                                    <datepicker selector="form-control">
+                                        <input
+                                            type = "text"
+                                            name="chosen_date"
+                                            class = "form-control input-sm"
+                                            placeholder = "Visit Date"
+                                            ng-model = "form.date"
+                                            ng-change = "onOutletVisitDateChanged(form.date)"
+                                        />
+                                    </datepicker>
                                 </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
-                                        Name
+                                        Day
                                     </label>
-                                    <input type="text" name="name" class="form-control" ng-model="categoryform.name">
+                                    <input type="text" name="name" class="form-control" ng-model="form.day" readonly>
                                 </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
-                                        Remark
+                                        Outcome
                                     </label>
-                                    <textarea name="remark" class="form-control" ng-model="categoryform.remark" rows="2"></textarea>
+                                    <select name="outcome" class="form-control select" ng-model="form.outcome">
+                                        @foreach($outletVisits::OUTCOMES as $index => $outcome)
+                                            <option value="{{$index}}" ng-selected="form.outcome == {{$index}}">
+                                                {{$outcome}}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <hr>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
-                                        Drawing #
+                                        Remarks
                                     </label>
-                                    <input type="text" name="drawing_id" class="form-control" ng-model="categoryform.drawing_id">
+                                    <textarea name="remarks" class="form-control" ng-model="form.remarks" rows="3"></textarea>
                                 </div>
-
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
-                                        <label for="files">Upload Drawing</label>
-                                        <input type="file" name="files" id="files" ng-files="setTheFiles($files)" id="image_file" class="form-control">
+                                        <button class="btn btn-success" ng-click="saveOutletVisitForm(form.person)"><i class="fa fa-upload"></i> Save</button>
                                     </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-success" ng-click="uploadFile(categoryform.id)"><i class="fa fa-upload"></i> Upload File</button>
-                                        <button class="btn btn-danger" ng-click="deleteBomcategoryDrawing(categoryform.id)"><i class="fa fa-times"></i> Remove File</button>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                    <a ng-href="@{{categoryform.drawing_path}}" ng-if="categoryform.drawing_path">
-                                        <img ng-src="@{{categoryform.drawing_path}}" height="250" width="250" style="border:2px solid black">
-                                    </a>
-                                    <img src="#" alt="No photo found" ng-if="!categoryform.drawing_path" height="250" width="250" style="border:2px solid black">
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" ng-click="editCategory()" data-dismiss="modal">Save</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-list-search table-hover table-bordered table-condensed">
+                                    <thead>
+                                        <tr style="background-color: #DDFDF8">
+                                            <th class="col-md-1 text-center">
+                                                #
+                                            </th>
+                                            <th class="col-md-1 text-center">
+                                                Date
+                                            </th>
+                                            <th class="col-md-1 text-center">
+                                                Day
+                                            </th>
+                                            <th class="col-md-1 text-center">
+                                                Outcome
+                                            </th>
+                                            <th class="col-md-3 text-center">
+                                                Remarks
+                                            </th>
+                                            <th class="col-md-2 text-center">
+                                                Created By
+                                            </th>
+                                            <th class="col-md-1 text-center">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="visit in form.person.outletVisits">
+                                            <td class="col-md-1 text-center">
+                                                @{{ $index + 1 }}
+                                            </td>
+                                            <td class="col-md-1 text-center">
+                                                @{{ visit.date }}
+                                            </td>
+                                            <td class="col-md-1 text-center">
+                                                @{{ visit.day }}
+                                            </td>
+                                            <td class="col-md-1 text-center">
+                                                @{{ visit.outcome }}
+                                            </td>
+                                            <td class="col-md-2 text-left">
+                                                @{{ visit.remarks }}
+                                            </td>
+                                            <td class="col-md-1 text-center">
+                                                <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

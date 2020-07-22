@@ -339,9 +339,11 @@ var app = angular.module('app', [
             sortName: ''
         }
         $scope.form = {
-            cust_id: '',
-            company: ''
+            date: '',
+            day: ''
         };
+        $scope.todayDate = moment().format('YYYY-MM-DD');
+        $scope.todayDay = moment().format('ddd');
         $scope.zones = [];
         // init page load
         // getPage(1, true);
@@ -465,6 +467,30 @@ var app = angular.module('app', [
             $http.post('/api/detailrpt/operation/zone', person).success(function(data) {
                 $scope.people[index]['zone_name'] = person.zone_id['name'];
                 $scope.people[index]['zone_id'] = person.zone_id['id'];
+            });
+        }
+
+        $scope.onOutletVisitClicked = function(event, person) {
+            event.preventDefault();
+            $scope.form = {
+                person: person,
+                date: $scope.todayDate,
+                day: $scope.todayDay
+            }
+        }
+
+        $scope.onOutletVisitDateChanged = function(date) {
+            if(date){
+                let momentDate = moment(new Date(date)).format('YYYY-MM-DD');
+                let momentDay = moment(new Date(date)).format('ddd');
+                $scope.form.date = momentDate;
+                $scope.form.day = momentDay;
+            }
+        }
+
+        $scope.saveOutletVisitForm = function(person) {
+            $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
+                $scope.form.person.outletVisits = data
             });
         }
 
