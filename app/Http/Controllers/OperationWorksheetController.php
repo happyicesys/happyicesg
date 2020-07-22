@@ -961,7 +961,7 @@ class OperationWorksheetController extends Controller
                 $alldata[$index1][$index2] = [
                     'id' => $id,
                     'qty' => $qty,
-                    'total' => $total->total,
+                    'total' => $total,
                     'items' => $items,
                     'color' => $color,
                     'bool_transaction' => $bool_transaction,

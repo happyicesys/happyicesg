@@ -413,7 +413,7 @@
                                     <span class="text-right">
                                         <strong>
                                             Qty @{{alldata.qty}} <br>
-                                            Amt @{{alldata.total}}
+                                            Amt @{{alldata.total[0]}}
                                         </strong>
                                     </span>
                                 </td>
