@@ -43,7 +43,7 @@ class OperationWorksheetController extends Controller
         ->where('people.id', '=', 3832)
         ->get(); */
 
-        dd($people->toArray());
+        // dd($people->toArray());
         return view('detailrpt.operation.merchandiser');
     }
 
