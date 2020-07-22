@@ -495,8 +495,8 @@ var app = angular.module('app', [
         }
 
         $scope.saveOutletVisitForm = function(person) {
-            $http.post('/api/person/outletvisit/' + person.person_id, $scope.form).success(function(data) {
-                $scope.form.person.outletVisits = data
+            $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
+                $scope.form.person = data
                 $scope.form.date = $scope.todayDate
                 $scope.form.day = $scope.todayDay
                 $scope.form.outcome = 1
@@ -507,7 +507,7 @@ var app = angular.module('app', [
 
         $scope.deleteOutletVisitEntry = function(id) {
             $http.delete('/api/person/outletvisit/' + id).success(function(data) {
-                $scope.form.person.outletVisits = data
+                $scope.form.person = data
                 $scope.searchDB();
             });
         }

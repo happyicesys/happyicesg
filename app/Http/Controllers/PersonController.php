@@ -800,12 +800,14 @@ class PersonController extends Controller
     // save outlet visit form by person id
     public function saveOutletVisitPersonApi($person_id)
     {
-        $person = Person::findOrFail($person_id);
+        $person = Person::with(['outletVisits' => function($query) {
+            $query->latest('date');
+        }, 'outletVisits.creator'])->find($person_id);
         request()->merge(array('created_by' => auth()->user()->id));
         $outletVisit = OutletVisit::create(request()->all());
         $person->outletVisits()->save($outletVisit);
 
-        return $person->outletVisits;
+        return $person;
     }
 
     // delete outlet visit form by outletvisit id
