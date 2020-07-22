@@ -446,7 +446,6 @@
                           <dir-pagination-controls max-size="5" pagination-id="operation_worksheet" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                     </div>
                 </div>
-            </div>
 
             <div id="mapModal" class="modal fade" role="dialog">
               <div class="modal-dialog modal-lg">
