@@ -503,7 +503,7 @@
                                     </label>
                                     <select name="outcome" class="form-control select" ng-model="form.outcome">
                                         @foreach($outletVisits::OUTCOMES as $index => $outcome)
-                                            <option value="{{$index}}">
+                                            <option value="{{$index}}" ng-init='form.outcome = "1"'>
                                                 {{$outcome}}
                                             </option>
                                         @endforeach

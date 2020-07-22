@@ -490,7 +490,7 @@ var app = angular.module('app', [
         }
 
         $scope.saveOutletVisitForm = function(person) {
-            $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
+            $http.post('/api/person/outletvisit/' + person.person_id, $scope.form).success(function(data) {
                 $scope.form.person.outletVisits = data
             });
         }
