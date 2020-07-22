@@ -219,9 +219,9 @@ class Person extends Baum\Node
         return $this->belongsTo('App\Zone');
     }
 
-    public function outletVisits()
+    public function outletvisits()
     {
-        return $this->hasMany(OutletVisit::class);
+        return $this->hasMany('App\OutletVisit');
     }
 
     // getter and setter

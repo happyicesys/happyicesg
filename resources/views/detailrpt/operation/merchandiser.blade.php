@@ -361,10 +361,10 @@
                                     @{{ person.account_manager_name }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <span ng-if="person.outletVisits[0]">
+                                    <span ng-if="person.outletvisits[0]">
                                         Last Visit<br>
-                                        @{{person.outletVisits[0].date}}<br>
-                                        @{{person.outletVisits[0].day}}<br>
+                                        @{{person.outletvisits[0].date}}<br>
+                                        @{{person.outletvisits[0].day}}<br>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
@@ -550,7 +550,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="visit in form.person.outletVisits">
+                                        <tr ng-repeat="visit in form.person.outletvisits">
                                             <td class="col-md-1 text-center">
                                                 @{{ $index + 1 }}
                                             </td>
@@ -575,7 +575,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr ng-if="!form.person.outletVisits || form.person.outletVisits.length == 0">
+                                        <tr ng-if="!form.person.outletvisits || form.person.outletvisits.length == 0">
                                             <td class="text-center" colspan="18">
                                                 No Results Found
                                             </td>
