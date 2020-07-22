@@ -790,7 +790,9 @@ class PersonController extends Controller
     // get outlet visits by person id
     public function getOutletVisitsApi($personId)
     {
-        $person = Person::with(['outletVisits', 'outletVisits.creator'])->find($personId);
+        $person = Person::with(['outletVisits' => function($query) {
+            $query->latest('date');
+        }, 'outletVisits.creator'])->find($personId);
 
         return $person;
     }
