@@ -949,9 +949,9 @@ class OperationWorksheetController extends Controller
                 $qty = clone $deals;
                 $total = clone $deals;
                 $items = clone $deals;
-                $qty = $qty->sum('deals.qty');
+                $qty = $qty->select(DB::raw('ROUND(SUM(deals.qty), 1)'))->get();
                 $total = $total->select(DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END)) AS total'))->get();
-                $items = $items->select('items.product_id', DB::raw('ROUND(SUM(deals.qty)) AS qty'))->groupBy('items.id')->get();
+                $items = $items->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))->groupBy('items.id')->get();
 
                 $transactions =  DB::table('transactions')
                         ->where('transactions.person_id', $person->person_id)
