@@ -934,7 +934,7 @@ class OperationWorksheetController extends Controller
                 $total = clone $deals;
                 $items = clone $deals;
                 $qty = $qty->sum('deals.qty');
-                $total = $total->select(DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS total'))->first();
+                $total = $total->select(DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS total'))->get();
                 $items = $items->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 2) AS qty'))->groupBy('items.id')->get();
 
                 $transactions =  DB::table('transactions')
@@ -961,7 +961,7 @@ class OperationWorksheetController extends Controller
                 $alldata[$index1][$index2] = [
                     'id' => $id,
                     'qty' => $qty,
-                    'total' => $total,
+                    'total' => $total['total'],
                     'items' => $items,
                     'color' => $color,
                     'bool_transaction' => $bool_transaction,
