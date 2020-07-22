@@ -22,6 +22,7 @@ use App\AddAccessory;
 use App\Deal;
 use App\User;
 use App\Personmaintenance;
+use App\OutletVisit;
 use Auth;
 use DB;
 use App\HasProfileAccess;
