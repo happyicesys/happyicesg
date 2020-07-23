@@ -280,7 +280,7 @@
             </div>
             {!! Form::close() !!}
 
-                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+                <div class="table-responsive hidden-xs" id="exportable" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -364,8 +364,10 @@
                                 <td class="col-md-1 text-center" style="min-width: 75px; font-size: 12px;">
                                     <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
-                                        @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
-                                        @{{person.outletvisit_date | date : "EEE"}}<br>
+                                        <span ng-style="{'color': person.outletvisit_date_color}">
+                                            @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
+                                            @{{person.outletvisit_date | date : "EEE"}}<br>
+                                        </span>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
@@ -433,6 +435,102 @@
                                             </span>
                                         </strong>
                                     </span>
+                                </td>
+                            </tr>
+
+                            <tr ng-if="!people.length > 0">
+                                <td colspan="18" class="text-center">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div>
+                          <dir-pagination-controls max-size="5" pagination-id="operation_worksheet" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+                    </div>
+                </div>
+
+                {{-- mobile view --}}
+                <div class="table-responsive hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
+                    <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
+                        <thead style="font-size: 12px;">
+                        <tr style="background-color: #DDFDF8">
+                            <th class="col-md-1 text-center">
+                                #
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('custcategory')">
+                                Cat
+                                <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('del_postcode')">
+                                Postcode
+                                <span ng-if="search.sortName == 'del_postcode' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('cust_id')">
+                                Cust ID
+                                <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr dir-paginate-start="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
+                                <td class="col-md-1 text-center">
+                                    @{{$index + indexFrom}}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{person.del_postcode}}
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{person.cust_id}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    ID Name
+                                </th>
+                                <th class="col-md-1 text-left">
+                                    @{{person.company}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Acc Manager
+                                </th>
+                                <th class="col-md-1 text-left">
+                                    @{{person.company}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last Visit
+                                </th>
+                                <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}">
+                                    @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
+                                    @{{person.outletvisit_date | date : "EEE"}}<br>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last Visit
+                                </th>
+                                <td class="col-md-1">
+                                    @{{person.ops2_deldate | date : "yy-MM-dd"}}
+                                    <br>
+                                    @{{person.ops2_day}}
+                                    <br>
+                                    @{{person.ops2_total_qty}}
+                                    <br>
+                                    @{{person.ops2_total}}
                                 </td>
                             </tr>
 
