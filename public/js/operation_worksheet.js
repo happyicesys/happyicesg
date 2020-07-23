@@ -334,6 +334,7 @@ var app = angular.module('app', [
             zones: '',
             tags: [],
             account_manager: '',
+            last_transac_color: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''

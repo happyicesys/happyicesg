@@ -590,6 +590,7 @@ class OperationWorksheetController extends Controller
         $zones = request('zones');
         $tags = request('tags');
         $account_manager = request('account_manager');
+        $last_transac_color = request('last_transac_color');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -666,6 +667,17 @@ class OperationWorksheetController extends Controller
                         ->where('operationdates.color', $color);
                 });
             // }
+        }
+
+        if($last_transac_color) {
+            switch($last_transac_color) {
+                case 'Blue':
+                    $people = $people->whereRaw('DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14');
+                    break;
+                case 'Red';
+                    $people = $people->whereRaw('DATEDIFF(now(), outlet_visits.date) >= 14');
+                    break;
+            }
         }
 
         if($preferred_days) {

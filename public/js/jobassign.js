@@ -197,10 +197,12 @@ var app = angular.module('app', [
             $scope.driverOptionShowing = !$scope.driverOptionShowing;
         }
 
-        $scope.onExportPdfClicked = function(event, driverName) {
+        $scope.onExportPdfClicked = function(event, driverName = null) {
             $scope.spinner = true;
             event.preventDefault();
-            $scope.search.driver = driverName;
+            if(driverName) {
+                $scope.search.driver = driverName;
+            }
             $http({
                 method: 'POST',
                 responseType: 'arraybuffer',

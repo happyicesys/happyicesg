@@ -250,6 +250,23 @@
                                 ])
                         !!}
                     </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('last_transac_color', 'Last Transac Color', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('last_transac_color',
+                                [
+                                    '' => 'All',
+                                    'Red' => 'Red',
+                                    'Blue' => 'Blue'
+                                ],
+                                null,
+                                [
+                                    'class'=>'select form-control',
+                                    'ng-model'=>'search.last_transac_color'
+                                ])
+                            !!}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -280,7 +297,7 @@
             </div>
             {!! Form::close() !!}
 
-                <div class="table-responsive hidden-xs" id="exportable" style="padding-top: 20px;">
+                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -450,7 +467,7 @@
                 </div>
 
                 {{-- mobile view --}}
-                <div class="table-responsive hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
+                <div class="hidden-xs hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
