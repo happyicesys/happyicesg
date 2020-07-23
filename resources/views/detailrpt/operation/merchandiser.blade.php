@@ -678,6 +678,10 @@
                                             <td class="col-md-1 text-center">
                                                 @{{outcomes[visit.outcome]}}
                                             </td>
+                                            <td>
+                                                @{{outcomes}}
+                                                @{{visit.outcome}}
+                                            </td>
                                             <td class="col-md-2 text-left">
                                                 @{{ visit.remarks }}
                                             </td>
