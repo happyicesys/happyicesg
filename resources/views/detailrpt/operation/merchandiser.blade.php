@@ -6,6 +6,7 @@
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
 
+
 @extends('template')
 @section('title')
 {{ $DETAILRPT_TITLE }}
@@ -560,7 +561,7 @@
                                                 @{{ visit.day }}
                                             </td>
                                             <td class="col-md-1 text-center">
-                                                @{{ visit.outcome }}
+                                                {{$outletVisits::OUTCOMES[@{{ visit.outcome }}]}}
                                             </td>
                                             <td class="col-md-2 text-left">
                                                 @{{ visit.remarks }}

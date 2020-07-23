@@ -461,7 +461,7 @@ var app = angular.module('app', [
         $scope.exportTransactions = function() {
             $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
                 alert('Invoices Created');
-                searchDB();
+                getPage(1, false);
             });
         }
 
@@ -490,14 +490,14 @@ var app = angular.module('app', [
             $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
                 $scope.getOutletVisitPerson(person.id)
                 $scope.form.remarks = ''
-                $scope.searchDB();
+                getPage(1, false);
             });
         }
 
         $scope.deleteOutletVisitEntry = function(id, person) {
             $http.delete('/api/person/outletvisit/' + id).success(function(data) {
                 $scope.getOutletVisitPerson(person.id)
-                $scope.searchDB();
+                getPage(1, false);
             });
         }
 
