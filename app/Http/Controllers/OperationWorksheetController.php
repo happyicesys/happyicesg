@@ -832,6 +832,13 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last_deliver_cancel");
 
+        $outletVisits = DB::raw( "(
+            SELECT DATE(date) AS date, day, person_id
+            FROM outlet_visits
+            ORDER BY date DESC
+            GROUP BY person_id
+        ) outlet_visits");
+
         $people =   Person::with(['personassets', 'outletVisits' => function($query) {
                         $query->latest('date');
                     }, 'outletVisits.creator'])
@@ -844,7 +851,7 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
                     ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
-                    ->leftJoin(DB::raw('(SELECT DATE(date) AS date, day, person_id FROM outlet_visits ORDER BY date DESC GROUP BY person_id) AS x'), 'x.person_id', '=', 'people.id')
+                    ->leftJoin($outletVisits, 'people.id', '=', 'outlet_visits.person_id')
                     ->select(
                             'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
@@ -873,11 +880,11 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'),
-                        'x.date AS outletvisit_date', 'x.day AS outletvisit_day',
+                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day',
                         DB::raw('CASE
-                                    WHEN (DATEDIFF(now(), x.date) >= 7 AND DATEDIFF(now(), x.date) < 14)
+                                    WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
                                     THEN "blue"
-                                    WHEN DATEDIFF(now(), x.date) >= 14
+                                    WHEN DATEDIFF(now(), outlet_visits.date) >= 14
                                     THEN "red"
                                 ELSE
                                     "black"
