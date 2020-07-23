@@ -414,7 +414,7 @@
                                         @{{person.ops_total}}
                                     </span>
                                 </td>
-                                <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index); 'color': getBackgroundColor(alldata, $parent.$index, $index) == 'Green' ? 'white' : 'black';}">
+                                <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
 
                                     <span ng-if="alldata.items">
                                         <span ng-repeat="item in alldata.items">
