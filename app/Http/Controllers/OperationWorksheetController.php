@@ -835,8 +835,11 @@ class OperationWorksheetController extends Controller
         $outletVisits = DB::raw( "(
             SELECT DATE(date) AS date, day, person_id
             FROM outlet_visits
-            ORDER BY date DESC
-            GROUP BY person_id
+            WHERE date IN (
+                SELECT MAX(date)
+                FROM outlet_visits
+                GROUP BY person_id
+            )
         ) outlet_visits");
 
         $people =   Person::with(['personassets', 'outletVisits' => function($query) {
