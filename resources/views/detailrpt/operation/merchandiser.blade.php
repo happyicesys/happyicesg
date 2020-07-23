@@ -468,7 +468,7 @@
 
                 {{-- mobile view --}}
                 <div class="hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
-                    <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
+                    <table id="datatable" class="table table-list-search table-bordered table-fixedheader" dir-paginate-start="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
                             <th class="col-md-1 text-center">
@@ -496,7 +496,7 @@
                         </thead>
 
                         <tbody>
-                            <tr dir-paginate-start="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
+                            <tr>
                                 <td class="col-md-1 text-center">
                                     @{{$index + indexFrom}}
                                 </td>
