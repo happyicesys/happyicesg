@@ -518,7 +518,7 @@
                                     @{{person.outletvisit_date | date : "EEE"}}<br>
                                 </th>
                             </tr>
-                            <tr>
+                            <tr dir-paginate-end>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Visit
