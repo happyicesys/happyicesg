@@ -92,9 +92,9 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
-        $scope.changeColor = function(alldata, parent_index, index) {
-            if(!alldata.qty) {
-                $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
+        $scope.changeColor = function(data, parent_index, index) {
+            if(!data.qty[0]['qty']) {
+                $http.post('/api/detailrpt/operation/color', {'id': data.id}).success(function(data) {
                     $scope.alldata[parent_index][index]['color'] = data.color;
                 });
             }

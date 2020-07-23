@@ -445,8 +445,8 @@
                             @{{person.ops_total}}
                         </span>
                     </td>
-                    <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index)}">
-                        &nbsp;@{{alldata.qty}}
+                    <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="data in alldata[$index]" ng-click="changeColor(data, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(data, $parent.$index, $index)}">
+                        &nbsp;@{{data.qty[0]['qty']}}
                     </td>
                 </tr>
 

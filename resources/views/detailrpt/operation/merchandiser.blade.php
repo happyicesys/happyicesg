@@ -297,7 +297,7 @@
             </div>
             {!! Form::close() !!}
 
-                <div class="table-responsive hidden-xs" id="exportable" style="padding-top: 20px;">
+                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -467,7 +467,7 @@
                 </div>
 
                 {{-- mobile view --}}
-                <div class="hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
+                <div class="hidden-xs hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader" dir-paginate="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -525,7 +525,7 @@
                                     Acc Manager
                                 </th>
                                 <th class="col-md-1 text-left" colspan="2">
-                                    @{{person.company}}
+                                    @{{person.account_manager_name}}
                                 </th>
                             </tr>
                             <tr>
@@ -541,7 +541,7 @@
                             <tr>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
-                                    Last Visit
+                                    Last Transac
                                 </th>
                                 <td class="col-md-1" colspan="2">
                                     @{{person.ops2_deldate | date : "yy-MM-dd"}}
