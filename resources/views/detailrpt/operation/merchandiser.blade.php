@@ -297,7 +297,7 @@
             </div>
             {!! Form::close() !!}
 
-                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+                <div class="table-responsive hidden-xs" id="exportable" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -467,7 +467,7 @@
                 </div>
 
                 {{-- mobile view --}}
-                <div class="hidden-xs hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
+                <div class="hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -501,6 +501,9 @@
                                     @{{$index + indexFrom}}
                                 </td>
                                 <td class="col-md-1 text-center">
+                                    @{{ person.custcategory }}
+                                </td>
+                                <td class="col-md-1 text-center">
                                     @{{person.del_postcode}}
                                 </td>
                                 <td class="col-md-1 text-center">
@@ -512,7 +515,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     ID Name
                                 </th>
-                                <th class="col-md-1 text-left">
+                                <th class="col-md-1 text-left" colspan="2">
                                     @{{person.company}}
                                 </th>
                             </tr>
@@ -521,7 +524,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Acc Manager
                                 </th>
-                                <th class="col-md-1 text-left">
+                                <th class="col-md-1 text-left" colspan="2">
                                     @{{person.company}}
                                 </th>
                             </tr>
@@ -530,7 +533,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Visit
                                 </th>
-                                <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}">
+                                <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}" colspan="2">
                                     @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
                                     @{{person.outletvisit_date | date : "EEE"}}<br>
                                 </th>
@@ -540,7 +543,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Visit
                                 </th>
-                                <td class="col-md-1">
+                                <td class="col-md-1" colspan="2">
                                     @{{person.ops2_deldate | date : "yy-MM-dd"}}
                                     <br>
                                     @{{person.ops2_day}}
