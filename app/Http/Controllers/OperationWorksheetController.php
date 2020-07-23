@@ -833,13 +833,9 @@ class OperationWorksheetController extends Controller
         ) last_deliver_cancel");
 
         $outletVisits = DB::raw( "(
-            SELECT DATE(date) AS date, day, person_id
+            SELECT DATE(MAX(date)) AS date, person_id
             FROM outlet_visits
-            WHERE date IN (
-                SELECT MAX(date)
-                FROM outlet_visits
-                GROUP BY person_id
-            )
+            GROUP BY person_id
         ) outlet_visits");
 
         $people =   Person::with(['personassets', 'outletVisits' => function($query) {
@@ -883,7 +879,7 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'),
-                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day',
+                        'outlet_visits.date AS outletvisit_date',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
                                     THEN "blue"

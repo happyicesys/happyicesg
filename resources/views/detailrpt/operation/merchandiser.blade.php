@@ -365,7 +365,7 @@
                                     <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
                                         @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
-                                        @{{person.outletvisit_day}}<br>
+                                        @{{person.outletvisit_date | date : "EEE"}}<br>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
