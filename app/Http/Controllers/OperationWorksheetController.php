@@ -873,7 +873,15 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'),
-                        'x.date AS outletvisit_date', 'x.day AS outletvisit_day'
+                        'x.date AS outletvisit_date', 'x.day AS outletvisit_day',
+                        DB::raw('CASE
+                                    WHEN (DATEDIFF(now(), x.date) >= 7 AND DATEDIFF(now(), x.date) < 14)
+                                    THEN "blue"
+                                    WHEN DATEDIFF(now(), x.date) >= 14
+                                    THEN "red"
+                                ELSE
+                                    "black"
+                                END AS outletvisit_date_color')
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
