@@ -468,7 +468,7 @@
 
                 {{-- mobile view --}}
                 <div class="hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
-                    <table id="datatable" class="table table-list-search table-bordered table-fixedheader" dir-paginate-start="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
+                    <table id="datatable" class="table table-list-search table-bordered table-fixedheader" dir-paginate="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
                             <th class="col-md-1 text-center">
@@ -538,7 +538,7 @@
                                     @{{person.outletvisit_date | date : "EEE"}}<br>
                                 </th>
                             </tr>
-                            <tr dir-paginate-end>
+                            <tr>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Visit
