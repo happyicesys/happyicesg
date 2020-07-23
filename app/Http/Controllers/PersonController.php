@@ -799,6 +799,14 @@ class PersonController extends Controller
         return $person;
     }
 
+    // get outlet visits outcome
+    public function getOutletVisitOutcomesApi()
+    {
+        $outcomes = OutletVisit::OUTCOMES;
+
+        return $outcomes;
+    }
+
     // save outlet visit form by person id
     public function saveOutletVisitPersonApi($person_id)
     {

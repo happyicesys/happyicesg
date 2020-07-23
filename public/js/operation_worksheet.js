@@ -346,9 +346,11 @@ var app = angular.module('app', [
         $scope.todayDate = moment().format('YYYY-MM-DD');
         $scope.todayDay = moment().format('ddd');
         $scope.zones = [];
+        $scope.outcomes = [];
         // init page load
         // getPage(1, true);
         getZoneOptions();
+        getOutletVisitOutcomes();
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -658,6 +660,12 @@ var app = angular.module('app', [
         function getZoneOptions() {
             $http.get('/api/zones').success(function(data) {
                 $scope.zones = data;
+            });
+        }
+
+        function getOutletVisitOutcomes() {
+            $http.get('/api/outletvisit/outcomes').success(function(data) {
+                $scope.outcomes = data;
             });
         }
     }

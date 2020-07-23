@@ -298,6 +298,7 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::get('/api/outletvisit/outcomes', 'PersonController@getOutletVisitOutcomesApi');
 Route::post('/api/outletvisits/person/{person_id}', 'PersonController@getOutletVisitsApi');
 Route::post('/api/person/outletvisit/{person_id}', 'PersonController@saveOutletVisitPersonApi');
 Route::delete('/api/person/outletvisit/{id}', 'PersonController@destroyOutletVisitPersonApi');

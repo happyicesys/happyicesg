@@ -678,10 +678,6 @@
                                             <td class="col-md-1 text-center">
                                                 @{{outcomes[visit.outcome]}}
                                             </td>
-                                            <td>
-                                                @{{outcomes}}
-                                                @{{visit.outcome}}
-                                            </td>
                                             <td class="col-md-2 text-left">
                                                 @{{ visit.remarks }}
                                             </td>
@@ -708,9 +704,6 @@
             </div>
 
             <script src="/js/operation_worksheet.js"></script>
-            <script>
-                let outcomes = {!! json_encode($outletVisits::OUTCOMES) !!}
-            </script>
         </div>
         </div>
     </div>
