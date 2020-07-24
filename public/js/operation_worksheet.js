@@ -810,8 +810,8 @@ var app = angular.module('app', [
                         lng: data.results[0].LONGITUDE,
                     }
                     $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
-                        $scope.alldata[index].del_lat = data.del_lat;
-                        $scope.alldata[index].del_lng = data.del_lng;
+                        $scope.people[index].del_lat = data.del_lat;
+                        $scope.people[index].del_lng = data.del_lng;
 
                         let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                         var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
@@ -834,7 +834,7 @@ var app = angular.module('app', [
 
             }else {
                 $scope.coordsArr = [];
-                $scope.alldata.forEach(function (person, key) {
+                $scope.people.forEach(function (person, key) {
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
@@ -857,8 +857,8 @@ var app = angular.module('app', [
                             }
                             $scope.coordsArr.push(coord)
                             $http.post('/api/person/storelatlng/' + person.id, coord).success(function (data) {
-                                $scope.alldata[key].del_lat = data.del_lat;
-                                $scope.alldata[key].del_lng = data.del_lng;
+                                $scope.people[key].del_lat = data.del_lat;
+                                $scope.people[key].del_lng = data.del_lng;
                             });
                         });
                     }
