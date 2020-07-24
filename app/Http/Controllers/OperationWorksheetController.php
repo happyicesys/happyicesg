@@ -1001,6 +1001,15 @@ class OperationWorksheetController extends Controller
                             :
                             '';
 
+                $fontColor = 'Black';
+
+                if($color) {
+                    switch($color) {
+                        case 'Green':
+                            $fontColor = 'White';
+                            break;
+                    }
+                }
 
                 $alldata[$index1][$index2] = [
                     'id' => $id,
@@ -1008,6 +1017,7 @@ class OperationWorksheetController extends Controller
                     'total' => $total,
                     'items' => $items,
                     'color' => $color,
+                    'font' => $fontColor,
                     'bool_transaction' => $bool_transaction,
                 ];
             }
