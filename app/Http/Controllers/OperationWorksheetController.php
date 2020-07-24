@@ -1017,7 +1017,7 @@ class OperationWorksheetController extends Controller
                     'total' => $total,
                     'items' => $items,
                     'color' => $color,
-                    'font' => $fontColor,
+                    'font_color' => $fontColor,
                     'bool_transaction' => $bool_transaction,
                 ];
             }
