@@ -763,6 +763,7 @@ class OperationWorksheetController extends Controller
     {
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
+/*
         $transactions = DB::table('deals')
                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                             ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
@@ -785,7 +786,26 @@ class OperationWorksheetController extends Controller
         $transactionsId = [];
         foreach($transactions as $transaction) {
             array_push($transactionsId, $transaction->transaction_id);
-        }
+        } */
+
+        $last3 = DB::raw( "(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3");
 
         $last2 = DB::raw( "(
             SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
@@ -837,7 +857,7 @@ class OperationWorksheetController extends Controller
             WHERE x.id = (
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' or a.status='Cancelled')
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1
                 )
@@ -872,16 +892,10 @@ class OperationWorksheetController extends Controller
                             DB::raw('SUBSTRING(people.preferred_days, 9, 1) AS friday'),
                             DB::raw('SUBSTRING(people.preferred_days, 11, 1) AS saturday'),
                             DB::raw('SUBSTRING(people.preferred_days, 13, 1) AS sunday'),
-                            DB::raw('SUBSTRING(people.area_group, 1, 1) AS west'),
-                            DB::raw('SUBSTRING(people.area_group, 3, 1) AS east'),
-                            DB::raw('SUBSTRING(people.area_group, 5, 1) AS others'),
-                            DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
-                            DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
-                            DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
-                            'people.preferred_days', 'people.area_group', 'people.zone_id', 'people.account_manager', 'custcategories.map_icon_file',
+                            'people.preferred_days', 'people.area_group', 'people.zone_id', 'people.account_manager',
                             'account_manager.name AS account_manager_name',
                         'profiles.id AS profile_id',
-                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory',
+                        'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
                         'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
                         DB::raw('CASE
@@ -971,7 +985,7 @@ class OperationWorksheetController extends Controller
                 $deals =  DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->whereIn('transaction_id', $transactionsId)
+                        // ->whereIn('transaction_id', $transactionsId)
                         ->where('transactions.person_id', $person->person_id)
                         ->whereDate('transactions.delivery_date', '=', $date);
 

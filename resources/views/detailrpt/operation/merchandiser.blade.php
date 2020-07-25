@@ -297,7 +297,7 @@
             </div>
             {!! Form::close() !!}
 
-                <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+                <div class="table-responsive hidden-xs" id="exportable" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
@@ -466,7 +466,7 @@
                 </div>
 
                 {{-- mobile view --}}
-                <div class="hidden-xs hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
+                <div class="hidden-lg hidden-md hidden-sm" style="padding-top: 20px;">
                     <table id="datatable" class="table table-list-search table-bordered table-fixedheader" dir-paginate="person in people | itemsPerPage:itemsPerPage" pagination-id="operation_worksheet" total-items="totalCount" current-page="currentPage">
                         <thead style="font-size: 12px;">
                         <tr style="background-color: #DDFDF8">
