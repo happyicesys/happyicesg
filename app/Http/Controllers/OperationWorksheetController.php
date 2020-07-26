@@ -47,6 +47,12 @@ class OperationWorksheetController extends Controller
         return view('detailrpt.operation.merchandiser');
     }
 
+    // return vending machine mobile page()
+    public function getMerchandiserMobileIndex()
+    {
+        return view('detailrpt.operation.merchandiser_mobile');
+    }
+
     // get operation worksheet api()
     public function getOperationWorksheetIndexApi()
     {

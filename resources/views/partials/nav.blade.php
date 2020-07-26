@@ -310,6 +310,7 @@
                         <ul class="dropdown-menu">
                             <li class="text-left"><a href="/operation/worksheet"> Worksheet</a></li>
                             <li class="text-left"><a href="/operation/merchandiser"> Merchandiser</a></li>
+                            <li class="text-left"><a href="/operation/merchandiser-mobile"> Merchandiser (Mobile)</a></li>
                         </ul>
                     </li>
                 @endif
