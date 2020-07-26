@@ -764,15 +764,12 @@ class OperationWorksheetController extends Controller
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
         $prevStr = "(
-                    SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date,
-                    DATE(x.delivery_date, '%a') AS day, x.total_qty,
-                    y.id AS person_id,
-                    ROUND((CASE WHEN x.gst=1 THEN (
-                        CASE
-                        WHEN x.is_gst_inclusive=0
-                        THEN total*((100+x.gst_rate)/100)
-                        ELSE x.total
-                        END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total
+                    SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                            CASE
+                            WHEN x.is_gst_inclusive=0
+                            THEN total*((100+x.gst_rate)/100)
+                            ELSE x.total
+                            END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
                     FROM transactions x
                     LEFT JOIN people y ON x.person_id=y.id
                     WHERE x.id = (
@@ -798,13 +795,12 @@ class OperationWorksheetController extends Controller
                     GROUP BY y.id
                     ) last2";
 
-        $last .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+        $last .= "      AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                         ORDER BY a.delivery_date
                         DESC LIMIT 1
                         )
                     GROUP BY y.id
                     ) last";
-
 
         $outletVisits = DB::raw( "(
             SELECT DATE(MAX(date)) AS date, person_id
