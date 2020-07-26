@@ -347,7 +347,9 @@
                                     ID Name
                                 </th>
                                 <th class="col-md-1 text-left" colspan="2">
-                                    @{{person.company}}
+                                    <a href="/person/@{{ person.person_id }}">
+                                        @{{ person.cust_id[0] == 'D' || person.cust_id[0] == 'H' ? person.name : person.company }}
+                                    </a>
                                     <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person, $index)"><i class="fa fa-map-o"></i></button>
                                 </th>
                             </tr>
