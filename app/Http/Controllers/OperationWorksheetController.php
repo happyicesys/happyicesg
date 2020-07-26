@@ -764,43 +764,122 @@ class OperationWorksheetController extends Controller
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
         $prevStr = "(
-                    SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                            CASE
-                            WHEN x.is_gst_inclusive=0
-                            THEN total*((100+x.gst_rate)/100)
-                            ELSE x.total
-                            END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-                    FROM transactions x
-                    LEFT JOIN people y ON x.person_id=y.id
-                    WHERE x.id = (
-                        SELECT a.id FROM transactions a
-                        WHERE a.person_id=y.id
-                    ";
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id";
+/*
+        $last3 = DB::raw( "(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3");
+
+        $last2 = DB::raw( "(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1,1
+                )
+            GROUP BY y.id
+        ) last2");
+
+        $last = DB::raw("(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1
+                )
+            GROUP BY y.id
+        ) last");
+
+        $last_deliver_cancel = DB::raw("(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id
+                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1
+                )
+            GROUP BY y.id
+        ) last_deliver_cancel"); */
 
         $last3 = $prevStr;
         $last2 = $prevStr;
         $last = $prevStr;
 
-        $last3 .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
-                        ORDER BY a.delivery_date
-                        DESC LIMIT 2,1
-                        )
-                    GROUP BY y.id
-                    ) last3";
+        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3";
 
-        $last2 .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
-                        ORDER BY a.delivery_date
-                        DESC LIMIT 1,1
-                        )
-                    GROUP BY y.id
-                    ) last2";
+        $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1,1
+                )
+            GROUP BY y.id
+        ) last2";
 
-        $last .= "      AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                        ORDER BY a.delivery_date
-                        DESC LIMIT 1
-                        )
-                    GROUP BY y.id
-                    ) last";
+        $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 1
+                )
+            GROUP BY y.id
+        ) last";
+
+        $last3 = DB::raw($last3);
+        $last2 = DB::raw($last2);
+        $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
             SELECT DATE(MAX(date)) AS date, person_id
