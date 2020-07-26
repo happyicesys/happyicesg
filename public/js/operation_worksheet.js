@@ -936,7 +936,7 @@ var app = angular.module('app', [
 
     app.filter('momenthuman', function() {
         return function(dateString) {
-            return moment(dateString).humanize();
+            return moment(dateString).fromNow();
         };
     });
 
