@@ -922,9 +922,9 @@ class OperationWorksheetController extends Controller
 
         if($people) {
             foreach($people as $person) {
-                $prevDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops_deldate);
-                $prevTwoDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops2_deldate);
-                $prevThreeDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops3_deldate);
+                $prevDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops_deldate, 1);
+                $prevTwoDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops2_deldate, 2);
+                $prevThreeDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops3_deldate, 3);
                 $person['last'] = $prevDeals;
                 $person['last2'] = $prevTwoDeals;
                 $person['last3'] = $prevThreeDeals;
@@ -1028,7 +1028,7 @@ class OperationWorksheetController extends Controller
         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
         ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
         ->where('x.person_id', $person_id)
-        ->whereDate('x.delivery_date', '=', $delivery_date)
+        // ->whereDate('x.delivery_date', '=', $delivery_date)
         ->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))
         ->whereRaw("
             x.id = (SELECT a.id FROM
