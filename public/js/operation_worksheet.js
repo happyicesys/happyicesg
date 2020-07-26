@@ -540,7 +540,7 @@ var app = angular.module('app', [
         }
 
         $scope.changeColor = function(alldata, parent_index, index) {
-            if(!alldata.qty) {
+            if(!alldata.qty[0]['qty']) {
                 $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
                     $scope.alldata[parent_index][index]['color'] = data.color;
                 });
