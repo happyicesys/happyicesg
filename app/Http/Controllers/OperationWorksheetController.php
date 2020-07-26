@@ -780,21 +780,21 @@ class OperationWorksheetController extends Controller
         $last2 = $prevStr;
         $last = $prevStr;
 
-        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date
                 DESC LIMIT 2,1
                 )
             GROUP BY y.id
         ) last3";
 
-        $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+        $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1,1
                 )
             GROUP BY y.id
         ) last2";
 
-        $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+        $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date
                 DESC LIMIT 1
                 )
