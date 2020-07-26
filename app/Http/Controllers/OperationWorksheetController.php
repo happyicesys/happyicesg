@@ -919,7 +919,7 @@ class OperationWorksheetController extends Controller
                 $prevDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops_deldate);
                 $prevTwoDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops2_deldate);
                 $prevThreeDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops3_deldate);
-                array_push($people[$personIndex]['last'], $prevDeals);
+                $person['last'] = $prevDeals;
                 // array_push($people[$personIndex], ['last2' => $prevTwoDeals]);
                 // array_push($people[$personIndex], ['last3' => $prevThreeDeals]);
                 // $people[$personIndex]->put('last2', $prevTwoDeals);
