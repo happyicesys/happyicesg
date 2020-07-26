@@ -763,106 +763,48 @@ class OperationWorksheetController extends Controller
     {
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
-/*
-        $transactions = DB::table('deals')
-                            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                            ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
-                            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                            ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                            ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
-                            ->select(
-                                'transactions.id AS transaction_id', 'transactions.delivery_date AS delivery_date',
-                                'people.id AS person_id', 'people.cust_id', 'people.name', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.zone_id', 'zones.name AS zone_name',
-                                'profiles.id AS profile_id',
-                                'custcategories.id AS custcategory_id',
-                                'items.id AS item_id', 'items.is_inventory'
-                            );
-        $transactions = $this->operationWorksheetDBFilter($datesVar, $transactions);
-        $transactions = $transactions
-                            ->groupBy('transactions.id')
-                            ->get();
+        $prevStr = "(
+                    SELECT transactions.id AS transaction_id, DATE(transactions.delivery_date) AS delivery_date,
+                    DATE(transactions.delivery_date, '%a') AS day, transactions.total_qty,
+                    people.id AS person_id
+                    ROUND((CASE WHEN x.gst=1 THEN (
+                        CASE
+                        WHEN x.is_gst_inclusive=0
+                        THEN total*((100+x.gst_rate)/100)
+                        ELSE x.total
+                        END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total
+                    FROM transactions x
+                    LEFT JOIN people y ON x.person_id=y.id
+                    WHERE x.id = (
+                        SELECT a.id FROM transactions a
+                        WHERE a.person_id=y.id
+                    ";
 
-        $transactionsId = [];
-        foreach($transactions as $transaction) {
-            array_push($transactionsId, $transaction->transaction_id);
-        } */
+        $last3 = $prevStr;
+        $last2 = $prevStr;
+        $last = $prevStr;
 
-        $last3 = DB::raw( "(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
-                SELECT a.id FROM transactions a
-                WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
-                ORDER BY a.delivery_date
-                DESC LIMIT 2,1
-                )
-            GROUP BY y.id
-        ) last3");
+        $last3 .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                        ORDER BY a.delivery_date
+                        DESC LIMIT 2,1
+                        )
+                    GROUP BY y.id
+                    ) last3";
 
-        $last2 = DB::raw( "(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
-                SELECT a.id FROM transactions a
-                WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
-                ORDER BY a.delivery_date
-                DESC LIMIT 1,1
-                )
-            GROUP BY y.id
-        ) last2");
+        $last2 .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                        ORDER BY a.delivery_date
+                        DESC LIMIT 1,1
+                        )
+                    GROUP BY y.id
+                    ) last2";
 
-        $last = DB::raw("(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
-                SELECT a.id FROM transactions a
-                WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 1
-                )
-            GROUP BY y.id
-        ) last");
+        $last .= "     AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                        ORDER BY a.delivery_date
+                        DESC LIMIT 1
+                        )
+                    GROUP BY y.id
+                    ) last";
 
-        $last_deliver_cancel = DB::raw("(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
-                SELECT a.id FROM transactions a
-                WHERE a.person_id=y.id
-                AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 1
-                )
-            GROUP BY y.id
-        ) last_deliver_cancel");
 
         $outletVisits = DB::raw( "(
             SELECT DATE(MAX(date)) AS date, person_id
@@ -870,14 +812,11 @@ class OperationWorksheetController extends Controller
             GROUP BY person_id
         ) outlet_visits");
 
-        $people =   Person::with(['personassets', 'outletVisits' => function($query) {
-                        $query->latest('date');
-                    }, 'outletVisits.creator'])
-                    ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+        $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
                     ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
-                    ->leftJoin($last_deliver_cancel, 'people.id', '=', 'last_deliver_cancel.person_id')
+                    ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
@@ -899,9 +838,9 @@ class OperationWorksheetController extends Controller
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
                         'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
                         DB::raw('CASE
-                                    WHEN (DATEDIFF(now(), last_deliver_cancel.delivery_date) >= 8 AND DATEDIFF(now(), last_deliver_cancel.delivery_date) < 15)
+                                    WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
                                     THEN "blue"
-                                    WHEN DATEDIFF(now(), last_deliver_cancel.delivery_date) >= 15
+                                    WHEN DATEDIFF(now(), last.delivery_date) >= 15
                                     THEN "red"
                                 ELSE
                                     "black"

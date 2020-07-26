@@ -516,6 +516,7 @@
                                 </th>
                                 <th class="col-md-1 text-left" colspan="2">
                                     @{{person.company}}
+                                    <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person, $index)"><i class="fa fa-map-o"></i></button>
                                 </th>
                             </tr>
                             <tr>
@@ -536,6 +537,7 @@
                                     @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
                                     @{{person.outletvisit_date | date : "EEE"}}<br>
                                 </th>
+                                <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                             </tr>
                             <tr>
                                 <td colspan="1"></td>
