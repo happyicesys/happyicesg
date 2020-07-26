@@ -766,7 +766,7 @@ class OperationWorksheetController extends Controller
         $prevStr = "(
                     SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date,
                     DATE(x.delivery_date, '%a') AS day, x.total_qty,
-                    y.id AS person_id
+                    y.id AS person_id,
                     ROUND((CASE WHEN x.gst=1 THEN (
                         CASE
                         WHEN x.is_gst_inclusive=0
