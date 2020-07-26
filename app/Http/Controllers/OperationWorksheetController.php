@@ -787,22 +787,22 @@ class OperationWorksheetController extends Controller
         $last = $prevStr;
 
         $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 2,1
+                ORDER BY a.delivery_date DESC a.created_at DESC
+                LIMIT 2,1
                 )
             GROUP BY y.id
         ) last3";
 
         $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 1,1
+                ORDER BY a.delivery_date DESC a.created_at DESC
+                LIMIT 1,1
                 )
             GROUP BY y.id
         ) last2";
 
         $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 1
+                ORDER BY a.delivery_date DESC a.created_at DESC
+                LIMIT 1
                 )
             GROUP BY y.id
         ) last";
@@ -1025,7 +1025,7 @@ class OperationWorksheetController extends Controller
             x.id = (SELECT a.id FROM
             transactions a WHERE a.person_id=x.person_id
             AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-            ORDER BY a.delivery_date DESC ". $positionStr.")"
+            ORDER BY a.delivery_date DESC a.created_at DESC ". $positionStr.")"
             )
         ->groupBy('items.id')
         ->get();
