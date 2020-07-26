@@ -809,7 +809,7 @@ var app = angular.module('app', [
                         lat: data.results[0].LATITUDE,
                         lng: data.results[0].LONGITUDE,
                     }
-                    $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
+                    $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
                         $scope.people[index].del_lat = data.del_lat;
                         $scope.people[index].del_lng = data.del_lng;
 
@@ -856,7 +856,7 @@ var app = angular.module('app', [
                                 lng: data.results[0].LONGITUDE,
                             }
                             $scope.coordsArr.push(coord)
-                            $http.post('/api/person/storelatlng/' + person.id, coord).success(function (data) {
+                            $http.post('/api/person/storelatlng/' + person.person_id, coord).success(function (data) {
                                 $scope.people[key].del_lat = data.del_lat;
                                 $scope.people[key].del_lng = data.del_lng;
                             });
