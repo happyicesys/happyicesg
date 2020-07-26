@@ -1010,15 +1010,60 @@ class OperationWorksheetController extends Controller
         ];
     }
 
-    private function getGroupedItemsByPersonIdAndDeliveryDate($person_id, $delivery_date) {
+    private function getGroupedItemsByPersonIdAndDeliveryDate($person_id, $delivery_date, $position) {
+        $positionStr = "";
+        switch($position) {
+            case '1':
+                $positionStr = " LIMIT 1";
+                break;
+            case '2':
+                $positionStr = " LIMIT 1, 1";
+                break;
+            case '3':
+                $positionStr = " LIMIT 2, 1";
+                break;
+        }
+
         $deals =  DB::table('deals')
         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        ->where('transactions.person_id', $person_id)
-        ->whereDate('transactions.delivery_date', '=', $delivery_date)
+        ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
+        ->where('x.person_id', $person_id)
+        ->whereDate('x.delivery_date', '=', $delivery_date)
         ->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))
+        ->whereRaw("
+            x.id = (SELECT a.id FROM
+            transactions a WHERE a.person_id=x.person_id
+            AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+            ORDER BY a.delivery_date DESC ". $positionStr.")"
+            )
         ->groupBy('items.id')
         ->get();
+
+/*
+        $prevStr = "(
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+                    CASE
+                    WHEN x.is_gst_inclusive=0
+                    THEN total*((100+x.gst_rate)/100)
+                    ELSE x.total
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+            FROM transactions x
+            LEFT JOIN people y ON x.person_id=y.id
+            WHERE x.id = (
+                SELECT a.id FROM transactions a
+                WHERE a.person_id=y.id";
+
+        $last3 = $prevStr;
+        $last2 = $prevStr;
+        $last = $prevStr;
+
+        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                ORDER BY a.delivery_date
+                DESC LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3"; */
+
 
         return $deals;
     }
