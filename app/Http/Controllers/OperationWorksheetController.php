@@ -1008,8 +1008,8 @@ class OperationWorksheetController extends Controller
         $deals =  DB::table('deals')
         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        ->where('transactions.person_id', $person->person_id)
-        ->whereDate('transactions.delivery_date', '=', $person->ops_deldate)
+        ->where('transactions.person_id', $person_id)
+        ->whereDate('transactions.delivery_date', '=', $delivery_date)
         ->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))
         ->groupBy('items.id')
         ->get();
