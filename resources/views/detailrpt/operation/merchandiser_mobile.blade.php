@@ -14,11 +14,11 @@
 @section('content')
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/operation/worksheet"><h1>Merchandiser - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i></h1></a>
+        <a class="title_hyper pull-left" href="/operation/merchandiser-mobile"><h1>Merchandiser (Mobile) - {{ $DETAILRPT_TITLE }} <i class="fa fa-book"></i></h1></a>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            Merchandiser
+            Merchandiser (Mobile)
         </div>
         <div class="panel-body" style="font-size: 13px;">
         <div ng-app="app" ng-controller="merchandiserController" ng-cloak>
@@ -378,6 +378,7 @@
                                 </th>
                                 <td class="col-md-1" colspan="2">
                                     @{{person.ops_deldate | date : "yy-MM-dd"}} (@{{person.ops_day}})
+                                    (@{{person.ops_deldate | momenthuman}})
                                     <br>
                                     <span ng-if="person.last">
                                         <span ng-repeat="item in person.last">

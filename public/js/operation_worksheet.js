@@ -934,5 +934,11 @@ var app = angular.module('app', [
         }
     }
 
+    app.filter('momenthuman', function() {
+        return function(dateString) {
+            return moment(dateString).humanize();
+        };
+    });
+
 app.controller('operationWorksheetController', operationWorksheetController);
 app.controller('merchandiserController', merchandiserController);
