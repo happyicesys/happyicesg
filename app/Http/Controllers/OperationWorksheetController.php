@@ -764,9 +764,9 @@ class OperationWorksheetController extends Controller
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
         $prevStr = "(
-                    SELECT transactions.id AS transaction_id, DATE(transactions.delivery_date) AS delivery_date,
-                    DATE(transactions.delivery_date, '%a') AS day, transactions.total_qty,
-                    people.id AS person_id
+                    SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date,
+                    DATE(x.delivery_date, '%a') AS day, x.total_qty,
+                    y.id AS person_id
                     ROUND((CASE WHEN x.gst=1 THEN (
                         CASE
                         WHEN x.is_gst_inclusive=0
