@@ -931,15 +931,6 @@ class OperationWorksheetController extends Controller
             }
         }
 
-
-        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
-                ORDER BY a.delivery_date
-                DESC LIMIT 2,1
-                )
-            GROUP BY y.id
-        ) last3";
-
-
         $alldata = array();
 
         foreach($people as $index1 => $person) {
@@ -1013,14 +1004,14 @@ class OperationWorksheetController extends Controller
     private function getGroupedItemsByPersonIdAndDeliveryDate($person_id, $delivery_date, $position) {
         $positionStr = "";
         switch($position) {
-            case '1':
+            case 1:
                 $positionStr = " LIMIT 1";
                 break;
-            case '2':
-                $positionStr = " LIMIT 1, 1";
+            case 2:
+                $positionStr = " LIMIT 1,1";
                 break;
-            case '3':
-                $positionStr = " LIMIT 2, 1";
+            case 3:
+                $positionStr = " LIMIT 2,1";
                 break;
         }
 

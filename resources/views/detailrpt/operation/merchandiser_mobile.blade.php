@@ -405,6 +405,7 @@
                                 </th>
                                 <td class="col-md-1" colspan="2">
                                     @{{person.ops2_deldate | date : "yy-MM-dd"}} (@{{person.ops2_day}})
+                                    (@{{person.ops2_deldate | momenthuman}})
                                     <br>
                                     <span ng-if="person.last2">
                                         <span ng-repeat="item in person.last2">
@@ -431,6 +432,7 @@
                                 </th>
                                 <td class="col-md-1" colspan="2">
                                     @{{person.ops3_deldate | date : "yy-MM-dd"}} (@{{person.ops3_day}})
+                                    (@{{person.ops3_deldate | momenthuman}})
                                     <br>
                                     <span ng-if="person.last3">
                                         <span ng-repeat="item in person.last3">
