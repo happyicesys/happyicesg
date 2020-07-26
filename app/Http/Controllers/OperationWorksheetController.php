@@ -836,6 +836,7 @@ class OperationWorksheetController extends Controller
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
                         'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
+                        'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
                                     THEN "blue"
@@ -913,6 +914,26 @@ class OperationWorksheetController extends Controller
             $people = $people->paginate($pageNum);
         }
 
+        if($people) {
+            foreach($people as $personIndex => $person) {
+                $prevDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops_deldate);
+                $prevTwoDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops2_deldate);
+                $prevThreeDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops3_deldate);
+                $people[$personIndex]->put('last', $prevDeals);
+                $people[$personIndex]->put('last2', $prevTwoDeals);
+                $people[$personIndex]->put('last3', $prevThreeDeals);
+            }
+        }
+
+
+        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid')
+                ORDER BY a.delivery_date
+                DESC LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3";
+
+
         $alldata = array();
 
         foreach($people as $index1 => $person) {
@@ -981,6 +1002,19 @@ class OperationWorksheetController extends Controller
             'dates' => $dates,
             'alldata' => $alldata
         ];
+    }
+
+    private function getGroupedItemsByPersonIdAndDeliveryDate($person_id, $delivery_date) {
+        $deals =  DB::table('deals')
+        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+        ->where('transactions.person_id', $person->person_id)
+        ->whereDate('transactions.delivery_date', '=', $person->ops_deldate)
+        ->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))
+        ->groupBy('items.id')
+        ->get();
+
+        return $deals;
     }
 
     private function operationDatesSync($transaction_id, $newdate = null)
