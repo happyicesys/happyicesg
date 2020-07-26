@@ -545,13 +545,76 @@
                                     Last Transac
                                 </th>
                                 <td class="col-md-1" colspan="2">
-                                    @{{person.ops2_deldate | date : "yy-MM-dd"}}
+                                    @{{person.ops_deldate | date : "yy-MM-dd"}} (@{{person.ops_day}})
                                     <br>
-                                    @{{person.ops2_day}}
+                                    <span ng-if="person.last">
+                                        <span ng-repeat="item in person.last">
+                                            @{{item.product_id}} (@{{item.qty}})
+                                            <br>
+                                        </span>
+                                    </span>
+                                    <span class="text-right">
+                                        <strong>
+                                            <span ng-if="person.ops_total_qty">
+                                                <br> Qty @{{person.ops_total_qty}} <br>
+                                            </span>
+                                            <span ng-if="person.ops_total">
+                                                Amt @{{person.ops_total}}
+                                            </span>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last 2 Transac
+                                </th>
+                                <td class="col-md-1" colspan="2">
+                                    @{{person.ops2_deldate | date : "yy-MM-dd"}} (@{{person.ops2_day}})
                                     <br>
-                                    @{{person.ops2_total_qty}}
+                                    <span ng-if="person.last2">
+                                        <span ng-repeat="item in person.last2">
+                                            @{{item.product_id}} (@{{item.qty}})
+                                            <br>
+                                        </span>
+                                    </span>
+                                    <span class="text-right">
+                                        <strong>
+                                            <span ng-if="person.ops2_total_qty">
+                                                <br> Qty @{{person.ops2_total_qty}} <br>
+                                            </span>
+                                            <span ng-if="person.ops2_total">
+                                                Amt @{{person.ops2_total}}
+                                            </span>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last 3 Transac
+                                </th>
+                                <td class="col-md-1" colspan="2">
+                                    @{{person.ops3_deldate | date : "yy-MM-dd"}} (@{{person.ops3_day}})
                                     <br>
-                                    @{{person.ops2_total}}
+                                    <span ng-if="person.last3">
+                                        <span ng-repeat="item in person.last3">
+                                            @{{item.product_id}} (@{{item.qty}})
+                                            <br>
+                                        </span>
+                                    </span>
+                                    <span class="text-right">
+                                        <strong>
+                                            <span ng-if="person.ops3_total_qty">
+                                                <br> Qty @{{person.ops3_total_qty}} <br>
+                                            </span>
+                                            <span ng-if="person.ops3_total">
+                                                Amt @{{person.ops3_total}}
+                                            </span>
+                                        </strong>
+                                    </span>
                                 </td>
                             </tr>
 
