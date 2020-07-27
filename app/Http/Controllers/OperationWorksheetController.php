@@ -858,7 +858,7 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'),
-                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.date AS outletvisit_day', 'outlet_visits.outcome',
+                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
                                     THEN "blue"

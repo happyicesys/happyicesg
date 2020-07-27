@@ -370,7 +370,7 @@
                                 <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}" colspan="2">
                                     @{{person.outletvisit_date}}<br>
                                     @{{person.outletvisit_day}}<br>
-                                    @{{person.outcome}} <br>
+                                    @{{outcomes[person.outcome]}} <br>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </th>
                             </tr>
