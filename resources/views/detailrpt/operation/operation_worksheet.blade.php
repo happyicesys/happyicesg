@@ -425,24 +425,24 @@
                     </td>
                     <td class="col-md-1 text-left">
                         <span class="row">
-                            @{{person.ops2_deldate | date : "yy-MM-dd"}}
+                            @{{person.last2.transaction.delivery_date}}
                             <br>
-                            @{{person.ops2_day}}
+                            @{{person.last2.transaction.day}}
                             <br>
-                            @{{person.ops2_total_qty}}
+                            @{{person.last2.transaction.total_qty}}
                             <br>
-                            @{{person.ops2_total}}
+                            @{{person.last2.transaction.total}}
                         </span>
                     </td>
                     <td class="col-md-1 text-left">
-                        <span class="row" ng-style="{'color': person.last_date_color}">
-                            @{{person.ops_deldate | date : "yy-MM-dd"}}
+                        <span class="row" ng-style="{'color': person.last1.transaction.date_color}">
+                            @{{person.last1.transaction.delivery_date}}
                             <br>
-                            @{{person.ops_day}}
+                            @{{person.last1.transaction.day}}
                             <br>
-                            @{{person.ops_total_qty}}
+                            @{{person.last1.transaction.total_qty}}
                             <br>
-                            @{{person.ops_total}}
+                            @{{person.last1.transaction.total}}
                         </span>
                     </td>
                     <td class="col-md-1 text-center td_edit" style="min-width: 70px;" ng-repeat="data in alldata[$index]" ng-click="changeColor(data, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(data, $parent.$index, $index)}">
