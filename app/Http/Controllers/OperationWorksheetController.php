@@ -1033,7 +1033,7 @@ class OperationWorksheetController extends Controller
         ->select(
             'items.product_id',
             DB::raw('ROUND(SUM(deals.qty), 1) AS qty'),
-            DB::raw('(CASE WHEN transactions.status = "Cancelled" THEN "Red" ELSE "Black" END) AS color')
+            DB::raw('(CASE WHEN x.status = "Cancelled" THEN "Red" ELSE "Black" END) AS color')
             )
         ->whereRaw("
             x.id = (SELECT a.id FROM
