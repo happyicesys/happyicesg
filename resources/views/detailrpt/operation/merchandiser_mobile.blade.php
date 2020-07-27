@@ -386,7 +386,11 @@
                                     Last Visit
                                 </th>
                                 <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}" colspan="2">
-                                    @{{person.outletvisit_date}} (@{{person.outletvisit_day}})<br>
+                                    @{{person.outletvisit_date}}
+                                    <span ng-if="person.outletvisit_day">
+                                      (@{{person.outletvisit_day}})
+                                    </span>
+                                    <br>
                                     @{{outcomes[person.outcome]}} <br>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </th>
@@ -410,8 +414,10 @@
                                     Last Transac
                                 </th>
                                 <td class="col-md-1" colspan="2" ng-style="{'color': person.last1.transaction.date_color}">
-                                    @{{person.last1.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last1.transaction.day}})
-                                    (@{{person.last1.transaction.delivery_date | momenthuman}})
+                                    <span ng-if="person.last1.transaction.delivery_date">
+                                      @{{person.last1.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last1.transaction.day}})
+                                      (@{{person.last1.transaction.delivery_date | momenthuman}})
+                                    </span>
                                     <br>
                                     <span ng-if="person.last1">
                                         <span ng-repeat="item in person.last1.deals">
@@ -433,9 +439,11 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 2 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last2.transaction.date_color}">
-                                    @{{person.last2.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last2.transaction.day}})
-                                    (@{{person.last2.transaction.delivery_date | momenthuman}})
+                                <td class="col-md-1" colspan="2">
+                                    <span ng-if="person.last2.transaction.delivery_date">
+                                      @{{person.last2.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last2.transaction.day}})
+                                      (@{{person.last2.transaction.delivery_date | momenthuman}})
+                                    </span>
                                     <br>
                                     <span ng-if="person.last2">
                                         <span ng-repeat="item in person.last2.deals">
@@ -457,9 +465,11 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 3 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last3.transaction.date_color}">
-                                    @{{person.last3.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last3.transaction.day}})
-                                    (@{{person.last3.transaction.delivery_date | momenthuman}})
+                                <td class="col-md-1" colspan="2">
+                                    <span ng-if="person.last3.transaction.delivery_date">
+                                      @{{person.last3.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last3.transaction.day}})
+                                      (@{{person.last3.transaction.delivery_date | momenthuman}})
+                                    </span>
                                     <br>
                                     <span ng-if="person.last3">
                                         <span ng-repeat="item in person.last3.deals">
@@ -481,9 +491,11 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 4 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last4.transaction.date_color}">
-                                    @{{person.last4.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last4.transaction.day}})
-                                    (@{{person.last4.transaction.delivery_date | momenthuman}})
+                                <td class="col-md-1" colspan="2">
+                                    <span ng-if="person.last4.transaction.delivery_date">
+                                      @{{person.last4.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last4.transaction.day}})
+                                      (@{{person.last4.transaction.delivery_date | momenthuman}})
+                                    </span>
                                     <br>
                                     <span ng-if="person.last4">
                                         <span ng-repeat="item in person.last4.deals">
@@ -505,9 +517,11 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 5 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last5.transaction.date_color}">
-                                    @{{person.last5.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last5.transaction.day}})
-                                    (@{{person.last5.transaction.delivery_date | momenthuman}})
+                                <td class="col-md-1" colspan="2">
+                                    <span ng-if="person.last5.transaction.delivery_date">
+                                      @{{person.last5.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last5.transaction.day}})
+                                      (@{{person.last5.transaction.delivery_date | momenthuman}})
+                                    </span>
                                     <br>
                                     <span ng-if="person.last5">
                                         <span ng-repeat="item in person.last5.deals">
