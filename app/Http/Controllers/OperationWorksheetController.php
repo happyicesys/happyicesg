@@ -775,7 +775,7 @@ class OperationWorksheetController extends Controller
                     WHEN x.is_gst_inclusive=0
                     THEN total*((100+x.gst_rate)/100)
                     ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
+                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END)) AS total, ROUND(x.total_qty, 1) AS total_qty
             FROM transactions x
             LEFT JOIN people y ON x.person_id=y.id
             WHERE x.id = (
@@ -826,9 +826,9 @@ class OperationWorksheetController extends Controller
 
         $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                    ->leftJoin($last, 'people.id', '=', 'last.person_id')
-                    ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
-                    ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
+                    // ->leftJoin($last, 'people.id', '=', 'last.person_id')
+                    // ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
+                    // ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
                     ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
@@ -847,9 +847,10 @@ class OperationWorksheetController extends Controller
                             'account_manager.name AS account_manager_name',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
-                        'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
-                        'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
-                        'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
+                        // 'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
+                        // 'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
+                        // 'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
+/*
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
                                     THEN "blue"
@@ -857,7 +858,7 @@ class OperationWorksheetController extends Controller
                                     THEN "red"
                                 ELSE
                                     "black"
-                                END AS last_date_color'),
+                                END AS last_date_color'), */
                         'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
@@ -866,10 +867,11 @@ class OperationWorksheetController extends Controller
                                     THEN "red"
                                 ELSE
                                     "black"
-                                END AS outletvisit_date_color'),
+                                END AS outletvisit_date_color')
+/*
                         DB::raw('(CASE WHEN last.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last_color'),
                         DB::raw('(CASE WHEN last2.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last2_color'),
-                        DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color')
+                        DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color') */
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
@@ -932,12 +934,9 @@ class OperationWorksheetController extends Controller
 
         if($people) {
             foreach($people as $person) {
-                $prevDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops_deldate, 1);
-                $prevTwoDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops2_deldate, 2);
-                $prevThreeDeals = $this->getGroupedItemsByPersonIdAndDeliveryDate($person->person_id, $person->ops3_deldate, 3);
-                $person['last'] = $prevDeals;
-                $person['last2'] = $prevTwoDeals;
-                $person['last3'] = $prevThreeDeals;
+                for($i=1; $i<=5; $i++) {
+                    $person['last'.$i] = $this->getPersonTransactionHistory($person->person_id, $i);
+                }
             }
         }
 
@@ -1011,66 +1010,50 @@ class OperationWorksheetController extends Controller
         ];
     }
 
-    private function getGroupedItemsByPersonIdAndDeliveryDate($person_id, $delivery_date, $position) {
+    private function getPersonTransactionHistory($person_id, $position) {
+        $indexPosition = $position - 1;
         $positionStr = "";
-        switch($position) {
-            case 1:
-                $positionStr = " LIMIT 1";
-                break;
-            case 2:
-                $positionStr = " LIMIT 1,1";
-                break;
-            case 3:
-                $positionStr = " LIMIT 2,1";
-                break;
-        }
+        $positionStr = " LIMIT ".$indexPosition.", 1";
 
         $deals =  DB::table('deals')
         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
         ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
         ->where('x.person_id', $person_id)
-        // ->whereDate('x.delivery_date', '=', $delivery_date)
-        ->select(
-            'items.product_id',
-            DB::raw('ROUND(SUM(deals.qty), 1) AS qty'),
-            DB::raw('(CASE WHEN x.status = "Cancelled" THEN "Red" ELSE "Black" END) AS color')
-            )
         ->whereRaw("
             x.id = (SELECT a.id FROM
             transactions a WHERE a.person_id=x.person_id
             AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
             ORDER BY a.delivery_date DESC, a.created_at DESC ". $positionStr.")"
-            )
-        ->groupBy('items.id')
-        ->get();
+        );
 
-/*
-        $prevStr = "(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
-                    CASE
-                    WHEN x.is_gst_inclusive=0
-                    THEN total*((100+x.gst_rate)/100)
-                    ELSE x.total
-                    END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END), 2) AS total, x.total_qty
-            FROM transactions x
-            LEFT JOIN people y ON x.person_id=y.id
-            WHERE x.id = (
-                SELECT a.id FROM transactions a
-                WHERE a.person_id=y.id";
+        $transaction = clone $deals;
+        $transaction = $transaction->select(
+                        'x.id',
+                        DB::raw('DATE(x.delivery_date) AS delivery_date'),
+                        DB::raw('DATE_FORMAT(x.delivery_date, "%a") AS day'),
+                        DB::raw('CASE
+                                    WHEN (DATEDIFF(now(), x.delivery_date) >= 8 AND DATEDIFF(now(), x.delivery_date) < 15)
+                                    THEN "blue"
+                                    WHEN DATEDIFF(now(), x.delivery_date) >= 15
+                                    THEN "red"
+                                ELSE
+                                    "black"
+                                END AS date_color')
+                    )
+                    ->groupBy('x.id')
+                    ->first();
 
-        $last3 = $prevStr;
-        $last2 = $prevStr;
-        $last = $prevStr;
-
-        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date
-                DESC LIMIT 2,1
+        $deals = $deals->select(
+                    'items.product_id',
+                    DB::raw('ROUND(SUM(deals.qty), 1) AS qty')
                 )
-            GROUP BY y.id
-        ) last3"; */
+                ->groupBy('items.id')
+                ->get();
 
-
-        return $deals;
+        return [
+            'transaction' => $transaction,
+            'deals' => $deals
+        ];
     }
 
     private function operationDatesSync($transaction_id, $newdate = null)

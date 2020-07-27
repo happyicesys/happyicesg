@@ -368,8 +368,7 @@
                                     Last Visit
                                 </th>
                                 <th class="col-md-1 text-left" ng-style="{'color': person.outletvisit_date_color}" colspan="2">
-                                    @{{person.outletvisit_date}}<br>
-                                    @{{person.outletvisit_day}}<br>
+                                    @{{person.outletvisit_date}} (@{{person.outletvisit_day}})<br>
                                     @{{outcomes[person.outcome]}} <br>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </th>
@@ -392,10 +391,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.ops_total_qty">
-                                                Qty @{{person.ops_total_qty}} <br>
-                                            </span>
-                                            <span ng-if="person.ops_total">
-                                                Amt @{{person.ops_total}}
+                                                Qty @{{person.ops_total_qty}}; Amt @{{person.ops_total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -419,10 +415,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.ops2_total_qty">
-                                                Qty @{{person.ops2_total_qty}} <br>
-                                            </span>
-                                            <span ng-if="person.ops2_total">
-                                                Amt @{{person.ops2_total}}
+                                                Qty @{{person.ops2_total_qty}}; Amt @{{person.ops2_total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -446,10 +439,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.ops3_total_qty">
-                                                Qty @{{person.ops3_total_qty}} <br>
-                                            </span>
-                                            <span ng-if="person.ops3_total">
-                                                Amt @{{person.ops3_total}}
+                                                Qty @{{person.ops3_total_qty}}; Amt @{{person.ops3_total}}
                                             </span>
                                         </strong>
                                     </span>
