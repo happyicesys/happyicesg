@@ -371,7 +371,6 @@
                                     @{{person.outletvisit_date}}<br>
                                     @{{person.outletvisit_day}}<br>
                                     @{{outcomes[person.outcome]}} <br>
-                                    @{{outcomes}}
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </th>
                             </tr>
