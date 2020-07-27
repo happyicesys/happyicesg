@@ -382,8 +382,8 @@
                                     <span ng-if="person.outletvisit_date">
                                         Last Visit<br>
                                         <span ng-style="{'color': person.outletvisit_date_color}">
-                                            @{{person.outletvisit_date | date : "yy-MM-dd"}}<br>
-                                            @{{person.outletvisit_date | date : "EEE"}}<br>
+                                            @{{person.outletvisit_date}}<br>
+                                            @{{person.outletvisit_day}}<br>
                                         </span>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
@@ -414,24 +414,24 @@
                                 </td>
                                 <td class="col-md-1 text-left" style="min-width: 75px; font-size: 12px;">
                                     <span class="row">
-                                        @{{person.ops2_deldate | date : "yy-MM-dd"}}
+                                        @{{person.last2.transaction.delivery_date}}
                                         <br>
-                                        @{{person.ops2_day}}
+                                        @{{person.last2.transaction.day}}
                                         <br>
-                                        @{{person.ops2_total_qty}}
+                                        @{{person.last2.transaction.total_qty}}
                                         <br>
-                                        @{{person.ops2_total}}
+                                        @{{person.last2.transaction.total}}
                                     </span>
                                 </td>
                                 <td class="col-md-1 text-left" style="min-width: 75px; font-size: 12px;">
-                                    <span class="row" ng-style="{'color': person.last_date_color}">
-                                        @{{person.ops_deldate | date : "yy-MM-dd"}}
+                                    <span class="row" ng-style="{'color': person.last1.transaction.date_color}">
+                                        @{{person.last1.transaction.delivery_date}}
                                         <br>
-                                        @{{person.ops_day}}
+                                        @{{person.last1.transaction.day}}
                                         <br>
-                                        @{{person.ops_total_qty}}
+                                        @{{person.last1.transaction.total_qty}}
                                         <br>
-                                        @{{person.ops_total}}
+                                        @{{person.last1.transaction.total}}
                                     </span>
                                 </td>
                                 <td class="col-md-1 text-center td_edit" style="min-width: 70px; font-size: 12px;" ng-repeat="alldata in alldata[$index]" ng-click="changeColor(alldata, $parent.$index, $index)" ng-style="{'background-color': getBackgroundColor(alldata, $parent.$index, $index), 'color': alldata.font_color}">

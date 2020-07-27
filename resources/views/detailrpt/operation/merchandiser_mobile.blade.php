@@ -428,7 +428,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.last1.transaction.total_qty">
-                                                Qty @{{person.last1.transaction.total_qty}}; Amt @{{person.last1.transaction.total}}
+                                                Qty @{{person.last1.transaction.total_qty}} ; Amt @{{person.last1.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -454,7 +454,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.last2.transaction.total_qty">
-                                                Qty @{{person.last2.transaction.total_qty}}; Amt @{{person.last2.transaction.total}}
+                                                Qty @{{person.last2.transaction.total_qty}} ; Amt @{{person.last2.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -480,7 +480,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.last3.transaction.total_qty">
-                                                Qty @{{person.last3.transaction.total_qty}}; Amt @{{person.last3.transaction.total}}
+                                                Qty @{{person.last3.transaction.total_qty}} ; Amt @{{person.last3.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -506,7 +506,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.last4.transaction.total_qty">
-                                                Qty @{{person.last4.transaction.total_qty}}; Amt @{{person.last4.transaction.total}}
+                                                Qty @{{person.last4.transaction.total_qty}} ; Amt @{{person.last4.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -532,7 +532,7 @@
                                     <span class="text-right">
                                         <strong>
                                             <span ng-if="person.last5.transaction.total_qty">
-                                                Qty @{{person.last5.transaction.total_qty}}; Amt @{{person.last5.transaction.total}}
+                                                Qty @{{person.last5.transaction.total_qty}} ; Amt @{{person.last5.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
