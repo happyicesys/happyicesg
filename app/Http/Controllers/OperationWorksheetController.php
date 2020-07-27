@@ -1049,7 +1049,7 @@ class OperationWorksheetController extends Controller
                         DB::raw('ROUND(x.total_qty, 1) AS total_qty')
                     )
                     ->groupBy('x.id');
-            dd($transaction);
+            dd($transaction->get());
                     // ->first();
 
         $deals = $deals->select(
