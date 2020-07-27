@@ -356,6 +356,24 @@
                             <tr>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Attn To
+                                </th>
+                                <th class="col-md-1 text-left" colspan="2">
+                                    @{{person.attn_name}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Contact
+                                </th>
+                                <th class="col-md-1 text-left" colspan="2">
+                                    @{{person.contact}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Acc Manager
                                 </th>
                                 <th class="col-md-1 text-left" colspan="2">
@@ -376,22 +394,35 @@
                             <tr>
                                 <td colspan="1"></td>
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Future 5 transac
+                                </th>
+                                <th class="col-md-1 text-left" colspan="2">
+                                  <span ng-if="person.future">
+                                    <span ng-repeat="transaction in person.future">
+                                      @{{transaction.id}} (@{{transaction.delivery_date}})
+                                    </span>
+                                  </span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last_color}">
-                                    @{{person.ops_deldate | date : "yy-MM-dd"}} (@{{person.ops_day}})
-                                    (@{{person.ops_deldate | momenthuman}})
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last1.transaction.date_color}">
+                                    @{{person.last1.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last1.transaction.day}})
+                                    (@{{person.last1.transaction.delivery_date | momenthuman}})
                                     <br>
-                                    <span ng-if="person.last">
-                                        <span ng-repeat="item in person.last">
+                                    <span ng-if="person.last1">
+                                        <span ng-repeat="item in person.last1.deals">
                                             @{{item.product_id}} (@{{item.qty}})
                                             <br>
                                         </span>
                                     </span>
                                     <span class="text-right">
                                         <strong>
-                                            <span ng-if="person.ops_total_qty">
-                                                Qty @{{person.ops_total_qty}}; Amt @{{person.ops_total}}
+                                            <span ng-if="person.last1.transaction.total_qty">
+                                                Qty @{{person.last1.transaction.total_qty}}; Amt @{{person.last1.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -402,20 +433,20 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 2 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last2_color}">
-                                    @{{person.ops2_deldate | date : "yy-MM-dd"}} (@{{person.ops2_day}})
-                                    (@{{person.ops2_deldate | momenthuman}})
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last2.transaction.date_color}">
+                                    @{{person.last2.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last2.transaction.day}})
+                                    (@{{person.last2.transaction.delivery_date | momenthuman}})
                                     <br>
                                     <span ng-if="person.last2">
-                                        <span ng-repeat="item in person.last2">
+                                        <span ng-repeat="item in person.last2.deals">
                                             @{{item.product_id}} (@{{item.qty}})
                                             <br>
                                         </span>
                                     </span>
                                     <span class="text-right">
                                         <strong>
-                                            <span ng-if="person.ops2_total_qty">
-                                                Qty @{{person.ops2_total_qty}}; Amt @{{person.ops2_total}}
+                                            <span ng-if="person.last2.transaction.total_qty">
+                                                Qty @{{person.last2.transaction.total_qty}}; Amt @{{person.last2.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
@@ -426,20 +457,68 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 3 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last3_color}">
-                                    @{{person.ops3_deldate | date : "yy-MM-dd"}} (@{{person.ops3_day}})
-                                    (@{{person.ops3_deldate | momenthuman}})
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last3.transaction.date_color}">
+                                    @{{person.last3.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last3.transaction.day}})
+                                    (@{{person.last3.transaction.delivery_date | momenthuman}})
                                     <br>
                                     <span ng-if="person.last3">
-                                        <span ng-repeat="item in person.last3">
+                                        <span ng-repeat="item in person.last3.deals">
                                             @{{item.product_id}} (@{{item.qty}})
                                             <br>
                                         </span>
                                     </span>
                                     <span class="text-right">
                                         <strong>
-                                            <span ng-if="person.ops3_total_qty">
-                                                Qty @{{person.ops3_total_qty}}; Amt @{{person.ops3_total}}
+                                            <span ng-if="person.last3.transaction.total_qty">
+                                                Qty @{{person.last3.transaction.total_qty}}; Amt @{{person.last3.transaction.total}}
+                                            </span>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last 4 Transac
+                                </th>
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last4.transaction.date_color}">
+                                    @{{person.last4.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last4.transaction.day}})
+                                    (@{{person.last4.transaction.delivery_date | momenthuman}})
+                                    <br>
+                                    <span ng-if="person.last4">
+                                        <span ng-repeat="item in person.last4.deals">
+                                            @{{item.product_id}} (@{{item.qty}})
+                                            <br>
+                                        </span>
+                                    </span>
+                                    <span class="text-right">
+                                        <strong>
+                                            <span ng-if="person.last4.transaction.total_qty">
+                                                Qty @{{person.last4.transaction.total_qty}}; Amt @{{person.last4.transaction.total}}
+                                            </span>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"></td>
+                                <th class="col-md-1 text-left" style="background-color: #DDFDF8">
+                                    Last 5 Transac
+                                </th>
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last5.transaction.date_color}">
+                                    @{{person.last5.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last5.transaction.day}})
+                                    (@{{person.last5.transaction.delivery_date | momenthuman}})
+                                    <br>
+                                    <span ng-if="person.last5">
+                                        <span ng-repeat="item in person.last5.deals">
+                                            @{{item.product_id}} (@{{item.qty}})
+                                            <br>
+                                        </span>
+                                    </span>
+                                    <span class="text-right">
+                                        <strong>
+                                            <span ng-if="person.last5.transaction.total_qty">
+                                                Qty @{{person.last5.transaction.total_qty}}; Amt @{{person.last5.transaction.total}}
                                             </span>
                                         </strong>
                                     </span>
