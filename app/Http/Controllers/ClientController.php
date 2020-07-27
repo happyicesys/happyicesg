@@ -59,7 +59,7 @@ class ClientController extends Controller
     // stream pdf page healthy morning
     public function everyMorningHealthy()
     {
-        $file = storage_path('app/pdf/') . 'every-morning-healthy.pdf';
+        $file = public_path('pdf/') . 'every-morning-healthy.pdf';
 
         if (file_exists($file)) {
 
