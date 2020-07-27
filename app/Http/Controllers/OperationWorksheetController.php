@@ -1048,8 +1048,9 @@ class OperationWorksheetController extends Controller
                                 END) ELSE x.total END) + (CASE WHEN x.delivery_fee>0 THEN x.delivery_fee ELSE 0 END)) AS total'),
                         DB::raw('ROUND(x.total_qty, 1) AS total_qty')
                     )
-                    ->groupBy('x.id')
-                    ->first();
+                    ->groupBy('x.id');
+            dd($transaction);
+                    // ->first();
 
         $deals = $deals->select(
                     'items.product_id',
