@@ -1018,7 +1018,7 @@ class OperationWorksheetController extends Controller
 
         $deals =  DB::table('deals')
         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-        ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
+        ->rightJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
         ->where('x.person_id', $person_id)
         ->whereRaw("
             x.id = (SELECT a.id FROM
