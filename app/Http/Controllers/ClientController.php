@@ -67,7 +67,7 @@ class ClientController extends Controller
                 'Content-Type' => 'application/pdf'
             ];
 
-            return response()->download($file, 'Test File', $headers, 'inline');
+            return response()->download($file, 'Every Morning Healthy', $headers, 'inline');
         } else {
             abort(404, 'File not found!');
         }
