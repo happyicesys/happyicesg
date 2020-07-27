@@ -937,6 +937,7 @@ class OperationWorksheetController extends Controller
                 for($i=1; $i<=5; $i++) {
                     $person['last'.$i] = $this->getPersonTransactionHistory($person->person_id, $i);
                 }
+                $person['future'] = $this->getPersonFutureHistory($person->person_id);
             }
         }
 
@@ -1054,6 +1055,26 @@ class OperationWorksheetController extends Controller
             'transaction' => $transaction,
             'deals' => $deals
         ];
+    }
+
+    private function getPersonFutureHistory($person_id)
+    {
+        $transactions =  DB::table('deals')
+        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+        ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
+        ->where('x.person_id', $person_id)
+        ->whereDate('x.delivery_date', '>=', Carbon::today()->toDateString())
+        ->whereRaw("
+            x.id = (SELECT a.id FROM
+            transactions a WHERE a.person_id=x.person_id
+            AND (a.status='Confirmed' OR a.status='Pending')
+            ORDER BY a.delivery_date ASC, a.created_at ASC LIMIT 5)"
+        )
+        ->select('x.id', 'x.delivery_date')
+        ->groupBy('x.id')
+        ->get();
+
+        return $transactions;
     }
 
     private function operationDatesSync($transaction_id, $newdate = null)
