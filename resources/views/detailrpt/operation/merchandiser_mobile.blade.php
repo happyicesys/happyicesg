@@ -378,7 +378,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last Transac
                                 </th>
-                                <td class="col-md-1" colspan="2">
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last_color}">
                                     @{{person.ops_deldate | date : "yy-MM-dd"}} (@{{person.ops_day}})
                                     (@{{person.ops_deldate | momenthuman}})
                                     <br>
@@ -405,7 +405,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 2 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2">
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last2_color}">
                                     @{{person.ops2_deldate | date : "yy-MM-dd"}} (@{{person.ops2_day}})
                                     (@{{person.ops2_deldate | momenthuman}})
                                     <br>
@@ -432,7 +432,7 @@
                                 <th class="col-md-1 text-left" style="background-color: #DDFDF8">
                                     Last 3 Transac
                                 </th>
-                                <td class="col-md-1" colspan="2">
+                                <td class="col-md-1" colspan="2" ng-style="{'color': person.last3_color}">
                                     @{{person.ops3_deldate | date : "yy-MM-dd"}} (@{{person.ops3_day}})
                                     (@{{person.ops3_deldate | momenthuman}})
                                     <br>

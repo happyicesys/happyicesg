@@ -770,7 +770,7 @@ class OperationWorksheetController extends Controller
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
 
         $prevStr = "(
-            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, ROUND((CASE WHEN x.gst=1 THEN (
+            SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, x.status, ROUND((CASE WHEN x.gst=1 THEN (
                     CASE
                     WHEN x.is_gst_inclusive=0
                     THEN total*((100+x.gst_rate)/100)
@@ -812,9 +812,16 @@ class OperationWorksheetController extends Controller
         $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
-            SELECT DATE(MAX(date)) AS date, person_id
-            FROM outlet_visits
-            GROUP BY person_id
+            SELECT x.date, x.person_id, x.outcome, x.remarks, creator.name AS created_by
+            FROM outlet_visits x
+            LEFT JOIN users AS creator ON creator.id=x.created_by
+            WHERE x.id = (
+                SELECT a.id FROM outlet_visits a
+                WHERE x.person_id=a.person_id
+                ORDER BY a.date DESC, a.created_at DESC
+                LIMIT 1
+            )
+            GROUP BY x.person_id
         ) outlet_visits");
 
         $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
@@ -859,7 +866,10 @@ class OperationWorksheetController extends Controller
                                     THEN "red"
                                 ELSE
                                     "black"
-                                END AS outletvisit_date_color')
+                                END AS outletvisit_date_color'),
+                        DB::raw('(CASE WHEN last.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last_color'),
+                        DB::raw('(CASE WHEN last2.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last2_color'),
+                        DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color')
                     );
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
@@ -1020,7 +1030,11 @@ class OperationWorksheetController extends Controller
         ->leftJoin('transactions AS x', 'x.id', '=', 'deals.transaction_id')
         ->where('x.person_id', $person_id)
         // ->whereDate('x.delivery_date', '=', $delivery_date)
-        ->select('items.product_id', DB::raw('ROUND(SUM(deals.qty), 1) AS qty'))
+        ->select(
+            'items.product_id',
+            DB::raw('ROUND(SUM(deals.qty), 1) AS qty'),
+            DB::raw('(CASE WHEN transactions.status = "Cancelled" THEN "Red" ELSE "Black" END) AS color')
+            )
         ->whereRaw("
             x.id = (SELECT a.id FROM
             transactions a WHERE a.person_id=x.person_id
