@@ -185,7 +185,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="visit in outlet_visits">
+                    <tr ng-repeat="visit in outletvisitForm.person.outlet_visits">
                         <td class="col-md-1 text-center">
                             @{{ $index + 1 }}
                         </td>
@@ -205,12 +205,12 @@
                             @{{ visit.creator.name }}
                         </td>
                         <td class="col-md-1 text-center">
-                            <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id, form.person)">
+                            <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id)">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                             </button>
                         </td>
                     </tr>
-                    <tr ng-if="!outlet_visits || outlet_visits.length == 0">
+                    <tr ng-if="!outletvisitForm.person.outlet_visits || outletvisitForm.person.outlet_visits.length == 0">
                         <td class="text-center" colspan="18">
                             No Results Found
                         </td>
@@ -488,7 +488,7 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">
-                Outlet Visit "@{{form.person.cust_id}} - @{{form.person.company}}"
+                Outlet Visit "{{$person->cust_id}} - {{$person->company}}"
             </h4>
             </div>
             <div class="modal-body">
@@ -503,8 +503,8 @@
                                 name="chosen_date"
                                 class = "form-control input-sm"
                                 placeholder = "Visit Date"
-                                ng-model = "form.date"
-                                ng-change = "onOutletVisitDateChanged(form.date)"
+                                ng-model = "outletvisitForm.date"
+                                ng-change = "onOutletVisitDateChanged(outletvisitForm.date)"
                             />
                         </datepicker>
                     </div>
@@ -512,15 +512,15 @@
                         <label class="control-label">
                             Day
                         </label>
-                        <input type="text" name="name" class="form-control" ng-model="form.day" readonly>
+                        <input type="text" name="name" class="form-control" ng-model="outletvisitForm.day" readonly>
                     </div>
                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
                         <label class="control-label">
                             Outcome
                         </label>
-                        <select name="outcome" class="form-control select" ng-model="form.outcome">
+                        <select name="outcome" class="form-control select" ng-model="outletvisitForm.outcome">
                             @foreach($outletVisits::OUTCOMES as $index => $outcome)
-                                <option value="{{$index}}" ng-init='form.outcome = "1"'>
+                                <option value="{{$index}}" ng-init='outletvisitForm.outcome = "1"'>
                                     {{$outcome}}
                                 </option>
                             @endforeach
@@ -530,11 +530,11 @@
                         <label class="control-label">
                             Remarks
                         </label>
-                        <textarea name="remarks" class="form-control" ng-model="form.remarks" rows="3"></textarea>
+                        <textarea name="remarks" class="form-control" ng-model="outletvisitForm.remarks" rows="3"></textarea>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="form-group">
-                            <button class="btn btn-success" ng-click="saveOutletVisitForm(form.person)"><i class="fa fa-upload"></i> Save</button>
+                            <button class="btn btn-success" ng-click="saveOutletVisitForm($event)"><i class="fa fa-upload"></i> Save</button>
                         </div>
                     </div>
                 </div>

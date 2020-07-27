@@ -51,8 +51,11 @@ var app = angular.module('app', [
         $scope.total_owe = 0.00;
         $scope.outcomes = [];
         $scope.outletvisitForm = {}
+        $scope.todayDate = moment().format('YYYY-MM-DD');
+        $scope.todayDay = moment().format('ddd');
 
         // init page load
+        getOutletVisitsPerson($('#person_id').val())
         getOutletVisitOutcomes();
         getPage(1, true);
         loadFiles();
@@ -129,22 +132,27 @@ var app = angular.module('app', [
             }
         }
 
-        $scope.saveOutletVisitForm = function(person) {
-            $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
-                $scope.getOutletVisitPerson(person.id)
+        $scope.saveOutletVisitForm = function(event) {
+            event.preventDefault();
+            $http.post('/api/person/outletvisit/' + $('#person_id').val(), $scope.outletvisitForm).success(function(data) {
+                $scope.getOutletVisitPerson($('#person_id').val())
                 $scope.outletvisitForm.remarks = ''
                 getPage(1, false);
             });
         }
 
-        $scope.deleteOutletVisitEntry = function(id, person) {
+        $scope.deleteOutletVisitEntry = function(id) {
             $http.delete('/api/person/outletvisit/' + id).success(function(data) {
-                $scope.getOutletVisitPerson(person.id)
+                $scope.getOutletVisitPerson($('#person_id').val())
                 getPage(1, false);
             });
         }
 
         $scope.getOutletVisitPerson = function(person_id) {
+            getOutletVisitsPerson(person_id);
+        }
+
+        function getOutletVisitsPerson(person_id) {
             $http.post('/api/outletvisits/person/' + person_id).success(function(data) {
                 $scope.outletvisitForm = {
                     person: data,
@@ -154,8 +162,6 @@ var app = angular.module('app', [
                 }
             });
         }
-
-        $scope.getOutletVisitPerson($('#person_id').val());
 
         // retrieve page w/wo search
         function getPage(pageNumber, first){

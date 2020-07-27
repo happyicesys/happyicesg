@@ -793,7 +793,7 @@ class PersonController extends Controller
     public function getOutletVisitsApi($personId)
     {
         $person = Person::with(['outletVisits' => function($query) {
-            $query->latest('date');
+            $query->orderBy('date', 'DESC')->orderBy('created_at', 'DESC');
         }, 'outletVisits.creator'])->find($personId);
 
         return $person;

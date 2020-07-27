@@ -73,6 +73,13 @@ class ClientController extends Controller
         }
     }
 
+    public function getEveryMorningHealthyPage()
+    {
+        $file = '/pdf/every-morning-healthy.pdf';
+
+        return view('client.every-morning-healthy', compact('file'));
+    }
+
     // return vending page
 /*    public function vendingIndex()
     {
