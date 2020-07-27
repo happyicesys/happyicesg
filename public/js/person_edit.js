@@ -49,8 +49,11 @@ var app = angular.module('app', [
         $scope.total_amount = 0.00;
         $scope.total_paid = 0.00;
         $scope.total_owe = 0.00;
+        $scope.outcomes = [];
+        $scope.outletvisitForm = {}
 
         // init page load
+        getOutletVisitOutcomes();
         getPage(1, true);
         loadFiles();
 
@@ -111,6 +114,48 @@ var app = angular.module('app', [
             $scope.sortBy = '';
             getPage(1, false);
         }
+
+        $scope.onOutletVisitClicked = function(event) {
+            event.preventDefault();
+            $scope.getOutletVisitPerson($('#person_id').val())
+        }
+
+        $scope.onOutletVisitDateChanged = function(date) {
+            if(date){
+                let momentDate = moment(new Date(date)).format('YYYY-MM-DD');
+                let momentDay = moment(new Date(date)).format('ddd');
+                $scope.outletvisitForm.date = momentDate;
+                $scope.outletvisitForm.day = momentDay;
+            }
+        }
+
+        $scope.saveOutletVisitForm = function(person) {
+            $http.post('/api/person/outletvisit/' + person.id, $scope.form).success(function(data) {
+                $scope.getOutletVisitPerson(person.id)
+                $scope.outletvisitForm.remarks = ''
+                getPage(1, false);
+            });
+        }
+
+        $scope.deleteOutletVisitEntry = function(id, person) {
+            $http.delete('/api/person/outletvisit/' + id).success(function(data) {
+                $scope.getOutletVisitPerson(person.id)
+                getPage(1, false);
+            });
+        }
+
+        $scope.getOutletVisitPerson = function(person_id) {
+            $http.post('/api/outletvisits/person/' + person_id).success(function(data) {
+                $scope.outletvisitForm = {
+                    person: data,
+                    date: $scope.todayDate,
+                    day: $scope.todayDay,
+                    outcome: 1
+                }
+            });
+        }
+
+        $scope.getOutletVisitPerson($('#person_id').val());
 
         // retrieve page w/wo search
         function getPage(pageNumber, first){
@@ -284,6 +329,12 @@ var app = angular.module('app', [
         }
 
         getVendPage(1);
+
+        function getOutletVisitOutcomes() {
+            $http.get('/api/outletvisit/outcomes').success(function(data) {
+                $scope.outcomes = data;
+            });
+        }
 
         // retrieve page w/wo search
         function getVendPage(pageNumber){

@@ -56,6 +56,23 @@ class ClientController extends Controller
         return view('client.contact');
     }
 
+    // stream pdf page healthy morning
+    public function everyMorningHealthy()
+    {
+        $file = storage_path('app/pdf/') . 'every-morning-healthy.pdf';
+
+        if (file_exists($file)) {
+
+            $headers = [
+                'Content-Type' => 'application/pdf'
+            ];
+
+            return response()->download($file, 'Test File', $headers, 'inline');
+        } else {
+            abort(404, 'File not found!');
+        }
+    }
+
     // return vending page
 /*    public function vendingIndex()
     {
@@ -108,6 +125,8 @@ class ClientController extends Controller
     {
         return view('client.franchise');
     }
+
+
 
     public function store(ClientRegisterRequest $request)
     {

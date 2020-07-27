@@ -4,6 +4,7 @@
 @inject('prices', 'App\Price')
 @inject('dtdprice', 'App\DtdPrice')
 @inject('people', 'App\Person')
+@inject('outletVisits', 'App\OutletVisit')
 
 @extends('template')
 @section('title')
@@ -141,6 +142,83 @@
 
     <div class="panel-body">
         @include('person.transaction_history')
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <div class="pull-left display_panel_title">
+                <h3 class="panel-title"><strong>Store Visit : {{$person->company}}</strong></h3>
+            </div>
+            <button type="button" class="btn btn-xs btn-success pull-right" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+        </div>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="table-responsive">
+            <table class="table table-list-search table-hover table-bordered table-condensed">
+                <thead>
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Date
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Day
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Outcome
+                        </th>
+                        <th class="col-md-3 text-center">
+                            Remarks
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Created By
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="visit in outlet_visits">
+                        <td class="col-md-1 text-center">
+                            @{{ $index + 1 }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ visit.date }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ visit.day }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{outcomes[visit.outcome]}}
+                        </td>
+                        <td class="col-md-2 text-left">
+                            @{{ visit.remarks }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ visit.creator.name }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            <button class="btn btn-xs btn-danger btn-delete" ng-click="deleteOutletVisitEntry(visit.id, form.person)">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr ng-if="!outlet_visits || outlet_visits.length == 0">
+                        <td class="text-center" colspan="18">
+                            No Results Found
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -403,6 +481,68 @@
     </div>
 </div>
 {{-- divider --}}
+
+<div class="modal fade" id="outletVisitModal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">
+                Outlet Visit "@{{form.person.cust_id}} - @{{form.person.company}}"
+            </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                        <label class="control-label">
+                            Date
+                        </label>
+                        <datepicker selector="form-control">
+                            <input
+                                type = "text"
+                                name="chosen_date"
+                                class = "form-control input-sm"
+                                placeholder = "Visit Date"
+                                ng-model = "form.date"
+                                ng-change = "onOutletVisitDateChanged(form.date)"
+                            />
+                        </datepicker>
+                    </div>
+                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                        <label class="control-label">
+                            Day
+                        </label>
+                        <input type="text" name="name" class="form-control" ng-model="form.day" readonly>
+                    </div>
+                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                        <label class="control-label">
+                            Outcome
+                        </label>
+                        <select name="outcome" class="form-control select" ng-model="form.outcome">
+                            @foreach($outletVisits::OUTCOMES as $index => $outcome)
+                                <option value="{{$index}}" ng-init='form.outcome = "1"'>
+                                    {{$outcome}}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                        <label class="control-label">
+                            Remarks
+                        </label>
+                        <textarea name="remarks" class="form-control" ng-model="form.remarks" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <button class="btn btn-success" ng-click="saveOutletVisitForm(form.person)"><i class="fa fa-upload"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 <script src="/js/person_edit.js"></script>
 <script>
