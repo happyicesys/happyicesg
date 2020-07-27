@@ -859,7 +859,7 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'), */
-                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
+                        'DATE_FORMAT(outlet_visits.date, "%y-%m-%d") AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
                                     THEN "blue"
@@ -1030,7 +1030,7 @@ class OperationWorksheetController extends Controller
         $transaction = clone $deals;
         $transaction = $transaction->select(
                         'x.id',
-                        DB::raw('DATE(x.delivery_date) AS delivery_date'),
+                        DB::raw('DATE_FORMAT(x.delivery_date, "%y-%m-%d") AS delivery_date'),
                         DB::raw('DATE_FORMAT(x.delivery_date, "%a") AS day'),
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), x.delivery_date) >= 8 AND DATEDIFF(now(), x.delivery_date) < 15)
