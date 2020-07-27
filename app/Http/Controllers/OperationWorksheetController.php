@@ -812,7 +812,7 @@ class OperationWorksheetController extends Controller
         $last = DB::raw($last); */
 
         $outletVisits = DB::raw( "(
-            SELECT DATE_FORMAT(x.date, '%a') AS day, DATE(x.date) AS date, x.person_id, x.outcome, x.remarks, creator.name AS created_by
+            SELECT DATE_FORMAT(x.date, '%a') AS day, DATE_FORMAT(x.date, '%y-%m-%d') AS date, x.person_id, x.outcome, x.remarks, creator.name AS created_by
             FROM outlet_visits x
             LEFT JOIN users AS creator ON creator.id=x.created_by
             WHERE x.id = (
@@ -859,7 +859,7 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS last_date_color'), */
-                        'DATE_FORMAT(outlet_visits.date, "%y-%m-%d") AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
+                        'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
                                     THEN "blue"
