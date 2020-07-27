@@ -768,7 +768,7 @@ class OperationWorksheetController extends Controller
     private function generateOperationWorksheetQuery($datesVar)
     {
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
-
+/*
         $prevStr = "(
             SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, x.status, ROUND((CASE WHEN x.gst=1 THEN (
                     CASE
@@ -809,7 +809,7 @@ class OperationWorksheetController extends Controller
 
         $last3 = DB::raw($last3);
         $last2 = DB::raw($last2);
-        $last = DB::raw($last);
+        $last = DB::raw($last); */
 
         $outletVisits = DB::raw( "(
             SELECT DATE_FORMAT(x.date, '%a') AS day, DATE(x.date) AS date, x.person_id, x.outcome, x.remarks, creator.name AS created_by
