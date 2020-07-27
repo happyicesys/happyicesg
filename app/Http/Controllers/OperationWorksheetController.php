@@ -1031,6 +1031,7 @@ class OperationWorksheetController extends Controller
         $transaction = $transaction->select(
                         'x.id',
                         DB::raw('DATE_FORMAT(x.delivery_date, "%y-%m-%d") AS delivery_date'),
+                        DB::raw('DATE(x.delivery_date) AS delivery_date_full'),
                         DB::raw('DATE_FORMAT(x.delivery_date, "%a") AS day'),
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), x.delivery_date) >= 8 AND DATEDIFF(now(), x.delivery_date) < 15)

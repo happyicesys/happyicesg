@@ -416,7 +416,7 @@
                                 <td class="col-md-1" colspan="2" ng-style="{'color': person.last1.transaction.date_color}">
                                     <span ng-if="person.last1.transaction.delivery_date">
                                       @{{person.last1.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last1.transaction.day}})
-                                      (@{{person.last1.transaction.delivery_date | momenthuman}})
+                                      (@{{person.last1.transaction.delivery_date_full | momenthuman}})
                                     </span>
                                     <br>
                                     <span ng-if="person.last1">
@@ -442,7 +442,7 @@
                                 <td class="col-md-1" colspan="2">
                                     <span ng-if="person.last2.transaction.delivery_date">
                                       @{{person.last2.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last2.transaction.day}})
-                                      (@{{person.last2.transaction.delivery_date | momenthuman}})
+                                      (@{{person.last2.transaction.delivery_date_full | momenthuman}})
                                     </span>
                                     <br>
                                     <span ng-if="person.last2">
@@ -468,7 +468,7 @@
                                 <td class="col-md-1" colspan="2">
                                     <span ng-if="person.last3.transaction.delivery_date">
                                       @{{person.last3.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last3.transaction.day}})
-                                      (@{{person.last3.transaction.delivery_date | momenthuman}})
+                                      (@{{person.last3.transaction.delivery_date_full | momenthuman}})
                                     </span>
                                     <br>
                                     <span ng-if="person.last3">
@@ -494,7 +494,7 @@
                                 <td class="col-md-1" colspan="2">
                                     <span ng-if="person.last4.transaction.delivery_date">
                                       @{{person.last4.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last4.transaction.day}})
-                                      (@{{person.last4.transaction.delivery_date | momenthuman}})
+                                      (@{{person.last4.transaction.delivery_date_full | momenthuman}})
                                     </span>
                                     <br>
                                     <span ng-if="person.last4">
@@ -520,7 +520,7 @@
                                 <td class="col-md-1" colspan="2">
                                     <span ng-if="person.last5.transaction.delivery_date">
                                       @{{person.last5.transaction.delivery_date | date : "yy-MM-dd"}} (@{{person.last5.transaction.day}})
-                                      (@{{person.last5.transaction.delivery_date | momenthuman}})
+                                      (@{{person.last5.transaction.delivery_date_full | momenthuman}})
                                     </span>
                                     <br>
                                     <span ng-if="person.last5">
