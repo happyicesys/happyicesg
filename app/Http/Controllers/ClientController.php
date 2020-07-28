@@ -75,7 +75,14 @@ class ClientController extends Controller
 
     public function getEveryMorningHealthyPage()
     {
-        $file = '/pdf/every-morning-healthy.pdf';
+        $file = [
+            'mainBanner' => '/img/vitalon/main-banner.gif',
+            'secondBanner' => '/img/vitalon/second-banner.jpg',
+            'thirdBanner' => '/img/vitalon/third-banner.jpg',
+            'fourthBanner' => '/img/vitalon/fourth-banner.jpg',
+            'award' => '/img/vitalon/award.jpg',
+            'cert' => '/img/vitalon/cert.jpg'
+        ];
 
         return view('client.every-morning-healthy', compact('file'));
     }

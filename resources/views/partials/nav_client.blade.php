@@ -72,8 +72,12 @@
                 </li>
                 @endif
                 @if($product_access)
-                <li>
-                    <a class="page-scroll" style="color: white;" href="/client/product">Products</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">Products<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/client/product">Ice Cream</a></li>
+                        <li><a href="/every-morning-healthy"> Every Morning Healthy Tea</a></li>
+                    </ul>
                 </li>
                 @endif
                 @if($online_order_access)
