@@ -80,6 +80,7 @@ class ClientController extends Controller
             'secondBanner' => '/img/vitalon/second-banner.jpg',
             'thirdBanner' => '/img/vitalon/third-banner.jpg',
             'fourthBanner' => '/img/vitalon/fourth-banner.jpg',
+            'fifthBanner' => '/img/vitalon/fifth-banner.jpg',
             'award' => '/img/vitalon/award.jpg',
             'cert' => '/img/vitalon/cert.jpg'
         ];
