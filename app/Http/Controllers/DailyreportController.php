@@ -222,14 +222,16 @@ class DailyreportController extends Controller
             $user = User::where('name', $request->driver)->first();
 
             if($user->hasRole('driver')) {
-                // dd('here1');
+                $commission_rate = 0.0075;
+                $totalcommission = $subtotal * $commission_rate;
+/*
                 if($subtotal <= 40000) {
                     $commission_rate = 0.006;
                     $totalcommission = $subtotal * $commission_rate;
                 }else {
                     $commission_rate = 0.01;
                     $totalcommission = (40000 * 0.006) + ($subtotal - 40000) * $commission_rate;
-                }
+                } */
             }
 
             if($user->hasRole('technician')) {
