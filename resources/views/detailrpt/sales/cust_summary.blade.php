@@ -186,6 +186,36 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('cust_id', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.cust_id',
+                                                'placeholder'=>'Cust ID',
+                                                'ng-change'=>'searchDB()',
+                                                'ng-model-options'=>'{ debounce: 500 }'
+                                            ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                {!! Form::text('company', null,
+                                                [
+                                                    'class'=>'form-control input-sm',
+                                                    'ng-model'=>'search.company',
+                                                    'placeholder'=>'ID Name',
+                                                    'ng-change'=>'searchDB()',
+                                                    'ng-model-options'=>'{ debounce: 500 }'
+                                                ])
+                !!}
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">

@@ -28,7 +28,7 @@
           </div>
           <div class="col-md-4 col-xs-6">
               <div class="form-group">
-                  {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                  {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('cust_id', null,
                                               [
                                                   'class'=>'form-control input-sm',

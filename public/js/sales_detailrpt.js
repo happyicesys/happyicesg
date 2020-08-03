@@ -126,6 +126,8 @@ var app = angular.module('app', [
             gst_rate: '',
             item_id: '',
             zone_id: '',
+            cust_id: '',
+            company: '',
             pageNum: 100,
             sortBy: true,
             sortName: '',
