@@ -876,6 +876,10 @@ class DetailRptController extends Controller
             $items = $items->where('items.is_commission', request('is_commission'));
         }
 
+        if(request('zone_id') != '') {
+            $items = $items->where('people.zone_id', request('zone_id'));
+        }
+
         if($request->profile_id) {
             $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
         }else {
@@ -933,6 +937,9 @@ class DetailRptController extends Controller
         }
         if($request->company) {
             $amountstr = $amountstr." AND people.company LIKE '%".$request->company."%'";
+        }
+        if($request->zone_id) {
+            $amountstr = $amountstr." AND people.zone_id =".$request->zone_id;;
         }
         if($request->profile_id) {
             $amountstr = $amountstr." AND profiles.id =".$request->profile_id;
@@ -2888,7 +2895,6 @@ class DetailRptController extends Controller
         $profile_id = $request->profile_id;
         $status = $request->status;
         $item_id = $request->item_id;
-        $zone_id = $request->zone_id;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -2910,9 +2916,6 @@ class DetailRptController extends Controller
         }
         if($item_id) {
             $items = $items->where('items.id', $item_id);
-        }
-        if($zone_id) {
-            $items = $items->where('people.zone_id', $zone_id);
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
