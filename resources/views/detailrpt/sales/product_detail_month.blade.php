@@ -84,7 +84,20 @@
         </div>
     </div>
     <div class="row">
-
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
+                {!! Form::select('zone_id',
+                        [''=>'All']+ $zones::lists('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.zone_id',
+                            'ng-change'=>'searchDB()'
+                        ])
+                !!}
+            </div>
+        </div>
     </div>
 </div>
 

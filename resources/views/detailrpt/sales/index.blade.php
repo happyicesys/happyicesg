@@ -4,6 +4,7 @@
 @inject('franchisees', 'App\User')
 @inject('items', 'App\Item')
 @inject('users', 'App\User')
+@inject('zones', 'App\Zone')
 
 @extends('template')
 @section('title')

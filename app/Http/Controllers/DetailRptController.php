@@ -2496,6 +2496,7 @@ class DetailRptController extends Controller
         $product_id = $request->product_id;
         $item_name = $request->item_name;
         $item_id = $request->item_id;
+        $zone_id = $request->zone_id;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -2606,6 +2607,10 @@ class DetailRptController extends Controller
             $transactions = $transactions->where('items.id', $item_id);
         }
 
+        if($zone_id) {
+            $transactions = $transactions->where('people.zone_id', $zone_id);
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -2637,6 +2642,7 @@ class DetailRptController extends Controller
         $product_id = $request->product_id;
         $item_name = $request->item_name;
         $item_id = $request->item_id;
+        $zone_id = $request->zone_id;
         $sortName = $request->sortName;
         $sortBy = $request->sortBy;
 
@@ -2718,6 +2724,9 @@ class DetailRptController extends Controller
         }
         if($item_id) {
             $query .= " AND items.id='".$item_id."' ";
+        }
+        if($zone_id) {
+            $query .= " AND people.zone_id='".$zone_id."' ";
         }
 /*
         if($sortName){
