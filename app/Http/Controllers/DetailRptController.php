@@ -805,6 +805,13 @@ class DetailRptController extends Controller
             }
         }
 
+        if($request->zone_id) {
+            $thistotal .= " AND people.zone_id='".$request->zone_id."'";
+            $prevqty .= " AND people.zone_id='".$request->zone_id."'";
+            $prev2qty .= " AND people.zone_id='".$request->zone_id."'";
+            $prevyrqty .= " AND people.zone_id='".$request->zone_id."'";
+        }
+
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
             $thistotal .= " AND profiles.id IN (".$profileIdStr.")";
