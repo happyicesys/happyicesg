@@ -678,10 +678,10 @@ class OperationWorksheetController extends Controller
         if($last_transac_color) {
             switch($last_transac_color) {
                 case 'Blue':
-                    $people = $people->whereRaw('DATEDIFF(now(), delivery_date) >= 7 AND DATEDIFF(now(), delivery_date) < 14');
+                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 7 AND DATEDIFF(now(), last.delivery_date) < 14');
                     break;
                 case 'Red';
-                    $people = $people->whereRaw('DATEDIFF(now(), delivery_date) >= 14');
+                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 14');
                     break;
             }
         }
@@ -768,7 +768,7 @@ class OperationWorksheetController extends Controller
     private function generateOperationWorksheetQuery($datesVar)
     {
         $dates = $this->generateDateRange($datesVar['earliest'], $datesVar['latest']);
-/*
+
         $prevStr = "(
             SELECT x.id AS transaction_id, DATE(x.delivery_date) AS delivery_date, y.id AS person_id, DATE_FORMAT(x.delivery_date, '%a') AS day, x.status, ROUND((CASE WHEN x.gst=1 THEN (
                     CASE
@@ -807,9 +807,9 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last";
 
-        $last3 = DB::raw($last3);
-        $last2 = DB::raw($last2);
-        $last = DB::raw($last); */
+        // $last3 = DB::raw($last3);
+        // $last2 = DB::raw($last2);
+        $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
             SELECT DATE_FORMAT(x.date, '%a') AS day, DATE_FORMAT(x.date, '%y-%m-%d') AS date, x.person_id, x.outcome, x.remarks, creator.name AS created_by
@@ -826,7 +826,7 @@ class OperationWorksheetController extends Controller
 
         $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-                    // ->leftJoin($last, 'people.id', '=', 'last.person_id')
+                    ->leftJoin($last, 'people.id', '=', 'last.person_id')
                     // ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
                     // ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
@@ -847,7 +847,7 @@ class OperationWorksheetController extends Controller
                             'account_manager.name AS account_manager_name',
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
-                        // 'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
+                        'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
                         // 'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
                         // 'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
 /*
