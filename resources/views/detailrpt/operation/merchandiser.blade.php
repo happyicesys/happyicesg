@@ -257,7 +257,8 @@
                                 [
                                     '' => 'All',
                                     'Red' => 'Red',
-                                    'Blue' => 'Blue'
+                                    'Blue' => 'Blue',
+                                    'BlueRed' => 'Blue & Red'
                                 ],
                                 null,
                                 [

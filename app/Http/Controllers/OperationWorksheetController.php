@@ -678,10 +678,13 @@ class OperationWorksheetController extends Controller
         if($last_transac_color) {
             switch($last_transac_color) {
                 case 'Blue':
-                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 7 AND DATEDIFF(now(), last.delivery_date) < 14');
+                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15');
                     break;
                 case 'Red';
-                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 14');
+                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 15');
+                    break;
+                case 'BlueRed';
+                    $people = $people->whereRaw('DATEDIFF(now(), last.delivery_date) >= 8');
                     break;
             }
         }
