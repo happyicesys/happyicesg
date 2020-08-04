@@ -33,19 +33,24 @@
             @if($alldata[$indexpeople])
                 @foreach($alldata[$indexpeople] as $data)
                     @php
-
                         $color = $data['color'];
-/*
+
                         switch($color) {
                             case 'Yellow':
-                                $color = '#ffff00';
+                                $color = '#ffff33';
                                 break;
                             case 'Red':
-                                $color = '#ff0000';
+                                $color = '#ff3333';
+                                break;
+                            case 'Orange':
+                                $color = '#ffae1a';
+                                break;
+                            case 'Green':
+                                $color = '#00b300';
                                 break;
                             default:
-                                $color = 'ffffff';
-                        } */
+                                $color = '#FFFFFF';
+                        }
 
                     @endphp
 
