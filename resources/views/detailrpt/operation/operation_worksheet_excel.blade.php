@@ -18,7 +18,7 @@
     </tr>
     </thead>
     @php
-        dd($alldata);
+        // dd($alldata);
     @endphp
     <tbody>
     @if($people)
@@ -52,7 +52,7 @@
                     @endphp
 
                     <td style="background-color: {{$color}}; border: thin solid #000000;">
-                        {{$data['qty']}}
+                        {{$data['qty'][0]['qty']}}
                     </td>
                 @endforeach
             @endif
