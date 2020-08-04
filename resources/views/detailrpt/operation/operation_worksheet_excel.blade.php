@@ -33,6 +33,7 @@
             @if($alldata[$indexpeople])
                 @foreach($alldata[$indexpeople] as $data)
                     @php
+                    dd($data);
                         $color = $data['color'];
                         switch($color) {
                             case 'Yellow':
