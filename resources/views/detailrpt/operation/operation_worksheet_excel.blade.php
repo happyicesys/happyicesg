@@ -35,6 +35,7 @@
                     @php
                     dd($data);
                         $color = $data['color'];
+/*
                         switch($color) {
                             case 'Yellow':
                                 $color = '#ffff00';
@@ -44,7 +45,7 @@
                                 break;
                             default:
                                 $color = 'ffffff';
-                        }
+                        } */
 
                     @endphp
 
