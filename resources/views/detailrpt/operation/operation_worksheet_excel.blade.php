@@ -19,43 +19,44 @@
     </thead>
 
     <tbody>
-        @php
-            dd($people->toArray());
-        @endphp
-    @foreach($people as $indexpeople => $person)
-        <tr>
-            <td>{{$indexpeople + 1}}</td>
-            <td>{{$person->del_postcode}}</td>
-            <td>{{$person->cust_id}}</td>
-            <td>{{$person->company}}</td>
-            <td>{{$person->custcategory}}</td>
-            <td>{{$person->operation_note}}</td>
-            <td>{{$person->del_lat}}</td>
-            <td>{{$person->del_lng}}</td>
+    @if($people)
+        @foreach($people as $indexpeople => $person)
+            <tr>
+                <td>{{$indexpeople + 1}}</td>
+                <td>{{$person->del_postcode}}</td>
+                <td>{{$person->cust_id}}</td>
+                <td>{{$person->company}}</td>
+                <td>{{$person->custcategory}}</td>
+                <td>{{$person->operation_note}}</td>
+                <td>{{$person->del_lat}}</td>
+                <td>{{$person->del_lng}}</td>
 
-        @foreach($alldata[$indexpeople] as $data)
+            @if($alldata[$indexpeople])
+                @foreach($alldata[$indexpeople] as $data)
 
-            {{-- color setup --}}
-            @php
-                $color = $data['color'];
+                    {{-- color setup --}}
+                    @php
+                        $color = $data['color'];
 
-                switch($color) {
-                    case 'Yellow':
-                        $color = '#ffff00';
-                        break;
-                    case 'Red':
-                        $color = '#ff0000';
-                        break;
-                    default:
-                        $color = 'ffffff';
-                }
-            @endphp
+                        switch($color) {
+                            case 'Yellow':
+                                $color = '#ffff00';
+                                break;
+                            case 'Red':
+                                $color = '#ff0000';
+                                break;
+                            default:
+                                $color = 'ffffff';
+                        }
+                    @endphp
 
-            <td style="background-color: {{$color}}; border: thin solid #000000;">
-                {{$data['qty']}}
-            </td>
+                    <td style="background-color: {{$color}}; border: thin solid #000000;">
+                        {{$data['qty']}}
+                    </td>
+                @endforeach
+            @endif
+            </tr>
         @endforeach
-        </tr>
-    @endforeach
+    @endif
     </tbody>
 </table>
