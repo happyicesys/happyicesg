@@ -37,7 +37,7 @@
                     {{-- color setup --}}
                     @php
                         $color = $data['color'];
-
+                        dd($color);
                         switch($color) {
                             case 'Yellow':
                                 $color = '#ffff00';
