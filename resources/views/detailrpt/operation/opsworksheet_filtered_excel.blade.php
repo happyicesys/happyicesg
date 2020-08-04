@@ -47,46 +47,9 @@
                     $transactionsStr = implode(",", $transArr);
                 }
             @endphp
-            <td>{{$transactionsStr}}</td>
-            @php
-                $zoneStrArr = [];
-                $zoneStr = '';
-                $zoneArr = explode(",",$person->area_group);
-                if(isset($zoneArr[0])) {
-                    if($zoneArr[0] == 1) {
-                        $zoneStrArr[0] = 'West';
-                    }
-                }
-                if(isset($zoneArr[1])) {
-                    if($zoneArr[1] == 1) {
-                        $zoneStrArr[1] = 'East';
-                    }
-                }
-                if(isset($zoneArr[2])) {
-                    if($zoneArr[2] == 1) {
-                        $zoneStrArr[2] = 'Others';
-                    }
-                }
-                if(isset($zoneArr[3])) {
-                    if($zoneArr[3] == 1) {
-                        $zoneStrArr[3] = 'Sup';
-                    }
-                }
-                if(isset($zoneArr[4])) {
-                    if($zoneArr[4] == 1) {
-                        $zoneStrArr[4] = 'Ops';
-                    }
-                }
-                if(isset($zoneArr[5])) {
-                    if($zoneArr[5] == 1) {
-                        $zoneStrArr[5] = 'North';
-                    }
-                }
 
-                $zoneStr = implode(",", $zoneStrArr);
-            @endphp
             <td>{{$person->operation_note}}</td>
-            <td>{{$zoneStr}}</td>
+            <td>{{$person->zone_name}}</td>
             <td>
                 {{$person->del_lat}}
             </td>
@@ -99,23 +62,29 @@
 
                 switch($color) {
                     case 'Yellow':
-                        $color = '#ffff00';
+                        $color = '#ffff33';
                         break;
                     case 'Red':
-                        $color = '#ff0000';
+                        $color = '#ff3333';
+                        break;
+                    case 'Orange':
+                        $color = '#ffae1a';
+                        break;
+                    case 'Green':
+                        $color = '#00b300';
                         break;
                     default:
-                        $color = 'ffffff';
+                        $color = '#FFFFFF';
                 }
 
                 if($data['bool_transaction']) {
                     $color = '#77d867';
-                    $data['qty'] = 0;
+                    $data['qty'][0]->qty = 0;
                 }
 
             @endphp
                 <td style="background-color: {{$color}}; border: thin solid #000000;">
-                    {{$data['qty']}}
+                    {{$data['qty'][0]->qty}}
                 </td>
             @endforeach
 
