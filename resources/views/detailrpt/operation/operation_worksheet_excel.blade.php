@@ -17,7 +17,9 @@
         @endforeach
     </tr>
     </thead>
-
+    @php
+        dd($alldata);
+    @endphp
     <tbody>
     @if($people)
         @foreach($people as $indexpeople => $person)
@@ -37,7 +39,6 @@
                     {{-- color setup --}}
                     @php
                         $color = $data['color'];
-                        dd($color);
                         switch($color) {
                             case 'Yellow':
                                 $color = '#ffff00';
