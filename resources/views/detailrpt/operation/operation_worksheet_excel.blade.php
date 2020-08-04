@@ -19,6 +19,9 @@
     </thead>
 
     <tbody>
+        @php
+            dd($people);
+        @endphp
     @foreach($people as $indexpeople => $person)
         <tr>
             <td>{{$indexpeople + 1}}</td>
