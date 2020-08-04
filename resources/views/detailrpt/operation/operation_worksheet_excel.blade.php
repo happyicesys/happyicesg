@@ -33,7 +33,6 @@
             @if($alldata[$indexpeople])
                 @foreach($alldata[$indexpeople] as $data)
                     @php
-                    dd($data['qty'][0]->qty);
                         $color = $data['color'];
                         switch($color) {
                             case 'Yellow':
@@ -49,7 +48,7 @@
                     @endphp
 
                     <td style="background-color: {{$color}}; border: thin solid #000000;">
-                        {{$data['qty'][0]['qty']}}
+                        {{$data['qty'][0]->null}}
                     </td>
                 @endforeach
             @endif
