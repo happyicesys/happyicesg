@@ -10,7 +10,6 @@
         <th>Cust ID</th>
         <th>ID Name</th>
         <th>Category</th>
-        <th>Inv#</th>
         <th>Ops Note</th>
         <th>Zone</th>
         <th>Lat</th>
