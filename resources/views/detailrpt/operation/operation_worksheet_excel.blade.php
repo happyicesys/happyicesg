@@ -33,7 +33,7 @@
             @if($alldata[$indexpeople])
                 @foreach($alldata[$indexpeople] as $data)
                     @php
-                    dd($data['qty'][0]);
+                    dd($data['qty'][0]->qty);
                         $color = $data['color'];
                         switch($color) {
                             case 'Yellow':
