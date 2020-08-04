@@ -20,7 +20,7 @@
 
     <tbody>
         @php
-            dd($people);
+            dd($people->toArray());
         @endphp
     @foreach($people as $indexpeople => $person)
         <tr>
