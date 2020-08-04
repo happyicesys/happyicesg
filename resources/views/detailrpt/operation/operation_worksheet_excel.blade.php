@@ -48,7 +48,9 @@
                     @endphp
 
                     <td style="background-color: {{$color}}; border: thin solid #000000;">
-                        {{$data['qty'][0]->null}}
+                        @if(isset($data['qty']))
+                            {{$data['qty'][0]->null}}
+                        @endif
                     </td>
                 @endforeach
             @endif
