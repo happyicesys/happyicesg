@@ -819,7 +819,7 @@
                                     <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
-                                    Deals
+                                    Inv Details
                                 </th>
                                 <th class="col-md-1 text-center">
                                     Zone
@@ -972,8 +972,9 @@
                                     <td class="col-md-1 text-center" style="min-width: 80px; font-size: 12px;">
                                         <span ng-if="transaction.deals">
                                             <span ng-repeat="deal in transaction.deals">
-                                                @{{deal.item.product_id}} (@{{deal.qty | currency: "": 1}})
-                                                <br>
+                                                <span class="row" style="margin: 0px 0px 0px 0px;">
+                                                    @{{deal.item.product_id}} (@{{deal.qty | currency: "": 1}})
+                                                </span>
                                             </span>
                                         </span>
                                     </td>
