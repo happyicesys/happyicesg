@@ -93,6 +93,12 @@ class TransactionController extends Controller
             $transactions = $transactions->latest('transactions.created_at')->paginate($pageNum);
         }
 
+        if($transactions) {
+            foreach($transactions as $transaction) {
+                $transaction->deals = $this->getTransactionDeals($transaction->id);
+            }
+        }
+
         $data = [
             'total_amount' => $total_amount + $delivery_total,
             'transactions' => $transactions,
@@ -122,6 +128,12 @@ class TransactionController extends Controller
             $transactionarr = $transactionarr->orderByRaw('FIELD(transactions.id, '.$transaction_rows.')');
         }
         $transactionarr = $transactionarr->orderBy('transactions.sequence')->orderBy('transactions.id', 'desc')->get();
+
+        if($transactionarr) {
+            foreach($transactionarr as $transaction) {
+                $transaction->deals = $this->getTransactionDeals($transaction->id);
+            }
+        }
 
         $collections = [];
         $grand_total = 0;
@@ -213,8 +225,13 @@ class TransactionController extends Controller
         $data = [];
         $data = $this->getJobAssignData();
         $data['request'] = $request->all();
-        // dd($data['grand_delivered_total'], $data['drivers']);
-        $filename = 'JobAssign_' . $now . '.pdf';
+        $filename = 'JobAssign_';
+        if($request->driver) {
+            $filename .= $request->driver.'_';
+        }else {
+            $filename .= 'All_';
+        }
+        $filename .= Carbon::today()->format('Ymd').'.pdf';
         $pdf = PDF::loadView('transaction.jobassign_pdf', $data);
         $pdf->setPaper('a4');
         $pdf->setOption('enable-javascript', true);
@@ -349,6 +366,12 @@ class TransactionController extends Controller
             $do->pickup_date = Carbon::today()->addDay()->toDateString();
             $do->delivery_date1 = Carbon::today()->addDay()->toDateString();
             $do->save();
+        }
+
+        // auto becomes assigned driver if have driver role
+        if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
+            $transaction->driver = auth()->user()->name;
+            $transaction->save();
         }
 
         // operation worksheet management
@@ -2046,14 +2069,6 @@ class TransactionController extends Controller
     // retrieve transactions data ()
     private function getTransactionsData()
     {
-/*
-        $dupes_transaction = DB::table('transactions AS dupes_transactions')
-                                ->leftJoin('people', 'people.id', '=', 'dupes_transactions.person_id')
-                                ->groupBy('dupes_transactions.del_postcode', 'people.id', 'dupes_transactions.contact')
-                                ->havingRaw('(COUNT(dupes_transactions.del_postcode) > 1 AND COUNT(people.id) > 1 AND COUNT(dupes_transactions.contact) > 1)')
-                                ->select(
-                                    DB::raw('COUNT(*) AS dupes')
-                                ); */
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
@@ -2105,9 +2120,17 @@ class TransactionController extends Controller
         // driver not able to see the invoices earlier than today
         $transactions = $this->filterDriverView($transactions);
 
-        // dd($transactions->toSql());
-
         return $transactions;
+    }
+
+    // retrieve transaction deals data
+    private function getTransactionDeals($transactionId)
+    {
+        $transaction = Transaction::with(['deals', 'deals.item'])->findOrFail($transactionId);
+
+        $deals = $transaction->deals;
+
+        return $deals;
     }
 
     private function syncTransaction(Request $request)

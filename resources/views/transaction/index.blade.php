@@ -819,6 +819,9 @@
                                     <span ng-if="search.sortName == 'transactions.del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 <th class="col-md-1 text-center">
+                                    Deals
+                                </th>
+                                <th class="col-md-1 text-center">
                                     Zone
                                 </th>
                                 @else
@@ -966,6 +969,14 @@
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
+                                    <td class="col-md-1 text-center" style="min-width: 80px; font-size: 12px;">
+                                        <span ng-if="transaction.deals">
+                                            <span ng-repeat="deal in transaction.deals">
+                                                @{{deal.item.product_id}} (@{{deal.qty | currency: "": 1}})
+                                                <br>
+                                            </span>
+                                        </span>
+                                    </td>
                                     <td class="col-md-1 text-left">
                                         <span ng-if="transaction.west == 1">West</span>
                                         <span ng-if="transaction.east == 1">East</span>

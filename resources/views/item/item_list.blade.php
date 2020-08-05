@@ -22,6 +22,14 @@
                         ['class'=>'select form-control', 'ng-model'=>'search.is_active', 'ng-init'=>'search.is_active = "1"'])
                     !!}
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                    {!! Form::label('is_inventory', 'Is Inventory?', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('is_inventory',
+                        [''=>'All', '1'=>'Yes', '0'=>'No'],
+                        null,
+                        ['class'=>'select form-control', 'ng-model'=>'search.is_inventory', 'ng-init'=>'search.is_inventory = "1"'])
+                    !!}
+                </div>
             </div>
         </div>
     </div>

@@ -218,7 +218,11 @@ var app = angular.module('app', [
                 var now = Date.now();
                 a.href = fileURL;
                 a.target = '_blank';
-                a.download = 'JobAssignPdf' + now + '.pdf';
+                let fileName = 'JobAssign_';
+                fileName += ($scope.search.driver ? $scope.search.driver.replace(/\s+/g, '_') : 'All') + '_';
+                fileName += moment().format('YYYYMMDD') + '.pdf';
+
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 $scope.spinner = false;
