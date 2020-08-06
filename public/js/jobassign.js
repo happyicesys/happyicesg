@@ -53,6 +53,7 @@ var app = angular.module('app', [
             tags: [],
             transactions_row: '',
             po_row: '',
+            item_id: '',
             itemsPerPage: 200,
             sortName: '',
             sortBy: true
