@@ -5,22 +5,22 @@
 @section('content')
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/item">
-            <h1> {{ $ITEM_TITLE }}<i class="fa fa-shopping-cart"></i></h1>
-        </a>
+    <a class="title_hyper pull-left" href="/item">
+        <h1> {{ $ITEM_TITLE }}<i class="fa fa-shopping-cart"></i></h1>
+    </a>
     </div>
     <div ng-app="app">
-        <div class="panel panel-info" ng-cloak>
+        <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <div class="panel-title">
                     <div class="pull-right">
                         @cannot('transaction_view')
-                        @if(!auth()->user()->hasRole('driver-supervisor'))
-                        <a href="/item/create" class="btn btn-success">+ New Product</a>
-                        <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
-                        <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Limit Setting</a>
-                        <a href="/inventory/email" class="btn btn-info"> Email Alert Limit Setting</a>
-                        @endif
+                            @if(!auth()->user()->hasRole('driver-supervisor'))
+                                <a href="/item/create" class="btn btn-success">+ New Product</a>
+                                <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
+                                <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Limit Setting</a>
+                                <a href="/inventory/email" class="btn btn-info"> Email Alert Limit Setting</a>
+                            @endif
                         @endcannot
                     </div>
                 </div>
@@ -57,7 +57,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 

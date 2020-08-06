@@ -43,6 +43,45 @@ class ItemController extends Controller
         return $data;
     }
 
+    // retrieve api data list for the items index (Formrequest $request)
+    public function getItemsApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+        $items = Item::withoutGlobalScopes();
+
+        // reading whether search input is filled
+        $items = $this->searchItemsDBFilter($items, $request);
+
+        if ($request->sortName) {
+            $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        $totals = $this->multipleTotalFields($items, [
+            'qty_now',
+            'qty_order'
+        ]);
+
+
+        if ($pageNum == 'All') {
+            $items = $items->orderBy('items.product_id', 'asc')->get();
+        } else {
+            $items = $items->orderBy('items.product_id', 'asc')->paginate($pageNum);
+        }
+
+
+        $data = [
+            'items' => $items,
+            'totals' => $totals
+        ];
+
+        return $data;
+    }
+
     // return item index page
     public function index()
     {
@@ -363,5 +402,53 @@ class ItemController extends Controller
                 $sheet->loadView('item.excel_unitcost', compact('profiles', 'items'));
             });
         })->download('xls');
+    }
+
+    // conditional filter parser(Collection $query, Formrequest $request)
+    private function searchItemsDBFilter($items, $request)
+    {
+        $product_id = $request->product_id;
+        $name = $request->name;
+        $remark = $request->remark;
+        $is_active = $request->is_active;
+        $is_inventory = $request->is_inventory;
+
+        if($product_id) {
+            $items = $items->where('items.product_id', 'LIKE', '%'. $product_id . '%');
+        }
+        if($name) {
+            $items = $items->where('items.name', 'LIKE', '%'. $name . '%');
+        }
+        if($remark) {
+            $items = $items->where('items.remark', 'LIKE', '%'. $remark . '%');
+        }
+        if($is_active != '') {
+            $items = $items->where('items.is_active', $is_active);
+        }
+        if($is_inventory != '') {
+            $items = $items->where('items.is_inventory', $is_inventory);
+        }
+        return $items;
+    }
+
+    // return multiple total fields
+    private function multipleTotalFields($query, $fieldNameArr)
+    {
+        $totalSql = clone $query;
+        $totalCol = $totalSql->get();
+        $totalArr = [];
+
+        foreach($fieldNameArr as $fieldName) {
+            $totalArr[$fieldName] = 0;
+        }
+
+        foreach($totalCol as $total) {
+            foreach($fieldNameArr as $fieldName) {
+                // dd($fieldName, $total, $total->$fieldName);
+                $totalArr[$fieldName] += $total->$fieldName;
+            }
+        }
+
+        return $totalArr;
     }
 }

@@ -160,26 +160,26 @@
                         @endif
                     </div>
 
-                <div class="row" style="padding-top: 20px;">
-                    <div class="col-md-4 col-xs-12">
-                        <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                    </div>
-                    <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
-                        <div class="row" style="padding-right:18px;">
-                            <label>Display</label>
-                            <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
-                                <option ng-value="100">100</option>
-                                <option ng-value="200">200</option>
-                                <option ng-value="All">All</option>
-                            </select>
-                            <label>per Page</label>
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="col-md-4 col-xs-12">
+                            <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                         </div>
-                        <div class="row">
-                            <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                        <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
+                            <div class="row" style="padding-right:18px;">
+                                <label>Display</label>
+                                <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
+                                    <option ng-value="100">100</option>
+                                    <option ng-value="200">200</option>
+                                    <option ng-value="All">All</option>
+                                </select>
+                                <label>per Page</label>
+                            </div>
+                            <div class="row">
+                                <label class="" style="padding-right:18px;" for="totalnum">Showing @{{alldata.length}} of @{{totalCount}} entries</label>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
                 <div class="table-responsive" id="exportable" style="padding-top: 20px;">
                     <table class="table table-list-search table-hover table-bordered">
