@@ -4,6 +4,7 @@
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('items', 'App\Item')
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
 @inject('imports', 'App\ImportTransactionExcel')
@@ -502,6 +503,16 @@
                                 <a href="" ng-click="onTodayDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-circle"></i></a>
                                 <a href="" ng-click="onNextDateClicked('delivery_from', 'delivery_to')" class="btn btn-default"><i class="fa fa-forward"></i></a>
                             </div>
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('item_id', 'Has Product', ['class'=>'control-label search-title']) !!}
+                            {!! Form::select('item_id', [''=>'All']+$items::where('is_active', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->orderBy('product_id', 'asc')->pluck('full', 'id')->all(), null, [
+                                'id'=>'item_id',
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.item_id',
+                                'ng-change' => 'searchDB()'
+                                ])
+                            !!}
                         </div>
                     </div>
                 </div>

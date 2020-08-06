@@ -2,6 +2,7 @@
 @inject('people', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
 @inject('franchisees', 'App\User')
+@inject('items', 'App\Item')
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
 
@@ -433,6 +434,16 @@ Job Assign
                                                             'ng-model-options'=>'{ debounce: 1000 }',
                                                             'rows' => '3'
                                                         ]) !!}
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('item_id', 'Has Product', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('item_id', [''=>'All']+$items::where('is_active', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->orderBy('product_id', 'asc')->pluck('full', 'id')->all(), null, [
+                            'id'=>'item_id',
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.item_id',
+                            'ng-change' => 'searchDB()'
+                            ])
+                        !!}
                     </div>
                     @endif
                 </div>
