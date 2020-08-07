@@ -67,7 +67,9 @@
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
                         {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
-                        {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                            {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}
+                        @endif
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
                         {{-- @endif --}}
                     @endif

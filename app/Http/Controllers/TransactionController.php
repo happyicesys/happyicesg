@@ -1101,8 +1101,10 @@ class TransactionController extends Controller
         $replicated_transaction->driver = null;
         $replicated_transaction->paid_by = '';
         $replicated_transaction->paid_at = '';
-        // dd($transaction->deals->toArray());
-
+        if($transaction->person->cust_id[0] === 'P'){
+            $replicated_transaction->po_no = null;
+        }
+        $replicated_transaction->updated_by = auth()->user()->name;
         $replicated_transaction->save();
 
         // replicate pricelist

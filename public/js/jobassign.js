@@ -204,6 +204,7 @@ var app = angular.module('app', [
             if(driverName) {
                 $scope.search.driver = driverName;
             }
+
             $http({
                 method: 'POST',
                 responseType: 'arraybuffer',
@@ -221,7 +222,8 @@ var app = angular.module('app', [
                 a.target = '_blank';
                 let fileName = 'JobAssign_';
                 fileName += ($scope.search.driver ? $scope.search.driver.replace(/\s+/g, '_') : 'All') + '_';
-                fileName += moment().format('YYYYMMDD') + '.pdf';
+                fileName += $scope.search.delivery_from ? moment(new Date($scope.search.delivery_from)).format('YYYYMMDD') : 'Alltime';
+                fileName += '.pdf';
 
                 a.download = fileName;
                 document.body.appendChild(a);
