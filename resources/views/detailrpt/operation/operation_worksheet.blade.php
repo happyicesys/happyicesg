@@ -143,7 +143,7 @@
             <div class="form-group">
                 {!! Form::label('zones', 'Zone', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('zones',
-                    $zones::lists('name', 'id')->all(),
+                    $zones::lists('name', 'id')->orderBy('priority')->get(),
                     null,
                     [
                         'class'=>'selectmultiple form-control',

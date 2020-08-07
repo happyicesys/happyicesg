@@ -148,7 +148,7 @@
                         <div class="form-group col-md-2 col-sm-4 col-xs-12">
                             {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
                             {!! Form::select('zone_id',
-                                    [''=>'All']+ $zones::lists('name', 'id')->all(),
+                                    [''=>'All']+ $zones::orderBy('priority')->lists('name', 'id')->all(),
                                     null,
                                     [
                                         'class'=>'select form-control',
