@@ -200,7 +200,7 @@
         <div class="form-group">
             {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
             {!! Form::select('zone_id',
-                    [''=>null]+ $zones::lists('name', 'id')->all(),
+                    [''=>null]+ $zones::orderBy('priority')->lists('name', 'id')->all(),
                     null,
                     ['class'=>'select form-control', 'disabled'=> $disabled])
             !!}
