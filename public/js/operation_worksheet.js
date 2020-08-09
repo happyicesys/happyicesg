@@ -159,6 +159,10 @@ var app = angular.module('app', [
                 $scope.people[index]['zone_id'] = person.zone_id['id'];
             });
         }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
+        }
 /*
         $scope.onMapClicked = function(singleperson = null, index = null) {
             var url = window.location.href;
@@ -645,6 +649,10 @@ var app = angular.module('app', [
                     outcome: 1
                 }
             });
+        }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
         }
 /*
         $scope.onMapClicked = function(singleperson = null, index = null) {

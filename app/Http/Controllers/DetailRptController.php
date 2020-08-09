@@ -812,6 +812,13 @@ class DetailRptController extends Controller
             $prevyrqty .= " AND people.zone_id='".$request->zone_id."'";
         }
 
+        if($request->account_manager) {
+            $thistotal .= " AND people.account_manager='".$request->account_manager."'";
+            $prevqty .= " AND people.account_manager='".$request->account_manager."'";
+            $prev2qty .= " AND people.account_manager='".$request->account_manager."'";
+            $prevyrqty .= " AND people.account_manager='".$request->account_manager."'";
+        }
+
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
             $thistotal .= " AND profiles.id IN (".$profileIdStr.")";
@@ -887,6 +894,10 @@ class DetailRptController extends Controller
             $items = $items->where('people.zone_id', request('zone_id'));
         }
 
+        if(request('account_manager') != '') {
+            $items = $items->where('people.account_manager', request('account_manager'));
+        }
+
         if($request->profile_id) {
             $items = $items->groupBy('items.id', 'profiles.id')->orderBy('items.product_id');
         }else {
@@ -950,6 +961,9 @@ class DetailRptController extends Controller
         }
         if($request->profile_id) {
             $amountstr = $amountstr." AND profiles.id =".$request->profile_id;
+        }
+        if($request->account_manager) {
+            $amountstr = $amountstr." AND people.account_manager =".$request->account_manager;
         }
         if($request->is_inventory) {
             $amountstr = $amountstr." AND items.is_inventory =".$request->is_inventory;
@@ -2657,6 +2671,7 @@ class DetailRptController extends Controller
         $item_name = $request->item_name;
         $item_id = $request->item_id;
         $zone_id = $request->zone_id;
+        $account_manager = $request->account_manager;
         $sortName = $request->sortName;
         $sortBy = $request->sortBy;
 

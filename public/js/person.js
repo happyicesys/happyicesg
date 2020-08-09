@@ -77,6 +77,10 @@ function personController($scope, $http){
         });
     }
 
+    $scope.merchandiserInit = function(userId) {
+        $scope.search.account_manager = userId;
+    }
+
     $scope.onMapClicked = function(singleperson = null, index = null) {
       var url = window.location.href;
       var location = '';

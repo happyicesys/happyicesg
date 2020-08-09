@@ -2855,6 +2855,10 @@ class TransactionController extends Controller
             $transactions = $transactions->whereRaw('transactions.id IN (SELECT transaction_id FROM deals WHERE item_id ='.$item_id.')');
         }
 
+        if($accountManager = request('account_manager')) {
+            $transactions = $transactions->where('people.account_manager', $accountManager);
+        }
+
         if(request('sortName')){
             $transactions = $transactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }

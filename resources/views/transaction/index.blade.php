@@ -516,6 +516,45 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                            {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+                            @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                            <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
+                                <option value="">All</option>
+                                @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
+                                <option value="{{$user->id}}">
+                                    {{$user->name}}
+                                </option>
+                                @endforeach
+                            </select>
+{{--
+                            {!! Form::select('account_manager',
+                                    [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'search.account_manager',
+                                        'ng-change'=>'searchDB()',
+                                        'ng-init'=>'merchandiserInit("{{auth()->user()->id}}")',
+                                        'disabled'=>'disabled'
+                                    ])
+                            !!} --}}
+                            @else
+                            {!! Form::select('account_manager',
+                                    [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'search.account_manager',
+                                        'ng-change'=>'searchDB()'
+                                    ])
+                            !!}
+                            @endif
+                        </div>
+                    </div>
+                </div>
                 @endif
 
                 <div class="row">

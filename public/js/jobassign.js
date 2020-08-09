@@ -54,6 +54,7 @@ var app = angular.module('app', [
             transactions_row: '',
             po_row: '',
             item_id: '',
+            account_manager: '',
             itemsPerPage: 200,
             sortName: '',
             sortBy: true
@@ -327,6 +328,10 @@ var app = angular.module('app', [
                 $scope.search.custcategory.splice($scope.search.custcategory.indexOf("55"), 1 );
             }
             $scope.searchDB();
+        }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
         }
 
         // retrieve page w/wo search

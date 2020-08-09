@@ -159,15 +159,26 @@
                     @endif
                 </select> --}}
                 {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
-                {!! Form::select('account_manager',
-                        [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
-                        null,
-                        [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.account_manager',
-                            'ng-change'=>'searchDB()'
-                        ])
-                !!}
+                @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                    <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
+                        <option value="">All</option>
+                        @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
+                        <option value="{{$user->id}}">
+                            {{$user->name}}
+                        </option>
+                        @endforeach
+                    </select>
+                @else
+                    {!! Form::select('account_manager',
+                            [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                            null,
+                            [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.account_manager',
+                                'ng-change'=>'searchDB()'
+                            ])
+                    !!}
+                @endif
             </div>
         </div>
         <div class="col-md-4 col-sm-6">

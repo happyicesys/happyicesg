@@ -178,6 +178,10 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -225,6 +229,7 @@ var app = angular.module('app', [
             is_commission: '0',
             item_id: '',
             zone_id: '',
+            account_manager: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -266,6 +271,10 @@ var app = angular.module('app', [
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
+        }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
         }
 
         // retrieve page w/wo search
@@ -322,6 +331,7 @@ var app = angular.module('app', [
             item_name: '',
             item_id: '',
             zone_id: '',
+            account_manager: '',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -366,6 +376,10 @@ var app = angular.module('app', [
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
+        }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
         }
 
         // retrieve page w/wo search
@@ -420,6 +434,7 @@ var app = angular.module('app', [
             is_inventory: '1',
             driver: [],
             zone_id: '',
+            account_manager: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -493,6 +508,10 @@ var app = angular.module('app', [
         $scope.driverInit = function(driver) {
             $scope.search.driver = [driver];
             $scope.search.status = 'Confirmed';
+        }
+
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
         }
 
         // retrieve page w/wo search

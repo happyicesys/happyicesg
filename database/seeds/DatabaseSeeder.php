@@ -42,8 +42,9 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(ShortMonthSeeder::class);
         $this->call(ZoneSeeder::class);
-        */
         $this->call(BankSeeder::class);
+        */
+        $this->call(MerchandiserRoleSeeder::class);
         Model::reguard();
     }
 }
