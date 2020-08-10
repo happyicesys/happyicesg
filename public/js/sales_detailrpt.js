@@ -79,6 +79,10 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.merchandiserInit = function(userId) {
+            $scope.search.account_manager = userId;
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
