@@ -410,7 +410,7 @@
                                 <td class="col-md-2">
                                     {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 120px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                                 </td>
-                                <td class="col-md-3" style="min-width: 120px;">
+                                <td class="col-md-3" style="min-width: 120px; font-size: 12px;">
                                     <div class="checkbox" style="margin-top: 0px;">
                                         <span class="col-md-4 pull-left" style="padding-left: 0px;">
                                         <label>
