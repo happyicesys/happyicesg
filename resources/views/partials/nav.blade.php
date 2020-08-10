@@ -159,7 +159,6 @@
                         $detailrpt_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
-                        $operation_access = true;
                     }
 
                     if(auth()->user()->hasRole('driver-supervisor')) {
