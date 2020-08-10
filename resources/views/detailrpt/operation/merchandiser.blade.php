@@ -347,6 +347,12 @@
                                 <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
+                                Ops Note
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Preferred Day(s)
+                            </th>
+                            <th class="col-md-2 text-center">
                                 Outlet Visit
                             </th>
                             <th class="col-md-1 text-center">
@@ -399,6 +405,59 @@
                                         </span>
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                </td>
+                                <td class="col-md-2">
+                                    {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 130px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
+                                </td>
+                                <td class="col-md-3" style="min-width: 100px;">
+                                    <div class="checkbox" style="margin-top: 0px;">
+                                        <span class="col-md-4 pull-left" style="padding-left: 0px;">
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.monday" ng-change="toggleCheckbox(person.monday, person.person_id, 'monday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Mon
+                                            </span>
+                                        </label>
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.tuesday" ng-change="toggleCheckbox(person.tuesday, person.person_id, 'tuesday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Tues
+                                            </span>
+                                        </label>
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.wednesday" ng-change="toggleCheckbox(person.wednesday, person.person_id, 'wednesday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Wed
+                                            </span>
+                                        </label>
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.thursday" ng-change="toggleCheckbox(person.thursday, person.person_id, 'thursday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Thu
+                                            </span>
+                                        </label>
+                                        </span>
+                                        <span class="col-md-4 pull-right" style="padding-left: 0px;">
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.friday" ng-change="toggleCheckbox(person.friday, person.person_id, 'friday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Fri
+                                            </span>
+                                        </label>
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.saturday" ng-change="toggleCheckbox(person.saturday, person.person_id, 'saturday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Sat
+                                            </span>
+                                        </label>
+                                        <label>
+                                            <input name="checkbox[@{{person.person_id}}]" type="checkbox" ng-model="person.sunday" ng-change="toggleCheckbox(person.sunday, person.person_id, 'sunday')" ng-true-value="'1'" ng-false-value="'0'">
+                                            <span style="margin-left: -5px; margin-top: 5px;">
+                                                Sun
+                                            </span>
+                                        </label>
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="col-md-1" style="max-width: 50px;">
                                     <div class="checkbox" style="margin-top: 0px;">
