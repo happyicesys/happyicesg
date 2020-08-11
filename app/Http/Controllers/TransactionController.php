@@ -1491,8 +1491,6 @@ class TransactionController extends Controller
         $searchtransaction = Transaction::where('delivery_date', '=', $request->delivery_date)->where('driver', $chosendriver)->max('sequence');
 
         $model->driver = $chosendriver;
-        $model->updated_at = Carbon::now();
-        $model->updated_by = auth()->user()->name;
         if($searchtransaction) {
             $model->sequence = $searchtransaction + 1;
         }else {
@@ -1512,8 +1510,6 @@ class TransactionController extends Controller
         $searchtransaction = Transaction::where('delivery_date', '=', $transaction['delivery_date'])->where('driver', $chosendriver)->max('sequence');
 
         $model->driver = $chosendriver;
-        $model->updated_at = Carbon::now();
-        $model->updated_by = auth()->user()->name;
         if($searchtransaction) {
             $model->sequence = $searchtransaction + 1;
         }else {

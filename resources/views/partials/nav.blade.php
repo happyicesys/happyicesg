@@ -158,6 +158,7 @@
                         $item_access = true;
                         $detailrpt_access = true;
                         $ecommerce_access = true;
+                        $operation_access = true;
                         $personmaintenance_access = true;
                     }
 
@@ -319,7 +320,9 @@
                     <li class="{{ Request::segment(1) == 'operation' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-sticky-note-o"></i> Operations <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
-                            <li class="text-left"><a href="/operation/worksheet"> Worksheet</a></li>
+                            @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
+                                <li class="text-left"><a href="/operation/worksheet"> Worksheet</a></li>
+                            @endif
                             <li class="text-left"><a href="/operation/merchandiser"> Merchandiser</a></li>
                             <li class="text-left"><a href="/operation/merchandiser-mobile"> Merchandiser (Mobile)</a></li>
                         </ul>
