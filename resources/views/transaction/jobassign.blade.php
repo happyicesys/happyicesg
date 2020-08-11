@@ -590,9 +590,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="14">
+                            <th colspan="15">
                             @else
-                            <th colspan="10">
+                            <th colspan="11">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -751,10 +751,10 @@ Job Assign
                                 <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('transactions.updated_at', driverkey)">
-                                Last Modified Time
-                                <span ng-if="search.sortName == 'transactions.updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'transactions.updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                                <a href="" ng-click="sortTable('transactions.creator_name', driverkey)">
+                                Created By
+                                <span ng-if="search.sortName == 'transactions.creator_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'transactions.creator_name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             @endif
                         </tr>
@@ -888,7 +888,7 @@ Job Assign
                                 <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
-                                <td class="col-md-1 text-center">@{{ transaction.updated_at }}</td>
+                                <td class="col-md-1 text-center">@{{ transaction.creator_name }}</td>
                                 @endif
                             </tr>
                             <tr ng-if="!driver.transactions || driver.transactions.length == 0">
