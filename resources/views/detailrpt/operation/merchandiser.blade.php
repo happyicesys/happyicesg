@@ -684,7 +684,7 @@
                                             </td>
                                         </tr>
                                         <tr ng-if="!form.person.outlet_visits || form.person.outlet_visits.length == 0">
-                                            <td class="text-center" colspan="18">
+                                            <td class="text-center" colspan="28">
                                                 No Results Found
                                             </td>
                                         </tr>

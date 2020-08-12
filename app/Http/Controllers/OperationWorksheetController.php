@@ -766,7 +766,7 @@ class OperationWorksheetController extends Controller
         }
 
         if($outletvisit_date) {
-            $people = $people->where('outlet_visits.date', $outletvisit_date);
+            $people = $people->whereDate('outlet_visits.date', '=', $outletvisit_date);
         }
 
         return $people;
