@@ -764,10 +764,10 @@ class OperationWorksheetController extends Controller
         if($account_manager) {
             $people = $people->where('people.account_manager', $account_manager);
         }
-/*
+
         if($outletvisit_date) {
-            $people = $people->whereDate('outlet_visits.date', '=', $outletvisit_date);
-        } */
+            $people = $people->whereDate('outletvisit_date', '=', $outletvisit_date);
+        }
 
         return $people;
     }
