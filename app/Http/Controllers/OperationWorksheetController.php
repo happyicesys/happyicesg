@@ -597,6 +597,7 @@ class OperationWorksheetController extends Controller
         $tags = request('tags');
         $account_manager = request('account_manager');
         $last_transac_color = request('last_transac_color');
+        $outletvisit_date = request('outletvisit_date');
         // die(var_dump($preferred_days));
 
         if($profile_id) {
@@ -762,6 +763,10 @@ class OperationWorksheetController extends Controller
 
         if($account_manager) {
             $people = $people->where('people.account_manager', $account_manager);
+        }
+
+        if($outletvisit_date) {
+            $people = $people->where('outlet_visits.date', $outletvisit_date);
         }
 
         return $people;

@@ -278,6 +278,21 @@
                             !!}
                         </div>
                     </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('outletvisit_date', 'Last Outlet Visit Dt', ['class'=>'control-label search-title']) !!}
+                            <datepicker selector="form-control">
+                                <input
+                                    type = "text"
+                                    name="outletvisit_date"
+                                    class = "form-control input-sm"
+                                    placeholder = "Today Date"
+                                    ng-model = "search.outletvisit_date"
+                                    ng-change = "onOutletVisitSearchDateChanged(search.outletvisit_date)"
+                                />
+                            </datepicker>
+                        </div>
+                    </div>
                 </div>
             </div>
 

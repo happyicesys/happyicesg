@@ -454,6 +454,7 @@ var app = angular.module('app', [
         $scope.itemsPerPage = 'All';
         $scope.indexFrom = 0;
         $scope.indexTo = 0;
+        $scope.today = moment().format('YYYY-MM-DD');
         $scope.search = {
             profile_id: '',
             id_prefix: '',
@@ -461,7 +462,7 @@ var app = angular.module('app', [
             exclude_custcategory: 0,
             cust_id: '',
             company: '',
-            chosen_date: moment().format('YYYY-MM-DD'),
+            chosen_date: $scope.today,
             previous: 'Last 14 days',
             future: '2 days',
             color: '',
@@ -471,6 +472,7 @@ var app = angular.module('app', [
             tags: [],
             account_manager: '',
             last_transac_color: '',
+            outletvisit_date: $scope.today,
             pageNum: 'All',
             sortBy: true,
             sortName: ''
@@ -512,6 +514,13 @@ var app = angular.module('app', [
         $scope.onChosenDateChanged = function(date){
             if(date){
                 $scope.search.chosen_date = moment(new Date(date)).format('YYYY-MM-DD');
+            }
+            // $scope.searchDB();
+        }
+
+        $scope.onOutletVisitSearchDateChanged = function(date){
+            if(date){
+                $scope.search.outletvisit_date = moment(new Date(date)).format('YYYY-MM-DD');
             }
             // $scope.searchDB();
         }
