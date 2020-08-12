@@ -472,7 +472,7 @@ var app = angular.module('app', [
             tags: [],
             account_manager: '',
             last_transac_color: '',
-            outletvisit_date: $scope.today,
+            outletvisit_date: '',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
