@@ -281,13 +281,13 @@
                     </div>
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="form-group">
-                            {!! Form::label('outletvisit_date', 'Last Outlet Visit Dt', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('outletvisit_date', 'Last Outlet Visit Date', ['class'=>'control-label search-title']) !!}
                             <datepicker selector="form-control">
                                 <input
                                     type = "text"
                                     name="outletvisit_date"
                                     class = "form-control input-sm"
-                                    placeholder = "Today Date"
+                                    placeholder = "Outlet Visit Date"
                                     ng-model = "search.outletvisit_date"
                                     ng-change = "onOutletVisitSearchDateChanged(search.outletvisit_date)"
                                 />
@@ -363,10 +363,10 @@
                                 <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('outlet_visits.date')">
+                                <a href="" ng-click="sortTable('outletvisit_date')">
                                 Outlet Visit
-                                <span ng-if="search.sortName == 'outlet_visits.date' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'outlet_visits.date' && search.sortBy" class="fa fa-caret-up"></span>
+                                <span ng-if="search.sortName == 'outletvisit_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'outletvisit_date' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
                                 Ops Note

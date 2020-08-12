@@ -150,7 +150,7 @@
                 <strong>@{{ total_owe ? total_owe : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
-        @if(!auth()->user()->hasRole('franchisee'))
+        @if(auth()->user()->hasRole('admin'))
         <div class="row">
             <div class="col-md-5 col-xs-5">
                 Gross Earning:
