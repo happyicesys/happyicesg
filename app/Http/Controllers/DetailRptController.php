@@ -1384,13 +1384,15 @@ class DetailRptController extends Controller
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
 
+        $transactions = $transactions->whereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->copy()->startOfMonth()->toDateString(), $thisYear->copy()->endOfYear()->toDateString()]);
+/*
         $transactions = $transactions->where(function($query) use ($delivery_from, $delivery_to, $prevMonth, $prev2Months, $prevYear) {
 
                             $query->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$delivery_from, $delivery_to])
                                     ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString()])
                                     ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString()])
                                      ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString()]);
-                        });
+                        }); */
 
         $transactions = $transactions->where(function($query) {
             $query->where('thistotal.salestotal', '<>', null)

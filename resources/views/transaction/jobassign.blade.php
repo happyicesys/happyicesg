@@ -590,9 +590,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="15">
+                            <th colspan="16">
                             @else
-                            <th colspan="11">
+                            <th colspan="12">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -751,6 +751,12 @@ Job Assign
                                 <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('updated_at', driverkey)">
+                                Last Modified Time
+                                <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('transactions.creator_name', driverkey)">
                                 Created By
                                 <span ng-if="search.sortName == 'transactions.creator_name' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -888,6 +894,7 @@ Job Assign
                                 <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
+                                <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.creator_name }}</td>
                                 @endif
                             </tr>
