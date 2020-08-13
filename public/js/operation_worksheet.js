@@ -485,6 +485,7 @@ var app = angular.module('app', [
         $scope.todayDay = moment().format('ddd');
         $scope.zones = [];
         $scope.outcomes = [];
+        $scope.ableChangeColor = true;
         // init page load
         // getPage(1, true);
         getZoneOptions();
@@ -553,10 +554,12 @@ var app = angular.module('app', [
         }
 
         $scope.changeColor = function(alldata, parent_index, index) {
-            if(!alldata.qty[0]['qty']) {
-                $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
-                    $scope.alldata[parent_index][index]['color'] = data.color;
-                });
+            if($scope.ableChangeColor)
+                if(!alldata.qty[0]['qty']) {
+                    $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
+                        $scope.alldata[parent_index][index]['color'] = data.color;
+                    });
+                }
             }
         }
 
@@ -662,6 +665,7 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
+            $scope.search.previous =
         }
 /*
         $scope.onMapClicked = function(singleperson = null, index = null) {

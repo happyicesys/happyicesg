@@ -303,7 +303,9 @@
                     <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
 
                     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="people.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                    <button type="button" class="btn btn-primary" ng-click="exportTransactions()" ng-if="search.chosen_date"> Generate Today Invoices</button>
+                    @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
+                        <button type="button" class="btn btn-primary" ng-click="exportTransactions()" ng-if="search.chosen_date"> Generate Today Invoices</button>
+                    @endif
                     <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
                 </div>
 
@@ -355,18 +357,21 @@
                                 <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+                            @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('account_manager')">
                                 Acc Manager
                                 <span ng-if="search.sortName == 'account_manager' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+                            @endif
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('outletvisit_date')">
                                 Outlet Visit
                                 <span ng-if="search.sortName == 'outletvisit_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'outletvisit_date' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
+                            @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                             <th class="col-md-2 text-center">
                                 Ops Note
                             </th>
@@ -376,6 +381,7 @@
                             <th class="col-md-1 text-center">
                                 Zone
                             </th>
+                            @endif
                             <th class="col-md-1 text-center">
                                 Last 2 Transac
                             </th>
@@ -411,9 +417,11 @@
                                 <td class="col-md-1 text-center">
                                     @{{ person.custcategory }}
                                 </td>
+                                @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                                 <td class="col-md-1 text-center">
                                     @{{ person.account_manager_name }}
                                 </td>
+                                @endif
                                 <td class="col-md-1 text-center" style="min-width: 75px; font-size: 12px;">
                                     <span ng-if="person.outletvisit_date">
                                         <span ng-style="{'color': person.outletvisit_date_color}">
@@ -424,6 +432,7 @@
                                     </span>
                                     <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#outletVisitModal" ng-click="onOutletVisitClicked($event, person)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                 </td>
+                                @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                                 <td class="col-md-2">
                                     {!! Form::textarea('operation_notes[@{{person.person_id}}]', null, ['class'=>'text-left form-control', 'rows'=>'3', 'style'=>'min-width: 120px; align-content: left; font-size: 12px;', 'ng-model'=>'person.operation_note', 'ng-change'=>'updateOpsNotes(person.person_id, person.operation_note)', 'ng-model-options'=>'{ debounce: 600 }']) !!}
                                 </td>
@@ -501,6 +510,7 @@
                                         </span>
                                     </div>
                                 </td>
+                                @endif
                                 <td class="col-md-1 text-left" style="min-width: 75px; font-size: 12px;">
                                     <span class="row">
                                         @{{person.last2.transaction.delivery_date}}
