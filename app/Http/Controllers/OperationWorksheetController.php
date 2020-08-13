@@ -928,6 +928,8 @@ class OperationWorksheetController extends Controller
 
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $people = $people->orderBy('outletvisit_date', 'desc');
         }
 
         $people = $people->orderBy('del_postcode');
