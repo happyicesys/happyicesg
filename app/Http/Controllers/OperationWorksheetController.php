@@ -761,7 +761,7 @@ class OperationWorksheetController extends Controller
             $people = $people->whereIn('persontags.id', $tags);
         }
 
-        if($account_manager) {
+        if($account_manager != '') {
             if($account_manager > 0) {
                 $people = $people->where('people.account_manager', $account_manager);
             }else if($account_manager == '-1') {
