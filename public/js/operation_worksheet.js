@@ -554,7 +554,7 @@ var app = angular.module('app', [
         }
 
         $scope.changeColor = function(alldata, parent_index, index) {
-            if($scope.ableChangeColor)
+            if($scope.ableChangeColor){
                 if(!alldata.qty[0]['qty']) {
                     $http.post('/api/detailrpt/operation/color', {'id': alldata.id}).success(function(data) {
                         $scope.alldata[parent_index][index]['color'] = data.color;
@@ -665,7 +665,8 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
-            $scope.search.previous =
+            $scope.search.previous = 'Last 7 days';
+            $scope.ableChangeColor = false;
         }
 /*
         $scope.onMapClicked = function(singleperson = null, index = null) {
