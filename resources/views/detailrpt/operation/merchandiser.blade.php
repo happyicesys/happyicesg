@@ -251,7 +251,7 @@
                             </select>
                         @else
                             {!! Form::select('account_manager',
-                                    [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                    [''=>'All', '-1'=>'-- Has Any Acc Manger --']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
                                     null,
                                     [
                                         'class'=>'select form-control',
