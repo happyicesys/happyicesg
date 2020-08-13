@@ -255,8 +255,7 @@
                                     null,
                                     [
                                         'class'=>'select form-control',
-                                        'ng-model'=>'search.account_manager',
-                                        'ng-change'=>'searchDB()'
+                                        'ng-model'=>'search.account_manager'
                                     ])
                             !!}
                         @endif
