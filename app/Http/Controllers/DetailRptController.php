@@ -1251,14 +1251,15 @@ class DetailRptController extends Controller
 
         $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
         $thiscommtotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
-        $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
-        $prevcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevcommtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
-        $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
-        $prev2commtotalStr = $this->filterTransactionDeliveryDateRaw($prev2commtotalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
-        $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
-        $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
+        $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+        $prevcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevcommtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+        $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+        $prev2commtotalStr = $this->filterTransactionDeliveryDateRaw($prev2commtotalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+        $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
+        $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
 
-        $thisyeartotalStr = $this->filterTransactionDeliveryDateRaw($thisyeartotalStr, $thisYear->startOfYear()->toDateString(), $thisYear->endOfYear()->toDateString());
+        $thisyeartotalStr = $this->filterTransactionDeliveryDateRaw($thisyeartotalStr, $thisYear->copy()->startOfYear()->toDateString(), $thisYear->copy()->endOfYear()->toDateString());
+        // dd($thisYear->startOfYear()->toDateString(), $thisYear->endOfYear()->toDateString());
 /*
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
