@@ -362,6 +362,7 @@ Route::resource('item', 'ItemController');
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
 
+Route::post('/api/pricematrix/override', 'PriceController@overridePriceMatrixApi');
 Route::post('/api/prices/person', 'PriceController@getPersonPricesApi');
 Route::post('/pricematrix/batchconfirm', 'PriceController@batchConfirmPriceMatrix');
 Route::get('/pricematrix', 'PriceController@getPriceMatrixIndex');

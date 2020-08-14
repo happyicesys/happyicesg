@@ -164,10 +164,10 @@
                 <table id="datatable" class="table table-list-search table-bordered table-fixedheader">
                     <thead style="font-size: 11px;">
                     <tr style="background-color: #DDFDF8">
-{{--
+
                         <th class="col-md-1 text-center">
                             <input type="checkbox" id="check_all" ng-model="form.checkall" ng-change="onCheckAllChecked()"/>
-                        </th> --}}
+                        </th>
                         <th class="col-md-1 text-center">
                             #
                         </th>
@@ -179,20 +179,20 @@
                         </th>
                         <th class="col-md-1 text-center" ng-repeat="(itemindex, item) in items">
                             (@{{item.product_id}}) @{{item.name}}
-{{--
+
                             <input type="text" class="input-xs text-right" ng-model="form.retail_price[itemindex]" placeholder="Retail Price">
                             <input type="text" class="input-xs text-right" ng-model="form.quote_price[itemindex]" placeholder="Quote Price">
-                            <button class="btn btn-xs btn-warning" ng-click="onOverrideButtonClicked(form.retail_price[itemindex], form.quote_price[item_index], itemindex)">Override</button> --}}
+                            <button class="btn btn-xs btn-warning" ng-click="onOverrideButtonClicked(form.retail_price[itemindex], form.quote_price[itemindex], itemindex)">Override</button>
                         </th>
                     </tr>
                     </thead>
 
                     <tbody style="font-size: 11px;">
                         <tr ng-repeat="person in people">
-{{--
+
                             <td class="col-md-1 text-center">
                                 <input type="checkbox" name="checkbox" ng-model="person.check">
-                            </td> --}}
+                            </td>
                             <td class="col-md-1 text-center">
                                 @{{$index + 1}}
                             </td>

@@ -55,10 +55,17 @@ function pricematrixController($scope, $http) {
 
     // on individual override button clicked
     $scope.onOverrideButtonClicked = function(retail_price, quote_price, itemindex) {
-        console.log(retail_price);
-        console.log(quote_price);
-        console.log(itemindex);
-        console.log($scope.items[itemindex]);
+        $http.post('/api/pricematrix/override', {
+            people: $scope.people,
+            retailPrice: retail_price,
+            quotePrice: quote_price,
+            itemId: $scope.items[itemindex]['id']
+        }).success(function(data) {
+            // $scope.form.retail_price[itemindex] = ''
+            // $scope.form.quote_price[itemindex] = ''
+            $scope.form.checkall = ''
+            getPage();
+        });
     }
 
     // checkbox all

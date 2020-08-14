@@ -272,6 +272,45 @@ class PriceController extends Controller
         }
     }
 
+    // override retail price and quote price by checkbox
+    public function overridePriceMatrixApi()
+    {
+        $peopleArr = request('people');
+        $retailPrice = request('retailPrice');
+        $quotePrice = request('quotePrice');
+        $itemId = request('itemId');
+
+        $item = Item::findOrFail($itemId);
+        if($peopleArr) {
+            foreach($peopleArr as $person) {
+                if(isset($person['check'])) {
+                    if($person['check']) {
+                        $price = Price::where('person_id', $person['id'])->where('item_id', $item->id)->first();
+                        if($quotePrice != 0 and $quotePrice != null and $quotePrice != '') {
+                            if($price) {
+                                $price->retail_price = $retailPrice;
+                                $price->quote_price = $quotePrice;
+                                $price->save();
+                            }else {
+                                $newPrice = new Price();
+                                $newPrice->retail_price = $retailPrice;
+                                $newPrice->quote_price = $quotePrice;
+                                $newPrice->item_id = $item->id;
+                                $newPrice->person_id = $person['id'];
+                                $newPrice->save();
+                            }
+                        }else {
+                            if($price) {
+                                $price->delete();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     // update the person costrate
     public function editCostrateApi()
     {
