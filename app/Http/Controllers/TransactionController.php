@@ -1546,8 +1546,6 @@ class TransactionController extends Controller
                         }else {
                             $model->driver = $driver;
                         }
-                        $model->updated_at = Carbon::now();
-                        $model->updated_by = auth()->user()->name;
                         $model->save();
                     }
                 }
@@ -1580,8 +1578,6 @@ class TransactionController extends Controller
                             }else {
                                 $model->driver = $form_driver;
                             }
-                            $model->updated_at = Carbon::now();
-                            $model->updated_by = auth()->user()->name;
                             $model->save();
                         }
                     }
