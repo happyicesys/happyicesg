@@ -5,7 +5,7 @@
 
 @extends('template')
 @section('title')
-Daily Report
+Performance
 @stop
 @section('content')
 

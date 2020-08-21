@@ -157,6 +157,7 @@
                         $person_access = true;
                         $item_access = true;
                         $detailrpt_access = true;
+                        $dailyreport_access = true;
                         $ecommerce_access = true;
                         $operation_access = true;
                         $personmaintenance_access = true;
@@ -306,8 +307,13 @@
                     <li class="{{ Request::segment(1) == 'dailyreport' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-flag"></i> Performance <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
+                            @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                             <li class="text-left"><a href="/dailyreport/commission"> Driver Commission</a></li>
                             <li class="text-left"><a href="/dailyreport/driver-location-count"> Driver # Location</a></li>
+                            @endif
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                                <li class="text-left"><a href="/dailyreport/account-manager-performance"> Acc Manager</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif
