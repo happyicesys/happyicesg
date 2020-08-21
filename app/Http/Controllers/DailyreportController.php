@@ -455,10 +455,7 @@ class DailyreportController extends Controller
         }
 
         $transactions = $transactions->get();
-
-
-
-        $outletVisits = $outletVisits->get();
+        $outletvisits = $outletVisits->get();
 
         $dataArr = [
             [
@@ -511,20 +508,20 @@ class DailyreportController extends Controller
                     }
                 }
             }
-            if($outletVisits) {
-                foreach($outletVisits as $outletVisit) {
+            if($outletvisits) {
+                foreach($outletvisits as $outletvisit) {
                     $createNewVisit = true;
-                    if($outletVisit->month == $months['month']){
+                    if($outletvisit->month == $months['month']){
                         // dd($outletVisit->toArray(), $months, $dataArr[$monthIndex]['dates']);
                         if($dataArr[$monthIndex]['dates']){
                             foreach($dataArr[$monthIndex]['dates'] as $dateIndex => $date) {
-                                if($dateIndex == $outletVisit->date) {
+                                if($dateIndex == $outletvisit->date) {
                                     foreach($date as $managerIndex => $manager) {
-                                        if($managerIndex == $outletVisit->account_manager_id) {
-                                            $dataArr[$monthIndex]['dates'][$dateIndex][$outletVisit->account_manager_id]['visits'] = $outletVisit->visited_total;
-                                            $visitTotal += $outletVisit->visited_total;
+                                        if($managerIndex == $outletvisit->account_manager_id) {
+                                            $dataArr[$monthIndex]['dates'][$dateIndex][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
+                                            $visitTotal += $outletvisit->visited_total;
                                             $createNewVisit = false;
-                                            unset($outletVisit);
+                                            unset($outletvisit);
                                         }
                                     }
                                 }
@@ -532,11 +529,11 @@ class DailyreportController extends Controller
                         }
 
                         if($createNewVisit) {
-                            $dataArr[$monthIndex]['dates'][$outletVisit->delivery_date][$outletVisit->account_manager_id]['account_manager_name'] = $outletVisit->account_manager_name;
-                            $dataArr[$monthIndex]['dates'][$outletVisit->delivery_date][$outletVisit->account_manager_id]['visits'] = $outletVisit->visited_total;
-                            $dataArr[$monthIndex]['dates'][$outletVisit->delivery_date][$outletVisit->account_manager_id]['date'] = $outletVisit->date;
-                            $visitTotal += $outletVisit->visited_total;
-                            // unset($outletVisit);
+                            $dataArr[$monthIndex]['dates'][$outletvisit->delivery_date][$outletvisit->account_manager_id]['account_manager_name'] = $outletvisit->account_manager_name;
+                            $dataArr[$monthIndex]['dates'][$outletvisit->delivery_date][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
+                            $dataArr[$monthIndex]['dates'][$outletvisit->delivery_date][$outletvisit->account_manager_id]['date'] = $outletvisit->date;
+                            $visitTotal += $outletvisit->visited_total;
+                            // unset($outletvisit);
                         }
 
                     }
