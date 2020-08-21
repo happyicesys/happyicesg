@@ -485,8 +485,8 @@ class DailyreportController extends Controller
                 foreach($transactions as $transaction) {
                     $createNewTransaction = true;
                     if($transaction->month == $months['month']){
-                        if($month['dates']){
-                            foreach($month['dates'] as $dateIndex => $date) {
+                        if($months['dates']){
+                            foreach($months['dates'] as $dateIndex => $date) {
                                 if($dateIndex == $transaction->date) {
                                     foreach($date as $managerIndex => $manager) {
                                         if($managerIndex == $transaction->account_manager_id) {
