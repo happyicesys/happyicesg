@@ -515,6 +515,7 @@ class DailyreportController extends Controller
                 foreach($outletVisits as $outletVisit) {
                     $createNewVisit = true;
                     if(isset($outletVisit)) {
+                        if($outletVisit) {
                         if($outletVisit->month == $months['month']){
                             // dd($outletVisit->toArray(), $months, $dataArr[$monthIndex]['dates']);
                             if($dataArr[$monthIndex]['dates']){
@@ -540,6 +541,7 @@ class DailyreportController extends Controller
                                 unset($outletVisit);
                             }
 
+                        }
                         }
                     }
                 }
