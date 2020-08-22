@@ -512,13 +512,13 @@ class DailyreportController extends Controller
                 foreach($outletvisits as $outletvisit) {
                     $createNewVisit = true;
                     if($outletvisit->month == $months['month']){
-                        // dd($outletVisit->toArray(), $months, $dataArr[$monthIndex]['dates']);
+                        // dd($outletvisit->toArray(), $months, $dataArr[$monthIndex]['dates']);
                         if($dataArr[$monthIndex]['dates']){
                             foreach($dataArr[$monthIndex]['dates'] as $dateIndex => $date) {
                                 if($dateIndex == $outletvisit->date) {
                                     foreach($date as $managerIndex => $manager) {
                                         dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
-                                        if($managerIndex == $outletvisit['account_manager_id']) {
+                                        if($managerIndex == $outletvisit->account_manager_id) {
                                             $dataArr[$monthIndex]['dates'][$dateIndex][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
                                             $visitTotal += $outletvisit->visited_total;
                                             $createNewVisit = false;
