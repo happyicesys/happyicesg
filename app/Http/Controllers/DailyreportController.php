@@ -490,7 +490,7 @@ class DailyreportController extends Controller
                                             $dataArr[$monthIndex]['dates'][$dateIndex][$transaction->date][$transaction->account_manager_id]['sales'] = $transaction->sales_total;
                                             $salesTotal += round($transaction->sales_total, 2);
                                             $createNewTransaction = false;
-                                            unset($transaction);
+                                            // unset($transaction);
                                         }
                                     }
                                 }
@@ -521,8 +521,8 @@ class DailyreportController extends Controller
                                             $dataArr[$monthIndex]['dates'][$dateIndex][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
                                             $visitTotal += $outletvisit->visited_total;
                                             $createNewVisit = false;
-                                            unset($outletvisit);
-                                            dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
+                                            // unset($outletvisit);
+                                            // dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
                                         }
                                     }
                                 }
