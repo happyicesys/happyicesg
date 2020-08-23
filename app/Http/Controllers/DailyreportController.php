@@ -520,9 +520,9 @@ class DailyreportController extends Controller
                                         if($managerIndex == $outletvisit->account_manager_id) {
                                             $dataArr[$monthIndex]['dates'][$dateIndex][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
                                             $visitTotal += $outletvisit->visited_total;
-                                            dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
                                             $createNewVisit = false;
                                             unset($outletvisit);
+                                            dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
                                         }
                                     }
                                 }
