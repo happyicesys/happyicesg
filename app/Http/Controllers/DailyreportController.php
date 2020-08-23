@@ -517,8 +517,8 @@ class DailyreportController extends Controller
                             foreach($dataArr[$monthIndex]['dates'] as $dateIndex => $date) {
                                 if($dateIndex == $outletvisit->date) {
                                     foreach($date as $managerIndex => $manager) {
-                                        // dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
                                         if($managerIndex == $outletvisit->account_manager_id) {
+                                        dd($outletvisit->account_manager_id, $outletvisit['account_manager_id'], $outletvisits->toArray(), $outletvisit->toArray());
                                             $dataArr[$monthIndex]['dates'][$dateIndex][$outletvisit->account_manager_id]['visits'] = $outletvisit->visited_total;
                                             $visitTotal += $outletvisit->visited_total;
                                             $createNewVisit = false;
