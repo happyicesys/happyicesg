@@ -445,14 +445,14 @@ class DailyreportController extends Controller
             DB::raw('ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN transactions.total ELSE transactions.total * 100/ (100 + transactions.gst_rate) END) ELSE transactions.total END), 2) AS sales_total'),
             DB::raw('MONTH(delivery_date) AS month'),
             DB::raw('DATE(delivery_date) AS date'),
-            DB::raw('DATE_FORMAT(delivery_date, "%a") AS day'),
+            DB::raw('DATE_FORMAT(delivery_date, "%a") AS day')
         );
         $outletVisits = $outletVisits->select(
             'account_manager.id AS account_manager_id', 'account_manager.name AS account_manager_name',
             DB::raw('COUNT(outlet_visits.id) AS visited_total'),
             DB::raw('MONTH(date) AS month'),
             DB::raw('DATE(date) AS date'),
-            DB::raw('DATE_FORMAT(date, "%a") AS day'),
+            DB::raw('DATE_FORMAT(date, "%a") AS day')
         );
 /*
         if(request('account_manager') === 'total') {
