@@ -399,13 +399,19 @@ class PriceController extends Controller
     private function filterPriceMatrixPeople()
     {
         $cust_id = request('cust_id');
+        $strictCustId = request('strictCustId');
         $custcategory_id = request('custcategory_id');
         $company = request('company');
+        $active = request('active');
 
         $people = new Person();
 
         if ($cust_id) {
-            $people = $people->where('people.cust_id', 'LIKE', '%' . $cust_id . '%');
+            if($strictCustId) {
+                $people = $people->where('people.cust_id', 'LIKE', $cust_id . '%');
+            }else {
+                $people = $people->where('people.cust_id', 'LIKE', '%'. $cust_id . '%');
+            }
         }
         if ($custcategory_id) {
             $people = $people->where('people.custcategory_id', $custcategory_id);
@@ -413,6 +419,14 @@ class PriceController extends Controller
         if ($company) {
             $people = $people->where('people.company', 'LIKE', '%' . $company . '%');
         }
+        if($active) {
+            $actives = $active;
+            if (count($actives) == 1) {
+                $actives = [$actives];
+            }
+            $people = $people->whereIn('people.active', $actives);
+        }
+
 
         return $people;
     }

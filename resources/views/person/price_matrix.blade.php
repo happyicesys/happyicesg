@@ -68,14 +68,19 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
-                        {!! Form::label('cust_id', 'Customer ID', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('cust_id',
-                            null,
-                            [
-                                'class'=>'form-control input-sm',
-                                'ng-model' => 'search.cust_id',
-                                'placeholder'=>'ID',
-                            ])
+                        {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
+                        <label class="pull-right">
+                            <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
+                            <span style="margin-top: 5px; margin-right: 5px;">
+                                Strict
+                            </span>
+                        </label>
+                        {!! Form::text('cust_id', null,
+                                                        [
+                                                            'class'=>'form-control input-sm',
+                                                            'ng-model'=>'search.cust_id',
+                                                            'placeholder'=>'ID'
+                                                        ])
                         !!}
                     </div>
                     <div class="form-group col-md-2 col-sm-4 col-xs-6">
@@ -132,6 +137,22 @@
                                 'ng-model' => 'search.is_inventory'
                             ])
                         !!}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-6">
+                        {!! Form::label('active', 'Cust Status', ['class'=>'control-label search-title']) !!}
+                        <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" multiple>
+                            <option value="">All</option>
+                            <option value="Yes">Active</option>
+                            <option value="New">New</option>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                <option value="No">Inactive</option>
+                                <option value="Pending">Pending</option>
+                            @endif
+                        </select>
                     </div>
                 </div>
             </div>

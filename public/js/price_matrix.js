@@ -16,11 +16,13 @@ function pricematrixController($scope, $http) {
     $scope.indexTo = 0;
     $scope.search = {
         cust_id: '',
+        strictCustId: '',
         custcategory_id: '',
         company: '',
         product_id: '',
         name: '',
         is_inventory: '1',
+        active: ['Yes'],
         pageNum: 'All',
         sortBy: true,
         sortName: ''
@@ -35,6 +37,9 @@ function pricematrixController($scope, $http) {
 
     angular.element(document).ready(function () {
         $('.select').select2();
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
     });
 
     // when hitting search button

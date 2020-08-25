@@ -129,7 +129,7 @@ Performance
                                       </select>
                                   @else
                                       {!! Form::select('account_manager',
-                                              [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                              [''=>'All', 'unassigned'=>'-- Unassigned --']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
                                               null,
                                               [
                                                   'class'=>'select form-control',
@@ -239,8 +239,9 @@ Performance
 
                                     <tbody ng-repeat="date in data.dates" ng-style="{'background-color': ($index%2==0) ? '#F1F1F1' : ''}">
                                         <tr ng-repeat="manager in date">
-                                            <td class="col-md-1 text-center" style="font-size: 12px;">
-                                                @{{manager.date}}
+                                            <td class="col-md-1 text-center" style="font-size: 11px;">
+                                                @{{manager.date}} <br>
+                                                @{{manager.day}}
                                             </td>
                                             <td class="col-md-1 text-center">
                                                 @{{manager.account_manager_name}}
