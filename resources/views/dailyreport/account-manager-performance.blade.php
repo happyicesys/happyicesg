@@ -129,7 +129,7 @@ Performance
                                       </select>
                                   @else
                                       {!! Form::select('account_manager',
-                                              [''=>'All', 'unassigned'=>'-- Unassigned --']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                              [''=>'All', 'unassigned'=>'-- Unassigned --', 'total'=>'-- Daily Total --']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
                                               null,
                                               [
                                                   'class'=>'select form-control',
@@ -197,10 +197,10 @@ Performance
                                 </tr>
                                 <tr style="background-color: #DDFDF8">
                                     <th class="col-md-1 text-center">
-                                        {{-- <a href="" ng-click="sortTable('date')"> --}}
+                                        <a href="" ng-click="sortTable('date')">
                                         Date
-                                        {{-- <span ng-if="search.sortName == 'date' && !search.sortBy" class="fa fa-caret-down"></span> --}}
-                                        {{-- <span ng-if="search.sortName == 'date' && search.sortBy" class="fa fa-caret-up"></span> --}}
+                                        <span ng-if="search.sortName == 'date' && !search.sortBy" class="fa fa-caret-down"></span>
+                                        <span ng-if="search.sortName == 'date' && search.sortBy" class="fa fa-caret-up"></span>
                                     </th>
                                     <th class="col-md-1 text-center">
                                         {{-- <a href="" ng-click="sortTable('account_manager_name')"> --}}

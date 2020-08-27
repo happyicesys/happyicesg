@@ -454,21 +454,21 @@ class DailyreportController extends Controller
             DB::raw('DATE(date) AS date'),
             DB::raw('DATE_FORMAT(date, "%a") AS day')
         );
-/*
+
         if(request('account_manager') === 'total') {
             $transactions = $transactions->groupBy('date');
             $outletVisits = $outletVisits->groupBy('date');
-        }else { */
+        }else {
             $transactions = $transactions->groupBy('date')->groupBy('account_manager.id');
             $outletVisits = $outletVisits->groupBy('date')->groupBy('account_manager.id');
-        // }
+        }
 
         if($sortName = request('sortName')){
             $transactions = $transactions->orderBy($sortName, request('sortBy') ? 'asc' : 'desc');
             $outletVisits = $outletVisits->orderBy($sortName, request('sortBy') ? 'asc' : 'desc');
         }else {
-            $transactions = $transactions->orderBy('date', 'asc')->orderBy('account_manager.name', 'asc');
-            $outletVisits = $outletVisits->orderBy('date', 'asc')->orderBy('account_manager.name', 'asc');
+            $transactions = $transactions->orderBy('date', 'desc')->orderBy('account_manager.name', 'asc');
+            $outletVisits = $outletVisits->orderBy('date', 'desc')->orderBy('account_manager.name', 'asc');
         }
 
         $transactions = $transactions->get();
@@ -515,7 +515,9 @@ class DailyreportController extends Controller
                         }
 
                         if($createNewTransaction) {
-                            $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['account_manager_name'] = $transaction->account_manager_name ?? 'UNASSIGNED';
+                            if(request('account_manager') !== 'total') {
+                                $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['account_manager_name'] = $transaction->account_manager_name ?? 'UNASSIGNED';
+                            }
                             $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['sales'] = $transaction->sales_total;
                             $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['date'] = $transaction->date;
                             $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['day'] = $transaction->day;
@@ -526,6 +528,8 @@ class DailyreportController extends Controller
                     }
                 }
             }
+
+            if(request('account_manager') !== 'total') {
             if($outletvisits) {
                 foreach($outletvisits as $outletvisit) {
                     $createNewVisit = true;
@@ -558,6 +562,7 @@ class DailyreportController extends Controller
 
                     }
                 }
+            }
             }
             $dataArr[$monthIndex]['salesTotal'] = round($salesTotal, 2);
             $dataArr[$monthIndex]['visitTotal'] = $visitTotal;
