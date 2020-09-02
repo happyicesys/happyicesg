@@ -691,10 +691,12 @@ Job Assign
                                 Address
                             </th>
                             <th class="col-md-1 text-center">
+                                PO Num
+{{--
                                 <a href="" ng-click="sortTable('transactions.contact', driverkey)">
                                 Contact
                                 <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
+                                <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span> --}}
                             </th>
                             <th class="col-md-1 text-center">
                                 <span class="col-md-12">
@@ -823,7 +825,7 @@ Job Assign
                                     @{{transaction.del_address}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ transaction.contact}}
+                                    @{{ transaction.po_no}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
