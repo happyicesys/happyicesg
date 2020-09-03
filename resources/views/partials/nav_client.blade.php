@@ -16,6 +16,7 @@
             $home_access = false;
             $product_access = false;
             $online_order_access = false;
+            $warehouse_sales_access = false;
             $recruitment_access = false;
             $vending_machine_access = false;
             $franchise_access = false;
@@ -30,6 +31,7 @@
                     $home_access = false;
                     $product_access = true;
                     $online_order_access = true;
+                    $warehouse_sales_access = true;
                     $recruitment_access = true;
                     $vending_machine_access = true;
                     $franchise_access = true;
@@ -42,6 +44,7 @@
                     $home_access = true;
                     $product_access = false;
                     $online_order_access = false;
+                    $warehouse_sales_access = false;
                     $recruitment_access = false;
                     $vending_machine_access = false;
                     $franchise_access = false;
@@ -54,6 +57,7 @@
                     $home_access = false;
                     $product_access = false;
                     $online_order_access = false;
+                    $warehouse_sales_access = false;
                     $recruitment_access = false;
                     $vending_machine_access = false;
                     $franchise_access = false;
@@ -100,6 +104,11 @@
                     <li>
                         <a class="page-scroll" style="color: yellow;" href="/warehouse-sales">Warehouse Sales</a>
                     </li> --}}
+                @endif
+                @if($warehouse_sales_access)
+                <li>
+                    <a class="page-scroll" style="color: white;" href="/warehouse-sales">Warehouse Sales</a>
+                </li>
                 @endif
                 @if($recruitment_access)
                 <li>

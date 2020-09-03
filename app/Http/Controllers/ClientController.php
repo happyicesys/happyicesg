@@ -595,7 +595,8 @@ class ClientController extends Controller
     // redirect to warehouse sales page
     public function warehouseSales()
     {
-        return Redirect::to('https://form.jotform.me/kentzo/happy-ice-warehouse-sales-dec-19');
+        // return Redirect::to('https://form.jotform.me/kentzo/happy-ice-warehouse-sales-dec-19');
+        return Redirect::to('https://form.jotform.com/kentzo/happyice-warehouse-sales');
     }
 
     // redirect to brown sugar boba milk tea page
