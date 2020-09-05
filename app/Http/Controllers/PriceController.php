@@ -286,7 +286,7 @@ class PriceController extends Controller
                 if(isset($person['check'])) {
                     if($person['check']) {
                         $price = Price::where('person_id', $person['id'])->where('item_id', $item->id)->first();
-                        if($quotePrice != 0 and $quotePrice != null and $quotePrice != '') {
+                        if($quotePrice != null and $quotePrice != '') {
                             if($price) {
                                 $price->retail_price = $retailPrice;
                                 $price->quote_price = $quotePrice;
