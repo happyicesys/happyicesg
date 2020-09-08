@@ -14,6 +14,18 @@
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
 
+
+<style>
+    .panel {
+        border-color: #6D3A9C !important;
+    }
+
+    .panel-heading {
+        background-color: #6D3A9C !important;
+        color: white;
+    }
+</style>
+
     @php
         $disabled = false;
         $disabledStr = '';
@@ -24,7 +36,7 @@
         }
     @endphp
     @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
-    <div class="panel panel-primary">
+    <div class="panel">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-7 col-sm-7 col-xs-12">
@@ -130,7 +142,7 @@
     @endunless
 
 {{-- divider --}}
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <h3 class="panel-title">
             <strong>Transaction History for {{$person->cust_id}} : {{$person->company}} </strong>
@@ -145,7 +157,7 @@
     </div>
 </div>
 
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
             <div class="pull-left display_panel_title">
@@ -224,7 +236,7 @@
 
 {{-- divider --}}
 @if($person->franchisee_id and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <h3 class="panel-title">
             <strong>F VendCash for {{$person->cust_id}} : {{$person->company}} </strong>
@@ -240,7 +252,7 @@
 {{-- divider --}}
 @unless(Auth::user()->type === 'marketer')
 
-    <div class="panel panel-primary">
+    <div class="panel">
         <div class="panel-heading">
             <div class="panel-title">
                 <div class="pull-left display_panel_title">
@@ -316,7 +328,7 @@
 
 {{-- divider --}}
 @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
             <h3 class="panel-title"><strong>Freezer and Accessories : {{$person->company}}</strong></h3>
@@ -338,7 +350,7 @@
 @endif
 {{-- divider --}}
 
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
             <h3 class="panel-title"><strong>File : {{$person->company}}</strong></h3>
@@ -446,7 +458,7 @@
 </div>
 {{-- divider --}}
 @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
             <h3 class="panel-title"><strong>Maintenance Log : {{$person->company}}</strong></h3>
@@ -461,7 +473,7 @@
 </div>
 @endif
 {{-- divider --}}
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
             <h3 class="panel-title"><strong>Notes : {{$person->company}}</strong></h3>
