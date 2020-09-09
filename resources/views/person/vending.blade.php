@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="panel">
     <div class="panel-heading">
         Vending Machine
     </div>
