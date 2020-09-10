@@ -7,13 +7,6 @@
 @inject('outletVisits', 'App\OutletVisit')
 
 @extends('template')
-@section('title')
-{{ $PERSON_TITLE }}
-@stop
-@section('content')
-
-<div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
-
 
 <style>
     .panel {
@@ -24,7 +17,21 @@
         background-color: #6D3A9C !important;
         color: white;
     }
+
+    .person-color {
+        color:  #6D3A9C;
+    }
 </style>
+
+@section('title')
+    {{ $PERSON_TITLE }}
+@stop
+@section('content')
+
+<div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
+
+
+
 
     @php
         $disabled = false;

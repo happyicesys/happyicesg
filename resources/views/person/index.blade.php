@@ -6,13 +6,19 @@
 @inject('zones', 'App\Zone')
 
 @extends('template')
+<style>
+    .person-color {
+        color:  #6D3A9C;
+    }
+</style>
+
 @section('title')
 {{ $PERSON_TITLE }}
 @stop
 @section('content')
 
     <div class="row">
-    <a class="title_hyper pull-left" href="/person"><h1>{{ $PERSON_TITLE }} <i class="fa fa-users"></i></h1></a>
+        <a class="title_hyper pull-left person-color" href="/person"><h1>{{ $PERSON_TITLE }} <i class="fa fa-users"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="personController">
 
