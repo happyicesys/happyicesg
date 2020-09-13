@@ -813,6 +813,7 @@ var app = angular.module('app', [
             var markers = [];
 
             if(singleperson) {
+                console.log(singleperson)
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
                     '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
@@ -834,9 +835,6 @@ var app = angular.module('app', [
                     $http.post('/api/person/storelatlng/' + singleperson.person_id, coord).success(function (data) {
                         $scope.people[index].del_lat = data.del_lat;
                         $scope.people[index].del_lng = data.del_lng;
-
-                        console.log(singleperson)
-                        console.log(singleperson.map_icon_file)
                         let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                         var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
                         var marker = new google.maps.Marker({
@@ -859,6 +857,7 @@ var app = angular.module('app', [
             }else {
                 $scope.coordsArr = [];
                 $scope.people.forEach(function (person, key) {
+                    console.log(person)
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
@@ -886,8 +885,6 @@ var app = angular.module('app', [
                             });
                         });
                     }
-                    console.log(person)
-                    console.log(person.map_icon_file)
                     let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                     var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                     var marker = new google.maps.Marker({
