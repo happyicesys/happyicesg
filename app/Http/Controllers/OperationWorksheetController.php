@@ -848,7 +848,7 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                     ->leftJoin($outletVisits, 'people.id', '=', 'outlet_visits.person_id')
                     ->select(
-                            'people.id AS person_id', 'people.cust_id', 'people.name AS attn_name', 'people.contact', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
+                            'people.id', 'people.id AS person_id', 'people.cust_id', 'people.name AS attn_name', 'people.contact', 'people.company', 'people.del_postcode', 'people.operation_note', 'people.del_address', 'people.del_lat', 'people.del_lng', 'zones.name AS zone_name',
                             DB::raw('SUBSTRING(people.preferred_days, 1, 1) AS monday'),
                             DB::raw('SUBSTRING(people.preferred_days, 3, 1) AS tuesday'),
                             DB::raw('SUBSTRING(people.preferred_days, 5, 1) AS wednesday'),

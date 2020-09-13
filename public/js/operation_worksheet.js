@@ -275,7 +275,6 @@ var app = angular.module('app', [
         } */
 
         $scope.onMapClicked = function(singleperson = null, index = null) {
-            console.log(singleperson)
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
@@ -353,7 +352,6 @@ var app = angular.module('app', [
             }else {
                 $scope.coordsArr = [];
                 $scope.alldata.forEach(function (person, key) {
-                    console.log(person)
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
@@ -815,7 +813,7 @@ var app = angular.module('app', [
             var markers = [];
 
             if(singleperson) {
-                console.log(singleperson)
+                // console.log(singleperson)
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
                     '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
@@ -859,7 +857,7 @@ var app = angular.module('app', [
             }else {
                 $scope.coordsArr = [];
                 $scope.people.forEach(function (person, key) {
-                    console.log(person)
+                    // console.log(person)
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
