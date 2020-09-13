@@ -5,6 +5,7 @@
 @inject('items', 'App\Item')
 @inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
+@inject('zones', 'App\Zone')
 
 @extends('template')
 @section('title')
@@ -201,24 +202,16 @@ Job Assign
                         </select>
                     </div> --}}
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('area_groups', 'Zone', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('area_groups',
-                        [
-                            '1' => 'West',
-                            '2' => 'East',
-                            '6' => 'North',
-                            '3' => 'Others',
-                            '4' => 'Sup',
-                            '5' => 'Ops'
-                        ],
-                        null,
-                        [
-                            'class'=>'selectmultiple form-control',
-                            'ng-model'=>'search.area_groups',
-                            'multiple' => 'multiple',
-                            'ng-change' => 'searchDB()'
-                        ])
-                    !!}
+                        {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
+                        {!! Form::select('zone_id',
+                                [''=>'All']+ $zones::orderBy('priority')->lists('name', 'id')->all(),
+                                null,
+                                [
+                                    'class'=>'select form-control',
+                                    'ng-model'=>'search.zone_id',
+                                    'ng-change'=>'searchDB()'
+                                ])
+                        !!}
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('po_no', 'PO Num', ['class'=>'control-label search-title']) !!}

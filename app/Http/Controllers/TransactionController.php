@@ -2075,7 +2075,7 @@ class TransactionController extends Controller
                         // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'people.operation_note',
+                                    'people.name', 'people.id as person_id', 'people.operation_note', 'people.zone_id',
                                     'transactions.del_postcode','transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
@@ -2849,6 +2849,10 @@ class TransactionController extends Controller
 
         if($accountManager = request('account_manager')) {
             $transactions = $transactions->where('people.account_manager', $accountManager);
+        }
+
+        if($zone_id = request('zone_id')) {
+            $transactions = $transactions->where('people.zone_id', $zone_id);
         }
 
         if(request('sortName')){

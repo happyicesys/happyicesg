@@ -55,6 +55,7 @@ var app = angular.module('app', [
             po_row: '',
             item_id: '',
             account_manager: '',
+            zone_id: '',
             itemsPerPage: 200,
             sortName: '',
             sortBy: true
