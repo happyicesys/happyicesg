@@ -351,7 +351,7 @@ var app = angular.module('app', [
 
             }else {
                 $scope.coordsArr = [];
-                $scope.alldata.forEach(function (person, key) {
+                $scope.people.forEach(function (person, key) {
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
