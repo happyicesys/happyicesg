@@ -835,6 +835,8 @@ var app = angular.module('app', [
                         $scope.people[index].del_lat = data.del_lat;
                         $scope.people[index].del_lng = data.del_lng;
 
+                        console.log(singleperson)
+                        console.log(singleperson.map_icon_file)
                         let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                         var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
                         var marker = new google.maps.Marker({
@@ -884,7 +886,8 @@ var app = angular.module('app', [
                             });
                         });
                     }
-
+                    console.log(person)
+                    console.log(person.map_icon_file)
                     let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
                     var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
                     var marker = new google.maps.Marker({

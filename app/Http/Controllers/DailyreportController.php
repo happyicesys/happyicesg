@@ -360,6 +360,11 @@ class DailyreportController extends Controller
         $transactions = Transaction::leftJoin('people', 'people.id', '=', 'transactions.person_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
+        $deals = Deal::leftJoin('transactions', 'transactions.id', '=', 'people.transaction_id')
+                                ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+                                ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                                ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
 
         $outletVisits = OutletVisit::leftJoin('people', 'people.id', '=', 'outlet_visits.person_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
@@ -367,6 +372,7 @@ class DailyreportController extends Controller
 
         if($profileId = request('profile_id')) {
             $transactions = $transactions->where('profiles.id', $profileId);
+            $deals = $deals->where('profiles.id', $profileId);
             $outletVisits = $outletVisits->where('profiles.id', $profileId);
         }
 
@@ -376,6 +382,8 @@ class DailyreportController extends Controller
             $lastTwoMonth = Carbon::createFromFormat('d-m-Y', '01-'.$currentMonth)->subMonths(2);
             $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $lastTwoMonth->copy()->startOfMonth()->toDateString());
             $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $thisMonth->copy()->endOfMonth()->toDateString());
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', $lastTwoMonth->copy()->startOfMonth()->toDateString());
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', $thisMonth->copy()->endOfMonth()->toDateString());
             $outletVisits = $outletVisits->whereDate('outlet_visits.date', '>=', $lastTwoMonth->copy()->startOfMonth()->toDateString());
             $outletVisits = $outletVisits->whereDate('outlet_visits.date', '<=', $thisMonth->copy()->endOfMonth()->toDateString());
         }
@@ -385,18 +393,24 @@ class DailyreportController extends Controller
                 $transactions = $transactions->where(function($query) {
                     $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
                 });
+                $deals = $deals->where(function($query) {
+                    $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });
             }else {
                 $transactions = $transactions->where('transactions.status', $request->status);
+                $deals = $deals->where('transactions.status', $request->status);
             }
         }
 
         if($custId = request('cust_id')) {
             $transactions = $transactions->where('people.id', 'LIKE', '%'.$custId.'%');
+            $deals = $deals->where('people.id', 'LIKE', '%'.$custId.'%');
             $outletVisits = $outletVisits->where('people.id', 'LIKE', '%'.$custId.'%');
         }
 
         if($company = request('company')) {
             $transactions = $transactions->where('people.id', 'LIKE', '%'.$company.'%');
+            $deals = $deals->where('people.id', 'LIKE', '%'.$company.'%');
             $outletVisits = $outletVisits->where('people.id', 'LIKE', '%'.$company.'%');
         }
 
@@ -406,9 +420,11 @@ class DailyreportController extends Controller
             }
             if($exclude_custcategory) {
                 $transactions = $transactions->whereNotIn('people.custcategory_id', $custCategory);
+                $deals = $deals->whereNotIn('people.custcategory_id', $custCategory);
                 $outletVisits = $outletVisits->whereNotIn('people.custcategory_id', $custCategory);
             }else {
                 $transactions = $transactions->whereIn('people.custcategory_id', $custCategory);
+                $deals = $deals->whereIn('people.custcategory_id', $custCategory);
                 $outletVisits = $outletVisits->whereIn('people.custcategory_id', $custCategory);
             }
         }
@@ -418,11 +434,15 @@ class DailyreportController extends Controller
                 $transactions = $transactions->where(function($query) {
                     $query->where('people.account_manager', '=', null)->orWhere('people.account_manager', '=', '');
                 });
+                $deals = $deals->where(function($query) {
+                    $query->where('people.account_manager', '=', null)->orWhere('people.account_manager', '=', '');
+                });
                 $outletVisits = $outletVisits->where(function($query) {
                     $query->where('people.account_manager', '=', null)->orWhere('people.account_manager', '=', '');
                 });
             }else if($acccountManager !== 'unassigned' and $acccountManager !== 'total'){
                 $transactions = $transactions->where('people.account_manager', $acccountManager);
+                $deals = $deals->where('people.account_manager', $acccountManager);
                 $outletVisits = $outletVisits->where('people.account_manager', $acccountManager);
             }
         }
@@ -437,6 +457,7 @@ class DailyreportController extends Controller
                 $zones = [$zones];
             }
             $transactions = $transactions->whereIn('people.zone_id', $zones);
+            $deals = $deals->whereIn('people.zone_id', $zones);
             $outletVisits = $outletVisits->whereIn('people.zone_id', $zones);
         }
 

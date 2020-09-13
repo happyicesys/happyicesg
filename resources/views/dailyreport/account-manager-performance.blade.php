@@ -93,6 +93,18 @@ Performance
                                     !!}
                                 </div>
                             </div>
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes'], null,
+                                        [
+                                            'class'=>'select form-control',
+                                            'ng-model'=>'search.is_commission',
+                                            'ng-change'=>'searchDB()'
+                                        ])
+                                    !!}
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-6 col-xs-12">

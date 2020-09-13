@@ -285,6 +285,7 @@ var app = angular.module('app', [
             exclude_custcategory: '',
             account_manager: '',
             zones: [],
+            is_commission: '0',
             pageNum: 100,
             sortBy: true,
             sortName: ''
