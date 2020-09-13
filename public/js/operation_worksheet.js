@@ -275,6 +275,7 @@ var app = angular.module('app', [
         } */
 
         $scope.onMapClicked = function(singleperson = null, index = null) {
+            console.log(singleperson)
             var url = window.location.href;
             var location = '';
             var locationLatLng = {};
@@ -352,6 +353,7 @@ var app = angular.module('app', [
             }else {
                 $scope.coordsArr = [];
                 $scope.alldata.forEach(function (person, key) {
+                    console.log(person)
                     // var address = person.del_address.replace(/ /g, '+');
                     var contentString = '<span style=font-size:10px;>' +
                         '<b>' +
