@@ -109,7 +109,7 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('chosen_date', 'Today Date', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('chosen_date', 'Scheduled Date', ['class'=>'control-label search-title']) !!}
                 <datepicker selector="form-control">
                     <input
                         type = "text"
@@ -252,7 +252,12 @@
         <button type="submit" form="export_excel" class="btn btn-default" name="excel_single" value="excel_single"><i class="fa fa-file-excel-o"></i> Export Filtered Excel</button>
 
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="people.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-        <button type="button" class="btn btn-primary" ng-click="exportTransactions()" ng-if="search.chosen_date"> Generate Today Invoices</button>
+        <button class="btn btn-sm btn-primary" ng-click="onGenerateTodayInvoicesClicked($event)">
+            Generate Today Invoices
+            <span ng-if="!generateTodayInvoicesPanel" class="fa fa-caret-down"></span>
+            <span ng-if="generateTodayInvoicesPanel" class="fa fa-caret-up"></span>
+        </button>
+        {{-- <button type="button" class="btn btn-primary" ng-click="exportTransactions()" ng-if="search.chosen_date"> Generate Today Invoices</button> --}}
         <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
 
@@ -269,6 +274,36 @@
         <div class="row">
             <label class="" style="padding-right:18px;" for="totalnum">Showing @{{people.length}} of @{{totalCount}} entries</label>
         </div>
+    </div>
+    <div ng-show="generateTodayInvoicesPanel">
+        <hr class="row">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('driver', 'Driver', ['class'=>'control-label search-title']) !!}
+                    <select name="driver" class="form-control select" ng-model="search.invoiceDriver">
+                        <option value="-1">
+                            -- None --
+                        </option>
+                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010)  and count($user->profiles) > 0)
+                                <option value="{{$user->name}}">
+                                    {{$user->name}}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <button class="btn btn-sm btn-success" ng-click="exportTransactions($event)">
+                        Generate Invoices
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr class="row">
     </div>
 </div>
 {!! Form::close() !!}

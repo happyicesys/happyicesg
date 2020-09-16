@@ -21,7 +21,7 @@ var app = angular.module('app', [
             exclude_custcategory: 0,
             cust_id: '',
             company: '',
-            chosen_date: moment().format('YYYY-MM-DD'),
+            chosen_date: moment().add(1, 'days').format('YYYY-MM-DD'),
             previous: 'Last 5 days',
             future: '2 days',
             color: '',
@@ -30,11 +30,13 @@ var app = angular.module('app', [
             zones: '',
             tags: [],
             account_manager: '',
+            invoiceDriver: '-1',
             pageNum: 'All',
             sortBy: true,
             sortName: ''
         }
         $scope.zones = [];
+        $scope.generateTodayInvoicesPanel = false;
         // init page load
         // getPage(1, true);
         getZoneOptions();
@@ -162,6 +164,12 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
+        }
+
+        // generate today invoices dropdown
+        $scope.onGenerateTodayInvoicesClicked = function(event) {
+            event.preventDefault();
+            $scope.generateTodayInvoicesPanel = ! $scope.generateTodayInvoicesPanel;
         }
 /*
         $scope.onMapClicked = function(singleperson = null, index = null) {

@@ -129,6 +129,7 @@ class OperationWorksheetController extends Controller
     public function generateBatchInvoices()
     {
         $date = request('chosen_date');
+        $invoiceDriver = request('invoiceDriver');
         $datesVar = [
             'today' => $date,
             'earliest' => $date,
@@ -139,6 +140,10 @@ class OperationWorksheetController extends Controller
         $people = $dataArr['people'];
         $dates = $dataArr['dates'];
         $alldata = $dataArr['alldata'];
+        $driver = null;
+        if($invoiceDriver and $invoiceDriver != '-1') {
+            $driver = $invoiceDriver;
+        }
 
         foreach($people as $indexpeople => $person) {
             foreach($alldata[$indexpeople] as $data) {
@@ -153,7 +158,8 @@ class OperationWorksheetController extends Controller
                         'del_postcode' => $person->del_postcode,
                         'del_address' => $person->del_address,
                         'del_lat' => $person->del_lat,
-                        'del_lng' => $person->del_lng
+                        'del_lng' => $person->del_lng,
+                        'driver' => $driver
                     ]);
 
                     $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', '=', $date)->first();

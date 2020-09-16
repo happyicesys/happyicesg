@@ -803,7 +803,6 @@
                         </div>
                     </div>
                     <hr class="row">
-
                 </div>
                 {!! Form::close() !!}
                     <div class="table-responsive" id="exportable" style="padding-top:20px;">

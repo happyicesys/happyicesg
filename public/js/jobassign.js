@@ -271,6 +271,26 @@ var app = angular.module('app', [
             });
         }
 
+        // batch update both driver and date
+        $scope.onBothBatchAssignClicked = function(event) {
+            event.preventDefault();
+            $http.post('/api/transaction/batch/jobdriver',
+            {
+                delivery_date: $scope.search.delivery_from,
+                drivers : $scope.drivers,
+                driver: $scope.form.driver
+            }).success(function(data) {
+            });
+            $http.post('/api/transaction/batch/deliverydate/jobassign',
+            {
+                drivers : $scope.drivers,
+                delivery_date: $scope.form.delivery_date
+            }).success(function(data) {
+            });
+            getPage(1);
+            $scope.form.checkall = false;
+        }
+
         // change transaction sequence
         $scope.onSequenceChanged = function(transaction, driverkey, transactionkey) {
             $http.post('/api/transaction/sequence/' + transaction.id, transaction).success(function(data) {
@@ -333,6 +353,12 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
+        }
+
+        // when refresh table data clicked
+        $scope.onRefreshTableClicked = function(event) {
+            event.preventDefault()
+            $scope.searchDB()
         }
 
         // retrieve page w/wo search

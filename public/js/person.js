@@ -15,6 +15,7 @@ function personController($scope, $http){
     $scope.sortName = '';
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.showBatchFunctionPanel = false;
     $scope.search = {
         cust_id: '',
         strictCustId: '',
@@ -35,6 +36,10 @@ function personController($scope, $http){
         $('.select').select2();
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
+        });
+        $('#checkAll').change(function(){
+            var all = this;
+            $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
         });
     });
 
@@ -79,6 +84,21 @@ function personController($scope, $http){
 
     $scope.merchandiserInit = function(userId) {
         $scope.search.account_manager = userId;
+    }
+
+    // batch function button dropdown
+    $scope.onBatchFunctionClicked = function(event) {
+        event.preventDefault();
+        $scope.showBatchFunctionPanel = ! $scope.showBatchFunctionPanel;
+    }
+
+    // checkbox all
+    $scope.onCheckAllChecked = function() {
+        var checked = $scope.form.checkall;
+
+        $scope.alldata.forEach(function (transaction, key) {
+            $scope.alldata[key].check = checked;
+        });
     }
 
     $scope.onMapClicked = function(singleperson = null, index = null) {

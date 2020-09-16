@@ -179,8 +179,13 @@
 
                     <div class="row" style="padding-top: 20px;">
                         <div class="col-md-4 col-xs-12">
-                            <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
                         </div>
                         <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">
@@ -198,9 +203,47 @@
                         </div>
                     </div>
                 </div>
+
+                <div ng-show="showBatchFunctionPanel">
+                    <hr class="row">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('batch_assign_driver', 'Batch Assign Driver', ['class'=>'control-label search-title']) !!}
+                                    <select name="driver" class="form-control select" ng-model="form.driver">
+                                        <option value="-1">
+                                            -- Clear --
+                                        </option>
+                                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010)  and count($user->profiles) > 0)
+                                                <option value="{{$user->name}}">
+                                                    {{$user->name}}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Assign</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="row">
+                </div>
+
                 <div class="table-responsive" id="exportable" style="padding-top: 20px;">
-                    <table class="table table-list-search table-hover table-bordered">
+                    <table class="table table-list-search table-hover table-bordered" style="font-size: 14px;">
                         <tr style="background-color: #DDFDF8">
+                            <th class="col-md-1 text-center">
+                                <input type="checkbox" id="check_all" ng-model="form.checkall" ng-change="onCheckAllChecked()"/>
+                            </th>
                             <th class="col-md-1 text-center">
                                 #
                             </th>
@@ -271,7 +314,12 @@
 
                         <tbody>
                             <tr dir-paginate="person in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" current-page="currentPage">
-                                <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
+                                <td class="col-md-1 text-center">
+                                    <input type="checkbox" name="checkbox" ng-model="transaction.check">
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ $index + indexFrom }}
+                                </td>
                                 <td class="col-md-1">
                                     <a href="/person/@{{ person.id }}/edit">
                                     @{{ person.cust_id }}

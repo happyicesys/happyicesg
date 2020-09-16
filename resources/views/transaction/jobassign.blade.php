@@ -490,6 +490,9 @@ Job Assign
                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             Export PDF
                         </button>
+                        <button class="btn btn-sm btn-warning" ng-click="onRefreshTableClicked($event)">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </button>
                         <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
                     </div>
 
@@ -497,7 +500,7 @@ Job Assign
                 <div ng-show="showBatchFunctionPanel">
                     <hr class="row">
                     <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="row col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('batch_assign_driver', 'Batch Assign Driver', ['class'=>'control-label search-title']) !!}
@@ -525,7 +528,7 @@ Job Assign
                             </div>
                         </div>
 
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="row col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('batch_change_delivery_date', 'Batch Change Delivery Date', ['class'=>'control-label search-title']) !!}
@@ -548,6 +551,13 @@ Job Assign
                                     <button type="submit" class="btn btn-sm btn-warning" name="batch_change_delivery_date" value="invoice" ng-click="onBatchChangeDeliveryDateClicked($event)"><i class="fa fa-calendar" aria-hidden="true"></i> Batch Change Delivery Date</button>
                                 </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-primary" ng-click="onBothBatchAssignClicked($event)">
+                                    Batch Update (driver & date)
+                                </button>
                             </div>
                         </div>
                     </div>
