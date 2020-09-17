@@ -29,6 +29,12 @@ function personController($scope, $http){
         profile_id: '',
         franchisee_id: ''
     }
+    $scope.assignForm = {
+        name: '',
+        custcategory: '',
+        account_manager: '',
+        zone_id: ''
+    }
     // init page load
     getPage(1, true);
 
@@ -94,11 +100,21 @@ function personController($scope, $http){
 
     // checkbox all
     $scope.onCheckAllChecked = function() {
-        var checked = $scope.form.checkall;
+        var checked = $scope.checkall;
 
         $scope.alldata.forEach(function (transaction, key) {
             $scope.alldata[key].check = checked;
         });
+    }
+
+    // quick batch assign
+    $scope.onBatchAssignClicked = function(event, assignName) {
+        event.preventDefault();
+        $scope.assignForm.name = assignName;
+        $http.post('/api/person/batch-update', {people: $scope.alldata, assignForm: $scope.assignForm}).success(function(data) {
+            $scope.searchDB();
+            $scope.checkall = false;
+        })
     }
 
     $scope.onMapClicked = function(singleperson = null, index = null) {

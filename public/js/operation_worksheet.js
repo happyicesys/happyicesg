@@ -148,7 +148,8 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.exportTransactions = function() {
+        $scope.exportTransactions = function(event) {
+            event.preventDefault()
             $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
                 alert('Invoices Created');
                 searchDB();
@@ -617,8 +618,7 @@ var app = angular.module('app', [
             });
         }
 
-        $scope.exportTransactions = function(event) {
-            event.preventDefault();
+        $scope.exportTransactions = function() {
             $http.post('/api/detailrpt/operation/batchinvoices', $scope.search).success(function(data) {
                 alert('Invoices Created');
                 getPage(1, false);

@@ -823,6 +823,45 @@ class PersonController extends Controller
         $outletVisit->delete();
     }
 
+    public function batchAssignPeople(Request $request)
+    {
+        $people = $request->people;
+        $assignForm = $request->assignForm;
+
+        if($people) {
+            foreach($people as $person) {
+                if(isset($person['check'])) {
+                    if($person['check']) {
+                        $person = Person::findOrFail($person['id']);
+                        $name = $assignForm['name'];
+                        $value = $assignForm[$assignForm['name']];
+                        if($value == '-1') {
+                            $value = null;
+                        }
+                        switch($name) {
+                            case 'custcategory':
+                                $person->custcategory_id = $value;
+                                break;
+                            case 'account_manager':
+                                $person->account_manager = $value;
+                                break;
+                            case 'zone_id':
+                                $person->zone_id = $value;
+                                break;
+                        }
+                        $person->save();
+                    }
+                }
+            }
+        }
+        // $name = $request->name;
+/*
+        switch($name) {
+            case 'custcategory':
+                $custcategory =
+        } */
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {

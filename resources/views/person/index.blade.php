@@ -181,11 +181,13 @@
                         <div class="col-md-4 col-xs-12">
                             <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
                             <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                            <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
-                                Batch Function
-                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
-                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
-                            </button>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                                    Batch Function
+                                    <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                    <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                                </button>
+                            @endif
                         </div>
                         <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">
@@ -210,17 +212,11 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    {!! Form::label('batch_assign_driver', 'Batch Assign Driver', ['class'=>'control-label search-title']) !!}
-                                    <select name="driver" class="form-control select" ng-model="form.driver">
-                                        <option value="-1">
-                                            -- Clear --
-                                        </option>
-                                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010)  and count($user->profiles) > 0)
-                                                <option value="{{$user->name}}">
-                                                    {{$user->name}}
-                                                </option>
-                                            @endif
+                                    {!! Form::label('assign_cust_category', 'Batch Assign Cust Category', ['class'=>'control-label search-title']) !!}
+                                    <select name="custcategory" class="select form-control" ng-model="assignForm.custcategory" ng-change="searchDB()">
+                                        <option value="">None</option>
+                                        @foreach($custcategories::orderBy('name')->get() as $custcategory)
+                                            <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -229,7 +225,53 @@
                                 <div class="form-group">
                                 <label class="control-label"></label>
                                 <div class="btn-group-control">
-                                    <button type="submit" class="btn btn-sm btn-warning" name="batch_assign" value="invoice" ng-click="onBatchAssignDriverClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Assign</button>
+                                    <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'custcategory')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Category</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('assign_acc_manager', 'Batch Assign Acc Manager', ['class'=>'control-label search-title']) !!}
+                                    {!! Form::select('account_manager',
+                                    [''=>'None']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'assignForm.account_manager'
+                                    ])
+                            !!}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-info" ng-click="onBatchAssignClicked($event, 'account_manager')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Acc Manager</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('assign_zone', 'Batch Assign Zone', ['class'=>'control-label search-title']) !!}
+                                    {!! Form::select('zone_id',
+                                    [''=>'None']+ $zones::orderBy('priority')->lists('name', 'id')->all(),
+                                    null,
+                                    [
+                                        'class'=>'select form-control',
+                                        'ng-model'=>'assignForm.zone_id'
+                                    ])
+                                    !!}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'zone_id')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Zone</button>
                                 </div>
                                 </div>
                             </div>
@@ -242,7 +284,7 @@
                     <table class="table table-list-search table-hover table-bordered" style="font-size: 14px;">
                         <tr style="background-color: #DDFDF8">
                             <th class="col-md-1 text-center">
-                                <input type="checkbox" id="check_all" ng-model="form.checkall" ng-change="onCheckAllChecked()"/>
+                                <input type="checkbox" id="check_all" ng-model="checkall" ng-change="onCheckAllChecked()"/>
                             </th>
                             <th class="col-md-1 text-center">
                                 #
@@ -315,7 +357,7 @@
                         <tbody>
                             <tr dir-paginate="person in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount" current-page="currentPage">
                                 <td class="col-md-1 text-center">
-                                    <input type="checkbox" name="checkbox" ng-model="transaction.check">
+                                    <input type="checkbox" name="checkbox" ng-model="person.check">
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ $index + indexFrom }}
