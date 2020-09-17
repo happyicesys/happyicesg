@@ -147,7 +147,7 @@
         <div class="row">
             <div class="col-md-4 col-sm-6 col-xs-12">
                 {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+                @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('driver-supervisor'))
                     {{-- {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Delivered By', 'ng-model'=> 'search.driver', 'ng-init'=>"driverInit({{auth()->user()->name}})", 'readonly'=>'readonly']) !!} --}}
                     <input type="text" class="form-control input-sm" placeholder="Delivered By" ng-model="search.driver" ng-init="driverInit('{{auth()->user()->name}}')" readonly>
                 @else

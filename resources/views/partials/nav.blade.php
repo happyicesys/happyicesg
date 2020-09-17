@@ -172,6 +172,7 @@
                         $detailrpt_access = true;
                         $ecommerce_access = true;
                         $personmaintenance_access = true;
+                        $operation_access = true;
                         $dailyreport_access = true;
                     }
 
@@ -329,8 +330,10 @@
                             @if(!auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus'))
                                 <li class="text-left"><a href="/operation/worksheet"> Worksheet</a></li>
                             @endif
-                            <li class="text-left"><a href="/operation/merchandiser"> Merchandiser</a></li>
-                            <li class="text-left"><a href="/operation/merchandiser-mobile"> Merchandiser (Mobile)</a></li>
+                            @if(!auth()->user()->hasRole('driver-supervisor'))
+                                <li class="text-left"><a href="/operation/merchandiser"> Merchandiser</a></li>
+                                <li class="text-left"><a href="/operation/merchandiser-mobile"> Merchandiser (Mobile)</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif
