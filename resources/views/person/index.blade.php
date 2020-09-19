@@ -276,6 +276,52 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label for="assign_tags" class="control-label search-title">
+                                        Batch
+                                        <span ng-if="!assignForm.detach">
+                                            Assign
+                                        </span>
+                                        <span ng-if="assignForm.detach">
+                                            Detach
+                                        </span>
+                                        Tag
+                                    </label>
+                                    <label class="pull-right">
+                                        <input type="checkbox" name="detach" ng-model="assignForm.detach">
+                                        <span style="margin-top: 5px; margin-right: 5px;">
+                                            Detach
+                                        </span>
+                                    </label>
+                                    <select name="tag" class="select form-control" ng-model="assignForm.tag_id">
+                                        <option value="">None</option>
+                                        @foreach($persontags::orderBy('name')->get() as $persontag)
+                                            <option value="{{$persontag->id}}">
+                                                {{$persontag->name}}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-info" ng-click="onBatchAssignClicked($event, 'tag_id')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                        <span ng-if="!assignForm.detach">
+                                            Assign
+                                        </span>
+                                        <span ng-if="assignForm.detach">
+                                            Detach
+                                        </span>
+                                        Tag
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr class="row">
                 </div>

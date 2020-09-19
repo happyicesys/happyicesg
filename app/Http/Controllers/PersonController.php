@@ -848,6 +848,15 @@ class PersonController extends Controller
                             case 'zone_id':
                                 $person->zone_id = $value;
                                 break;
+                            case 'tag_id':
+                                if(!$assignForm['detach']) {
+                                    // dd('here1');
+                                    $this->attachTagPerson($person->id, $value);
+                                }else {
+                                    // dd('here2');
+                                    $this->detachTagPerson($person->id, $value);
+                                }
+                                break;
                         }
                         $person->save();
                     }
@@ -1076,6 +1085,31 @@ class PersonController extends Controller
                 }
             }
 
+        }
+    }
+
+    // attach tag to person
+    private function attachTagPerson($personId, $tagId)
+    {
+        if($tagId and $personId) {
+            $prevPersonTagAttach = Persontagattach::where('person_id', $personId)->where('persontag_id', $tagId)->first();
+
+            if(!$prevPersonTagAttach) {
+                Persontagattach::create([
+                    'person_id' => $personId,
+                    'persontag_id' => $tagId
+                ]);
+            }
+        }
+    }
+
+    // detach tag from person
+    private function detachTagPerson($personId, $tagId)
+    {
+        $persontagattach = Persontagattach::where('person_id', $personId)->where('persontag_id', $tagId)->first();
+
+        if($persontagattach) {
+            $persontagattach->delete();
         }
     }
 

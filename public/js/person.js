@@ -33,7 +33,9 @@ function personController($scope, $http){
         name: '',
         custcategory: '',
         account_manager: '',
-        zone_id: ''
+        zone_id: '',
+        tag_id: '',
+        detach: ''
     }
     // init page load
     getPage(1, true);
