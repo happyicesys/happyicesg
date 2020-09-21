@@ -256,11 +256,12 @@
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                     </li>
                 @endif
+{{--
                 @if($scheduled_routes_access)
                     <li class="{{ Request::segment(1) == 'scheduled-routes' ? 'active' : '' }}">
                         <a href="/scheduled-routes"><i class="fa fa-road" aria-hidden="true"></i> Scheduled Routes</a>
                     </li>
-                @endif
+                @endif --}}
                 @if($hd_access)
                     <li class="{{ Request::segment(1) == 'hdprofile' || Request::segment(1) == 'personasset' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>
