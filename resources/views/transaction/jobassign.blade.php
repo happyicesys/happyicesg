@@ -465,7 +465,6 @@ Job Assign
                     @endif
                 </div>
 
-                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
@@ -490,9 +489,11 @@ Job Assign
                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             Export PDF
                         </button>
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                         <button class="btn btn-sm btn-warning" ng-click="onRefreshTableClicked($event)">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
                         </button>
+                        @endif
                         <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
                     </div>
 
@@ -563,6 +564,7 @@ Job Assign
                     </div>
                     <hr class="row">
                 </div>
+                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                 <div class="row">
                     <div class="col-md-5 col-sm-6 col-xs-12" style="padding: 10px 0px 10px 0px;">
                         <div class="col-md-5 col-xs-5">
