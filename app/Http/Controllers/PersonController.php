@@ -871,12 +871,6 @@ class PersonController extends Controller
         } */
     }
 
-    // get scheduled routes person
-    public function getScheduledRoutePersonIndex()
-    {
-        return view('person.scheduled-routes');
-    }
-
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {

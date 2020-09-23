@@ -54,6 +54,7 @@
                 $personmaintenance_access = false;
                 $jobcard_access = false;
                 $vending_access = false;
+                $route_template = false;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -217,6 +218,7 @@
                         $jobcard_access = true;
                         $vending_access = true;
                         $dailyreport_access = true;
+                        $route_template = true;
                     }
 
                     if(auth()->user()->hasRole('operation')) {
@@ -256,12 +258,12 @@
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                     </li>
                 @endif
-{{--
-                @if($scheduled_routes_access)
-                    <li class="{{ Request::segment(1) == 'scheduled-routes' ? 'active' : '' }}">
-                        <a href="/scheduled-routes"><i class="fa fa-road" aria-hidden="true"></i> Scheduled Routes</a>
+
+                @if($route_template)
+                    <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">
+                        <a href="/route-template"><i class="fa fa-road" aria-hidden="true"></i> Route Template</a>
                     </li>
-                @endif --}}
+                @endif
                 @if($hd_access)
                     <li class="{{ Request::segment(1) == 'hdprofile' || Request::segment(1) == 'personasset' ? 'active' : '' }}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-truck"></i>

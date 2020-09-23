@@ -302,7 +302,11 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
-Route::get('/person/scheduled-routes', 'PersonController@getScheduledRoutePersonIndex');
+Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
+Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');
+Route::post('/api/route-template/store-update', 'RouteTemplateController@storeUpdateRouteTemplateApi');
+Route::post('/api/route-template/generate', 'RouteTemplateController@generateTemplateInvoiceApi');
+
 Route::post('/api/person/batch-update', 'PersonController@batchAssignPeople');
 Route::get('/api/outletvisit/outcomes', 'PersonController@getOutletVisitOutcomesApi');
 Route::post('/api/outletvisits/person/{person_id}', 'PersonController@getOutletVisitsApi');
