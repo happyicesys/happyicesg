@@ -98,6 +98,7 @@ class RouteTemplateController extends Controller
     {
         // dd($request->all());
         $invoiceDate = $request->invoiceDate;
+        $driver = $request->driver ? $request->driver : null;
         $routeTemplates = $request->alldata;
 
         if($routeTemplates) {
@@ -110,6 +111,7 @@ class RouteTemplateController extends Controller
                             'delivery_date' => $invoiceDate,
                             'person_id' => $person->id,
                             'sequence' => $item->sequence,
+                            'driver' => $driver,
                             'status' => 'Pending',
                             'pay_status' => 'Owe',
                             'updated_by' => auth()->user()->name,

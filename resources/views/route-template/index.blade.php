@@ -128,17 +128,34 @@ Route Template
                 <hr>
                 <div class="row">
                   <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="form-group">
-                      <label>Invoice Date</label>
-                      <datepicker>
-                          <input
-                              type = "text"
-                              class = "form-control input-sm"
-                              placeholder = "Invoice Date"
-                              ng-model = "search.invoice_date"
-                              ng-change = "onDateChange('invoice_date', search.invoice_date)"
-                          />
-                      </datepicker>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label>Invoice Date</label>
+                        <datepicker>
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Invoice Date"
+                                ng-model = "search.invoice_date"
+                                ng-change = "onDateChange('invoice_date', search.invoice_date)"
+                            />
+                        </datepicker>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="form-group">
+                        <label>Driver</label>
+                        <select ng-model="search.driver" class="form-control select">
+                          <option value=""></option>
+                          @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                              @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010) and count($user->profiles) > 0)
+                                  <option value="{{$user->name}}">
+                                      {{$user->name}}
+                                  </option>
+                              @endif
+                          @endforeach
+                      </select>
+                      </div>
                     </div>
 
                     <button class="btn btn-success" ng-click="onGenerateClicked()" ng-disabled="!search.invoice_date" style="margin-top:20px;">

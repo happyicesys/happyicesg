@@ -88,7 +88,7 @@ function routeTemplateController($scope, $http){
     $scope.onGenerateClicked = function() {
       let isConfirmGenerate = confirm('Are you sure you want to generate the invoices?');
       if(isConfirmGenerate){
-        $http.post('/api/route-template/generate', {invoiceDate: $scope.search.invoice_date, alldata: $scope.alldata}).success(function(data) {
+        $http.post('/api/route-template/generate', {invoiceDate: $scope.search.invoice_date, driver: $scope.search.driver, alldata: $scope.alldata}).success(function(data) {
           getPage(1)
           $scope.checkall = false;
         }).error(function(data) {
