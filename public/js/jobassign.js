@@ -21,6 +21,7 @@ var app = angular.module('app', [
         $scope.headerTemp = '';
         $scope.driverOptionShowing = true;
         $scope.showBatchFunctionPanel = false;
+        $scope.showRouteTemplatePanel = false;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.requestfrom = moment().subtract(7, 'd').format("YYYY-MM-DD");
         $scope.requestto = moment().add(30, 'd').format("YYYY-MM-DD");
@@ -65,7 +66,9 @@ var app = angular.module('app', [
         $scope.form = {
             person_account: '',
             driver: '-1',
-            delivery_date: $scope.today
+            delivery_date: $scope.today,
+            template_name: '',
+            template_desc: ''
         };
         // init page load
         getUsersData();
@@ -244,6 +247,13 @@ var app = angular.module('app', [
             $scope.showBatchFunctionPanel = ! $scope.showBatchFunctionPanel;
         }
 
+        // show route template panel
+        $scope.onRouteTemplateClicked = function(event) {
+            event.preventDefault();
+            $scope.showRouteTemplatePanel = ! $scope.showRouteTemplatePanel;
+        }
+
+
         // batch assign driver
         $scope.onBatchAssignDriverClicked = function(event) {
             event.preventDefault();
@@ -289,6 +299,17 @@ var app = angular.module('app', [
             });
             getPage(1);
             $scope.form.checkall = false;
+        }
+
+        $scope.onSaveTemplateButtonClicked = function(event) {
+            event.preventDefault();
+            $http.post('/api/route-template/jobassign/create', {
+                templateName: $scope.form.template_name,
+                templateDesc: $scope.form.template_desc,
+                drivers: $scope.drivers
+            }).success(function(data) {
+                alert('Template saved!');
+            });
         }
 
         // change transaction sequence

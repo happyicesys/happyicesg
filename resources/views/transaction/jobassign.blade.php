@@ -484,6 +484,12 @@ Job Assign
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                             <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                         </button>
+
+                        <button class="btn btn-sm btn-info" ng-click="onRouteTemplateClicked($event)">
+                            Save Route Template
+                            <span ng-if="!showRouteTemplatePanel" class="fa fa-caret-down"></span>
+                            <span ng-if="showRouteTemplatePanel" class="fa fa-caret-up"></span>
+                        </button>
                         @endif
                         <button class="btn btn-sm btn-primary" ng-click="onExportPdfClicked($event)">
                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -562,6 +568,30 @@ Job Assign
                             </div>
                         </div>
                     </div>
+                    <hr class="row">
+                </div>
+                <div ng-show="showRouteTemplatePanel">
+                    <hr class="row">
+                        <div class="row col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="template-name">
+                                    Template Name
+                                </label>
+                                <label style="color: red;">*</label>
+                                <input type="text" class="form-control" ng-model="form.template_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="template-desc">
+                                    Template Desc
+                                </label>
+                                <textarea class="form-control" ng-model="form.template_desc" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success" ng-click="onSaveTemplateButtonClicked($event)">
+                                    Save Template
+                                </button>
+                            </div>
+                        </div>
                     <hr class="row">
                 </div>
                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))

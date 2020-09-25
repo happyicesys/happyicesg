@@ -253,7 +253,7 @@
 
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="people.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
         <button class="btn btn-sm btn-primary" ng-click="onGenerateTodayInvoicesClicked($event)">
-            Generate Today Invoices
+            Generate Scheduled Invoices
             <span ng-if="!generateTodayInvoicesPanel" class="fa fa-caret-down"></span>
             <span ng-if="generateTodayInvoicesPanel" class="fa fa-caret-up"></span>
         </button>

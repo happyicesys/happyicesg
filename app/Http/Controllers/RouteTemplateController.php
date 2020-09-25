@@ -140,6 +140,36 @@ class RouteTemplateController extends Controller
         }
     }
 
+    // generate route template from job assign page
+    public function createRouteTemplateFromJobassignApi(Request $request)
+    {
+        $drivers = $request->drivers;
+        $templateName = $request->templateName;
+        $templateDesc = $request->templateDesc;
+
+        $routeTemplate = RouteTemplate::create([
+            'name' => $templateName,
+            'desc' => $templateDesc,
+            'created_by' => auth()->user()->id
+        ]);
+
+        if($drivers) {
+            foreach($drivers as $driverindex => $driver) {
+                foreach($driver['transactions'] as $transactionindex => $transaction) {
+                    if(isset($transaction['check'])) {
+                        if($transaction['check']) {
+                            $itemArr = [];
+                            $itemArr['person']['id'] = $transaction['person_id'];
+                            $itemArr['sequence'] = $transaction['sequence'];
+                            $this->syncRouteTemplateItem($itemArr, $routeTemplate->id);
+                        }
+                    }
+                    unset($drivers[$driverindex]['transactions'][$transactionindex]);
+                }
+            }
+        }
+    }
+
     // sync new route template items
     private function syncRouteTemplateItem($routeTemplateItem, $id)
     {
