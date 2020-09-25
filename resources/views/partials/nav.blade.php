@@ -175,6 +175,7 @@
                         $personmaintenance_access = true;
                         $operation_access = true;
                         $dailyreport_access = true;
+                        $route_template = true;
                     }
 
                     if(auth()->user()->hasRole('supervisor_msia')) {
