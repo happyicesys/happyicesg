@@ -182,7 +182,7 @@ function personController($scope, $http){
                         position: pos,
                         map: map,
                         title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                        label: {fontSize: '11px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
+                        label: {fontSize: '13px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
                         icon: {
                             labelOrigin: new google.maps.Point(15,10),
                             url: url
@@ -246,7 +246,7 @@ function personController($scope, $http){
                     position: pos,
                     map: map,
                     title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
-                    label: {fontSize: '11px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
+                    label: {fontSize: '13px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
                     icon: {
                         labelOrigin: new google.maps.Point(15,10),
                         url: url
