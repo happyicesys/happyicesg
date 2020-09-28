@@ -177,34 +177,44 @@ function personController($scope, $http){
 
                   let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
                   var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                  var marker = new google.maps.Marker({
-                      position: pos,
-                      map: map,
-                      title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                      label: {fontSize: '15px', text: singleperson.custcategory, fontWeight: 'bold'},
-                      icon: {
-                          labelOrigin: new google.maps.Point(15,10),
-                          url: url
-                      }
-                  });
-                  markers.push(marker);
                   if(type === 2) {
-                    infowindow.open(map, marker);
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                        label: {fontSize: '11px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
+                        icon: {
+                            labelOrigin: new google.maps.Point(15,10),
+                            url: url
+                        }
+                    });
                   }else {
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                        label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
+                        icon: {
+                            labelOrigin: new google.maps.Point(15,10),
+                            url: url
+                        }
+                    });
+                  }
+                  markers.push(marker);
+
                     marker.addListener('click', function () {
                         infowindow.open(map, marker);
                     });
-                  }
               });
           });
 
       }else {
           $scope.coordsArr = [];
           $scope.alldata.forEach(function (person, key) {
-              // var address = person.del_address.replace(/ /g, '+');
+                let custString = person.cust_id + ' - ' + person.company + ' - ' + person.custcategory;
               var contentString = '<span style=font-size:10px;>' +
                   '<b>' +
-                  person.cust_id + ' - ' + person.company + ' - ' + person.custcategory +
+                  custString +
                   '</b>' +
                   // '<br>' +
                   // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
@@ -231,24 +241,36 @@ function personController($scope, $http){
 
               let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
               var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
-              var marker = new google.maps.Marker({
-                  position: pos,
-                  map: map,
-                  title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
-                  label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
-                  icon: {
-                      labelOrigin: new google.maps.Point(15,10),
-                      url: url
-                  }
-              });
-              markers.push(marker);
               if(type === 2) {
-                infowindow.open(map, marker);
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                    label: {fontSize: '11px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
+                    icon: {
+                        labelOrigin: new google.maps.Point(15,10),
+                        url: url
+                    }
+                });
               }else {
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                    label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
+                    icon: {
+                        labelOrigin: new google.maps.Point(15,10),
+                        url: url
+                    }
+                });
+              }
+
+              markers.push(marker);
+
                 marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
-              }
+
           });
       }
 
