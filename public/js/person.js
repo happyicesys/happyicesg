@@ -119,7 +119,7 @@ function personController($scope, $http){
         })
     }
 
-    $scope.onMapClicked = function(singleperson = null, index = null) {
+    $scope.onMapClicked = function(singleperson = null, index = null, type = null) {
       var url = window.location.href;
       var location = '';
       var locationLatLng = {};
@@ -188,9 +188,13 @@ function personController($scope, $http){
                       }
                   });
                   markers.push(marker);
-                  marker.addListener('click', function () {
-                      infowindow.open(map, marker);
-                  });
+                  if(type === 2) {
+                    infowindow.open(map, marker);
+                  }else {
+                    marker.addListener('click', function () {
+                        infowindow.open(map, marker);
+                    });
+                  }
               });
           });
 
@@ -238,9 +242,13 @@ function personController($scope, $http){
                   }
               });
               markers.push(marker);
-              marker.addListener('click', function () {
-                  infowindow.open(map, marker);
-              });
+              if(type === 2) {
+                infowindow.open(map, marker);
+              }else {
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+              }
           });
       }
 

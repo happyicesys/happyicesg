@@ -178,9 +178,10 @@
                     </div>
 
                     <div class="row" style="padding-top: 20px;">
-                        <div class="col-md-4 col-xs-12">
+                        <div class="col-md-8 col-xs-12">
                             <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 1)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 2)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Map with ID & Name</button>
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
                                     Batch Function
@@ -189,7 +190,7 @@
                                 </button>
                             @endif
                         </div>
-                        <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
+                        <div class="col-md-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">
                                 <label>Display</label>
                                 <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='All'" ng-change="pageNumChanged()">
