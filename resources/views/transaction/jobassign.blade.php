@@ -881,13 +881,8 @@ Job Assign
                                     @{{ transaction.operation_note | cut:true:40:'...' }}
                                 </td>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                                <td class="col-md-1 text-left">
-                                    <span ng-if="transaction.west == 1">West</span>
-                                    <span ng-if="transaction.east == 1">East</span>
-                                    <span ng-if="transaction.north == 1">North</span>
-                                    <span ng-if="transaction.others == 1">Others</span>
-                                    <span ng-if="transaction.sup == 1">Sup</span>
-                                    <span ng-if="transaction.ops == 1">Ops</span>
+                                <td class="col-md-1 text-center">
+                                    @{{transaction.zone_name}}
                                 </td>
                                 @endif
                                 {{-- status by color --}}

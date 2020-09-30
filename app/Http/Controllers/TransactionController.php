@@ -2071,11 +2071,13 @@ class TransactionController extends Controller
                         ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
                         ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                         ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
-                        ->leftJoin('users AS creator', 'creator.id', '=', 'transactions.created_by');
+                        ->leftJoin('users AS creator', 'creator.id', '=', 'transactions.created_by')
+                        ->leftJoin('zones', 'zones.id', '=', 'people.zone_id');
                         // ->leftJoin($dupes_transaction, 'dupes_transactions.id', '=', 'transactions.id');
         $transactions = $transactions->select(
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'people.operation_note', 'people.zone_id',
+                                    'zones.name AS zone_name',
                                     'transactions.del_postcode','transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
