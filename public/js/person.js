@@ -27,7 +27,8 @@ function personController($scope, $http){
         zone_id: '',
         pageNum: 'All',
         profile_id: '',
-        franchisee_id: ''
+        franchisee_id: '',
+        excludeCustCat: ''
     }
     $scope.assignForm = {
         name: '',

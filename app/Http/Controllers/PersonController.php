@@ -885,6 +885,7 @@ class PersonController extends Controller
         $franchisee_id = $request->franchisee_id;
         $accountManager = $request->account_manager;
         $zoneId = $request->zone_id;
+        $excludeCustCat = $request->excludeCustCat;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -897,7 +898,11 @@ class PersonController extends Controller
             if (count($custcategory) == 1) {
                 $custcategory = [$custcategory];
             }
-            $people = $people->whereIn('custcategories.id', $custcategory);
+            if($excludeCustCat) {
+                $people = $people->whereNotIn('custcategories.id', $custcategory);
+            }else {
+                $people = $people->whereIn('custcategories.id', $custcategory);
+            }
         }
         if ($company) {
             $people = $people->where('people.company', 'LIKE', '%' . $company . '%');

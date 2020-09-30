@@ -48,7 +48,7 @@
                             {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                             <label class="pull-right">
                                 <input type="checkbox" name="strictCustId" ng-model="search.strictCustId" ng-change="searchDB()">
-                                <span style="margin-top: 5px; margin-right: 5px;">
+                                <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
                                     Strict
                                 </span>
                             </label>
@@ -64,6 +64,12 @@
                         </div>
                         <div class="form-group col-md-2 col-sm-4 col-xs-12">
                             {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                            <label class="pull-right">
+                                <input type="checkbox" name="excludeCustCat" ng-model="search.excludeCustCat" ng-change="searchDB()">
+                                <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
+                                    Exclude
+                                </span>
+                            </label>
                             <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
                                 <option value="">All</option>
                                 @foreach($custcategories::orderBy('name')->get() as $custcategory)
