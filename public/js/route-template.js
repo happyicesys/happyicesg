@@ -158,6 +158,19 @@ function routeTemplateController($scope, $http){
       $scope.form = routeTemplate
     }
 
+    // on route template removed
+    $scope.onSingleEntryRemoved = function(id) {
+      let isConfirmRemove = confirm('Are you sure you want to remove the template?');
+
+      if(isConfirmRemove) {
+        $http.delete('/api/route-template/delete/' + id).success(function(data) {
+          getPage(1);
+        })
+      }else {
+        return false;
+      }
+    }
+
     function getDefaultForm() {
       return {
         id: '',
@@ -168,15 +181,6 @@ function routeTemplateController($scope, $http){
         route_template_items: []
       }
     }
-    // checkbox all
-/*
-    $scope.onCheckAllChecked = function() {
-        var checked = $scope.checkall;
-
-        $scope.alldata.forEach(function (transaction, key) {
-            $scope.alldata[key].check = checked;
-        });
-    } */
 
     // retrieve page w/wo search
     function getPage(pageNumber, first){

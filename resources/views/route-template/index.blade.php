@@ -173,21 +173,16 @@ Route Template
                             <th class="col-md-1 text-center">
                                 #
                             </th>
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-3 text-center">
                                 <a href="" ng-click="sortTable('name')">
                                 Name
                                 <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-2 text-center">
-                                <a href="" ng-click="sortTable('desc')">
-                                Desc
-                                <span ng-if="search.sortName == 'desc' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'desc' && search.sortBy" class="fa fa-caret-up"></span>
-                            </th>
                             <th class="col-md-5 text-center">
                                 Route(s)
                             </th>
+                            <th class="col-md-1 text-center"></th>
                         </tr>
 
                         <tbody>
@@ -199,13 +194,10 @@ Route Template
                                 <td class="col-md-1 text-center">
                                     @{{ $index + indexFrom }}
                                 </td>
-                                <td class="col-md-2">
+                                <td class="col-md-3">
                                     <a href="#" ng-click="onSingleRouteTemplateClicked(routeTemplate)" data-toggle="modal" data-target="#route-template-modal">
                                     @{{ routeTemplate.name }}
                                     </a>
-                                </td>
-                                <td class="col-md-2">
-                                    @{{ routeTemplate.desc }}
                                 </td>
                                 <td class="col-md-5 text-left">
                                   <ul ng-repeat="item in routeTemplate.route_template_items | orderBy:'sequence'">
@@ -213,6 +205,11 @@ Route Template
                                       [@{{item.sequence}}] @{{item.person.cust_id}} - @{{item.person.company}} (@{{item.person.del_postcode}})
                                     </li>
                                   </ul>
+                                </td>
+                                <td class="col-md-1 text-center">
+                                  <button class="btn btn-danger btn-sm" ng-click="onSingleEntryRemoved(routeTemplate.id)">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                  </button>
                                 </td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">

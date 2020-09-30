@@ -170,6 +170,14 @@ class RouteTemplateController extends Controller
         }
     }
 
+    // delete route template with its children
+    public function deleteRouteTemplateApi($id)
+    {
+        $routeTemplate = RouteTemplate::findOrFail($id);
+        $routeTemplate->routeTemplateItems()->delete();
+        $routeTemplate->delete();
+    }
+
     // sync new route template items
     private function syncRouteTemplateItem($routeTemplateItem, $id)
     {

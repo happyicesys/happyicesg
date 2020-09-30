@@ -307,6 +307,7 @@ Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi
 Route::post('/api/route-template/store-update', 'RouteTemplateController@storeUpdateRouteTemplateApi');
 Route::post('/api/route-template/generate', 'RouteTemplateController@generateTemplateInvoiceApi');
 Route::post('/api/route-template/jobassign/create', 'RouteTemplateController@createRouteTemplateFromJobassignApi');
+Route::delete('/api/route-template/delete/{id}', 'RouteTemplateController@deleteRouteTemplateApi');
 
 Route::post('/api/person/batch-update', 'PersonController@batchAssignPeople');
 Route::get('/api/outletvisit/outcomes', 'PersonController@getOutletVisitOutcomesApi');
