@@ -130,6 +130,16 @@ var app = angular.module('app', [
             });
         });
 
+        // export cust cat excel
+        $scope.exportCustCatExcel = function (event) {
+            event.preventDefault();
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_custcategory').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "CustCat"+ now + ".xls");
+        };
+
         $scope.confirmDelete5 = function(id){
             var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
             if(isConfirmDelete){

@@ -21,6 +21,10 @@
     .person-color {
         color:  #6D3A9C;
     }
+
+    table {
+        font-size: 14px;
+    }
 </style>
 
 @section('title')
@@ -29,10 +33,6 @@
 @section('content')
 
 <div class="create_edit" style="margin-top:10px;" ng-app="app" ng-controller="personEditController" ng-cloak>
-
-
-
-
     @php
         $disabled = false;
         $disabledStr = '';

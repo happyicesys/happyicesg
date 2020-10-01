@@ -29,9 +29,14 @@
                 {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name']) !!}
             </div>
         </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <button class="btn btn-sm btn-primary" ng-click="exportCustCatExcel($event)">Export Excel</button>
+            </div>
+        </div>
 
         <div class="row"></div>
-        <div class="table-responsive">
+        <div class="table-responsive" id="exportable_custcategory">
             <table class="table table-list-search table-hover table-bordered">
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">
