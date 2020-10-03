@@ -120,9 +120,11 @@
 
 <div class="row">
     <div class="col-md-3 col-sm-3 col-xs-12" style="padding-top: 20px;">
+        @if(!auth()->user()->hasRole('event'))
         <button class="btn btn-primary" ng-click="exportDataTransRpt()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         @if(!auth()->user()->hasRole('franchisee') and ! auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
             <button type="submit" class="btn btn-default" form="invbreakdown">Invoice Breakdown</button>
+        @endif
         @endif
     </div>
     <div class="col-md-5 col-sm-5 col-xs-12" style="padding-top: 20px;">

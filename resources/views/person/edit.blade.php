@@ -37,7 +37,7 @@
         $disabled = false;
         $disabledStr = '';
 
-        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user')) {
+        if(auth()->user()->hasRole('watcher') or auth()->user()->hasRole('subfranchisee') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('event')) {
             $disabled = true;
             $disabledStr = 'disabled';
         }
@@ -76,7 +76,7 @@
                 <div class="col-md-5 col-sm-5 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
                                 {!! Form::submit('Create Transaction', ['class'=> 'btn btn-success', 'form'=>'person_transaction']) !!}
                                 @if(!auth()->user()->hasRole('hd_user'))
                                 @cannot('transaction_view')
@@ -109,7 +109,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="input-group-btn">
                         <div class="pull-right">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
                             @cannot('transaction_view')
                             {!! Form::submit('Save Profile', ['class'=> 'btn btn-success', 'form'=>'form_person']) !!}
                             @endcannot
@@ -117,7 +117,7 @@
                             <a href="/person" class="btn btn-default">Back</a>
                         </div>
                         <div class="pull-left">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
+                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event'))
                             @cannot('transaction_view')
                                 @if($person->active == 'Yes')
                                     {!! Form::submit('Pending', ['name'=>'active', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
@@ -322,7 +322,7 @@
                     </tbody>
                 </table>
                 <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
                     {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
                 @endif
             </div>
@@ -334,7 +334,7 @@
 @endunless
 
 {{-- divider --}}
-@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
+@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event'))
 <div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
@@ -430,7 +430,7 @@
                         </td>
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
                                 <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
                             @endif
                             <a href="{{$file->path}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
@@ -447,13 +447,13 @@
             {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
             {!! Form::close() !!}
         @endif
-        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
             <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
         @endif
     </div>
 
     <div class="panel-footer">
-        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
+        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event'))
             {!! Form::open(['action'=>['PersonController@addFile', $person->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
             {!! Form::close() !!}
         @endif
@@ -464,7 +464,7 @@
     </div>
 </div>
 {{-- divider --}}
-@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
+@if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event'))
 <div class="panel">
     <div class="panel-heading">
         <div class="panel-title">
@@ -492,7 +492,7 @@
             {!! Form::model($person, ['action'=>['PersonController@storeNote', $person->id]]) !!}
                 {!! Form::label('note', 'Notes', ['class'=>'control-label']) !!}
                 {!! Form::textarea('note', null, ['class'=>'form-control', 'rows'=>'3', 'ng-model'=>'noteModel', 'disabled'=>$disabled]) !!}
-                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event'))
                     {!! Form::submit('Save Note', ['name'=>'save', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
                 @endif
             {!! Form::close() !!}
