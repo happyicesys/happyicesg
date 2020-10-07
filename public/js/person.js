@@ -1,4 +1,9 @@
-var app = angular.module('app', ['ui.bootstrap', 'angularUtils.directives.dirPagination']);
+var app = angular.module('app', [
+    'angularUtils.directives.dirPagination',
+    'ui.select',
+    'ngSanitize',
+    '720kb.datepicker'
+]);
 
 function personController($scope, $http){
     // init the variables
@@ -36,7 +41,9 @@ function personController($scope, $http){
         account_manager: '',
         zone_id: '',
         tag_id: '',
-        detach: ''
+        detach: '',
+        driver: '',
+        delivery_date: $scope.today
     }
     // init page load
     getPage(1, true);
@@ -118,6 +125,12 @@ function personController($scope, $http){
             $scope.searchDB();
             $scope.checkall = false;
         })
+    }
+
+    $scope.formDateChange = function(scope, date){
+        if(date){
+            $scope.assignForm[scope] = moment(new Date(date)).format('YYYY-MM-DD');
+        }
     }
 
     $scope.onMapClicked = function(singleperson = null, index = null, type = null) {
@@ -307,7 +320,7 @@ function personController($scope, $http){
         });
     }
 }
-
+/*
   app.directive('datePicker', function(){
     return{
       restrict: 'A',
@@ -358,6 +371,6 @@ function personController($scope, $http){
         });
       }
     }
-  });
+  }); */
 
 app.controller('personController', personController);

@@ -16,6 +16,7 @@ use App\Price;
 use App\Transaction;
 use App\Freezer;
 use App\Accessory;
+use App\Operationdate;
 use App\Profile;
 use App\AddFreezer;
 use App\AddAccessory;
@@ -857,6 +858,11 @@ class PersonController extends Controller
                                     $this->detachTagPerson($person->id, $value);
                                 }
                                 break;
+                            case 'transactions':
+                                $data['delivery_date'] = $assignForm['delivery_date'];
+                                $data['driver'] = $assignForm['driver'];
+                                $this->generateSingleInvoiceByPersonId($person->id, $data);
+                                break;
                         }
                         $person->save();
                     }
@@ -869,6 +875,42 @@ class PersonController extends Controller
             case 'custcategory':
                 $custcategory =
         } */
+    }
+
+    // fast generate single invoice by person id
+    public function generateSingleInvoiceByPersonId($person_id, $data)
+    {
+        $date = $data['delivery_date'];
+        $driver = $data['driver'];
+        $person = Person::findOrFail($person_id);
+
+        $transaction = Transaction::create([
+            'delivery_date' => $date,
+            'person_id' => $person->id,
+            'status' => 'Pending',
+            'pay_status' => 'Owe',
+            'updated_by' => auth()->user()->name,
+            'created_by' => auth()->user()->id,
+            'del_postcode' => $person->del_postcode,
+            'del_address' => $person->del_address,
+            'del_lat' => $person->del_lat,
+            'del_lng' => $person->del_lng,
+            'driver' => $driver ? $driver : null
+        ]);
+
+        $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $date)->first();
+
+        if($prevOpsDate) {
+            $prevOpsDate->color = 'Orange';
+            $prevOpsDate->save();
+        }else {
+            $opsdate = new Operationdate;
+            $opsdate->person_id = $person->id;
+            $opsdate->delivery_date = $date;
+            $opsdate->color = 'Orange';
+            $opsdate->save();
+        }
+
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

@@ -331,6 +331,62 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label">
+                                        <u>
+                                            Batch Generate Invoices
+                                        </u>
+                                    </label>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label for="driver" class="control-label search-title">
+                                            Delivery Date
+                                        </label>
+                                        <datepicker>
+                                            <input
+                                                name = "delivery_date"
+                                                type = "text"
+                                                class = "form-control input-sm"
+                                                placeholder = "Delivery Date"
+                                                ng-model = "assignForm.delivery_date"
+                                                ng-change = "formDateChange('delivery_date', assignForm.delivery_date)"
+                                            />
+                                        </datepicker>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="driver" class="control-label search-title">
+                                            Driver
+                                        </label>
+                                        <select name="driver" class="form-control select" ng-model="assignForm.driver">
+                                            <option value="">
+                                                -- None --
+                                            </option>
+                                            @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                                                @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->id === 100010)  and count($user->profiles) > 0)
+                                                    <option value="{{$user->name}}">
+                                                        {{$user->name}}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                    <label class="control-label"></label>
+                                    <div class="btn-group-control">
+                                        <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'transactions')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                            Batch Generate
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <hr class="row">
                 </div>
