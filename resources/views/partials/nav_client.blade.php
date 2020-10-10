@@ -22,6 +22,7 @@
             $franchise_access = false;
             $about_access = false;
             $contact_access = false;
+            $locate_access = false;
 
             $general_setting = $generalsettings::firstOrFail();
             $country_region = $general_setting->country_region;
@@ -39,6 +40,7 @@
                     $contact_access = true;
                     $order_now_access = false;
                     $vend_complain_access=true;
+                    $locate_access = true;
                     break;
                 case 'MALAYSIA':
                     $home_access = true;
@@ -65,6 +67,7 @@
                     $contact_access = false;
                     $order_now_access = false;
                     $vend_complain_access=true;
+                    $locate_access = true;
             }
         @endphp
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -141,6 +144,11 @@
                 @if($contact_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/client/contact">Contact</a>
+                </li>
+                @endif
+                @if($locate_access)
+                <li>
+                    <a class="page-scroll" style="color: white;" href="/#">Locate (Coming Soon)</a>
                 </li>
                 @endif
                 @if($order_now_access)

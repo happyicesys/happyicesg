@@ -100,6 +100,7 @@ class ItemController extends Controller
         request()->merge(array('publish' => request()->has('publish') ? 1 : 0));
         request()->merge(array('is_inventory' => request()->has('is_inventory') ? 1 : 0));
         request()->merge(array('is_commission' => request()->has('is_commission') ? 1 : 0));
+        request()->merge(array('is_supermarket_fee' => request()->has('is_supermarket_fee') ? 1 : 0));
         request()->merge(array('is_healthier' => request()->has('is_healthier') ? 1 : 0));
         request()->merge(array('is_halal' => request()->has('is_halal') ? 1 : 0));
 
@@ -147,6 +148,7 @@ class ItemController extends Controller
         request()->merge(array('publish' => request()->has('publish') == 'true' ? 1 : 0));
         request()->merge(array('is_inventory' => request()->has('is_inventory') == 'true' ? 1 : 0));
         request()->merge(array('is_commission' => request()->has('is_commission') == 'true' ? 1 : 0));
+        request()->merge(array('is_supermarket_fee' => request()->has('is_supermarket_fee') ? 1 : 0));
         request()->merge(array('is_healthier' => request()->has('is_healthier') == 'true' ? 1 : 0));
         request()->merge(array('is_halal' => request()->has('is_halal') == 'true' ? 1 : 0));
 

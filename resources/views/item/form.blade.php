@@ -186,19 +186,25 @@
         <div class="col-md-2 col-sm-2 col-xs-6">
             <div class="form-group">
                 {!! Form::checkbox('is_commission', $item->is_commission) !!}
-                {!! Form::label('is_commission', 'Is Commission', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+                {!! Form::label('is_commission', 'Is Vending Comm?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-6">
+            <div class="form-group">
+                {!! Form::checkbox('is_supermarket_fee', $item->is_supermarket_fee) !!}
+                {!! Form::label('is_supermarket_fee', 'Is Supermarket Fee?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
             </div>
         </div>
         <div class="col-md-2 col-sm-2 col-xs-6">
             <div class="form-group">
                 {!! Form::checkbox('is_healthier', $item->is_healthier) !!}
-                {!! Form::label('is_healthier', 'Is Healthier', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+                {!! Form::label('is_healthier', 'Is Healthier?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
             </div>
         </div>
         <div class="col-md-2 col-sm-2 col-xs-6">
             <div class="form-group">
                 {!! Form::checkbox('is_halal', $item->is_halal) !!}
-                {!! Form::label('is_halal', 'Is Halal', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+                {!! Form::label('is_halal', 'Is Halal?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
             </div>
         </div>
     </div>

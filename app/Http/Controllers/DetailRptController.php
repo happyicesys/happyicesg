@@ -362,6 +362,7 @@ class DetailRptController extends Controller
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                         ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                        ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfeetotal,
                             people.profile_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -371,9 +372,24 @@ class DetailRptController extends Controller
                             WHERE 1=1 ";
         $thistotalStr =  $this->searchTransactionRawFilter($thistotalStr, $request);
         $thiscommtotalStr = $thistotalStr;
+        $thissfeetotalStr = $thistotalStr;
 
         if($request->is_commission != '') {
-            $thistotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $thistotalStr .= " AND items.is_commission='".$is_commission."' ";
+                    $thistotalStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $thistotalStr .= " AND items.is_commission=1 ";
+                    $thistotalStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $thistotalStr .= " AND items.is_commission=0 ";
+                    $thistotalStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
         $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
         $thistotalStr .= " GROUP BY people.id) thistotal";
@@ -384,12 +400,17 @@ class DetailRptController extends Controller
         $thiscommtotalStr .= " GROUP BY people.id) thiscommtotal";
         $thiscommtotal = DB::raw($thiscommtotalStr);
 
+        $thissfeetotalStr = $this->filterTransactionDeliveryDateRaw($thissfeetotalStr, $delivery_from, $delivery_to);
+        $thissfeetotalStr .= " GROUP BY people.id) thissfeetotal";
+        $thissfeetotal = DB::raw($thissfeetotalStr);
+
 
         $prevtotalStr = "(
                         SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                         ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                         ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                        ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfeetotal,
                             people.profile_id
                             FROM deals
                             LEFT JOIN items ON items.id=deals.item_id
@@ -400,10 +421,29 @@ class DetailRptController extends Controller
 
         $prevtotalStr =  $this->searchTransactionRawFilter($prevtotalStr, $request);
         $prevcommtotalStr = $prevtotalStr;
+        $prevsfeetotalStr = $prevtotalStr;
 
         if($request->is_commission != '') {
-            $prevtotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $prevtotalStr .= " AND items.is_commission='".$is_commission."' ";
+                    $prevtotalStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $prevtotalStr .= " AND items.is_commission=1 ";
+                    $prevtotalStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $prevtotalStr .= " AND items.is_commission=0 ";
+                    $prevtotalStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
+/*
+        if($request->is_commission != '') {
+            $prevtotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+        } */
         $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
         $prevtotalStr .= " GROUP BY people.id) prevtotal";
         $prevtotal = DB::raw($prevtotalStr);
@@ -412,12 +452,17 @@ class DetailRptController extends Controller
         $prevcommtotalStr .= " GROUP BY people.id) prevcommtotal";
         $prevcommtotal = DB::raw($prevcommtotalStr);
 
+        $prevsfeetotalStr = $this->filterTransactionDeliveryDateRaw($prevsfeetotalStr, $prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString());
+        $prevsfeetotalStr .= " GROUP BY people.id) prevsfeetotal";
+        $prevsfeetotal = DB::raw($prevsfeetotalStr);
+
 
         $prev2totalStr = "(
                             SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                             ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                            ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfeetotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -428,9 +473,24 @@ class DetailRptController extends Controller
 
         $prev2totalStr =  $this->searchTransactionRawFilter($prev2totalStr, $request);
         $prev2commtotalStr = $prev2totalStr;
+        $prev2sfeetotalStr = $prev2totalStr;
 
         if($request->is_commission != '') {
-            $prev2totalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $prev2totalStr .= " AND items.is_commission='".$is_commission."' ";
+                    $prev2totalStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $prev2totalStr .= " AND items.is_commission=1 ";
+                    $prev2totalStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $prev2totalStr .= " AND items.is_commission=0 ";
+                    $prev2totalStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
         $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
         $prev2totalStr .= " GROUP BY people.id) prev2total";
@@ -440,12 +500,17 @@ class DetailRptController extends Controller
         $prev2commtotalStr .= " GROUP BY people.id) prev2commtotal";
         $prev2commtotal = DB::raw($prev2commtotalStr);
 
+        $prev2sfeetotalStr = $this->filterTransactionDeliveryDateRaw($prev2sfeetotalStr, $prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString());
+        $prev2sfeetotalStr .= " GROUP BY people.id) prev2sfeetotal";
+        $prev2sfeetotal = DB::raw($prev2sfeetotalStr);
+
 
         $prevyeartotalStr = "(
                             SELECT transactions.id AS transaction_id, people.id AS person_id, ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                             ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                             ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                            ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfeetotal,
                                 people.profile_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -456,9 +521,24 @@ class DetailRptController extends Controller
 
         $prevyeartotalStr =  $this->searchTransactionRawFilter($prevyeartotalStr, $request);
         $prevyearcommtotalStr = $prevyeartotalStr;
+        $prevyearsfeetotalStr = $prevyeartotalStr;
 
         if($request->is_commission != '') {
-            $prevyeartotalStr .= " AND items.is_commission='".$request->is_commission."' ";
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $prevyeartotalStr .= " AND items.is_commission='".$is_commission."' ";
+                    $prevyeartotalStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $prevyeartotalStr .= " AND items.is_commission=1 ";
+                    $prevyeartotalStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $prevyeartotalStr .= " AND items.is_commission=0 ";
+                    $prevyeartotalStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
         $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
         $prevyeartotalStr .= " GROUP BY people.id) prevyeartotal";
@@ -467,6 +547,10 @@ class DetailRptController extends Controller
         $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
         $prevyearcommtotalStr .= " GROUP BY people.id) prevyearcommtotal";
         $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
+
+        $prevyearsfeetotalStr = $this->filterTransactionDeliveryDateRaw($prevyearsfeetotalStr, $prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString());
+        $prevyearsfeetotalStr .= " GROUP BY people.id) prevyearsfeetotal";
+        $prevyearsfeetotal = DB::raw($prevyearsfeetotalStr);
 
         $transactions = DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
@@ -483,13 +567,18 @@ class DetailRptController extends Controller
                         ->leftJoin($prevcommtotal, 'people.id', '=', 'prevcommtotal.person_id')
                         ->leftJoin($prev2commtotal, 'people.id', '=', 'prev2commtotal.person_id')
                         ->leftJoin($prevyearcommtotal, 'people.id', '=', 'prevyearcommtotal.person_id')
+                        ->leftJoin($thissfeetotal, 'people.id', '=', 'thissfeetotal.person_id')
+                        ->leftJoin($prevsfeetotal, 'people.id', '=', 'prevsfeetotal.person_id')
+                        ->leftJoin($prev2sfeetotal, 'people.id', '=', 'prev2sfeetotal.person_id')
+                        ->leftJoin($prevyearsfeetotal, 'people.id', '=', 'prevyearsfeetotal.person_id')
                         ->select(
                             'items.is_commission', 'items.product_id', 'items.name AS item_name',
                             'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                             'profiles.name as profile_name', 'profiles.id as profile_id', 'account_manager.name AS account_manager_name', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
-                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal', 'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal', 'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal', 'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal', 'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal'
+                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal', 'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal', 'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal', 'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal', 'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                            'thissfeetotal.sfeetotal AS this_sfeetotal', 'prevsfeetotal.sfeetotal AS prev_sfeetotal', 'prev2sfeetotal.sfeetotal AS prev2_sfeetotal', 'prevyearsfeetotal.sfeetotal AS prevyear_sfeetotal'
                         );
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
@@ -526,18 +615,22 @@ class DetailRptController extends Controller
             'this_taxtotal',
             'this_transactiontotal',
             'this_commtotal',
+            'this_sfeetotal',
             'prev_salestotal',
             'prev_taxtotal',
             'prev_transactiontotal',
             'prev_commtotal',
+            'prev_sfeetotal',
             'prev2_salestotal',
             'prev2_taxtotal',
             'prev2_transactiontotal',
             'prev2_commtotal',
+            'prev2_sfeetotal',
             'prevyear_salestotal',
             'prevyear_taxtotal',
             'prevyear_transactiontotal',
-            'prevyear_commtotal'
+            'prevyear_commtotal',
+            'prevyear_sfeetotal'
         ]);
 
         if($pageNum == 'All'){
@@ -580,10 +673,28 @@ class DetailRptController extends Controller
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             WHERE 1=1 ";
         $queryStr =  $this->searchTransactionRawFilter($queryStr, $request);
-
+/*
         if($request->is_commission != '') {
             $queryStr .= " AND items.is_commission='".$request->is_commission."' ";
+        } */
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $queryStr .= " AND items.is_commission='".$is_commission."' ";
+                    $queryStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $queryStr .= " AND items.is_commission=1 ";
+                    $queryStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $queryStr .= " AND items.is_commission=0 ";
+                    $queryStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
+
         $thisYearStr = $queryStr;
         // $lastYearStr = $queryStr;
         // $lastTwoYearStr = $queryStr;
@@ -885,9 +996,27 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $items = $this->filterUserDbProfile($items);
-
+/*
         if(request('is_commission') != '') {
             $items = $items->where('items.is_commission', request('is_commission'));
+        } */
+
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $items .= " AND items.is_commission='".$is_commission."' ";
+                    $items .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $items .= " AND items.is_commission=1 ";
+                    $items .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $items .= " AND items.is_commission=0 ";
+                    $items .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
 
         if(request('zone_id') != '') {
@@ -1023,9 +1152,26 @@ class DetailRptController extends Controller
             $personstatus = implode("','",$personstatus);
             $amountstr .= " AND people.active IN ('".$personstatus."')";
         }
-
+/*
         if(request('is_commission') != '') {
             $amountstr .= " AND items.is_commission='".request('is_commission')."'";
+        } */
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $amountstr .= " AND items.is_commission='".$is_commission."' ";
+                    $amountstr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $amountstr .= " AND items.is_commission=1 ";
+                    $amountstr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $amountstr .= " AND items.is_commission=0 ";
+                    $amountstr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
 
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
@@ -1234,9 +1380,26 @@ class DetailRptController extends Controller
         }
 
         $queryStrNoComm = $queryStr;
-
+/*
         if($request->is_commission != '') {
             $queryStr .= " AND items.is_commission='".$request->is_commission."' ";
+        } */
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $queryStr .= " AND items.is_commission='".$is_commission."' ";
+                    $queryStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $queryStr .= " AND items.is_commission=1 ";
+                    $queryStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $queryStr .= " AND items.is_commission=0 ";
+                    $queryStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
 
         $thistotalStr = $queryStr;
@@ -1519,8 +1682,29 @@ class DetailRptController extends Controller
         }else {
             $date_diff = 1;
         }
+/*
         if(request('is_commission') != '') {
             $isCommissionStr = " items.is_commission='".request('is_commission')."' ";
+        }else {
+            $isCommissionStr = " 1=1 ";
+        } */
+
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $isCommissionStr .= " AND items.is_commission='".$is_commission."' ";
+                    $isCommissionStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $isCommissionStr .= " AND items.is_commission=1 ";
+                    $isCommissionStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $isCommissionStr .= " AND items.is_commission=0 ";
+                    $isCommissionStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }else {
             $isCommissionStr = " 1=1 ";
         }
@@ -2109,8 +2293,25 @@ class DetailRptController extends Controller
         if($is_inventory) {
             $deals = $deals->where('items.is_inventory', $is_inventory);
         }
+/*
         if($is_commission != '') {
             $deals = $deals->where('items.is_commission', $is_commission);
+        } */
+        if($is_commission != '') {
+            switch($is_commission) {
+                case '0':
+                    $deals = $deals->where('items.is_commission', $is_commission);
+                    $deals = $deals->where('items.is_supermarket_fee', $is_commission);
+                    break;
+                case '1':
+                    $deals = $deals->where('items.is_commission', 1);
+                    $deals = $deals->where('items.is_supermarket_fee', 0);
+                    break;
+                case '2':
+                    $deals = $deals->where('items.is_commission', 0);
+                    $deals = $deals->where('items.is_supermarket_fee', 1);
+                    break;
+            }
         }
         if($driver) {
             $deals = $deals->where('transactions.driver', 'LIKE', '%'.$driver.'%');
@@ -2203,8 +2404,25 @@ class DetailRptController extends Controller
         if($custcategory) {
             $deals = $deals->where('custcategories.id', $custcategory);
         }
+/*
         if($is_commission != '') {
             $deals = $deals->where('items.is_commission', $is_commission);
+        } */
+        if($is_commission != '') {
+            switch($is_commission) {
+                case '0':
+                    $deals = $deals->where('items.is_commission', $is_commission);
+                    $deals = $deals->where('items.is_supermarket_fee', $is_commission);
+                    break;
+                case '1':
+                    $deals = $deals->where('items.is_commission', 1);
+                    $deals = $deals->where('items.is_supermarket_fee', 0);
+                    break;
+                case '2':
+                    $deals = $deals->where('items.is_commission', 0);
+                    $deals = $deals->where('items.is_supermarket_fee', 1);
+                    break;
+            }
         }
         return $deals;
     }
@@ -2620,6 +2838,22 @@ class DetailRptController extends Controller
         }
         if($is_commission != '') {
             $transactions = $transactions->where('items.is_commission', $is_commission);
+        }
+        if($is_commission != '') {
+            switch($is_commission) {
+                case '0':
+                    $transactions = $transactions->where('items.is_commission', $is_commission);
+                    $transactions = $transactions->where('items.is_supermarket_fee', $is_commission);
+                    break;
+                case '1':
+                    $transactions = $transactions->where('items.is_commission', 1);
+                    $transactions = $transactions->where('items.is_supermarket_fee', 0);
+                    break;
+                case '2':
+                    $transactions = $transactions->where('items.is_commission', 0);
+                    $transactions = $transactions->where('items.is_supermarket_fee', 1);
+                    break;
+            }
         }
 
         if($account_manager) {

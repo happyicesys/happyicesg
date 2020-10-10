@@ -56,6 +56,12 @@ class ClientController extends Controller
         return view('client.contact');
     }
 
+    // return locate page
+    public function getLocations()
+    {
+        return view('client.locate');
+    }
+
     // stream pdf page healthy morning
     public function everyMorningHealthy()
     {

@@ -295,6 +295,7 @@ Route::get('/client/register', 'ClientController@getRegister');
 Route::get('/client/about', 'ClientController@getAboutUs');
 Route::get('/client/product', 'ClientController@getProduct');
 Route::get('/client/contact', 'ClientController@getContact');
+Route::get('/client/locate', 'ClientController@getLocations');
 Route::post('/client/contact', 'ClientController@sendContactEmail');
 Route::resource('client', 'ClientController');
 

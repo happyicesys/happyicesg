@@ -181,7 +181,7 @@
             <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes', '1'=>'Only Commission'], null,
+                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
                         [
                             'class'=>'select form-control',
                             'ng-model'=>'search.is_commission',

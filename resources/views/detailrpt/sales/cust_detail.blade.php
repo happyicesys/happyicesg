@@ -123,7 +123,7 @@
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
                 {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes', '1'=>'Only Commission'], null,
+                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
                     [
                         'class'=>'select form-control',
                         'ng-model'=>'search.is_commission',
@@ -335,76 +335,92 @@
             <tr style="background-color: #DDFDF8">
                 <th colspan="5"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Trans:
                     </span>
                     @{{ totals.this_transactiontotal ? totals.this_transactiontotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Tax:
                     </span>
                     @{{ totals.this_taxtotal ? totals.this_taxtotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Sales:
                     </span>
                     @{{ totals.this_salestotal ? totals.this_salestotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
-                        Comm:
+                    <span class="pull-left" style="font-size:11px;">
+                        VCom:
                     </span>
-                    @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left" style="font-size:11px;">
+                        SFee:
+                    </span>
+                    @{{ totals.this_sfeetotal ? totals.this_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Trans:
                     </span>
                     @{{ totals.prev_transactiontotal ? totals.prev_transactiontotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Tax:
                     </span>
                     @{{ totals.prev_taxtotal ? totals.prev_taxtotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Sales:
                     </span>
                     @{{ totals.prev_salestotal ? totals.prev_salestotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
-                        Comm:
+                    <span class="pull-left" style="font-size:11px;">
+                        VCom:
                     </span>
-                    @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left" style="font-size:11px;">
+                        SFee:
+                    </span>
+                    @{{ totals.prev_sfeetotal ? totals.prev_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Trans:
                     </span>
                     @{{ totals.prev2_transactiontotal ? totals.prev2_transactiontotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Tax:
                     </span>
                     @{{ totals.prev2_taxtotal ? totals.prev2_taxtotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Sales:
                     </span>
                     @{{ totals.prev2_salestotal ? totals.prev2_salestotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
-                        Comm:
+                    <span class="pull-left" style="font-size:11px;" >
+                        VCom:
                     </span>
-                    @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left" style="font-size:11px;" >
+                        SFee:
+                    </span>
+                    @{{ totals.prev2_sfeetotal ? totals.prev2_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Trans:
                     </span>
                     @{{ totals.prevyear_transactiontotal ? totals.prevyear_transactiontotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Tax:
                     </span>
                     @{{ totals.prevyear_taxtotal ? totals.prevyear_taxtotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
+                    <span class="pull-left" style="font-size:11px;">
                         Sales:
                     </span>
                     @{{ totals.prevyear_salestotal ? totals.prevyear_salestotal : 0.00 | currency: "": 2}} <br>
-                    <span class="pull-left">
-                        Comm:
+                    <span class="pull-left" style="font-size:11px;">
+                        VCom:
                     </span>
-                    @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}} <br>
+                    <span class="pull-left" style="font-size:11px;">
+                        SFee:
+                    </span>
+                    @{{ totals.prevyear_sfeetotal ? totals.prevyear_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
             </tr>
 

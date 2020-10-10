@@ -72,9 +72,27 @@ class DailyreportController extends Controller
                 $totalRaw .= " and custcategories.id IN ('".$custcategories."')";
             }
         }
-
+/*
         if($request->is_commission != '') {
             $totalRaw .= "and items.is_commission = '".$request->is_commission."'";
+        } */
+
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $totalRaw .= " AND items.is_commission='".$is_commission."' ";
+                    $totalRaw .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $totalRaw .= " AND items.is_commission=1 ";
+                    $totalRaw .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $totalRaw .= " AND items.is_commission=0 ";
+                    $totalRaw .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
 
         $totalRaw .= " GROUP BY transactions.delivery_date, transactions.driver) totalRaw";
@@ -131,8 +149,26 @@ class DailyreportController extends Controller
         if($request->id_prefix) {
             $deals = $deals->where('people.cust_id', 'LIKE', $request->id_prefix.'%');
         }
+/*
         if($request->is_commission != '') {
             $deals = $deals->where('items.is_commission', $request->is_commission);
+        } */
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $deals .= " AND items.is_commission='".$is_commission."' ";
+                    $deals .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $deals .= " AND items.is_commission=1 ";
+                    $deals .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $deals .= " AND items.is_commission=0 ";
+                    $deals .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
         }
         if ($request->person_active) {
             // dd($request->person_active);
