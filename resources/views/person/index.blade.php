@@ -197,6 +197,7 @@
                                     <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
                                 </button>
                             @endif
+                            <i class="fa fa-spinner fa-2x fa-spin" ng-show="spinner"></i>
                         </div>
                         <div class="col-md-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">

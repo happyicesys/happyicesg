@@ -149,6 +149,7 @@
                 @if($locate_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/#">Locate (Coming Soon)</a>
+                    {{-- <a class="page-scroll" style="color: white;" href="/client/locate">Locate</a> --}}
                 </li>
                 @endif
                 @if($order_now_access)

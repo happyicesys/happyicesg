@@ -1005,16 +1005,16 @@ class DetailRptController extends Controller
             $is_commission = $request->is_commission;
             switch($is_commission) {
                 case '0':
-                    $items .= " AND items.is_commission='".$is_commission."' ";
-                    $items .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    $items = $items->where('items.is_commission', $is_commission);
+                    $items = $items->where('items.is_supermarket_fee', $is_commission);
                     break;
                 case '1':
-                    $items .= " AND items.is_commission=1 ";
-                    $items .= " AND items.is_supermarket_fee=0 ";
+                    $items = $items->where('items.is_commission', 1);
+                    $items = $items->where('items.is_supermarket_fee', 0);
                     break;
                 case '2':
-                    $items .= " AND items.is_commission=0 ";
-                    $items .= " AND items.is_supermarket_fee=1 ";
+                    $items = $items->where('items.is_commission', 0);
+                    $items = $items->where('items.is_supermarket_fee', 1);
                     break;
             }
         }
