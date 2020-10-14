@@ -157,16 +157,16 @@ class DailyreportController extends Controller
             $is_commission = $request->is_commission;
             switch($is_commission) {
                 case '0':
-                    $deals .= " AND items.is_commission='".$is_commission."' ";
-                    $deals .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    $deals = $deals->where('items.is_commission', $is_commission);
+                    $deals = $deals->where('items.is_supermarket_fee', $is_commission);
                     break;
                 case '1':
-                    $deals .= " AND items.is_commission=1 ";
-                    $deals .= " AND items.is_supermarket_fee=0 ";
+                    $deals = $deals->where('items.is_commission', 1);
+                    $deals = $deals->where('items.is_commission', 0);
                     break;
                 case '2':
-                    $deals .= " AND items.is_commission=0 ";
-                    $deals .= " AND items.is_supermarket_fee=1 ";
+                    $deals = $deals->where('items.is_commission', 0);
+                    $deals = $deals->where('items.is_commission', 1);
                     break;
             }
         }
