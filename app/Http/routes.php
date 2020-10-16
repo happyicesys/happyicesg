@@ -273,6 +273,7 @@ Route::any('/thankspurchase', 'ClientController@thanksYourPurchase');
 Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaInquiry');
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
 Route::get('/delivery', 'ClientController@brownsugarBobaInquiry');
+Route::get('/icecream-buffet', 'ClientController@icecreamBuffetPage');
 Route::get('/every-morning-healthy-order', 'ClientController@everyMorningHealthyOrder');
 Route::get('/next-day-delivery', 'ClientController@brownsugarBobaInquiry');
 Route::get('/ice-cream-party-package', 'ClientController@iceCreamPartyPackage');
@@ -296,6 +297,7 @@ Route::get('/client/about', 'ClientController@getAboutUs');
 Route::get('/client/product', 'ClientController@getProduct');
 Route::get('/client/contact', 'ClientController@getContact');
 Route::get('/client/locate', 'ClientController@getLocations');
+Route::post('/api/client/locate/{vendingType}', 'ClientController@getPeopleByVendingType');
 Route::post('/client/contact', 'ClientController@sendContactEmail');
 Route::resource('client', 'ClientController');
 

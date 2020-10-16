@@ -592,6 +592,12 @@ class ClientController extends Controller
         return Redirect::to('https://form.jotform.com/kentzo/nextdaydelivery');
     }
 
+    // redirec to warehouse sales page
+    public function icecreamBuffetPage()
+    {
+        return Redirect::to('https://form.jotform.com/kentzo/icecream-buffet');
+    }
+
     // redirect to brown sugar boba milk tea page
     public function everyMorningHealthyOrder()
     {
@@ -643,6 +649,31 @@ class ClientController extends Controller
     public function privacyPolicy()
     {
         return view('client.privacy-policy');
+    }
+
+    // retrieve people by vending type
+    public function getPeopleByVendingType($vendingType)
+    {
+        // $people = [];
+        switch($vendingType) {
+            case 'fvmMap':
+                $people = Person::whereHas('persontagattaches', function($query) {
+                    $query->whereHas('persontag', function($query) {
+                        $query->where('name', 'happy_ice_fvm');
+                    });
+                });
+            break;
+            case 'dvmMap':
+                $people = Person::whereHas('persontagattaches', function($query) {
+                    $query->whereHas('persontag', function($query) {
+                        $query->where('name', 'happy_ice_dvm');
+                    });
+                });
+            break;
+        }
+        $people = $people->where('active', 'Yes')->orderBy('cust_id')->get();
+
+        return $people;
     }
 
     // create H code customer process based on given postcode and assign to member

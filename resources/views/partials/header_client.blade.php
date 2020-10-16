@@ -68,6 +68,8 @@
     <!-- select2 -->
     <script src="/js/select2.min.js"></script>
 
+    {{-- google maps --}}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSegGsLqW4GNNPPg2NbjlJ1uXMCoN4s1c" async defer></script>
     <!-- Custom Theme JavaScript -->
 
     <!-- videojs cdn -->

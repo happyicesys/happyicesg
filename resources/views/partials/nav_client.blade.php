@@ -99,6 +99,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:yellow;">Online Order Form<span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                        <li><a target="_blank" href="/icecream-buffet">Ice Cream Buffet</a></li>
                         <li><a target="_blank" href="/delivery">Ice Cream</a></li>
                         <li><a target="_blank" href="/every-morning-healthy-order">Every Morning Healthy Drinks Order</a></li>
                         </ul>

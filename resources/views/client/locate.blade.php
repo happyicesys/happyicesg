@@ -4,7 +4,7 @@ Healthier Life
 @stop
 @section('content')
 
-<div class="row" style="padding: 50px 0px 30px 0px;">
+<div ng-app="app" ng-controller="locateController" class="row" style="padding: 100px 0px 30px 0px;">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -17,10 +17,10 @@ Healthier Life
         <div class="panel-body">
             <div class="tab-content">
                 <div class="tab-pane active" id="fvm">
-                    <div id="map-fvm"></div>
+                    <div id="fvmMap"></div>
                 </div>
                 <div class="tab-pane active" id="dvm">
-                    <div id="map-dvm"></div>
+                    <div id="dvmMap"></div>
                 </div>
             </div>
         </div>
