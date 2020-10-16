@@ -82,7 +82,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">Products<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a target="_blank" href="/menu">Menu</a></li>
+                        <li><a href="/menu">Menu</a></li>
                         <li><a href="/client/product">Ice Cream</a></li>
                         <li><a href="/every-morning-healthy"> Every Morning Healthy Tea</a></li>
                     </ul>
@@ -110,11 +110,12 @@
                         <a class="page-scroll" style="color: yellow;" href="/warehouse-sales">Warehouse Sales</a>
                     </li> --}}
                 @endif
+{{--
                 @if($warehouse_sales_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/warehouse-sales">Warehouse Sales</a>
                 </li>
-                @endif
+                @endif --}}
                 @if($recruitment_access)
                 <li>
                     <a class="page-scroll" style="color: white;" href="/recruitment">Recruitment</a>

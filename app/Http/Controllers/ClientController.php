@@ -97,8 +97,19 @@ class ClientController extends Controller
     // return buffet menu
     public function getMenuPage()
     {
-        $file = public_path('pdf/') . 'ice_cream_buffet_menu_20201016.pdf';
+        // $file = public_path('pdf/') . 'ice_cream_buffet_menu_20201016.pdf';
+        $file = [
+            'menu_1' => '/img/menu/1.png',
+            'menu_2' => '/img/menu/2.png',
+            'menu_3' => '/img/menu/3.png',
+            'menu_4' => '/img/menu/4.png',
+            'menu_5' => '/img/menu/5.png',
+            'menu_6' => '/img/menu/6.png',
+            'menu_7' => '/img/menu/7.png',
+        ];
 
+        return view('client.menu', compact('file'));
+/*
         if (file_exists($file)) {
 
             $headers = [
@@ -108,7 +119,7 @@ class ClientController extends Controller
             return response()->download($file, 'Ice Cream Buffet Menu', $headers, 'inline');
         } else {
             abort(404, 'File not found!');
-        }
+        } */
     }
 
     // return vending page
