@@ -274,6 +274,7 @@ Route::get('/brown-sugar-milk-boba-icecream', 'ClientController@brownsugarBobaIn
 Route::get('/brown-sugar-milk-boba-party', 'ClientController@brownsugarBobaPartyInquiry');
 Route::get('/delivery', 'ClientController@brownsugarBobaInquiry');
 Route::get('/icecream-buffet', 'ClientController@icecreamBuffetPage');
+Route::get('/menu', 'ClientController@getMenuPage');
 Route::get('/every-morning-healthy-order', 'ClientController@everyMorningHealthyOrder');
 Route::get('/next-day-delivery', 'ClientController@brownsugarBobaInquiry');
 Route::get('/ice-cream-party-package', 'ClientController@iceCreamPartyPackage');

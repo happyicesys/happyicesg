@@ -94,6 +94,23 @@ class ClientController extends Controller
         return view('client.every-morning-healthy', compact('file'));
     }
 
+    // return buffet menu
+    public function getMenuPage()
+    {
+        $file = public_path('pdf/') . 'ice_cream_buffet_menu_20201016.pdf';
+
+        if (file_exists($file)) {
+
+            $headers = [
+                'Content-Type' => 'application/pdf'
+            ];
+
+            return response()->download($file, 'Ice Cream Buffet Menu', $headers, 'inline');
+        } else {
+            abort(404, 'File not found!');
+        }
+    }
+
     // return vending page
 /*    public function vendingIndex()
     {
