@@ -835,7 +835,7 @@ class PersonController extends Controller
                     if($person['check']) {
                         $person = Person::findOrFail($person['id']);
                         $name = $assignForm['name'];
-                        $value = $assignForm[$assignForm['name']];
+                        $value = isset($assignForm[$assignForm['name']]) ? $assignForm[$assignForm['name']] : null;
                         if($value == '-1') {
                             $value = null;
                         }
