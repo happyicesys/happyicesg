@@ -141,6 +141,13 @@
                 @endif
                 @if($about_access)
                 <li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false" style="color:white;">About <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                          <li><a href="/client/about">About Us</a></li>
+                          <li><a href="/privacy">Privacy Policy</a></li>
+                        </ul>
+                      </li>
                     <a class="page-scroll" style="color: white;" href="/client/about">About</a>
                 </li>
                 @endif
