@@ -21,13 +21,13 @@
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('driver-supervisor'))
                         <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
-                        @if(!auth()->user()->hasRole('event'))
+                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li>
                         <li><a href="#monthly_report" role="tab" data-toggle="tab">Monthly Report</a></li>
                         <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail (Month)</a></li>
                         @endif
                     @endif
-                    @if(!auth()->user()->hasRole('event'))
+                    @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <li><a href="#product_detail_day" role="tab" data-toggle="tab">Product Detail (Day)</a></li>
                     @endif
                     {{-- <li><a href="#invoice_breakdown" role="tab" data-toggle="tab">Invoice Breakdown</a></li> --}}

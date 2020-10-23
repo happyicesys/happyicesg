@@ -239,7 +239,7 @@
                         $dailyreport_access = true;
                     }
 
-                    if(auth()->user()->hasRole('event')) {
+                    if(auth()->user()->hasRole('event') or auth()->user()->hasRole('event_plus')) {
                         $access = true;
                         $jobassign_access = true;
                         $person_access = true;
@@ -308,7 +308,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-book"></i> {{ $DETAILRPT_TITLE }} <i class="fa fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                                 <li class="text-left"><a href="/detailrpt/sales"> Sales</a></li>
-                            @if(!auth()->user()->hasRole('supervisor') and !auth()->user()->hasRole('driver-supervisor') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus') and !auth()->user()->hasRole('event'))
+                            @if(!auth()->user()->hasRole('supervisor') and !auth()->user()->hasRole('driver-supervisor') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                 <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                                 <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
                                 <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>

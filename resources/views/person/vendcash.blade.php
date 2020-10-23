@@ -60,7 +60,7 @@
 
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">
-        @if(!auth()->user()->hasRole('event'))
+        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
             <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
         @endif
     </div>

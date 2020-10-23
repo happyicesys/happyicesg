@@ -248,7 +248,7 @@
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">
     <div class="col-md-8 col-xs-12">
-        @if(!auth()->user()->hasRole('event'))
+        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
             <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         @endif
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>

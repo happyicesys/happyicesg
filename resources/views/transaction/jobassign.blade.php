@@ -26,7 +26,7 @@ Job Assign
                     <div class="pull-right">
                         <a href="/transaction/create" class="btn btn-success">
                             <i class="fa fa-plus"></i>
-                            @if(!auth()->user()->hasRole('event'))
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                 <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
                             @endif
                         </a>
@@ -469,11 +469,11 @@ Job Assign
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        @if(!auth()->user()->hasRole('event'))
+                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
                         @endif
                         <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event'))
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
                                 Hide Extra Buttons
@@ -495,13 +495,13 @@ Job Assign
                             <span ng-if="showRouteTemplatePanel" class="fa fa-caret-up"></span>
                         </button>
                         @endif
-                        @if(!auth()->user()->hasRole('event'))
+                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button class="btn btn-sm btn-primary" ng-click="onExportPdfClicked($event)">
                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             Export PDF
                         </button>
                         @endif
-                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event'))
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button class="btn btn-sm btn-warning" ng-click="onRefreshTableClicked($event)">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
                         </button>
@@ -643,7 +643,7 @@ Job Assign
                                 </button>
                                 @endif
                                 <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
-                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event'))
+                                @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                     <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Sort</button>
                                     <button class="btn btn-xs btn-default" ng-click="onInitTransactionsSequence($event, driverkey)">
                                         Re-number
@@ -813,7 +813,7 @@ Job Assign
                                     <input type="checkbox" name="checkbox" ng-model="transaction.check">
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('event'))
+                                    @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('event') or auth()->user()->hasRole('event_plus'))
                                         @{{transaction.sequence ? transaction.sequence * 1 : ''}}
                                     @else
                                         <input type="text" class=" text-center" style="width:40px" ng-model="transaction.sequence" ng-value="transaction.sequence = transaction.sequence ? transaction.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onSequenceChanged(transaction, driverkey, transactionkey)">
@@ -869,7 +869,7 @@ Job Assign
                                     @{{ transaction.po_no}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event'))
+                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                         <textarea name="transremark" rows="3" style="max-width: 120px;" ng-model='transaction.transremark' ng-change="onTransRemarkChanged(transaction.id, driverkey, transactionkey)" ng-model-options="{debounce: 500}" ng-if="driverOptionShowing"></textarea>
                                         <span ng-if="!driverOptionShowing">
                                             @{{transaction.transremark}}
@@ -913,7 +913,7 @@ Job Assign
                                 {{-- status by color ended --}}
                                 <td class="col-md-1 text-center">
                                     @{{ transaction.driver }}
-                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event'))
+                                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                     <ui-select ng-model="transaction.driverchosen" on-select="onFormDriverChanged(transaction, driverkey, transactionkey)" ng-if="driverOptionShowing">
                                         <ui-select-match allow-clear="true">
                                             <span ng-bind="$select.driver.name"></span>
