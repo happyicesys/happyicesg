@@ -287,6 +287,7 @@ class TransactionController extends Controller
         ]);
 
         $request->merge(array('updated_by' => Auth::user()->name));
+        $request->merge(['order_date' => Carbon::today()]);
         $request->merge(['delivery_date' => Carbon::today()]);
         $request->merge(['created_by' => auth()->user()->id]);
         $request->merge(['merchandiser' => auth()->user()->id]);

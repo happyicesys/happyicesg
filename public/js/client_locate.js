@@ -9,6 +9,7 @@ function locateController($scope, $http){
   // init the variables
   $scope.people = [];
 
+//   initMap();
   getVendingApi('fvmMap');
   getVendingApi('dvmMap');
 
@@ -24,13 +25,11 @@ function locateController($scope, $http){
         location = 'Singapore';
         locationLatLng = {lat: 1.3521, lng: 103.8198};
     }
-
+// console.log(mapId)
     var map = new google.maps.Map(document.getElementById(mapId), {
         center: locationLatLng,
         zoom: 12
     });
-
-    var geocoder = new google.maps.Geocoder();
 
     var markers = [];
     $scope.coordsArr = [];
@@ -71,13 +70,13 @@ function locateController($scope, $http){
 
         markers.push(marker);
         infowindow.open(map, marker);
-
+/*
         marker.addListener('click', function () {
             infowindow.open(map, marker);
         });
 
         google.maps.event.trigger(map, "resize");
-        map.setCenter(locationLatLng);
+        map.setCenter(locationLatLng); */
     });
 
   }
@@ -92,6 +91,21 @@ function locateController($scope, $http){
           $scope.spinner = false;
       });
   }
+
+  void function initMap() {
+    const myLatLng = {lat: 1.3521, lng: 103.8198};
+    const map = new google.maps.Map(document.getElementById("fvm-map"), {
+      zoom: 4,
+      center: myLatLng,
+    });
+    new google.maps.Marker({
+      position: myLatLng,
+      map,
+      title: "Hello World!",
+    });
+    google.maps.event.trigger(map, "resize");
+    map.setCenter(myLatLng);
+  }();
 }
 
 

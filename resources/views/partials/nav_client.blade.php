@@ -148,7 +148,7 @@
                           <li><a href="/privacy">Privacy Policy</a></li>
                         </ul>
                       </li>
-                    <a class="page-scroll" style="color: white;" href="/client/about">About</a>
+                    {{-- <a class="page-scroll" style="color: white;" href="/client/about">About</a> --}}
                 </li>
                 @endif
                 @if($contact_access)
