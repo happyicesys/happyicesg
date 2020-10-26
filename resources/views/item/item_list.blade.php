@@ -127,6 +127,12 @@
                     <span ng-if="search.sortName == 'unit' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('base_unit')">
+                    Pc/ Ctn
+                    <span ng-if="search.sortName == 'base_unit' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'base_unit' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('qty_now')">
                     Available Qty
                     <span ng-if="search.sortName == 'qty_now' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -180,6 +186,9 @@
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ item.unit }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ item.base_unit }}
                     </td>
                     <td class="col-md-1 text-right">
                         <span ng-if="item.is_inventory === 1">
