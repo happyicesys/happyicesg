@@ -241,6 +241,7 @@
 
                     if(auth()->user()->hasRole('event') or auth()->user()->hasRole('event_plus')) {
                         $access = true;
+                        $transaction_access = true;
                         $jobassign_access = true;
                         $person_access = true;
                         $detailrpt_access = true;
