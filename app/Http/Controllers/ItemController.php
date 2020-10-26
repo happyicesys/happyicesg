@@ -414,6 +414,7 @@ class ItemController extends Controller
         $remark = $request->remark;
         $is_active = $request->is_active;
         $is_inventory = $request->is_inventory;
+        $base_unit = $request->base_unit;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'. $product_id . '%');
@@ -429,6 +430,9 @@ class ItemController extends Controller
         }
         if($is_inventory != '') {
             $items = $items->where('items.is_inventory', $is_inventory);
+        }
+        if($base_unit){
+            $items = $items->where('items.base_unit', $base_unit);
         }
         return $items;
     }

@@ -60,6 +60,18 @@
                 ['class'=>'select form-control', 'ng-model'=>'search.is_inventory', 'ng-init'=>'search.is_inventory = "1"', 'ng-change'=>'searchDB()'])
             !!}
         </div>
+        <div class="form-group col-md-2 col-sm-4 col-xs-12">
+            {!! Form::label('base_unit', 'Pc/ Ctn', ['class'=>'control-label search-title']) !!}
+            {!! Form::text('base_unit', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.base_unit',
+                                                'placeholder'=>'Pc/ Ctn',
+                                                'ng-change'=>'searchDB()',
+                                                'ng-model-options'=>'{ debounce: 500 }'
+                                            ])
+            !!}
+        </div>
     </div>
 
     <div class="row">
