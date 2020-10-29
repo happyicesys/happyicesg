@@ -20,7 +20,7 @@ function personController($scope, $http){
     $scope.sortName = '';
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
-    $scope.showBatchFunctionPanel = false;
+    $scope.showBatchFunctionPanel = true;
     $scope.search = {
         cust_id: '',
         strictCustId: '',
@@ -124,6 +124,9 @@ function personController($scope, $http){
         $http.post('/api/person/batch-update', {people: $scope.alldata, assignForm: $scope.assignForm}).success(function(data) {
             $scope.searchDB();
             $scope.checkall = false;
+            if(data.transactions) {
+                alert('Invoices ' + data.transactions + ' created');
+            }
         })
     }
 

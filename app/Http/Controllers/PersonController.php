@@ -829,6 +829,7 @@ class PersonController extends Controller
         $people = $request->people;
         $assignForm = $request->assignForm;
 
+        $transactions = [];
         if($people) {
             foreach($people as $person) {
                 if(isset($person['check'])) {
@@ -861,7 +862,11 @@ class PersonController extends Controller
                             case 'transactions':
                                 $data['delivery_date'] = $assignForm['delivery_date'];
                                 $data['driver'] = $assignForm['driver'];
-                                $this->generateSingleInvoiceByPersonId($person->id, $data);
+                                $transaction = $this->generateSingleInvoiceByPersonId($person->id, $data);
+                                array_push($transactions, $transaction->id);
+                                break;
+                            case 'remark':
+                                $person->remark = $value;
                                 break;
                         }
                         $person->save();
@@ -869,12 +874,9 @@ class PersonController extends Controller
                 }
             }
         }
-        // $name = $request->name;
-/*
-        switch($name) {
-            case 'custcategory':
-                $custcategory =
-        } */
+        return [
+            'transactions' => $transactions
+        ];
     }
 
     // fast generate single invoice by person id
@@ -911,6 +913,7 @@ class PersonController extends Controller
             $opsdate->save();
         }
 
+        return $transaction;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

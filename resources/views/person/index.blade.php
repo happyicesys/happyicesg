@@ -332,6 +332,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('remark', 'Batch Change Remarks', ['class'=>'control-label search-title']) !!}
+                                    <textarea name="remark" class="form-control" rows="6" ng-model="assignForm.remark"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                <div class="btn-group-control">
+                                    <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'remark')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Update Remarks</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                         <hr class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
