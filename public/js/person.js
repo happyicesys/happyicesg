@@ -124,7 +124,7 @@ function personController($scope, $http){
         $http.post('/api/person/batch-update', {people: $scope.alldata, assignForm: $scope.assignForm}).success(function(data) {
             $scope.searchDB();
             $scope.checkall = false;
-            if(data.transactions) {
+            if(data.transactions.length > 0) {
                 alert('Invoices ' + data.transactions + ' created');
             }
         })
