@@ -20,7 +20,7 @@ function personController($scope, $http){
     $scope.sortName = '';
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
-    $scope.showBatchFunctionPanel = true;
+    $scope.showBatchFunctionPanel = false;
     $scope.search = {
         cust_id: '',
         strictCustId: '',
@@ -33,7 +33,8 @@ function personController($scope, $http){
         pageNum: 'All',
         profile_id: '',
         franchisee_id: '',
-        excludeCustCat: ''
+        excludeCustCat: '',
+        freezers: ''
     }
     $scope.assignForm = {
         name: '',

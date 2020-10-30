@@ -18,6 +18,12 @@
                 -webkit-overflow-scrolling: touch;
             }
             /* } */
+            ._720kb-datepicker-calendar-day._720kb-datepicker-today {
+                background:#87ceeb;
+            }
+            ._720kb-datepicker-calendar-day._720kb-datepicker-active, ._720kb-datepicker-calendar-day:hover {
+                background: #87ceeb;
+            }
         </style>
     </head>
 

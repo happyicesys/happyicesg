@@ -852,10 +852,8 @@ class PersonController extends Controller
                                 break;
                             case 'tag_id':
                                 if(!$assignForm['detach']) {
-                                    // dd('here1');
                                     $this->attachTagPerson($person->id, $value);
                                 }else {
-                                    // dd('here2');
                                     $this->detachTagPerson($person->id, $value);
                                 }
                                 break;
@@ -874,6 +872,7 @@ class PersonController extends Controller
                 }
             }
         }
+
         return [
             'transactions' => $transactions
         ];
@@ -931,6 +930,7 @@ class PersonController extends Controller
         $accountManager = $request->account_manager;
         $zoneId = $request->zone_id;
         $excludeCustCat = $request->excludeCustCat;
+        $freezers = $request->freezers;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -997,6 +997,18 @@ class PersonController extends Controller
         }
         if($zoneId) {
             $people = $people->where('people.zone_id', $zoneId);
+        }
+        if($freezers) {
+            if (count($freezers) == 1) {
+                $freezers = [$freezers];
+            }
+            // $people = $people->whereHas('freezers')
+            $people = $people->whereExists(function ($query) use ($freezers) {
+                $query->select(DB::raw(1))
+                      ->from('addfreezers')
+                      ->whereRaw('addfreezers.person_id = people.id')
+                      ->whereIn('addfreezers.freezer_id', $freezers);
+            }) ;
         }
 
         return $people;

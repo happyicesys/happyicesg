@@ -1,4 +1,5 @@
 @inject('custcategories', 'App\Custcategory')
+@inject('freezers', 'App\Freezer')
 @inject('profiles', 'App\Profile')
 @inject('franchisees', 'App\User')
 @inject('persontags', 'App\Persontag')
@@ -179,6 +180,16 @@
                                         'ng-change'=>'searchDB()'
                                     ])
                             !!}
+                        </div>
+                        <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                            {!! Form::label('freezers', 'Freezer', ['class'=>'control-label search-title']) !!}
+                            <select name="freezers" id="freezers" class="selectmultiple form-control" ng-model="search.freezers" ng-change="searchDB()" multiple>
+                                @foreach($freezers::orderBy('name')->get() as $freezer)
+                                    <option value="{{$freezer->id}}">
+                                        {{$freezer->name}}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         @endif
                     </div>
