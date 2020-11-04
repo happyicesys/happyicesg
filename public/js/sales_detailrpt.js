@@ -17,6 +17,7 @@ var app = angular.module('app', [
         $scope.indexTo = 0;
         $scope.today = moment().format("YYYY-MM-DD");
         $scope.search = {
+            edited: false,
             profile_id: '',
             current_month: moment().month()+1 + '-' + moment().year(),
             id_prefix: '',
@@ -38,7 +39,7 @@ var app = angular.module('app', [
             sortBy: true
         }
         // init page load
-        getPage(1, true);
+        // getPage(1, true);
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -74,9 +75,15 @@ var app = angular.module('app', [
 
           // when hitting search button
         $scope.searchDB = function(){
+            $scope.search.edited = true;
+        }
+
+        // search button transaction index
+        $scope.onSearchButtonClicked = function(event) {
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
-            getPage(1, false);
+            getPage(1);
         }
 
         $scope.merchandiserInit = function(userId) {
