@@ -111,7 +111,10 @@
                         <div class="pull-right">
                             @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             @cannot('transaction_view')
-                            {!! Form::submit('Save Profile', ['class'=> 'btn btn-success', 'form'=>'form_person']) !!}
+                            <button type="submit" class="btn btn-success" form="form_person">
+                                Save Profile
+                            </button>
+                            {{-- {!! Form::submit('Save Profile', ['class'=> 'btn btn-success', 'form'=>'form_person']) !!} --}}
                             @endcannot
                             @endif
                             <a href="/person" class="btn btn-default">Back</a>

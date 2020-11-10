@@ -522,7 +522,14 @@
                                     / @{{ person.alt_contact }}
                                     </span>
                                 </td>
-                                <td class="col-md-3">@{{ person.del_address }}</td>
+                                <td class="col-md-3">
+                                    <span class="col-md-10">
+                                        @{{ person.del_address }}
+                                    </span>
+                                    <span class="col-md-2">
+                                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person, $index, 1)"><i class="fa fa-map-o"></i></button>
+                                    </span>
+                                </td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
                                 <td class="col-md-1 text-center">
                                     @{{ person.zone_name }}
