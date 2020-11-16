@@ -104,6 +104,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\Person', 'franchisee_id');
     }
 
+    public function custcategories()
+    {
+        return $this->belongsToMany('App\Custcategory');
+    }
+
     // scopes
     // db query builder
     public function scopeFilterUserFranchise($query)

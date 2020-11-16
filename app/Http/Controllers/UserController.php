@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Custcategory;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -211,6 +212,24 @@ class UserController extends Controller
         $user = User::findOrFail($user_id);
         $profile = Profile::findOrFail($profile_id);
         $user->profiles()->detach($profile);
+    }
+
+    // add custcategory to the user ($user_id)
+    public function addCustcategoryIdByUser($userId)
+    {
+        $user = User::findOrFail($userId);
+
+        $custcategory = Custcategory::findOrFail(request('custcategoryId'));
+
+        $user->custcategories()->attach($custcategory);
+    }
+
+    // remove custcategory by given user id(int $user_id, int $custcategoryId)
+    public function removeCustcategoryIdByUser($userId, $custcategoryId)
+    {
+        $user = User::findOrFail($userId);
+        $custcategory = Custcategory::findOrFail($custcategoryId);
+        $user->custcategories()->detach($custcategory);
     }
 
     // control user activation(int $user_id)

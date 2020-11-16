@@ -39,6 +39,11 @@ class Custcategory extends Model
         return $this->hasMany('App\Bomvending');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
     // scopes
     public function scopeNames($query, $value)
     {

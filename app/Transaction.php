@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Traits\HasCustcategoryAccess;
 
 class Transaction extends Model
 {
-    use \Venturecraft\Revisionable\RevisionableTrait, HasProfileAccess;
+    use \Venturecraft\Revisionable\RevisionableTrait, HasProfileAccess, HasCustcategoryAccess;
 
     public static function boot()
     {

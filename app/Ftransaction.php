@@ -2,12 +2,13 @@
 
 namespace App;
 
+use App\Traits\HasCustcategoryAccess;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class Ftransaction extends Model
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasCustcategoryAccess;
 
     protected $fillable=[
         'ftransaction_id', 'total', 'collection_datetime', 'person_id', 'digital_clock',

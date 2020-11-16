@@ -21,10 +21,11 @@ use PDF;
 use App\HasMonthOptions;
 use App\HasProfileAccess;
 use App\GetIncrement;
+use App\Traits\HasCustcategoryAccess;
 
 class FtransactionController extends Controller
 {
-	use HasMonthOptions, HasProfileAccess, GetIncrement;
+	use HasMonthOptions, HasProfileAccess, GetIncrement, HasCustcategoryAccess;
 
     //auth-only login can see
     public function __construct()
@@ -52,6 +53,7 @@ class FtransactionController extends Controller
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('users', 'users.id', '=', 'x.franchisee_id')
                         ->leftJoin('users AS update_person', 'update_person.id', '=', 'x.updated_by')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->select(
                                     'people.cust_id', 'people.company',
                                     'people.name', 'people.id as person_id', 'x.id', 'x.ftransaction_id', 'x.total',
@@ -75,6 +77,7 @@ class FtransactionController extends Controller
 
         // add user profile filters
         $ftransactions = $this->filterUserDbProfile($ftransactions);
+        $ftransactions = $this->filterUserDbCustcategory($ftransactions);
 
         // filter off franchisee
         if(auth()->user()->hasRole('franchisee')) {
@@ -375,7 +378,7 @@ class FtransactionController extends Controller
                                                                                                         WHEN transactions.is_gst_inclusive=0
                                                                                                         THEN transactions.total*((100+transactions.gst_rate)/100)
                                                                                                         ELSE transactions.total
-                                                                                                        END) ELSE transactions.total END), 2)'));      
+                                                                                                        END) ELSE transactions.total END), 2)'));
 
         $data = [
             'total_vend_amount' => $total_vend_amount,

@@ -29,10 +29,11 @@ use DB;
 use App\HasProfileAccess;
 use App\Persontag;
 use App\Persontagattach;
+use App\Traits\HasCustcategoryAccess;
 
 class PersonController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasCustcategoryAccess;
 
     //auth-only login can see
     public function __construct()
@@ -87,6 +88,7 @@ class PersonController extends Controller
 
         // add user profile filters
         $people = $this->filterUserDbProfile($people);
+        $people = $this->filterUserDbCustcategory($people);
 
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');

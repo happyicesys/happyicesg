@@ -15,10 +15,11 @@ use DB;
 use Auth;
 use PDF;
 use App\HasProfileAccess;
+use App\Traits\HasCustcategoryAccess;
 
 class RptController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasCustcategoryAccess;
     /**Auth for all
      *
      */
@@ -582,6 +583,7 @@ class RptController extends Controller
         } */
 
         $query = $this->filterUserDbProfile($query);
+        $query = $this->filterUserDbCustcategory($query);
 
         $query = $this->extraField($request, $query);
         $query = $query->select(
@@ -694,7 +696,8 @@ class RptController extends Controller
 
         $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id');
 
         $query1 = clone $query;
 
@@ -713,6 +716,7 @@ class RptController extends Controller
         }
 
         $query1 = $this->filterUserDbProfile($query1);
+        $query1 = $this->filterUserDbCustcategory($query1);
 
         $query1 = $this->extraField($request, $query1);
         $query1 = $query1->orderBy('transactions.id', 'desc');
@@ -734,6 +738,7 @@ class RptController extends Controller
         }
 
         $query2 = $this->filterUserDbProfile($query2);
+        $query2 = $this->filterUserDbCustcategory($query2);
 
         $query2 = $this->extraField($request, $query2);
         $query2 = $query2->orderBy('transactions.id', 'desc');

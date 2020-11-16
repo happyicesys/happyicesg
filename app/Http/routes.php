@@ -457,6 +457,8 @@ Route::get('/api/user/{user_id}/profile', 'UserController@getProfileByUser');
 Route::get('/api/user/{user_id}/nonprofile', 'UserController@getNotProfileByUser');
 Route::post('/user/{user_id}/addprofile', 'UserController@addProfileByUser');
 Route::delete('/user/{user_id}/removeprofile/{profile_id}', 'UserController@removeProfileByUser');
+Route::post('/user/{user_id}/addcustcat', 'UserController@addCustcategoryIdByUser');
+Route::delete('/user/{user_id}/removecustcat/{custcategoryId}', 'UserController@removeCustcategoryIdByUser');
 
 Route::get('/role/data', 'RoleController@getData');
 Route::resource('role', 'RoleController');
@@ -529,6 +531,7 @@ Route::get('/payterm/data', 'PaytermController@getData');
 Route::delete('/payterm/data/{id}', 'PaytermController@destroyAjax');
 Route::resource('payterm', 'PaytermController');
 
+Route::get('/api/custcat/user/{userId}/{type}', 'CustcategoryController@getCustcategoryByUserIdApi');
 Route::get('/api/custcat/{id}', 'CustcategoryController@getCustcategoryApi');
 Route::get('/custcat/data', 'CustcategoryController@getData');
 Route::delete('/custcat/data/{id}', 'CustcategoryController@destroyAjax');

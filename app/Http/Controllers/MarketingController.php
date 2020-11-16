@@ -31,10 +31,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Postcode;
 use App\D2dOnlineSale;
 use App\HasProfileAccess;
+use App\Traits\HasCustcategoryAccess;
 
 class MarketingController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasCustcategoryAccess;
 
     //auth-only login can see
     public function __construct()

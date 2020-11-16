@@ -63,9 +63,26 @@
             Profile Access : {{$user->id}} - {{$user->name}}
         </div>
         <div class="panel-body">
-            <assignProfile id="assignProfileController" :user_id={{json_encode($user->id)}} inline-template>
-                @include('user._assignProfile')
-            </assignProfile>
+            <div id="assignProfileController">
+                <assignProfile :user_id={{json_encode($user->id)}} inline-template>
+                    @include('user._assignProfile')
+                </assignProfile>
+            </div>
+        </div>
+    </div>
+@endif
+
+@if(auth()->user()->hasRole('admin'))
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Custcategory Access : {{$user->id}} - {{$user->name}}
+        </div>
+        <div class="panel-body">
+            <div id="assignCustcategoryController">
+                <assign-custcategory :user_id={{json_encode($user->id)}} inline-template>
+                    @include('user._assignCustcategory')
+                </assign-custcategory>
+            </div>
         </div>
     </div>
 @endif
@@ -78,5 +95,5 @@
     }
 </style>
 <script src="/js/vue-controller/assignProfileController.js"></script>
-
+<script src="/js/vue-controller/assignCustcategoryController.js"></script>
 @stop

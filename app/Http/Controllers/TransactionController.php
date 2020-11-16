@@ -48,10 +48,11 @@ use App\HasProfileAccess;
 use App\CreateRemoveDealLogic;
 use App\GetIncrement;
 use App\HasFranchiseeAccess;
+use App\Traits\HasCustcategoryAccess;
 
 class TransactionController extends Controller
 {
-    use HasProfileAccess, CreateRemoveDealLogic, HasFranchiseeAccess;
+    use HasProfileAccess, CreateRemoveDealLogic, HasFranchiseeAccess, HasCustcategoryAccess;
     //qty status condition
     /*
         qty_status = 1 (Stock Order/ Confirmed)
@@ -2110,6 +2111,9 @@ class TransactionController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+
+        // add user custcategory filters
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         // toll to check is franchisee or not
         $transactions = $this->filterFranchiseeTransactionDB($transactions);

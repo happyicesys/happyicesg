@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CustcategoryRequest;
 use App\Http\Requests;
 use App\Custcategory;
+use App\User;
 
 class CustcategoryController extends Controller
 {
@@ -80,5 +81,22 @@ class CustcategoryController extends Controller
         $custcat = Custcategory::findOrFail($id);
         $custcat->delete();
         return redirect('user');
+    }
+
+    // return custcategories by user id given
+    public function getCustcategoryByUserIdApi($userId, $type = 1)
+    {
+        if($type == 1) {
+            $user = User::findOrFail($userId);
+
+            return $user->custcategories;
+
+        }else if($type == 2) {
+            $custcategories = Custcategory::whereDoesntHave('users', function($query) use ($userId) {
+                            $query->where('id', $userId);
+                        })->get();
+
+            return $custcategories;
+        }
     }
 }

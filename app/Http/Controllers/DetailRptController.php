@@ -23,10 +23,11 @@ use App\GeneralSetting;
 // traits
 use App\HasProfileAccess;
 use App\HasMonthOptions;
+use App\Traits\HasCustcategoryAccess;
 
 class DetailRptController extends Controller
 {
-    use HasProfileAccess, HasMonthOptions;
+    use HasProfileAccess, HasMonthOptions, HasCustcategoryAccess;
 
     // detect authed
     public function __construct()
@@ -88,6 +89,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $total_amount = $this->calDBOriginalTotal($transactions);
 
@@ -196,6 +198,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $transactions = $transactions->latest('thistotal.outstanding', 'DESC')->groupBy('people.id');
 
@@ -258,6 +261,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $caldata = $this->calPayDetailTotal($transactions);
 
@@ -288,6 +292,7 @@ class DetailRptController extends Controller
 
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('paysummaryinfos', function($join) {
                             $join->on(DB::raw('Date(paysummaryinfos.paid_at)'), '=', DB::raw('Date(transactions.paid_at)'));
@@ -313,6 +318,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $totals = $this->calAccPaySummary($transactions);
 
@@ -594,6 +600,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $transactions = $transactions->where(function($query) {
             $query->where('thistotal.salestotal', '<>', null)
@@ -761,6 +768,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
         $transactions = $transactions->where(function($query) {
             $query->where('this_year.salestotal', '<>', null);
@@ -875,6 +883,7 @@ class DetailRptController extends Controller
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                         WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
                         AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'";
         $prevqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -883,6 +892,7 @@ class DetailRptController extends Controller
                     LEFT JOIN transactions ON transactions.id=deals.transaction_id
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
+                    LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                     WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
         $prev2qty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -891,6 +901,7 @@ class DetailRptController extends Controller
                     LEFT JOIN transactions ON transactions.id=deals.transaction_id
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
+                    LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                     WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
         $prevyrqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -899,6 +910,7 @@ class DetailRptController extends Controller
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                         WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                         AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
 
@@ -938,6 +950,13 @@ class DetailRptController extends Controller
             $prevyrqty .= " AND profiles.id IN (".$profileIdStr.")";
         }
 
+        if(count($custcategoryIds = $this->getUserCustcategoryIdArray()) > 0) {
+            $custcategoryIdStr = implode(",", $custcategoryIds);
+            $thistotal .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+            $prevqty .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+            $prev2qty .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+            $prevyrqty .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+        }
 
         if($request->profile_id) {
             $thistotal .= " GROUP BY item_id, profile_id) thistotal";
@@ -959,6 +978,7 @@ class DetailRptController extends Controller
                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                 ->leftJoin($thistotal, function($join) use ($profile_id) {
                     if($profile_id) {
@@ -996,6 +1016,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $items = $this->filterUserDbProfile($items);
+        $items = $this->filterUserDbCustcategory($items);
 /*
         if(request('is_commission') != '') {
             $items = $items->where('items.is_commission', request('is_commission'));
@@ -1566,6 +1587,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
+        $transactions = $this->filterUserDbCustcategory($transactions);
 
 
         if($profile_id) {
@@ -1839,6 +1861,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $deals = $this->filterUserDbProfile($deals);
+        $deals = $this->filterUserDbCustcategory($deals);
 
         $deals = $deals->groupBy('people.id');
 
@@ -1944,6 +1967,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $deals = $this->filterUserDbProfile($deals);
+        $deals = $this->filterUserDbCustcategory($deals);
 
         $transactions = clone $deals;
         $itemsPeople = clone $deals;
@@ -2061,6 +2085,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $deals = $this->filterUserDbProfile($deals);
+        $deals = $this->filterUserDbCustcategory($deals);
 
         $transactions = clone $deals;
         $transactionDates = clone $deals;
@@ -3398,6 +3423,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $deals = $this->filterUserDbProfile($deals);
+        $deals = $this->filterUserDbCustcategory($deals);
 
         if(request('sortName')){
             $deals = $deals->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');

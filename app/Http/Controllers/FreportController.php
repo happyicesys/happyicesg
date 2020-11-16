@@ -11,11 +11,12 @@ use App\Person;
 use App\Variance;
 use Carbon\Carbon;
 use App\HasProfileAccess;
+use App\Traits\HasCustcategoryAccess;
 use DB;
 
 class FreportController extends Controller
 {
-    use HasProfileAccess;
+    use HasProfileAccess, HasCustcategoryAccess;
     // detect authed
     public function __construct()
     {
@@ -81,6 +82,7 @@ class FreportController extends Controller
                                 GROUP BY people.id) ftransactions_analog");
 
         $people = DB::table('people')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                         ->leftJoin($transactions_analog, 'people.id', '=', 'transactions_analog.person_id')
                         ->leftJoin($ftransactions_analog, 'people.id', '=', 'ftransactions_analog.person_id')
@@ -107,6 +109,7 @@ class FreportController extends Controller
 
         // add user profile filters
         $people = $this->filterUserDbProfile($people);
+        $people = $this->filterUserDbCustcategory($people);
 
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
@@ -168,6 +171,7 @@ class FreportController extends Controller
 
         $variances = DB::table('variances')
                         ->leftJoin('people', 'variances.person_id', '=', 'people.id')
+                        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('users AS update_person', 'update_person.id', '=', 'variances.updated_by')
                         ->select(
@@ -184,6 +188,7 @@ class FreportController extends Controller
 
         // add user profile filters
         $variances = $this->filterUserDbProfile($variances);
+        $variances = $this->filterUserDbCustcategory($variances);
 
         // filter off franchisee
         if(auth()->user()->hasRole('franchisee')) {
@@ -242,13 +247,13 @@ class FreportController extends Controller
                 GROUP BY people.id) AS sales"
         );
         $transactions_total = DB::raw(
-            "(SELECT people.id AS person_id, 
+            "(SELECT people.id AS person_id,
                 SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
                 LEFT JOIN profiles ON profiles.id=people.profile_id
@@ -259,13 +264,13 @@ class FreportController extends Controller
             "
         );
         $transactions_owe = DB::raw(
-            "(SELECT people.id AS person_id, 
+            "(SELECT people.id AS person_id,
                 SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
                 LEFT JOIN profiles ON profiles.id=people.profile_id
@@ -277,13 +282,13 @@ class FreportController extends Controller
             "
         );
         $transactions_paid = DB::raw(
-            "(SELECT people.id AS person_id, 
+            "(SELECT people.id AS person_id,
                 SUM(ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
                                                 WHEN transactions.is_gst_inclusive=0
                                                 THEN total*((100+transactions.gst_rate)/100)
                                                 ELSE transactions.total
-                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total 
+                                                END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total
                 FROM transactions
                 LEFT JOIN people ON people.id=transactions.person_id
                 LEFT JOIN profiles ON profiles.id=people.profile_id
@@ -307,10 +312,11 @@ class FreportController extends Controller
                 AND (transactions.status = 'Delivered' OR transactions.status= 'Verified Paid' OR transactions.status= 'Verified Owe')
                 GROUP BY people.id) AS transactions_stock
             "
-        );        
+        );
 
         $ftransactions = DB::table('ftransactions')
             ->leftJoin('people', 'people.id', '=', 'ftransactions.person_id')
+            ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
             ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
             ->leftJoin('users AS franchisees', 'ftransactions.franchisee_id', '=', 'franchisees.id')
             ->leftJoin($first_date, 'people.id', '=', 'first_date.person_id')
@@ -330,7 +336,7 @@ class FreportController extends Controller
                 DB::raw('ROUND(SUM(ftransactions.total) - SUM(ftransactions.taxtotal), 2) AS finaltotal'),
                 'transactions_total.total AS total_cost',
                 DB::raw('ROUND(SUM(ftransactions.total) - transactions_total.total, 2) AS gross_profit'),
-                DB::raw('ROUND((SUM(ftransactions.total) - transactions_total.total)/ SUM(ftransactions.total) * 100, 2) AS gross_profit_percent'),                
+                DB::raw('ROUND((SUM(ftransactions.total) - transactions_total.total)/ SUM(ftransactions.total) * 100, 2) AS gross_profit_percent'),
                 'transactions_owe.total AS owe',
                 'transactions_paid.total AS paid',
                 'people.is_vending',
@@ -348,6 +354,7 @@ class FreportController extends Controller
 
         // add user profile filters
         $ftransactions = $this->filterUserDbProfile($ftransactions);
+        $ftransactions = $this->filterUserDbCustcategory($ftransactions);
 
         $ftransactions = $ftransactions->groupBy('people.id');
 
@@ -372,7 +379,7 @@ class FreportController extends Controller
             'dynamictotals' => $dynamictotals
         ];
 
-        return $data;        
+        return $data;
     }
 
     // filter for transactions($query)
@@ -535,7 +542,7 @@ class FreportController extends Controller
             $ftransactions = $ftransactions->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
         return $ftransactions;
-    }    
+    }
 
     // calculate totals for the invoice breakdown summary(collection $deals)
     private function calInvoiceSummaryFixedTotals($ftransactions)
@@ -650,5 +657,5 @@ class FreportController extends Controller
         ];
 
         return $totals;
-    }    
+    }
 }
