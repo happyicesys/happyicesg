@@ -547,7 +547,8 @@ class RptController extends Controller
 
         $query = DB::table('transactions')
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id');
+            ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+            ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id');
 
         if (Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
             $query = $query->where(function($q) {
