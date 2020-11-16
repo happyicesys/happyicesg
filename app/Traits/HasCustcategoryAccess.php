@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Traits;
+use App\Custcategory;
 
 trait HasCustcategoryAccess{
 
@@ -35,10 +36,12 @@ trait HasCustcategoryAccess{
 
         $user_custcategories = auth()->user()->custcategories;
 
-        if($user_custcategories) {
-            foreach($user_custcategories as $user_custcategory) {
-                array_push($custcategoryIdArr, $user_custcategory->id);
-            }
+        if(count($user_custcategories) === 0) {
+            $user_custcategories = Custcategory::all();
+        }
+
+        foreach($user_custcategories as $user_custcategory) {
+            array_push($custcategoryIdArr, $user_custcategory->id);
         }
 
         return $custcategoryIdArr;
