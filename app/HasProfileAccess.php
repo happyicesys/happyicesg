@@ -20,6 +20,17 @@ trait HasProfileAccess{
         return $query->whereIn('profiles.id', $profileIdArr);
     }
 
+    public function filterUserDBRawProfile($query)
+    {
+        $profileIdArr = $this->searchUserProfileId();
+
+        $profileIdArrStr = implode("','",$profileIdArr);
+
+        $query .= " and profiles.id IN ('".$profileIdArrStr."')";
+
+        return $query;
+    }
+
     // return profile ids only()
     public function getUserProfileIdArray()
     {

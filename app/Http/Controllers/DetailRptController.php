@@ -678,8 +678,13 @@ class DetailRptController extends Controller
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                             WHERE 1=1 ";
         $queryStr =  $this->searchTransactionRawFilter($queryStr, $request);
+
+        // profile filter and custcategory filter
+        $queryStr = $this->filterUserDBRawProfile($queryStr);
+        $queryStr = $this->filterUserDBRawCustcategory($queryStr);
 /*
         if($request->is_commission != '') {
             $queryStr .= " AND items.is_commission='".$request->is_commission."' ";

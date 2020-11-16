@@ -21,6 +21,17 @@ trait HasCustcategoryAccess{
         return $query->whereIn('custcategories.id', $custcategoryIdArr);
     }
 
+    public function filterUserDBRawCustcategory($query)
+    {
+        $custcategoryIdArr = $this->searchUserCustcategoryId();
+
+        $custcategoryIdStr = implode("','",$custcategoryIdArr);
+
+        $query .= " and custcategories.id IN ('".$custcategoryIdStr."')";
+
+        return $query;
+    }
+
     // return custcategory ids only()
     public function getUserCustcategoryIdArray()
     {
