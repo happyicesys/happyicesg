@@ -1200,10 +1200,14 @@ class DetailRptController extends Controller
             }
         }
 
+        // profile and custcategory filter
+        $amountstr = $this->filterUserDBRawProfile($amountstr);
+        $amountstr = $this->filterUserDBRawCustcategory($amountstr);
+/*
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
             $amountstr .= " AND profiles.id IN (".$profileIdStr.")";
-        }
+        } */
 
         // set driver and technician view
         if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician')) {
@@ -1400,10 +1404,9 @@ class DetailRptController extends Controller
 
         $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
 
-        if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
-            $profileIdStr = implode(",", $profileIds);
-            $queryStr .= " AND profiles.id IN (".$profileIdStr.")";
-        }
+        // profile and custcategory filter
+        $queryStr = $this->filterUserDBRawProfile($queryStr);
+        $queryStr = $this->filterUserDBRawCustcategory($queryStr);
 
         $queryStrNoComm = $queryStr;
 /*
