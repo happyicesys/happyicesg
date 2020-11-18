@@ -474,6 +474,12 @@
                                 <span ng-if="search.sortName == 'del_postcode' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                Tag(s)
+                            </th>
+                            <th class="col-md-1 text-center">
+                                Freezer(s)
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('zone_id')">
                                 Zone
                                 <span ng-if="search.sortName == 'zone_id' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -510,7 +516,7 @@
                                     @{{ person.company }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ person.custcategory }}
+                                    @{{ person.custcategory_name }}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ person.account_manager_name }}
@@ -531,6 +537,18 @@
                                     </span>
                                 </td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
+                                <td class="col-md-1 text-center" style="max-width: 250;">
+                                    <span class="label label-info" ng-repeat="tag in person.persontags">
+                                        <span>
+                                            @{{tag.name}}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="col-md-1 text-center" style="max-width: 250;">
+                                    <span class="label label-default" ng-repeat="freezer in person.freezers" >
+                                        @{{freezer.name}}
+                                    </span>
+                                </td>
                                 <td class="col-md-1 text-center">
                                     @{{ person.zone_name }}
                                 </td>

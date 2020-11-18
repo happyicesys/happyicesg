@@ -63,7 +63,7 @@ class PersonController extends Controller
         $input = $request->all();
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
-
+/*
         $people = DB::table('persontagattaches')
             ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
             ->rightJoin('people', 'people.id', '=', 'persontagattaches.person_id')
@@ -77,7 +77,20 @@ class PersonController extends Controller
                 'profiles.id AS profile_id', 'profiles.name AS profile_name',
                 'account_managers.name AS account_manager_name',
                 'zones.name AS zone_name'
-            );
+            ); */
+
+        $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
+        ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+        ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
+        ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
+        ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
+        ->select(
+            'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
+            'custcategories.name as custcategory_name', 'custcategories.map_icon_file',
+            'profiles.id AS profile_id', 'profiles.name AS profile_name',
+            'account_managers.name AS account_manager_name',
+            'zones.name AS zone_name'
+        );
 
         // reading whether search input is filled
         $people = $this->searchPeopleDBFilter($people, $request);
@@ -93,14 +106,13 @@ class PersonController extends Controller
         // condition (exclude all H code)
         $people = $people->where('people.cust_id', 'NOT LIKE', 'H%');
 
-        $people = $people->groupBy('people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm', 'custcategories.name', 'profiles.id', 'profiles.name');
-
         if ($pageNum == 'All') {
             $people = $people->orderBy('people.created_at', 'desc')->get();
         } else {
             $people = $people->orderBy('people.created_at', 'desc')->paginate($pageNum);
         }
 
+        // dd($people->toArray());
         $data = [
             'people' => $people,
         ];
@@ -918,6 +930,97 @@ class PersonController extends Controller
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)
+    private function searchPeopleFilter($people, $request)
+    {
+        $franchisee_id = $request->franchisee_id;
+
+        if ($cust_id = $request->cust_id) {
+            if($request->strictCustId) {
+                $people = $people->where('cust_id', 'LIKE', $cust_id . '%');
+            }else {
+                $people = $people->where('cust_id', 'LIKE', '%'. $cust_id . '%');
+            }
+        }
+        if ($custcategory = $request->custcategory) {
+            if (count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+            if($request->excludeCustCat) {
+                $people = $people->whereHas('custcategory', function($query) use ($custcategory) {
+                    $query->whereNotIn('id', $custcategory);
+                });
+            }else {
+                $people = $people->whereHas('custcategory', function($query) use ($custcategory) {
+                    $query->whereIn('id', $custcategory);
+                });
+            }
+        }
+        if ($company = $request->company) {
+            $people = $people->where('company', 'LIKE', $company . '%');
+        }
+        if ($contact = $request->contact) {
+            $people = $people->where(function ($query) use ($contact) {
+                $query->where('contact', 'LIKE', '%' . $contact . '%')->orWhere('alt_contact', 'LIKE', '%' . $contact . '%');
+            });
+        }
+
+        if($active = $request->active) {
+            $actives = $active;
+            if (count($actives) == 1) {
+                $actives = [$actives];
+            }
+            $people = $people->whereIn('active', $actives);
+        }
+
+        if($tags = $request->tags) {
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $people = $people->whereHas('persontags', function($query) use ($tags) {
+                $query->whereIn('persontags.id', $tags);
+            });
+        }
+
+        if ($profile_id = $request->profile_id) {
+            $people = $people->whereHas('profile', function($query) use ($profile_id) {
+                $query->where('id', $profile_id);
+            });
+        }
+
+                // add in franchisee checker
+        if (auth()->user()->hasRole('franchisee') or auth()->user()->hasRole('hd_user') or auth()->user()->hasRole('watcher')) {
+            $people = $people->whereIn('franchisee_id', [auth()->user()->id]);
+        } else if (auth()->user()->hasRole('subfranchisee')) {
+            $people = $people->whereIn('franchisee_id', [auth()->user()->master_franchisee_id]);
+        } else if ($franchisee_id != null) {
+            if($franchisee_id != 0) {
+                $people = $people->where('franchisee_id', $franchisee_id);
+            }else {
+                $people = $people->where('francisee_id', 0);
+            }
+        }
+
+        if($accountManager = $request->account_manager) {
+            $people = $people->where('account_manager', $accountManager);
+        }
+        if($zoneId = $request->zone_id) {
+            $people = $people->whereHas('zone', function($query) use ($zoneId) {
+                $query->where('id', $zoneId);
+            });
+        }
+        if($freezers = $request->freezers) {
+            if (count($freezers) == 1) {
+                $freezers = [$freezers];
+            }
+            $people = $people->whereHas('freezers', function($query) use ($freezers) {
+                $query->whereIn('freezers.id', $freezers);
+            });
+        }
+
+        return $people;
+    }
+
+    // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {
         $cust_id = $request->cust_id;
@@ -975,7 +1078,9 @@ class PersonController extends Controller
             if (count($tags) == 1) {
                 $tags = [$tags];
             }
-            $people = $people->whereIn('persontags.id', $tags);
+            $people = $people->whereHas('persontags', function($query) use ($tags) {
+                $query->whereIn('persontags.id', $tags);
+            });
         }
 
         if ($profile_id) {

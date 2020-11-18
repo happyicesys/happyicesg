@@ -96,7 +96,12 @@ class Person extends Baum\Node
 
     public function freezers()
     {
-        return $this->belongsToMany(Freezer::class);
+        return $this->belongsToMany(Freezer::class, 'addfreezers');
+    }
+
+    public function persontags()
+    {
+        return $this->belongsToMany(Persontag::class, 'persontagattaches');
     }
 
     public function accessories()
