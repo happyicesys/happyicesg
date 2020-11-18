@@ -16,7 +16,7 @@ Healthier Life
       <img src="{{$file['menu_2']}}" alt="menu_2" class="img-responsive center-block img-style">
       <img src="{{$file['menu_3']}}" alt="menu_3" class="img-responsive center-block img-style">
       <img src="{{$file['menu_4']}}" alt="menu_4" class="img-responsive center-block img-style">
-      {{-- <img src="{{$file['menu_5']}}" alt="menu_5" class="img-responsive center-block img-style"> --}}
+      <img src="{{$file['menu_5']}}" alt="menu_5" class="img-responsive center-block img-style">
       <img src="{{$file['menu_6']}}" alt="menu_6" class="img-responsive center-block img-style">
       <img src="{{$file['menu_7']}}" alt="menu_7" class="img-responsive center-block img-style">
     </div>
