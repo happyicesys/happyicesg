@@ -180,10 +180,15 @@
                 <tr class="hidden" data-tableexport-display="always">
                     <td></td>
                 </tr>
+                @php
+                    // $speople = $speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get();
+                    $speople = $speople::whereIn('id', $peopleIdArr)->orderBy('cust_id')->get();
+                    // dd($speople->toArray());
+                @endphp
                 <tr>
                     <th colspan="5"></th>
                     <th class="text-center">Total Sold Qty</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($speople as $person)
                         <td class="text-center">
                             {{
                                 number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
@@ -196,7 +201,7 @@
                 <tr>
                     <th colspan="5"></th>
                     <th class="text-center">Gross Profit</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($speople as $person)
                         <td class="text-center">
                              {{
                                 number_format($sdeals::whereIn('id', $dealsIdArr)->whereHas('transaction', function($q) use ($person) {
@@ -209,18 +214,18 @@
                 <tr>
                     <th colspan="5"></th>
                     <th class="text-center">Customer Cat</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($speople as $person)
                         <td class="text-center">
-                            {{$speople::where('id', $person->id)->first()->custcategory['name']}}
+                            {{$person->custcategory->name}}
                         </td>
                     @endforeach
                 </tr>
                 <tr>
                     <th colspan="5"></th>
                     <th class="text-center">Profile</th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($speople as $person)
                         <td class="text-center">
-                            {{$speople::where('id', $person->id)->first()->profile['name']}}
+                            {{$person->profile->name}}
                         </td>
                     @endforeach
                 </tr>
@@ -243,7 +248,7 @@
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         Total Qty
                     </th>
-                    @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                    @foreach($speople as $person)
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         ({{$person->cust_id}}) {{$person->company}}
                     </th>
@@ -281,7 +286,7 @@
                         @php
                             $loopedperson = []
                         @endphp
-                        @foreach($speople::whereIn('id', $peopleIdArr)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $peopleIdArr).')'))->get() as $person)
+                        @foreach($speople as $person)
                         <td class="col-md-1 text-right">
 
                             @if(request('stock_status') === 'Balance')
@@ -318,7 +323,7 @@
                         @endforeach
                     </tr>
                     @endforeach
-                    @if(!$items and count($speople::whereIn('id', $peopleIdArr)->get()) == 0)
+                    @if(!$items and count($speople) == 0)
                     <tr>
                         <td colspan="18" class="text-center">No Records Found</td>
                     </tr>

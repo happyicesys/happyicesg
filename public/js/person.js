@@ -34,7 +34,8 @@ function personController($scope, $http){
         profile_id: '',
         franchisee_id: '',
         excludeCustCat: '',
-        freezers: ''
+        freezers: '',
+        edited: false,
     }
     $scope.assignForm = {
         name: '',
@@ -85,11 +86,17 @@ function personController($scope, $http){
         getPage(1);
     }
 
+    // search button transaction index
+    $scope.onSearchButtonClicked = function(event) {
+        event.preventDefault();
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
       // when hitting search button
     $scope.searchDB = function(){
-        $scope.sortName = '';
-        $scope.sortBy = '';
-        getPage(1, false);
+        $scope.search.edited = true;
     }
 
     // retrieve franchisee id
@@ -321,6 +328,7 @@ function personController($scope, $http){
 
             // return total amount
             $scope.spinner = false;
+            $scope.search.edited = false;
         });
     }
 }
