@@ -34,6 +34,7 @@ class PersonRequest extends Request
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'postcode' => 'numeric',
             'cost_rate' => 'numeric',
+            'key_lock_number' => 'numeric'
         ];
     }
 
@@ -49,6 +50,7 @@ class PersonRequest extends Request
             'alt_contact.regex' => 'The Alt contact number only accepts 0-9, +, -',
             'postcode.numeric' => 'The postcode must be in numbers',
             'cost_rate.numeric' => 'Cost rate must be in numbers',
+            'key_lock_number.numeric' => 'Key Lock Number must be in numbers',
         ];
     }
 }

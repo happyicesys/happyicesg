@@ -284,7 +284,8 @@
                         </td>
 
                         @php
-                            $loopedperson = []
+                            $loopedperson = [];
+                            $rowTotal = 0;
                         @endphp
                         @foreach($speople as $person)
                         <td class="col-md-1 text-right">

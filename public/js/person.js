@@ -95,8 +95,13 @@ function personController($scope, $http){
     }
 
       // when hitting search button
-    $scope.searchDB = function(){
+    $scope.searchDB = function(event){
         $scope.search.edited = true;
+        if(event.keyCode === 13) {
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
+            getPage(1, false);
+        }
     }
 
     // retrieve franchisee id

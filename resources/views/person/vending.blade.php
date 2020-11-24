@@ -95,6 +95,14 @@
                 </div>
             </div>
         </div>
+        <div class="row col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('key_lock_number', 'Key Lock Number', ['class'=>'control-label']) !!}
+                    {!! Form::text('key_lock_number', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+        </div>
         @if($person->vending)
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
