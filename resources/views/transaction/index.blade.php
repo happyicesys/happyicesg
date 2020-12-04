@@ -501,9 +501,10 @@
                             {!! Form::label('item_id', 'Has Product', ['class'=>'control-label search-title']) !!}
                             {!! Form::select('item_id', [''=>'All']+$items::where('is_active', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->orderBy('product_id', 'asc')->pluck('full', 'id')->all(), null, [
                                 'id'=>'item_id',
-                                'class'=>'select form-control',
+                                'class'=>'selectmultiple form-control',
                                 'ng-model'=>'search.item_id',
-                                'ng-change' => 'searchDB()'
+                                'ng-change' => 'searchDB()',
+                                'multiple' => 'multiple'
                                 ])
                             !!}
                         </div>
@@ -797,6 +798,37 @@
                                     <div class="form-group" >
                                         {!! Form::label('note', 'Payment Ref', ['class'=>'control-label search-title']) !!}
                                         <input type="text" class="form-control" ng-model="form.note" placeholder="Blank to remains same">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                                    <select name="status" class="form-control selectform" ng-model="form.status">
+                                        <option value=""></option>
+                                        <option value="Confirmed">Confirmed</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        @if(auth()->user()->hasRole('admin'))
+                                            <option value="CancelRemove">Cancel & Remove</option>
+                                        @endif
+                                    </select>
+                                    <small>
+                                        Pending to (Confirmed, Cancelled, Cancel Remove) <br>
+                                        Confirmed to (Delivered, Cancelled, Cance lRemove) <br>
+                                        Delivered to (Confirmed, Cancelled, Cancel Remove) <br>
+                                        Cancelled to (Cancel Remove)
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                <label class="control-label"></label>
+                                    <div class="btn-group-control">
+                                        <button type="submit" class="btn btn-sm btn-default" name="batch_set_status" ng-click="onBatchSetStatusClicked($event)" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Batch Set Status</button>
                                     </div>
                                 </div>
                             </div>

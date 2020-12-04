@@ -206,9 +206,9 @@
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         @endif
-                        @if($transaction->is_deliveryorder)
+                        {{-- @if($transaction->is_deliveryorder) --}}
                             <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
-                        @endif
+                        {{-- @endif --}}
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
                 </div>
@@ -236,9 +236,9 @@
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
-                        @if($transaction->is_deliveryorder)
+                        {{-- @if($transaction->is_deliveryorder) --}}
                             <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
-                        @endif
+                        {{-- @endif --}}
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
@@ -279,9 +279,9 @@
                         @endif
                         <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
-                        @if($transaction->is_deliveryorder)
+                        {{-- @if($transaction->is_deliveryorder) --}}
                             <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
-                        @endif
+                        {{-- @endif --}}
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
                 </div>

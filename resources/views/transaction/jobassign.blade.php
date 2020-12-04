@@ -434,9 +434,10 @@ Job Assign
                         {!! Form::label('item_id', 'Has Product', ['class'=>'control-label search-title']) !!}
                         {!! Form::select('item_id', [''=>'All']+$items::where('is_active', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->orderBy('product_id', 'asc')->pluck('full', 'id')->all(), null, [
                             'id'=>'item_id',
-                            'class'=>'select form-control',
+                            'class'=>'selectmultiple form-control',
                             'ng-model'=>'search.item_id',
-                            'ng-change' => 'searchDB()'
+                            'ng-change' => 'searchDB()',
+                            'multiple' => 'multiple'
                             ])
                         !!}
                     </div>

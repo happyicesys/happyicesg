@@ -793,6 +793,7 @@ class TransactionController extends Controller
         $this->operationDatesSync($transaction->id, $delivery_date, $previous_delivery_date);
 
         $dealArr = [];
+        // dd($quantities, $amounts);
         if($quantities and $amounts) {
             // dd($quantities, $quotes, $amounts);
             if(array_filter($quantities) != null and array_filter($amounts) != null) {
@@ -2054,12 +2055,208 @@ class TransactionController extends Controller
         }
     }
 
+    // batch update status
+    public function batchUpdateStatus(Request $request)
+    {
+        $transactions = $request->transactions;
+        $chosenArr = $request->chosen;
+        if($transactions) {
+            $executedEntry = [
+
+            ];
+            foreach($transactions as $transaction) {
+                if(isset($transaction['check'])) {
+                    if($transaction['check']) {
+                        DB::beginTransaction();
+                        $model = Transaction::findOrFail($transaction['id']);
+                        $prevStatus = $model->status;
+                        $editStatus = $chosenArr['status'];
+                        $entry = [
+                            'id' => null,
+                            'prevStatus' => $prevStatus,
+                            'editStatus' => $editStatus,
+                            'syncOrderDeals' => false,
+                            'orderToActualDeals' => false,
+                            'actualToOrderDeals' => false,
+                            'deleteDeals' => false,
+                            'nextStatus' => '',
+                            'forceDelete' => false,
+                            'qtyStatus' => 0
+                        ];
+
+                        if($prevStatus === $editStatus) {
+                            continue;
+                        }
+
+                        switch($prevStatus) {
+                            case 'Pending': {
+                                switch($editStatus) {
+                                    case 'Confirmed':
+                                        $entry['syncOrderDeals'] = true;
+                                        $entry['nextStatus'] = 'Confirmed';
+                                        break;
+                                    case 'Cancelled':
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        break;
+                                    case 'CancelRemove':
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        $entry['forceDelete'] = true;
+                                        break;
+                                    default:
+                                        $entry['nextStatus'] = $prevStatus;
+                                }
+                            }
+                            break;
+                            case 'Confirmed': {
+                                switch($editStatus) {
+                                    case 'Delivered':
+                                        $entry['orderToActualDeals'] = true;
+                                        $entry['nextStatus'] = 'Delivered';
+                                        break;
+                                    case 'Cancelled':
+                                        $entry['deleteDeals'] = true;
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        break;
+                                    case 'CancelRemove':
+                                        $entry['deleteDeals'] = true;
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        $entry['forceDelete'] = true;
+                                        break;
+                                    default:
+                                        $entry['nextStatus'] = $prevStatus;
+                                }
+                            }
+                            break;
+                            case 'Delivered': {
+                                switch($editStatus) {
+                                    case 'Confirmed':
+                                        $entry['actualToOrderDeals'] = true;
+                                        $entry['nextStatus'] = 'Confirmed';
+                                        break;
+                                    case 'Cancelled':
+                                        $entry['deleteDeals'] = true;
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        break;
+                                    case 'CancelRemove':
+                                        $entry['deleteDeals'] = true;
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        $entry['forceDelete'] = true;
+                                        break;
+                                    default:
+                                        $entry['nextStatus'] = $prevStatus;
+                                }
+                            }
+                            break;
+                            case 'Cancelled': {
+                                switch($editStatus) {
+/*
+                                    case 'Confirmed':
+                                        $entry['syncOrderDeals'] = true;
+                                        $entry['nextStatus'] = 'Confirmed';
+                                        $entry['qtyStatus'] = 1;
+                                        break;
+                                    case 'Delivered':
+                                        $entry['orderToActualDeals'] = true;
+                                        $entry['nextStatus'] = 'Delivered';
+                                        $entry['qtyStatus'] = 2;
+                                        break;
+                                    case 'Cancelled':
+                                        $entry['deleteDeals'] = true;
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        $entry['qtyStatus'] = 3;
+                                        break; */
+                                    case 'CancelRemove':
+                                        $entry['nextStatus'] = 'Cancelled';
+                                        $entry['qtyStatus'] = 3;
+                                        $entry['forceDelete'] = true;
+                                        break;
+                                    default:
+                                        $entry['nextStatus'] = $prevStatus;
+                                }
+                            }
+                            break;
+                        }
+                        // dd($entry['syncOrderDeals'], $entry['orderToActualDeals'], $entry['actualToOrderDeals'], $entry['deleteDeals']);
+
+                        if($entry['syncOrderDeals']) {
+                            $this->transactionDealSyncOrder($model->id);
+                        }
+                        if($entry['orderToActualDeals']) {
+                            $this->dealOrder2Actual($model->id);
+                        }
+                        if($entry['actualToOrderDeals']) {
+                            $this->dealActual2Order($model->id);
+                        }
+                        if($entry['deleteDeals']) {
+                            $this->dealDeleteMultiple($model->id);
+                        }
+
+                        $model->status = $entry['nextStatus'];
+                        $model->updated_at = Carbon::now();
+                        $model->updated_by = auth()->user()->name;
+                        $model->save();
+
+                        array_push($executedEntry, $model->id);
+
+                        $this->operationDatesSync($model->id);
+                        // dd('hereman', $entry);
+                        if($entry['forceDelete']) {
+                            $this->destroyTransactionWithDeals($model->id);
+                        }
+                        DB::commit();
+                    }
+                }
+            }
+            return $executedEntry;
+        }
+    }
+
+    private function dealMakeOrder($transaction_id, $qty_status)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        $deals = $transaction->deals;
+
+        if($deals) {
+            foreach($deals as $deal) {
+                $deal->qty_status = $qty_status;
+                $deal->save();
+            }
+        }
+    }
+
+    private function transactionDealSyncOrder($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        $deals = $transaction->deals;
+
+        if($deals) {
+            foreach($deals as $deal) {
+                $this->dealSyncOrder($deal->item->id);
+            }
+        }
+    }
+
     // update individual trans remark
     public function updateTransremarkById($id)
     {
         $transaction = Transaction::findOrFail($id);
         $transaction->transremark = request('transremark');
         $transaction->save();
+    }
+
+    // mass update qty status
+    private function massUpdateQtyStatus($transaction_id, $qty_status)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        $deals = $transaction->deals;
+
+        if($deals) {
+            foreach($deals as $deal) {
+                $deal->qty_status = $qty_status;
+                $deal->save();
+            }
+        }
     }
 
     // retrieve transactions data ()
@@ -2378,6 +2575,7 @@ class TransactionController extends Controller
     private function dealOrder2Actual($transaction_id)
     {
         $deals = Deal::where('qty_status', '1')->where('transaction_id', $transaction_id)->get();
+        // dd($deals->toArray(), $transaction_id);
         foreach($deals as $deal){
             $item = Item::findOrFail($deal->item_id);
             $deal->qty_status = 2;
@@ -2386,7 +2584,25 @@ class TransactionController extends Controller
                 $deal->qty_after = $item->qty_now - $deal->qty;
                 $item->qty_now = $item->qty_now - $deal->qty;
                 $item->save();
-                $this->loggingDebug($item, $deal);
+            }
+            $deal->save();
+            $this->dealSyncOrder($item->id);
+        }
+    }
+
+    // convert actual to order
+    private function dealActual2Order($transaction_id)
+    {
+        $deals = Deal::where('qty_status', '2')->where('transaction_id', $transaction_id)->get();
+        // dd($deals->toArray(), $transaction_id);
+        foreach($deals as $deal){
+            $item = Item::findOrFail($deal->item_id);
+            $deal->qty_status = 1;
+            if($item->is_inventory === 1) {
+                $deal->qty_before = null;
+                $deal->qty_after = null;
+                $item->qty_now = $item->qty_now + $deal->qty;
+                $item->save();
             }
             $deal->save();
             $this->dealSyncOrder($item->id);
@@ -2412,6 +2628,17 @@ class TransactionController extends Controller
             }
             $this->dealSyncOrder($item->id);
         }
+    }
+
+    private function destroyTransactionWithDeals($transaction_id)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+
+        $this->dealDeleteMultiple($transaction_id);
+
+        $transaction->deals()->delete();
+
+        $transaction->delete();
     }
 
     private function dealUndoDelete($transaction_id)
@@ -2851,7 +3078,15 @@ class TransactionController extends Controller
         }
 
         if($item_id = request('item_id')) {
-            $transactions = $transactions->whereRaw('transactions.id IN (SELECT transaction_id FROM deals WHERE item_id ='.$item_id.')');
+            $items = $item_id;
+            if (count($items) > 0) {
+                $itemStr = implode(",", $items);
+            }else {
+                $itemStr = $items;
+            }
+
+            // dd($items, $itemStr);
+            $transactions = $transactions->whereRaw('transactions.id IN (SELECT transaction_id FROM deals WHERE item_id IN ('.$itemStr.'))');
         }
 
         if($accountManager = request('account_manager')) {

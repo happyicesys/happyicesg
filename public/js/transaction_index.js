@@ -72,7 +72,8 @@ var app = angular.module('app', [
             pay_status: '',
             paid_at: $scope.today,
             pay_method: '',
-            note: ''
+            note: '',
+            status: ''
         };
         // init page load
         getUsersData();
@@ -257,6 +258,25 @@ var app = angular.module('app', [
                 getPage(1);
                 $scope.form.checkall = false;
             })
+        }
+
+        $scope.onBatchSetStatusClicked = function(event) {
+            event.preventDefault();
+            let isConfirmStatus = confirm('Are you sure to batch set status?');
+            if(isConfirmStatus){
+                $http.post('/api/transaction/batch/status', {
+                    transactions: $scope.alldata,
+                    chosen: $scope.form
+                }).success(function(data) {
+                    if(data && data.length > 0) {
+                        alert(data + ' has been updated');
+                    }
+                    getPage(1);
+                    $scope.form.checkall = false;
+                })
+            }else{
+                return false;
+            }
         }
 
         // retrieve page w/wo search
