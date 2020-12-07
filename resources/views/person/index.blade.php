@@ -549,19 +549,27 @@
                                     </span>
                                 </td>
                                 <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
-                                <td class="col-md-1 text-left" style="max-width: 150; font-size: 13px;">
+                                <td class="col-md-1 text-left" style="max-width: 160; font-size: 13px;">
+                                    <span class="col-md-12" ng-repeat="tag in person.persontags">
+                                        - @{{tag.name}}
+                                    </span>
+{{--
                                     <ul style="padding-left: 15px;">
                                         <li ng-repeat="tag in person.persontags">
                                             @{{tag.name}}
                                         </li>
-                                    </ul>
+                                    </ul> --}}
                                 </td>
                                 <td class="col-md-1 text-left" style="max-width: 150; font-size: 13px;">
+                                    <span class="col-md-12" ng-repeat="freezer in person.freezers">
+                                        - @{{freezer.name}}
+                                    </span>
+                                    {{--
                                     <ul style="padding-left: 15px;">
                                         <li ng-repeat="freezer in person.freezers">
                                             @{{freezer.name}}
                                         </li>
-                                    </ul>
+                                    </ul> --}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ person.zone_name }}
