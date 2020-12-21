@@ -55,7 +55,7 @@
                             ])
                     !!}
                 @endif
-            </div>  
+            </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('contact', 'Contact', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('contact', null,
@@ -67,7 +67,7 @@
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
                 !!}
-            </div>   
+            </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('created_at', 'Created At', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -101,7 +101,7 @@
                     <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
                     <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
                 </div>
-            </div>                                                                         
+            </div>
       </div>
 
             <div class="row" style="padding-top: 20px;">
@@ -151,31 +151,31 @@
                     </th>
                     <th class="col-md-1 text-center">
                         Attn To
-                    </th>  
+                    </th>
                     <th class="col-md-1 text-center">
                         Contact
-                    </th> 
+                    </th>
                     <th class="col-md-1 text-center">
                         Address
-                    </th> 
+                    </th>
                     <th class="col-md-1 text-center">
                         Postcode
-                    </th> 
+                    </th>
                     <th class="col-md-1 text-center">
                         Remarks
-                    </th>     
+                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('created_at')">
                         Created By
                         <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>                                
+                        <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('updated_at')">
                         Updated By
                         <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
-                        <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>                                
-                    </th>                                                                                                                                                                                                                               
+                        <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
                     <th class="col-md-1 text-center"></th>
                 </tr>
 
@@ -189,38 +189,38 @@
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.custcategory.name}}
-                        </td>  
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{data.account_manager.name}}
-                        </td>   
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{data.attn_to}}
-                        </td>  
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{data.contact}}
-                        </td>    
+                        </td>
                         <td class="col-md-2 text-center" style="max-width: 300px;">
                             @{{data.address}}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.postcode}}
-                        </td>    
+                        </td>
                         <td class="col-md-2 text-center" style="max-width: 300px;">
                             @{{data.remarks}}
-                        </td>  
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{data.creator.name}} <br>
                             @{{data.created_at}}
-                        </td>   
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{data.updater.name}} <br>
                             @{{data.updated_at}}
-                        </td>                                                                                                                                                                                                                                                                                            
+                        </td>
                         <td class="col-md-1 text-center">
                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#potential-customer-modal" ng-click="onSingleEntryEdit(data)">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                            </button>        
-{{--                                                                 
+                            </button>
+{{--
                             <button class="btn btn-danger btn-sm" ng-click="onSingleEntryRemove(data.id)">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button> --}}
@@ -235,6 +235,7 @@
         <div class="panel-footer">
             <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
         </div>
+    </div>
 </div>
 
 <div id="potential-customer-modal" class="modal fade" role="dialog">
@@ -268,8 +269,8 @@
                         {{$custcategory->name}}
                     </option>
                     @endforeach
-                </select>                        
-            </div>   
+                </select>
+            </div>
             <div class="form-group">
                 <label for="account_manager">
                     Account Manager
@@ -281,38 +282,38 @@
                         {{$user->name}}
                     </option>
                     @endforeach
-                </select>                        
-            </div>  
+                </select>
+            </div>
             <div class="form-group">
                 <label for="attn_to">
                     Attn To
                 </label>
                 <input type="text" class="form-control" ng-model="form.attn_to">
-            </div>  
+            </div>
             <div class="form-group">
                 <label for="contact">
                     Contact
                 </label>
                 <input type="text" class="form-control" ng-model="form.contact">
-            </div>    
+            </div>
             <div class="form-group">
                 <label for="address">
                     Address
                 </label>
                 <textarea class="form-control" rows="4" ng-model="form.address"></textarea>
-            </div>  
+            </div>
             <div class="form-group">
                 <label for="postcode">
                     Postcode
                 </label>
                 <input type="text" class="form-control" ng-model="form.postcode">
-            </div>   
+            </div>
             <div class="form-group">
                 <label for="remarks">
                     Remarks
                 </label>
                 <textarea class="form-control" rows="4" ng-model="form.remarks"></textarea>
-            </div>                                                                                                
+            </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
