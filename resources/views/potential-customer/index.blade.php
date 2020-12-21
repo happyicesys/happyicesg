@@ -143,9 +143,12 @@ Potential Customer
                             <th class="col-md-1 text-center">
                                 Postcode
                             </th> 
-                            <th class="col-md-2 text-center">
+                            <th class="col-md-1 text-center">
                                 Remarks
-                            </th>                                                                                                                                                                       
+                            </th>     
+                            <th class="col-md-1 text-center">
+                                Created By
+                            </th>                                                                                                                                                                                                   
                             <th class="col-md-1 text-center"></th>
                         </tr>
 
@@ -177,7 +180,10 @@ Potential Customer
                                 </td>    
                                 <td class="col-md-2 text-center">
                                     @{{data.remarks}}
-                                </td>                                                                                                                                                                                                                            
+                                </td>  
+                                <td class="col-md-1 text-center">
+                                    @{{data.creator.name}}
+                                </td>                                                                                                                                                                                                                                                            
                                 <td class="col-md-1 text-center">
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#potential-customer-modal" ng-click="onSingleEntryEdit(data)">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>

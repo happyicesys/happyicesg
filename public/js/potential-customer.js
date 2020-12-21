@@ -123,6 +123,17 @@ var app = angular.module('app', [
 
         //   on edit single entry
         $scope.onSingleEntryEdit = function(data) {
+            $scope.form = {
+                id: data.id,
+                name: data.name,
+                custcategory_id: data.custcategory_id,
+                account_manager_id: data.account_manager_id,
+                attn_to: data.attn_to,
+                contact: data.contact,
+                address: data.address,
+                postcode: data.postcode,
+                remarks: data.remarks,
+            }
             console.log(JSON.parse(JSON.stringify(data)))
         }
   
@@ -143,8 +154,8 @@ var app = angular.module('app', [
         return {
           id: '',
           name: '',
-          custcategory: '',
-          account_manager: '',
+          custcategory_id: '',
+          account_manager_id: '',
           attn_to: '',
           contact: '',
           address: '',
