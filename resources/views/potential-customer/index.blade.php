@@ -12,7 +12,7 @@ Potential Customer
     <div class="row">
         <a class="title_hyper pull-left" href="/potential-customer"><h1>Potential Customer <i class="fa fa-address-card-o"></i></h1></a>
     </div>
-    <div ng-app="app" >
+    <div ng-app="app">
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
@@ -22,22 +22,25 @@ Potential Customer
             </div>
             <div class="panel-body">
                 <div class="tab-content">
+{{--
                     <div class="tab-pane active" id="potential_customer">
                         <div ng-controller="potentialCustomerController">
                             @include('potential-customer.potential')
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="tab-pane" id="meeting_minute">
                         <div ng-controller="meetingMinuteController">
                             @include('potential-customer.meeting-minute')
                         </div>
                     </div>
+                    <div class="tab-pane active" id="potential_customer">
+                        <div ng-controller="potentialCustomerController">
+                            @include('potential-customer.potential')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-
-
     </div>
 
     <script src="/js/potential-customer.js"></script>
