@@ -10,7 +10,7 @@ Potential Customer
 @section('content')
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/potential-customer"><h1>Potential Customer <i class="fa fa-road"></i></h1></a>
+        <a class="title_hyper pull-left" href="/potential-customer"><h1>Potential Customer <i class="fa fa-address-card-o"></i></h1></a>
     </div>
     <div ng-app="app" ng-controller="potentialCustomerController">
 
