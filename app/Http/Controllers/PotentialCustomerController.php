@@ -83,7 +83,7 @@ class PotentialCustomerController extends Controller
         }
 
         if($name) {
-            $query = $query->where('name', 'LIKE', '%'.$name.'%');
+            $query = $query->where('potential_customers.name', 'LIKE', '%'.$name.'%');
         }
 
         if($account_manager) {
@@ -95,11 +95,11 @@ class PotentialCustomerController extends Controller
         }    
         
         if($created_at) {
-            $query = $query->whereDate('created_at', '=', $created_at);
+            $query = $query->whereDate('potential_customers.created_at', '=', $created_at);
         }    
         
         if($updated_at) {
-            $query = $query->whereDate('updated_at', '=', $updated_at);
+            $query = $query->whereDate('potential_customers.updated_at', '=', $updated_at);
         }            
 
         return $query;
