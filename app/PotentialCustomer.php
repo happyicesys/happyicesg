@@ -30,4 +30,35 @@ class PotentialCustomer extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    // setter
+    public function setIsFirstAttribute($value)
+    {
+        $this->attributes['is_first'] = $value === 1 ? true : false;
+    }
+
+    public function setIsSecondAttribute($value)
+    {
+        $this->attributes['is_second'] = $value === 1 ? true : false;
+    }
+
+    public function setIsThirdAttribute($value)
+    {
+        $this->attributes['is_third'] = $value === 1 ? true : false;
+    }
+
+    public function setIsFourthAttribute($value)
+    {
+        $this->attributes['is_fourth'] = $value === 1 ? true : false;
+    }
+
+    public function setIsFifthAttribute($value)
+    {
+        $this->attributes['is_fifth'] = $value === 1 ? true : false;
+    }
+
+    public function setIsSixthAttribute($value)
+    {
+        $this->attributes['is_sixth'] = $value === 1 ? true : false;
+    }
 }

@@ -261,37 +261,37 @@
             <div class="form-group">
                 <label>
                     <input type="checkbox" ng-model="form.is_first" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         Sample given
                     </span>
                 </label>
                 <label>
                     <input type="checkbox" ng-model="form.is_second" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         Meet boss
                     </span>
                 </label>
                 <label>
                     <input type="checkbox" ng-model="form.is_third" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         First try boss reject
                     </span>
                 </label>
                 <label>
                     <input type="checkbox" ng-model="form.is_fourth" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         Approved
                     </span>
                 </label>
                 <label>
                     <input type="checkbox" ng-model="form.is_fifth" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         2nd try
                     </span>
                 </label>
                 <label>
                     <input type="checkbox" ng-model="form.is_sixth" ng-true-value="'1'" ng-false-value="'0'">
-                    <span style="margin-left: -5px; margin-top: 5px;">
+                    <span style="padding-left: 5px; margin-top: 5px;">
                         3rd try
                     </span>
                 </label>
