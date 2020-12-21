@@ -17,7 +17,7 @@ Potential Customer
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab"> Potential Customer</a></li>
-                    <li><a href="#meeting_minutes" role="tab" data-toggle="tab"> Meeting Minutes</a></li>
+                    <li><a href="#meeting_minute" role="tab" data-toggle="tab"> Meeting Minutes</a></li>
                 </ul>
             </div>
             <div class="panel-body">
@@ -27,7 +27,7 @@ Potential Customer
                             @include('potential-customer.potential')
                         </div>
                     </div>
-                    <div class="tab-pane" id="meeting_minutes">
+                    <div class="tab-pane" id="meeting_minute">
                         <div ng-controller="meetingMinutesController">
                             @include('potential-customer.meeting-minute')
                         </div>
