@@ -271,7 +271,7 @@
 
                 @if($potential_customer_access)
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
-                        <a href="/potential-customer"><i class="fa fa-address-card-o"></i>Potential Customer</a>
+                        <a href="/potential-customer"><i class="fa fa-address-card-o"></i> Potential Customer</a>
                     </li>
                 @endif                
 

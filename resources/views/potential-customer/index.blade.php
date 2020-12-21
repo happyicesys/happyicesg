@@ -161,7 +161,7 @@ Potential Customer
                                     @{{data.name}}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{data.custcateogory.name}}
+                                    @{{data.custcategory.name}}
                                 </td>  
                                 <td class="col-md-1 text-center">
                                     @{{data.account_manager.name}}
