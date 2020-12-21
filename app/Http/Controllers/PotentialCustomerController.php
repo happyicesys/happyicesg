@@ -24,9 +24,9 @@ class PotentialCustomerController extends Controller
     // get data api
     public function getDataApi(Request $request)
     {
-        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater'])
-                ->leftJoin('users as account_manager', 'potential_customers.account_manager_id', '=', 'account_manager.id')
-                ->leftJoin('custcategories', 'potential_customers.custcategory_id', '=', 'custcategories.id');
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater']);
+                // ->leftJoin('users as account_manager', 'potential_customers.account_manager_id', '=', 'account_manager.id')
+                // ->leftJoin('custcategories', 'potential_customers.custcategory_id', '=', 'custcategories.id');
 
         $model = $this->potentialCustomerFilter($model, $request);
 
@@ -53,7 +53,7 @@ class PotentialCustomerController extends Controller
         $id = $request->id;
         $currentUserId = auth()->user()->id;
 
-        dd($request->all());
+        // dd($request->all());
         if($id) {
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
