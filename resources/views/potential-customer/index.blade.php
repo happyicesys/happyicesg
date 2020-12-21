@@ -83,7 +83,41 @@ Potential Customer
                                                             'ng-model-options'=>'{ debounce: 500 }'
                                                         ])
                         !!}
-                    </div>                                    
+                    </div>   
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('created_at', 'Created At', ['class'=>'control-label search-title']) !!}
+                        <div class="input-group">
+                            <datepicker>
+                                <input
+                                    name = "created_at"
+                                    type = "text"
+                                    class = "form-control input-sm"
+                                    placeholder = "Created At"
+                                    ng-model = "search.created_at"
+                                    ng-change = "dateChange('created_at', search.created_at)"
+                                />
+                            </datepicker>
+                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_at', search.created_at)"></span>
+                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_at', search.created_at)"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('updated_at', 'Updated At', ['class'=>'control-label search-title']) !!}
+                        <div class="input-group">
+                            <datepicker>
+                                <input
+                                    name = "updated_at"
+                                    type = "text"
+                                    class = "form-control input-sm"
+                                    placeholder = "Updated At"
+                                    ng-model = "search.updated_at"
+                                    ng-change = "dateChange('updated_at', search.updated_at)"
+                                />
+                            </datepicker>
+                            <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
+                            <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
+                        </div>
+                    </div>                                                                         
               </div>
 
                     <div class="row" style="padding-top: 20px;">
@@ -147,10 +181,16 @@ Potential Customer
                                 Remarks
                             </th>     
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('created_at')">
                                 Created By
+                                <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>                                
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('updated_at')">
                                 Updated By
+                                <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>                                
                             </th>                                                                                                                                                                                                                               
                             <th class="col-md-1 text-center"></th>
                         </tr>
@@ -175,13 +215,13 @@ Potential Customer
                                 <td class="col-md-1 text-center">
                                     @{{data.contact}}
                                 </td>    
-                                <td class="col-md-1 text-center">
+                                <td class="col-md-1 text-center" style="max-width: 150px;">
                                     @{{data.address}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{data.postcode}}
                                 </td>    
-                                <td class="col-md-2 text-center">
+                                <td class="col-md-2 text-center" style="max-width: 150px;">
                                     @{{data.remarks}}
                                 </td>  
                                 <td class="col-md-1 text-center">

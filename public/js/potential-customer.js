@@ -22,6 +22,8 @@ var app = angular.module('app', [
           custcategory: '',
           account_manager: '',
           contact: '',
+          created_at: '',
+          created_at: '',
           pageNum: 'All',
       }
       $scope.form = getDefaultForm()
@@ -134,7 +136,6 @@ var app = angular.module('app', [
                 postcode: data.postcode,
                 remarks: data.remarks,
             }
-            console.log(JSON.parse(JSON.stringify(data)))
         }
   
       // on route template removed
@@ -149,6 +150,24 @@ var app = angular.module('app', [
           return false;
         }
       }
+
+      $scope.onPrevSingleClicked = function(scope_name, date) {
+          $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+          $scope.searchDB();
+      }
+
+      $scope.onNextSingleClicked = function(scope_name, date) {
+          $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+          $scope.searchDB();
+      }  
+      
+      $scope.dateChange = function(scope_from, date){
+          if(date){
+              $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
+              $scope.compareDateChange(scope_from);
+          }
+          $scope.searchDB();
+      }      
   
       function getDefaultForm() {
         return {
