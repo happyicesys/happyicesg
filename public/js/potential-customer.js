@@ -135,6 +135,14 @@ var app = angular.module('app', [
                 address: data.address,
                 postcode: data.postcode,
                 remarks: data.remarks,
+                is_important: data.is_important,
+                is_first: data.is_first,
+                is_second: data.is_second,
+                is_third: data.is_third,
+                is_fourth: data.is_fourth,
+                is_fifth: data.is_fifth,
+                is_sixth: data.is_sixth,
+
             }
             $('.select').select2({
               placeholder: 'Select...'
@@ -183,6 +191,13 @@ var app = angular.module('app', [
           address: '',
           postcode: '',
           remarks: '',
+          is_important: '',
+          is_first: '',
+          is_second: '',
+          is_third: '',
+          is_fourth: '',
+          is_fifth: '',
+          is_sixth: '',
         }
       }
 
