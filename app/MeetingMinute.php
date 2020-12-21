@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class MeetingMinute extends Model
@@ -19,5 +20,11 @@ class MeetingMinute extends Model
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    // getter
+    public function getDateAttribute($value)
+    {
+        return Carbon::parse($value)->toDateString();
     }
 }
