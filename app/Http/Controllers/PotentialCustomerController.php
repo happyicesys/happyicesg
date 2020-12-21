@@ -87,5 +87,7 @@ class PotentialCustomerController extends Controller
         if($contact) {
             $query = $query->where('contact', 'LIKE', '%'.$contact.'%');
         }        
+
+        return $query;
     }
 }

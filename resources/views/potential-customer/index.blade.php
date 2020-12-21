@@ -260,7 +260,7 @@ Potential Customer
                         <label for="address">
                             Address
                         </label>
-                        <textarea rows="4" ng-model="form.address"></textarea>
+                        <textarea class="form-control" rows="4" ng-model="form.address"></textarea>
                     </div>  
                     <div class="form-group">
                         <label for="postcode">
@@ -272,7 +272,7 @@ Potential Customer
                         <label for="remarks">
                             Remarks
                         </label>
-                        <textarea rows="4" ng-model="form.remarks"></textarea>
+                        <textarea class="form-control" rows="4" ng-model="form.remarks"></textarea>
                     </div>                                                                                                
                   </div>
                   <div class="modal-footer">
