@@ -24,7 +24,7 @@ class PotentialCustomerController extends Controller
     // get data api
     public function getDataApi(Request $request)
     {
-        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator']);
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater']);
 
         $model = $this->potentialCustomerFilter($model, $request);
 
