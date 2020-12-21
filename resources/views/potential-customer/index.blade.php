@@ -88,7 +88,7 @@ Potential Customer
 
                     <div class="row" style="padding-top: 20px;">
                         <div class="col-md-4 col-xs-12">
-                            <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            {{-- <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button> --}}
                         </div>
                         <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">
@@ -179,7 +179,7 @@ Potential Customer
                                     @{{data.remarks}}
                                 </td>                                                                                                                                                                                                                            
                                 <td class="col-md-1 text-center">
-                                    <button class="btn btn-default btn-sm" ng-click="onSingleEntryEdit(data.id)">
+                                    <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#potential-customer-modal" ng-click="onSingleEntryEdit(data)">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </button>                                    
                                     <button class="btn btn-danger btn-sm" ng-click="onSingleEntryRemove(data.id)">

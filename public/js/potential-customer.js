@@ -120,6 +120,11 @@ var app = angular.module('app', [
         });
         $scope.form = routeTemplate
       }
+
+        //   on edit single entry
+        $scope.onSingleEntryEdit = function(data) {
+            console.log(JSON.parse(JSON.stringify(data)))
+        }
   
       // on route template removed
       $scope.onSingleEntryRemoved = function(id) {

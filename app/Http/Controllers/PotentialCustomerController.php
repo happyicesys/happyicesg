@@ -55,9 +55,11 @@ class PotentialCustomerController extends Controller
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
             $model->updated_by = $currentUserId;
+            $model->save();
         }else {
             $model = PotentialCustomer::create($request->all());
             $model->created_by = $currentUserId;
+            $model->save();
         }
     }    
 
