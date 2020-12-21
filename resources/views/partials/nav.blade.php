@@ -251,7 +251,7 @@
             @endphp
 
             @if($access)
-            <ul class="nav navbar-nav side-nav">
+            <ul class="nav navbar-nav side-nav" style="overflow-y: scroll;">
                 @if($transaction_access)
                     <li class="{{ Request::segment(1) == 'transaction' ? 'active' : '' }}">
                         <a href="/transaction"><i class="fa fa-fw fa-credit-card"></i> {{ $TRANS_TITLE }}</a>

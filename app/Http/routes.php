@@ -357,6 +357,9 @@ Route::get('/potential-customer', 'PotentialCustomerController@index');
 Route::post('/api/potential-customer', 'PotentialCustomerController@getDataApi');
 Route::post('/api/potential-customer/store-update', 'PotentialCustomerController@storeUpdateApi');
 
+Route::post('/api/meeting-minute', 'MeetingMinuteController@getDataApi');
+Route::post('/api/meeting-minute/store-update', 'MeetingMinuteController@storeUpdateApi');
+
 Route::get('/profile/data', 'ProfileController@getData');
 Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');
 Route::resource('profile', 'ProfileController');
