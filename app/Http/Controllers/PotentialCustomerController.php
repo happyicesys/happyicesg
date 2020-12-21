@@ -24,7 +24,9 @@ class PotentialCustomerController extends Controller
     // get data api
     public function getDataApi(Request $request)
     {
-        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater']);
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater'])
+                ->leftJoin('users as account_manager', 'potential_customers.account_manager_id', '=', 'account_manager.id')
+                ->leftJoin('custcategories', 'potential_customers.custcategory_id', '=', 'custcategories.id');
 
         $model = $this->potentialCustomerFilter($model, $request);
 
@@ -35,9 +37,9 @@ class PotentialCustomerController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;        
 
         if ($pageNum == 'All') {
-            $model = $model->orderBy('created_at', 'desc')->get();
+            $model = $model->orderBy('potential_customers.created_at', 'desc')->get();
         } else {
-            $model = $model->orderBy('created_at', 'desc')->paginate($pageNum);
+            $model = $model->orderBy('potential_customers.created_at', 'desc')->paginate($pageNum);
         }
 
         return [
