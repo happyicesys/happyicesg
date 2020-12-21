@@ -22,16 +22,16 @@ Potential Customer
             </div>
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="potential_customer">   
+                    <div class="tab-pane active" id="potential_customer">
                         <div ng-controller="potentialCustomerController">
                             @include('potential-customer.potential')
-                        </div>  
+                        </div>
                     </div>
-                    <div class="tab-pane" id="meeting_minutes">   
+                    <div class="tab-pane" id="meeting_minutes">
                         <div ng-controller="meetingMinutesController">
-                            @include('potential-customer.meeting_minutes')
-                        </div>  
-                    </div>                    
+                            @include('potential-customer.meeting-minute')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,5 +52,5 @@ Potential Customer
                 $('[href="' + lastTab + '"]').tab('show');
             }
         });
-    </script>    
+    </script>
 @stop
