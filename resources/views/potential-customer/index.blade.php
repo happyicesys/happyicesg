@@ -84,7 +84,7 @@ Potential Customer
                                                         ])
                         !!}
                     </div>   
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-12">
                         {!! Form::label('created_at', 'Created At', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
@@ -101,7 +101,7 @@ Potential Customer
                             <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_at', search.created_at)"></span>
                         </div>
                     </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-12">
                         {!! Form::label('updated_at', 'Updated At', ['class'=>'control-label search-title']) !!}
                         <div class="input-group">
                             <datepicker>
