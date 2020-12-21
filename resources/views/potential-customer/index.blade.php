@@ -49,7 +49,7 @@ Potential Customer
                                                       ])
                       !!}
                   </div>
-                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                    <div class="form-group col-md-2 col-sm-4 col-xs-12">
                         {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                         @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                             <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
@@ -222,9 +222,9 @@ Potential Customer
                         <label for="custcategory">
                             Custcategory
                         </label>
-                        <select class="select form-control" ng-model="form.custcategory">
+                        <select class="select form-control" ng-model="form.custcategory_id">
                             <option value=""></option>
-                            @foreach($custcategories as $custcategory)
+                            @foreach($custcategories::orderBy('name')->get() as $custcategory)
                             <option value="{{$custcategory->id}}">
                                 {{$custcategory->name}}
                             </option>
@@ -235,7 +235,7 @@ Potential Customer
                         <label for="account_manager">
                             Account Manager
                         </label>
-                        <select class="select form-control" ng-model="form.account_manager">
+                        <select class="select form-control" ng-model="form.account_manager_id">
                             <option value=""></option>
                             @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
                             <option value="{{$user->id}}">
