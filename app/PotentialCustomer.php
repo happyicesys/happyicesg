@@ -28,6 +28,6 @@ class PotentialCustomer extends Model
 
     public function updater()
     {
-        return $this->belongsTo(User::class, 'updater_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }
