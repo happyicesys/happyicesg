@@ -215,13 +215,13 @@ Potential Customer
                                 <td class="col-md-1 text-center">
                                     @{{data.contact}}
                                 </td>    
-                                <td class="col-md-1 text-center" style="max-width: 150px;">
+                                <td class="col-md-1 text-center" style="word-wrap: break-word; max-width: 250px;">
                                     @{{data.address}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{data.postcode}}
                                 </td>    
-                                <td class="col-md-2 text-center" style="max-width: 150px;">
+                                <td class="col-md-2 text-center" style="word-wrap: break-word; max-width: 250px;">
                                     @{{data.remarks}}
                                 </td>  
                                 <td class="col-md-1 text-center">
