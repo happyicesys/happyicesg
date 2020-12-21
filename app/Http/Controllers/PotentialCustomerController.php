@@ -53,7 +53,7 @@ class PotentialCustomerController extends Controller
         $id = $request->id;
         $currentUserId = auth()->user()->id;
 
-        dd($request->all());
+        // dd($request->all());
         if($id) {
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
