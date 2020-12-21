@@ -163,8 +163,8 @@
                         type = "text"
                         class = "form-control input-sm"
                         placeholder = "Date"
-                        ng-model = "search.date"
-                        ng-change = "dateChange('date', search.date)"
+                        ng-model = "form.date"
+                        ng-change = "dateChange('date', form.date)"
                     />
                 </datepicker>
             </div>
