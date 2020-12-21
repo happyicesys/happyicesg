@@ -121,7 +121,7 @@ Potential Customer
                             </th>
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('custcategory_name')">
-                                Category
+                                Cust Category
                                 <span ng-if="search.sortName == 'custcategory_name' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'custcategory_name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
@@ -164,7 +164,7 @@ Potential Customer
                                     @{{data.custcateogory.name}}
                                 </td>  
                                 <td class="col-md-1 text-center">
-                                    @{{data.accountManager.name}}
+                                    @{{data.account_manager.name}}
                                 </td>   
                                 <td class="col-md-1 text-center">
                                     @{{data.attn_to}}
@@ -187,10 +187,11 @@ Potential Customer
                                 <td class="col-md-1 text-center">
                                     <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#potential-customer-modal" ng-click="onSingleEntryEdit(data)">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                    </button>                                    
+                                    </button>        
+{{--                                                                 
                                     <button class="btn btn-danger btn-sm" ng-click="onSingleEntryRemove(data.id)">
                                         <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
+                                    </button> --}}
                                 </td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">
