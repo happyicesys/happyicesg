@@ -164,15 +164,15 @@
                         class = "form-control input-sm"
                         placeholder = "Date"
                         ng-model = "form.date"
-                        ng-change = "dateChange('date', form.date)"
+                        ng-change = "formDateChange('date', form.date)"
                     />
                 </datepicker>
             </div>
             <div class="form-group">
-                <label for="remarks">
-                    Remarks
+                <label for="details">
+                    Details
                 </label>
-                <textarea class="form-control" rows="10" ng-model="form.remarks"></textarea>
+                <textarea class="form-control" rows="10" ng-model="form.details"></textarea>
             </div>
           </div>
           <div class="modal-footer">

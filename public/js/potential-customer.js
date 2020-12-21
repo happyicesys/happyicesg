@@ -362,6 +362,13 @@ var app = angular.module('app', [
         $scope.searchDB();
     }
 
+    $scope.formDateChange = function(scope_from, date){
+      if(date){
+          $scope.form[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
+          // $scope.compareDateChange(scope_from);
+      }
+  }
+
     function getDefaultForm() {
       return {
         id: '',
