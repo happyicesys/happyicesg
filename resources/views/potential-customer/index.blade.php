@@ -154,16 +154,16 @@ Potential Customer
                                 <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('custcategory_name')">
+                                <a href="" ng-click="sortTable('custcategory.name')">
                                 Cust Category
-                                <span ng-if="search.sortName == 'custcategory_name' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'custcategory_name' && search.sortBy" class="fa fa-caret-up"></span>
+                                <span ng-if="search.sortName == 'custcategory.name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'custcategory.name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('account_manager')">
+                                <a href="" ng-click="sortTable('account_manager.name')">
                                 Acc Manager
-                                <span ng-if="search.sortName == 'account_manager' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'account_manager' && search.sortBy" class="fa fa-caret-up"></span>
+                                <span ng-if="search.sortName == 'account_manager.name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'account_manager.name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
                                 Attn To

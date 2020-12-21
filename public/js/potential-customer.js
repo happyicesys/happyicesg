@@ -136,6 +136,9 @@ var app = angular.module('app', [
                 postcode: data.postcode,
                 remarks: data.remarks,
             }
+            $('.select').select2({
+              placeholder: 'Select...'
+            });
         }
   
       // on route template removed
@@ -164,7 +167,7 @@ var app = angular.module('app', [
       $scope.dateChange = function(scope_from, date){
           if(date){
               $scope.search[scope_from] = moment(new Date(date)).format('YYYY-MM-DD');
-              $scope.compareDateChange(scope_from);
+              // $scope.compareDateChange(scope_from);
           }
           $scope.searchDB();
       }      

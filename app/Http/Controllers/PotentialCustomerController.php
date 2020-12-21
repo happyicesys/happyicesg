@@ -90,7 +90,15 @@ class PotentialCustomerController extends Controller
         
         if($contact) {
             $query = $query->where('contact', 'LIKE', '%'.$contact.'%');
-        }        
+        }    
+        
+        if($created_at) {
+            $query = $query->whereDate('created_at', '=', $created_at);
+        }    
+        
+        if($updated_at) {
+            $query = $query->whereDate('updated_at', '=', $updated_at);
+        }            
 
         return $query;
     }
