@@ -70,6 +70,8 @@ class PotentialCustomerController extends Controller
         $name = $request->name;
         $account_manager = $request->account_manager;
         $contact = $request->contact;
+        $created_at = $request->created_at;
+        $updated_at = $request->updated_at;
 
         if($custcategory) {
             if (count($custcategory) == 1) {
