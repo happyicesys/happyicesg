@@ -16,21 +16,17 @@ Potential Customer
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab"> Potential Customer</a></li>
-                    <li><a href="#meeting_minute" role="tab" data-toggle="tab"> Meeting Minutes</a></li>
+                    <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab">Potential Customer</a></li>
+                    <li><a href="#meeting_minute" role="tab" data-toggle="tab">Meeting Minutes</a></li>
                 </ul>
             </div>
             <div class="panel-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="potential_customer">
-                        <div ng-controller="potentialCustomerController">
-                            @include('potential-customer.potential')
-                        </div>
+                    <div class="tab-pane active" id="potential_customer" ng-controller="potentialCustomerController">
+                        @include('potential-customer.potential')
                     </div>
-                    <div class="tab-pane" id="meeting_minute">
-                        <div ng-controller="meetingMinuteController">
-                            @include('potential-customer.meeting-minute')
-                        </div>
+                    <div class="tab-pane" id="meeting_minute" ng-controller="meetingMinuteController">
+                        @include('potential-customer.meeting-minute')
                     </div>
                 </div>
             </div>
