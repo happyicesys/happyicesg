@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MeetingMinutes extends Model
+class MeetingMinute extends Model
 {
     protected $fillable = [
         'date', 'details', 'created_by', 'updated_by'
