@@ -22,20 +22,14 @@ Potential Customer
             </div>
             <div class="panel-body">
                 <div class="tab-content">
-{{--
                     <div class="tab-pane active" id="potential_customer">
                         <div ng-controller="potentialCustomerController">
                             @include('potential-customer.potential')
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="tab-pane" id="meeting_minute">
                         <div ng-controller="meetingMinuteController">
                             @include('potential-customer.meeting-minute')
-                        </div>
-                    </div>
-                    <div class="tab-pane active" id="potential_customer">
-                        <div ng-controller="potentialCustomerController">
-                            @include('potential-customer.potential')
                         </div>
                     </div>
                 </div>
@@ -44,7 +38,7 @@ Potential Customer
     </div>
 
     <script src="/js/potential-customer.js"></script>
-    <script src="/js/meeting-minutes.js"></script>
+    {{-- <script src="/js/meeting-minutes.js"></script> --}}
     <script>
         $(function() {
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
