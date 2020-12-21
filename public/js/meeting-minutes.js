@@ -5,7 +5,7 @@ var app = angular.module('app', [
     '720kb.datepicker'
   ]);
 
-  function potentialCustomerController($scope, $http){
+  function meetingMinuteController($scope, $http){
       // init the variables
       $scope.alldata = [];
       $scope.totalCount = 0;
@@ -189,4 +189,4 @@ var app = angular.module('app', [
       }
   }
 
-  app.controller('meetingMinutesController', meetingMinutesController);
+  app.controller('meetingMinuteController', meetingMinuteController);

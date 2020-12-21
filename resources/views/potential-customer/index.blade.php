@@ -28,7 +28,7 @@ Potential Customer
                         </div>
                     </div>
                     <div class="tab-pane" id="meeting_minute">
-                        <div ng-controller="meetingMinutesController">
+                        <div ng-controller="meetingMinuteController">
                             @include('potential-customer.meeting-minute')
                         </div>
                     </div>
