@@ -32,9 +32,9 @@ class PotentialCustomerController extends Controller
 
         if ($request->sortName) {
             $model = $model->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-        }    
-        
-        $pageNum = $request->pageNum ? $request->pageNum : 100;        
+        }
+
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         if ($pageNum == 'All') {
             $model = $model->orderBy('potential_customers.created_at', 'desc')->get();
@@ -44,7 +44,7 @@ class PotentialCustomerController extends Controller
 
         return [
             'data' => $model
-        ];       
+        ];
     }
 
     // store new potential customer(Request $request)
@@ -53,6 +53,7 @@ class PotentialCustomerController extends Controller
         $id = $request->id;
         $currentUserId = auth()->user()->id;
 
+        dd($request->all());
         if($id) {
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
@@ -63,7 +64,7 @@ class PotentialCustomerController extends Controller
             $model->created_by = $currentUserId;
             $model->save();
         }
-    }    
+    }
 
     // potentialCustomerFilter
     private function potentialCustomerFilter($query, $request)
@@ -88,19 +89,19 @@ class PotentialCustomerController extends Controller
 
         if($account_manager) {
             $query = $query->where('account_manager_id', $account_manager);
-        } 
-        
+        }
+
         if($contact) {
             $query = $query->where('contact', 'LIKE', '%'.$contact.'%');
-        }    
-        
+        }
+
         if($created_at) {
             $query = $query->whereDate('potential_customers.created_at', '=', $created_at);
-        }    
-        
+        }
+
         if($updated_at) {
             $query = $query->whereDate('potential_customers.updated_at', '=', $updated_at);
-        }            
+        }
 
         return $query;
     }
