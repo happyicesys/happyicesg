@@ -353,6 +353,10 @@ Route::post('/api/person/custtagattach/{id}/unbind', 'PersonController@unbindCus
 Route::post('/api/persontag/create', 'PersonController@createPersontagApi');
 Route::post('/api/persontagattaches/bind', 'PersonController@bindPersontagAttachesApi');
 
+Route::get('/potential-customer', 'PotentialCustomerController@index');
+Route::post('/api/potential-customer', 'PotentialCustomerController@getDataApi');
+Route::post('/api/potential-customer/store-update', 'PotentialCustomerController@storeUpdateApi');
+
 Route::get('/profile/data', 'ProfileController@getData');
 Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');
 Route::resource('profile', 'ProfileController');

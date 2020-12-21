@@ -55,6 +55,7 @@
                 $jobcard_access = false;
                 $vending_access = false;
                 $route_template = false;
+                $potential_customer_access = true;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -267,6 +268,12 @@
                         <a href="/person"><i class="fa fa-fw fa-users"></i> {{ $PERSON_TITLE }}</a>
                     </li>
                 @endif
+
+                @if($potential_customer_access)
+                    <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
+                        <a href="/potential-customer"><i class="fa fa-address-card-o"></i>Potential Customer</a>
+                    </li>
+                @endif                
 
                 @if($route_template)
                     <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">
