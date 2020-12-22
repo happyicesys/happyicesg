@@ -114,7 +114,7 @@
                         <td class="col-md-2 text-center">
                             @{{data.date}}
                         </td>
-                        <td class="col-md-5 text-left">
+                        <td class="col-md-5 text-left" style="white-space: pre-wrap;">
                             @{{data.details}}
                         </td>
                         <td class="col-md-1 text-center">

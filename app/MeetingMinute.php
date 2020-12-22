@@ -25,6 +25,6 @@ class MeetingMinute extends Model
     // getter
     public function getDateAttribute($value)
     {
-        return Carbon::parse($value)->toDateString();
+        return Carbon::parse($value)->format('Y-m-d (ddd)');
     }
 }
