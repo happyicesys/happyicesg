@@ -11,10 +11,10 @@ class PotentialCustomerController extends Controller
 {
     //auth-only login can see
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     // get index page
     public function index()
