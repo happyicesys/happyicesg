@@ -212,16 +212,16 @@
                             @{{data.remarks}}
                         </td>
                         <td class="col-md-1 text-center">
-                            <span class="col-md-12" ng-if="is_first">
+                            <span class="col-md-12" ng-if="data.is_first">
                                 -Sample given
                             </span>
-                            <span class="col-md-12" ng-if="is_second">
+                            <span class="col-md-12" ng-if="data.is_second">
                                 -Meet Boss
                             </span>
-                            <span class="col-md-12" ng-if="is_third">
+                            <span class="col-md-12" ng-if="data.is_third">
                                 -First try boss reject
                             </span>
-                            <span class="col-md-12" ng-if="is_fourth">
+                            <span class="col-md-12" ng-if="data.is_fourth">
                                 -Approved
                             </span>
                         </td>
