@@ -4,7 +4,7 @@ var app = angular.module('app', [
     'ui.select',
     'ngSanitize',
     '720kb.datepicker',
-    'thatisuday.dropzone'
+    // 'thatisuday.dropzone'
   ]);
 
   function potentialCustomerController($scope, $http){
@@ -150,14 +150,14 @@ var app = angular.module('app', [
               placeholder: 'Select...'
             });
 
-            $scope.attachmentOptions = {
-              headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-              },
-              url : '/api/potential-customer/' + data.id +'/attachment',
-              acceptedFiles : 'image/*',
-              addRemoveLinks : true,
-            };
+            // $scope.attachmentOptions = {
+            //   headers: {
+            //     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            //   },
+            //   url : '/api/potential-customer/' + data.id +'/attachment',
+            //   acceptedFiles : 'image/*',
+            //   addRemoveLinks : true,
+            // };
         }
 
       // on route template removed
