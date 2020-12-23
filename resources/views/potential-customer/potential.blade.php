@@ -164,7 +164,7 @@
                     <th class="col-md-1 text-center">
                         Remarks
                     </th>
-                    <th class="col-md-1 text-center">
+                    <th class="col-md-2 text-center">
                         Progress
                     </th>
                     <th class="col-md-1 text-center">
@@ -211,19 +211,21 @@
                         <td class="col-md-2 text-center" style="max-width: 300px;">
                             @{{data.remarks}}
                         </td>
-                        <td class="col-md-1 text-center">
-                            <span class="col-md-12" ng-if="data.is_first">
-                                -Sample given
-                            </span>
-                            <span class="col-md-12" ng-if="data.is_second">
-                                -Meet Boss
-                            </span>
-                            <span class="col-md-12" ng-if="data.is_third">
-                                -First try boss reject
-                            </span>
-                            <span class="col-md-12" ng-if="data.is_fourth">
-                                -Approved
-                            </span>
+                        <td class="col-md-2 text-left">
+                            <ul>
+                                <li ng-if="data.is_first">
+                                    Sample given
+                                </li>
+                                <li ng-if="data.is_second">
+                                    Meet Boss
+                                </li>
+                                <li ng-if="data.is_third">
+                                    First try boss reject
+                                </li>
+                                <li ng-if="data.is_fourth">
+                                    Approved
+                                </li>
+                            </ul>
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.creator.name}} <br>
