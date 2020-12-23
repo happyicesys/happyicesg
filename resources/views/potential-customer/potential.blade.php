@@ -377,7 +377,7 @@
                 </label>
                 <textarea class="form-control" rows="4" ng-model="form.remarks"></textarea>
             </div>
-            <form action="@{{'/api/potential-customer/' + form.id + '/attachment'}}" class="dropzone"></form>
+            <form action="/api/potential-customer/3/attachment" class="dropzone"></form>
 {{--
             <div ng-if="form.id" class="form-group">
                 <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone>
