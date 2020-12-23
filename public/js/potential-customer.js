@@ -151,8 +151,8 @@ var app = angular.module('app', [
             });
 
             $scope.attachmentOptions = {
-              url : '/potential-customer/attachments',
-              paramName : data.id,
+              url : '/api/potential-customer/attachments',
+              paramName : {id: data.id},
               maxFilesize : '10',
               acceptedFiles : 'image/jpeg, images/jpg, image/png',
               addRemoveLinks : true,
