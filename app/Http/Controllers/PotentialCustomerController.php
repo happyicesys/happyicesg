@@ -68,9 +68,9 @@ class PotentialCustomerController extends Controller
     }
 
     // store attachments
-    public function storeAttachments(Request $request, $id)
+    public function storeAttachments(Request $request)
     {
-        dd($id, $request->all());
+        dd($request->all());
     }
 
     // potentialCustomerFilter

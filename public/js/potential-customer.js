@@ -152,12 +152,12 @@ var app = angular.module('app', [
 
             $scope.attachmentOptions = {
               headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               },
-              url : '/api/potential-customer/' + data.id +'/attachment',
+              url : '/potential-customer-file',
               acceptedFiles : 'image/*',
               addRemoveLinks : true,
+              paramName: form.id,
             };
         }
 
