@@ -1,8 +1,10 @@
+Dropzone.autoDiscover = false;
 var app = angular.module('app', [
     'angularUtils.directives.dirPagination',
     'ui.select',
     'ngSanitize',
-    '720kb.datepicker'
+    '720kb.datepicker',
+    'thatisuday.dropzone'
   ]);
 
   function potentialCustomerController($scope, $http){
@@ -147,6 +149,14 @@ var app = angular.module('app', [
             $('.select').select2({
               placeholder: 'Select...'
             });
+
+            $scope.attachmentOptions = {
+              url : '/potential-customer/attachments',
+              paramName : data.id,
+              maxFilesize : '10',
+              acceptedFiles : 'image/jpeg, images/jpg, image/png',
+              addRemoveLinks : true,
+            };
         }
 
       // on route template removed

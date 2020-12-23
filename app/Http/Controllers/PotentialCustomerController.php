@@ -66,6 +66,12 @@ class PotentialCustomerController extends Controller
         }
     }
 
+    // store attachments
+    public function storeAttachments(Request $request)
+    {
+        dd($request->all());
+    }
+
     // potentialCustomerFilter
     private function potentialCustomerFilter($query, $request)
     {

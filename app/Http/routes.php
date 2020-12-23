@@ -356,6 +356,7 @@ Route::post('/api/persontagattaches/bind', 'PersonController@bindPersontagAttach
 Route::get('/potential-customer', 'PotentialCustomerController@index');
 Route::post('/api/potential-customer', 'PotentialCustomerController@getDataApi');
 Route::post('/api/potential-customer/store-update', 'PotentialCustomerController@storeUpdateApi');
+Route::post('/api/potential-customer/attachments', 'PotentialCustomerController@storeAttachments');
 
 Route::post('/api/meeting-minute', 'MeetingMinuteController@getDataApi');
 Route::post('/api/meeting-minute/store-update', 'MeetingMinuteController@storeUpdateApi');

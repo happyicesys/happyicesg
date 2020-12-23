@@ -202,17 +202,17 @@
                         <td class="col-md-1 text-center">
                             @{{data.contact}}
                         </td>
-                        <td class="col-md-2 text-center" style="max-width: 300px;">
+                        <td class="col-md-2 text-left" style="max-width: 300px;">
                             @{{data.address}}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.postcode}}
                         </td>
-                        <td class="col-md-2 text-center" style="max-width: 300px;">
+                        <td class="col-md-2 text-left" style="max-width: 300px;">
                             @{{data.remarks}}
                         </td>
                         <td class="col-md-2 text-left">
-                            <ul style="margin-left: 0px; padding-left: 5px; font-size: 13px;">
+                            <ul style="margin-left: 0px; padding-left: 5px; font-size: 12px;">
                                 <li ng-if="data.is_first">
                                     Sample given
                                 </li>
@@ -376,6 +376,9 @@
                     Remarks
                 </label>
                 <textarea class="form-control" rows="4" ng-model="form.remarks"></textarea>
+            </div>
+            <div ng-if="form.id" class="form-group">
+                <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone>
             </div>
           </div>
           <div class="modal-footer">

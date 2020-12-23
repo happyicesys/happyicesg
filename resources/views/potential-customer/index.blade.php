@@ -17,7 +17,7 @@ Potential Customer
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab">Potential Customer</a></li>
-                    <li><a href="#performance" role="tab" data-toggle="tab">Performance</a></li>
+                    {{-- <li><a href="#performance" role="tab" data-toggle="tab">Performance</a></li> --}}
                     <li><a href="#meeting_minute" role="tab" data-toggle="tab">Meeting Minutes</a></li>
                 </ul>
             </div>
