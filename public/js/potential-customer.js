@@ -157,7 +157,7 @@ var app = angular.module('app', [
               url : '/potential-customer-file',
               acceptedFiles : 'image/*',
               addRemoveLinks : true,
-              paramName: form.id,
+              paramName: $scope.form.id,
             };
         }
 
