@@ -225,6 +225,12 @@
                                 <li ng-if="data.is_fourth">
                                     Approved
                                 </li>
+                                <li ng-if="data.is_fifth">
+                                    2nd try
+                                </li>
+                                <li ng-if="data.is_sixth">
+                                    3rd try
+                                </li>
                             </ul>
                         </td>
                         <td class="col-md-1 text-center">
