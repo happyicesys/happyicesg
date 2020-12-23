@@ -4,7 +4,7 @@ var app = angular.module('app', [
     'ui.select',
     'ngSanitize',
     '720kb.datepicker',
-    // 'thatisuday.dropzone'
+    'thatisuday.dropzone'
   ]);
 
   function potentialCustomerController($scope, $http){
@@ -150,14 +150,18 @@ var app = angular.module('app', [
               placeholder: 'Select...'
             });
 
-            // $scope.attachmentOptions = {
-            //   headers: {
-            //     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-            //   },
-            //   url : '/api/potential-customer/' + data.id +'/attachment',
-            //   acceptedFiles : 'image/*',
-            //   addRemoveLinks : true,
-            // };
+            $scope.attachmentOptions = {
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+              },
+              url : '/api/potential-customer/' + data.id +'/attachment',
+              acceptedFiles : 'image/*',
+              addRemoveLinks : true,
+              sending: function(file, xhr, formData) {
+                // Pass token. You can use the same method to pass any other values as well such as a id to associate the image with for example.
+                formData.append("_token", $('[name=_token').val()); // Laravel expect the token post value to be named _token by default
+              }
+            };
         }
 
       // on route template removed

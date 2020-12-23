@@ -377,11 +377,11 @@
                 </label>
                 <textarea class="form-control" rows="4" ng-model="form.remarks"></textarea>
             </div>
-            <form action="/api/potential-customer/3/attachment" class="dropzone"></form>
-{{--
+            {{-- <form action="/api/potential-customer/3/attachment" class="dropzone"></form> --}}
+
             <div ng-if="form.id" class="form-group">
                 <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone>
-            </div> --}}
+            </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
