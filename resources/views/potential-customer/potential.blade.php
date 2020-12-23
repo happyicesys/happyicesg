@@ -212,7 +212,7 @@
                             @{{data.remarks}}
                         </td>
                         <td class="col-md-2 text-left">
-                            <ul style="margin-left: 0px; padding-left: 5px;">
+                            <ul style="margin-left: 0px; padding-left: 5px; font-size: 13px;">
                                 <li ng-if="data.is_first">
                                     Sample given
                                 </li>
