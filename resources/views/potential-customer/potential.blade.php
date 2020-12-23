@@ -165,6 +165,9 @@
                         Remarks
                     </th>
                     <th class="col-md-1 text-center">
+                        Progress
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('created_at')">
                         Created By
                         <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -207,6 +210,20 @@
                         </td>
                         <td class="col-md-2 text-center" style="max-width: 300px;">
                             @{{data.remarks}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            <span class="col-md-12" ng-if="is_first">
+                                -Sample given
+                            </span>
+                            <span class="col-md-12" ng-if="is_second">
+                                -Meet Boss
+                            </span>
+                            <span class="col-md-12" ng-if="is_third">
+                                -First try boss reject
+                            </span>
+                            <span class="col-md-12" ng-if="is_fourth">
+                                -Approved
+                            </span>
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.creator.name}} <br>
