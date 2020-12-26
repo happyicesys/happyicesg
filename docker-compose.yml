@@ -1,0 +1,29 @@
+web:
+    image: hitalos/laravel:latest
+    ports:
+        - 8080:80
+    volumes:
+       - ./:/var/www
+       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    links:
+        - db
+    environment:
+        DB_HOST: db
+        DB_DATABASE: happyicesg
+        DB_USERNAME: dockermysql
+        DB_PASSWORD: root
+        DB_CONNECTION: mysql
+db:
+    image: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+        - 4306:3306
+    volumes:
+        - dbdata:/var/lib/mysql/
+    environment:
+        # with mysql
+        MYSQL_DATABASE: happyicesg
+        MYSQL_USER: dockermysql
+        MYSQL_PASSWORD: root
+        MYSQL_ROOT_PASSWORD: root

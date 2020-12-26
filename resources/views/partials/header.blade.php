@@ -13,4 +13,5 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSegGsLqW4GNNPPg2NbjlJ1uXMCoN4s1c" async defer></script>
 <link rel="stylesheet" href="/css/ng-dropzone.min.css" type="text/css">
 <script src="/js/ng-dropzone.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
 

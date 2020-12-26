@@ -4,10 +4,11 @@ var app = angular.module('app', [
     'ui.select',
     'ngSanitize',
     '720kb.datepicker',
+    // 'angularFileUpload'
     'thatisuday.dropzone'
   ]);
 
-  function potentialCustomerController($scope, $http){
+  function potentialCustomerController($scope, $http, FileUploader){
       // init the variables
       $scope.alldata = [];
       $scope.totalCount = 0;
@@ -150,11 +151,25 @@ var app = angular.module('app', [
               placeholder: 'Select...'
             });
 
+            // $scope.uploader = new FileUploader();
+
+            // $scope.dzOptions = {
+            //   headers: {
+            //     'X-CSRF-TOKEN': '{{csrf_token()}}'
+            //   },
+            //   url : '/api/potential-customer-file',
+            //   paramName : 'photo',
+            //   maxFilesize : '10',
+            //   acceptedFiles : 'image/jpeg, images/jpg, image/png',
+            //   addRemoveLinks : true,
+            //   autoProcessQueue: true
+            // };
+
             $scope.attachmentOptions = {
               headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               },
-              url : '/potential-customer-file',
+              url : '/api/potential-customer-file',
               acceptedFiles : 'image/*',
               paramName: $scope.form.id,
             };

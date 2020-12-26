@@ -10,7 +10,6 @@ use App\PotentialCustomer;
 class PotentialCustomerController extends Controller
 {
     //auth-only login can see
-
     public function __construct()
     {
         $this->middleware('auth');

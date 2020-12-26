@@ -97,6 +97,7 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($input);
 
+        // dd($incomingQty);
         if(array_filter($incomingQty)){
 
             if($this->createInvRecord($inventory->id, $currentQty, $incomingQty, $afterQty)){

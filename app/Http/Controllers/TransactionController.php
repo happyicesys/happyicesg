@@ -2262,7 +2262,6 @@ class TransactionController extends Controller
     // retrieve transactions data ()
     private function getTransactionsData()
     {
-
         $transactions = DB::table('transactions')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
@@ -2305,7 +2304,7 @@ class TransactionController extends Controller
 
         $transactions = $this->searchDBFilter($transactions);
         $transactions = $transactions->groupBy('transactions.id');
-
+// dd($transactions->get());
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
 
@@ -2316,7 +2315,7 @@ class TransactionController extends Controller
         $transactions = $this->filterFranchiseeTransactionDB($transactions);
 
         // driver not able to see the invoices earlier than today
-        $transactions = $this->filterDriverView($transactions);
+        // $transactions = $this->filterDriverView($transactions);
 
         return $transactions;
     }
@@ -2912,14 +2911,14 @@ class TransactionController extends Controller
         if(!auth()->user()->hasRole('hd_user')) {
             if(request('delivery_from') === request('delivery_to')){
                 if(request('delivery_from') != '' and request('delivery_to') != ''){
-                    $transactions = $transactions->where('transactions.delivery_date', '=', request('delivery_from'));
+                    $transactions = $transactions->whereDate('transactions.delivery_date', '=', request('delivery_from'));
                 }
             }else{
                 if(request('delivery_from')){
-                    $transactions = $transactions->where('transactions.delivery_date', '>=', request('delivery_from'));
+                    $transactions = $transactions->whereDate('transactions.delivery_date', '>=', request('delivery_from'));
                 }
                 if(request('delivery_to')){
-                    $transactions = $transactions->where('transactions.delivery_date', '<=', request('delivery_to'));
+                    $transactions = $transactions->whereDate('transactions.delivery_date', '<=', request('delivery_to'));
                 }
             }
         }

@@ -380,7 +380,15 @@
             {{-- <form action="/api/potential-customer/3/attachment" class="dropzone"></form> --}}
 
             <div ng-if="form.id" class="form-group">
+                {{-- <input type="file" nv-file-select uploader="uploader"/><br/>
+                <ul>
+                    <li ng-repeat="item in uploader.queue">
+                        Name: <span ng-bind="item.file.name"></span><br/>
+                        <button ng-click="item.upload()">upload</button>
+                    </li>
+                </ul> --}}
                 <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone>
+                {{-- <ng-dropzone class="dropzone" options="dzOptions" ></ng-dropzone> --}}
             </div>
           </div>
           <div class="modal-footer">
