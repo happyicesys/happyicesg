@@ -105,14 +105,15 @@ class DailyreportController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-            ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
+            // ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
+            ->leftJoin('users', 'users.name', '=', 'transactions.driver')
             ->rightJoin('role_user', 'role_user.user_id', '=', 'users.id')
             ->leftJoin($totalRaw, function($join) {
                 $join->on('totalRaw.driver', '=', 'transactions.driver');
                 $join->on('totalRaw.delivery_date', '=', 'transactions.delivery_date');
             })
             ->leftJoin('driver_locations', function($join) {
-                $join->on('driver_locations.delivery_date', '=', 'transactions.delivery_date');
+                $join->on(DB::raw('DATE(driver_locations.delivery_date)'), '=', DB::raw('DATE(transactions.delivery_date)'));
                 $join->on('driver_locations.user_id', '=', 'users.id');
             })
             ->leftJoin('users AS updater', 'updater.id', 'LIKE', 'driver_locations.updated_by')
@@ -130,6 +131,7 @@ class DailyreportController extends Controller
             );
 
         // only include drivers
+
         if($type == 2) {
             $deals = $deals->whereIn('role_user.role_id', [6, 16]);
         }
@@ -232,9 +234,10 @@ class DailyreportController extends Controller
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
             }
         }
-
-        $deals = $deals->groupBy('transactions.delivery_date')->groupBy('transactions.driver');
-
+// dd($deals->get());
+        $deals = $deals->groupBy(DB::raw('DATE(transactions.delivery_date)'))->groupBy('users.id');
+        // $deals = $deals->groupBy('transactions.delivery_date')->groupBy('transactions.driver');
+        // dd($deals->get());
 
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
