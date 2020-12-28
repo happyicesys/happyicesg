@@ -387,7 +387,7 @@
                         <button ng-click="item.upload()">upload</button>
                     </li>
                 </ul> --}}
-                <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone>
+                {{-- <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone> --}}
                 {{-- <ng-dropzone class="dropzone" options="dzOptions" ></ng-dropzone> --}}
             </div>
           </div>

@@ -8,7 +8,7 @@ var app = angular.module('app', [
     'thatisuday.dropzone'
   ]);
 
-  function potentialCustomerController($scope, $http, FileUploader){
+  function potentialCustomerController($scope, $http){
       // init the variables
       $scope.alldata = [];
       $scope.totalCount = 0;
