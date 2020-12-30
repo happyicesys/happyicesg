@@ -10,10 +10,16 @@
             </assignVending>
         </div> --}}
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('commission_type', 'Commission Type', ['class'=>'control-label']) !!}
                 {!! Form::select('commission_type', ['1'=>'Absolute Amount', '2'=>'Percentage'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('commission_package', 'Commission Package', ['class'=>'control-label']) !!}
+                {!! Form::select('commission_package', ['1'=>'Both Utility & Comm', '2'=>'Whichever One is Higher'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
             </div>
         </div>
         @if(!$person->is_dvm)

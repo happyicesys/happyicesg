@@ -10,6 +10,11 @@ use Baum;
 class Person extends Baum\Node
 {
 
+    // commission_package
+    // 1 = Both utility and comm
+    // 2 = Utility only
+    // 3 = Comm only
+
     use \Venturecraft\Revisionable\RevisionableTrait;
     // use SoftDeletes;
     public static function boot()
@@ -24,7 +29,8 @@ class Person extends Baum\Node
         'cust_id', 'profile_id', 'salutation',
         'user_id', 'parent_name', 'parent_id',
         'block', 'floor', 'unit', 'operation_note', 'del_lat',
-        'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary', 'terminal_provider'
+        'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary', 'terminal_provider',
+        'commission_package'
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
@@ -79,7 +85,7 @@ class Person extends Baum\Node
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
-    'bank_id', 'account_number', 'key_lock_number'
+    'bank_id', 'account_number', 'key_lock_number', 'commission_package'
     ];
 
     protected $dates = ['deleted_at'];

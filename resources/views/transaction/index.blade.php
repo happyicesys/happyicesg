@@ -812,7 +812,7 @@
                                         <option value="Confirmed">Confirmed</option>
                                         <option value="Delivered">Delivered</option>
                                         <option value="Cancelled">Cancelled</option>
-                                        @if(auth()->user()->hasRole('admin'))
+                                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('supervisor'))
                                             <option value="CancelRemove">Cancel & Remove</option>
                                         @endif
                                     </select>

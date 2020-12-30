@@ -389,6 +389,80 @@
                 </ul> --}}
                 {{-- <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone> --}}
                 {{-- <ng-dropzone class="dropzone" options="dzOptions" ></ng-dropzone> --}}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Attachment(s)
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-list-search table-hover table-bordered">
+                            <tr style="background-color: #DDFDF8">
+                                <th class="col-md-1 text-center">
+                                    #
+                                </th>
+                                <th class="col-md-10 text-center">
+                                    Image
+                                </th>
+                                <th class="col-md-1 text-center">
+                                    Action
+                                </th>
+                            </tr>
+
+                            <tbody>
+                                @unless(count($invattachments)>0)
+                                    <td class="text-center" colspan="12">No Records Found</td>
+                                @else
+                                    @foreach($invattachments as $index => $invattachment)
+
+                                    @php
+                                        $ext = pathinfo($invattachment->path, PATHINFO_EXTENSION);
+                                    @endphp
+
+                                    <tr>
+                                        <td class="col-md-1 text-center">
+                                            {{ $index + 1 }}
+                                        </td>
+                                        <td class="col-md-10">
+                                            @if($ext == 'pdf')
+                                                <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
+                                            @else
+                                                <a href="{{$invattachment->path}}">
+                                                    <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
+                                                </a>
+                                            @endif
+                                        </td>
+                                        <td class="col-md-1 text-center">
+                                            @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                                                <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                                @if($ext == 'pdf')
+                                                    <a href="{{$invattachment->path}}" class="btn btn-sm btn-info">Download</a>
+                                                @endif
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @endunless
+                            </tbody>
+                        </table>
+
+                        @if(count($invattachments) > 0)
+                            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['TransactionController@removeAttachment', $invattachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+                            {!! Form::close() !!}
+                        @endif
+
+                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                        {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
+                        @endif
+        {{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
+                            {{csrf_field()}}
+                            <input type="file" name="img_file[]" multiple>
+                            <button type="submit" class="pull-right btn btn-success">Upload</button>
+                        </form> --}}
+                        {!! Form::close() !!}
+                        <label class="pull-right totalnum" for="totalnum">
+                            Total of {{count($invattachments)}} entries
+                        </label>
+                    </div>
+                </div>
             </div>
           </div>
           <div class="modal-footer">
