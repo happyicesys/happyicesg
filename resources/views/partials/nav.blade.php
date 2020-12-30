@@ -247,6 +247,10 @@
                         $person_access = true;
                         $detailrpt_access = true;
                     }
+
+                    if(auth()->user()->hasRole('consultant')) {
+                        $access = true;
+                    }
                 }
             @endphp
 
@@ -273,7 +277,7 @@
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
                         <a href="/potential-customer"><i class="fa fa-address-card-o"></i> Potential Customer</a>
                     </li>
-                @endif                
+                @endif
 
                 @if($route_template)
                     <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">
