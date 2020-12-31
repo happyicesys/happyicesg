@@ -414,6 +414,12 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="control-label search-title">
+                                            Transremark
+                                        </label>
+                                        <textarea class="form-control" rows="3" ng-model="assignForm.transremark"></textarea>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">

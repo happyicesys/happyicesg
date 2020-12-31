@@ -874,6 +874,7 @@ class PersonController extends Controller
                             case 'transactions':
                                 $data['delivery_date'] = $assignForm['delivery_date'];
                                 $data['driver'] = $assignForm['driver'];
+                                $data['transremark'] = $assignForm['transremark'];
                                 $transaction = $this->generateSingleInvoiceByPersonId($person->id, $data);
                                 array_push($transactions, $transaction->id);
                                 break;
@@ -897,6 +898,7 @@ class PersonController extends Controller
     {
         $date = $data['delivery_date'];
         $driver = $data['driver'];
+        $transremark = $data['transremark'];
         $person = Person::findOrFail($person_id);
 
         $transaction = Transaction::create([
@@ -910,7 +912,8 @@ class PersonController extends Controller
             'del_address' => $person->del_address,
             'del_lat' => $person->del_lat,
             'del_lng' => $person->del_lng,
-            'driver' => $driver ? $driver : null
+            'driver' => $driver ? $driver : null,
+            'transremark' => $transremark
         ]);
 
         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $date)->first();

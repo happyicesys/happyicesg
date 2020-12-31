@@ -45,7 +45,8 @@ function personController($scope, $http){
         tag_id: '',
         detach: '',
         driver: '',
-        delivery_date: $scope.today
+        delivery_date: $scope.today,
+        transremark: ''
     }
     // init page load
     getPage(1, true);
@@ -97,11 +98,11 @@ function personController($scope, $http){
       // when hitting search button
     $scope.searchDB = function(event){
         $scope.search.edited = true;
-        if(event.keyCode === 13) {
+        if(event.keyCode && event.keyCode === 13) {
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
-            getPage(1, false);
         }
+        getPage(1, false);
     }
 
     // retrieve franchisee id

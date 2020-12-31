@@ -26,9 +26,9 @@ Potential Customer
                     <div class="tab-pane active" id="potential_customer" ng-controller="potentialCustomerController">
                         @include('potential-customer.potential')
                     </div>
-                    {{-- <div class="tab-pane" id="performance" ng-controller="performanceController"> --}}
-                        {{-- @include('potential-customer.performance') --}}
-                    {{-- </div> --}}
+                    <div class="tab-pane" id="performance" ng-controller="performanceController">
+                        @include('potential-customer.performance')
+                    </div>
                     <div class="tab-pane" id="meeting_minute" ng-controller="meetingMinuteController">
                         @include('potential-customer.meeting-minute')
                     </div>

@@ -14,7 +14,7 @@ var app = angular.module('app', [
       $scope.totalCount = 0;
       $scope.totalPages = 0;
       $scope.currentPage = 1;
-      $scope.itemsPerPage = 'All';
+      $scope.itemsPerPage = '100';
       $scope.indexFrom = 0;
       $scope.indexTo = 0;
       $scope.sortBy = true;
@@ -27,7 +27,7 @@ var app = angular.module('app', [
           contact: '',
           created_at: '',
           created_at: '',
-          pageNum: 'All',
+          pageNum: '100',
       }
       $scope.form = getDefaultForm()
 
@@ -259,7 +259,7 @@ var app = angular.module('app', [
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
-    $scope.itemsPerPage = 'All';
+    $scope.itemsPerPage = '100';
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.sortBy = true;
@@ -268,7 +268,7 @@ var app = angular.module('app', [
     $scope.search = {
         date: '',
         account_manager_id: '',
-        pageNum: 'All',
+        pageNum: '100',
     }
 
     // init page load
