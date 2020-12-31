@@ -389,7 +389,7 @@
                 </ul> --}}
                 {{-- <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone> --}}
                 {{-- <ng-dropzone class="dropzone" options="dzOptions" ></ng-dropzone> --}}
-                <div class="panel panel-primary">
+                {{-- <div class="panel panel-primary">
                     <div class="panel-heading">
                         Attachment(s)
                     </div>
@@ -452,17 +452,13 @@
                         @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
                         @endif
-        {{--                 <form action="/transaction/invoice/attach" method="POST" enctype="multipart/form-data">
-                            {{csrf_field()}}
-                            <input type="file" name="img_file[]" multiple>
-                            <button type="submit" class="pull-right btn btn-success">Upload</button>
-                        </form> --}}
+
                         {!! Form::close() !!}
                         <label class="pull-right totalnum" for="totalnum">
                             Total of {{count($invattachments)}} entries
                         </label>
                     </div>
-                </div>
+                </div> --}}
             </div>
           </div>
           <div class="modal-footer">
