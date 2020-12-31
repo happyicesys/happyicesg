@@ -62,6 +62,10 @@ class AuthController extends Controller
             return '/transaction/jobassign';
         }
 
+        if(auth()->user()->hasRole('consultant')) {
+            return '/potential-customer';
+        }
+
         return '/transaction';
     }
 
