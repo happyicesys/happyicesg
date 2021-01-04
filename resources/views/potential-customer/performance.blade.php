@@ -1,14 +1,4 @@
 <div class="panel panel-default" ng-cloak>
-    <div class="panel-heading">
-        <div class="panel-title">
-            <div class="pull-right">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                Performance
-              </button>
-            </div>
-        </div>
-    </div>
-
     <div class="panel-body">
       <div class="row">
             <div class="form-group col-md-3 col-sm-4 col-xs-12">

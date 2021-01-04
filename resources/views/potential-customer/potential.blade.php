@@ -190,8 +190,11 @@
                         <td class="col-md-2 text-center">
                             @{{data.name}}
                         </td>
-                        <td class="col-md-2 text-left">
+                        <td class="col-md-2 text-left" style="min-width: 110px;">
                             <ul style="margin-left: 0px; padding-left: 5px; font-size: 12px;">
+                                <li ng-if="data.is_seventh">
+                                    Need follow-up
+                                </li>
                                 <li ng-if="data.is_first">
                                     Sample given
                                 </li>
@@ -203,6 +206,9 @@
                                 </li>
                                 <li ng-if="data.is_fourth">
                                     Approved
+                                </li>
+                                <li ng-if="data.is_eighth">
+                                    In-principle approved
                                 </li>
                                 <li ng-if="data.is_fifth">
                                     2nd try
@@ -224,13 +230,14 @@
                         <td class="col-md-1 text-center">
                             @{{data.contact}}
                         </td>
-                        <td class="col-md-2 text-left" style="max-width: 300px;">
+                        <td class="col-md-2 text-left" style="word-wrap: break-word;min-width: 160px;max-width: 300px;white-space: normal;">
                             @{{data.address}}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.postcode}}
+                            <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(data)"><i class="fa fa-map-o"></i></button>
                         </td>
-                        <td class="col-md-2 text-left" style="max-width: 300px;">
+                        <td class="col-md-2 text-left" style="word-wrap: break-word;min-width: 160px;max-width: 300px;white-space: normal;">
                             @{{data.remarks}}
                         </td>
                         <td class="col-md-1 text-center">
@@ -285,6 +292,12 @@
             </div>
             <div class="form-group">
                 <label>
+                    <input type="checkbox" ng-model="form.is_seventh" ng-true-value="1" ng-false-value="0">
+                    <span style="padding-left: 5px; margin-top: 5px;">
+                        Need follow-up
+                    </span>
+                </label>
+                <label>
                     <input type="checkbox" ng-model="form.is_first" ng-true-value="1" ng-false-value="0">
                     <span style="padding-left: 5px; margin-top: 5px;">
                         Sample given
@@ -306,6 +319,12 @@
                     <input type="checkbox" ng-model="form.is_fourth" ng-true-value="1" ng-false-value="0">
                     <span style="padding-left: 5px; margin-top: 5px;">
                         Approved
+                    </span>
+                </label>
+                <label>
+                    <input type="checkbox" ng-model="form.is_eighth" ng-true-value="1" ng-false-value="0">
+                    <span style="padding-left: 5px; margin-top: 5px;">
+                        In-principle approved
                     </span>
                 </label>
                 <label>
@@ -469,6 +488,24 @@
       </div>
 
   </div>
+</div>
+
+<div id="mapModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Plotted Map</h4>
+            </div>
+            <div class="modal-body">
+                <div id="map"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script>

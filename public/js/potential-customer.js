@@ -145,7 +145,8 @@ var app = angular.module('app', [
                 is_fourth: data.is_fourth,
                 is_fifth: data.is_fifth,
                 is_sixth: data.is_sixth,
-
+                is_seventh: data.is_seventh,
+                is_eighth: data.is_eighth,
             }
             $('.select').select2({
               placeholder: 'Select...'
@@ -224,7 +225,83 @@ var app = angular.module('app', [
           is_fourth: '',
           is_fifth: '',
           is_sixth: '',
+          is_seventh: '',
+          is_eighth: '',
         }
+      }
+
+      $scope.onMapClicked = function(data) {
+        var url = window.location.href;
+        var location = '';
+        var locationLatLng = {};
+        let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
+        const MAP_ICON_FILE = {
+            'red': 'red.png',
+            'blue': 'blue.png',
+            'green': 'green.png',
+            'light-blue': 'lightblue.png',
+            'pink': 'pink.png',
+            'purple': 'purple.png',
+            'yellow': 'yellow.png',
+            'orange': 'orange.png'
+        };
+
+        if(url.includes("my")) {
+            location = 'Malaysia';
+            locationLatLng = {lat: 1.4927, lng: 103.7414};
+        }else if(url.includes("sg")) {
+            location = 'Singapore';
+            locationLatLng = {lat: 1.3521, lng: 103.8198};
+        }
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: locationLatLng,
+            zoom: 12
+        });
+
+        var geocoder = new google.maps.Geocoder();
+
+        var markers = [];
+        // console.log(JSON.parse(JSON.stringify(data)));
+        if(data) {
+            var contentString = '<span style=font-size:10px;>' +
+                '<b>' +
+                '(' + data.custcategory.name + ') ' + data.name + ' - ' + data.postcode +
+                '</b>' +
+                '</span>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + data.postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(res) {
+                    let lat = res.results[0].LATITUDE;
+                    let lng = res.results[0].LONGITUDE;
+
+                    let url = map_icon_base + MAP_ICON_FILE[data.custcategory.map_icon_file]
+                    // console.log(JSON.parse(JSON.stringify(data)))
+                    let pos = new google.maps.LatLng(lat, lng);
+
+                    let marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: '(' + data.custcategory.name + ') ' + data.name + ' - ' + data.postcode,
+                        icon: {
+                            labelOrigin: new google.maps.Point(15,10),
+                            url: url
+                        }
+                    });
+                    markers.push(marker);
+
+                    marker.addListener('click', function () {
+                        infowindow.open(map, marker);
+                    });
+            });
+        }
+        $("#mapModal").on("shown.bs.modal", function () {
+            google.maps.event.trigger(map, "resize");
+            map.setCenter(locationLatLng);
+        });
       }
 
       // retrieve page w/wo search
