@@ -578,4 +578,5 @@ var app = angular.module('app', [
   }
 
   app.controller('potentialCustomerController', potentialCustomerController);
+  app.controller('performanceController', performanceController);
   app.controller('meetingMinuteController', meetingMinuteController);

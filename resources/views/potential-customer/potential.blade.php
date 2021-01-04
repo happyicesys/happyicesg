@@ -137,6 +137,9 @@
                         <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
+                    <th class="col-md-2 text-center">
+                        Progress
+                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('custcategory_id')">
                         Cust Category
@@ -164,9 +167,6 @@
                     <th class="col-md-1 text-center">
                         Remarks
                     </th>
-                    <th class="col-md-2 text-center">
-                        Progress
-                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('created_at')">
                         Created By
@@ -190,27 +190,6 @@
                         <td class="col-md-2 text-center">
                             @{{data.name}}
                         </td>
-                        <td class="col-md-1 text-center">
-                            @{{data.custcategory.name}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            @{{data.account_manager.name}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            @{{data.attn_to}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            @{{data.contact}}
-                        </td>
-                        <td class="col-md-2 text-left" style="max-width: 300px;">
-                            @{{data.address}}
-                        </td>
-                        <td class="col-md-1 text-center">
-                            @{{data.postcode}}
-                        </td>
-                        <td class="col-md-2 text-left" style="max-width: 300px;">
-                            @{{data.remarks}}
-                        </td>
                         <td class="col-md-2 text-left">
                             <ul style="margin-left: 0px; padding-left: 5px; font-size: 12px;">
                                 <li ng-if="data.is_first">
@@ -232,6 +211,27 @@
                                     3rd try
                                 </li>
                             </ul>
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.custcategory.name}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.account_manager.name}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.attn_to}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.contact}}
+                        </td>
+                        <td class="col-md-2 text-left" style="max-width: 300px;">
+                            @{{data.address}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.postcode}}
+                        </td>
+                        <td class="col-md-2 text-left" style="max-width: 300px;">
+                            @{{data.remarks}}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{data.creator.name}} <br>
