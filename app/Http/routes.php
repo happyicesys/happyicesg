@@ -357,6 +357,7 @@ Route::get('/potential-customer', 'PotentialCustomerController@index');
 Route::post('/api/potential-customer', 'PotentialCustomerController@getDataApi');
 Route::post('/api/potential-customer/store-update', 'PotentialCustomerController@storeUpdateApi');
 Route::post('/api/potential-customer-file', 'PotentialCustomerController@storeAttachment');
+Route::post('/api/potential-customer/performance', 'PotentialCustomerController@getPerformanceApi');
 
 
 Route::post('/api/meeting-minute', 'MeetingMinuteController@getDataApi');

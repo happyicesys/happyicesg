@@ -564,7 +564,8 @@ class DailyreportController extends Controller
                                 if($dateIndex == $transaction->date) {
                                     foreach($date as $managerIndex => $manager) {
                                         if($managerIndex == $transaction->account_manager_id) {
-                                            $dataArr[$monthIndex]['dates'][$dateIndex][$transaction->date][$transaction->account_manager_id]['sales'] = $transaction->sales_total;
+                                            // $dataArr[$monthIndex]['dates'][$dateIndex][$transaction->date][$transaction->account_manager_id]['sales'] = $transaction->sales_total;
+                                            $dataArr[$monthIndex]['dates'][$transaction->date][$transaction->account_manager_id]['sales'] = $transaction->sales_total;
                                             $salesTotal += round($transaction->sales_total, 2);
                                             $createNewTransaction = false;
                                             // unset($transaction);

@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PotentialCustomer;
+use App\HasMonthOptions;
+use Carbon\Carbon;
+use DB;
 
 class PotentialCustomerController extends Controller
 {
+    use HasMonthOptions;
+
     //auth-only login can see
     public function __construct()
     {
@@ -18,7 +23,9 @@ class PotentialCustomerController extends Controller
     // get index page
     public function index()
     {
-        return view('potential-customer.index');
+        $monthOptions = $this->getMonthOptions();
+
+        return view('potential-customer.index', compact('monthOptions'));
     }
 
     // get data api
@@ -55,13 +62,19 @@ class PotentialCustomerController extends Controller
 
         // dd($request->all());
         if($id) {
+            // $request->merge(['updated_by' => $currentUserId]);
+            // $request->merge(['updated_at' => Carbon::now()]);
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
             $model->updated_by = $currentUserId;
+            $model->updated_at = Carbon::now();
             $model->save();
         }else {
+            // $request->merge(['created_by' => $currentUserId]);
+            // $request->merge(['created_at' => Carbon::now()]);
             $model = PotentialCustomer::create($request->all());
             $model->created_by = $currentUserId;
+            $model->created_at = Carbon::now();
             $model->save();
         }
     }
@@ -70,6 +83,138 @@ class PotentialCustomerController extends Controller
     public function storeAttachments(Request $request)
     {
         dd($request->all());
+    }
+
+    // return performance api
+    public function getPerformanceApi(Request $request)
+    {
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater'])
+                                ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'potential_customers.account_manager_id');
+
+        // set update from and to & create from and to
+        if($currentMonth = request('current_month')) {
+            $thisMonth = Carbon::createFromFormat('d-m-Y', '01-'.$currentMonth);
+            $dateFrom = $thisMonth->copy()->startOfMonth()->toDateString();
+            $dateTo = $thisMonth->copy()->endOfMonth()->toDateString();
+        }
+
+        $createdQuery = clone $model;
+        $updatedQuery = clone $model;
+
+        $request->merge(['created_from' => $dateFrom]);
+        $request->merge(['created_to' => $dateTo]);
+        $request->merge(['updated_from' => null]);
+        $request->merge(['updated_to' => null]);
+        $createdQuery = $this->potentialCustomerFilter($createdQuery, $request);
+
+        $request->merge(['created_from' => null]);
+        $request->merge(['created_to' => null]);
+        $request->merge(['updated_from' => $dateFrom]);
+        $request->merge(['updated_to' => $dateTo]);
+        $updatedQuery = $this->potentialCustomerFilter($updatedQuery, $request);
+
+        $createdQuery = $createdQuery->select(
+            'account_manager.id AS account_manager_id', 'account_manager.name AS account_manager_name',
+            DB::raw('COUNT(potential_customers.id) AS created_count'),
+            DB::raw('MONTH(potential_customers.created_at) AS month'),
+            DB::raw('DATE(potential_customers.created_at) AS date'),
+            DB::raw('DATE_FORMAT(potential_customers.created_at, "%a") AS day')
+        );
+
+        $updatedQuery = $updatedQuery->select(
+            'account_manager.id AS account_manager_id', 'account_manager.name AS account_manager_name',
+            DB::raw('COUNT(potential_customers.id) AS updated_count'),
+            DB::raw('MONTH(potential_customers.updated_at) AS month'),
+            DB::raw('DATE(potential_customers.updated_at) AS date'),
+            DB::raw('DATE_FORMAT(potential_customers.updated_at, "%a") AS day')
+        );
+
+        $createdQuery = $createdQuery->groupBy('date')->groupBy('account_manager.id');
+        $updatedQuery = $updatedQuery->groupBy('date')->groupBy('account_manager.id');
+
+        if($sortName = request('sortName')){
+            $createdQuery = $createdQuery->orderBy($sortName, request('sortBy') ? 'asc' : 'desc');
+            $updatedQuery = $updatedQuery->orderBy($sortName, request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $createdQuery = $createdQuery->orderBy('date', 'desc')->orderBy('account_manager.name', 'asc');
+            $updatedQuery = $updatedQuery->orderBy('date', 'desc')->orderBy('account_manager.name', 'asc');
+        }
+
+        $createdCol = $createdQuery->get();
+        $updatedCol = $updatedQuery->get();
+
+        $dataArr = [
+            'title' => 'Current Month',
+            'month' => $thisMonth->copy()->month,
+            'dates' => []
+        ];
+        // dd($createdCol->toArray(), $updatedCol->toArray());
+
+        if($createdCol or $updatedCol) {
+            $createdTotal = 0;
+            $updatedTotal = 0;
+            if(count($createdCol) > 0) {
+                foreach($createdCol as $created) {
+                    $addNewDate = true;
+                    if($dataArr['dates']) {
+                        foreach($dataArr['dates'] as $dateIndex => $date) {
+                            if($dateIndex == $created->date) {
+                                foreach($date as $managerIndex => $manager) {
+                                    if($managerIndex == $created->account_manager_id) {
+                                        $dataArr['dates'][$created->date][$created->account_manager_id]['created'] = $created->created_count;
+                                        $dataArr['dates'][$created->date][$created->account_manager_id]['account_manager_name'] = $created->account_manager_name;
+                                        $dataArr['dates'][$created->date][$created->account_manager_id]['date'] = $created->date;
+                                        $dataArr['dates'][$created->date][$created->account_manager_id]['day'] = $created->day;
+                                        $createdTotal += $created->created_count;
+                                        $addNewDate = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if($addNewDate) {
+                        $dataArr['dates'][$created->date][$created->account_manager_id]['created'] = $created->created_count;
+                        $dataArr['dates'][$created->date][$created->account_manager_id]['account_manager_name'] = $created->account_manager_name;
+                        $dataArr['dates'][$created->date][$created->account_manager_id]['date'] = $created->date;
+                        $dataArr['dates'][$created->date][$created->account_manager_id]['day'] = $created->day;
+                        $createdTotal += $created->created_count;
+                    }
+                }
+
+                foreach($updatedCol as $updated) {
+                    $addNewDate = true;
+                    if($dataArr['dates']) {
+                        foreach($dataArr['dates'] as $dateIndex => $date) {
+                            if($dateIndex == $updated->date) {
+                                foreach($date as $managerIndex => $manager) {
+                                    if($managerIndex == $updated->account_manager_id) {
+                                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['updated'] = $updated->updated_count;
+                                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['account_manager_name'] = $updated->account_manager_name;
+                                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['date'] = $updated->date;
+                                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['day'] = $updated->day;
+                                        $updatedTotal += $updated->updated_count;
+                                        $addNewDate = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if($addNewDate) {
+                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['updated'] = $updated->updated_count;
+                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['account_manager_name'] = $updated->account_manager_name;
+                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['date'] = $updated->date;
+                        $dataArr['dates'][$updated->date][$updated->account_manager_id]['day'] = $updated->day;
+                        $updatedTotal += $updated->updated_count;
+                    }
+                }
+            }
+            $dataArr['createdTotal'] = $createdTotal;
+            $dataArr['updatedTotal'] = $updatedTotal;
+        }
+
+        return $dataArr;
     }
 
     // potentialCustomerFilter
@@ -81,6 +226,10 @@ class PotentialCustomerController extends Controller
         $contact = $request->contact;
         $created_at = $request->created_at;
         $updated_at = $request->updated_at;
+        $created_from = $request->created_from;
+        $created_to = $request->created_to;
+        $updated_from = $request->updated_from;
+        $updated_to = $request->updated_to;
 
         if($custcategory) {
             if (count($custcategory) == 1) {
@@ -107,6 +256,16 @@ class PotentialCustomerController extends Controller
 
         if($updated_at) {
             $query = $query->whereDate('potential_customers.updated_at', '=', $updated_at);
+        }
+
+        if($created_from and $created_to) {
+            $query = $query->whereDate('potential_customers.created_at', '>=', $created_from);
+            $query = $query->whereDate('potential_customers.created_at', '<=', $created_to);
+        }
+
+        if($updated_from and $updated_to) {
+            $query = $query->whereDate('potential_customers.updated_at', '>=', $updated_from);
+            $query = $query->whereDate('potential_customers.updated_at', '<=', $updated_to);
         }
 
         return $query;

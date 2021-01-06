@@ -343,7 +343,7 @@ var app = angular.module('app', [
     $scope.sortName = '';
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
-        date: '',
+        current_month: moment().month()+1 + '-' + moment().year(),
         account_manager_id: '',
         pageNum: '100',
     }
@@ -441,21 +441,22 @@ var app = angular.module('app', [
     function getPage(pageNumber, first){
         $scope.spinner = true;
         $http.post('/api/potential-customer/performance?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-            if(data.data.data){
-                $scope.alldata = data.data.data;
-                $scope.totalCount = data.data.total;
-                $scope.currentPage = data.data.current_page;
-                $scope.indexFrom = data.data.from;
-                $scope.indexTo = data.data.to;
-            }else{
-                $scope.alldata = data.data;
-                $scope.totalCount = data.data.length;
-                $scope.currentPage = 1;
-                $scope.indexFrom = 1;
-                $scope.indexTo = data.data.length;
-            }
-            // get total count
-            $scope.All = data.data.length;
+            $scope.data = data;
+
+            // if(data.data.data){
+            //     $scope.alldata = data.data.data;
+            //     $scope.totalCount = data.data.total;
+            //     $scope.currentPage = data.data.current_page;
+            //     $scope.indexFrom = data.data.from;
+            //     $scope.indexTo = data.data.to;
+            // }else{
+            //     $scope.alldata = data.data;
+            //     $scope.totalCount = data.data.length;
+            //     $scope.currentPage = 1;
+            //     $scope.indexFrom = 1;
+            //     $scope.indexTo = data.data.length;
+            // }
+            // $scope.All = data.data.length;
 
             // return total amount
             $scope.spinner = false;
