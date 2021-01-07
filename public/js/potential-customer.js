@@ -94,16 +94,47 @@ var app = angular.module('app', [
               $scope.alldata[key].check = checked;
           });
       }
+      $scope.files = [];
+      let images = [];
+      var formData = new FormData();
 
-    //   $scope.merchandiserInit = function(userId) {
-    //       $scope.search.account_manager = userId;
-    //   }
+      $scope.uploadFile = function (potential_customer_id) {
+          var request = {
+              method: 'POST',
+              url: '/api/potential-customer-attachment/potential-customer/' + potential_customer_id,
+              data: formData,
+              headers: {
+                  'Content-Type': undefined
+              }
+          };
+          $http(request)
+              .then(function success(e) {
+                  $scope.files = e.data.files;
+                  $scope.errors = [];
+                  // clear uploaded file
+                  var fileElement = angular.element('#image_file');
+                  fileElement.value = '';
+                  getPage(1, false)
+                  alert("Image(s) has been uploaded successfully!");
+              }, function error(e) {
+                  $scope.errors = e.data.errors;
+              });
+      };
 
+      $scope.setTheFiles = function ($files) {
+          angular.forEach($files, function (value, key) {
+            //   console.log(value)
+              formData.append('images[]', value);
+          });
+      };
 
-      // delete single entry api
-      $scope.onSingleEntryDeleted = function(item) {
-        let index = $scope.form.route_template_items.indexOf(item);
-        $scope.form.route_template_items.splice(index, 1)
+      $scope.deleteFile = function(potential_customer_id) {
+          $http.delete('/api/potential-customer-attachment/potential_customer/'+ potential_customer_id + '/delete').success(function(data) {
+
+            //   $http.get('/api/bomcategory/' + bomcategory_id).success(function(catdata) {
+            //       fetchSingleBomcategory(catdata);
+            //   });
+          });
       }
 
       // upon form submit
@@ -115,15 +146,6 @@ var app = angular.module('app', [
           });
           getPage(1)
         });
-      }
-
-      // single edit entry clicked
-      $scope.onSingleRouteTemplateClicked = function(routeTemplate) {
-        $scope.form = getDefaultForm()
-        $('.select').select2({
-          placeholder: 'Select...'
-        });
-        $scope.form = routeTemplate
       }
 
         //   on edit single entry
@@ -147,6 +169,7 @@ var app = angular.module('app', [
                 is_sixth: data.is_sixth,
                 is_seventh: data.is_seventh,
                 is_eighth: data.is_eighth,
+                attachments: data.potential_customer_attachments
             }
             $('.select').select2({
               placeholder: 'Select...'
@@ -654,6 +677,19 @@ var app = angular.module('app', [
         });
     }
   }
+
+app.directive('ngFiles', ['$parse', function ($parse) {
+    function file_links(scope, element, attrs) {
+        var onChange = $parse(attrs.ngFiles);
+        element.on('change', function (event) {
+            onChange(scope, {$files: event.target.files});
+        });
+    }
+    return {
+        link: file_links
+    }
+}]);
+
 
   app.controller('potentialCustomerController', potentialCustomerController);
   app.controller('performanceController', performanceController);

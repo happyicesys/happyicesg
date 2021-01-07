@@ -15,5 +15,6 @@ Vagrantfile
 /public/import_excel
 /public/import_excel_result
 /storage/import_excel_result
+/public/potential_customer
 
 

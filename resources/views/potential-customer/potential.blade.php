@@ -35,6 +35,7 @@
           </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+{{--
                 @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                     <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
                         <option value="">All</option>
@@ -44,7 +45,7 @@
                         </option>
                         @endforeach
                     </select>
-                @else
+                @else --}}
                     {!! Form::select('account_manager',
                             [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
                             null,
@@ -54,7 +55,7 @@
                                 'ng-change'=>'searchDB()'
                             ])
                     !!}
-                @endif
+                {{-- @endif --}}
             </div>
             <div class="form-group col-md-2 col-sm-4 col-xs-12">
                 {!! Form::label('contact', 'Contact', ['class'=>'control-label search-title']) !!}
@@ -398,7 +399,21 @@
             </div>
             {{-- <form action="/api/potential-customer/3/attachment" class="dropzone"></form> --}}
 
+            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="form.attachments">
+            {{-- <a ng-href="@{{attachment.url}}"> --}}
+                <img ng-src="@{{attachment.url}}" height="100" width="100" style="border:1px solid black" ng-repeat="attachment in form.attachments">
+            {{-- </a> --}}
+            </div>
             <div ng-if="form.id" class="form-group">
+                <div class="form-group">
+                    <label for="files">Upload Image(s)</label>
+                    <input type="file" name="files" id="files" ng-files="setTheFiles($files)" id="image_file" class="form-control" multiple>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" ng-click="uploadFile(form.id)"><i class="fa fa-upload"></i> Upload File(s)</button>
+                    <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button>
+                </div>
+
                 {{-- <input type="file" nv-file-select uploader="uploader"/><br/>
                 <ul>
                     <li ng-repeat="item in uploader.queue">

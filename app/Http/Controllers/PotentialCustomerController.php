@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PotentialCustomer;
+use App\PotentialCustomerAttachment;
 use App\HasMonthOptions;
 use Carbon\Carbon;
 use DB;
@@ -31,7 +32,7 @@ class PotentialCustomerController extends Controller
     // get data api
     public function getDataApi(Request $request)
     {
-        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater']);
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater', 'potentialCustomerAttachments']);
                 // ->leftJoin('users as account_manager', 'potential_customers.account_manager_id', '=', 'account_manager.id')
                 // ->leftJoin('custcategories', 'potential_customers.custcategory_id', '=', 'custcategories.id');
 
@@ -79,10 +80,25 @@ class PotentialCustomerController extends Controller
         }
     }
 
-    // store attachments
-    public function storeAttachments(Request $request)
+    // upload attachments file()
+    public function storePotentialCustomerAttachment($potential_customer_id)
     {
-        dd($request->all());
+        $potentialCustomer = PotentialCustomer::findOrFail($potential_customer_id);
+        $potentialCustomer->updated_by = auth()->user()->id;
+        $potentialCustomer->updated_at = Carbon::now();
+        $potentialCustomer->save();
+        // dd(request()->all());
+        if($images = request()->file('images')){
+            foreach($images as $image) {
+                // dd($image);
+                $name = (Carbon::now()->format('dmYHi')).$image->getClientOriginalName();
+                $image->move('potential_customer/'.$potentialCustomer->id.'/', $name);
+                $potentialCustomerAttachment = new PotentialCustomerAttachment;
+                $potentialCustomerAttachment->url = '/potential_customer/'.$potentialCustomer->id.'/'.$name;
+                $potentialCustomerAttachment->potential_customer_id = $potentialCustomer->id;
+                $potentialCustomerAttachment->save();
+            }
+        }
     }
 
     // return performance api

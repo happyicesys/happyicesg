@@ -28,6 +28,11 @@ class PotentialCustomer extends Model
         return $this->belongsTo(Custcategory::class);
     }
 
+    public function potentialCustomerAttachments()
+    {
+        return $this->hasMany(PotentialCustomerAttachment::class);
+    }
+
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
