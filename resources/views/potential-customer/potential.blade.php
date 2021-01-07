@@ -411,7 +411,7 @@
                 </div>
                 <div class="form-group">
                     <button class="btn btn-success" ng-click="uploadFile(form.id)"><i class="fa fa-upload"></i> Upload File(s)</button>
-                    <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button>
+                    {{-- <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button> --}}
                 </div>
 
                 {{-- <input type="file" nv-file-select uploader="uploader"/><br/>
