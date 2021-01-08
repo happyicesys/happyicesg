@@ -10,6 +10,7 @@ use App\PotentialCustomerAttachment;
 use App\HasMonthOptions;
 use Carbon\Carbon;
 use DB;
+use File;
 
 class PotentialCustomerController extends Controller
 {
@@ -231,6 +232,24 @@ class PotentialCustomerController extends Controller
         }
 
         return $dataArr;
+    }
+
+    // return potential customer attachments by potential customer id
+    public function getAttachmentApi($id)
+    {
+        $potentialCustomerAttachments = PotentialCustomerAttachment::where('potential_customer_id', $id)->oldest()->paginate(1);
+
+        return [
+            'data' => $potentialCustomerAttachments
+        ];
+    }
+
+    // delete single entry potential customer attachment
+    public function deletePotentialCustomerAttachment($potentialCustomerAttachmentId)
+    {
+        $potentialCustomerAttachment = PotentialCustomerAttachment::findOrFail($potentialCustomerAttachmentId);
+        File::delete($potentialCustomerAttachment->url);
+        $potentialCustomerAttachment->delete();
     }
 
     // potentialCustomerFilter

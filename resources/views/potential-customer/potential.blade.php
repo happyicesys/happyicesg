@@ -253,6 +253,9 @@
                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#potential-customer-modal" ng-click="onSingleEntryEdit(data)">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </button>
+                            <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#attachments" ng-click="onImageClicked(data.id, data)" ng-if="data.potential_customer_attachments.length > 0">
+                                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                            </button>
 {{--
                             <button class="btn btn-danger btn-sm" ng-click="onSingleEntryRemove(data.id)">
                                 <i class="fa fa-times" aria-hidden="true"></i>
@@ -399,10 +402,8 @@
             </div>
             {{-- <form action="/api/potential-customer/3/attachment" class="dropzone"></form> --}}
 
-            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="form.attachments">
-            {{-- <a ng-href="@{{attachment.url}}"> --}}
+            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="form.attachments" ng-click="onImageClicked(form.id)" data-toggle="modal" data-target="#attachments">
                 <img ng-src="@{{attachment.url}}" height="100" width="100" style="border:1px solid black" ng-repeat="attachment in form.attachments">
-            {{-- </a> --}}
             </div>
             <div ng-if="form.id" class="form-group">
                 <div class="form-group">
@@ -413,86 +414,6 @@
                     <button class="btn btn-success" ng-click="uploadFile(form.id)"><i class="fa fa-upload"></i> Upload File(s)</button>
                     {{-- <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button> --}}
                 </div>
-
-                {{-- <input type="file" nv-file-select uploader="uploader"/><br/>
-                <ul>
-                    <li ng-repeat="item in uploader.queue">
-                        Name: <span ng-bind="item.file.name"></span><br/>
-                        <button ng-click="item.upload()">upload</button>
-                    </li>
-                </ul> --}}
-                {{-- <ng-dropzone class="dropzone" options="attachmentOptions"></ng-dropzone> --}}
-                {{-- <ng-dropzone class="dropzone" options="dzOptions" ></ng-dropzone> --}}
-                {{-- <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        Attachment(s)
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-list-search table-hover table-bordered">
-                            <tr style="background-color: #DDFDF8">
-                                <th class="col-md-1 text-center">
-                                    #
-                                </th>
-                                <th class="col-md-10 text-center">
-                                    Image
-                                </th>
-                                <th class="col-md-1 text-center">
-                                    Action
-                                </th>
-                            </tr>
-
-                            <tbody>
-                                @unless(count($invattachments)>0)
-                                    <td class="text-center" colspan="12">No Records Found</td>
-                                @else
-                                    @foreach($invattachments as $index => $invattachment)
-
-                                    @php
-                                        $ext = pathinfo($invattachment->path, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    <tr>
-                                        <td class="col-md-1 text-center">
-                                            {{ $index + 1 }}
-                                        </td>
-                                        <td class="col-md-10">
-                                            @if($ext == 'pdf')
-                                                <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
-                                            @else
-                                                <a href="{{$invattachment->path}}">
-                                                    <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
-                                                </a>
-                                            @endif
-                                        </td>
-                                        <td class="col-md-1 text-center">
-                                            @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                                                <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
-                                                @if($ext == 'pdf')
-                                                    <a href="{{$invattachment->path}}" class="btn btn-sm btn-info">Download</a>
-                                                @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                @endunless
-                            </tbody>
-                        </table>
-
-                        @if(count($invattachments) > 0)
-                            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['TransactionController@removeAttachment', $invattachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
-                            {!! Form::close() !!}
-                        @endif
-
-                        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') or (auth()->user()->hasRole('hd_user') and $transaction->status == 'Pending') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        {!! Form::open(['action'=>['TransactionController@addInvoiceAttachment', $transaction->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
-                        @endif
-
-                        {!! Form::close() !!}
-                        <label class="pull-right totalnum" for="totalnum">
-                            Total of {{count($invattachments)}} entries
-                        </label>
-                    </div>
-                </div> --}}
             </div>
           </div>
           <div class="modal-footer">
@@ -523,20 +444,37 @@
     </div>
 </div>
 
-<script>
-$(document).ready(function() {
-    Dropzone.autoDiscover = false;
-    $('.dropzone').dropzone({
-        init: function()
-        {
-            this.on("complete", function()
-            {
-              if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                // location.reload();
-              }
-            });
-        }
+<div id="attachments" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Image(s)</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12 text-center">
+                        <button class="btn btn-success btn-md" ng-disabled="!images.alldata.prev_page_url" ng-click="onPrevImageClicked()">
+                            <i class="fa fa-backward" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-xs-12 text-center">
+                        <img ng-src="@{{data.url}}" class=" img-responsive center-block" height="300" width="300" style="border:1px solid black" dir-paginate="data in images.alldata.data | itemsPerPage:images.itemsPerPage" total-items="images.totalCount" current-page="images.currentPage" pagination-id="images">
+                        <button class="btn btn-danger btn-block center-block" style="margin-top: 15px;" ng-click="onRemoveImageClicked()">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12 text-center">
+                        <button class="btn btn-success btn-md" ng-disabled="!images.alldata.next_page_url" ng-click="onNextImageClicked()">
+                            <i class="fa fa-forward" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
 
-    });
-});
-</script>
+    </div>
+</div>

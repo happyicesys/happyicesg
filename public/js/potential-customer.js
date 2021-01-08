@@ -30,6 +30,7 @@ var app = angular.module('app', [
           pageNum: '100',
       }
       $scope.form = getDefaultForm()
+      $scope.images = [];
 
       // init page load
       getPage(1, true);
@@ -58,6 +59,10 @@ var app = angular.module('app', [
       // switching page
       $scope.pageChanged = function(newPage){
           getPage(newPage, false);
+      };
+
+      $scope.imagePageChanged = function(newPage){
+        getImagePage(newPage, $scope.form.id);
       };
 
       $scope.pageNumChanged = function(){
@@ -135,6 +140,13 @@ var app = angular.module('app', [
             //       fetchSingleBomcategory(catdata);
             //   });
           });
+      }
+
+      $scope.onImageClicked = function(id, data = null) {
+        if(!$scope.form.id) {
+            $scope.onSingleEntryEdit(data)
+        }
+        getImagePage(1, id)
       }
 
       // upon form submit
@@ -228,6 +240,22 @@ var app = angular.module('app', [
               // $scope.compareDateChange(scope_from);
           }
           $scope.searchDB();
+      }
+
+      $scope.onPrevImageClicked = function() {
+        getImagePage($scope.images.currentPage - 1, $scope.form.id)
+      }
+
+      $scope.onNextImageClicked = function() {
+        //   console.log($scope.images.currentPage, $scope.form.id)
+        getImagePage($scope.images.currentPage + 1, $scope.form.id)
+      }
+
+      $scope.onRemoveImageClicked = function() {
+        //   console.log($scope.images.alldata.data[0].id)
+          $http.post('/api/potential-customer-attachment/' + $scope.images.alldata.data[0].id + '/delete').success(function(data) {
+            getImagePage(1, $scope.form.id)
+          })
       }
 
       function getDefaultForm() {
@@ -350,6 +378,17 @@ var app = angular.module('app', [
               // return total amount
               $scope.spinner = false;
           });
+      }
+
+      function getImagePage(pageNumber, id) {
+        $http.post('/api/potential-customer/'+ id + '/attachments?page=' + pageNumber).success(function(data) {
+            $scope.images.alldata = data.data;
+            $scope.images.totalCount = data.data.data.length;
+            $scope.images.currentPage = data.data.current_page;
+            $scope.images.itemsPerPage = 1;
+            $scope.images.indexFrom = 1;
+            $scope.images.indexTo = data.data.data.length;
+        });
       }
   }
 
