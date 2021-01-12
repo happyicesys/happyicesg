@@ -17,7 +17,9 @@
                         @cannot('transaction_view')
                             @if(!auth()->user()->hasRole('driver-supervisor'))
                                 <a href="/item/create" class="btn btn-success">+ New Product</a>
+                            @endif
                                 <a href="/inventory/create" class="btn btn-primary">+ Stock Movement</a>
+                            @if(!auth()->user()->hasRole('driver-supervisor'))
                                 <a href="/inventory/setting" class="btn btn-warning"><i class="fa fa-cog"></i> Limit Setting</a>
                                 <a href="/inventory/email" class="btn btn-info"> Email Alert Limit Setting</a>
                             @endif
@@ -31,9 +33,10 @@
                     <div class="panel-heading">
                         <ul class="nav nav-pills nav-justified" role="tablist">
                             <li class="active"><a href="#item" role="tab" data-toggle="tab">Item</a></li>
+
+                            <li><a href="#stock" role="tab" data-toggle="tab">Stock Movement</a></li>
                             @cannot('transaction_view')
                             @if(!auth()->user()->hasRole('driver-supervisor'))
-                                <li><a href="#stock" role="tab" data-toggle="tab">Stock Movement</a></li>
                                 @if(Auth::user()->hasRole('admin'))
                                     <li><a href="#unit_cost" role="tab" data-toggle="tab">Unit Cost</a></li>
                                 @endif
