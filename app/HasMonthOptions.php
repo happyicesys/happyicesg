@@ -10,13 +10,24 @@ trait HasMonthOptions{
     public function getMonthOptions()
     {
         // past year till now months option
+        // $month_options = array();
+        // $oneyear_ago = Carbon::today()->subYears(3);
+        // $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
+        // $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+
+        // for($i=1; $i<=$diffmonths; $i++) {
+        //     $oneyear_ago = $oneyear_ago->addMonth();
+        //     $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        // }
         $month_options = array();
         $oneyear_ago = Carbon::today()->subYears(3);
         $diffmonths = Carbon::today()->diffInMonths($oneyear_ago);
-        $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
-        for($i=1; $i<=$diffmonths; $i++) {
-            $oneyear_ago = $oneyear_ago->addMonth();
-            $month_options[$oneyear_ago->month.'-'.$oneyear_ago->year] = Month::findOrFail($oneyear_ago->month)->name.' '.$oneyear_ago->year;
+        $today = Carbon::today();
+        $month_options[$today->month.'-'.$today->year] = Month::findOrFail($today->month)->name.' '.$today->year;
+
+        for($i=$diffmonths; $i>=1; $i--) {
+            $today = $today->subMonth();
+            $month_options[$today->month.'-'.$today->year] = Month::findOrFail($today->month)->name.' '.$today->year;
         }
         return $month_options;
     }

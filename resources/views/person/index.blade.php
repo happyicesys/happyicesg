@@ -200,10 +200,10 @@
                             {!! Form::label('created_month', 'Created Month', ['class'=>'control-label search-title']) !!}
                             <select class="select form-control" name="created_month" ng-model="search.created_month" ng-change="searchDB()">
                                 <option value="">All</option>
-                                <option value="-1">Earlier than that</option>
                                 @foreach($month_options as $key => $value)
                                     <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
                                 @endforeach
+                                <option value="-1">Earlier than that</option>
                             </select>
                         </div>
                     </div>
