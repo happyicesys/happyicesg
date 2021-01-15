@@ -196,6 +196,16 @@
                             </select>
                         </div>
                         @endif
+                        <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                            {!! Form::label('created_month', 'Created Month', ['class'=>'control-label search-title']) !!}
+                            <select class="select form-control" name="created_month" ng-model="search.created_month" ng-change="searchDB()">
+                                <option value="">All</option>
+                                <option value="-1">Earlier than that</option>
+                                @foreach($month_options as $key => $value)
+                                    <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <div class="row" style="padding-top: 20px;">

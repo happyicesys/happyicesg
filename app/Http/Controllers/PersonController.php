@@ -24,6 +24,7 @@ use App\Deal;
 use App\User;
 use App\Personmaintenance;
 use App\OutletVisit;
+use App\HasMonthOptions;
 use Auth;
 use DB;
 use App\HasProfileAccess;
@@ -33,7 +34,7 @@ use App\Traits\HasCustcategoryAccess;
 
 class PersonController extends Controller
 {
-    use HasProfileAccess, HasCustcategoryAccess;
+    use HasProfileAccess, HasCustcategoryAccess, HasMonthOptions;
 
     //auth-only login can see
     public function __construct()
@@ -129,7 +130,8 @@ class PersonController extends Controller
 
     public function index()
     {
-        return view('person.index');
+        $month_options = $this->getMonthOptions();
+        return view('person.index', compact('month_options'));
     }
 
     public function create()
@@ -1040,6 +1042,7 @@ class PersonController extends Controller
         $zoneId = $request->zone_id;
         $excludeCustCat = $request->excludeCustCat;
         $freezers = $request->freezers;
+        $createdMonth = $request->created_month;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1120,6 +1123,17 @@ class PersonController extends Controller
                       ->whereRaw('addfreezers.person_id = people.id')
                       ->whereIn('addfreezers.freezer_id', $freezers);
             }) ;
+        }
+        if($createdMonth) {
+            if($createdMonth == '-1') {
+                $searchTiming = Carbon::today()->subYears(3)->startOfMonth()->toDateString();
+                $people = $people->whereDate('people.created_at', '<=', $searchTiming);
+            }else {
+                $searchTiming = Carbon::createFromFormat('d-m-Y', '01-'.$createdMonth);
+                $dateFrom = $searchTiming->copy()->startOfMonth()->toDateString();
+                $dateTo = $searchTiming->copy()->endOfMonth()->toDateString();
+                $people = $people->whereDate('people.created_at', '>=', $dateFrom)->whereDate('people.created_at', '<=', $dateTo);
+            }
         }
 
         return $people;
