@@ -510,6 +510,12 @@
                                 <span ng-if="search.sortName == 'payterm' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('created_at')">
+                                Created At
+                                <span ng-if="search.sortName == 'created_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'created_at' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('active')">
                                 Status
                                 <span ng-if="search.sortName == 'active' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -581,6 +587,7 @@
                                     @{{ person.zone_name }}
                                 </td>
                                 <td class="col-md-1 text-center">@{{person.payterm}}</td>
+                                <td class="col-md-1 text-center">@{{ person.created_at }}</td>
                                 <td class="col-md-1 text-center">@{{ person.active }}</td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">
