@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PotentialCustomer;
 use App\PotentialCustomerAttachment;
+use App\SalesProgress;
 use App\HasMonthOptions;
 use Carbon\Carbon;
 use DB;
@@ -33,7 +34,7 @@ class PotentialCustomerController extends Controller
     // get data api
     public function getDataApi(Request $request)
     {
-        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater', 'potentialCustomerAttachments']);
+        $model = PotentialCustomer::with(['accountManager', 'custcategory', 'creator', 'updater', 'potentialCustomerAttachments', 'salesProgresses']);
                 // ->leftJoin('users as account_manager', 'potential_customers.account_manager_id', '=', 'account_manager.id')
                 // ->leftJoin('custcategories', 'potential_customers.custcategory_id', '=', 'custcategories.id');
 
@@ -61,23 +62,27 @@ class PotentialCustomerController extends Controller
     {
         $id = $request->id;
         $currentUserId = auth()->user()->id;
-
-        // dd($request->all());
+// dd($request->all());
         if($id) {
-            // $request->merge(['updated_by' => $currentUserId]);
-            // $request->merge(['updated_at' => Carbon::now()]);
             $model = PotentialCustomer::findOrFail($id);
             $model->update($request->all());
             $model->updated_by = $currentUserId;
             $model->updated_at = Carbon::now();
             $model->save();
         }else {
-            // $request->merge(['created_by' => $currentUserId]);
-            // $request->merge(['created_at' => Carbon::now()]);
             $model = PotentialCustomer::create($request->all());
             $model->created_by = $currentUserId;
             $model->created_at = Carbon::now();
             $model->save();
+        }
+        if($salesProgresses = $request->salesProgresses) {
+            $model->salesProgresses()->detach();
+            foreach($salesProgresses as $index => $salesProgress) {
+                if($salesProgress === true) {
+                    $sales = SalesProgress::findOrFail($index);
+                    $model->salesProgresses()->attach($sales);
+                }
+            }
         }
     }
 

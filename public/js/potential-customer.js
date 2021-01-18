@@ -8,7 +8,7 @@ var app = angular.module('app', [
     'thatisuday.dropzone'
   ]);
 
-  function potentialCustomerController($scope, $http){
+  function potentialCustomerController($scope, $http, $filter){
       // init the variables
       $scope.alldata = [];
       $scope.totalCount = 0;
@@ -31,9 +31,11 @@ var app = angular.module('app', [
       }
       $scope.form = getDefaultForm()
       $scope.images = [];
+      $scope.salesProgresses = [];
 
       // init page load
       getPage(1, true);
+      getSalesProgress();
 
       angular.element(document).ready(function () {
           $('.select').select2({
@@ -160,8 +162,18 @@ var app = angular.module('app', [
         });
       }
 
+      $scope.onAddPotentialCustomerTemplateButtonClicked = function() {
+        $scope.form = getDefaultForm()
+      }
+
         //   on edit single entry
         $scope.onSingleEntryEdit = function(data) {
+            let salesProgresses = [];
+            if(data.sales_progresses) {
+                angular.forEach(data.sales_progresses, function(value, index) {
+                    salesProgresses[value.id] = true
+                })
+            }
             $scope.form = {
                 id: data.id,
                 name: data.name,
@@ -173,33 +185,12 @@ var app = angular.module('app', [
                 postcode: data.postcode,
                 remarks: data.remarks,
                 is_important: data.is_important,
-                is_first: data.is_first,
-                is_second: data.is_second,
-                is_third: data.is_third,
-                is_fourth: data.is_fourth,
-                is_fifth: data.is_fifth,
-                is_sixth: data.is_sixth,
-                is_seventh: data.is_seventh,
-                is_eighth: data.is_eighth,
+                salesProgresses: salesProgresses,
                 attachments: data.potential_customer_attachments
             }
             $('.select').select2({
               placeholder: 'Select...'
             });
-
-            // $scope.uploader = new FileUploader();
-
-            // $scope.dzOptions = {
-            //   headers: {
-            //     'X-CSRF-TOKEN': '{{csrf_token()}}'
-            //   },
-            //   url : '/api/potential-customer-file',
-            //   paramName : 'photo',
-            //   maxFilesize : '10',
-            //   acceptedFiles : 'image/jpeg, images/jpg, image/png',
-            //   addRemoveLinks : true,
-            //   autoProcessQueue: true
-            // };
 
             $scope.attachmentOptions = {
               headers: {
@@ -258,6 +249,25 @@ var app = angular.module('app', [
           })
       }
 
+      $scope.syncSalesProgressCheck = function(itemArr, matchId) {
+            let itemId = $filter('filter')(itemArr, {id: matchId })[0];
+            if(itemId) {
+                return true
+            }else {
+                return false
+            }
+      }
+
+      $scope.onSalesProgressChanged = function(value) {
+          console.log(value);
+      }
+
+      $scope.rolesObjFromArray = function (rolesArr) {
+        rolesArr.forEach(function (role) {
+          $scope.currentUser.rolesObj[role] = true;
+        });
+      }
+
       function getDefaultForm() {
         return {
           id: '',
@@ -270,14 +280,8 @@ var app = angular.module('app', [
           postcode: '',
           remarks: '',
           is_important: '',
-          is_first: '',
-          is_second: '',
-          is_third: '',
-          is_fourth: '',
-          is_fifth: '',
-          is_sixth: '',
-          is_seventh: '',
-          is_eighth: '',
+          salesProgresses: [],
+          checkboxes: []
         }
       }
 
@@ -378,6 +382,12 @@ var app = angular.module('app', [
               // return total amount
               $scope.spinner = false;
           });
+      }
+
+      function getSalesProgress() {
+          $http.post('/api/sales-progress?page="All"').success(function(data) {
+            $scope.salesProgresses = data.data;
+          })
       }
 
       function getImagePage(pageNumber, id) {

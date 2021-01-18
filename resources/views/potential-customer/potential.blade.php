@@ -193,29 +193,8 @@
                         </td>
                         <td class="col-md-2 text-left" style="min-width: 110px;">
                             <ul style="margin-left: 0px; padding-left: 5px; font-size: 12px;">
-                                <li ng-if="data.is_seventh">
-                                    Need follow-up
-                                </li>
-                                <li ng-if="data.is_first">
-                                    Sample given
-                                </li>
-                                <li ng-if="data.is_second">
-                                    Meet Boss
-                                </li>
-                                <li ng-if="data.is_third">
-                                    First try boss reject
-                                </li>
-                                <li ng-if="data.is_fourth">
-                                    Approved
-                                </li>
-                                <li ng-if="data.is_eighth">
-                                    In-principle approved
-                                </li>
-                                <li ng-if="data.is_fifth">
-                                    2nd try
-                                </li>
-                                <li ng-if="data.is_sixth">
-                                    3rd try
+                                <li ng-repeat="sales_progress in data.sales_progresses">
+                                    @{{sales_progress.name}}
                                 </li>
                             </ul>
                         </td>
@@ -295,7 +274,16 @@
                 <input type="text" class="form-control" ng-model="form.name">
             </div>
             <div class="form-group">
-                <label>
+                <label ng-repeat="(index, salesProgress) in salesProgresses.data" style="margin-left: 0px; padding-left: 10px;">
+                    <input type="checkbox" ng-model="form.salesProgresses[salesProgress.id]"
+                    {{-- ng-change="onSalesProgressChanged(form.checkboxes[salesProgress.id])" --}}
+                    {{-- ng-checked="syncSalesProgressCheck(form.salesProgresses, salesProgress.id)" --}}
+                    ng-value-true=true ng-value-false=false>
+                    <span style="padding-left: 5px; margin-top: 5px;">
+                        @{{salesProgress.name}}
+                    </span>
+                </label>
+                {{-- <label>
                     <input type="checkbox" ng-model="form.is_seventh" ng-true-value="1" ng-false-value="0">
                     <span style="padding-left: 5px; margin-top: 5px;">
                         Need follow-up
@@ -342,7 +330,7 @@
                     <span style="padding-left: 5px; margin-top: 5px;">
                         3rd try
                     </span>
-                </label>
+                </label> --}}
             </div>
             <div class="form-group">
                 <label for="custcategory">

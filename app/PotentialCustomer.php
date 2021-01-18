@@ -33,6 +33,11 @@ class PotentialCustomer extends Model
         return $this->hasMany(PotentialCustomerAttachment::class);
     }
 
+    public function salesProgresses()
+    {
+        return $this->belongsToMany(SalesProgress::class, 'potential_customer_sales_progress', 'potential_customer_id', 'sales_progress_id');
+    }
+
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');

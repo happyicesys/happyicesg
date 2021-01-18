@@ -363,6 +363,8 @@ Route::post('/api/potential-customer-attachment/{id}/delete', 'PotentialCustomer
 Route::post('/api/potential-customer-attachment/potential-customer/{id}', 'PotentialCustomerController@storePotentialCustomerAttachment');
 // Route::post('/api/potential-customer-attachment/{potential-customer-attachment-id}/delete', 'PotentialCustomerController@deletePotentialCustomerAttachment');
 
+Route::post('/api/sales-progress', 'SalesProgressController@getDataApi');
+
 
 Route::post('/api/meeting-minute', 'MeetingMinuteController@getDataApi');
 Route::post('/api/meeting-minute/store-update', 'MeetingMinuteController@storeUpdateApi');

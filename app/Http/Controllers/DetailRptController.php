@@ -1595,7 +1595,7 @@ class DetailRptController extends Controller
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
-        $transactions = $this->filterUserDbCustcategory($transactions);
+        $transactions = $this->filterUserDbCustcategoryWithoutNull($transactions);
 
 
         if($profile_id) {
