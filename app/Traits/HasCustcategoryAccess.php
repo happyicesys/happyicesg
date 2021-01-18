@@ -18,6 +18,13 @@ trait HasCustcategoryAccess{
     {
         $custcategoryIdArr = $this->searchUserCustcategoryId();
 
+        if(auth()->user()->hasRole('admin')) {
+            return $query->where(function($query) use ($custcategoryIdArr){
+                $query->whereIn('custcategories.id', $custcategoryIdArr)
+                    ->orWhereNull('custcategory_id');
+            });
+        }
+
         return $query->whereIn('custcategories.id', $custcategoryIdArr);
     }
 
