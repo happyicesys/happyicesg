@@ -1,7 +1,7 @@
 <div class="panel panel-default" ng-cloak>
     <div class="panel-heading">
         <div class="panel-title">
-            Creation
+            Acc Holder
         </div>
     </div>
 

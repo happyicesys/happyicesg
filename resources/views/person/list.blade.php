@@ -575,7 +575,7 @@
                         <td class="col-md-1 text-center">@{{ person.active }}</td>
                     </tr>
                     <tr ng-if="!alldata || alldata.length == 0">
-                        <td colspan="14" class="text-center">No Records Found</td>
+                        <td colspan="18" class="text-center">No Records Found</td>
                     </tr>
                 </tbody>
             </table>
