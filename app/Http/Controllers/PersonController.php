@@ -64,21 +64,6 @@ class PersonController extends Controller
         $input = $request->all();
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
-/*
-        $people = DB::table('persontagattaches')
-            ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
-            ->rightJoin('people', 'people.id', '=', 'persontagattaches.person_id')
-            ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
-            ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
-            ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
-            ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
-            ->select(
-                'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
-                'custcategories.name as custcategory', 'custcategories.map_icon_file',
-                'profiles.id AS profile_id', 'profiles.name AS profile_name',
-                'account_managers.name AS account_manager_name',
-                'zones.name AS zone_name'
-            ); */
 
         $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
@@ -120,6 +105,52 @@ class PersonController extends Controller
         ];
 
         return $data;
+    }
+
+    // return creation api
+    public function getCreationApi(Request $request)
+    {
+        $model = Person::with(['accountManager', 'custcategory', 'persontags', 'profile'])
+                                ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
+
+        $model = $this->searchPeopleFilter($model, $request);
+
+        $model = $model->select(
+            'account_manager.id AS account_manager_id', 'account_manager.name AS account_manager_name',
+            DB::raw('COUNT(people.id) AS created_count'),
+            DB::raw('MONTH(people.created_at) AS month'),
+            DB::raw('DATE_FORMAT(people.created_at, "%b") AS month_name'),
+            DB::raw('YEAR(people.created_at) AS year'),
+        );
+
+        $model = $model->groupBy('year')->groupBy('month')->groupBy('account_manager.id');
+
+        if($sortName = request('sortName')){
+            $model = $model->orderBy($sortName, request('sortBy') ? 'asc' : 'desc');
+        }else {
+            $model = $model->orderBy('year', 'desc')->orderBy('month', 'desc')->orderBy('account_manager.name', 'asc');
+        }
+
+        $entries = $model->get();
+
+        $dataArr = [];
+        // dd($entries->toArray());
+        if(count($entries) > 0) {
+            foreach($entries as $entry) {
+                if($entry->year and $entry->month) {
+                    $dataArr['year'][$entry->year][$entry->month][$entry->account_manager_id ? $entry->account_manager_id : 'Unassigned'] = [
+                        'year' => $entry->year,
+                        'month' => $entry->month,
+                        'month_name' => $entry->month_name,
+                        'account_manager_name' => $entry->account_manager_name ? $entry->account_manager_name : 'Unassigned',
+                        'created_count' => $entry->created_count
+                    ];
+                }
+            }
+        }
+        krsort($dataArr['year']);
+        // dd($dataArr);
+        return $dataArr;
     }
 
     public function getPersonUserId($user_id)

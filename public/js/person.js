@@ -338,57 +338,108 @@ function personController($scope, $http){
         });
     }
 }
-/*
-  app.directive('datePicker', function(){
-    return{
-      restrict: 'A',
-      require: 'ngModel',
-      link: function(scope, elm, attr, ctrl){
-
-        // Format date on load
-        ctrl.$formatters.unshift(function(value) {
-          if(value && moment(value).isValid()){
-               return moment(new Date(value)).format('MM/DD/YYYY');
-          }
-          return value;
-        })
-
-        //Disable Calendar
-        scope.$watch(attr.ngDisabled, function (newVal) {
-          if(newVal === true)
-            $(elm).datepicker("disable");
-          else
-            $(elm).datepicker("enable");
-        });
-
-        // Datepicker Settings
-        elm.datepicker({
-          autoSize: true,
-          changeYear: true,
-          changeMonth: true,
-          dateFormat: attr["dateformat"] || 'mm/dd/yy',
-          showOn: 'button',
-          buttonText: '<i class="glyphicon glyphicon-calendar"></i>',
-          onSelect: function (valu) {
-            scope.$apply(function () {
-                ctrl.$setViewValue(valu);
-            });
-            elm.focus();
-          },
-
-           beforeShow: function(){
-             debugger;
-            if(attr["minDate"] != null)
-                $(elm).datepicker('option', 'minDate', attr["minDate"]);
-
-            if(attr["maxDate"] != null )
-                $(elm).datepicker('option', 'maxDate', attr["maxDate"]);
-          },
 
 
-        });
-      }
+function creationController($scope, $http){
+    // init the variables
+    $scope.alldata = [];
+    $scope.datasetTemp = {};
+    $scope.totalCountTemp = {};
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 'All';
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.sortBy = true;
+    $scope.sortName = '';
+    $scope.headerTemp = '';
+    $scope.today = moment().format("YYYY-MM-DD");
+    $scope.showBatchFunctionPanel = false;
+    $scope.search = {
+        cust_id: '',
+        strictCustId: '',
+        custcategory: '',
+        company: '',
+        active: ['Yes'],
+        account_manager: '',
+        pageNum: 'All',
+        profile_id: '',
+        excludeCustCat: '',
+        edited: false,
     }
-  }); */
+    // init page load
+    getPage(1, true);
+
+    angular.element(document).ready(function () {
+        $('.select').select2();
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
+        $('#checkAll').change(function(){
+            var all = this;
+            $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
+        });
+    });
+
+    $scope.exportData = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Customer Creation Rpt"+ now + ".xls");
+    };
+
+    // switching page
+    $scope.pageChanged = function(newPage){
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function(){
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function(sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = ! $scope.search.sortBy;
+        getPage(1);
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function(event) {
+        event.preventDefault();
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+      // when hitting search button
+    $scope.searchDB = function(){
+        $scope.search.edited = true;
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    $scope.merchandiserInit = function(userId) {
+        $scope.search.account_manager = userId;
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first){
+        $scope.spinner = true;
+        $http.post('/api/person/creation?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            // console.log(data)
+            $scope.alldata = data.year;
+
+            // return total amount
+            $scope.spinner = false;
+            $scope.search.edited = false;
+        });
+    }
+}
 
 app.controller('personController', personController);
+app.controller('creationController', creationController);
