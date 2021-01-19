@@ -120,7 +120,7 @@ class PersonController extends Controller
             DB::raw('COUNT(people.id) AS created_count'),
             DB::raw('MONTH(people.created_at) AS month'),
             DB::raw('DATE_FORMAT(people.created_at, "%b") AS month_name'),
-            DB::raw('YEAR(people.created_at) AS year'),
+            DB::raw('YEAR(people.created_at) AS year')
         );
 
         $model = $model->groupBy('year')->groupBy('month')->groupBy('account_manager.id');
