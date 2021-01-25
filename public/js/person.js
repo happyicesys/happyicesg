@@ -429,11 +429,12 @@ function creationController($scope, $http){
 
     // retrieve page w/wo search
     function getPage(pageNumber, first){
+
         $scope.spinner = true;
         $http.post('/api/person/creation?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-            // console.log(data)
-            $scope.alldata = data.year;
 
+            $scope.alldata = data;
+            console.log(JSON.parse(JSON.stringify($scope.alldata)))
             // return total amount
             $scope.spinner = false;
             $scope.search.edited = false;

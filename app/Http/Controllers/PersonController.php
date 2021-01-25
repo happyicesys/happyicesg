@@ -130,6 +130,7 @@ class PersonController extends Controller
         }else {
             $model = $model->orderBy('year', 'desc')->orderBy('month', 'desc')->orderBy('account_manager.name', 'asc');
         }
+        // $model = $model->orderBy(DB::raw('YEAR(people.created_at)', 'desc'))->orderBy(DB::raw('MONTH(people.created_at)', 'desc'));
 
         $entries = $model->get();
 
@@ -138,18 +139,17 @@ class PersonController extends Controller
         if(count($entries) > 0) {
             foreach($entries as $entry) {
                 if($entry->year and $entry->month) {
-                    $dataArr['year'][$entry->year][$entry->month][$entry->account_manager_id ? $entry->account_manager_id : 'Unassigned'] = [
+                    array_push($dataArr, [
                         'year' => $entry->year,
                         'month' => $entry->month,
                         'month_name' => $entry->month_name,
                         'account_manager_name' => $entry->account_manager_name ? $entry->account_manager_name : 'Unassigned',
                         'created_count' => $entry->created_count
-                    ];
+                    ]);
                 }
             }
         }
-        krsort($dataArr['year']);
-        // dd($dataArr);
+
         return $dataArr;
     }
 

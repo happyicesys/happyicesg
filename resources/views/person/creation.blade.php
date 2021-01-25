@@ -119,30 +119,22 @@
                 </tr>
                 {{-- @{{alldata}} --}}
 
-                <tbody ng-repeat-start="(index, year) in alldata" style="background-color: #d9f7f7;">
-                    <tr style="height: 50px">
-                        <th colspan="18" class="text-center">
-                            <span>
-                                @{{index}}
-                            </span>
-                        </th>
+                <tbody>
+
+                    <tr ng-repeat-end ng-repeat="data in alldata" ng-style="{'background-color': (data.month%2==0) ? '#F1F1F1' : ''}">
+                        <td class="col-md-1 text-center">
+                            @{{data.year}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.month_name}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{data.account_manager_name}}
+                        </td>
+                        <td class="col-md-1 text-right">
+                            @{{data.created_count}}
+                        </td>
                     </tr>
-                    <tbody ng-repeat-end ng-repeat="month in year" ng-style="{'background-color': ($index%2==0) ? '#F1F1F1' : ''}">
-                        <tr ng-repeat="entry in month">
-                            <td class="col-md-1 text-center">
-                                @{{entry.year}}
-                            </td>
-                            <td class="col-md-1 text-center">
-                                @{{entry.month_name}}
-                            </td>
-                            <td class="col-md-1 text-center">
-                                @{{entry.account_manager_name}}
-                            </td>
-                            <td class="col-md-1 text-right">
-                                @{{entry.created_count}}
-                            </td>
-                        </tr>
-                    </tbody>
                     <tr ng-if="!alldata || alldata.length == 0">
                         <td colspan="18" class="text-center">No Records Found</td>
                     </tr>
