@@ -186,7 +186,10 @@ HD Transaction
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                            <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                        @endif
+
                         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
                             <button class="btn btn-default" ng-click="enableAccConsolidate($event)">
                                 Export Acc Consolidate

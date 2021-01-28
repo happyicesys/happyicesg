@@ -453,6 +453,7 @@ class DailyreportController extends Controller
             $outletVisits = $outletVisits->where('people.id', 'LIKE', '%'.$company.'%');
         }
 
+        $exclude_custcategory = request('exclude_custcategory');
         if($custCategory = request('custcategory')) {
             if (count($custCategory) == 1) {
                 $custCategory = [$custCategory];
@@ -533,7 +534,7 @@ class DailyreportController extends Controller
 
         $transactions = $transactions->get();
         $outletvisits = $outletVisits->get();
-
+        // dd($outlet);
         $dataArr = [
             [
                 'title' => 'Current Month',

@@ -108,7 +108,9 @@ Route Template
 
                     <div class="row" style="padding-top: 20px;">
                         <div class="col-md-4 col-xs-12">
-                            <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                              <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            @endif
                         </div>
                         <div class="col-md-4 col-md-offset-4 col-xs-12 text-right">
                             <div class="row" style="padding-right:18px;">

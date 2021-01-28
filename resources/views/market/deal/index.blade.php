@@ -129,7 +129,10 @@ Deals
             <div class="row">
                 <div style="padding: 0px 0px 10px 15px">
                     <button class="btn btn-default" ng-click="searchDB()">Search</button>
-                    <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+
+                    @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                        <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                    @endif
                     <label class="pull-right" style="padding-right:18px;" for="totalnum">Showing @{{(transactions | filter:search).length}} of @{{transactions.length}} entries</label>
                 </div>
             </div>

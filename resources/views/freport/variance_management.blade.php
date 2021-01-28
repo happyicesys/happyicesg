@@ -123,8 +123,9 @@
 
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-xs-12">
-                    {{-- <button class="btn btn-primary" ng-click="exportData()">Export Excel</button> --}}
-                    <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
+                    @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                        <button class="btn btn-primary" type="submit" form="export_excel" name="export_excel" value="export_excel"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"> Export Excel</span></button>
+                    @endif
                 </div>
 
                 <div class="col-md-4 col-sm-6 col-xs-12" style="padding-top:5px;">

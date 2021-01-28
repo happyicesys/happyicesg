@@ -32,7 +32,10 @@
         <div class="col-md-12 col-sm-12 col-xs-12 form-group">
             <div class="pull-left">
                 <button type="submit" form="submit_unitcost" class="btn btn-success"> Batch Update</button>
-                <button type="submit" form="export_excel" name="exportExcel" value="exportExcel" class="btn btn-primary" >Export Excel</button>
+
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                    <button type="submit" form="export_excel" name="exportExcel" value="exportExcel" class="btn btn-primary" >Export Excel</button>
+                @endif
             </div>
             <label class="pull-right totalnum" for="totalnum">Showing @{{alldata.length}} entries</label>
         </div>

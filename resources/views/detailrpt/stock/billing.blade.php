@@ -201,7 +201,10 @@
 
         <div class="row">
             <div class="col-md-3 col-sm-3 col-xs-12">
-                <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                    <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                @endif
                 <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="consolidate" ng-disabled="!search.profile_id"><i class="fa fa-book"></i> Consolidate Sales Report</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">

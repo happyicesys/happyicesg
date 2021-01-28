@@ -304,7 +304,10 @@
                             @if(Auth::user()->hasRole('admin'))
                                 {!! Form::submit('Batch Delete', ['name'=>'delete', 'class'=> 'btn btn-danger', 'form'=>'update_form']) !!}
                             @endif
-                            {!! Form::submit('Export Excel', ['class'=>'btn btn-primary', 'form'=>'export_excel']) !!}
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                                {!! Form::submit('Export Excel', ['class'=>'btn btn-primary', 'form'=>'export_excel']) !!}
+                            @endif
+
                         </div>
                     </div>
                 </div>

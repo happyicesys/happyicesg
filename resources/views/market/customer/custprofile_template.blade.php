@@ -62,7 +62,10 @@
 
         <div class="row">
             <div style="padding: 0px 15px 10px 15px">
-                <button class="btn btn-primary pull-left" ng-click="exportData()">Export Excel</button>
+
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                    <button class="btn btn-primary pull-left" ng-click="exportData()">Export Excel</button>
+                @endif
                 <label ng-if="customers" class="pull-right totalnum" for="totalnum">Showing @{{(customers | filter:search).length}} of @{{customers.length}} entries</label>
             </div>
         </div>

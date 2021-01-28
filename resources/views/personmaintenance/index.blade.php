@@ -44,8 +44,8 @@
                                 'ng-model'=>'search.person_id',
                                 'ng-change'=>'searchDB()'
                                 ])
-                            !!}                                                            
-                        </div>                         
+                            !!}
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('title', 'Affected Component', ['class'=>'control-label search-title']) !!}
                             {!! Form::text('title', null,
@@ -56,7 +56,7 @@
                                                                 'placeholder'=>'Affected Component',
                                                                 'ng-model-options'=>'{ debounce: 500 }'
                                                             ]) !!}
-                        </div>  
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('created_from', 'Created From', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
@@ -73,7 +73,7 @@
                                 <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_from', search.created_from)"></span>
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_from', search.created_from)"></span>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="form-group col-md-3 col-sm-6 col-xs-12">
                             {!! Form::label('created_to', 'Created To', ['class'=>'control-label search-title']) !!}
                             <div class="input-group">
@@ -90,12 +90,15 @@
                                 <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('created_to', search.created_to)"></span>
                                 <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('created_to', search.created_to)"></span>
                             </div>
-                        </div>                                                                                                 
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                                <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                            @endif
                         </div>
 
                         <div class="col-md-6 col-sm-6 col-xs-12 text-right">
@@ -125,31 +128,31 @@
                                     Serial Num
                                     <span ng-if="search.sortName == 'vending.serial_no' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'vending.serial_no' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                  
+                                </th>
                                 <th class="col-md-2 text-center">
                                     <a href="" ng-click="sortTable('cust_id')">
                                     Customer
                                     <span ng-if="search.sortName == 'cust_id' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th> 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('vending.type')">
                                     Type
                                     <span ng-if="search.sortName == 'vending.type' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'vending.type' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th> 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('error_code')">
                                     Error Code
                                     <span ng-if="search.sortName == 'error_code' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'error_code' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th> 
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('lane_number')">
                                     Lane Num
                                     <span ng-if="search.sortName == 'lane_number' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'lane_number' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                                                                                                                
+                                </th>
                                 <th class="col-md-2 text-center">
                                     <a href="" ng-click="sortTable('title')">
                                     Affected Component
@@ -167,19 +170,19 @@
                                     Refund?
                                     <span ng-if="search.sortName == 'is_refund' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'is_refund' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                                              
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('complete_date')">
                                     Solved On
                                     <span ng-if="search.sortName == 'complete_date' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'complete_date' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>    
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('is_verify')">
                                     Validation
                                     <span ng-if="search.sortName == 'is_verify' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'is_verify' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>                                                            
+                                </th>
                                 <th class="col-md-1"></th>
                             </tr>
                             <tbody>
@@ -191,7 +194,7 @@
                                         <a href="/vm/@{{personmaintenance.vending.id}}/edit">
                                             @{{personmaintenance.vending.serial_no}}
                                         </a>
-                                    </td>                                     
+                                    </td>
                                     <td class="col-md-2 text-center">
                                         <a href="/person/@{{personmaintenance.person.id}}/edit">
                                             (@{{personmaintenance.person.cust_id}}) @{{personmaintenance.person.company}}
@@ -199,13 +202,13 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.vending.type}}
-                                    </td> 
+                                    </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.error_code}}
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.lane_number}}
-                                    </td>                                                                                                                                               
+                                    </td>
                                     <td class="col-md-2 text-center">
                                         @{{personmaintenance.title}}
                                     </td>
@@ -214,10 +217,10 @@
                                     </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.is_refund == 1 ? 'Yes' : 'No'}}
-                                    </td>                                                                        
+                                    </td>
                                     <td class="col-md-1 text-center">
                                         @{{personmaintenance.complete_date}}
-                                    </td>   
+                                    </td>
                                     <td class="col-md-1 text-left">
                                         <span class="col-md-12 col-sm-12 col-xs-12" ng-style="{color: (personmaintenance.is_verify == null ? '' : (personmaintenance.is_verify == 1 ? 'green' : 'red'))}">
                                             @{{personmaintenance.is_verify == null ? 'Pending' : (personmaintenance.is_verify == 1 ? 'Verified' : 'Rejected')}}
@@ -228,7 +231,7 @@
                                             <button ng-if="personmaintenance.is_verify != '0'" class="btn btn-sm btn-danger" ng-click="verifyPersonmaintenance($event, personmaintenance, 0)"><i class="fa fa-cross"></i> Reject</button>
                                             </span>
                                         @endif
-                                    </td>                                                                                                            
+                                    </td>
                                     <td class="col-md-1 text-center">
                                         @if(auth()->user()->hasRole('admin'))
                                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
@@ -236,8 +239,8 @@
                                         @endif
                                         @if(!auth()->user()->hasRole('admin'))
                                             <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#personmaintenance_modal" ng-if="personmaintenance.is_verify != '1'" ng-click="editPersonmaintenanceModal(personmaintenance)"><i class="fa fa-pencil-square-o"></i></button>
-                                            <button class="btn btn-danger btn-sm" ng-if="personmaintenance.is_verify != '1' && (personmaintenance.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>                                        
-                                        @endif                                        
+                                            <button class="btn btn-danger btn-sm" ng-if="personmaintenance.is_verify != '1' && (personmaintenance.creator.id == {{auth()->user()->id}})" ng-click="removeEntry(personmaintenance.id)"><i class="fa fa-times"></i></button>
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr ng-if="!alldata || alldata.length == 0">
@@ -275,18 +278,18 @@
                                                 <ui-select-choices repeat="person.id as person in people | filter: $select.search">
                                                     <div ng-bind-html="person.cust_id + ' - ' + person.company | highlight: $select.search"></div>
                                                 </ui-select-choices>
-                                            </ui-select>  
+                                            </ui-select>
                                             </div>
-                                        </div>   
+                                        </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <div class="form-group" ng-if="form.vending_id">
                                                 <label for="vending_details">Vending Machine</label>
                                                 <a href="/vm/@{{form.vending_id}}/edit">
                                                     <input type="text" name="title" class="form-control" ng-model="form.vending_details" readonly>
                                                 </a>
-                                            </div>                                                                                     
-                                        </div>                                                                   
-                                    </div> 
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -304,7 +307,7 @@
                                                     ng-model = "form.created_at"
                                                     ng-change = "createdAtChanged(form.created_at)"
                                                 />
-                                            </datepicker> 
+                                            </datepicker>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -321,11 +324,11 @@
                                                     ng-model = "form.complete_date"
                                                     ng-change = "completeDateChanged(form.complete_date)"
                                                 />
-                                            </datepicker> 
+                                            </datepicker>
                                             </div>
-                                        </div>                                                                       
-                                    </div> 
-                                </div>                                                              
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Affected Component
@@ -373,12 +376,12 @@
                                                 <option value="21">21</option>
                                                 <option value="51">51</option>
                                                 <option value="52">52</option>
-                                                <option value="53">53</option>                                                
+                                                <option value="53">53</option>
                                             </select>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </div>
-                                </div>                                
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Repair Details
@@ -408,16 +411,16 @@
                                         Customer Bank Account#
                                     </label>
                                     <input type="text" name="title" class="form-control" ng-model="form.refund_account">
-                                </div>                                
+                                </div>
                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                     <label class="control-label">
                                         Customer Contact
                                     </label>
                                     <input type="text" name="title" class="form-control" ng-model="form.refund_contact">
-                                </div>                                
-                            </div>                            
+                                </div>
+                            </div>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" ng-click="createPersonmaintenance()" data-dismiss="modal" ng-if="!form.id" ng-disabled="isFormValid()">Create</button>
                             <button type="button" class="btn btn-success" ng-click="editPersonmaintenance()" data-dismiss="modal" ng-if="form.id" ng-disabled="isFormValid()">Save</button>
@@ -429,4 +432,4 @@
         </div>
 
     <script src="/js/personmaintenance.js"></script>
-@stop        
+@stop

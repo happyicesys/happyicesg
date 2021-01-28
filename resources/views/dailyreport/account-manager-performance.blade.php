@@ -173,8 +173,10 @@ Performance
                         <div class="col-md-6 col-sm-12 col-xs-12" style="padding-top: 20px;">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12 col-xs-12">
-                                    {{-- <button class="btn btn-info" ng-click="searchDB($event)"><i class="fa fa-search"></i><span class="hidden-xs"></span> Search</button> --}}
-                                    <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                                    @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                                        <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                                    @endif
+
                                     <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
                                 </div>
                             </div>

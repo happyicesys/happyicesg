@@ -67,7 +67,9 @@
 
     <div class="row">
         <div class="col-md-3 col-sm-4 col-xs-12">
-            <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+            @endif
         </div>
 
         <div class="pull-right col-md-3 col-sm-4 col-xs-12">

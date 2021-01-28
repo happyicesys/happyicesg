@@ -231,7 +231,9 @@
 
         <div class="row">
             <div style="padding: 20px 0px 10px 15px">
-                <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                    <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                @endif
                 {!! Form::submit('Export PDF', ['name'=>'export_pdf', 'class'=> 'btn btn-warning', 'form'=>'daily_rpt']) !!}
                 @cannot('transaction_view')
                 {!! Form::submit('Batch Verify', ['name'=>'verify', 'class'=> 'btn btn-success', 'form'=>'verify']) !!}

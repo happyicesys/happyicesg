@@ -31,7 +31,9 @@
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
-                <button class="btn btn-sm btn-primary" ng-click="exportCustCatExcel($event)">Export Excel</button>
+                @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                    <button class="btn btn-sm btn-primary" ng-click="exportCustCatExcel($event)">Export Excel</button>
+                @endif
             </div>
         </div>
 
