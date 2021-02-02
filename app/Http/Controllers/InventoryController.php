@@ -94,6 +94,7 @@ class InventoryController extends Controller
         }
 
         $input = $request->all();
+        // dd($input);
 
         $inventory = Inventory::create($input);
 
@@ -104,6 +105,8 @@ class InventoryController extends Controller
 
                 // store all the history total into inventory
                 // qtytotal_current used to record original entry
+                $inventory->rec_date = $request->rec_date;
+
                 $inventory->qtytotal_current = array_sum($currentQty);
 
                 $inventory->qtytotal_incoming = array_sum($incomingQty);

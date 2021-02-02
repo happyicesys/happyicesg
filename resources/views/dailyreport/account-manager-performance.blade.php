@@ -223,8 +223,11 @@ Performance
                                         {{-- <span ng-if="search.sortName == 'account_manager_name' && search.sortBy" class="fa fa-caret-up"></span> --}}
                                     </th>
                                     <th class="col-md-1 text-center">
+                                        Acc Manager Visit
+                                    </th>
+                                    <th class="col-md-1 text-center">
                                         {{-- <a href="" ng-click="sortTable('visited_total')"> --}}
-                                        Outlet Visit
+                                        Sales Visit
                                         {{-- <span ng-if="search.sortName == 'visited_total' && !search.sortBy" class="fa fa-caret-down"></span> --}}
                                         {{-- <span ng-if="search.sortName == 'visited_total' && search.sortBy" class="fa fa-caret-up"></span> --}}
                                     </th>
@@ -244,6 +247,9 @@ Performance
                                         <th>
                                         </th>
                                         <th class="col-md-1 text-center">
+                                            @{{data.selfVisitTotal | currency: "": 0}}
+                                        </th>
+                                        <th class="col-md-1 text-center">
                                             @{{data.visitTotal | currency: "": 0}}
                                         </th>
                                         <th class="col-md-1 text-right" ng-repeat-end>
@@ -259,6 +265,9 @@ Performance
                                             </td>
                                             <td class="col-md-1 text-center">
                                                 @{{manager.account_manager_name}}
+                                            </td>
+                                            <td class="col-md-1 text-center">
+                                                @{{manager.selfVisits}}
                                             </td>
                                             <td class="col-md-1 text-center">
                                                 @{{manager.visits}}

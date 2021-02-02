@@ -93,7 +93,7 @@
                     !!}
                 </div>
             </div>
-            @if($person->cust_id[0] === 'P')
+            {{-- @if($person->cust_id[0] === 'P') --}}
             <div class="col-md-3 col-sm-3 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('po_no', 'PO Number', ['class'=>'control-label search-title']) !!}
@@ -108,7 +108,7 @@
                     !!}
                 </div>
             </div>
-            @endif
+            {{-- @endif --}}
         </div>
     </div>
 </div>
