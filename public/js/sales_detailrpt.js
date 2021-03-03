@@ -329,7 +329,7 @@ var app = angular.module('app', [
             id_prefix: '',
             cust_id: '',
             company: '',
-            custcategory: '',
+            custcategory: [],
             exclude_custcategory: '',
             status: 'Delivered',
             person_active: [],
@@ -343,6 +343,7 @@ var app = angular.module('app', [
             item_id: '',
             zone_id: '',
             account_manager: '',
+            exACategory: '',
             pageNum: 100,
             sortName: '',
             sortBy: true
@@ -391,6 +392,17 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
+        }
+
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
         }
 
         // retrieve page w/wo search

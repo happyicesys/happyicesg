@@ -89,6 +89,10 @@
               <div class="form-group">
                   {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                   <label class="pull-right">
+                        <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
+                        <span style="margin-top: 5px; margin-right: 5px;">
+                            Ex A
+                        </span>
                       <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
                       <span style="margin-top: 5px;">
                           Exclude

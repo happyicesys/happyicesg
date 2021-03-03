@@ -279,7 +279,12 @@
                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('com_remark')">
+                    Company
+                    <span ng-if="search.sortName == 'com_remark' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'com_remark' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('custcategories.id')">
                     Category
@@ -343,12 +348,12 @@
                         </a>
                     </td>
                     <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-
                     <td class="col-md-1 text-center">
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
+                    <td class="col-md-1 text-center">@{{ transaction.com_remark }} </td>
                     <td class="col-md-1 text-center">@{{ transaction.custcategory }}</td>
                     {{-- status by color --}}
                     <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.status == 'Pending'">

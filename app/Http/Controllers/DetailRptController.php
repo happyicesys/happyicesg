@@ -73,7 +73,7 @@ class DetailRptController extends Controller
                                                 ELSE transactions.total
                                                 END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2) AS total'),
                                     DB::raw('ROUND(SUM(CASE WHEN deals.divisor > 1 THEN (items.base_unit * deals.dividend/ deals.divisor) ELSE (items.base_unit * deals.qty) END)) AS pieces'),
-                                    'transactions.id', 'people.cust_id', 'people.company',
+                                    'transactions.id', 'people.cust_id', 'people.company', 'people.com_remark',
                                     'people.name', 'people.id as person_id',
                                     'transactions.status', 'transactions.delivery_date', 'profiles.name as profile_name',
                                     'transactions.pay_status',
@@ -662,12 +662,6 @@ class DetailRptController extends Controller
         $lastTwoYearDate = $thisYearDate->copy()->subYears(2);
         $lastThreeYearDate = $thisYearDate->copy()->subYears(3);
 
-        // dd($thisYearDate->year, $lastYearDate->year, $lastTwoYearDate->year, $lastThreeYearDate->year);
-/*
-        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
-        ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
-        ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,    */
-
         $queryStr = "(
                         SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
                         MONTH(transactions.delivery_date) AS month,
@@ -680,6 +674,7 @@ class DetailRptController extends Controller
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                             WHERE 1=1 ";
+
         $queryStr =  $this->searchTransactionRawFilter($queryStr, $request);
 
         // profile filter and custcategory filter
@@ -708,25 +703,12 @@ class DetailRptController extends Controller
         }
 
         $thisYearStr = $queryStr;
-        // $lastYearStr = $queryStr;
-        // $lastTwoYearStr = $queryStr;
-        // $lastThreeYearStr = $queryStr;
 
         $thisYearStr = $this->filterTransactionDeliveryDateRaw($thisYearStr, $lastThreeYearDate->copy()->startOfYear()->toDateString(), $thisYearDate->copy()->endOfYear()->toDateString());
-        // $lastYearStr = $this->filterTransactionDeliveryDateRaw($lastYearStr, $lastYearDate->copy()->startOfYear()->toDateString(), $lastYearDate->copy()->endOfYear()->toDateString());
-        // $lastTwoYearStr = $this->filterTransactionDeliveryDateRaw($lastTwoYearStr, $lastTwoYearDate->copy()->startOfYear()->toDateString(), $lastTwoYearDate->copy()->endOfYear()->toDateString());
-        // $lastThreeYearStr = $this->filterTransactionDeliveryDateRaw($lastThreeYearStr, $lastThreeYearDate->copy()->startOfYear()->toDateString(), $lastThreeYearDate->copy()->endOfYear()->toDateString());
 
         $thisYearStr .= " GROUP BY year, month) this_year";
-        // $lastYearStr .= " GROUP BY people.id) last_year";
-        // $lastTwoYearStr .= " GROUP BY people.id) last_two_year";
-        // $lastThreeYearStr .= " GROUP BY people.id) last_three_year";
 
         $thisYear = DB::raw($thisYearStr);
-        // $lastYear = DB::raw($lastYearStr);
-        // $lastTwoYear = DB::raw($lastTwoYearStr);
-        // $lastThreeYear = DB::raw($lastThreeYearStr);
-
 
         $transactions = DB::table('deals')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
@@ -734,10 +716,6 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                        // ->leftJoin($thisYear, 'people.id', '=', 'this_year.person_id')
-                        // ->leftJoin($lastYear, 'people.id', '=', 'last_year.person_id')
-                        // ->leftJoin($lastTwoYear, 'people.id', '=', 'last_two_year.person_id')
-                        // ->leftJoin($lastThreeYear, 'people.id', '=', 'last_three_year.person_id')
                         ->leftJoin($thisYear, function($join) {
                             $join->on('this_year.month', '=', DB::raw('MONTH(transactions.delivery_date)'));
                             $join->on('this_year.year', '=', DB::raw('YEAR(transactions.delivery_date)'));
@@ -749,22 +727,11 @@ class DetailRptController extends Controller
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
                             'this_year.salestotal AS salestotal',
-/*
-                            'last_year.salestotal AS last_year_salestotal',
-                            'last_two_year.salestotal AS last_two_year_salestotal',
-                            'last_three_year.salestotal AS last_three_year_salestotal', */
-                            // DB::raw('((this_year.salestotal - last_year.salestotal)/ CASE WHEN last_year.salestotal THEN last_year.salestotal ELSE 1 END) * 100 AS yoy'),
-/*
-                            DB::raw('((last_year.salestotal - last_two_year.salestotal)/ CASE WHEN last_two_year.salestotal THEN last_two_year.salestotal ELSE 1 END) * 100 AS last_year_yoy'),
-                            DB::raw('((last_two_year.salestotal - last_three_year.salestotal)/ CASE WHEN last_three_year.salestotal THEN last_three_year.salestotal ELSE 1 END) * 100 AS last_two_year_yoy'), */
                             DB::raw('MONTH(transactions.delivery_date) AS month'),
                             DB::raw('YEAR(transactions.delivery_date) AS year')
                         );
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
-/*
-        $transactions = $transactions->whereDate('transactions.delivery_date', '=>', $lastTwoYearDate->copy()->startOfYear()->toDateString())
-                                    ->whereDate('transactions.delivery_date', '<=', $thisYearDate->copy()->endOfYear()->toDateString()); */
 
         $transactions = $transactions->where(function($query) use ($lastThreeYearDate, $thisYearDate) {
 
@@ -777,9 +744,6 @@ class DetailRptController extends Controller
 
         $transactions = $transactions->where(function($query) {
             $query->where('this_year.salestotal', '<>', null);
-                // ->orWhere('last_year.salestotal', '<>', null)
-                // ->orWhere('last_two_year.salestotal', '<>', null)
-                // ->orWhere('last_three_year.salestotal', '<>', null);
         });
 
         $transactions = $transactions->orderBy('year', 'desc')->orderBy('month', 'asc')
@@ -789,12 +753,8 @@ class DetailRptController extends Controller
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
 
-        // $totals = $this->calTransactionTotalSql($transactions);
         $totals = $this->multipleTotalFields($transactions, [
             'salestotal',
-            // 'last_year_salestotal',
-            // 'last_two_year_salestotal',
-            // 'last_three_year_salestotal'
         ]);
 
         $transactions = $transactions->get();
@@ -2919,9 +2879,12 @@ class DetailRptController extends Controller
     // filter transactions raw
     private function searchTransactionRawFilter($query, $request)
     {
+        // dd($request->all());
         $profile_id = $request->profile_id;
         // $delivery_from = $request->delivery_from;
         $payment_from = $request->payment_from;
+        $custcategory = $request->custcategory;
+        $exclude_custcategory = $request->exclude_custcategory;
         $cust_id = $request->cust_id;
         // $delivery_to = $request->delivery_to;
         $payment_to = $request->payment_to;
@@ -2954,6 +2917,20 @@ class DetailRptController extends Controller
         } */
         if($payment_from){
             $query .= " AND DATE(transactions.paid_at) >= '".$payment_from."' ";
+        }
+        if($custcategory) {
+            // dd($custcategory);
+            $custcategories = $custcategory;
+
+            // dd($custcategories);
+            $custcategoryIdStr = implode(",", $custcategories);
+            // dd($custcategoryIdStr);
+
+            if($exclude_custcategory) {
+                $query .= " AND custcategories.id NOT IN (".$custcategoryIdStr.")";
+            }else {
+                $query .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+            }
         }
         if($cust_id){
             $query .= " AND people.cust_id LIKE '".$cust_id."%' ";
