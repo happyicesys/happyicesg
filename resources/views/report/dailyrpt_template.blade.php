@@ -1,4 +1,5 @@
 @inject('profiles', 'App\Profile')
+@inject('users', 'App\User')
 
 <style>
     ._720kb-datepicker-calendar{
@@ -28,19 +29,19 @@
         {!! Form::open(['id'=>'daily_rpt', 'method'=>'POST','action'=>['RptController@getDailyPdf']]) !!}
         <div class="row col-md-12 col-sm-12 col-xs-12">
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('transaction_id', 'Invoice:', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('transaction_id', 'Invoice', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('transaction_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Inv Num']) !!}
             </div>
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('cust_id', 'ID:', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.cust_id', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Cust ID']) !!}
             </div>
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('company', 'Company:', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('company', 'Company', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.company', 'ng-change'=>'dbSearch()', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Company']) !!}
             </div>
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('statuses', 'Status:', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
 {{--
                 <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="dbSearch()" multiple>
                     <option value="">All</option>
@@ -80,18 +81,18 @@
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
                 <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
-                    {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('paid_by', null, ['class'=>'form-control input-sm', 'ng-model'=>'paid_by', 'ng-change'=>'paidByChange(paid_by)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'Pay Received By']) !!}
                 </div>
             @else
                 <div class="form-group col-md-2 col-sm-6 col-xs-12 hidden">
-                    {!! Form::label('paid_by', 'Pay Received By:', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('paid_by', 'Pay Received By', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('paid_by', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'Pay Received By', 'disabled'=>'disbaled']) !!}
                 </div>
             @endunless
             {{-- paid_at toggle only when on change because need to fulfil orWhere --}}
             <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                {!! Form::label('paid_at', 'Date:', ['class'=>'control-label search-title']) !!}
+                {!! Form::label('paid_at', 'Date', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
                     <datepicker date-set="@{{today}}" date-format="yyyy-MM-dd">
                         <input
@@ -125,13 +126,27 @@
         <div class="row col-md-12 col-sm-12 col-xs-12">
             {{-- driver can only view himself --}}
             @unless(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
+{{--
                 <div class="form-group col-md-2 col-sm-6 col-xs-12">
                     {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', null, ['class'=>'form-control input-sm', 'ng-model'=>'driver', 'ng-change'=>'driverChange(driver)', 'ng-model-options'=>'{ debounce: 350 }', 'placeholder'=>'User']) !!}
+                </div> --}}
+                <div class="form-group col-md-2 col-sm-6 col-xs-12">
+                    {!! Form::label('driver', 'User', ['class'=>'control-label search-title']) !!}
+                    <select name="driver" class="form-control select" ng-model="driver" ng-change="driverChange(driver)">
+                        <option value="">All</option>
+                        @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
+                            @if($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->hasRole('account') or $user->hasRole('accountadmin') or $user->hasRole('supervisor') or $user->hasRole('merchandiser') or $user->hasRole('merchandiser_plus'))
+                                <option value="{{$user->name}}">
+                                    {{$user->name}}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
                 </div>
             @else
                 <div class="form-group col-md-2 col-sm-6 col-xs-12">
-                    {!! Form::label('driver', 'User:', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('driver', 'User', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('driver', Auth::user()->name, ['class'=>'form-control input-sm', 'placeholder'=>'User', 'readonly'=>'readonly']) !!}
                 </div>
             @endunless
