@@ -83,7 +83,8 @@ var app = angular.module('app', [
             $scope.searchDB();
         }
 
-        $scope.exportData = function () {
+        $scope.exportData = function (event) {
+            event.preventDefault();
             var blob = new Blob(["\ufeff", document.getElementById('exportable_custdetail').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });

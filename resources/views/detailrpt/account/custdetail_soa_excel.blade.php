@@ -21,6 +21,7 @@
     <th>Inv #</th>
     <th>Customer ID</th>
     <th>ID Name</th>
+    <th>Company</th>
     <th>Date</th>
     <th>Pieces</th>
     <th>Charges($)</th>
@@ -35,6 +36,7 @@
                 <td>{{$transaction->id}}</td>
                 <td>{{$transaction->cust_id}}</td>
                 <td>{{$transaction->company}}</td>
+                <td>{{$transaction->com_remark}}</td>
                 {{-- <td>{{Carbon\Carbon::createFromFormat('Y-m-d', $transaction->order_date)->format('d M y')}}</td> --}}
                 <td>{{Carbon\Carbon::parse($transaction->delivery_date)->format('Y-m-d')}}</td>
                 <td>

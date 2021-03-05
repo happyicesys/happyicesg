@@ -208,7 +208,7 @@
 <div class="row" style="padding-left: 15px;">
     <div class="col-md-4 col-xs-12 btn-group" style="padding-top: 20px;">
         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
-            <button class="btn btn-primary btn-sm" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+            <button class="btn btn-primary btn-sm" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
         @endif
         <button class="btn btn-warning btn-sm" form="batch_pdf"><i class="fa fa-file-pdf-o"></i><span class="hidden-xs"></span> Batch Export PDF</button>
         <button type="submit" class="btn btn-success btn-sm" form="exportData" name="exportSOA" value="exportSOA"><i class="fa fa-outdent"></i><span class="hidden-xs"></span> Export SOA</button>
