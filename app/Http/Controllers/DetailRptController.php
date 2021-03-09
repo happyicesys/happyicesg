@@ -374,6 +374,7 @@ class DetailRptController extends Controller
                             LEFT JOIN items ON items.id=deals.item_id
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             WHERE 1=1 ";
         $thistotalStr =  $this->searchTransactionRawFilter($thistotalStr, $request);
@@ -422,6 +423,7 @@ class DetailRptController extends Controller
                             LEFT JOIN items ON items.id=deals.item_id
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
+                            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             WHERE 1=1 ";
 
@@ -474,6 +476,7 @@ class DetailRptController extends Controller
                                 LEFT JOIN items ON items.id=deals.item_id
                                 LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE 1=1 ";
 
@@ -522,6 +525,7 @@ class DetailRptController extends Controller
                                 LEFT JOIN items ON items.id=deals.item_id
                                 LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE 1=1 ";
 
