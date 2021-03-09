@@ -632,9 +632,9 @@ Job Assign
                         {{-- hidden table for excel export --}}
                         <tr style="background-color: #8BD5FC">
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <th colspan="16">
+                            <th colspan="17">
                             @else
-                            <th colspan="12">
+                            <th colspan="13">
                             @endif
                                 @{{driver.name}}
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
@@ -767,14 +767,14 @@ Job Assign
                                 <span ng-if="search.sortName == 'status' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'status' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                            {{-- @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician')) --}}
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('driver', driverkey)">
                                 Assigned Driver
                                 <span ng-if="search.sortName == 'driver' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'driver' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            @endif
+                            {{-- @endif --}}
                             <th class="col-md-1 text-center">
                                 <a href="" ng-click="sortTable('total', driverkey)">
                                 Total Amount
@@ -786,6 +786,12 @@ Job Assign
                                 Total Qty
                                 <span ng-if="search.sortName == 'total_qty' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'total_qty' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('pay_status', driverkey)">
+                                Pay Status
+                                <span ng-if="search.sortName == 'pay_status' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'pay_status' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             <th class="col-md-1 text-center">
@@ -929,6 +935,12 @@ Job Assign
                                     @{{ transaction.total | currency: "": 2}}
                                 </td>
                                 <td class="col-md-1 text-center">@{{ transaction.total_qty }}</td>
+                                <td class="col-md-1 text-center" style="color: red;" ng-if="transaction.pay_status == 'Owe'">
+                                    @{{ transaction.pay_status }}
+                                </td>
+                                <td class="col-md-1 text-center" style="color: green;" ng-if="transaction.pay_status == 'Paid'">
+                                    @{{ transaction.pay_status }}
+                                </td>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                                 <td class="col-md-1 text-center">@{{ transaction.updated_by}}</td>
                                 <td class="col-md-1 text-center">@{{ transaction.updated_at}}</td>
