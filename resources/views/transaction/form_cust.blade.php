@@ -26,35 +26,72 @@
         @endphp
 
         <div class="row">
-            <div class="col-md-6 form-group">
-                {!! Form::label('bill_address', 'Bill To', ['class'=>'control-label']) !!}
-                {!! Form::textarea('bill_address', null, ['class'=>'form-control',
-                'ng-model'=>'form.bill_address',
-                'disabled'=> $disabled,
-                'disabled'=> $dodisable,
-                'rows'=>'5']) !!}
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('bill_address', null, ['class'=>'form-control',
+                    'ng-model'=>'form.bill_address',
+                    'disabled'=> $disabled,
+                    'disabled'=> $dodisable,
+                    'rows'=>'4']) !!}
+                </div>
+
+                <div class="form-group">
+                    @if(!$transaction->is_deliveryorder)
+                    @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                            {!! Form::label('bill_postcode', 'Billing PostCode', ['class'=>'control-label']) !!}
+                            {!! Form::text('bill_postcode', null, ['class'=>'form-control',
+                            'ng-model'=>'form.bill_postcode',
+                            'disabled'=> $disabled,
+                            'readonly'=>'readonly']) !!}
+                    @else
+                            {!! Form::label('bill_postcode', 'Billing PostCode', ['class'=>'control-label']) !!}
+                            {!! Form::text('bill_postcode', null, [
+                                'class'=>'form-control',
+                                'disabled'=> $disabled,
+                            'ng-model'=>'form.bill_postcode']) !!}
+                    @endif
+                    @endif
+                </div>
             </div>
 
-            {{-- haagen daz user disable --}}
-            @if(!$transaction->is_deliveryorder)
-                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-                    <div class="col-md-6 form-group">
-                        {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('del_address', null, ['class'=>'form-control input-sm',
-                        'ng-model'=>'form.del_address',
-                        'readonly'=>'readonly',
-                        'rows'=>'5']) !!}
-                    </div>
-                @else
-                    <div class="col-md-6 form-group">
-                        {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
-                        {!! Form::textarea('del_address', null, ['class'=>'form-control',
-                        'ng-model'=>'form.del_address',
-                        'disabled'=> $disabled,
-                        'rows'=>'5']) !!}
-                    </div>
-                @endif
-            @endif
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{-- haagen daz user disable --}}
+                    @if(!$transaction->is_deliveryorder)
+                        @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                                {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
+                                {!! Form::textarea('del_address', null, ['class'=>'form-control input-sm',
+                                'ng-model'=>'form.del_address',
+                                'readonly'=>'readonly',
+                                'rows'=>'4']) !!}
+                        @else
+                                {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
+                                {!! Form::textarea('del_address', null, ['class'=>'form-control',
+                                'ng-model'=>'form.del_address',
+                                'disabled'=> $disabled,
+                                'rows'=>'4']) !!}
+                        @endif
+                    @endif
+                </div>
+                <div class="form-group">
+                    @if(!$transaction->is_deliveryorder)
+                    @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                            {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                            {!! Form::text('del_postcode', null, ['class'=>'form-control',
+                            'ng-model'=>'form.del_postcode',
+                            'disabled'=> $disabled,
+                            'readonly'=>'readonly']) !!}
+                    @else
+                            {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                            {!! Form::text('del_postcode', null, [
+                                'class'=>'form-control',
+                                'disabled'=> $disabled,
+                            'ng-model'=>'form.del_postcode']) !!}
+                    @endif
+                    @endif
+                </div>
+            </div>
         </div>
 
 
@@ -125,25 +162,6 @@
                 @endif
             @endif
 
-            @if(!$transaction->is_deliveryorder)
-            @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-                <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
-                    {!! Form::text('del_postcode', null, ['class'=>'form-control',
-                    'ng-model'=>'form.del_postcode',
-                    'disabled'=> $disabled,
-                    'readonly'=>'readonly']) !!}
-                </div>
-            @else
-                <div class="col-md-3 col-xs-6 form-group">
-                    {!! Form::label('del_postcode', 'PostCode', ['class'=>'control-label']) !!}
-                    {!! Form::text('del_postcode', null, [
-                        'class'=>'form-control',
-                        'disabled'=> $disabled,
-                    'ng-model'=>'form.del_postcode']) !!}
-                </div>
-            @endif
-            @endif
         </div>
         @if(!$transaction->is_deliveryorder)
         <div class="row">
@@ -338,33 +356,38 @@
         @endif
 
         <div class="row">
-            <div class="col-md-12 form-group">
-                {!! Form::label('person_remark', 'Customer Remarks', ['class'=>'control-label']) !!}
-                {!! Form::textarea('person_remark', null, ['class'=>'form-control text-xs',
-                'ng-model'=>'form.person_remark',
-                'disabled'=> 'disabled',
-                'rows'=>'5']) !!}
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::label('person_remark', 'Customer Remarks', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('person_remark', null, ['class'=>'form-control text-xs',
+                    'ng-model'=>'form.person_remark',
+                    'disabled'=> 'disabled',
+                    'rows'=>'5']) !!}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @if(!$transaction->is_deliveryorder)
+                            {!! Form::label('transremark', 'Transaction Remarks', ['class'=>'control-label']) !!}
+                            @if($transaction->is_important)
+                                <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                            @else
+                                <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
+                            @endif
+
+                            @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
+                            {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
+                            @else
+                            {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
+                            'ng-model'=>'form.transremark',
+                            'disabled'=> $disabled,
+                            'rows'=>'5']) !!}
+                            @endif
+                    @endif
+                </div>
             </div>
 
-        @if(!$transaction->is_deliveryorder)
-            <div class="col-md-12 form-group">
-                {!! Form::label('transremark', 'Transaction Remarks', ['class'=>'control-label']) !!}
-                @if($transaction->is_important)
-                    <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
-                @else
-                    <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-click="onIsImportantClicked({{$transaction->id}}, $index)"></i>
-                @endif
 
-                @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
-                {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs', 'rows'=>'5', 'readonly'=>'readonly']) !!}
-                @else
-                {!! Form::textarea('transremark', null, ['class'=>'form-control text-xs',
-                'ng-model'=>'form.transremark',
-                'disabled'=> $disabled,
-                'rows'=>'5']) !!}
-                @endif
-            </div>
-        @endif
         </div>
 
 

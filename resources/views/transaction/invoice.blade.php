@@ -256,12 +256,12 @@
                                 <div class="row">
                                     <div class="col-xs-5" style="font-size: 110%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>UpdateBy:</strong></span>
+                                            <span class="inline"><strong>CreateBy:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline">{{$transaction->updated_by}}</span>
+                                            <span class="inline">{{$transaction->created_by}}</span>
                                         </div>
                                     </div>
                                 </div>

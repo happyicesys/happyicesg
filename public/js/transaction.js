@@ -298,6 +298,7 @@ function transactionController($scope, $http) {
                 del_address: data.transaction.del_address ? data.transaction.del_address : data.transaction.person.del_address,
                 bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
                 del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
+                bill_postcode: data.transaction.bill_postcode ? data.transaction.bill_postcode : data.transaction.person.bill_postcode,
                 attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
                 contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
                 order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
