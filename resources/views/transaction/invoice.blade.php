@@ -261,7 +261,7 @@
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline">{{$transaction->created_by}}</span>
+                                            <span class="inline">{{$transaction->creator ? $transaction->creator->name : ''}}</span>
                                         </div>
                                     </div>
                                 </div>
