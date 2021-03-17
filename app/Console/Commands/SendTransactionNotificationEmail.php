@@ -54,7 +54,7 @@ class SendTransactionNotificationEmail extends Command
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
                         ->select(
                                     'people.cust_id', 'people.company',
-                                    'people.name', 'people.id as person_id', 'transactions.del_postcode',
+                                    'people.name', 'people.id as person_id', 'transactions.del_postcode', 'transactions.bill_postcode',
                                     'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                     'transactions.total_qty', 'transactions.pay_status',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',

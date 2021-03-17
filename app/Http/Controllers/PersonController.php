@@ -71,7 +71,7 @@ class PersonController extends Controller
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
         ->select(
-            'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
+            'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
             DB::raw('DATE(people.created_at) AS created_at'),
             'custcategories.name as custcategory_name', 'custcategories.map_icon_file',
             'profiles.id AS profile_id', 'profiles.name AS profile_name',

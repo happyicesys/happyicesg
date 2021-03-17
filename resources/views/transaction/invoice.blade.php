@@ -98,6 +98,7 @@
                                     @else --}}
                                         <span class="col-xs-12">{{$person->com_remark}}</span>
                                         <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
+                                        <span class="col-xs-offset-1">{{$transaction->bill_postcode ? $transaction->bill_postcode : $person->bill_postcode}}</span>
                                     {{-- @endif --}}
                                     </div>
                                 </div>

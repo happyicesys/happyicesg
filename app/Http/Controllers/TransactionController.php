@@ -302,6 +302,7 @@ class TransactionController extends Controller
 
         $person = Person::findOrFail(request('person_id'));
         $request->merge(['del_postcode' => $person->del_postcode]);
+        $request->merge(['bill_postcode' => $person->bill_postcode]);
         $request->merge(['del_lat' => $person->del_lat]);
         $request->merge(['del_lng' => $person->del_lng]);
 
