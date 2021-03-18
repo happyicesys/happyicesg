@@ -623,7 +623,8 @@ class ClientController extends Controller
     // redirec to warehouse sales page
     public function icecreamBuffetPage()
     {
-        return Redirect::to('https://form.jotform.com/kentzo/icecream-buffet');
+        // return Redirect::to('https://form.jotform.com/kentzo/icecream-buffet');
+        return Redirect::to('https://form.jotform.com/kentzo/ice-cream-buffet-warehouse-sales');
     }
 
     // redirect to brown sugar boba milk tea page
