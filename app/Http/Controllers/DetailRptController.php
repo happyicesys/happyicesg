@@ -1484,89 +1484,13 @@ class DetailRptController extends Controller
         $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
         $thisyeartotal = DB::raw($thisyeartotalStr);
 
-        $transactions1 = DB::table('deals')
+
+        $transactions = DB::table('deals')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
-                        ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
-                        ->leftJoin($thistotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('thistotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($thiscommtotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('thiscommtotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('thiscommtotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prevtotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prevtotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prevcommtotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prevcommtotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prev2total, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prev2total.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prev2commtotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prev2commtotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prev2commtotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($prevyearcommtotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
-                            if($profile_id) {
-                                $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
-                            }
-                            $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
-                        })
-                        ->select(
-                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                            'account_manager.name AS account_manager_name',
-                            'profiles.name as profile_name', 'profiles.id as profile_id',
-                            'transactions.gst', 'transactions.gst_rate',
-                            'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
-                            'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
-                            'custcategory_groups.name AS custcategory_group_name',
-                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
-                            'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
-                            'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
-                            'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
-                            'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
-                            'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
-                        );
-
-        $transactions2 = DB::table('deals')
-                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->rightJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
@@ -1625,31 +1549,20 @@ class DetailRptController extends Controller
                             $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
                         })
                         ->select(
-                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                            'account_manager.name AS account_manager_name',
-                            'profiles.name as profile_name', 'profiles.id as profile_id',
-                            'transactions.gst', 'transactions.gst_rate',
-                            'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
-                            'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
-                            'custcategory_groups.name AS custcategory_group_name',
-                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
-                            'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
-                            'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
-                            'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
-                            'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
-                            'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
-                        );
-
-
-        // $transactions = DB::table('deals')
-        //                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        //                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-        //                 ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-        //                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-        //                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-
-        $transactions = $transactions1
-                        ->unionAll($transactions2);
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'account_manager.name AS account_manager_name',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id',
+                                    'transactions.gst', 'transactions.gst_rate',
+                                    'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                                    'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
+                                    'custcategory_groups.name AS custcategory_group_name',
+                                    'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
+                                    'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
+                                    'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
+                                    'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
+                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                                    'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
+                                );
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
 
@@ -1676,9 +1589,9 @@ class DetailRptController extends Controller
 
 
         if($profile_id) {
-            $transactions = $transactions->orderBy('this_salestotal', 'DESC')->groupBy('custcategories.id', 'profiles.id');
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id', 'profiles.id');
         }else {
-            $transactions = $transactions->orderBy('this_salestotal', 'DESC')->groupBy('custcategories.id');
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id');
         }
 
         if($request->sortName){
