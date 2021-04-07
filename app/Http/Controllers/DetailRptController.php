@@ -1489,27 +1489,7 @@ class DetailRptController extends Controller
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id');
-
-        $transactions2 = DB::table('deals')
-                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->rightJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id');
-
-
-
-
-        // $transactions = DB::table('deals')
-        //                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        //                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-        //                 ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
-        //                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-        //                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
-
-        $transactions = $transactions1
-                        ->unionAll($transactions2)
+                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, function($join) use ($profile_id) {
@@ -1565,7 +1545,81 @@ class DetailRptController extends Controller
                                 $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
+                        });
+
+        $transactions2 = DB::table('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->rightJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
+                        ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
+                        ->leftJoin($thistotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thistotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
                         })
+                        ->leftJoin($thiscommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thiscommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thiscommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevcommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prev2total, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2total.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prev2commtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2commtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2commtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevyearcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
+                        });
+
+
+        // $transactions = DB::table('deals')
+        //                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+        //                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+        //                 ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+        //                 ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+        //                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+
+        $transactions = $transactions1
+                        ->unionAll($transactions2)
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'account_manager.name AS account_manager_name',
