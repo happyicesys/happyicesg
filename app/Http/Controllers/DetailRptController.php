@@ -1545,7 +1545,22 @@ class DetailRptController extends Controller
                                 $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
-                        });
+                        })
+                        ->select(
+                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                            'account_manager.name AS account_manager_name',
+                            'profiles.name as profile_name', 'profiles.id as profile_id',
+                            'transactions.gst', 'transactions.gst_rate',
+                            'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                            'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
+                            'custcategory_groups.name AS custcategory_group_name',
+                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
+                            'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
+                            'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
+                            'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
+                            'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                            'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
+                        );
 
         $transactions2 = DB::table('deals')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
@@ -1608,7 +1623,22 @@ class DetailRptController extends Controller
                                 $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
-                        });
+                        })
+                        ->select(
+                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                            'account_manager.name AS account_manager_name',
+                            'profiles.name as profile_name', 'profiles.id as profile_id',
+                            'transactions.gst', 'transactions.gst_rate',
+                            'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                            'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
+                            'custcategory_groups.name AS custcategory_group_name',
+                            'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
+                            'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
+                            'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
+                            'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
+                            'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                            'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
+                        );
 
 
         // $transactions = DB::table('deals')
@@ -1619,22 +1649,7 @@ class DetailRptController extends Controller
         //                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
 
         $transactions = $transactions1
-                        ->unionAll($transactions2)
-                        ->select(
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
-                                    'account_manager.name AS account_manager_name',
-                                    'profiles.name as profile_name', 'profiles.id as profile_id',
-                                    'transactions.gst', 'transactions.gst_rate',
-                                    'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
-                                    'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
-                                    'custcategory_groups.name AS custcategory_group_name',
-                                    'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
-                                    'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
-                                    'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
-                                    'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
-                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
-                                    'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
-                                );
+                        ->unionAll($transactions2);
 
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
 
