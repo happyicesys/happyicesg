@@ -382,7 +382,7 @@
                 </th>
             </tr>
             <tr style="background-color: #DDFDF8">
-                <th colspan="3"></th>
+                <th colspan="4"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left">
                         Trans:
