@@ -1661,9 +1661,9 @@ class DetailRptController extends Controller
 
 
         if($profile_id) {
-            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id', 'profiles.id');
+            $transactions = $transactions->orderBy('this_salestotal', 'DESC')->groupBy('custcategories.id', 'profiles.id');
         }else {
-            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategories.id');
+            $transactions = $transactions->orderBy('this_salestotal', 'DESC')->groupBy('custcategories.id');
         }
 
         if($request->sortName){
