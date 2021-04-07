@@ -1,7 +1,7 @@
 <div ng-controller="custPayDetailController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -15,7 +15,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('payment_from', 'Payment From', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -51,9 +51,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
@@ -67,7 +65,9 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('payment_to', 'Payment To', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -103,9 +103,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('person_id', 'Customer', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('person_id',
@@ -128,7 +126,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('payment', 'Payment', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('payment',
@@ -142,7 +140,9 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
@@ -154,9 +154,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
@@ -167,7 +165,31 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        P
+                    </span>
+                    <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>--}}
+                </label>
+                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory_group',
+                        'multiple'=>'multiple',
+                        'ng-change' => "searchDB()"
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('pay_method',
@@ -181,7 +203,9 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-xs-6">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+

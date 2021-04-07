@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Custcategory extends Model
 {
     protected $fillable = [
-    	'name', 'desc', 'map_icon_file'
+    	'name', 'desc', 'map_icon_file', 'custcategory_group_id'
     ];
 
     const MAP_BASE_URL = 'http://maps.google.com/mapfiles/ms/micons/';
@@ -24,6 +24,11 @@ class Custcategory extends Model
     ];
 
     // relationships
+    public function custcategoryGroup()
+    {
+        return $this->belongsTo(Custcategory::class);
+    }
+
     public function people()
     {
     	return $this->belongsToMany('App\Person');

@@ -353,6 +353,7 @@ class OperationWorksheetController extends Controller
         $profile_id = request('profile_id');
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
+        $custcategoryGroup = request('custcategory_group');
         // $exclude_custcategory = request('exclude_custcategory');
         $cust_id = request('cust_id');
         $company = request('company');
@@ -380,7 +381,17 @@ class OperationWorksheetController extends Controller
         if($custcategory) {
             $transactions = $transactions->whereHas('person', function($q) use ($custcategory) {
                 $q->whereHas('custcategory', function($q) use ($custcategory) {
-                    $q->where('id', $custcategory);
+                    $q->whereIn('id', $custcategory);
+                });
+            });
+        }
+
+        if($custcategoryGroup) {
+            $transactions = $transactions->whereHas('person', function($q) use ($custcategoryGroup) {
+                $q->whereHas('custcategory', function($q) use ($custcategoryGroup) {
+                    $q->whereHas('custcategoryGroup', function($q) use ($custcategoryGroup) {
+                        $q->whereIn('id', $custcategoryGroup);
+                    });
                 });
             });
         }
@@ -425,6 +436,8 @@ class OperationWorksheetController extends Controller
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
         $exclude_custcategory = request('exclude_custcategory');
+        $custcategory_group = request('custcategory_group');
+        $exclude_custcategory_group = request('exclude_custcategory_group');
         $cust_id = request('cust_id');
         $company = request('company');
         $status = request('status');
@@ -465,6 +478,18 @@ class OperationWorksheetController extends Controller
             }
         }
 
+        if($custcategory_group) {
+            $custcategory_groups = $custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($exclude_custcategory_group) {
+                $transactions = $transactions->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $transactions = $transactions->whereIn('custcategory_groups.id', $custcategory_groups);
+            }
+        }
+
         if($cust_id) {
             $transactions = $transactions->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
         }
@@ -494,6 +519,7 @@ class OperationWorksheetController extends Controller
         $profile_id = request('profile_id');
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
+        $custcategoryGroup = request('custcategory_group');
         $cust_id = request('cust_id');
         $company = request('company');
         $color = request('color');
@@ -509,6 +535,14 @@ class OperationWorksheetController extends Controller
         if($custcategory) {
             $people = $people->whereHas('custcategory', function($q) use ($custcategory) {
                 $q->where('id', $custcategory);
+            });
+        }
+
+        if($custcategoryGroup) {
+            $people = $people->whereHas('custcategory', function($q) use ($custcategoryGroup) {
+                $q->whereHas('custcategoryGroup', function($q) use ($custcategoryGroup) {
+                    $q->whereIn('id', $custcategoryGroup);
+                });
             });
         }
 
@@ -593,6 +627,8 @@ class OperationWorksheetController extends Controller
         $id_prefix = request('id_prefix');
         $custcategory = request('custcategory');
         $exclude_custcategory = request('exclude_custcategory');
+        $custcategory_group = request('custcategory_group');
+        $exclude_custcategory_group = request('exclude_custcategory_group');
         $cust_id = request('cust_id');
         $company = request('company');
         $color = request('color');
@@ -635,6 +671,18 @@ class OperationWorksheetController extends Controller
                 $people = $people->whereNotIn('custcategories.id', $custcategories);
             }else {
                 $people = $people->whereIn('custcategories.id', $custcategories);
+            }
+        }
+
+        if($custcategory_group) {
+            $custcategory_groups = $custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($exclude_custcategory_group) {
+                $people = $people->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $people = $people->whereIn('custcategory_groups.id', $custcategory_groups);
             }
         }
 
@@ -844,6 +892,7 @@ class OperationWorksheetController extends Controller
         ) outlet_visits");
 
         $people =   Person::leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                    ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
                     // ->leftJoin($last2, 'people.id', '=', 'last2.person_id')

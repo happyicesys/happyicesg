@@ -16,6 +16,7 @@
             <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
             <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
             <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+            <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
             <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
             <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
         </ul>
@@ -363,6 +364,10 @@
                 </div>
             </div>
             {{-- end of fourth element--}}
+
+            <div class="tab-pane" id="cust_cat_group" ng-controller="custCategoryGroupController">
+                @include('user.custcat_group_template')
+            </div>
 
             {{-- fifth element --}}
             <div class="tab-pane" id="cust_cat" ng-controller="custCategoryController">

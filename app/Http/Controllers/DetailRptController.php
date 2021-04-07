@@ -65,6 +65,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->select(
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
@@ -141,6 +142,8 @@ class DetailRptController extends Controller
             people.id AS person_id, people.profile_id FROM transactions
             LEFT JOIN people ON transactions.person_id=people.id
             LEFT JOIN profiles ON people.profile_id=profiles.id
+            LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+            LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
             WHERE 1=1 ";
 
         $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
@@ -179,6 +182,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
                         ->leftJoin($prev2total, 'people.id', '=', 'prev2total.person_id')
@@ -241,6 +245,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                     'profiles.name as profile_name', 'profiles.id as profile_id',
@@ -375,6 +380,7 @@ class DetailRptController extends Controller
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            LEFT JOIN custcategory_groups ON custcategories.custcategory_group_id=custcategory_groups.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             WHERE 1=1 ";
         $thistotalStr =  $this->searchTransactionRawFilter($thistotalStr, $request);
@@ -424,6 +430,7 @@ class DetailRptController extends Controller
                             LEFT JOIN transactions ON transactions.id=deals.transaction_id
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            LEFT JOIN custcategory_groups ON custcategories.custcategory_group_id=custcategory_groups.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             WHERE 1=1 ";
 
@@ -477,6 +484,7 @@ class DetailRptController extends Controller
                                 LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                                LEFT JOIN custcategory_groups ON custcategories.custcategory_group_id=custcategory_groups.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE 1=1 ";
 
@@ -526,6 +534,7 @@ class DetailRptController extends Controller
                                 LEFT JOIN transactions ON transactions.id=deals.transaction_id
                                 LEFT JOIN people ON transactions.person_id=people.id
                                 LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                                LEFT JOIN custcategory_groups ON custcategories.custcategory_group_id=custcategory_groups.id
                                 LEFT JOIN profiles ON people.profile_id=profiles.id
                                 WHERE 1=1 ";
 
@@ -568,6 +577,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, 'people.id', '=', 'thistotal.person_id')
                         ->leftJoin($prevtotal, 'people.id', '=', 'prevtotal.person_id')
@@ -677,6 +687,7 @@ class DetailRptController extends Controller
                             LEFT JOIN people ON transactions.person_id=people.id
                             LEFT JOIN profiles ON people.profile_id=profiles.id
                             LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                            LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                             WHERE 1=1 ";
 
         $queryStr =  $this->searchTransactionRawFilter($queryStr, $request);
@@ -720,6 +731,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin($thisYear, function($join) {
                             $join->on('this_year.month', '=', DB::raw('MONTH(transactions.delivery_date)'));
                             $join->on('this_year.year', '=', DB::raw('YEAR(transactions.delivery_date)'));
@@ -1059,6 +1071,7 @@ class DetailRptController extends Controller
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                         LEFT JOIN users AS drivers ON drivers.name=transactions.driver
                         WHERE transactions.delivery_date>='".request('delivery_from')."'
                         AND transactions.delivery_date<='".request('delivery_to')."'";
@@ -1116,6 +1129,15 @@ class DetailRptController extends Controller
                 $amountstr = $amountstr." AND custcategories.id NOT IN (".$custcategory.")";
             }else {
                 $amountstr = $amountstr." AND custcategories.id IN (".$custcategory.")";
+            }
+        }
+        if($request->custcategory_group) {
+            $custcategory_group = implode(",", $request->custcategory_group);
+
+            if($request->exclude_custcategory_group) {
+                $amountstr = $amountstr." AND custcategory_groups.id NOT IN (".$custcategory_group.")";
+            }else {
+                $amountstr = $amountstr." AND custcategory_groups.id IN (".$custcategory_group.")";
             }
         }
 /*
@@ -1364,6 +1386,7 @@ class DetailRptController extends Controller
                         LEFT JOIN people ON transactions.person_id=people.id
                         LEFT JOIN profiles ON people.profile_id=profiles.id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                         WHERE 1=1 ";
 
         $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
@@ -1468,6 +1491,7 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
                         ->leftJoin($thistotal, function($join) use ($profile_id) {
                             if($profile_id) {
@@ -1550,16 +1574,16 @@ class DetailRptController extends Controller
                                      ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString()]);
                         }); */
 
-        $transactions = $transactions->where(function($query) {
-            $query->where('thistotal.salestotal', '<>', null)
-                ->orWhere('prevtotal.salestotal', '<>', null)
-                ->orWhere('prev2total.salestotal', '<>', null)
-                ->orWhere('prevyeartotal.salestotal', '<>', null);
-        });
+        // $transactions = $transactions->where(function($query) {
+        //     $query->where('thistotal.salestotal', '<>', null)
+        //         ->orWhere('prevtotal.salestotal', '<>', null)
+        //         ->orWhere('prev2total.salestotal', '<>', null)
+        //         ->orWhere('prevyeartotal.salestotal', '<>', null);
+        // });
 
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
-        $transactions = $this->filterUserDbCustcategoryWithoutNull($transactions);
+        // $transactions = $this->filterUserDbCustcategoryWithoutNull($transactions);
 
 
         if($profile_id) {
@@ -2604,6 +2628,8 @@ class DetailRptController extends Controller
         $id_prefix = $request->id_prefix;
         $custcategory = $request->custcategory;
         $exclude_custcategory = $request->exclude_custcategory;
+        $custcategory_group = $request->custcategory_group;
+        $exclude_custcategory_group = $request->exclude_custcategory_group;
         $bankin_from = $request->bankin_from;
         $bankin_to = $request->bankin_to;
         $franchisee_id = $request->franchisee_id;
@@ -2686,6 +2712,17 @@ class DetailRptController extends Controller
                 $transactions = $transactions->whereIn('custcategories.id', $custcategories);
             }
         }
+        if($custcategory_group) {
+            $custcategory_groups = $custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($exclude_custcategory_group) {
+                $transactions = $transactions->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $transactions = $transactions->whereIn('custcategory_groups.id', $custcategory_groups);
+            }
+        }
         if($bankin_from) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
         }
@@ -2732,6 +2769,8 @@ class DetailRptController extends Controller
         $id_prefix = $request->id_prefix;
         $custcategory = $request->custcategory;
         $exclude_custcategory = $request->exclude_custcategory;
+        $custcategory_group = $request->custcategory_group;
+        $exclude_custcategory_group = $request->exclude_custcategory_group;
         $bankin_from = $request->bankin_from;
         $bankin_to = $request->bankin_to;
         $franchisee_id = $request->franchisee_id;
@@ -2814,6 +2853,17 @@ class DetailRptController extends Controller
                 $transactions = $transactions->whereIn('custcategories.id', $custcategories);
             }
         }
+        if($custcategory_group) {
+            $custcategory_groups = $custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($exclude_custcategory_group) {
+                $transactions = $transactions->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $transactions = $transactions->whereIn('custcategory_groups.id', $custcategory_groups);
+            }
+        }
         if($bankin_from) {
             $transactions = $transactions->whereDate('paysummaryinfos.bankin_date', '>=', $bankin_from);
         }
@@ -2889,6 +2939,8 @@ class DetailRptController extends Controller
         $payment_from = $request->payment_from;
         $custcategory = $request->custcategory;
         $exclude_custcategory = $request->exclude_custcategory;
+        $custcategory_group = $request->custcategory_group;
+        $exclude_custcategory_group = $request->exclude_custcategory_group;
         $cust_id = $request->cust_id;
         // $delivery_to = $request->delivery_to;
         $payment_to = $request->payment_to;
@@ -2934,6 +2986,18 @@ class DetailRptController extends Controller
                 $query .= " AND custcategories.id NOT IN (".$custcategoryIdStr.")";
             }else {
                 $query .= " AND custcategories.id IN (".$custcategoryIdStr.")";
+            }
+        }
+        if($custcategory_group) {
+            // dd($custcategory);
+            $custcategory_groups = $custcategory_group;
+
+            $custcategoryGroupIdStr = implode(",", $custcategory_groups);
+
+            if($exclude_custcategory_group) {
+                $query .= " AND custcategory_groups.id NOT IN (".$custcategoryGroupIdStr.")";
+            }else {
+                $query .= " AND custcategory_groups.id IN (".$custcategoryGroupIdStr.")";
             }
         }
         if($cust_id){

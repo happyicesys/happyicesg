@@ -2267,6 +2267,7 @@ class TransactionController extends Controller
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+                        ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
                         ->leftJoin('deliveryorders', 'deliveryorders.transaction_id', '=', 'transactions.id')
                         ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                         ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
@@ -2957,6 +2958,19 @@ class TransactionController extends Controller
                 $transactions = $transactions->whereNotIn('custcategories.id', $custcategories);
             }else {
                 $transactions = $transactions->whereIn('custcategories.id', $custcategories);
+            }
+        }
+
+        if(request('custcategory_group')) {
+            $custcategoryGroups = request('custcategory_group');
+            if (count($custcategoryGroups) == 1) {
+                $custcategoryGroups = [$custcategoryGroups];
+            }
+            if(request('exclude_custcategory_group')) {
+                // dd('here');
+                $transactions = $transactions->whereNotIn('custcategory_groups.id', $custcategoryGroups);
+            }else {
+                $transactions = $transactions->whereIn('custcategory_groups.id', $custcategoryGroups);
             }
         }
 

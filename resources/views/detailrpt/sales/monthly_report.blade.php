@@ -1,7 +1,7 @@
 <div ng-controller="monthlyReportController">
   <div class="col-md-12 col-xs-12">
       <div class="row">
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('profile_id', [''=>'All']+
@@ -16,7 +16,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('current_year', 'Current Year', ['class'=>'control-label search-title']) !!}
                   <select class="select form-control" name="current_year" ng-model="search.current_year" ng-change="searchDB()">
@@ -26,7 +26,7 @@
                   </select>
               </div>
           </div>
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('cust_id', null,
@@ -40,28 +40,27 @@
                   !!}
               </div>
           </div>
+          <div class="col-md-3 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
+                <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
+                    <option value="">All</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+                    <option value="H">H</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="V">V</option>
+                    <option value="W">W</option>
+                </select>
+            </div>
+        </div>
       </div>
       <div class="row">
-          <div class="col-md-4 col-xs-6">
-              <div class="form-group">
-                  {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
-                  <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
-                      <option value="">All</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                      <option value="F">F</option>
-                      <option value="G">G</option>
-                      <option value="H">H</option>
-                      <option value="R">R</option>
-                      <option value="S">S</option>
-                      <option value="V">V</option>
-                      <option value="W">W</option>
-                  </select>
-              </div>
-          </div>
-
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('company', null,
@@ -75,7 +74,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
   {{--
               <div class="form-group">
                   {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
@@ -109,21 +108,45 @@
                   !!}
               </div>
           </div>
+            <div class="col-md-3 col-xs-6">
+                <div class="form-group">
+                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                    <label class="pull-right">
+                        {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                        <span style="margin-top: 5px; margin-right: 5px;">
+                            P
+                        </span>
+                        <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                        <span style="margin-top: 5px;">
+                            Exclude
+                        </span>--}}
+                    </label>
+                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory_group',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB()"
+                        ])
+                    !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <div class="form-group">
+                    {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
+                        [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.status',
+                        'ng-change'=>'searchDB()'
+                        ])
+                    !!}
+                </div>
+            </div>
       </div>
       <div class="row">
-          <div class="col-md-4 col-xs-6">
-              <div class="form-group">
-                  {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                  {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
-                      [
-                      'class'=>'select form-control',
-                      'ng-model'=>'search.status',
-                      'ng-change'=>'searchDB()'
-                      ])
-                  !!}
-              </div>
-          </div>
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
@@ -135,7 +158,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-4 col-xs-6">
+          <div class="col-md-3 col-xs-6">
               <div class="form-group">
                   {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
@@ -146,9 +169,7 @@
                   !!}
               </div>
           </div>
-      </div>
-      <div class="row">
-          <div class="col-md-4 col-sm-6">
+          <div class="col-md-3 col-sm-6">
               <div class="form-group">
                   {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                   <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
@@ -162,7 +183,7 @@
                   </select>
               </div>
           </div>
-          <div class="col-md-4 col-sm-6">
+          <div class="col-md-3 col-sm-6">
               <div class="form-group">
                   {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('is_gst_inclusive',
@@ -180,7 +201,9 @@
               !!}
               </div>
           </div>
-          <div class="col-md-4 col-sm-6">
+      </div>
+      <div class="row">
+          <div class="col-md-3 col-sm-6">
               <div class="form-group">
                   {!! Form::label('gst_rate', 'GST Rate (%)', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('gst_rate', null,
@@ -193,62 +216,60 @@
                                                   ]) !!}
               </div>
           </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-sm-6">
-            <div class="form-group">
-                {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
-                {!! Form::select('item_id',
-                        [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
-                        null,
-                        [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.item_id',
-                            'ng-change'=>'searchDB()'
-                        ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-            <div class="form-group">
-                {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
-                {!! Form::select('zone_id',
-                        [''=>'All']+ $zones::orderBy('priority')->lists('name', 'id')->all(),
-                        null,
-                        [
-                            'class'=>'select form-control',
-                            'ng-model'=>'search.zone_id',
-                            'ng-change'=>'searchDB()'
-                        ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-            <div class="form-group">
-                {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
-                @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
-                    <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
-                        <option value="">All</option>
-                        @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
-                        <option value="{{$user->id}}">
-                            {{$user->name}}
-                        </option>
-                        @endforeach
-                    </select>
-                @else
-                    {!! Form::select('account_manager',
-                            [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+            <div class="col-md-3 col-sm-6">
+                <div class="form-group">
+                    {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
+                    {!! Form::select('item_id',
+                            [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
                             null,
                             [
                                 'class'=>'select form-control',
-                                'ng-model'=>'search.account_manager',
+                                'ng-model'=>'search.item_id',
                                 'ng-change'=>'searchDB()'
                             ])
                     !!}
-                @endif
+                </div>
             </div>
-        </div>
-    </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="form-group">
+                    {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
+                    {!! Form::select('zone_id',
+                            [''=>'All']+ $zones::orderBy('priority')->lists('name', 'id')->all(),
+                            null,
+                            [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.zone_id',
+                                'ng-change'=>'searchDB()'
+                            ])
+                    !!}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="form-group">
+                    {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
+                    @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                        <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
+                            <option value="">All</option>
+                            @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
+                            <option value="{{$user->id}}">
+                                {{$user->name}}
+                            </option>
+                            @endforeach
+                        </select>
+                    @else
+                        {!! Form::select('account_manager',
+                                [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                null,
+                                [
+                                    'class'=>'select form-control',
+                                    'ng-model'=>'search.account_manager',
+                                    'ng-change'=>'searchDB()'
+                                ])
+                        !!}
+                    @endif
+                </div>
+            </div>
+      </div>
   </div>
 
   <div class="row" style="padding-left: 15px; padding-top:20px;">

@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MerchandiserRoleSeeder::class);
         $this->call(SalesProgressSeeder::class);
         */
+        $this->call(CustcategoryGroupSeeder::class);
 
         Model::reguard();
     }

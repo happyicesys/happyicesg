@@ -434,7 +434,7 @@ function creationController($scope, $http){
         $http.post('/api/person/creation?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
 
             $scope.alldata = data;
-            console.log(JSON.parse(JSON.stringify($scope.alldata)))
+            // console.log(JSON.parse(JSON.stringify($scope.alldata)))
             // return total amount
             $scope.spinner = false;
             $scope.search.edited = false;

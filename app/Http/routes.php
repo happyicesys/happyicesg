@@ -550,6 +550,12 @@ Route::get('/payterm/data', 'PaytermController@getData');
 Route::delete('/payterm/data/{id}', 'PaytermController@destroyAjax');
 Route::resource('payterm', 'PaytermController');
 
+Route::post('/api/custcat/group', 'CustcategoryGroupController@getCustcategoryGroupsIndexApi');
+Route::delete('/api/custcat/group/{id}/destroy', 'CustcategoryGroupController@deleteCustcategoryGroupApi');
+Route::post('/api/custcat/group/{id}/unbind', 'CustcategoryGroupController@unbindCustcategoryGroupAttachment');
+Route::post('/api/custcat/group/create', 'CustcategoryGroupController@createCustcategoryGroupApi');
+Route::post('/api/custcat/group/bind', 'CustcategoryGroupController@bindCustcategoryGroupAttachesApi');
+
 Route::get('/api/custcat/user/{userId}/{type}', 'CustcategoryController@getCustcategoryByUserIdApi');
 Route::get('/api/custcat/{id}', 'CustcategoryController@getCustcategoryApi');
 Route::get('/custcat/data', 'CustcategoryController@getData');

@@ -41,6 +41,7 @@ class DailyreportController extends Controller
         LEFT JOIN people ON people.id = transactions.person_id
         LEFT JOIN profiles ON profiles.id = people.profile_id
         LEFT JOIN custcategories ON custcategories.id = people.custcategory_id
+        LEFT JOIN custcategory_groups ON custcategory_groups.id = custcategories.custcategory_group_id
         where 1=1";
 
         if($request->profile_id) {
@@ -70,6 +71,17 @@ class DailyreportController extends Controller
                 $totalRaw .= " and custcategories.id NOT IN ('".$custcategories."')";
             }else {
                 $totalRaw .= " and custcategories.id IN ('".$custcategories."')";
+            }
+        }
+
+        if($request->custcategory_group) {
+            $custcategory_groups = $request->custcategory_group;
+            $custcategory_groups = implode("','",$custcategory_groups);
+
+            if($request->exclude_custcategory_group) {
+                $totalRaw .= " and custcategory_groups.id NOT IN ('".$custcategory_groups."')";
+            }else {
+                $totalRaw .= " and custcategory_groups.id IN ('".$custcategory_groups."')";
             }
         }
 /*
@@ -105,6 +117,7 @@ class DailyreportController extends Controller
             ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
             ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
             ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+            ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
             // ->leftJoin('users', 'users.name', 'LIKE', DB::raw( "CONCAT('%', transactions.driver, '%')"))
             ->leftJoin('users', 'users.name', '=', 'transactions.driver')
             ->rightJoin('role_user', 'role_user.user_id', '=', 'users.id')
@@ -204,6 +217,18 @@ class DailyreportController extends Controller
                 $deals = $deals->whereNotIn('custcategories.id', $custcategories);
             }else {
                 $deals = $deals->whereIn('custcategories.id', $custcategories);
+            }
+        }
+
+        if($request->custcategory_group) {
+            $custcategory_groups = $request->custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($request->exclude_custcategory_group) {
+                $deals = $deals->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $deals = $deals->whereIn('custcategory_groups.id', $custcategory_groups);
             }
         }
 
@@ -397,15 +422,21 @@ class DailyreportController extends Controller
     public function getAccountManagerPerformanceApi()
     {
         $transactions = Transaction::leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                                ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
         $deals = Deal::leftJoin('transactions', 'transactions.id', '=', 'people.transaction_id')
                                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                                ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                                 ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
 
         $outletVisits = OutletVisit::leftJoin('people', 'people.id', '=', 'outlet_visits.person_id')
+                                ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                                ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                                 ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager');
 
@@ -459,13 +490,29 @@ class DailyreportController extends Controller
                 $custCategory = [$custCategory];
             }
             if($exclude_custcategory) {
-                $transactions = $transactions->whereNotIn('people.custcategory_id', $custCategory);
-                $deals = $deals->whereNotIn('people.custcategory_id', $custCategory);
-                $outletVisits = $outletVisits->whereNotIn('people.custcategory_id', $custCategory);
+                $transactions = $transactions->whereNotIn('custcategories.id', $custCategory);
+                $deals = $deals->whereNotIn('custcategories.id', $custCategory);
+                $outletVisits = $outletVisits->whereNotIn('custcategories.id', $custCategory);
             }else {
-                $transactions = $transactions->whereIn('people.custcategory_id', $custCategory);
-                $deals = $deals->whereIn('people.custcategory_id', $custCategory);
-                $outletVisits = $outletVisits->whereIn('people.custcategory_id', $custCategory);
+                $transactions = $transactions->whereIn('custcategories.id', $custCategory);
+                $deals = $deals->whereIn('custcategories.id', $custCategory);
+                $outletVisits = $outletVisits->whereIn('custcategories.id', $custCategory);
+            }
+        }
+
+        $exclude_custcategory_group = request('exclude_custcategory_group');
+        if($custCategoryGroup = request('custcategory_group')) {
+            if (count($custCategoryGroup) == 1) {
+                $custCategoryGroup = [$custCategoryGroup];
+            }
+            if($exclude_custcategory_group) {
+                $transactions = $transactions->whereNotIn('custcategory_groups.id', $custCategoryGroup);
+                $deals = $deals->whereNotIn('custcategory_groups.id', $custCategoryGroup);
+                $outletVisits = $outletVisits->whereNotIn('custcategory_groups.id', $custCategoryGroup);
+            }else {
+                $transactions = $transactions->whereIn('custcategory_groups.id', $custCategoryGroup);
+                $deals = $deals->whereIn('custcategory_groups.id', $custCategoryGroup);
+                $outletVisits = $outletVisits->whereIn('custcategory_groups.id', $custCategoryGroup);
             }
         }
 

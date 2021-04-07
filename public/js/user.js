@@ -296,6 +296,142 @@ var app = angular.module('app', [
         }
     }
 
+
+    function custCategoryGroupController($scope, $http) {
+        // init the variables
+        $scope.alldata = [];
+        $scope.peopledata = [];
+        $scope.totalCount = 0;
+        $scope.totalPages = 0;
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 100;
+        $scope.indexFrom = 0;
+        $scope.indexTo = 0;
+        $scope.search = {
+            name: '',
+            custcategories: [],
+            pageNum: 100,
+            sortBy: true,
+            sortName: ''
+        }
+        $scope.form = {
+            name: '',
+            desc: '',
+        }
+        // init page load
+        getPage();
+
+        angular.element(document).ready(function () {
+            $('.select').select2({
+                placeholder: 'Select..'
+            });
+            $('.selectmultiple').select2({
+                placeholder: 'Choose one or many..'
+            });
+        });
+
+        $scope.exportData = function (event) {
+            event.preventDefault();
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_custcategory_group').innerHTML], {
+                type: "application/vnd.ms-excel;charset=charset=utf-8"
+            });
+            var now = Date.now();
+            saveAs(blob, "Custcategory Group"+ now + ".xls");
+        };
+
+        // switching page
+        $scope.pageChanged = function(newPage){
+            getPage(newPage, false);
+        };
+
+        $scope.pageNumChanged = function(){
+            $scope.search['pageNum'] = $scope.itemsPerPage
+            $scope.currentPage = 1
+            getPage(1, false)
+        };
+
+        $scope.sortTable = function(sortName) {
+            $scope.search.sortName = sortName;
+            $scope.search.sortBy = ! $scope.search.sortBy;
+            getPage(1, false);
+        }
+
+          // when hitting search button
+        $scope.searchDB = function(){
+            $scope.search.sortName = '';
+            $scope.search.sortBy = true;
+            getPage(1, false);
+        }
+
+        $scope.onCustcategoryGroupDelete = function(data) {
+            var isConfirmDelete = confirm('Are you sure you want to delete the custcategory group & detach its binding(s)?');
+            if(isConfirmDelete){
+                $http({
+                    method: 'DELETE',
+                    url: '/api/custcat/group/' + data.id + '/destroy'
+                })
+                .success(function(data){
+                    getPage(1, false);
+                })
+                .error(function(data){
+                    alert('Unable to delete');
+                })
+            }else{
+                return false;
+            }
+        }
+
+        $scope.onCustcategoryGroupUnbind = function(id) {
+            $http({
+                method: 'POST',
+                url: '/api/custcat/group/' + id + '/unbind'
+            })
+            .success(function(data){
+                getPage(1, false);
+            })
+            .error(function(data){
+                alert('Unable to delete');
+            })
+        }
+
+        // create
+        $scope.onCustcategoryGroupNameCreateClicked = function() {
+            $http.post('/api/custcat/group/create', $scope.form).success(function(data){
+                $scope.form.name = '';
+                getPage(1, false);
+            });
+        }
+
+        // bind
+        $scope.onCustcategoryGroupBindingClicked = function() {
+            $http.post('/api/custcat/group/bind', $scope.form).success(function(data) {
+                $scope.form.custcategory_id = '';
+                getPage(1, false);
+            });
+        }
+
+        // retrieve page w/wo search
+        function getPage(pageNumber, first){
+            $scope.spinner = true;
+            $http.post('/api/custcat/group?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+                if(data.custcategoryGroups.data){
+                    $scope.alldata = data.custcategoryGroups.data;
+                    $scope.totalCount = data.custcategoryGroups.total;
+                    $scope.currentPage = data.custcategoryGroups.current_page;
+                    $scope.indexFrom = data.custcategoryGroups.from;
+                    $scope.indexTo = data.custcategoryGroups.to;
+                }else{
+                    $scope.alldata = data.custcategoryGroups;
+                    $scope.totalCount = data.custcategoryGroups.length;
+                    $scope.currentPage = 1;
+                    $scope.indexFrom = 1;
+                    $scope.indexTo = data.custcategoryGroups.length;
+                }
+                $scope.spinner = false;
+            });
+        }
+    }
+
 function repeatController($scope) {
     $scope.$watch('$index', function(index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -334,6 +470,7 @@ app.controller('repeatController3', repeatController3);
 app.controller('repeatController4', repeatController4);
 app.controller('repeatController5', repeatController5);
 app.controller('custTagsController', custTagsController);
+app.controller('custCategoryGroupController', custCategoryGroupController);
 
 $(function() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

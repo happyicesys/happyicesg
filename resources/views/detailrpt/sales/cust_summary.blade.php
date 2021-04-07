@@ -84,12 +84,24 @@
         </div>
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
-                {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
+                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        P
+                    </span>
+                    <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>--}}
+                </label>
+                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
                     [
-                        'class'=>'select form-control',
-                        'ng-model'=>'search.is_commission',
-                        'ng-change'=>'searchDB()'
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory_group',
+                        'multiple'=>'multiple',
+                        'ng-change' => "searchDB()"
                     ])
                 !!}
             </div>
@@ -223,6 +235,18 @@
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
+                    [
+                        'class'=>'select form-control',
+                        'ng-model'=>'search.is_commission',
+                        'ng-change'=>'searchDB()'
+                    ])
                 !!}
             </div>
         </div>

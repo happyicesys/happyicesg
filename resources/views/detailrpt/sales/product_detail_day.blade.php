@@ -5,7 +5,7 @@
 <div ng-controller="productDayDetailController">
 <div class="col-md-12 col-xs-12">
     <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('cust_id', null,
@@ -19,7 +19,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_from', 'Delivery From', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_id', 'Product ID', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('product_id', null,
@@ -51,9 +51,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('company', null,
@@ -67,7 +65,9 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('delivery_to', 'Delivery To', ['class'=>'control-label search-title']) !!}
                 <div class="input-group">
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('product_name', 'Product Name', ['class'=>'control-label search-title']) !!}
                 {!! Form::text('product_name', null,
@@ -99,9 +99,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('profile_id', [''=>'All']+
@@ -117,7 +115,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
@@ -137,7 +135,33 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        P
+                    </span>
+                    <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>--}}
+                </label>
+                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory_group',
+                        'multiple'=>'multiple',
+                        'ng-change' => "searchDB()"
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
 {{--
@@ -157,9 +181,7 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
@@ -171,7 +193,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                 <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
@@ -185,7 +207,9 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
                 {!! Form::select('is_inventory', ['1'=>'Inventory Item', ''=>'All'],
@@ -198,9 +222,7 @@
                 !!}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('driver', 'Assigned Driver', ['class'=>'control-label search-title']) !!}
                 @if(Auth::user()->hasRole('driver') or auth()->user()->hasRole('technician'))
@@ -225,7 +247,7 @@
                 @endif
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
                 {!! Form::select('zone_id',
@@ -239,7 +261,7 @@
                 !!}
             </div>
         </div>
-        <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                 @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))

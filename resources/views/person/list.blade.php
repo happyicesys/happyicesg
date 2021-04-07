@@ -55,6 +55,28 @@
                     </select>
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                    <label class="pull-right">
+                        {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                        <span style="margin-top: 5px; margin-right: 5px;">
+                            P
+                        </span>
+                        <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                        <span style="margin-top: 5px;">
+                            Exclude
+                        </span>--}}
+                    </label>
+                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory_group',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB($event)"
+                        ])
+                    !!}
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                     {!! Form::text('company', null,
                                                     [
@@ -90,17 +112,6 @@
                             <option value="No">Inactive</option>
                             <option value="Pending">Pending</option>
                         @endif
-                    </select>
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
-                    <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
-                        <option value="">All</option>
-                        @foreach($persontags::orderBy('name')->get() as $persontag)
-                            <option value="{{$persontag->id}}">
-                                {{$persontag->name}}
-                            </option>
-                        @endforeach
                     </select>
                 </div>
             </div>
@@ -179,6 +190,19 @@
                             <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
                         @endforeach
                         <option value="-1">Earlier than that</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
+                    <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
+                        <option value="">All</option>
+                        @foreach($persontags::orderBy('name')->get() as $persontag)
+                            <option value="{{$persontag->id}}">
+                                {{$persontag->name}}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -451,6 +475,12 @@
                         <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('custcategory_group_name')">
+                        Group
+                        <span ng-if="search.sortName == 'custcategory_group_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'custcategory_group_name' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('account_managers.name')">
                         Acc Manager
                         <span ng-if="search.sortName == 'account_managers.name' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -527,6 +557,9 @@
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.custcategory_name }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ person.custcategory_group_name }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.account_manager_name }}

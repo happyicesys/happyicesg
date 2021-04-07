@@ -1,3 +1,4 @@
+@inject('custcategoryGroups', 'App\CustcategoryGroup')
 @inject('custcatform', 'App\Custcategory')
 
 <div class="form-group">
@@ -32,7 +33,20 @@
     </select>
 </div>
 
+<div class="form-group">
+    {!! Form::label('custcategory_group_id', 'Custcategory Group', ['class'=>'control-label search-title']) !!}
+    <select name="custcategory_group_id" class="select form-control">
+        <option value=""></option>
+        @foreach($custcategoryGroups->orderBy('name', 'asc')->get() as $index => $custcategoryGroup)
+            <option value="{{$custcategoryGroup->id}}" {{$custcat->custcategory_group_id == $custcategoryGroup->id ? 'selected' : ''}}>
+                {{$custcategoryGroup->name}}
+            </option>
+        @endforeach
+    </select>
+</div>
+
 <script>
     $('.select').select2({
+        placeholder: 'Select...'
     });
 </script>

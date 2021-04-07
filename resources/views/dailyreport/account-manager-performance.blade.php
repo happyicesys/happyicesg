@@ -1,6 +1,7 @@
 @inject('profiles', 'App\Profile')
 @inject('customers', 'App\Person')
 @inject('custcategories', 'App\Custcategory')
+@inject('custcategoryGroups', 'App\CustcategoryGroup')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
 
@@ -26,7 +27,7 @@ Performance
                   <div ng-controller="accountManagerPerformanceController">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="row">
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                                     {!! Form::select('profile_id', [''=>'All']+
@@ -42,7 +43,7 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('current_month', 'Current Month', ['class'=>'control-label search-title']) !!}
                                     <select class="select form-control" name="current_month" ng-model="search.current_month" ng-change="searchDB()">
@@ -53,7 +54,7 @@ Performance
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                                     {!! Form::select('status', [''=>'All', 'Delivered'=>'Delivered', 'Confirmed'=>'Confirmed', 'Cancelled'=>'Cancelled'], null,
@@ -65,9 +66,7 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('cust_id', 'ID', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('cust_id', null,
@@ -80,7 +79,9 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                                     {!! Form::text('company', null,
@@ -93,7 +94,7 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
                                     {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
@@ -105,9 +106,7 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                                     <label class="pull-right">
@@ -127,7 +126,33 @@ Performance
                                     !!}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                                    <label class="pull-right">
+                                        {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
+                                        <span style="margin-top: 5px; margin-right: 5px;">
+                                            P
+                                        </span>
+                                        <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                                        <span style="margin-top: 5px;">
+                                            Exclude
+                                        </span>--}}
+                                    </label>
+                                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                                        null,
+                                        [
+                                            'class'=>'selectmultiple form-control',
+                                            'ng-model'=>'search.custcategory_group',
+                                            'multiple'=>'multiple',
+                                            'ng-change' => "searchDB()"
+                                        ])
+                                    !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                               <div class="form-group">
                                   {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                                   @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
@@ -152,7 +177,7 @@ Performance
                                   @endif
                               </div>
                             </div>
-                            <div class="col-md-4 col-sm-6 col-xs-12">
+                            <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     {!! Form::label('zones', 'Zone', ['class'=>'control-label search-title']) !!}
                                     {!! Form::select('zones',
@@ -204,7 +229,7 @@ Performance
                         <div class=" table-responsive col-md-4 col-sm-6 col-xs-12" style="padding: 0px 0px 0px 0px;" ng-repeat="data in alldata">
                             <table class="table table-list-search table-hover table-bordered">
                                 <tr style="background-color: #DDFDF8">
-                                    <th colspan="4" class="text-center">
+                                    <th colspan="5" class="text-center">
                                         @{{data.title}}
                                         {{-- @{{data.title}} --}}
                                     </th>

@@ -1,4 +1,5 @@
 @inject('custcategories', 'App\Custcategory')
+@inject('custcategoryGroups', 'App\CustcategoryGroup')
 @inject('freezers', 'App\Freezer')
 @inject('profiles', 'App\Profile')
 @inject('franchisees', 'App\User')

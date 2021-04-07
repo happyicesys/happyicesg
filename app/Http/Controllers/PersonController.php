@@ -67,13 +67,14 @@ class PersonController extends Controller
 
         $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
+        ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
         ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
         ->select(
             'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
             DB::raw('DATE(people.created_at) AS created_at'),
-            'custcategories.name as custcategory_name', 'custcategories.map_icon_file',
+            'custcategories.name as custcategory_name', 'custcategories.map_icon_file', 'custcategory_groups.name AS custcategory_group_name',
             'profiles.id AS profile_id', 'profiles.name AS profile_name',
             'account_managers.name AS account_manager_name',
             'zones.name AS zone_name'
@@ -992,6 +993,24 @@ class PersonController extends Controller
                 });
             }
         }
+        if ($custcategory = $request->custcategory_group) {
+            if (count($custcategory) == 1) {
+                $custcategory = [$custcategory];
+            }
+            if($request->exclude_custcategory_group) {
+                $people = $people->whereHas('custcategory', function($query) use ($custcategory) {
+                    $query->whereHas('custcategoryGroup', function($query) use ($custcategory) {
+                        $query->whereNotIn('id', $custcategory);
+                    });
+                });
+            }else {
+                $people = $people->whereHas('custcategory', function($query) use ($custcategory) {
+                    $query->whereHas('custcategoryGroup', function($query) use ($custcategory) {
+                        $query->whereIn('id', $custcategory);
+                    });
+                });
+            }
+        }
         if ($company = $request->company) {
             $people = $people->where('company', 'LIKE', $company . '%');
         }
@@ -1063,6 +1082,8 @@ class PersonController extends Controller
         $cust_id = $request->cust_id;
         $strictCustId = $request->strictCustId;
         $custcategory = $request->custcategory;
+        $custcategoryGroup = $request->custcategory_group;
+        $excludeCustcategoryGroup = $request->exclude_custcategory_group;
         $company = $request->company;
         $contact = $request->contact;
         $active = $request->active;
@@ -1090,6 +1111,17 @@ class PersonController extends Controller
                 $people = $people->whereNotIn('custcategories.id', $custcategory);
             }else {
                 $people = $people->whereIn('custcategories.id', $custcategory);
+            }
+        }
+        if($custcategoryGroup) {
+            if (count($custcategoryGroup) == 1) {
+                $custcategoryGroup = [$custcategoryGroup];
+            }
+            if($excludeCustcategoryGroup) {
+                // dd('here');
+                $people = $people->whereNotIn('custcategory_groups.id', $custcategoryGroup);
+            }else {
+                $people = $people->whereIn('custcategory_groups.id', $custcategoryGroup);
             }
         }
         if ($company) {
