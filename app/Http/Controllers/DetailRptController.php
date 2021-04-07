@@ -1490,7 +1490,6 @@ class DetailRptController extends Controller
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
-                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->crossJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
