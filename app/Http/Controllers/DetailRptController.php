@@ -1488,7 +1488,7 @@ class DetailRptController extends Controller
         $transactions = DB::table('deals')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('items', 'items.id', '=', 'deals.item_id')
-                        ->leftJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->crossJoin('people', 'transactions.person_id', '=', 'people.id')
                         ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
                         ->crossJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
                         ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
