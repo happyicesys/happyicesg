@@ -347,7 +347,8 @@
                     <span ng-if="search.sortName == 'custcategory_desc' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'custcategory_desc' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <a href="" ng-click="sortTable('custcategory_group_name')">
+                <th class="col-md-1 text-center">
+                    <a href="" ng-click="sortTable('custcategory_group_name')">
                     Group
                     <span ng-if="search.sortName == 'custcategory_group_name' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'custcategory_group_name' && search.sortBy" class="fa fa-caret-up"></span>
