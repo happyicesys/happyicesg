@@ -347,6 +347,11 @@
                     <span ng-if="search.sortName == 'custcategory_desc' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'custcategory_desc' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
+                <a href="" ng-click="sortTable('custcategory_group_name')">
+                    Group
+                    <span ng-if="search.sortName == 'custcategory_group_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'custcategory_group_name' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('thistotal.salestotal')">
                     This Month
@@ -462,6 +467,9 @@
                     <td class="col-md-1 text-left">
                         @{{ transaction.custcategory_desc }}
                     </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.custcategory_group_name }}
+                    </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.this_salestotal | currency: "": 2 }}
                     </td>
@@ -476,7 +484,7 @@
                     </td>
                 </tr>
                 <tr ng-if="!alldata || alldata.length == 0">
-                    <td colspan="14" class="text-center">No Records Found</td>
+                    <td colspan="15" class="text-center">No Records Found</td>
                 </tr>
             </tbody>
         </table>

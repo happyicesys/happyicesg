@@ -1554,6 +1554,7 @@ class DetailRptController extends Controller
                                     'transactions.gst', 'transactions.gst_rate',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
+                                    'custcategory_groups.name AS custcategory_group_name',
                                     'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
                                     'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
                                     'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
