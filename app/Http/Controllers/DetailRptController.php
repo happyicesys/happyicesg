@@ -1655,7 +1655,8 @@ class DetailRptController extends Controller
                     ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                     ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
                         people.profile_id,
-                        custcategories.id AS custcategory_id
+                        custcategories.id AS custcategory_id,
+                        custcategory_groups.id AS custcategory_group_id
                         FROM deals
                         LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
@@ -1729,25 +1730,25 @@ class DetailRptController extends Controller
         } */
 
         if($profile_id) {
-            $thistotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
-            $thiscommtotalStr .= " GROUP BY profiles.id, custcategories.id) thiscommtotal";
-            $prevtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
-            $prevcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevcommtotal";
-            $prev2totalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
-            $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2commtotal";
-            $prevyeartotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
-            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyearcommtotal";
-            $thisyeartotalStr .= " GROUP BY profiles.id, custcategories.id) thisyeartotal";
+            $thistotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisyeartotal";
         }else  {
-            $thistotalStr .= " GROUP BY custcategories.id) thistotal";
-            $thiscommtotalStr .= " GROUP BY custcategories.id) thiscommtotal";
-            $prevtotalStr .= " GROUP BY custcategories.id) prevtotal";
-            $prevcommtotalStr .= " GROUP BY custcategories.id) prevcommtotal";
-            $prev2totalStr .= " GROUP BY custcategories.id) prev2total";
-            $prev2commtotalStr .= " GROUP BY custcategories.id) prev2commtotal";
-            $prevyeartotalStr .= " GROUP BY custcategories.id) prevyeartotal";
-            $prevyearcommtotalStr .= " GROUP BY custcategories.id) prevyearcommtotal";
-            $thisyeartotalStr .= " GROUP BY custcategories.id) thisyeartotal";
+            $thistotalStr .= " GROUP BY custcategory_groups.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY custcategory_groups.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY custcategory_groups.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY custcategory_groups.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY custcategory_groups.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY custcategory_groups.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY custcategory_groups.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY custcategory_groups.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY custcategory_groups.id) thisyeartotal";
         }
 
         $thistotal = DB::raw($thistotalStr);
@@ -1773,55 +1774,55 @@ class DetailRptController extends Controller
                             if($profile_id) {
                                 $join->on('thistotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('thistotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($thiscommtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('thiscommtotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('thiscommtotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('thiscommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prevtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevtotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prevtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prevcommtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prevcommtotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prevcommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prev2total, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prev2total.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prev2total.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prev2commtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prev2commtotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prev2commtotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prev2commtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prevyeartotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prevyearcommtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('prevyearcommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
                             }
-                            $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
+                            $join->on('thisyeartotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->select(
                                     'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
