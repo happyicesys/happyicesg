@@ -511,6 +511,7 @@ Route::get('/detailrpt/sales', 'DetailRptController@salesIndex');
 Route::post('/api/detailrpt/sales/monthly-report', 'DetailRptController@getSalesMonthlyReportApi');
 Route::post('/api/detailrpt/sales/custdetail', 'DetailRptController@getSalesCustdetailApi');
 Route::post('/api/detailrpt/sales/custsummary', 'DetailRptController@getSalesCustSummaryApi');
+Route::post('/api/detailrpt/sales/custsummary-group', 'DetailRptController@getSalesCustSummaryGroupApi');
 Route::post('/api/detailrpt/sales/productday', 'DetailRptController@getSalesProductDetailDayApi');
 Route::post('/api/detailrpt/sales/productmonth', 'DetailRptController@getSalesProductDetailMonthApi');
 Route::get('/detailrpt/sales/{item_id}/thismonth', 'DetailRptController@getProductDetailMonthThisMonth');

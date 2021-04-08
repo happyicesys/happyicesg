@@ -24,6 +24,7 @@
                         <li class="active"><a href="#cust_detail" role="tab" data-toggle="tab">Customer Detail</a></li>
                         @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <li><a href="#cust_summary" role="tab" data-toggle="tab">Customer Summary</a></li>
+                        <li><a href="#cust_summary_group" role="tab" data-toggle="tab">Customer Summary(Group)</a></li>
                         <li><a href="#monthly_report" role="tab" data-toggle="tab">Monthly Report</a></li>
                         <li><a href="#product_detail_month" role="tab" data-toggle="tab">Product Detail (Month)</a></li>
                         @endif
@@ -42,6 +43,9 @@
                     </div>
                     <div class="tab-pane" id="cust_summary">
                         @include('detailrpt.sales.cust_summary')
+                    </div>
+                    <div class="tab-pane" id="cust_summary_group">
+                        @include('detailrpt.sales.cust_summary_group')
                     </div>
                     <div class="tab-pane" id="monthly_report">
                         @include('detailrpt.sales.monthly_report')

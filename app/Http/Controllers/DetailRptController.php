@@ -1566,14 +1566,6 @@ class DetailRptController extends Controller
         $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
 
         $transactions = $transactions->whereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->copy()->startOfMonth()->toDateString(), $thisYear->copy()->endOfYear()->toDateString()]);
-/*
-        $transactions = $transactions->where(function($query) use ($delivery_from, $delivery_to, $prevMonth, $prev2Months, $prevYear) {
-
-                            $query->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$delivery_from, $delivery_to])
-                                    ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevMonth->startOfMonth()->toDateString(), $prevMonth->endOfMonth()->toDateString()])
-                                    ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prev2Months->startOfMonth()->toDateString(), $prev2Months->endOfMonth()->toDateString()])
-                                     ->orWhereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->startOfMonth()->toDateString(), $prevYear->endOfMonth()->toDateString()]);
-                        }); */
 
         // $transactions = $transactions->where(function($query) {
         //     $query->where('thistotal.salestotal', '<>', null)
@@ -1633,6 +1625,283 @@ class DetailRptController extends Controller
 
         return $data;
     }
+
+
+    // retrieve customers sales summary group api(Formrequest $request)
+    public function getSalesCustSummaryGroupApi(Request $request)
+    {
+        // showing total amount init
+        $total_amount = 0;
+        $input = $request->all();
+        // initiate the page num when null given
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+
+        // indicate the month and year
+        $carbondate = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month);
+        $prevMonth = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonth();
+        $prev2Months = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subMonths(2);
+        $prevYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month)->subYear();
+        $thisYear = Carbon::createFromFormat('d-m-Y', '01-'.$request->current_month);
+        $delivery_from = $carbondate->startOfMonth()->toDateString();
+        $delivery_to = $carbondate->endOfMonth()->toDateString();
+        $profile_id = $request->profile_id;
+        $request->merge(array('delivery_from' => $delivery_from));
+        $request->merge(array('delivery_to' => $delivery_to));
+
+
+        $queryStr = "(
+                    SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
+                    ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
+                    ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                        people.profile_id,
+                        custcategories.id AS custcategory_id
+                        FROM deals
+                        LEFT JOIN items ON items.id=deals.item_id
+                        LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                        LEFT JOIN people ON transactions.person_id=people.id
+                        LEFT JOIN profiles ON people.profile_id=profiles.id
+                        LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
+                        WHERE 1=1 ";
+
+        $queryStr = $this->searchTransactionRawFilter($queryStr, $request);
+
+        // profile and custcategory filter
+        $queryStr = $this->filterUserDBRawProfile($queryStr);
+        $queryStr = $this->filterUserDBRawCustcategory($queryStr);
+
+        $queryStrNoComm = $queryStr;
+/*
+        if($request->is_commission != '') {
+            $queryStr .= " AND items.is_commission='".$request->is_commission."' ";
+        } */
+        if($request->is_commission != '') {
+            $is_commission = $request->is_commission;
+            switch($is_commission) {
+                case '0':
+                    $queryStr .= " AND items.is_commission='".$is_commission."' ";
+                    $queryStr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+                    break;
+                case '1':
+                    $queryStr .= " AND items.is_commission=1 ";
+                    $queryStr .= " AND items.is_supermarket_fee=0 ";
+                    break;
+                case '2':
+                    $queryStr .= " AND items.is_commission=0 ";
+                    $queryStr .= " AND items.is_supermarket_fee=1 ";
+                    break;
+            }
+        }
+
+        $thistotalStr = $queryStr;
+        $prevtotalStr = $queryStr;
+        $prev2totalStr = $queryStr;
+        $prevyeartotalStr = $queryStr;
+        $thiscommtotalStr = $queryStrNoComm;
+        $prevcommtotalStr = $queryStrNoComm;
+        $prev2commtotalStr = $queryStrNoComm;
+        $prevyearcommtotalStr = $queryStrNoComm;
+        $thisyeartotalStr = $queryStrNoComm;
+
+        $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
+        $thiscommtotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
+        $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+        $prevcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevcommtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+        $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+        $prev2commtotalStr = $this->filterTransactionDeliveryDateRaw($prev2commtotalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+        $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
+        $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
+
+        $thisyeartotalStr = $this->filterTransactionDeliveryDateRaw($thisyeartotalStr, $thisYear->copy()->startOfYear()->toDateString(), $thisYear->copy()->endOfYear()->toDateString());
+        // dd($thisYear->startOfYear()->toDateString(), $thisYear->endOfYear()->toDateString());
+/*
+        if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
+            $profileIdStr = implode(",", $profileIds);
+            $thistotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $thiscommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevcommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prev2totalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prev2commtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevyeartotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+            $prevyearcommtotalStr .= " AND profiles.id IN (".$profileIdStr.")";
+        } */
+
+        if($profile_id) {
+            $thistotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisyeartotal";
+        }else  {
+            $thistotalStr .= " GROUP BY custcategory_groups.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY custcategory_groups.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY custcategory_groups.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY custcategory_groups.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY custcategory_groups.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY custcategory_groups.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY custcategory_groups.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY custcategory_groups.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY custcategory_groups.id) thisyeartotal";
+        }
+
+        $thistotal = DB::raw($thistotalStr);
+        $thiscommtotal = DB::raw($thiscommtotalStr);
+        $prevtotal = DB::raw($prevtotalStr);
+        $prevcommtotal = DB::raw($prevcommtotalStr);
+        $prev2total = DB::raw($prev2totalStr);
+        $prev2commtotal = DB::raw($prev2commtotalStr);
+        $prevyeartotal = DB::raw($prevyeartotalStr);
+        $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
+        $thisyeartotal = DB::raw($thisyeartotalStr);
+
+
+        $transactions = DB::table('deals')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->crossJoin('people', 'transactions.person_id', '=', 'people.id')
+                        ->leftJoin('profiles', 'people.profile_id', '=', 'profiles.id')
+                        ->crossJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
+                        ->leftJoin('users AS account_manager', 'account_manager.id', '=', 'people.account_manager')
+                        ->leftJoin($thistotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thistotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thistotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($thiscommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thiscommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thiscommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevcommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prev2total, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2total.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2total.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prev2commtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2commtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2commtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyeartotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($prevyearcommtotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyearcommtotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thisyeartotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thisyeartotal.custcategory_id', '=', 'custcategories.id');
+                        })
+                        ->select(
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                    'account_manager.name AS account_manager_name',
+                                    'profiles.name as profile_name', 'profiles.id as profile_id',
+                                    'transactions.gst', 'transactions.gst_rate',
+                                    'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
+                                    'custcategories.name AS custcategory', 'custcategories.desc AS custcategory_desc',
+                                    'custcategory_groups.name AS custcategory_group_name',
+                                    'thistotal.salestotal AS this_salestotal', 'thistotal.taxtotal AS this_taxtotal', 'thistotal.transactiontotal AS this_transactiontotal',
+                                    'prevtotal.salestotal AS prev_salestotal', 'prevtotal.taxtotal AS prev_taxtotal', 'prevtotal.transactiontotal AS prev_transactiontotal',
+                                    'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
+                                    'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
+                                    'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                                    'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
+                                );
+
+        $transactions = $this->searchTransactionFilterWithoutDeliveryDate($transactions, $request);
+
+        $transactions = $transactions->whereBetween(DB::raw('DATE(transactions.delivery_date)'), [$prevYear->copy()->startOfMonth()->toDateString(), $thisYear->copy()->endOfYear()->toDateString()]);
+
+        // $transactions = $transactions->where(function($query) {
+        //     $query->where('thistotal.salestotal', '<>', null)
+        //         ->orWhere('prevtotal.salestotal', '<>', null)
+        //         ->orWhere('prev2total.salestotal', '<>', null)
+        //         ->orWhere('prevyeartotal.salestotal', '<>', null);
+        // });
+
+        // add user profile filters
+        $transactions = $this->filterUserDbProfile($transactions);
+        // $transactions = $this->filterUserDbCustcategoryWithoutNull($transactions);
+
+
+        if($profile_id) {
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategory_groups.id', 'profiles.id');
+        }else {
+            $transactions = $transactions->orderBy('thistotal.salestotal', 'DESC')->groupBy('custcategory_groups.id');
+        }
+
+        if($request->sortName){
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
+
+        $totals = $this->multipleTotalFields($transactions, [
+            'this_salestotal',
+            'this_taxtotal',
+            'this_transactiontotal',
+            'this_commtotal',
+            'prev_salestotal',
+            'prev_taxtotal',
+            'prev_transactiontotal',
+            'prev_commtotal',
+            'prev2_salestotal',
+            'prev2_taxtotal',
+            'prev2_transactiontotal',
+            'prev2_commtotal',
+            'prevyear_salestotal',
+            'prevyear_taxtotal',
+            'prevyear_transactiontotal',
+            'prevyear_commtotal',
+            'thisyear_salestotal',
+            'thisyear_taxtotal',
+            'thisyear_transactiontotal',
+            'thisyear_commtotal'
+        ]);
+
+        if($pageNum == 'All'){
+            $transactions = $transactions->get();
+        }else{
+            $transactions = $transactions->paginate($pageNum);
+        }
+
+        $data = [
+            'totals' => $totals,
+            'transactions' => $transactions,
+        ];
+
+        return $data;
+    }
+
 
     // retrieve invoice breakdown detail (Formrequest $request)
     public function getInvoiceBreakdownDetail(Request $request)
