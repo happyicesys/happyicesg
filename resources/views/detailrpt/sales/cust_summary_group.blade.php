@@ -318,7 +318,7 @@
     </div>
 </div>
 
-    <div class="table-responsive" id="exportable_custsummary" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_custsummary_group" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
 
             {{-- hidden table for excel export --}}

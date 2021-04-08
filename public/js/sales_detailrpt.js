@@ -257,11 +257,11 @@ var app = angular.module('app', [
             });
         });
         $scope.exportData = function () {
-            var blob = new Blob(["\ufeff", document.getElementById('exportable_custsummary').innerHTML], {
+            var blob = new Blob(["\ufeff", document.getElementById('exportable_custsummary_group').innerHTML], {
                 type: "application/vnd.ms-excel;charset=charset=utf-8"
             });
             var now = Date.now();
-            saveAs(blob, "Cust Summary (Sales)"+ now + ".xls");
+            saveAs(blob, "Cust Summary (Group)"+ now + ".xls");
         };
 
         // switching page
