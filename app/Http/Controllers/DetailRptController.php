@@ -1729,25 +1729,25 @@ class DetailRptController extends Controller
         } */
 
         if($profile_id) {
-            $thistotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thistotal";
-            $thiscommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thiscommtotal";
-            $prevtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevtotal";
-            $prevcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevcommtotal";
-            $prev2totalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2total";
-            $prev2commtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2commtotal";
-            $prevyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyeartotal";
-            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearcommtotal";
-            $thisyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisyeartotal";
+            $thistotalStr .= " GROUP BY profiles.id, custcategories.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY profiles.id, custcategories.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY profiles.id, custcategories.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY profiles.id, custcategories.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY profiles.id, custcategories.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY profiles.id, custcategories.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategories.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY profiles.id, custcategories.id) thisyeartotal";
         }else  {
-            $thistotalStr .= " GROUP BY custcategory_groups.id) thistotal";
-            $thiscommtotalStr .= " GROUP BY custcategory_groups.id) thiscommtotal";
-            $prevtotalStr .= " GROUP BY custcategory_groups.id) prevtotal";
-            $prevcommtotalStr .= " GROUP BY custcategory_groups.id) prevcommtotal";
-            $prev2totalStr .= " GROUP BY custcategory_groups.id) prev2total";
-            $prev2commtotalStr .= " GROUP BY custcategory_groups.id) prev2commtotal";
-            $prevyeartotalStr .= " GROUP BY custcategory_groups.id) prevyeartotal";
-            $prevyearcommtotalStr .= " GROUP BY custcategory_groups.id) prevyearcommtotal";
-            $thisyeartotalStr .= " GROUP BY custcategory_groups.id) thisyeartotal";
+            $thistotalStr .= " GROUP BY custcategories.id) thistotal";
+            $thiscommtotalStr .= " GROUP BY custcategories.id) thiscommtotal";
+            $prevtotalStr .= " GROUP BY custcategories.id) prevtotal";
+            $prevcommtotalStr .= " GROUP BY custcategories.id) prevcommtotal";
+            $prev2totalStr .= " GROUP BY custcategories.id) prev2total";
+            $prev2commtotalStr .= " GROUP BY custcategories.id) prev2commtotal";
+            $prevyeartotalStr .= " GROUP BY custcategories.id) prevyeartotal";
+            $prevyearcommtotalStr .= " GROUP BY custcategories.id) prevyearcommtotal";
+            $thisyeartotalStr .= " GROUP BY custcategories.id) thisyeartotal";
         }
 
         $thistotal = DB::raw($thistotalStr);
