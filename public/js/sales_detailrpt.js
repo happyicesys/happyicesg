@@ -23,7 +23,8 @@ var app = angular.module('app', [
             id_prefix: '',
             cust_id: '',
             company: '',
-            custcategory: '',
+            custcategory: [],
+            exACategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
             person_active: [],
@@ -90,6 +91,17 @@ var app = angular.module('app', [
             $scope.search.account_manager = userId;
         }
 
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -117,6 +129,7 @@ var app = angular.module('app', [
     function custSummaryController($scope, $http){
         // init the variables
         $scope.alldata = [];
+        $scope.custcategories = [];
         $scope.totalCount = 0;
         $scope.totalPages = 0;
         $scope.currentPage = 1;
@@ -128,7 +141,8 @@ var app = angular.module('app', [
             profile_id: '',
             current_month: moment().month()+1 + '-' + moment().year(),
             id_prefix: '',
-            custcategory: '',
+            custcategory: [],
+            exACategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
             person_active: [],
@@ -193,6 +207,17 @@ var app = angular.module('app', [
             $scope.search.account_manager = userId;
         }
 
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -232,7 +257,8 @@ var app = angular.module('app', [
             profile_id: '',
             current_month: moment().month()+1 + '-' + moment().year(),
             id_prefix: '',
-            custcategory: '',
+            custcategory: [],
+            exACategory: '',
             exclude_custcategory: '',
             status: 'Delivered',
             person_active: [],
@@ -297,6 +323,17 @@ var app = angular.module('app', [
             $scope.search.account_manager = userId;
         }
 
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -337,7 +374,7 @@ var app = angular.module('app', [
             current_month: moment().month()+1 + '-' + moment().year(),
             product_id: '',
             product_name: '',
-            custcategory: '',
+            custcategory: [],
             exclude_custcategory: '',
             status: 'Delivered',
             person_active: [],
@@ -552,7 +589,8 @@ var app = angular.module('app', [
             delivery_to: $scope.today,
             product_name: '',
             profile_id: '',
-            custcategory: '',
+            custcategory: [],
+            exACategory: '',
             exclude_custcategory: '',
             person_active: [],
             // status: 'Confirmed',
@@ -639,6 +677,17 @@ var app = angular.module('app', [
 
         $scope.merchandiserInit = function(userId) {
             $scope.search.account_manager = userId;
+        }
+
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
         }
 
         // retrieve page w/wo search

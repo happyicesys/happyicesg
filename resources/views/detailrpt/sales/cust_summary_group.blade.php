@@ -66,6 +66,10 @@
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
+                    <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        Ex A
+                    </span>
                     <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
                     <span style="margin-top: 5px;">
                         Exclude
@@ -301,6 +305,14 @@
                 <strong>@{{ totals.thisyear_commtotal ? totals.thisyear_commtotal : 0.00 | currency: "": 2}}</strong>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                SFee:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals.thisyear_sfeetotal ? totals.thisyear_sfeetotal : 0.00 | currency: "": 2}}</strong>
+            </div>
+        </div>
     </div>
     <div class="col-md-4 col-xs-12 text-right">
         <div class="row">
@@ -388,6 +400,10 @@
                         Comm:
                     </span>
                     @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}}
+                    <span class="pull-left">
+                        SFee:
+                    </span>
+                    @{{ totals.this_sfeetotal ? totals.this_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left">
@@ -406,6 +422,10 @@
                         Comm:
                     </span>
                     @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}}
+                    <span class="pull-left">
+                        SFee:
+                    </span>
+                    @{{ totals.prev_sfeetotal ? totals.prev_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left">
@@ -424,6 +444,10 @@
                         Comm:
                     </span>
                     @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}}
+                    <span class="pull-left">
+                        Sfee:
+                    </span>
+                    @{{ totals.prev2_sfeetotal ? totals.prev2_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left">
@@ -442,6 +466,10 @@
                         Comm:
                     </span>
                     @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}}
+                    <span class="pull-left">
+                        SFee:
+                    </span>
+                    @{{ totals.prevyear_sfeetotal ? totals.prevyear_sfeetotal : 0.00 | currency: "": 2}}
                 </th>
             </tr>
 
