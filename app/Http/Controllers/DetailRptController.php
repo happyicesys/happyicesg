@@ -1629,7 +1629,7 @@ class DetailRptController extends Controller
                                     'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
                                     'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
                                     'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
-                                    'thisSfeetotal.sfeetotal AS this_sfeetotal', 'prevSfeetotal.sfeetotal AS prev_sfeetotal', 'prev2Sfeetotal.sfeetotal AS prev2_sfeetotal', 'prevyearSfeetotal.sfeetotal AS prevyear_sfeetotal',
+                                    'thisSfeetotal.sfeetotal AS this_sfeetotal', 'prevSfeetotal.sfeetotal AS prev_sfeetotal', 'prev2Sfeetotal.sfeetotal AS prev2_sfeetotal', 'prevyearSfeetotal.sfeetotal AS prevyear_sfeetotal', 'thisyeartotal.sfeetotal AS thisyear_sfeetotal',
                                     'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
                                 );
 
