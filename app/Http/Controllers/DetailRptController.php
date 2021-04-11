@@ -1730,6 +1730,7 @@ class DetailRptController extends Controller
                     ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount * (transactions.gst_rate/100) ELSE transactions.gst_rate/100*deals.amount END) ELSE 0 END), 2) AS taxtotal,
                     ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount*((100 + transactions.gst_rate)/100) ELSE deals.amount END) ELSE deals.amount END), 2) AS transactiontotal,
                     ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commtotal,
+                    ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfeetotal,
                         people.profile_id,
                         custcategories.id AS custcategory_id,
                         custcategory_groups.id AS custcategory_group_id
@@ -1779,16 +1780,27 @@ class DetailRptController extends Controller
         $prevcommtotalStr = $queryStrNoComm;
         $prev2commtotalStr = $queryStrNoComm;
         $prevyearcommtotalStr = $queryStrNoComm;
+        $thisSfeetotalStr = $queryStrNoComm;
+        $prevSfeetotalStr = $queryStrNoComm;
+        $prev2SfeetotalStr = $queryStrNoComm;
+        $prevyearSfeetotalStr = $queryStrNoComm;
         $thisyeartotalStr = $queryStrNoComm;
 
         $thistotalStr = $this->filterTransactionDeliveryDateRaw($thistotalStr, $delivery_from, $delivery_to);
         $thiscommtotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
+        $thisSfeetotalStr = $this->filterTransactionDeliveryDateRaw($thiscommtotalStr, $delivery_from, $delivery_to);
+
         $prevtotalStr = $this->filterTransactionDeliveryDateRaw($prevtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
         $prevcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevcommtotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+        $prevSfeetotalStr = $this->filterTransactionDeliveryDateRaw($prevSfeetotalStr, $prevMonth->copy()->startOfMonth()->toDateString(), $prevMonth->copy()->endOfMonth()->toDateString());
+
         $prev2totalStr = $this->filterTransactionDeliveryDateRaw($prev2totalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
         $prev2commtotalStr = $this->filterTransactionDeliveryDateRaw($prev2commtotalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+        $prev2SfeetotalStr = $this->filterTransactionDeliveryDateRaw($prev2SfeetotalStr, $prev2Months->copy()->startOfMonth()->toDateString(), $prev2Months->copy()->endOfMonth()->toDateString());
+
         $prevyeartotalStr = $this->filterTransactionDeliveryDateRaw($prevyeartotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
         $prevyearcommtotalStr = $this->filterTransactionDeliveryDateRaw($prevyearcommtotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
+        $prevyearSfeetotalStr = $this->filterTransactionDeliveryDateRaw($prevyearSfeetotalStr, $prevYear->copy()->startOfMonth()->toDateString(), $prevYear->copy()->endOfMonth()->toDateString());
 
         $thisyeartotalStr = $this->filterTransactionDeliveryDateRaw($thisyeartotalStr, $thisYear->copy()->startOfYear()->toDateString(), $thisYear->copy()->endOfYear()->toDateString());
         // dd($thisYear->startOfYear()->toDateString(), $thisYear->endOfYear()->toDateString());
@@ -1808,33 +1820,57 @@ class DetailRptController extends Controller
         if($profile_id) {
             $thistotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thistotal";
             $thiscommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thiscommtotal";
+            $thisSfeetotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thissfeetotal";
+
             $prevtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevtotal";
             $prevcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevcommtotal";
+            $prevSfeetotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevsfeetotal";
+
             $prev2totalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2total";
             $prev2commtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2commtotal";
+            $prev2SfeetotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prev2sfeetotal";
+
             $prevyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyeartotal";
             $prevyearcommtotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearcommtotal";
+            $prevyearSfeetotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearsfeetotal";
+
             $thisyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisyeartotal";
         }else  {
             $thistotalStr .= " GROUP BY custcategory_groups.id) thistotal";
             $thiscommtotalStr .= " GROUP BY custcategory_groups.id) thiscommtotal";
+            $thisSfeetotalStr .= " GROUP BY custcategory_groups.id) thissfeetotal";
+
             $prevtotalStr .= " GROUP BY custcategory_groups.id) prevtotal";
             $prevcommtotalStr .= " GROUP BY custcategory_groups.id) prevcommtotal";
+            $prevSfeetotalStr .= " GROUP BY custcategory_groups.id) prevsfeetotal";
+
             $prev2totalStr .= " GROUP BY custcategory_groups.id) prev2total";
             $prev2commtotalStr .= " GROUP BY custcategory_groups.id) prev2commtotal";
+            $prev2SfeetotalStr .= " GROUP BY custcategory_groups.id) prev2sfeetotal";
+
             $prevyeartotalStr .= " GROUP BY custcategory_groups.id) prevyeartotal";
             $prevyearcommtotalStr .= " GROUP BY custcategory_groups.id) prevyearcommtotal";
+            $prevyearSfeetotalStr .= " GROUP BY custcategory_groups.id) prevyearsfeetotal";
+
             $thisyeartotalStr .= " GROUP BY custcategory_groups.id) thisyeartotal";
         }
 
         $thistotal = DB::raw($thistotalStr);
         $thiscommtotal = DB::raw($thiscommtotalStr);
+        $thisSfeetotal = DB::raw($thisSfeetotalStr);
+
         $prevtotal = DB::raw($prevtotalStr);
         $prevcommtotal = DB::raw($prevcommtotalStr);
+        $prevSfeetotal = DB::raw($prevSfeetotalStr);
+
         $prev2total = DB::raw($prev2totalStr);
         $prev2commtotal = DB::raw($prev2commtotalStr);
+        $prev2Sfeetotal = DB::raw($prev2SfeetotalStr);
+
         $prevyeartotal = DB::raw($prevyeartotalStr);
         $prevyearcommtotal = DB::raw($prevyearcommtotalStr);
+        $prevyearSfeetotal = DB::raw($prevyearSfeetotalStr);
+
         $thisyeartotal = DB::raw($thisyeartotalStr);
 
 
@@ -1858,6 +1894,12 @@ class DetailRptController extends Controller
                             }
                             $join->on('thiscommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
+                        ->leftJoin($thisSfeetotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('thissfeetotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('thissfeetotal.custcategory_group_id', '=', 'custcategory_groups.id');
+                        })
                         ->leftJoin($prevtotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevtotal.profile_id', '=', 'profiles.id');
@@ -1869,6 +1911,12 @@ class DetailRptController extends Controller
                                 $join->on('prevcommtotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('prevcommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
+                        })
+                        ->leftJoin($prevSfeetotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevsfeetotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevsfeetotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($prev2total, function($join) use ($profile_id) {
                             if($profile_id) {
@@ -1882,6 +1930,12 @@ class DetailRptController extends Controller
                             }
                             $join->on('prev2commtotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
+                        ->leftJoin($prev2Sfeetotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prev2sfeetotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prev2sfeetotal.custcategory_group_id', '=', 'custcategory_groups.id');
+                        })
                         ->leftJoin($prevyeartotal, function($join) use ($profile_id) {
                             if($profile_id) {
                                 $join->on('prevyeartotal.profile_id', '=', 'profiles.id');
@@ -1893,6 +1947,12 @@ class DetailRptController extends Controller
                                 $join->on('prevyearcommtotal.profile_id', '=', 'profiles.id');
                             }
                             $join->on('prevyearcommtotal.custcategory_group_id', '=', 'custcategory_groups.id');
+                        })
+                        ->leftJoin($prevyearSfeetotal, function($join) use ($profile_id) {
+                            if($profile_id) {
+                                $join->on('prevyearsfeetotal.profile_id', '=', 'profiles.id');
+                            }
+                            $join->on('prevyearsfeetotal.custcategory_group_id', '=', 'custcategory_groups.id');
                         })
                         ->leftJoin($thisyeartotal, function($join) use ($profile_id) {
                             if($profile_id) {
@@ -1913,6 +1973,7 @@ class DetailRptController extends Controller
                                     'prev2total.salestotal AS prev2_salestotal', 'prev2total.taxtotal AS prev2_taxtotal', 'prev2total.transactiontotal AS prev2_transactiontotal',
                                     'prevyeartotal.salestotal AS prevyear_salestotal', 'prevyeartotal.taxtotal AS prevyear_taxtotal', 'prevyeartotal.transactiontotal AS prevyear_transactiontotal',
                                     'thiscommtotal.commtotal AS this_commtotal', 'prevcommtotal.commtotal AS prev_commtotal', 'prev2commtotal.commtotal AS prev2_commtotal', 'prevyearcommtotal.commtotal AS prevyear_commtotal',
+                                    'thissfeetotal.sfeetotal AS this_sfeetotal', 'prevsfeetotal.sfeetotal AS prev_sfeetotal', 'prev2sfeetotal.sfeetotal AS prev2_sfeetotal', 'prevyearsfeetotal.sfeetotal AS prevyear_sfeetotal', 'thisyeartotal.sfeetotal AS thisyear_sfeetotal',
                                     'thisyeartotal.salestotal AS thisyear_salestotal', 'thisyeartotal.taxtotal AS thisyear_taxtotal', 'thisyeartotal.transactiontotal AS thisyear_transactiontotal', 'thisyeartotal.commtotal AS thisyear_commtotal'
                                 );
 
@@ -1947,22 +2008,27 @@ class DetailRptController extends Controller
             'this_taxtotal',
             'this_transactiontotal',
             'this_commtotal',
+            'this_sfeetotal',
             'prev_salestotal',
             'prev_taxtotal',
             'prev_transactiontotal',
             'prev_commtotal',
+            'prev_sfeetotal',
             'prev2_salestotal',
             'prev2_taxtotal',
             'prev2_transactiontotal',
             'prev2_commtotal',
+            'prev2_sfeetotal',
             'prevyear_salestotal',
             'prevyear_taxtotal',
             'prevyear_transactiontotal',
             'prevyear_commtotal',
+            'prevyear_sfeetotal',
             'thisyear_salestotal',
             'thisyear_taxtotal',
             'thisyear_transactiontotal',
-            'thisyear_commtotal'
+            'thisyear_commtotal',
+            'thisyear_sfeetotal'
         ]);
 
         if($pageNum == 'All'){
