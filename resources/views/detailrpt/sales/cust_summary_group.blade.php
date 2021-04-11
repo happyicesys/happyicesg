@@ -399,7 +399,7 @@
                     <span class="pull-left">
                         Comm:
                     </span>
-                    @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.this_commtotal ? totals.this_commtotal : 0.00 | currency: "": 2}}<br>
                     <span class="pull-left">
                         SFee:
                     </span>
@@ -421,7 +421,7 @@
                     <span class="pull-left">
                         Comm:
                     </span>
-                    @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prev_commtotal ? totals.prev_commtotal : 0.00 | currency: "": 2}} <br>
                     <span class="pull-left">
                         SFee:
                     </span>
@@ -443,7 +443,7 @@
                     <span class="pull-left">
                         Comm:
                     </span>
-                    @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prev2_commtotal ? totals.prev2_commtotal : 0.00 | currency: "": 2}} <br>
                     <span class="pull-left">
                         Sfee:
                     </span>
@@ -465,7 +465,7 @@
                     <span class="pull-left">
                         Comm:
                     </span>
-                    @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}}
+                    @{{ totals.prevyear_commtotal ? totals.prevyear_commtotal : 0.00 | currency: "": 2}}<br>
                     <span class="pull-left">
                         SFee:
                     </span>
