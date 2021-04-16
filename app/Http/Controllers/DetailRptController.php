@@ -2792,7 +2792,7 @@ class DetailRptController extends Controller
             'total_gross_profit' => $total_gross_profit,
             'total_gross_profit_percent' => $total_gross_profit/ $total_sell_value * 100,
             'total_sf_fee' => $total_sf_fee,
-            'total_gross_after_sf_fee' => $total_gross_profit - $total_sf_fee,
+            'total_gross_after_sf_fee' => $total_gross_profit + $total_sf_fee,
             'total_gross_after_sf_fee_percent' => ($total_gross_profit + $total_sf_fee)/ $total_sell_value * 100
         ];
         return $totals;
