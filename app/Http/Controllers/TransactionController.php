@@ -733,7 +733,7 @@ class TransactionController extends Controller
         if($transaction->person->custcategory->custcategoryGroup->name === 'ONLINE') {
 
             $this->validate($request, [
-                'attn_name' => 'required',
+                'name' => 'required',
                 'contact' => 'required'
             ]);
         }
