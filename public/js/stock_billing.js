@@ -29,6 +29,7 @@ var app = angular.module('app', [
             company: '',
             person_id: '',
             driver: '',
+            exACategory: '',
             custcategory: '',
             exclude_custcategory: '',
             is_inventory: '1',
@@ -110,6 +111,17 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
+        $scope.onExACategoryChanged = function() {
+            if($scope.search.exACategory) {
+                $scope.search.custcategory.push("2");
+                $scope.search.exclude_custcategory = true;
+            }else {
+                $scope.search.custcategory.splice($scope.search.custcategory.indexOf("2"), 1 );
+                $scope.search.exclude_custcategory = false;
+            }
+            $scope.searchDB();
+        }
+
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
@@ -134,6 +146,10 @@ var app = angular.module('app', [
                 $scope.total_costs = data.totals.total_costs.toFixed(2);
                 $scope.total_sell_value = data.totals.total_sell_value.toFixed(2);
                 $scope.total_gross_profit = data.totals.total_gross_profit.toFixed(2);
+                $scope.total_gross_profit_percent = data.totals.total_gross_profit_percent.toFixed(2);
+                $scope.total_sf_fee = data.totals.total_sf_fee.toFixed(2);
+                $scope.total_gross_after_sf_fee = data.totals.total_gross_after_sf_fee.toFixed(2);
+                $scope.total_gross_after_sf_fee_percent = data.totals.total_gross_after_sf_fee_percent.toFixed(2);
                 $scope.spinner = false;
             });
         }

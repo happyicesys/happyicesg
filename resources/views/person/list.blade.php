@@ -140,7 +140,7 @@
                     @if(auth()->user()->hasRole('merchandiser'))
                         <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB($event)" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
                             <option value="">All</option>
-                            @foreach($users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
+                            @foreach($users::whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
                             <option value="{{$user->id}}">
                                 {{$user->name}}
                             </option>
@@ -148,7 +148,7 @@
                         </select>
                     @else
                         {!! Form::select('account_manager',
-                                [''=>'All']+$users::where('is_active', 1)->whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                                [''=>'All']+$users::whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
                                 null,
                                 [
                                     'class'=>'select form-control',

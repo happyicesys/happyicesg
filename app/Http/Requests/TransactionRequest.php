@@ -25,7 +25,7 @@ class TransactionRequest extends Request
     {
         return [
             'person_id' =>'required',
-            
+            'del_postcode' => 'required|digits:6'
         ];
     }
 }

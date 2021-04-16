@@ -2,6 +2,7 @@
 @inject('sdeals', 'App\Deal')
 @inject('speople', 'App\Person')
 @inject('scustcategories', 'App\Custcategory')
+@inject('custcategoryGroups', 'App\CustcategoryGroup')
 @inject('susers', 'App\User')
 
 @extends('template')
@@ -78,6 +79,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('driver', 'Delivered By', ['class'=>'control-label search-title']) !!}
+                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
+                        <option value="">All</option>
+                        @foreach($susers::where('is_active', 1)->orderBy('name')->get() as $user)
+                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor')) and count($user->profiles) > 0)
+                                <option value="{{$user->name}}">
+                                    {{$user->name}}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -134,10 +150,16 @@
                     !!}
                 </div>
             </div>
+        </div>
+        <div class="row form-group">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
+                        <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
+                        <span style="margin-top: 5px; margin-right: 5px;">
+                            Ex A
+                        </span>
                         <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
                         <span style="margin-top: 5px;">
                             Exclude
@@ -154,8 +176,20 @@
                     !!}
                 </div>
             </div>
-        </div>
-        <div class="row form-group">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.custcategory_group',
+                            'multiple'=>'multiple',
+                            'ng-change' => "searchDB()"
+                        ])
+                    !!}
+                </div>
+            </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
@@ -171,7 +205,7 @@
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
+                    {!! Form::label('is_commission', 'Include Comm & SFee', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
                         [
                             'class'=>'select form-control',
@@ -181,21 +215,7 @@
                     !!}
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="form-group">
-                    {!! Form::label('is_commission', 'Delivered By', ['class'=>'control-label search-title']) !!}
-                    <select name="driver" class="form-control select" ng-model="search.driver" ng-change="searchDB()">
-                        <option value="">All</option>
-                        @foreach($susers::where('is_active', 1)->orderBy('name')->get() as $user)
-                            @if(($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor')) and count($user->profiles) > 0)
-                                <option value="{{$user->name}}">
-                                    {{$user->name}}
-                                </option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+
 
         </div>
 
@@ -208,44 +228,88 @@
                 <button type="submit" class="btn btn-default" form="submit_form" name="exportpdf" value="consolidate" ng-disabled="!search.profile_id"><i class="fa fa-book"></i> Consolidate Sales Report</button>
             </div>
             <div class="col-md-5 col-sm-5 col-xs-12">
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Qty
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Qty
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_qty ? total_qty : 0.00 | currency: "": 4}}
+                            </strong>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                            @{{total_qty ? total_qty : 0.00 | currency: "": 4}}
-                        </strong>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Cost $
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_costs ? total_costs : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Selling Value $
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_sell_value ? total_sell_value : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Total Gross Profit $
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_profit ? total_gross_profit : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Gross Profit %
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_profit_percent ? total_gross_profit_percent : 0 | currency: "": 0}} %
+                            </strong>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Cost $
+                <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 15px;">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            SFee
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_sf_fee ? total_sf_fee : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                            @{{total_costs ? total_costs : 0.00 | currency: "": 2}}
-                        </strong>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Gross Profit After SFee
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_after_sf_fee ? total_gross_after_sf_fee : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Selling Value $
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                            @{{total_sell_value ? total_sell_value : 0.00 | currency: "": 2}}
-                        </strong>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        Total Gross Profit $
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
-                        <strong>
-                            @{{total_gross_profit ? total_gross_profit : 0.00 | currency: "": 2}}
-                        </strong>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Gross Profit % After SFee
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_gross_after_sf_fee_percent ? total_gross_after_sf_fee_percent : 0 | currency: "": 0}} %
+                            </strong>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -358,6 +422,12 @@
                         <span ng-if="search.sortName == 'is_inventory' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center" style="background-color: #DDFDF8">
+                        <a href="" ng-click="sortTable('is_supermarket_fee')">
+                        Is SFee
+                        <span ng-if="search.sortName == 'is_supermarket_fee' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'is_supermarket_fee' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center" style="background-color: #DDFDF8">
                         <a href="" ng-click="sortTable('qty')">
                         Total Qty
                         <span ng-if="search.sortName == 'qty' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -414,6 +484,9 @@
                         </td>
                         <td class="col-md-1 text-center">
                             @{{deal.is_inventory ? 'Yes' : 'No'}}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{deal.is_supermarket_fee ? 'Yes' : 'No'}}
                         </td>
                         <td class="col-md-1 text-right">
                             @{{deal.qty | currency: "": 4}}

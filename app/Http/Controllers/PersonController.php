@@ -396,14 +396,11 @@ class PersonController extends Controller
         // }
 
         // reading whether search input is filled
-        if ($request->id or $request->status or $request->pay_status or $request->delivery_from or $request->delivery_to or $request->driver or $request->po_no) {
-            $transactions = $this->searchTransactionDBFilter($transactions, $request);
-        } else {
-            if ($request->sortName) {
-                $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-            }
-        }
+        $transactions = $this->searchTransactionDBFilter($transactions, $request);
 
+        if ($request->sortName) {
+            $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }
         // $transactions = $this->filterDriverView($transactions);
 
         $transactions = $transactions->latest('transactions.created_at')->groupBy('transactions.id');
@@ -1207,6 +1204,7 @@ class PersonController extends Controller
     {
         $id = $request->id;
         $status = $request->status;
+        $statuses = $request->statuses;
         $pay_status = $request->pay_status;
         $delivery_from = $request->delivery_from;
         $delivery_to = $request->delivery_to;
@@ -1218,6 +1216,12 @@ class PersonController extends Controller
         }
         if($status) {
             $transactions = $transactions->where('transactions.status', 'LIKE', '%' . $status . '%');
+        }
+        if($statuses) {
+            if(in_array("Delivered", $statuses)) {
+                array_push($statuses, 'Verified Owe', 'Verified Paid');
+            }
+            $transactions = $transactions->whereIn('transactions.status', $statuses);
         }
         if($pay_status) {
             $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%' . $pay_status . '%');

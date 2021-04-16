@@ -728,6 +728,16 @@ class TransactionController extends Controller
             }
         }
 
+        // online custcategory groups must have attn name and contact
+        // dd($transaction->person->id, $transaction->person->custcategory->name, $transaction->person->custcategory->custcategoryGroup->name);
+        if($transaction->person->custcategory->custcategoryGroup->name === 'ONLINE') {
+
+            $this->validate($request, [
+                'attn_name' => 'required',
+                'contact' => 'required'
+            ]);
+        }
+
         // filter delivery date if the invoice lock date is before request delivery date
         if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {
             if($freeze_date->min(Carbon::parse($request->delivery_date)) != $freeze_date) {

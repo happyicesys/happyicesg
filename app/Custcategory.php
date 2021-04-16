@@ -26,7 +26,7 @@ class Custcategory extends Model
     // relationships
     public function custcategoryGroup()
     {
-        return $this->belongsTo(Custcategory::class);
+        return $this->belongsTo(CustcategoryGroup::class);
     }
 
     public function people()

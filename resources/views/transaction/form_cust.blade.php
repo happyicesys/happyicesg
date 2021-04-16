@@ -78,12 +78,14 @@
                     @if(!$transaction->is_deliveryorder)
                     @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                             {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                            <label for="art" style="color: red;">*</label>
                             {!! Form::text('del_postcode', null, ['class'=>'form-control',
                             'ng-model'=>'form.del_postcode',
                             'disabled'=> $disabled,
                             'readonly'=>'readonly']) !!}
                     @else
                             {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                            <label for="art" style="color: red;">*</label>
                             {!! Form::text('del_postcode', null, [
                                 'class'=>'form-control',
                                 'disabled'=> $disabled,

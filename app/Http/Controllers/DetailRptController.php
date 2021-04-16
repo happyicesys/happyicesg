@@ -2688,6 +2688,8 @@ class DetailRptController extends Controller
         $person_id = request('person_id');
         $custcategory = request('custcategory');
         $exclude_custcategory = request('exclude_custcategory');
+        $custcategory_group = request('custcategory_group');
+        $exclude_custcategory_group = request('exclude_custcategory_group');
         $is_inventory = request('is_inventory');
         $is_commission = request('is_commission');
         $driver = request('driver');
@@ -2724,6 +2726,18 @@ class DetailRptController extends Controller
                 $deals = $deals->whereIn('custcategories.id', $custcategories);
             }
         }
+        if($custcategory_group) {
+            $custcategory_groups = $custcategory_group;
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+            if($exclude_custcategory_group) {
+                $deals = $deals->whereNotIn('custcategory_groups.id', $custcategory_groups);
+            }else {
+                $deals = $deals->whereIn('custcategory_groups.id', $custcategory_groups);
+            }
+        }
+
         if($is_inventory) {
             $deals = $deals->where('items.is_inventory', $is_inventory);
         }
@@ -2731,6 +2745,7 @@ class DetailRptController extends Controller
         if($is_commission != '') {
             $deals = $deals->where('items.is_commission', $is_commission);
         } */
+
         if($is_commission != '') {
             switch($is_commission) {
                 case '0':
@@ -2760,12 +2775,14 @@ class DetailRptController extends Controller
         $total_costs = 0;
         $total_sell_value = 0;
         $total_gross_profit = 0;
+        $total_sf_fee = 0;
         $calculateDeals = clone $deals;
         foreach($calculateDeals->get() as $deal) {
             $total_qty += $deal->qty;
             $total_costs += $deal->total_cost;
             $total_sell_value += $deal->amount;
             $total_gross_profit += $deal->gross;
+            $total_sf_fee += $deal->sfee;
         }
 
         $totals = [
@@ -2773,6 +2790,10 @@ class DetailRptController extends Controller
             'total_costs' => $total_costs,
             'total_sell_value' => $total_sell_value,
             'total_gross_profit' => $total_gross_profit,
+            'total_gross_profit_percent' => $total_gross_profit/ $total_sell_value * 100,
+            'total_sf_fee' => $total_sf_fee,
+            'total_gross_after_sf_fee' => $total_gross_profit - $total_sf_fee,
+            'total_gross_after_sf_fee_percent' => ($total_gross_profit + $total_sf_fee)/ $total_sell_value * 100
         ];
         return $totals;
     }
@@ -3832,6 +3853,7 @@ class DetailRptController extends Controller
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                 ->leftJoin('unitcosts', function($join) {
                     $join->on('items.id', '=', 'unitcosts.item_id');
                     $join->on('profiles.id', '=', 'unitcosts.profile_id');
@@ -3839,7 +3861,8 @@ class DetailRptController extends Controller
                 ->select(
                     'deals.divisor', 'deals.dividend',
                     'profiles.id AS profile_id', 'profiles.name AS profile_name', 'transactions.gst', 'transactions.gst_rate',
-                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark',
+                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark', 'items.is_supermarket_fee',
+                    DB::raw('ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfee'),
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),

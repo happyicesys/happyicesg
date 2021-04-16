@@ -18,17 +18,28 @@
                 </div>
             </div>
             <div class="col-md-3 col-sm-3 col-xs-12">
+<!--
                 <div class="form-group">
-                    {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-                    {!! Form::text('status', null,
+                    {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
+                    {!! Form::text('statuses', null,
                                                 [
                                                     'class'=>'form-control input-sm',
-                                                    'ng-model'=>'search.status',
+                                                    'ng-model'=>'search.statuses',
                                                     'placeholder'=>'Status',
                                                     'ng-change'=>'searchDB()',
                                                     'ng-model-options'=>'{ debounce: 500 }'
                                                 ])
                     !!}
+                </div> -->
+                <div class="form-group">
+                    {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
+                    <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
+                        <option value="">All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
                 </div>
             </div>
             <div class="col-md-3 col-sm-3 col-xs-12">
