@@ -1227,10 +1227,10 @@ class PersonController extends Controller
             $transactions = $transactions->where('transactions.pay_status', 'LIKE', '%' . $pay_status . '%');
         }
         if($delivery_from) {
-            $transactions = $transactions->where('transactions.delivery_date', '>=', $delivery_from);
+            $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
         }
         if($delivery_to) {
-            $transactions = $transactions->where('transactions.delivery_date', '<=', $delivery_to);
+            $transactions = $transactions->whereDate('transactions.delivery_date', '<=', $delivery_to);
         }
         if($driver) {
             $transactions = $transactions->where('transactions.driver', 'LIKE', '%' . $driver . '%');
