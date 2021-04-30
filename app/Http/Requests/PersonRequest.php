@@ -28,7 +28,6 @@ class PersonRequest extends Request
         return [
             'cust_id' => 'required|unique:people,cust_id,'.$person,
             'company' => 'required',
-            'name'=>'min:3',
             'roc_no' => 'unique:people,roc_no,'.$person,
             'contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
             'alt_contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),

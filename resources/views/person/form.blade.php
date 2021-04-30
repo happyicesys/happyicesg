@@ -39,15 +39,14 @@
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
-            {!! Form::label('site_name', 'Site Name', ['class'=>'control-label']) !!}
-            {!! Form::text('site_name', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="form-group">
             {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
             {!! Form::text('com_remark', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('site_name', 'Delivery Location Name', ['class'=>'control-label']) !!}
+            {!! Form::text('site_name', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 </div>
