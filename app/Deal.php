@@ -52,7 +52,7 @@ class Deal extends Model
     // relationships
     public function item()
     {
-        return $this->belongsTo('App\Item');
+        return $this->belongsTo('App\Item')->withoutGlobalScopes();
     }
 
     public function transaction()
