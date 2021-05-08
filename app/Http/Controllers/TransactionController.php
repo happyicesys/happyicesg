@@ -437,7 +437,7 @@ class TransactionController extends Controller
             $prices = DB::table('prices')
                         ->leftJoin('items', 'prices.item_id', '=', 'items.id')
                         ->select(
-                            'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces'
+                            'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces', 'items.is_active'
                         )
                         ->where('prices.person_id', '=', $transaction->person_id)
                         ->where('items.is_active', 1)

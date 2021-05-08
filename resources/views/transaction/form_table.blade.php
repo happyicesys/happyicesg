@@ -38,54 +38,56 @@
                     <td class="text-center" colspan="7">No Records Found</td>
                     @else
                     @foreach($prices as $price)
-                    <tr class="txtMult">
-                        <td class="col-md-5 col-xs-4 hidden-xs">
-                                <strong>{{$price->product_id}}</strong></span>
-                                - {{$price->name}}
-                                <small>{{$price->remark}}</small>
-                        </td>
-                        <td class="col-md-5 col-xs-4 hidden-lg hidden-md hidden-sm">
-                                <strong>{{$price->product_id}}</strong><br>
-                                {{$price->name}}<br>
-                                <small>{{$price->remark}}</small>
-                        </td>
-                        <td class="col-md-1 col-xs-2">
-                            @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                            <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                            @else
-                                @can('transaction_view')
-                                <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
-                                @else
+                        @if($price->is_active)
+                        <tr class="txtMult">
+                            <td class="col-md-5 col-xs-4 hidden-xs">
+                                    <strong>{{$price->product_id}}</strong></span>
+                                    - {{$price->name}}
+                                    <small>{{$price->remark}}</small>
+                            </td>
+                            <td class="col-md-5 col-xs-4 hidden-lg hidden-md hidden-sm">
+                                    <strong>{{$price->product_id}}</strong><br>
+                                    {{$price->name}}<br>
+                                    <small>{{$price->remark}}</small>
+                            </td>
+                            <td class="col-md-1 col-xs-2">
+                                @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
                                 <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                                @endcan
-                            @endif
-                        </td>
-                        <td class="col-md-2 col-xs-2">
-                            <strong>
-                            <input type="text" name="retail[{{$price->item_id}}]"
-                             value="{{$price->retail_price}}"
-                            class="text-right retailClass form-control" readonly="readonly"/>
-                            </strong>
-                        </td>
-                        <td class="col-md-2 col-xs-2">
-                            <strong>
-                            @if($transaction->status == 'Cancelled')
-                                <input type="text" name="quote[{{$price->item_id}}]"
-                                value="{{$price->quote_price}}"
-                                class="text-right form-control quoteClass" readonly="readonly"/>
-                            @else
-                                <input type="text" name="quote[{{$price->item_id}}]"
-                                value="{{$price->quote_price}}"
-                                class="text-right form-control quoteClass" {{$disabledStr}}/>
-                            @endif
-                            </strong>
-                            {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
-                        </td>
-                        <td class="col-md-2 col-xs-2">
-                            <input type="text" name="amount[{{$price->item_id}}]"
-                            class="text-right form-control amountClass" style="min-width: 100px;" readonly="readonly"/>
-                        </td>
-                    </tr>
+                                @else
+                                    @can('transaction_view')
+                                    <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
+                                    @else
+                                    <input type="text" name="qty[{{$price->item_id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
+                                    @endcan
+                                @endif
+                            </td>
+                            <td class="col-md-2 col-xs-2">
+                                <strong>
+                                <input type="text" name="retail[{{$price->item_id}}]"
+                                value="{{$price->retail_price}}"
+                                class="text-right retailClass form-control" readonly="readonly"/>
+                                </strong>
+                            </td>
+                            <td class="col-md-2 col-xs-2">
+                                <strong>
+                                @if($transaction->status == 'Cancelled')
+                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    value="{{$price->quote_price}}"
+                                    class="text-right form-control quoteClass" readonly="readonly"/>
+                                @else
+                                    <input type="text" name="quote[{{$price->item_id}}]"
+                                    value="{{$price->quote_price}}"
+                                    class="text-right form-control quoteClass" {{$disabledStr}}/>
+                                @endif
+                                </strong>
+                                {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
+                            </td>
+                            <td class="col-md-2 col-xs-2">
+                                <input type="text" name="amount[{{$price->item_id}}]"
+                                class="text-right form-control amountClass" style="min-width: 100px;" readonly="readonly"/>
+                            </td>
+                        </tr>
+                        @endif
                     @endforeach
                     @endunless
                     <tr>
