@@ -1778,13 +1778,14 @@ class TransactionController extends Controller
                         }
                     }
                 }
+                // dd('here', $items, $headers);
 
                 if($headers)
                   foreach($results as $resultindex => $result) {
                     $po_no = '';
 
                     if(!$result['customer_id'] and !$result['delivery_date']) {
-                        // dd($result['customer_id'], $result['delivery_date']);
+                        // dd($results, $result['customer_id'], $result['delivery_date']);
                         continue;
                     }
 
@@ -1803,10 +1804,12 @@ class TransactionController extends Controller
                                         'reason' => 'Duplicated PO',
                                         'row_number' => $resultindex + 2
                                     ]);
+                                    // dd('dup po');
                                     continue;
                                 }
                             }
                         }
+                        // dd('hereman');
 
                         $model = new Transaction();
                         if($cust_id = $result['customer_id']) {
@@ -2016,7 +2019,7 @@ class TransactionController extends Controller
                 ]);
             // }
         }
-
+        // dd($importStatusArr);
         if(count($importStatusArr['failure']) > 0 or count($importStatusArr['item_failure']) > 0 or count($importStatusArr['success']) == 0) {
             return 'false';
         }else {

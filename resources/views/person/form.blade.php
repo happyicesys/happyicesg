@@ -285,9 +285,9 @@
         <div class="form-group">
             {!! Form::label('bank_id', 'Bank', ['class'=>'control-label']) !!}
             {!! Form::select('bank_id',
-                    [''=>null]+ $banks::lists('name', 'id')->all(),
+                    ['None'=>'-- None --']+ $banks::lists('name', 'id')->all(),
                     null,
-                    ['class'=>'select form-control', 'disabled'=> $disabled])
+                    ['class'=>'selectnotclear form-control', 'disabled'=> $disabled])
             !!}
         </div>
     </div>
