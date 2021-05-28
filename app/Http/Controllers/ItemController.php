@@ -6,6 +6,7 @@ use App\Http\Requests\ItemRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -108,23 +109,38 @@ class ItemController extends Controller
 
         if($file = request()->file('main_imgpath')){
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-            $file->move('item_asset/'.$item->id.'/', $name);
-            $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/'.$item->id.'/'.$name, file_get_contents($file->getRealPath()), 'public');
+            $item->main_imgpath = (Storage::url('item_asset/'.$item->id.'/'.$name));
             $item->save();
+
+            // $file->move('item_asset/'.$item->id.'/', $name);
+            // $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         if($desc_file = request()->file('desc_imgpath')) {
             $name = (Carbon::now()->format('dmYHi')).$desc_file->getClientOriginalName();
-            $file->move('item_asset/desc/'.$item->id.'/', $name);
-            $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/desc/'.$item->id.'/'.$name, file_get_contents($desc_file->getRealPath()), 'public');
+            $item->desc_imgpath = (Storage::url('item_asset/desc/'.$item->id.'/'.$name));
             $item->save();
+
+            // $file->move('item_asset/desc/'.$item->id.'/', $name);
+            // $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         if($nutri_file = request()->file('nutri_imgpath')) {
             $name = (Carbon::now()->format('dmYHi')).$nutri_file->getClientOriginalName();
-            $file->move('item_asset/nutri/'.$item->id.'/', $name);
-            $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/nutri/'.$item->id.'/'.$name, file_get_contents($nutri_file->getRealPath()), 'public');
+            $item->nutri_imgpath = (Storage::url('item_asset/nutri/'.$item->id.'/'.$name));
             $item->save();
+
+            // $file->move('item_asset/nutri/'.$item->id.'/', $name);
+            // $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         return redirect('item');
@@ -156,27 +172,45 @@ class ItemController extends Controller
         $item->update(request()->all());
 
         if($file = request()->file('main_imgpath')){
-            File::delete(public_path().$item->main_imgpath);
+            // File::delete(public_path().$item->main_imgpath);
+            Storage::delete($item->main_imgpath);
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-            $file->move('item_asset/'.$item->id.'/', $name);
-            $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/'.$item->id.'/'.$name, file_get_contents($file->getRealPath()), 'public');
+            $item->main_imgpath = (Storage::url('item_asset/'.$item->id.'/'.$name));
             $item->save();
+
+            // $file->move('item_asset/'.$item->id.'/', $name);
+            // $item->main_imgpath = '/item_asset/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         if($desc_file = request()->file('desc_imgpath')) {
-            File::delete(public_path().$item->desc_imgpath);
+            Storage::delete($item->desc_imgpath);
+            // File::delete(public_path().$item->desc_imgpath);
             $name = (Carbon::now()->format('dmYHi')).$desc_file->getClientOriginalName();
-            $desc_file->move('item_asset/desc/'.$item->id.'/', $name);
-            $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/desc/'.$item->id.'/'.$name, file_get_contents($desc_file->getRealPath()), 'public');
+            $item->desc_imgpath = (Storage::url('item_asset/desc/'.$item->id.'/'.$name));
             $item->save();
+
+            // $desc_file->move('item_asset/desc/'.$item->id.'/', $name);
+            // $item->desc_imgpath = '/item_asset/desc/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         if($nutri_file = request()->file('nutri_imgpath')) {
-            File::delete(public_path().$item->nutri_imgpath);
+            Storage::delete($item->nutri_imgpath);
+            // File::delete(public_path().$item->nutri_imgpath);
             $name = (Carbon::now()->format('dmYHi')).$nutri_file->getClientOriginalName();
-            $nutri_file->move('item_asset/nutri/'.$item->id.'/', $name);
-            $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
+
+            Storage::put('item_asset/nutri/'.$item->id.'/'.$name, file_get_contents($nutri_file->getRealPath()), 'public');
+            $item->nutri_imgpath = (Storage::url('item_asset/nutri/'.$item->id.'/'.$name));
             $item->save();
+
+            // $nutri_file->move('item_asset/nutri/'.$item->id.'/', $name);
+            // $item->nutri_imgpath = '/item_asset/nutri/'.$item->id.'/'.$name;
+            // $item->save();
         }
 
         return Redirect::action('ItemController@edit', $item->id);

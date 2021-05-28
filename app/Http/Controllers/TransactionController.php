@@ -1326,11 +1326,16 @@ class TransactionController extends Controller
     // attach file on the invoice(int transaction_id)
     public function addInvoiceAttachment($transaction_id)
     {
+        // dd('here');
         $transaction = Transaction::findOrFail($transaction_id);
         $file = request()->file('file');
         $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-        $file->move('inv_attachments/'.$transaction->person->cust_id.'/', $name);
-        $transaction->invattachments()->create(['path' => "/inv_attachments/".$transaction->person->cust_id."/{$name}"]);
+        Storage::put('inv_attachments/'.$transaction->person->cust_id.'/'.$name, file_get_contents($file->getRealPath()), 'public');
+        $url = (Storage::url('inv_attachments/'.$transaction->person->cust_id.'/'.$name));
+        // $file->put('inv_attachments/'.$transaction->person->cust_id.'/'.$name, 's3');
+        // $file->move('inv_attachments/'.$transaction->person->cust_id.'/', $name);
+        $transaction->invattachments()->create(['path' => $url]);
+        // $transaction->invattachments()->create(['path' => $file->url()])
     }
 
     // remove attachment from the transaction invoice(int attachment_id)

@@ -54,7 +54,7 @@ Healthier Life
         Your order has been received and a confirmation email has been sent to you.
         <br>
         If you do not receive the confirmation email, do write to us at
-        <strong>onlineorder@happyice.com.sg</strong> or <strong>Whatsapp us at 8612 8075</strong> to confirm your order.
+        <strong>onlineorder@happyice.com.sg</strong> or <strong>Whatsapp us at 9889 8718</strong> to confirm your order.
     </p>
 {{--
     @if($edit_link)

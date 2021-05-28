@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => 'digitalocean',
 
     /*
     |--------------------------------------------------------------------------
@@ -62,12 +62,13 @@ return [
             // 'timeout'  => 30,
         ],
 
-        's3' => [
+        'digitalocean' => [
             'driver' => 's3',
-            'key'    => 'your-key',
-            'secret' => 'your-secret',
-            'region' => 'your-region',
-            'bucket' => 'your-bucket',
+            'key' => env('DIGITALOCEAN_SPACES_KEY'),
+            'secret' => env('DIGITALOCEAN_SPACES_SECRET'),
+            'endpoint' => env('DIGITALOCEAN_SPACES_ENDPOINT'),
+            'region' => env('DIGITALOCEAN_SPACES_REGION'),
+            'bucket' => env('DIGITALOCEAN_SPACES_BUCKET'),
         ],
 
         'rackspace' => [

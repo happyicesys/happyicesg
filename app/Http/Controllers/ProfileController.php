@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Laracasts\Flash\Flash;
@@ -119,7 +120,7 @@ class ProfileController extends Controller
                 $person->gst_rate = request('gst_rate');
                 $person->save();
             }
-        }        
+        }
 
         if($profile->is_gst_inclusive != $is_gst_inclusive ){
             $people = $profile->people;
@@ -155,7 +156,11 @@ class ProfileController extends Controller
     {
         $file = $request->file($file);
         $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
-        $file->move('cust_asset/profile', $name);
+        // $file->move('cust_asset/profile', $name);
+
+        Storage::put('cust_asset/profile/'.$name, file_get_contents($file->getRealPath()), 'public');
+        $url = (Storage::url('cust_asset/profile/'.$name));
+        // $person->files()->create(['path' => $url]);
     }
 
     //remove file and delete file path

@@ -6,6 +6,7 @@ use App\Http\Requests\PersonRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Laracasts\Flash\Flash;
@@ -346,8 +347,13 @@ class PersonController extends Controller
         $person = Person::findOrFail($id);
         $file = $request->file('file');
         $name = (Carbon::now()->format('dmYHi')) . $file->getClientOriginalName();
-        $file->move('person_asset/file', $name);
-        $person->files()->create(['path' => "/person_asset/file/{$name}"]);
+
+        Storage::put('person_asset/file/'.$name, file_get_contents($file->getRealPath()), 'public');
+        $url = (Storage::url('person_asset/file/'.$name));
+        $person->files()->create(['path' => $url]);
+
+        // $file->move('person_asset/file', $name);
+        // $person->files()->create(['path' => "/person_asset/file/{$name}"]);
 
     }
 
