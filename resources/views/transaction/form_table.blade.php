@@ -23,15 +23,17 @@
                         <th class="text-center">
                             Qty
                         </th>
-                        <th class="text-center">
-                            Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
-                        </th>
-                        <th class="text-center">
-                            Quote Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
-                        </th>
-                         <th class="text-center">
-                            Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
-                        </th>
+                        @if(!$transaction->is_discard)
+                            <th class="text-center">
+                                Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                            </th>
+                            <th class="text-center">
+                                Quote Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                            </th>
+                            <th class="text-center">
+                                Amount ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
+                            </th>
+                        @endif
                     </tr>
 
                     @unless(count($prices)>0)
@@ -39,6 +41,7 @@
                     @else
                     @foreach($prices as $price)
                         @if($price->is_active)
+                        {{-- @if(($transaction->is_discard and $price->is_inventory) or !$transaction->is_discard) --}}
                         <tr class="txtMult">
                             <td class="col-md-5 col-xs-4 hidden-xs">
                                     <strong>{{$price->product_id}}</strong></span>
@@ -61,6 +64,7 @@
                                     @endcan
                                 @endif
                             </td>
+                            @if(!$transaction->is_discard)
                             <td class="col-md-2 col-xs-2">
                                 <strong>
                                 <input type="text" name="retail[{{$price->item_id}}]"
@@ -86,18 +90,22 @@
                                 <input type="text" name="amount[{{$price->item_id}}]"
                                 class="text-right form-control amountClass" style="min-width: 100px;" readonly="readonly"/>
                             </td>
+                            @endif
                         </tr>
+                        {{-- @endif --}}
                         @endif
                     @endforeach
                     @endunless
                     <tr>
                         <td class="col-md-1 col-xs-2 text-center"><strong>Total</strong></td>
                         <td colspan="3" class="col-md-3 text-right">
+                            @if(!$transaction->is_discard)
                             <td class="text-right" id="grandTotal" >
                                 <strong>
                                     <input type="text" name="total_create" class="text-right form-control grandTotal" readonly="readonly" />
                                 </strong>
                             </td>
+                            @endif
                         </td>
                     </tr>
                 </table>

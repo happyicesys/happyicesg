@@ -33,12 +33,14 @@
                         <th class="col-md-1 text-center">
                             Quantity
                         </th>
-                        <th class="col-md-1 text-center">
-                            Unit Price
-                        </th>
-                        <th class="col-md-1 text-center">
-                            Amount
-                        </th>
+                        @if(!$transaction->is_discard)
+                            <th class="col-md-1 text-center">
+                                Unit Price
+                            </th>
+                            <th class="col-md-1 text-center">
+                                Amount
+                            </th>
+                        @endif
                         <th class="col-md-1 text-center">
                             Action
                         </th>
@@ -70,11 +72,13 @@
                                 </span>
                             </td>
                             {{-- unit price --}}
-                            <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
-                            <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price | currency: "" }}</td>
-                            {{-- deal amount --}}
-                            <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
-                            <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
+                            @if(!$transaction->is_discard)
+                                <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
+                                <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price | currency: "" }}</td>
+                                {{-- deal amount --}}
+                                <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
+                                <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
+                            @endif
                             <td class="col-md-1 text-center">
                                 @php
                                     $valid = false;
@@ -234,7 +238,7 @@
                             </tr>
                         @endif
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
-                            <td colspan="12" cltatuass="text-center">No Records Found!</td>
+                            <td colspan="12" class="text-center">No Records Found!</td>
                         </tr>
 
                     </tbody>

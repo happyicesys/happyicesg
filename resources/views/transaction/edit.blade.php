@@ -8,18 +8,21 @@
 <div class="panel panel-primary" ng-app="app" ng-controller="transactionController" ng-cloak>
 
     <div class="panel-heading">
-        <div class="col-md-4">
+        <div class="col-md-6 col-xs-12">
         <h4>
+            @if($transaction->is_discard)
+                <span class="label label-danger">Discard</span>
+            @endif
             @if($transaction->status == 'Cancelled')
-            <del><strong>Invoice : {{$transaction->id}}</strong>
+                <del><strong>Invoice : {{$transaction->id}}</strong>
             @else
-            <strong>Invoice : {{$transaction->id}}</strong>
-             ({{$transaction->status}}) - {{$transaction->pay_status}}
+                <strong>Invoice : {{$transaction->id}}</strong>
+                ({{$transaction->status}}) - {{$transaction->pay_status}}
             @endif
             {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6 col-xs-12">
             @if($transaction->paid_by)
             <div class="col-md-4">
                 <label style="padding-top: 10px" class="pull-right">Paid by : {{ $transaction->paid_by }}</label>
@@ -66,6 +69,7 @@
                 <div class="pull-right">
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
+                        {{-- {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard', 'form'=>'new_transaction']) !!} --}}
                         {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
                             {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}

@@ -284,7 +284,7 @@ class TransactionController extends Controller
         $this->validate($request, [
             'person_id' => 'required',
         ],[
-            'person_id.required' => 'Please choose an option',
+            'person_id.required' => 'Please choose a customer',
         ]);
 
         $request->merge(array('updated_by' => Auth::user()->name));
@@ -312,8 +312,6 @@ class TransactionController extends Controller
         }
 
         $request->merge(['status' => 'Pending']);
-        $input = $request->all();
-
         // filter delivery date if the invoice lock date is before request delivery date
         if($freeze_date = GeneralSetting::firstOrFail()->INVOICE_FREEZE_DATE) {
             if($freeze_date->min(Carbon::parse($request->delivery_date)) != $freeze_date) {
@@ -332,6 +330,11 @@ class TransactionController extends Controller
             }
         }
 
+        if($request->input('discard')) {
+            $request->merge(['is_discard' => 1]);
+        }
+
+        $input = $request->all();
         $transaction = Transaction::create($input);
         // create dtd transaction once detect person code is D
         if($transaction->person->cust_id[0] === 'D'){
@@ -415,7 +418,7 @@ class TransactionController extends Controller
             $prices = DB::table('dtdprices')
                         ->leftJoin('items', 'dtdprices.item_id', '=', 'items.id')
                         ->select(
-                            'dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces')
+                            'dtdprices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces', 'items.is_inventory')
                         ->where('items.is_active', 1)
                         ->orderBy('product_id')
                         ->get();
@@ -428,7 +431,7 @@ class TransactionController extends Controller
                                         ->on('prices.item_id', '=', 'items.id');
                             })
                             ->select(
-                                'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces'
+                                'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces', 'items.is_inventory'
                                 )
                             ->where('items.is_active', 1)
                             ->orderBy('product_id')
@@ -437,7 +440,7 @@ class TransactionController extends Controller
             $prices = DB::table('prices')
                         ->leftJoin('items', 'prices.item_id', '=', 'items.id')
                         ->select(
-                            'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces', 'items.is_active'
+                            'prices.*', 'items.product_id', 'items.name', 'items.remark', 'items.id as item_id', 'items.base_unit as pieces', 'items.is_active', 'items.is_inventory'
                         )
                         ->where('prices.person_id', '=', $transaction->person_id)
                         ->where('items.is_active', 1)
@@ -2300,7 +2303,7 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
-                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence',
+                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence', 'transactions.is_discard',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
@@ -2387,9 +2390,15 @@ class TransactionController extends Controller
     private function syncDeal($transaction, $dealArr, $status)
     {
 
+        // dd($dealArr);
         if($dealArr) {
             $errors = [];
             foreach($dealArr as $dealObj) {
+
+                if($transaction->is_discard) {
+                    $status = 99;
+                }
+
                 $qty = $dealObj['qty'];
 
                 $dividend = 0;
@@ -2401,6 +2410,7 @@ class TransactionController extends Controller
                 }
 
                 if($qty != NULL or $qty != 0 ){
+
                     // inventory lookup before saving to deals
                     $item = Item::findOrFail($dealObj['item_id']);
                     // dd($dealObj['item_id'], $dealObj, $item);
@@ -2449,70 +2459,6 @@ class TransactionController extends Controller
                 }
             }
         }
-/*
-        if($quantities and $amounts){
-            if(array_filter($quantities) != null and array_filter($amounts) != null){
-                // create array of errors to fetch errors from loop if any
-                $errors = array();
-                foreach($quantities as $index => $qty){
-
-                    $dividend = 0;
-                    $divisor = 1;
-                    if(strpos($qty, '/') !== false) {
-                        $dividend = explode('/', $qty)[0];
-                        $divisor = explode('/', $qty)[1];
-                        $qty = $this->fraction($qty);
-                    }
-
-                    if($qty != NULL or $qty != 0 ){
-                        // inventory lookup before saving to deals
-                        $item = Item::findOrFail($index);
-                        $unitcost = Unitcost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
-                        // inventory email notification for stock running low
-                        if($item->email_limit and !$item->is_vending and $item->is_inventory){
-                            if(($status == 1 and $this->calOrderEmailLimit($qty, $item)) or ($status == 2 and $this->calActualEmailLimit($qty, $item))){
-                                if(! $item->emailed){
-                                    $this->sendEmailAlert($item);
-                                    // restrict only send 1 mail if insufficient
-                                    $item->emailed = true;
-                                    $item->save();
-                                }
-                            }else{
-                                // reactivate email alert
-                                $item->emailed = false;
-                                $item->save();
-                            }
-                        }
-
-                        if($status == 1 and $this->calOrderLimit($qty, $item)) {
-                            array_push($errors, $item->product_id.' - '.$item->name);
-                        }else if($status == 2 and $this->calActualLimit($qty, $item)) {
-                            array_push($errors, $item->product_id.' - '.$item->name);
-                        }else {
-                            $deal = new Deal();
-                            $deal->transaction_id = $transaction->id;
-                            $deal->item_id = $index;
-                            $deal->dividend = $dividend ? $dividend : $qty;
-                            $deal->divisor = $divisor;
-                            $deal->amount = $amounts[$index];
-                            $deal->unit_price = $quotes[$index];
-                            $deal->qty_status = $status;
-                            $deal->unit_cost = $unitcost ? $unitcost->unit_cost : null;
-                            $deal->qty = $qty;
-                            if($status == 2 and $item->is_inventory === 1) {
-                                $deal->qty_before = $item->qty_now;
-                                $deal->qty_after = $item->qty_now - $qty;
-                                $item->qty_now = $item->qty_now - $qty;
-                                $item->save();
-                                $this->loggingDebug($item, $deal);
-                            }
-                            $deal->save();
-                            $this->dealSyncOrder($index);
-                        }
-                    }
-                }
-            }
-        } */
 
         if($status == 2){
             $this->dealOrder2Actual($transaction->id);

@@ -230,22 +230,24 @@
                         !!}
                     </div>
 
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('paid_by', 'Payment Received By', ['class'=>'control-label']) !!}
-                        {!! Form::select('paid_by',
-                                [''=>null]+$users::where('is_active', 1)->lists('name', 'name')->all(),
-                                null,
-                                ['class'=>'select form-control', 'disabled'=> $disabled])
-                        !!}
-                    </div>
+                    @if(!$transaction->is_discard)
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('paid_by', 'Payment Received By', ['class'=>'control-label']) !!}
+                            {!! Form::select('paid_by',
+                                    [''=>null]+$users::where('is_active', 1)->lists('name', 'name')->all(),
+                                    null,
+                                    ['class'=>'select form-control', 'disabled'=> $disabled])
+                            !!}
+                        </div>
 
-                    <div class="col-md-4 form-group">
-                        {!! Form::label('paid_at', 'Payment Received On', ['class'=>'control-label']) !!}
-                    <div class="input-group date">
-                        {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at', 'disabled'=> $disabled,]) !!}
-                        <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                    </div>
-                    </div>
+                        <div class="col-md-4 form-group">
+                            {!! Form::label('paid_at', 'Payment Received On', ['class'=>'control-label']) !!}
+                        <div class="input-group date">
+                            {!! Form::text('paid_at', null, ['class'=>'form-control', 'id'=>'paid_at', 'disabled'=> $disabled,]) !!}
+                            <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                        </div>
+                        </div>
+                    @endif
                 @endcannot
             @endif
 

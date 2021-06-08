@@ -17,6 +17,7 @@ class Person extends Baum\Node
 
     use \Venturecraft\Revisionable\RevisionableTrait;
     // use SoftDeletes;
+
     public static function boot()
     {
         parent::boot();
@@ -86,7 +87,7 @@ class Person extends Baum\Node
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
-    'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode'
+    'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point',
     ];
 
     protected $dates = ['deleted_at'];

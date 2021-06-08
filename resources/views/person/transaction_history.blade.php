@@ -338,6 +338,9 @@
                     <a href="/market/deal/@{{ transaction.id }}/edit" ng-if="transaction.cust_id[0] === 'H'">
                         @{{ transaction.id }}
                     </a>
+                    <span class="label label-danger" ng-if="transaction.is_discard">
+                        Discard
+                    </span>
                 </td>
 
                 {{-- status by color --}}

@@ -287,12 +287,29 @@ class PersonController extends Controller
                 break;
         }
 
-        $input = $request->all();
-        $person->update($input);
+        if($type = $request->type) {
+            $request->merge(['is_dvm' => 0]);
+            $request->merge(['is_vending' => 0]);
+            $request->merge(['is_combi' => 0]);
+            $request->merge(['is_subsidiary' => 0]);
+            $request->merge(['is_non_freezer_point' => 0]);
 
-        $person->is_vending = $request->has('is_vending') ? 1 : 0;
-        $person->is_dvm = $request->has('is_dvm') ? 1 : 0;
-        $person->is_subsidiary = $request->has('is_subsidiary') ? 1 : 0;
+            // default setting is dvm based on custcategory
+            if($person->custcategory) {
+                if ($person->custcategory->name == 'V-Dir') {
+                    $request->merge(['is_dvm' => 1]);
+                    $request->merge(['is_vending' => 0]);
+                }else {
+                    $request->merge([$type => 1]);
+                }
+            }else {
+                $request->merge([$type => 1]);
+            }
+        }
+
+        $input = $request->all();
+        unset($input['type']);
+        $person->update($input);
 
         // serial number validation for vending
         if ($person->serial_number) {
@@ -303,13 +320,7 @@ class PersonController extends Controller
             ]);
         }
 
-        // default setting is dvm based on custcategory
-        if ($person->custcategory) {
-            if ($person->custcategory->name == 'V-Dir') {
-                $person->is_dvm = 1;
-                $person->is_vending = 0;
-            }
-        }
+
         // $person->is_profit_sharing_report = $request->has('is_profit_sharing_report') ? 1 : 0;
         $person->save();
         if (!$person->is_vending and !$person->is_dvm) {
@@ -387,7 +398,7 @@ class PersonController extends Controller
             ->select(
                 DB::raw('(CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=1 THEN (transactions.total) ELSE (transactions.total * ((100 + transactions.gst_rate)/100)) END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee THEN transactions.delivery_fee ELSE 0 END) AS total'),
                 DB::raw('ROUND(SUM(CASE WHEN deals.divisor>1 THEN (items.base_unit * deals.dividend/deals.divisor) ELSE (deals.qty * items.base_unit) END)) AS pieces'),
-                'transactions.delivery_fee', 'transactions.id AS id', 'transactions.status AS status', 'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver', 'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status', 'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at', 'transactions.created_at AS created_at', 'transactions.pay_method', DB::raw('DATE(transactions.delivery_date) AS del_date'), 'transactions.po_no', 'transactions.del_postcode', 'transactions.name', 'transactions.contact',
+                'transactions.delivery_fee', 'transactions.id AS id', 'transactions.status AS status', 'transactions.delivery_date AS delivery_date', 'transactions.driver AS driver', 'transactions.total_qty AS total_qty', 'transactions.pay_status AS pay_status', 'transactions.updated_by AS updated_by', 'transactions.updated_at AS updated_at', 'transactions.created_at AS created_at', 'transactions.pay_method', DB::raw('DATE(transactions.delivery_date) AS del_date'), 'transactions.po_no', 'transactions.del_postcode', 'transactions.name', 'transactions.contact', 'transactions.is_discard',
                 'people.cust_id', 'people.company', 'people.id as person_id',
                 'profiles.name AS profile_name',
                 'transactions.gst',

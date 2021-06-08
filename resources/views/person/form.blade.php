@@ -216,25 +216,37 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" style="padding: 15px 0px 15px 0px;">
     <div class="col-md-4 col-sm-4 col-xs-6">
-        <div class="form-group" style="padding-top: 25px;">
-            {!! Form::checkbox('is_dvm', $person->is_dvm, null, ['disabled'=>$disabled]) !!}
+        <div class="form-group">
+            <input type="radio" name="type" value="is_dvm" {{$person->is_dvm ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_dvm', 'Direct Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 
     <div class="col-md-4 col-sm-4 col-xs-6">
-        <div class="form-group" style="padding-top: 25px;">
-            {!! Form::checkbox('is_vending', $person->is_vending, null, ['disabled'=>$disabled]) !!}
+        <div class="form-group">
+            <input type="radio" name="type" value="is_vending" {{$person->is_vending ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 
     <div class="col-md-4 col-sm-4 col-xs-6">
-        <div class="form-group" style="padding-top: 25px;">
-            {!! Form::checkbox('is_subsidiary', $person->is_subsidiary, null, ['disabled'=>$disabled]) !!}
+        <div class="form-group">
+            <input type="radio" name="type" value="is_combi" {{$person->is_combi ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+            {!! Form::label('is_combi', 'Combi', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-6">
+        <div class="form-group">
+            <input type="radio" name="type" value="is_subsidiary" {{$person->is_subsidiary ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
             {!! Form::label('is_subsidiary', 'Freezer Point (Supermarket)', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-6">
+        <div class="form-group">
+            <input type="radio" name="type" value="is_non_freezer_point" {{$person->is_non_freezer_point ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
+            {!! Form::label('is_non_freezer_point', 'Non Freezer Point', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div>
 {{--

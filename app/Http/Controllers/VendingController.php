@@ -717,43 +717,129 @@ class VendingController extends Controller
         // 2 compulsory items 055, U01
         $sales_commission = Item::where('product_id', '055')->firstOrFail();
         $utility_subsidy = Item::where('product_id', 'V01')->firstOrFail();
+        $commissionPackage = $transaction->person->commission_package;
+    // commission_package
+    // 1 = Both utility and comm
+    // 2 = whichever is higher
+
+    // commission_type
+    // 1 = absolute amount
+    // 2 = percentage
 
         if($person->commission_type == 1) {
-            $deal_comm = new Deal();
-            $deal_comm->item_id = $sales_commission->id;
-            $deal_comm->transaction_id = $transaction_id;
-            $deal_comm->dividend = $person->sales;
-            $deal_comm->divisor = 1;
-            $deal_comm->qty_status = 2;
-            $deal_comm->qty = 0;
-            $deal_comm->unit_price = -$person->profit_sharing;
-            $deal_comm->amount = -$person->subtotal_profit_sharing;
-            $deal_comm->save();
+            if($commissionPackage == 1) {
+                $deal_comm = new Deal();
+                $deal_comm->item_id = $sales_commission->id;
+                $deal_comm->transaction_id = $transaction_id;
+                $deal_comm->dividend = $person->sales;
+                $deal_comm->divisor = 1;
+                $deal_comm->qty_status = 2;
+                $deal_comm->qty = 0;
+                $deal_comm->unit_price = -$person->profit_sharing;
+                $deal_comm->amount = -$person->subtotal_profit_sharing;
+                $deal_comm->save();
+
+                $deal_util = new Deal();
+                $deal_util->item_id = $utility_subsidy->id;
+                $deal_util->transaction_id = $transaction_id;
+                $deal_util->dividend = 1;
+                $deal_util->divisor = 1;
+                $deal_util->qty_status = 2;
+                $deal_util->qty_status = 0;
+                $deal_util->unit_price = -$person->utility_subsidy;
+                $deal_util->amount = -$person->utility_subsidy;
+                $deal_util->save();
+            }else if($commissionPackage == 2) {
+                if($person->subtotal_profit_sharing > $person->utility_subsidy) {
+                    $deal_comm = new Deal();
+                    $deal_comm->item_id = $sales_commission->id;
+                    $deal_comm->transaction_id = $transaction_id;
+                    $deal_comm->dividend = $person->sales;
+                    $deal_comm->divisor = 1;
+                    $deal_comm->qty_status = 2;
+                    $deal_comm->qty = 0;
+                    $deal_comm->unit_price = -$person->profit_sharing;
+                    $deal_comm->amount = -$person->subtotal_profit_sharing;
+                    $deal_comm->save();
+                }else {
+                    $deal_util = new Deal();
+                    $deal_util->item_id = $utility_subsidy->id;
+                    $deal_util->transaction_id = $transaction_id;
+                    $deal_util->dividend = 1;
+                    $deal_util->divisor = 1;
+                    $deal_util->qty_status = 2;
+                    $deal_util->qty_status = 0;
+                    $deal_util->unit_price = -$person->utility_subsidy;
+                    $deal_util->amount = -$person->utility_subsidy;
+                    $deal_util->save();
+                }
+            }
+
         }else if($person->commission_type == 2) {
-            $deal_comm = new Deal();
-            $deal_comm->item_id = $sales_commission->id;
-            $deal_comm->transaction_id = $transaction_id;
-            $deal_comm->dividend = $person->subtotal_sales;
-            $deal_comm->divisor = 1;
-            $deal_comm->qty_status = 2;
-            $deal_comm->qty = 0;
-            $deal_comm->unit_price = -$person->profit_sharing/100;
-            $deal_comm->amount = $person->subtotal_sales * (-$person->profit_sharing/100);
-            $deal_comm->save();
+            $profitSharingAmount = $person->subtotal_sales * ($person->profit_sharing/100);
+
+            if($commissionPackage == 1) {
+                $deal_comm = new Deal();
+                $deal_comm->item_id = $sales_commission->id;
+                $deal_comm->transaction_id = $transaction_id;
+                $deal_comm->dividend = $person->subtotal_sales;
+                $deal_comm->divisor = 1;
+                $deal_comm->qty_status = 2;
+                $deal_comm->qty = 0;
+                $deal_comm->unit_price = -$person->profit_sharing/100;
+                $deal_comm->amount = -$profitSharingAmount;
+                $deal_comm->save();
+
+                $deal_util = new Deal();
+                $deal_util->item_id = $utility_subsidy->id;
+                $deal_util->transaction_id = $transaction_id;
+                $deal_util->dividend = 1;
+                $deal_util->divisor = 1;
+                $deal_util->qty_status = 2;
+                $deal_util->qty_status = 0;
+                $deal_util->unit_price = -$person->utility_subsidy;
+                $deal_util->amount = -$person->utility_subsidy;
+                $deal_util->save();
+            }else if($commissionPackage == 2) {
+                if($profitSharingAmount > $$person->utility_subsidy) {
+                    $deal_comm = new Deal();
+                    $deal_comm->item_id = $sales_commission->id;
+                    $deal_comm->transaction_id = $transaction_id;
+                    $deal_comm->dividend = $person->subtotal_sales;
+                    $deal_comm->divisor = 1;
+                    $deal_comm->qty_status = 2;
+                    $deal_comm->qty = 0;
+                    $deal_comm->unit_price = -$person->profit_sharing/100;
+                    $deal_comm->amount = -$profitSharingAmount;
+                    $deal_comm->save();
+                }else {
+                    $deal_util = new Deal();
+                    $deal_util->item_id = $utility_subsidy->id;
+                    $deal_util->transaction_id = $transaction_id;
+                    $deal_util->dividend = 1;
+                    $deal_util->divisor = 1;
+                    $deal_util->qty_status = 2;
+                    $deal_util->qty_status = 0;
+                    $deal_util->unit_price = -$person->utility_subsidy;
+                    $deal_util->amount = -$person->utility_subsidy;
+                    $deal_util->save();
+                }
+            }
+
         }
 
-        if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility_subsidy != '') {
-            $deal_util = new Deal();
-            $deal_util->item_id = $utility_subsidy->id;
-            $deal_util->transaction_id = $transaction_id;
-            $deal_util->dividend = 1;
-            $deal_util->divisor = 1;
-            $deal_util->qty_status = 2;
-            $deal_util->qty_status = 0;
-            $deal_util->unit_price = -$person->utility_subsidy;
-            $deal_util->amount = -$person->utility_subsidy;
-            $deal_util->save();
-        }
+        // if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility_subsidy != '') {
+        //     $deal_util = new Deal();
+        //     $deal_util->item_id = $utility_subsidy->id;
+        //     $deal_util->transaction_id = $transaction_id;
+        //     $deal_util->dividend = 1;
+        //     $deal_util->divisor = 1;
+        //     $deal_util->qty_status = 2;
+        //     $deal_util->qty_status = 0;
+        //     $deal_util->unit_price = -$person->utility_subsidy;
+        //     $deal_util->amount = -$person->utility_subsidy;
+        //     $deal_util->save();
+        // }
 
         $deals = Deal::whereTransactionId($transaction->id)->get();
         $deal_total = $deals->sum('amount');

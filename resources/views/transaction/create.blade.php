@@ -137,10 +137,11 @@
             {{-- end of the division --}}
 
             <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group pull-right" style="padding: 30px 0px 0px 0px;">
-                        {!! Form::submit('Add', ['class'=> 'btn btn-success']) !!}
-                        <a href="/transaction" class="btn btn-default">Cancel</a>
+                <div class="col-md-12 btn-group">
+                    <div class="pull-right">
+                        {!! Form::submit('Add', ['class'=> 'btn btn-success', 'type'=>'button', 'name'=>'add']) !!}
+                        {{-- {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard']) !!} --}}
+                        <a href="/transaction" class="btn btn-default" type="button">Cancel</a>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,7 @@ class Deal extends Model
         qty_status = 1 (Stock Order/ Confirmed)
         qty_status = 2 (Actual Stock Deducted/ Delivered)
         qty_status = 3 (Stock Removed/ Deleted || Cancelled)
+        qty_status = 99 (Stock Discard Log)
     */
 
     use \Venturecraft\Revisionable\RevisionableTrait;

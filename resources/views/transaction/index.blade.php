@@ -1053,6 +1053,9 @@
                                         </a>
                                         <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
                                         <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
+                                        <span class="label label-danger" ng-if="transaction.is_discard">
+                                            Discard
+                                        </span>
                                     </td>
 
                                     @if(!auth()->user()->hasRole('hd_user'))
