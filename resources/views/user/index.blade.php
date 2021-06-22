@@ -19,6 +19,7 @@
             <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
             <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
             <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
+            <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
         </ul>
     </div>
 
@@ -377,6 +378,10 @@
 
             <div class="tab-pane" id="cust_tags" ng-controller="custTagsController">
                 @include('user.cust_tags_template')
+            </div>
+
+            <div class="tab-pane" id="itemcategory" ng-controller="itemcategoryController">
+                @include('user.itemcategory')
             </div>
     </div>
 </div>

@@ -37,10 +37,11 @@
                             <th class="col-md-1 text-center">
                                 Unit Price
                             </th>
-                            <th class="col-md-1 text-center">
-                                Amount
-                            </th>
                         @endif
+                        <th class="col-md-1 text-center">
+                            Amount
+                        </th>
+
                         <th class="col-md-1 text-center">
                             Action
                         </th>
@@ -76,9 +77,10 @@
                                 <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
                                 <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price | currency: "" }}</td>
                                 {{-- deal amount --}}
-                                <td class="col-md-1 text-right" ng-if="deal.amount != 0">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
-                                <td class="col-md-1 text-right" ng-if="deal.amount == 0"><strong>FOC</strong></td>
                             @endif
+                            <td class="col-md-1 text-right" ng-if="deal.amount != 0 ">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
+                            <td class="col-md-1 text-right" ng-if="deal.amount == 0 && !deal.is_discard"><strong>FOC</strong></td>
+                            <td class="col-md-1 text-right" ng-if="deal.amount == 0 && deal.is_discard"></td>
                             <td class="col-md-1 text-center">
                                 @php
                                     $valid = false;
@@ -173,7 +175,9 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
-                                <td colspan="1"></td>
+                                @if(!$transaction->is_discard)
+                                    <td colspan="1"></td>
+                                @endif
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>
@@ -212,7 +216,9 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
-                                <td colspan="1"></td>
+                                @if(!$transaction->is_discard)
+                                    <td colspan="1"></td>
+                                @endif
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>
@@ -231,7 +237,9 @@
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
-                                <td colspan="1"></td>
+                                @if(!$transaction->is_discard)
+                                    <td colspan="1"></td>
+                                @endif
                                 <td class="col-md-1 text-right">
                                     <strong>@{{totalModel}}</strong>
                                 </td>

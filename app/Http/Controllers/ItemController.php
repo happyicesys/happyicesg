@@ -54,7 +54,7 @@ class ItemController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         $items = Item::withoutGlobalScopes();
-
+        // dd($request->all());
         // reading whether search input is filled
         $items = $this->searchItemsDBFilter($items, $request);
 
@@ -449,6 +449,7 @@ class ItemController extends Controller
         $is_active = $request->is_active;
         $is_inventory = $request->is_inventory;
         $base_unit = $request->base_unit;
+        $itemcategories = $request->itemcategories;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'. $product_id . '%');
@@ -462,12 +463,22 @@ class ItemController extends Controller
         if($is_active != '') {
             $items = $items->where('items.is_active', $is_active);
         }
-        if($is_inventory != '') {
+        if($is_inventory != '' or $is_inventory == 0) {
+            // dd($is_inventory);
             $items = $items->where('items.is_inventory', $is_inventory);
         }
         if($base_unit){
             $items = $items->where('items.base_unit', $base_unit);
         }
+
+        if($itemcategories) {
+            if (count($itemcategories) == 1) {
+                $itemcategories = [$itemcategories];
+            }
+
+            $items = $items->whereIn('items.itemcategory_id', $itemcategories);
+        }
+
         return $items;
     }
 

@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
         */
         // $this->call(CustcategoryGroupSeeder::class);
 
+        // $this->call(ItemcategorySeeder::class);
         Model::reguard();
     }
 }

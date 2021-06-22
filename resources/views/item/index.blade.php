@@ -1,3 +1,4 @@
+@inject('itemcategories', 'App\Itemcategory')
 @extends('template')
 @section('title')
 {{ $ITEM_TITLE }}
@@ -32,8 +33,8 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <ul class="nav nav-pills nav-justified" role="tablist">
-                            <li class="active"><a href="#item" role="tab" data-toggle="tab">Item</a></li>
-
+                            <li class="active"><a href="#item" role="tab" data-toggle="tab">Product (Inventory)</a></li>
+                            <li><a href="#item_non_inventory" role="tab" data-toggle="tab">Product (Non Inventory)</a></li>
                             <li><a href="#stock" role="tab" data-toggle="tab">Stock Movement</a></li>
                             @cannot('transaction_view')
                             @if(!auth()->user()->hasRole('driver-supervisor'))
@@ -49,6 +50,9 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="item">
                                 @include('item.item_list')
+                            </div>
+                            <div class="tab-pane" id="item_non_inventory">
+                                @include('item.item_non_inventory_list')
                             </div>
                             <div class="tab-pane" id="stock">
                                 @include('item.stockmovement')

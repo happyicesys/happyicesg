@@ -521,7 +521,11 @@ class VendingController extends Controller
                                     DB::raw('(
                                                 CASE
                                                 WHEN people.commission_type = 1
-                                                THEN (COALESCE((FLOOR((analog_end.analog_clock - (CASE
+                                                THEN
+                                                    CASE
+                                                    WHEN people.commission_package = 1
+                                                    THEN
+                                                        (COALESCE((FLOOR((analog_end.analog_clock - (CASE
                                                         WHEN analog_start.analog_clock
                                                         THEN analog_start.analog_clock
                                                         ELSE analog_first.analog_clock
@@ -532,8 +536,8 @@ class VendingController extends Controller
                                                         ELSE analog_first.analog_clock
                                                         END)) *
                                                         people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                                ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
-                                                END) AS subtotal_payout'),
+                                                    ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                                    END) AS subtotal_payout'),
                                     DB::raw('(CASE
                                             WHEN people.commission_type = 1
                                             THEN FLOOR((analog_end.analog_clock - (
@@ -717,6 +721,9 @@ class VendingController extends Controller
         // 2 compulsory items 055, U01
         $sales_commission = Item::where('product_id', '055')->firstOrFail();
         $utility_subsidy = Item::where('product_id', 'V01')->firstOrFail();
+        $rentalSubsidy = Item::where('product_id', '60')->firstOrFail();
+        // 60 rental to landlord
+
         $commissionPackage = $transaction->person->commission_package;
     // commission_package
     // 1 = Both utility and comm
@@ -801,7 +808,7 @@ class VendingController extends Controller
                 $deal_util->amount = -$person->utility_subsidy;
                 $deal_util->save();
             }else if($commissionPackage == 2) {
-                if($profitSharingAmount > $$person->utility_subsidy) {
+                if($profitSharingAmount > $person->utility_subsidy) {
                     $deal_comm = new Deal();
                     $deal_comm->item_id = $sales_commission->id;
                     $deal_comm->transaction_id = $transaction_id;

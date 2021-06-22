@@ -5,7 +5,7 @@ var app = angular.module('app', [
     '720kb.datepicker'
 ]);
 
-function personController($scope, $http){
+function personController($scope, $http) {
     // init the variables
     $scope.alldata = [];
     $scope.datasetTemp = {};
@@ -21,6 +21,7 @@ function personController($scope, $http){
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.showBatchFunctionPanel = false;
+    $scope.checkall = '';
     $scope.search = {
         cust_id: '',
         strictCustId: '',
@@ -56,7 +57,7 @@ function personController($scope, $http){
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
         });
-        $('#checkAll').change(function(){
+        $('#checkAll').change(function () {
             var all = this;
             $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
         });
@@ -67,38 +68,38 @@ function personController($scope, $http){
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "Customer Rpt"+ now + ".xls");
+        saveAs(blob, "Customer Rpt" + now + ".xls");
     };
 
     // switching page
-    $scope.pageChanged = function(newPage){
+    $scope.pageChanged = function (newPage) {
         getPage(newPage, false);
     };
 
-    $scope.pageNumChanged = function(){
+    $scope.pageNumChanged = function () {
         $scope.search['pageNum'] = $scope.itemsPerPage
         $scope.currentPage = 1
         getPage(1, false)
     };
 
-    $scope.sortTable = function(sortName) {
+    $scope.sortTable = function (sortName) {
         $scope.search.sortName = sortName;
-        $scope.search.sortBy = ! $scope.search.sortBy;
+        $scope.search.sortBy = !$scope.search.sortBy;
         getPage(1);
     }
 
     // search button transaction index
-    $scope.onSearchButtonClicked = function(event) {
+    $scope.onSearchButtonClicked = function (event) {
         event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
         getPage(1, false);
     }
 
-      // when hitting search button
-    $scope.searchDB = function(event){
+    // when hitting search button
+    $scope.searchDB = function (event) {
         $scope.search.edited = true;
-        if(event.keyCode && event.keyCode === 13) {
+        if (event.keyCode && event.keyCode === 13) {
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
         }
@@ -106,24 +107,24 @@ function personController($scope, $http){
     }
 
     // retrieve franchisee id
-    $scope.getFranchiseeId = function() {
-        $http.get('/api/franchisee/auth').success(function(data) {
+    $scope.getFranchiseeId = function () {
+        $http.get('/api/franchisee/auth').success(function (data) {
             return data;
         });
     }
 
-    $scope.merchandiserInit = function(userId) {
+    $scope.merchandiserInit = function (userId) {
         $scope.search.account_manager = userId;
     }
 
     // batch function button dropdown
-    $scope.onBatchFunctionClicked = function(event) {
+    $scope.onBatchFunctionClicked = function (event) {
         event.preventDefault();
-        $scope.showBatchFunctionPanel = ! $scope.showBatchFunctionPanel;
+        $scope.showBatchFunctionPanel = !$scope.showBatchFunctionPanel;
     }
 
     // checkbox all
-    $scope.onCheckAllChecked = function() {
+    $scope.onCheckAllChecked = function () {
         var checked = $scope.checkall;
 
         $scope.alldata.forEach(function (transaction, key) {
@@ -132,197 +133,203 @@ function personController($scope, $http){
     }
 
     // quick batch assign
-    $scope.onBatchAssignClicked = function(event, assignName) {
+    $scope.onBatchAssignClicked = function (event, assignName) {
         event.preventDefault();
         $scope.assignForm.name = assignName;
-        $http.post('/api/person/batch-update', {people: $scope.alldata, assignForm: $scope.assignForm}).success(function(data) {
-            $scope.searchDB();
+        $http.post('/api/person/batch-update', { people: $scope.alldata, assignForm: $scope.assignForm }).success(function (data) {
+            // console.log('here1');
+            // $scope.searchDB();
             $scope.checkall = false;
-            if(data.transactions.length > 0) {
+            // $('#checkAll').change(function () {
+            //     var all = this;
+            //     $(this).closest('table').find('input[type="checkbox"]').prop('checked', false);
+            // });
+            // console.log(JSON.parse(JSON.stringify(data)));
+            if (data.transactions.length > 0) {
                 alert('Invoices ' + data.transactions + ' created');
             }
         })
     }
 
-    $scope.formDateChange = function(scope, date){
-        if(date){
+    $scope.formDateChange = function (scope, date) {
+        if (date) {
             $scope.assignForm[scope] = moment(new Date(date)).format('YYYY-MM-DD');
         }
     }
 
-    $scope.onMapClicked = function(singleperson = null, index = null, type = null) {
-      var url = window.location.href;
-      var location = '';
-      var locationLatLng = {};
-      let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
-      const MAP_ICON_FILE = {
-          'red': 'red.png',
-          'blue': 'blue.png',
-          'green': 'green.png',
-          'light-blue': 'lightblue.png',
-          'pink': 'pink.png',
-          'purple': 'purple.png',
-          'yellow': 'yellow.png',
-          'orange': 'orange.png'
-      };
+    $scope.onMapClicked = function (singleperson = null, index = null, type = null) {
+        var url = window.location.href;
+        var location = '';
+        var locationLatLng = {};
+        let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
+        const MAP_ICON_FILE = {
+            'red': 'red.png',
+            'blue': 'blue.png',
+            'green': 'green.png',
+            'light-blue': 'lightblue.png',
+            'pink': 'pink.png',
+            'purple': 'purple.png',
+            'yellow': 'yellow.png',
+            'orange': 'orange.png'
+        };
 
-      if(url.includes("my")) {
-          location = 'Malaysia';
-          locationLatLng = {lat: 1.4927, lng: 103.7414};
-      }else if(url.includes("sg")) {
-          location = 'Singapore';
-          locationLatLng = {lat: 1.3521, lng: 103.8198};
-      }
+        if (url.includes("my")) {
+            location = 'Malaysia';
+            locationLatLng = { lat: 1.4927, lng: 103.7414 };
+        } else if (url.includes("sg")) {
+            location = 'Singapore';
+            locationLatLng = { lat: 1.3521, lng: 103.8198 };
+        }
 
-      var map = new google.maps.Map(document.getElementById('map'), {
-          center: locationLatLng,
-          zoom: 12
-      });
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: locationLatLng,
+            zoom: 12
+        });
 
-      var geocoder = new google.maps.Geocoder();
+        var geocoder = new google.maps.Geocoder();
 
-      var markers = [];
+        var markers = [];
 
-      if(singleperson) {
-          var contentString = '<span style=font-size:10px;>' +
-              '<b>' +
-              '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
-              '</b>' +
-              // '<br>' +
-              // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
-              '</span>';
+        if (singleperson) {
+            var contentString = '<span style=font-size:10px;>' +
+                '<b>' +
+                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                '</b>' +
+                // '<br>' +
+                // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
+                '</span>';
 
-          var infowindow = new google.maps.InfoWindow({
-              content: contentString
-          });
-          // console.log(singleperson)
-          $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
-              let coord = {
-                  transaction_id: singleperson.id,
-                  lat: data.results[0].LATITUDE,
-                  lng: data.results[0].LONGITUDE,
-              }
-              $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
-                  $scope.alldata[index].del_lat = data.del_lat;
-                  $scope.alldata[index].del_lng = data.del_lng;
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+            // console.log(singleperson)
+            $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + singleperson.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                let coord = {
+                    transaction_id: singleperson.id,
+                    lat: data.results[0].LATITUDE,
+                    lng: data.results[0].LONGITUDE,
+                }
+                $http.post('/api/person/storelatlng/' + singleperson.id, coord).success(function (data) {
+                    $scope.alldata[index].del_lat = data.del_lat;
+                    $scope.alldata[index].del_lng = data.del_lng;
 
-                  let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
-                  var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
-                  if(type === 2) {
-                    var marker = new google.maps.Marker({
-                        position: pos,
-                        map: map,
-                        title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                        label: {fontSize: '13px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold'},
-                        icon: {
-                            labelOrigin: new google.maps.Point(15,10),
-                            url: url
-                        }
-                    });
-                  }else {
-                    var marker = new google.maps.Marker({
-                        position: pos,
-                        map: map,
-                        title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
-                        label: {fontSize: '15px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold'},
-                        icon: {
-                            labelOrigin: new google.maps.Point(15,10),
-                            url: url
-                        }
-                    });
-                  }
-                  markers.push(marker);
+                    let url = map_icon_base + MAP_ICON_FILE[singleperson.map_icon_file]
+                    var pos = new google.maps.LatLng(singleperson.del_lat, singleperson.del_lng);
+                    if (type === 2) {
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                            label: { fontSize: '13px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
+                            icon: {
+                                labelOrigin: new google.maps.Point(15, 10),
+                                url: url
+                            }
+                        });
+                    } else {
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            map: map,
+                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                            label: { fontSize: '15px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
+                            icon: {
+                                labelOrigin: new google.maps.Point(15, 10),
+                                url: url
+                            }
+                        });
+                    }
+                    markers.push(marker);
 
                     marker.addListener('click', function () {
                         infowindow.open(map, marker);
                     });
-              });
-          });
+                });
+            });
 
-      }else {
-          $scope.coordsArr = [];
-          $scope.alldata.forEach(function (person, key) {
+        } else {
+            $scope.coordsArr = [];
+            $scope.alldata.forEach(function (person, key) {
                 let custString = person.cust_id + ' - ' + person.company + ' - ' + person.custcategory;
-              var contentString = '<span style=font-size:10px;>' +
-                  '<b>' +
-                  custString +
-                  '</b>' +
-                  // '<br>' +
-                  // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
-                  '</span>';
+                var contentString = '<span style=font-size:10px;>' +
+                    '<b>' +
+                    custString +
+                    '</b>' +
+                    // '<br>' +
+                    // '<span style="font-size:13px">' + '<b>' + person.del_postcode + '</b>' + '</span>' + ' ' + person.del_address +
+                    '</span>';
 
-              var infowindow = new google.maps.InfoWindow({
-                  content: contentString
-              });
-              // console.log(person)
-              if(!person.del_lat && !person.del_lng) {
-                  $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function(data) {
-                      let coord = {
-                          transaction_id: person.id,
-                          lat: data.results[0].LATITUDE,
-                          lng: data.results[0].LONGITUDE,
-                      }
-                      $scope.coordsArr.push(coord)
-                      $http.post('/api/person/storelatlng/' + person.id, coord).success(function (data) {
-                          $scope.alldata[key].del_lat = data.del_lat;
-                          $scope.alldata[key].del_lng = data.del_lng;
-                      });
-                  });
-              }
-
-              let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
-              var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
-              if(type === 2) {
-                var marker = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
-                    label: {fontSize: '13px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold'},
-                    icon: {
-                        labelOrigin: new google.maps.Point(15,10),
-                        url: url
-                    }
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
                 });
-              }else {
-                var marker = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
-                    label: {fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold'},
-                    icon: {
-                        labelOrigin: new google.maps.Point(15,10),
-                        url: url
-                    }
-                });
-              }
+                // console.log(person)
+                if (!person.del_lat && !person.del_lng) {
+                    $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                        let coord = {
+                            transaction_id: person.id,
+                            lat: data.results[0].LATITUDE,
+                            lng: data.results[0].LONGITUDE,
+                        }
+                        $scope.coordsArr.push(coord)
+                        $http.post('/api/person/storelatlng/' + person.id, coord).success(function (data) {
+                            $scope.alldata[key].del_lat = data.del_lat;
+                            $scope.alldata[key].del_lng = data.del_lng;
+                        });
+                    });
+                }
 
-              markers.push(marker);
+                let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
+                var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+                if (type === 2) {
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        label: { fontSize: '13px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold' },
+                        icon: {
+                            labelOrigin: new google.maps.Point(15, 10),
+                            url: url
+                        }
+                    });
+                } else {
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        label: { fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold' },
+                        icon: {
+                            labelOrigin: new google.maps.Point(15, 10),
+                            url: url
+                        }
+                    });
+                }
+
+                markers.push(marker);
 
                 marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
 
-          });
-      }
+            });
+        }
 
 
-      $("#mapModal").on("shown.bs.modal", function () {
-          google.maps.event.trigger(map, "resize");
-          map.setCenter(locationLatLng);
-      });
-  }
+        $("#mapModal").on("shown.bs.modal", function () {
+            google.maps.event.trigger(map, "resize");
+            map.setCenter(locationLatLng);
+        });
+    }
 
     // retrieve page w/wo search
-    function getPage(pageNumber, first){
+    function getPage(pageNumber, first) {
         $scope.spinner = true;
-        $http.post('/api/people?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
-            if(data.people.data){
+        $http.post('/api/people?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            if (data.people.data) {
                 $scope.alldata = data.people.data;
                 $scope.totalCount = data.people.total;
                 $scope.currentPage = data.people.current_page;
                 $scope.indexFrom = data.people.from;
                 $scope.indexTo = data.people.to;
-            }else{
+            } else {
                 $scope.alldata = data.people;
                 $scope.totalCount = data.people.length;
                 $scope.currentPage = 1;
@@ -340,7 +347,7 @@ function personController($scope, $http){
 }
 
 
-function creationController($scope, $http){
+function creationController($scope, $http) {
     // init the variables
     $scope.alldata = [];
     $scope.datasetTemp = {};
@@ -376,7 +383,7 @@ function creationController($scope, $http){
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
         });
-        $('#checkAll').change(function(){
+        $('#checkAll').change(function () {
             var all = this;
             $(this).closest('table').find('input[type="checkbox"]').prop('checked', all.checked);
         });
@@ -387,51 +394,51 @@ function creationController($scope, $http){
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "Customer Creation Rpt"+ now + ".xls");
+        saveAs(blob, "Customer Creation Rpt" + now + ".xls");
     };
 
     // switching page
-    $scope.pageChanged = function(newPage){
+    $scope.pageChanged = function (newPage) {
         getPage(newPage, false);
     };
 
-    $scope.pageNumChanged = function(){
+    $scope.pageNumChanged = function () {
         $scope.search['pageNum'] = $scope.itemsPerPage
         $scope.currentPage = 1
         getPage(1, false)
     };
 
-    $scope.sortTable = function(sortName) {
+    $scope.sortTable = function (sortName) {
         $scope.search.sortName = sortName;
-        $scope.search.sortBy = ! $scope.search.sortBy;
+        $scope.search.sortBy = !$scope.search.sortBy;
         getPage(1);
     }
 
     // search button transaction index
-    $scope.onSearchButtonClicked = function(event) {
+    $scope.onSearchButtonClicked = function (event) {
         event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
         getPage(1, false);
     }
 
-      // when hitting search button
-    $scope.searchDB = function(){
+    // when hitting search button
+    $scope.searchDB = function () {
         $scope.search.edited = true;
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
         getPage(1, false);
     }
 
-    $scope.merchandiserInit = function(userId) {
+    $scope.merchandiserInit = function (userId) {
         $scope.search.account_manager = userId;
     }
 
     // retrieve page w/wo search
-    function getPage(pageNumber, first){
+    function getPage(pageNumber, first) {
 
         $scope.spinner = true;
-        $http.post('/api/person/creation?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+        $http.post('/api/person/creation?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
 
             $scope.alldata = data;
             // console.log(JSON.parse(JSON.stringify($scope.alldata)))

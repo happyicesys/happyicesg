@@ -313,6 +313,7 @@ Route::post('/api/route-template/generate', 'RouteTemplateController@generateTem
 Route::post('/api/route-template/jobassign/create', 'RouteTemplateController@createRouteTemplateFromJobassignApi');
 Route::delete('/api/route-template/delete/{id}', 'RouteTemplateController@deleteRouteTemplateApi');
 
+Route::post('/api/person/edit/{id}', 'PersonController@editApi');
 Route::post('/api/person/batch-update', 'PersonController@batchAssignPeople');
 Route::get('/api/outletvisit/outcomes', 'PersonController@getOutletVisitOutcomesApi');
 Route::post('/api/outletvisits/person/{person_id}', 'PersonController@getOutletVisitsApi');
@@ -391,6 +392,10 @@ Route::resource('item', 'ItemController');
 
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
+Route::get('/api/itemcategory/{id}', 'ItemcategoryController@getItemcategoryApi');
+Route::get('/itemcategory/data', 'ItemcategoryController@getData');
+Route::delete('/itemcategory/data/{id}', 'ItemcategoryController@destroyAjax');
+Route::resource('itemcategory', 'ItemcategoryController');
 
 Route::post('/api/pricematrix/override', 'PriceController@overridePriceMatrixApi');
 Route::post('/api/prices/person', 'PriceController@getPersonPricesApi');

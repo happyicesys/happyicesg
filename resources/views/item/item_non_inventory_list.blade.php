@@ -1,4 +1,4 @@
-<div ng-controller="itemController">
+<div ng-controller="itemNonInventoryController">
 
     <div class="row">
         <div class="col-md-3 col-sm-4 col-xs-12">
@@ -106,7 +106,7 @@
                 <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
             @endif
         </div>
-
+{{--
         <div class="col-md-5 col-sm-4 col-xs-12" style="padding-top:5px;">
             <div class="row">
                 <div class="col-md-5 col-sm-5 col-xs-5">
@@ -124,9 +124,9 @@
                     <strong>@{{ totals.qty_order ? totals.qty_order : 0.00 | currency: "": 4}}</strong>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-md-4 col-sm-4 col-xs-12 text-right">
+        <div class="col-md-4 col-sm-4 col-xs-12 pull-right text-right">
             <div class="row" style="padding-right:18px;">
                 <label>Display</label>
                 <select ng-model="itemsPerPage" name="pageNum" ng-init="itemsPerPage='100'" ng-change="pageNumChanged()">

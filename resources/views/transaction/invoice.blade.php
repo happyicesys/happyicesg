@@ -797,7 +797,15 @@
                     @if($transaction->invattachments)
                     <div class="col-xs-12" style="padding-bottom: 30px;">
                         @foreach($transaction->invattachments()->oldest()->get() as $invattachment)
-                            <img src="{{public_path().$invattachment->path}}" style="width: 300px; height: 200px;">
+                            @php
+                                $pathName = '';
+                                if(strpos($invattachment->path, 'happyice-space.sgp1.digitaloceanspaces.com') !== false ){
+                                    $pathName = $invattachment->path;
+                                }else {
+                                    $pathName = public_path().$invattachment->path;
+                                }
+                            @endphp
+                            <img src="{{$pathName}}" style="width: 300px; height: 200px;">
                         @endforeach
                     </div>
                     @endif

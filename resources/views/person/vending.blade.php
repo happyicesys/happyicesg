@@ -9,17 +9,28 @@
                 @include('person._assignVending')
             </assignVending>
         </div> --}}
+{{--
+        <div class="form-group">
+            {!! Form::label('cooperate_method', 'Cooperate Method', ['class'=>'control-label']) !!}
+            {!! Form::select('cooperate_method', ['1'=>'Profit Sharing', '2'=>'Rentals'], null, ['ng-model'=>'form.cooperate_method', 'class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+        </div> --}}
 
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('commission_type', 'Commission Type', ['class'=>'control-label']) !!}
-                {!! Form::select('commission_type', ['1'=>'Absolute Amount', '2'=>'Percentage'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('commission_type', 'Commission Type', ['class'=>'control-label']) !!}
+                    {{-- <select ui-select2="{ allowClear: true}" name="commission_type" class="form-control" ng-model="form.commission_type" {{$disabled ? 'disabled' : null}}>
+                        <option value="1">Absolute Amount</option>
+                        <option value="2" selected>Percentage</option>
+                    </select> --}}
+                    {!! Form::select('commission_type', ['1'=>'Absolute Amount', '2'=>'Percentage'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('commission_package', 'Commission Package', ['class'=>'control-label']) !!}
-                {!! Form::select('commission_package', ['1'=>'Both Utility & Comm', '2'=>'Whichever One is Higher'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('commission_package', 'Commission Package', ['class'=>'control-label']) !!}
+                    {!! Form::select('commission_package', ['1'=>'Both Utility & Comm', '2'=>'Whichever One is Higher'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+                </div>
             </div>
         </div>
         @if(!$person->is_dvm)
@@ -91,7 +102,7 @@
                         '3'=>'XVend',
                         '4'=>'Auresys',
                         '5'=>'Beeptech'
-                    ], null, ['class'=>'select form-control', 'disabled'=>$disabled]) !!}
+                    ], null, ['ng-model'=>'form.terminal_provider', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">

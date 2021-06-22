@@ -451,7 +451,7 @@
             <table class="table table-list-search table-hover table-bordered" style="font-size: 14px;">
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">
-                        <input type="checkbox" id="check_all" ng-model="checkall" ng-change="onCheckAllChecked()"/>
+                        <input type="checkbox" id="checkAll" ng-model="checkall" ng-change="onCheckAllChecked()"/>
                     </th>
                     <th class="col-md-1 text-center">
                         #

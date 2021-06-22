@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Itemcategory extends Model
 {
     protected $fillable = [
-    	'name'
+        'name', 'desc', 'code'
     ];
 
-    // relationships
     public function items()
     {
-    	return $this->hasMany('App\Item');
+        return $this->hasMany(Item::class);
     }
 }

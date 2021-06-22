@@ -218,6 +218,12 @@ class PersonController extends Controller
         return view('person.edit', compact('person', 'files', 'prices', 'addfreezers', 'addaccessories'));
     }
 
+    public function editApi($id)
+    {
+        $person = Person::findOrFail($id);
+        return $person;
+    }
+
     // return files api by given person id(int $person_id)
     public function getFilesApi($person_id)
     {
@@ -937,6 +943,8 @@ class PersonController extends Controller
                 }
             }
         }
+        // dd($transactions);
+        Flash::success(count($transactions).' Invoices successfully created :'.implode(", ", $transactions));
 
         return [
             'transactions' => $transactions

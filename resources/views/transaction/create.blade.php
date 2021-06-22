@@ -140,7 +140,7 @@
                 <div class="col-md-12 btn-group">
                     <div class="pull-right">
                         {!! Form::submit('Add', ['class'=> 'btn btn-success', 'type'=>'button', 'name'=>'add']) !!}
-                        {{-- {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard']) !!} --}}
+                        {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard']) !!}
                         <a href="/transaction" class="btn btn-default" type="button">Cancel</a>
                     </div>
                 </div>
