@@ -804,7 +804,10 @@
                                 }else {
                                     $pathName = public_path().$invattachment->path;
                                 }
+                                dd($pathName);
                             @endphp
+
+
                             <img src="{{$pathName}}" style="width: 300px; height: 200px;">
                         @endforeach
                     </div>
