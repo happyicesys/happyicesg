@@ -804,7 +804,6 @@
                                 }else {
                                     $pathName = public_path().$invattachment->path;
                                 }
-                                dd($pathName);
                             @endphp
 
 
