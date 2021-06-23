@@ -80,7 +80,7 @@
                             @endif
                             <td class="col-md-1 text-right" ng-if="deal.amount != 0 ">@{{ (deal.amount/100 * 100) | currency: "" }}</td>
                             <td class="col-md-1 text-right" ng-if="deal.amount == 0 && !deal.is_discard"><strong>FOC</strong></td>
-                            <td class="col-md-1 text-right" ng-if="deal.amount == 0 && deal.is_discard"></td>
+                            {{-- <td class="col-md-1 text-right" ng-if="deal.amount == 0 && deal.is_discard"></td> --}}
                             <td class="col-md-1 text-center">
                                 @php
                                     $valid = false;
@@ -149,7 +149,9 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
+                                @if(!$transaction->is_discard)
                                 <td></td>
+                                @endif
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
@@ -159,7 +161,9 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
+                                @if(!$transaction->is_discard)
                                 <td></td>
+                                @endif
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -190,7 +194,9 @@
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
                                 </td>
+                                @if(!$transaction->is_discard)
                                 <td></td>
+                                @endif
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
@@ -200,7 +206,9 @@
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
                                 </td>
+                                @if(!$transaction->is_discard)
                                 <td></td>
+                                @endif
                                 <td colspan="2"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}

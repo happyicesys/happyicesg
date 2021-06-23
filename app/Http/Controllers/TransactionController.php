@@ -819,8 +819,8 @@ class TransactionController extends Controller
                             array_push($dealArr, [
                                 'item_id' => $index,
                                 'qty' => $qty,
-                                'quote' => 0,
-                                'amount' => 0
+                                'quote' => $price->quote_price,
+                                'amount' => -($price->quote_price * $qty),
                             ]);
                         }
 
