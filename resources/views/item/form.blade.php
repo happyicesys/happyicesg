@@ -164,8 +164,8 @@
 
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('item_category_id', 'Item Category', ['class'=>'control-label']) !!}
-                {!! Form::select('item_category_id', [''=>null] + $itemcategories::pluck('name', 'id')->all(), null, ['id'=>'unit', 'class'=>'select form-control']) !!}
+                {!! Form::label('itemcategory_id', 'Item Category', ['class'=>'control-label']) !!}
+                {!! Form::select('itemcategory_id', [''=>null] + $itemcategories::pluck('name', 'id')->all(), null, ['id'=>'unit', 'class'=>'select form-control']) !!}
             </div>
         </div>
     </div>

@@ -29,6 +29,7 @@ class ItemRequest extends Request
             'product_id' => 'required|unique:items,product_id,'.$item,
             'name' => 'required|unique:items,name,'.$item,
             'unit' => 'required',
+            'itemcategory_id' => 'required',
         ];
     }
 }
