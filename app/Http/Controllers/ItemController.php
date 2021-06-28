@@ -53,7 +53,9 @@ class ItemController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $items = Item::withoutGlobalScopes();
+        $items = Item::withoutGlobalScopes()
+                    ->with('itemcategory');
+                    // ->leftJoin('itemcategories', 'items.itemcategory_id', '=', 'itemcategories.id');
         // dd($request->all());
         // reading whether search input is filled
         $items = $this->searchItemsDBFilter($items, $request);

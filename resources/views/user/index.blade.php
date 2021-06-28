@@ -12,14 +12,18 @@
 <div class="panel panel-warning" ng-app="app" ng-cloak>
     <div class="panel-heading">
         <ul class="nav nav-pills nav-justified" role="tablist">
-            <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
-            <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
-            <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
-            <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
-            <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
-            <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
-            <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
-            <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
+            @if(auth()->user()->hasRole('admin'))
+                <li class="active"><a href="#data" role="tab" data-toggle="tab">User Data</a></li>
+                <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
+                <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
+                <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+                <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
+                <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
+            @endif
+                <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
+            @if(auth()->user()->hasRole('admin'))
+                <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
+            @endif
         </ul>
     </div>
 

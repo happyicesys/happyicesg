@@ -161,6 +161,9 @@
                     <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
+                    Category
+                </th>
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('unit')">
                     Unit
                     <span ng-if="search.sortName == 'unit' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -223,6 +226,9 @@
                     </td>
                     <td class="col-md-2">
                         @{{ item.name }}
+                    </td>
+                    <td class="col-md-1">
+                        @{{ item.itemcategory ? item.itemcategory.name : null }}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ item.unit }}

@@ -150,6 +150,7 @@
                         $jobcard_access = true;
                         $dailyreport_access = true;
                         $operation_access = true;
+                        $user_access = true;
                     }
 
                     if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus')) {
