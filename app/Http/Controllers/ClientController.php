@@ -560,7 +560,8 @@ class ClientController extends Controller
     // get vending complain page
     public function getVendComplainIndex()
     {
-        return view('client.vendcomplain');
+        return Redirect::to('https://form.jotform.com/kentzo/happy-ice-refund-request-form');
+        // return view('client.vendcomplain');
     }
 
     // submit vending complain page and generate email
