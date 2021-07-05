@@ -614,7 +614,7 @@
                                         @if($deal->dividend === 1)
                                             1 Unit
                                         @else
-                                            {{$deal->dividend + 0}} Unit
+                                            {{$deal->dividend ? $deal->dividend + 0 : 1}} Unit
                                         @endif
                                     </td>
                                 @else

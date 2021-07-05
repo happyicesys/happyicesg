@@ -1,10 +1,10 @@
 var app = angular.module('app', [
     'angularUtils.directives.dirPagination',
     'ui.select',
+    // 'ui.select2',
     'ngSanitize',
     '720kb.datepicker',
     'datePicker',
-    // 'ui.select2'
 ]);
 
 function personEditController($scope, $http) {
@@ -70,6 +70,26 @@ function personEditController($scope, $http) {
         key_lock_number: '',
         serial_no: ''
     }
+    $scope.commissionOptions = [
+        {
+            id: 1,
+            name: 'Absolute Amount'
+        },
+        {
+            id: 2,
+            name: 'Percentage'
+        },
+    ]
+    $scope.commissionPackages = [
+        {
+            id: 1,
+            name: 'Both Utility & Comm'
+        },
+        {
+            id: 2,
+            name: 'Whichever One is Higher'
+        },
+    ]
 
     // init page load
     getOutletVisitsPerson($('#person_id').val())
@@ -96,6 +116,11 @@ function personEditController($scope, $http) {
                     newOption: true
                 }
             }
+        });
+        toggleVendingFields();
+        $('#cooperate_method').on('select2:select', function (e) {
+            var data = e.params.data['id'];
+            toggleVendingFields();
         });
     });
     $scope.onDeliveryFromChanged = function (date) {
@@ -181,11 +206,26 @@ function personEditController($scope, $http) {
         });
     }
 
+    function toggleVendingFields() {
+        let cooperateMethod = $('#cooperate_method').val();
+        if (cooperateMethod == 1) {
+            $('.commissionDiv').show();
+            $('.rentalDiv').hide();
+        } else {
+            $('.commissionDiv').hide();
+            $('.rentalDiv').show();
+        }
+    }
+
     // retrieve single person data
     function getPersonApi() {
         $http.post('/api/person/edit/' + $('#person_id').val()).success(function (data) {
-            $scope.form = data;
-            console.log(JSON.parse(JSON.stringify(data)))
+            $scope.form = {
+                ...data,
+                commission_type: $scope.commissionOptions.find(x => x.id === data.commission_type),
+                commission_package: $scope.commissionPackages.find(x => x.id === data.commission_package),
+            };
+            toggleVendingFields();
 
             // $('.select').select2({
             //     placeholder: 'Select..',

@@ -507,7 +507,7 @@
                         @{{ transaction.sales}}
                     </td>
                     <td class="col-md-1 text-right">
-                        @{{ transaction.profit_sharing | currency: "": 2}} <small>(@{{transaction.profit_sharing_format}})</small>
+                        @{{ transaction.profit_sharing | currency: "": 2}} <small ng-if="transaction.profit_sharing_format">(@{{transaction.profit_sharing_format}})</small>
                     </td>
                     <td class="col-md-1 text-right">
                         @{{ transaction.subtotal_sales}}

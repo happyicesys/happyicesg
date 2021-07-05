@@ -292,6 +292,7 @@ class PersonController extends Controller
                 $request->merge(array('active' => 'New'));
                 break;
         }
+        // dd($request->all());
 
         if($type = $request->type) {
             $request->merge(['is_dvm' => 0]);

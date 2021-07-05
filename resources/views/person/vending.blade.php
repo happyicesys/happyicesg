@@ -9,21 +9,17 @@
                 @include('person._assignVending')
             </assignVending>
         </div> --}}
-{{--
+
         <div class="form-group">
             {!! Form::label('cooperate_method', 'Cooperate Method', ['class'=>'control-label']) !!}
-            {!! Form::select('cooperate_method', ['1'=>'Profit Sharing', '2'=>'Rentals'], null, ['ng-model'=>'form.cooperate_method', 'class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
-        </div> --}}
+            {!! Form::select('cooperate_method', ['1'=>'Profit Sharing', '2'=>'Rentals'], null, ['class'=>'selectnotclear form-control', 'id'=>'cooperate_method', 'disabled'=>$disabled]) !!}
+        </div>
 
-        <div class="row">
+        <div class="row commissionDiv">
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('commission_type', 'Commission Type', ['class'=>'control-label']) !!}
-                    {{-- <select ui-select2="{ allowClear: true}" name="commission_type" class="form-control" ng-model="form.commission_type" {{$disabled ? 'disabled' : null}}>
-                        <option value="1">Absolute Amount</option>
-                        <option value="2" selected>Percentage</option>
-                    </select> --}}
-                    {!! Form::select('commission_type', ['1'=>'Absolute Amount', '2'=>'Percentage'], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+                    {!! Form::select('commission_type', ['1'=>'Absolute Amount', '2'=>'Percentage'], null, ['class'=>' selectnotclear form-control', 'disabled'=>$disabled]) !!}
                 </div>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -33,6 +29,7 @@
                 </div>
             </div>
         </div>
+        <div class="row">
         @if(!$person->is_dvm)
         <div class="col-md-4 col-sm-4 col-xs-12">
             <div class="form-group">
@@ -41,7 +38,7 @@
             </div>
         </div>
         @endif
-        <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12 rentalDiv">
             <div class="form-group">
                 {!! Form::label('vending_monthly_rental', 'Monthly Rental ($)', ['class'=>'control-label']) !!}
                 {!! Form::text('vending_monthly_rental', null, ['class'=>'form-control']) !!}
@@ -58,10 +55,12 @@
                     break;
             }
         @endphp
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('vending_profit_sharing', 'Profit Sharing ('.$profit_sharing_unit.')', ['class'=>'control-label']) !!}
-                {!! Form::text('vending_profit_sharing', null, ['class'=>'form-control']) !!}
+        <div class="commissionDiv">
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('vending_profit_sharing', 'Profit Sharing ('.$profit_sharing_unit.')', ['class'=>'control-label']) !!}
+                    {!! Form::text('vending_profit_sharing', null, ['class'=>'form-control']) !!}
+                </div>
             </div>
         </div>
         <div class="col-md-4 col-sm-4 col-xs-12">
@@ -102,7 +101,7 @@
                         '3'=>'XVend',
                         '4'=>'Auresys',
                         '5'=>'Beeptech'
-                    ], null, ['ng-model'=>'form.terminal_provider', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
+                    ], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-12">
@@ -137,5 +136,6 @@
             </div>
         </div>
         @endif
+        </div>
     </div>
 </div>

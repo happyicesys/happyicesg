@@ -69,7 +69,7 @@
                                     1 Unit
                                 </span>
                                 <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
-                                    @{{deal.dividend | removeZero}} Unit
+                                    @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
                                 </span>
                             </td>
                             {{-- unit price --}}

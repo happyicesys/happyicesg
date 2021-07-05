@@ -104,11 +104,18 @@ class VendingController extends Controller
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;
                 $remarkStr = '';
                 // dd($person->commission_type);
-                if($person->commission_type == 1) {
-                    $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
-                }else if($person->commission_type == 2) {
-                    $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+
+                if($person->cooperate_method == 2) {
+                    $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", Rental: ".$person->vending_monthly_rental;
+                }else {
+                    if($person->commission_type == 1) {
+                        $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
+                    }else if($person->commission_type == 2) {
+                        $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                    }
                 }
+
+
                 $transaction->transremark = $remarkStr;
                 $transaction->is_required_analog = 0;
                 $transaction->save();
@@ -500,7 +507,7 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type', 'people.cooperate_method', 'people.commission_package',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
@@ -512,35 +519,131 @@ class VendingController extends Controller
                                     DB::raw('(analog_lastmonth_end.analog_clock - (CASE WHEN analog_lastmonth_start.analog_clock THEN analog_lastmonth_start.analog_clock ELSE analog_lastmonth_first.analog_clock END)) AS last_clocker_delta'),
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END AS sales'),
-                                    DB::raw('CASE WHEN people.commission_type = 1 THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) * people.vending_piece_price ELSE vend_received.vend_received END AS subtotal_sales'),
-                                    'people.vending_profit_sharing AS profit_sharing',
-                                    DB::raw('(CASE WHEN people.commission_type = 1 THEN "$" ELSE "%" END) AS profit_sharing_format'),
+                                    DB::raw('
+                                        CASE
+                                        WHEN
+                                            people.commission_type = 1
+                                        THEN
+                                            FLOOR((analog_end.analog_clock - (
+                                            CASE WHEN
+                                                analog_start.analog_clock THEN analog_start.analog_clock
+                                            ELSE
+                                                analog_first.analog_clock
+                                            END
+                                            ))- (
+                                            CASE WHEN
+                                                people.vending_clocker_adjustment
+                                            THEN
+                                            ((analog_end.analog_clock - (
+                                                CASE WHEN
+                                                    analog_start.analog_clock
+                                                THEN
+                                                    analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END
+                                                )) * people.vending_clocker_adjustment/ 100)
+                                            ELSE
+                                                0
+                                            END
+                                            )) * people.vending_piece_price
+                                        ELSE
+                                            vend_received.vend_received
+                                        END
+                                        AS subtotal_sales'
+                                    ),
+                                    DB::raw('
+                                        CASE WHEN
+                                            people.cooperate_method = 1
+                                        THEN
+                                            people.vending_profit_sharing
+                                        ELSE
+                                            null
+                                        END
+                                        AS profit_sharing
+                                    '),
+                                    DB::raw('(
+                                        CASE WHEN
+                                            people.cooperate_method = 1
+                                        THEN
+                                            CASE WHEN
+                                                people.commission_type = 1
+                                            THEN "$"
+                                            ELSE "%"
+                                            END
+                                        ELSE
+                                            null
+                                        END
+                                        ) AS profit_sharing_format'),
                                     'people.vending_monthly_rental AS vending_monthly_rental',
-                                    DB::raw('CASE WHEN people.commission_type = 1 THEN (FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) - ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing) ELSE (vend_received.vend_received * people.vending_profit_sharing/100) END AS subtotal_profit_sharing'),
+                                    DB::raw('
+                                        CASE WHEN
+                                            people.cooperate_method = 1
+                                        THEN
+                                            CASE WHEN
+                                                people.commission_type = 1
+                                            THEN
+                                                (FLOOR((analog_end.analog_clock - (
+                                                CASE WHEN
+                                                    analog_start.analog_clock
+                                                THEN
+                                                    analog_start.analog_clock
+                                                ELSE
+                                                    analog_first.analog_clock
+                                                END
+                                                    )) - ((analog_end.analog_clock - (
+                                                CASE WHEN
+                                                    analog_start.analog_clock
+                                                THEN
+                                                    analog_start.analog_clock
+                                                ELSE
+                                                    analog_first.analog_clock
+                                                END
+                                                    )) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing)
+                                            ELSE
+                                                (vend_received.vend_received * people.vending_profit_sharing/100)
+                                            END
+                                        ELSE
+                                            null
+                                        END
+                                        AS subtotal_profit_sharing'
+                                    ),
                                     'people.vending_monthly_utilities AS utility_subsidy',
                                     DB::raw('(
+                                        CASE WHEN
+                                            people.cooperate_method = 1
+                                        THEN
+                                            CASE WHEN
+                                                people.commission_type = 1
+                                            THEN
                                                 CASE
-                                                WHEN people.commission_type = 1
+                                                WHEN people.commission_package = 1
                                                 THEN
+                                                    (COALESCE((FLOOR((analog_end.analog_clock - (CASE
+                                                    WHEN analog_start.analog_clock
+                                                    THEN analog_start.analog_clock
+                                                    ELSE analog_first.analog_clock
+                                                    END)) - ((analog_end.analog_clock - (
                                                     CASE
-                                                    WHEN people.commission_package = 1
-                                                    THEN
-                                                        (COALESCE((FLOOR((analog_end.analog_clock - (CASE
-                                                        WHEN analog_start.analog_clock
-                                                        THEN analog_start.analog_clock
-                                                        ELSE analog_first.analog_clock
-                                                        END)) - ((analog_end.analog_clock - (
-                                                        CASE
-                                                        WHEN analog_start.analog_clock
-                                                        THEN analog_start.analog_clock
-                                                        ELSE analog_first.analog_clock
-                                                        END)) *
-                                                        people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                                    ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
-                                                    END) AS subtotal_payout'),
-                                    DB::raw('(CASE
-                                            WHEN people.commission_type = 1
-                                            THEN FLOOR((analog_end.analog_clock - (
+                                                    WHEN analog_start.analog_clock
+                                                    THEN analog_start.analog_clock
+                                                    ELSE analog_first.analog_clock
+                                                    END)) *
+                                                    people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
+                                                END
+                                            ELSE
+                                                (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                            END
+                                        ELSE
+                                            people.vending_monthly_rental
+                                        END
+                                        ) AS subtotal_payout'
+
+                                            ),
+                                    DB::raw('(
+                                            CASE WHEN
+                                                people.commission_type = 1
+                                            THEN
+                                                FLOOR((analog_end.analog_clock - (
                                                 CASE WHEN analog_start.analog_clock
                                                 THEN analog_start.analog_clock
                                                 ELSE analog_first.analog_clock
@@ -553,22 +656,83 @@ class VendingController extends Controller
                                                     END)) * people.vending_clocker_adjustment/ 100)
                                                 ELSE 0
                                                 END)) * people.vending_piece_price
-                                            ELSE vend_received.vend_received
-                                            END) -
-                                                (
-                                            CASE WHEN people.commission_type = 1
-                                            THEN (COALESCE((FLOOR((analog_end.analog_clock - (
-                                                CASE WHEN analog_start.analog_clock
-                                                THEN analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END)) - ((analog_end.analog_clock - (
-                                                CASE WHEN analog_start.analog_clock
-                                                THEN analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                            ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
-                                            END) AS subtotal_gross_profit'),
+                                            ELSE
+                                                vend_received.vend_received
+                                            END)
+                                            -
+                                            (
+                                            CASE WHEN
+                                                people.cooperate_method = 1
+                                            THEN
+                                                CASE WHEN
+                                                    people.commission_type = 1
+                                                THEN
+                                                    (COALESCE((FLOOR((analog_end.analog_clock - (
+                                                    CASE WHEN
+                                                        analog_start.analog_clock
+                                                    THEN
+                                                        analog_start.analog_clock
+                                                    ELSE
+                                                        analog_first.analog_clock
+                                                    END)) - ((analog_end.analog_clock - (
+                                                    CASE WHEN
+                                                        analog_start.analog_clock
+                                                    THEN
+                                                        analog_start.analog_clock
+                                                    ELSE
+                                                        analog_first.analog_clock
+                                                    END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0))
+                                                ELSE
+                                                    (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
+                                                END
+                                            ELSE
+                                                people.vending_monthly_rental
+                                            END
+                                            ) AS subtotal_gross_profit'),
                                     DB::raw('((
+                                        CASE WHEN
+                                            people.commission_type = 1
+                                        THEN
+                                            FLOOR((analog_end.analog_clock - (
+                                            CASE WHEN
+                                                analog_start.analog_clock
+                                            THEN
+                                                analog_start.analog_clock
+                                            ELSE
+                                                analog_first.analog_clock
+                                            END))- (
+                                            CASE WHEN
+                                                people.vending_clocker_adjustment
+                                            THEN
+                                                ((analog_end.analog_clock - (
+                                                CASE WHEN
+                                                    analog_start.analog_clock
+                                                THEN
+                                                    analog_start.analog_clock
+                                                ELSE
+                                                    analog_first.analog_clock
+                                                END)) * people.vending_clocker_adjustment/ 100)
+                                            ELSE
+                                                0
+                                            END)) * people.vending_piece_price
+                                        ELSE
+                                            vend_received.vend_received
+                                        END)
+                                        -
+                                        (
+                                        CASE WHEN
+                                            people.commission_type = 1
+                                        THEN (COALESCE((FLOOR((analog_end.analog_clock - (
+                                            CASE WHEN analog_start.analog_clock
+                                            THEN analog_start.analog_clock
+                                            ELSE analog_first.analog_clock
+                                            END)) - ((analog_end.analog_clock - (
+                                            CASE WHEN analog_start.analog_clock
+                                            THEN analog_start.analog_clock
+                                            ELSE analog_first.analog_clock
+                                            END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
+                                        ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
+                                        END))/ (
                                         CASE WHEN people.commission_type = 1
                                         THEN FLOOR((analog_end.analog_clock - (
                                             CASE WHEN analog_start.analog_clock
@@ -582,36 +746,12 @@ class VendingController extends Controller
                                                 ELSE analog_first.analog_clock
                                                 END)) * people.vending_clocker_adjustment/ 100)
                                             ELSE 0
-                                            END)) * people.vending_piece_price
-                                        ELSE vend_received.vend_received END) - (
-                                            CASE WHEN people.commission_type = 1
-                                            THEN (COALESCE((FLOOR((analog_end.analog_clock - (
-                                                CASE WHEN analog_start.analog_clock
-                                                THEN analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END)) - ((analog_end.analog_clock - (
-                                                CASE WHEN analog_start.analog_clock
-                                                THEN analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                            ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
-                                            END))/ (
-                                            CASE WHEN people.commission_type = 1
-                                            THEN FLOOR((analog_end.analog_clock - (
-                                                CASE WHEN analog_start.analog_clock
-                                                THEN analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END))- (
-                                                CASE WHEN people.vending_clocker_adjustment
-                                                THEN ((analog_end.analog_clock - (
-                                                    CASE WHEN analog_start.analog_clock
-                                                    THEN analog_start.analog_clock
-                                                    ELSE analog_first.analog_clock
-                                                    END)) * people.vending_clocker_adjustment/ 100)
-                                                ELSE 0
-                                                END))
-                                            ELSE sales_count.sales_count
-                                            END) AS avg_selling_price'),
+                                            END))
+                                        ELSE
+                                            sales_count.sales_count
+                                        END
+                                            )
+                                        AS avg_selling_price'),
                                     'melted.melted_amount AS melted_amount',
                                     'vend_received.vend_received AS vend_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
                                 );
@@ -724,7 +864,9 @@ class VendingController extends Controller
         $rentalSubsidy = Item::where('product_id', '60')->firstOrFail();
         // 60 rental to landlord
 
-        $commissionPackage = $transaction->person->commission_package;
+        $commissionPackage = $person->commission_package;
+        $commissionType = $person->commission_type;
+        $cooperateMethod = $person->cooperate_method;
     // commission_package
     // 1 = Both utility and comm
     // 2 = whichever is higher
@@ -732,43 +874,34 @@ class VendingController extends Controller
     // commission_type
     // 1 = absolute amount
     // 2 = percentage
-
-        if($person->commission_type == 1) {
-            if($commissionPackage == 1) {
-                $deal_comm = new Deal();
-                $deal_comm->item_id = $sales_commission->id;
-                $deal_comm->transaction_id = $transaction_id;
-                $deal_comm->dividend = $person->sales;
-                $deal_comm->divisor = 1;
-                $deal_comm->qty_status = 2;
-                $deal_comm->qty = 0;
-                $deal_comm->unit_price = -$person->profit_sharing;
-                $deal_comm->amount = -$person->subtotal_profit_sharing;
-                $deal_comm->save();
-
-                $deal_util = new Deal();
-                $deal_util->item_id = $utility_subsidy->id;
-                $deal_util->transaction_id = $transaction_id;
-                $deal_util->dividend = 1;
-                $deal_util->divisor = 1;
-                $deal_util->qty_status = 2;
-                $deal_util->qty_status = 0;
-                $deal_util->unit_price = -$person->utility_subsidy;
-                $deal_util->amount = -$person->utility_subsidy;
-                $deal_util->save();
-            }else if($commissionPackage == 2) {
-                if($person->subtotal_profit_sharing > $person->utility_subsidy) {
+// dd($cooperateMethod, $person);
+        if($cooperateMethod == 2) {
+            // dd('here1');
+            $deal = new Deal();
+            $deal->item_id = $rentalSubsidy->id;
+            $deal->transaction_id = $transaction_id;
+            $deal->dividend = 1;
+            $deal->divisor = 1;
+            $deal->qty_status = 2;
+            $deal->qty_status = 0;
+            $deal->unit_price = -$person->vending_monthly_rental;
+            $deal->amount = -$person->vending_monthly_rental;
+            $deal->save();
+        }else {
+            // dd('here2');
+            if($commissionType == 1) {
+                if($commissionPackage == 1) {
                     $deal_comm = new Deal();
                     $deal_comm->item_id = $sales_commission->id;
                     $deal_comm->transaction_id = $transaction_id;
                     $deal_comm->dividend = $person->sales;
                     $deal_comm->divisor = 1;
                     $deal_comm->qty_status = 2;
-                    $deal_comm->qty = 0;
+                    // $deal_comm->qty = 0;
                     $deal_comm->unit_price = -$person->profit_sharing;
                     $deal_comm->amount = -$person->subtotal_profit_sharing;
                     $deal_comm->save();
-                }else {
+
                     $deal_util = new Deal();
                     $deal_util->item_id = $utility_subsidy->id;
                     $deal_util->transaction_id = $transaction_id;
@@ -779,47 +912,47 @@ class VendingController extends Controller
                     $deal_util->unit_price = -$person->utility_subsidy;
                     $deal_util->amount = -$person->utility_subsidy;
                     $deal_util->save();
+                }else if($commissionPackage == 2) {
+                    if($person->subtotal_profit_sharing > $person->utility_subsidy) {
+                        $deal_comm = new Deal();
+                        $deal_comm->item_id = $sales_commission->id;
+                        $deal_comm->transaction_id = $transaction_id;
+                        $deal_comm->dividend = $person->sales;
+                        $deal_comm->divisor = 1;
+                        $deal_comm->qty_status = 2;
+                        // $deal_comm->qty = 0;
+                        $deal_comm->unit_price = -$person->profit_sharing;
+                        $deal_comm->amount = -$person->subtotal_profit_sharing;
+                        $deal_comm->save();
+                    }else {
+                        $deal_util = new Deal();
+                        $deal_util->item_id = $utility_subsidy->id;
+                        $deal_util->transaction_id = $transaction_id;
+                        $deal_util->dividend = 1;
+                        $deal_util->divisor = 1;
+                        $deal_util->qty_status = 2;
+                        $deal_util->qty_status = 0;
+                        $deal_util->unit_price = -$person->utility_subsidy;
+                        $deal_util->amount = -$person->utility_subsidy;
+                        $deal_util->save();
+                    }
                 }
-            }
 
-        }else if($person->commission_type == 2) {
-            $profitSharingAmount = $person->subtotal_sales * ($person->profit_sharing/100);
+            }else if($commissionType == 2) {
+                $profitSharingAmount = $person->subtotal_sales * ($person->profit_sharing/100);
 
-            if($commissionPackage == 1) {
-                $deal_comm = new Deal();
-                $deal_comm->item_id = $sales_commission->id;
-                $deal_comm->transaction_id = $transaction_id;
-                $deal_comm->dividend = $person->subtotal_sales;
-                $deal_comm->divisor = 1;
-                $deal_comm->qty_status = 2;
-                $deal_comm->qty = 0;
-                $deal_comm->unit_price = -$person->profit_sharing/100;
-                $deal_comm->amount = -$profitSharingAmount;
-                $deal_comm->save();
-
-                $deal_util = new Deal();
-                $deal_util->item_id = $utility_subsidy->id;
-                $deal_util->transaction_id = $transaction_id;
-                $deal_util->dividend = 1;
-                $deal_util->divisor = 1;
-                $deal_util->qty_status = 2;
-                $deal_util->qty_status = 0;
-                $deal_util->unit_price = -$person->utility_subsidy;
-                $deal_util->amount = -$person->utility_subsidy;
-                $deal_util->save();
-            }else if($commissionPackage == 2) {
-                if($profitSharingAmount > $person->utility_subsidy) {
+                if($commissionPackage == 1) {
                     $deal_comm = new Deal();
                     $deal_comm->item_id = $sales_commission->id;
                     $deal_comm->transaction_id = $transaction_id;
                     $deal_comm->dividend = $person->subtotal_sales;
                     $deal_comm->divisor = 1;
                     $deal_comm->qty_status = 2;
-                    $deal_comm->qty = 0;
+                    // $deal_comm->qty = 0;
                     $deal_comm->unit_price = -$person->profit_sharing/100;
                     $deal_comm->amount = -$profitSharingAmount;
                     $deal_comm->save();
-                }else {
+
                     $deal_util = new Deal();
                     $deal_util->item_id = $utility_subsidy->id;
                     $deal_util->transaction_id = $transaction_id;
@@ -830,9 +963,33 @@ class VendingController extends Controller
                     $deal_util->unit_price = -$person->utility_subsidy;
                     $deal_util->amount = -$person->utility_subsidy;
                     $deal_util->save();
+                }else if($commissionPackage == 2) {
+                    if($profitSharingAmount > $person->utility_subsidy) {
+                        $deal_comm = new Deal();
+                        $deal_comm->item_id = $sales_commission->id;
+                        $deal_comm->transaction_id = $transaction_id;
+                        $deal_comm->dividend = $person->subtotal_sales;
+                        $deal_comm->divisor = 1;
+                        $deal_comm->qty_status = 2;
+                        // $deal_comm->qty = 0;
+                        $deal_comm->unit_price = -$person->profit_sharing/100;
+                        $deal_comm->amount = -$profitSharingAmount;
+                        $deal_comm->save();
+                    }else {
+                        $deal_util = new Deal();
+                        $deal_util->item_id = $utility_subsidy->id;
+                        $deal_util->transaction_id = $transaction_id;
+                        $deal_util->dividend = 1;
+                        $deal_util->divisor = 1;
+                        $deal_util->qty_status = 2;
+                        $deal_util->qty_status = 0;
+                        $deal_util->unit_price = -$person->utility_subsidy;
+                        $deal_util->amount = -$person->utility_subsidy;
+                        $deal_util->save();
+                    }
                 }
-            }
 
+            }
         }
 
         // if($person->utility_subsidy != 0.00 and $person->utility_subsidy != null and $person->utility_subsidy != '') {
