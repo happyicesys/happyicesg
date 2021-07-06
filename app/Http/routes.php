@@ -6,13 +6,16 @@ if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
     // error_reporting(E_ALL ^ E_WARNING); // Maybe this is enough
 }
 
-Route::get('/', function () {
-	$url = request()->url();
-	if (strpos($url, 'my') !== false) {
-		return view('auth.login');
-	}else {
-		return view('client.index');
-	}
+Route::get('/', function ()
+{
+	return view('auth.login');
+
+	// $url = request()->url();
+	// if (strpos($url, 'my') !== false) {
+	// 	return view('auth.login');
+	// }else {
+	// 	return view('client.index');
+	// }
 });
 
 Route::get('/admin', function () {
