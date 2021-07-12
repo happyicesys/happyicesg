@@ -260,12 +260,11 @@
                         ['class'=>'select form-control', 'disabled'=> $disabled])
                     !!}
                 </div>
-
-                <div class="col-md-4 form-group">
-                    {!! Form::label('note', 'Payment Ref', ['class'=>'control-label']) !!}
-                    {!! Form::text('note', null, ['class'=>'form-control', 'disabled'=> $disabled]) !!}
-                </div>
             @endif
+            <div class="col-md-4 form-group">
+                {!! Form::label('note', 'Payment Ref', ['class'=>'control-label']) !!}
+                {!! Form::text('note', null, ['class'=>'form-control', 'disabled'=> $disabled]) !!}
+            </div>
         </div>
         @endif
 

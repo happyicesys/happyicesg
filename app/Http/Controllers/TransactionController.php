@@ -1149,7 +1149,9 @@ class TransactionController extends Controller
             $replicated_transaction->po_no = null;
         }
         $replicated_transaction->updated_by = auth()->user()->name;
+        // $replicated_transaction->note =
         $replicated_transaction->save();
+        // dd($replicated_transaction->toArray());
 
         // replicate pricelist
         foreach($transaction->deals as $deal) {
