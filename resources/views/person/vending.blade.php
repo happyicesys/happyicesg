@@ -95,7 +95,7 @@
                     {!! Form::label('terminal_provider', 'Terminal Provider', ['class'=>'control-label']) !!}
                     {!! Form::select('terminal_provider',
                     [
-                        ''=>'',
+                        '0'=>'None',
                         '1'=>'Nayax',
                         '2'=>'Castle',
                         '3'=>'XVend',
