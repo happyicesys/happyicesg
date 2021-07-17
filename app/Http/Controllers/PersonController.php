@@ -963,7 +963,7 @@ class PersonController extends Controller
         $transaction = Transaction::create([
             'delivery_date' => $date,
             'person_id' => $person->id,
-            'status' => 'Pending',
+            'status' => 'Confirmed',
             'pay_status' => 'Owe',
             'updated_by' => auth()->user()->name,
             'created_by' => auth()->user()->id,

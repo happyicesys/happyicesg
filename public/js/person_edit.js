@@ -22,7 +22,7 @@ function personEditController($scope, $http) {
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
         id: '',
-        statuses: ['Confirmed', 'Delivered'],
+        statuses: ['Pending', 'Confirmed', 'Delivered'],
         pay_status: '',
         delivery_from: '',
         delivery_to: '',
