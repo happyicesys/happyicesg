@@ -42,7 +42,10 @@
             $disabledStr = 'disabled';
         }
     @endphp
-    @unless($person->cust_id[0] === 'D' or $person->cust_id[0] === 'H')
+                {{-- @php
+                dd('here', $person->cust_id[0]);
+            @endphp --}}
+    @unless($person->cust_id[0] === 'H')
     <div class="panel">
         <div class="panel-heading">
             <div class="row">
