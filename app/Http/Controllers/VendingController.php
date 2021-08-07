@@ -390,6 +390,19 @@ class VendingController extends Controller
                                 ORDER BY transactions.delivery_date DESC
                                 ) fvm_start");
 
+        $cashless = DB::raw("(SELECT MAX(transactions.delivery_date) AS delivery_date, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051c'
+                                AND DATE(transactions.delivery_date)<'".$this_month_start."'
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) cashless");
+
         $fvm_first = DB::raw("(SELECT MIN(transactions.delivery_date) AS delivery_date, people.id AS person_id
                                 FROM deals
                                 LEFT JOIN items ON items.id=deals.item_id
@@ -477,6 +490,21 @@ class VendingController extends Controller
                                 ORDER BY transactions.delivery_date DESC
                                 ) vend_received");
 
+        $cashless_received = DB::raw("(SELECT SUM(deals.amount) AS cashless_received, MAX(transactions.delivery_date) AS max_delivery_date, MIN(transactions.delivery_date) AS min_delivery_date, people.id AS person_id
+                                FROM deals
+                                LEFT JOIN items ON items.id=deals.item_id
+                                LEFT JOIN transactions ON transactions.id=deals.transaction_id
+                                LEFT JOIN people ON transactions.person_id=people.id
+                                LEFT JOIN profiles ON people.profile_id=profiles.id
+                                WHERE ".$statusStr."
+                                AND items.product_id='051c'
+                                AND DATE(transactions.delivery_date)>='".$this_month_start."'
+                                AND DATE(transactions.delivery_date)<='".$this_month_end."'
+                                AND deals.amount > 0
+                                GROUP BY people.id
+                                ORDER BY transactions.delivery_date DESC
+                                ) cashless_received");
+
         $sales_count = DB::raw("(SELECT SUM(transactions.sales_count) AS sales_count, people.id AS person_id
                                 FROM transactions
                                 LEFT JOIN people ON transactions.person_id=people.id
@@ -497,6 +525,7 @@ class VendingController extends Controller
                         ->leftJoin($analog_start, 'people.id', '=', 'analog_start.person_id')
                         ->leftJoin($analog_first, 'people.id', '=', 'analog_first.person_id')
                         ->leftJoin($fvm_start, 'people.id', '=', 'fvm_start.person_id')
+                        ->leftJoin($cashless, 'people.id', '=', 'cashless.person_id')
                         ->leftJoin($fvm_first, 'people.id', '=', 'fvm_first.person_id')
                         ->leftJoin($analog_end, 'people.id', '=', 'analog_end.person_id')
                         ->leftJoin($analog_lastmonth_start, 'people.id', '=', 'analog_lastmonth_start.person_id')
@@ -504,6 +533,7 @@ class VendingController extends Controller
                         ->leftJoin($analog_lastmonth_end, 'people.id', '=', 'analog_lastmonth_end.person_id')
                         ->leftJoin($melted, 'people.id', '=', 'melted.person_id')
                         ->leftJoin($vend_received, 'people.id', '=', 'vend_received.person_id')
+                        ->leftJoin($cashless_received, 'people.id', '=', 'cashless_received.person_id')
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
@@ -547,7 +577,14 @@ class VendingController extends Controller
                                             END
                                             )) * people.vending_piece_price
                                         ELSE
-                                            vend_received.vend_received
+                                            vend_received.vend_received +
+                                            (CASE WHEN
+                                                cashless_received.cashless_received
+                                            THEN
+                                                cashless_received.cashless_received
+                                            ELSE
+                                                0
+                                            END)
                                         END
                                         AS subtotal_sales'
                                     ),
@@ -600,7 +637,15 @@ class VendingController extends Controller
                                                 END
                                                     )) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing)
                                             ELSE
-                                                (vend_received.vend_received * people.vending_profit_sharing/100)
+                                                ((vend_received.vend_received +
+                                                    (CASE WHEN
+                                                        cashless_received.cashless_received
+                                                    THEN
+                                                        cashless_received.cashless_received
+                                                    ELSE
+                                                        0
+                                                    END))
+                                                * people.vending_profit_sharing/100)
                                             END
                                         ELSE
                                             null
@@ -631,7 +676,15 @@ class VendingController extends Controller
                                                     people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
                                                 END
                                             ELSE
-                                                (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
+                                                ((vend_received.vend_received +
+                                                (CASE WHEN
+                                                    cashless_received.cashless_received
+                                                THEN
+                                                    cashless_received.cashless_received
+                                                ELSE
+                                                    0
+                                                END))
+                                                * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
                                             END
                                         ELSE
                                             people.vending_monthly_rental
@@ -657,7 +710,14 @@ class VendingController extends Controller
                                                 ELSE 0
                                                 END)) * people.vending_piece_price
                                             ELSE
-                                                vend_received.vend_received
+                                                vend_received.vend_received +
+                                                (CASE WHEN
+                                                    cashless_received.cashless_received
+                                                THEN
+                                                    cashless_received.cashless_received
+                                                ELSE
+                                                    0
+                                                END)
                                             END)
                                             -
                                             (
@@ -683,7 +743,15 @@ class VendingController extends Controller
                                                         analog_first.analog_clock
                                                     END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0))
                                                 ELSE
-                                                    (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
+                                                    (vend_received.vend_received +
+                                                    ((CASE WHEN
+                                                        cashless_received.cashless_received
+                                                    THEN
+                                                        cashless_received.cashless_received
+                                                    ELSE
+                                                        0
+                                                    END))
+                                                    * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
                                                 END
                                             ELSE
                                                 people.vending_monthly_rental
@@ -716,7 +784,14 @@ class VendingController extends Controller
                                                 0
                                             END)) * people.vending_piece_price
                                         ELSE
-                                            vend_received.vend_received
+                                            vend_received.vend_received +
+                                            (CASE WHEN
+                                                cashless_received.cashless_received
+                                            THEN
+                                                cashless_received.cashless_received
+                                            ELSE
+                                                0
+                                            END)
                                         END)
                                         -
                                         (
@@ -731,7 +806,15 @@ class VendingController extends Controller
                                             THEN analog_start.analog_clock
                                             ELSE analog_first.analog_clock
                                             END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                        ELSE (vend_received.vend_received * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
+                                        ELSE ((vend_received.vend_received +
+                                            (CASE WHEN
+                                                cashless_received.cashless_received
+                                            THEN
+                                                cashless_received.cashless_received
+                                            ELSE
+                                                0
+                                            END))
+                                        * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
                                         END))/ (
                                         CASE WHEN people.commission_type = 1
                                         THEN FLOOR((analog_end.analog_clock - (
@@ -753,7 +836,7 @@ class VendingController extends Controller
                                             )
                                         AS avg_selling_price'),
                                     'melted.melted_amount AS melted_amount',
-                                    'vend_received.vend_received AS vend_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
+                                    'vend_received.vend_received AS vend_received', 'cashless_received.cashless_received AS cashless_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
                                 );
 
         if(request('profile_id') or request('current_month') or request('cust_id') or request('id_prefix') or request('company') or request('custcategory') or request('status') or request('is_rental') or request('is_active')){
