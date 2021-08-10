@@ -124,7 +124,8 @@
                             <a href="/person" class="btn btn-default">Back</a>
                         </div>
                         <div class="pull-left">
-                            @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            {{-- @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus')) --}}
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('supervisor') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('account'))
                             @cannot('transaction_view')
                                 @if($person->active == 'Yes')
                                     {!! Form::submit('Pending', ['name'=>'active', 'class'=> 'btn btn-primary', 'form'=>'form_person']) !!}
