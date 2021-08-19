@@ -925,6 +925,20 @@ class DetailRptController extends Controller
             $prevyrqty .= " AND people.account_manager='".$request->account_manager."'";
         }
 
+        if($request->cust_id) {
+            if($request->strictCustId) {
+                $thistotal .= " AND people.cust_id='".$request->cust_id."'";
+                $prevqty .= " AND people.cust_id='".$request->cust_id."'";
+                $prev2qty .= " AND people.cust_id='".$request->cust_id."'";
+                $prevyrqty .= " AND people.cust_id='".$request->cust_id."'";
+            }else {
+                $thistotal .= " AND people.cust_id LIKE '%".$request->cust_id."%'";
+                $prevqty .= " AND people.cust_id LIKE '%".$request->cust_id."%'";
+                $prev2qty .= " AND people.cust_id LIKE '%".$request->cust_id."%'";
+                $prevyrqty .= " AND people.cust_id LIKE '%".$request->cust_id."%'";
+            }
+        }
+
         if(count($profileIds = $this->getUserProfileIdArray()) > 0) {
             $profileIdStr = implode(",", $profileIds);
             $thistotal .= " AND profiles.id IN (".$profileIdStr.")";
@@ -991,7 +1005,8 @@ class DetailRptController extends Controller
                         'items.name AS product_name', 'items.remark', 'items.product_id', 'items.id', 'items.is_inventory', 'items.is_commission',
                         'thistotal.amount AS amount', 'thistotal.qty AS qty', 'profiles.name AS profile_name', 'profiles.id AS profile_id',
                         'transactions.status',
-                        'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty'
+                        'prevqty.qty AS prevqty', 'prev2qty.qty AS prev2qty', 'prevyrqty.qty AS prevyrqty',
+                        'people.cust_id'
                     );
 
         // reading whether search input is filled
@@ -3674,6 +3689,8 @@ class DetailRptController extends Controller
         $profile_id = $request->profile_id;
         $status = $request->status;
         $item_id = $request->item_id;
+        $cust_id = $request->cust_id;
+        $strictCustId = $request->strictCustId;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -3695,6 +3712,13 @@ class DetailRptController extends Controller
         }
         if($item_id) {
             $items = $items->where('items.id', $item_id);
+        }
+        if($cust_id){
+            if($strictCustId) {
+                $items = $items->where('people.cust_id', 'LIKE', $cust_id.'%');
+            }else {
+                $items = $items->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
+            }
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');

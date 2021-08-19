@@ -123,6 +123,26 @@
                 @endif
             </div>
         </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('id', 'ID', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    <input type="checkbox" name="strictCustId" ng-model="search.strictCustId">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        Strict
+                    </span>
+                </label>
+                {!! Form::text('id', null,
+                                            [
+                                                'class'=>'form-control input-sm',
+                                                'ng-model'=>'search.cust_id',
+                                                'ng-change'=>'searchDB()',
+                                                'placeholder'=>'Cust ID',
+                                                'ng-model-options'=>'{ debounce: 700 }'
+                                            ])
+                !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -130,7 +150,7 @@
     <div class="col-md-4 col-xs-12">
         @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
             <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-        @endif        
+        @endif
         <span ng-show="spinner"> <i style="color:red;" class="fa fa-spinner fa-2x fa-spin"></i></span>
     </div>
     <div class="col-md-4 col-xs-12">
