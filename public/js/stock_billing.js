@@ -30,7 +30,7 @@ function stockBillingController($scope, $http) {
         person_id: '',
         driver: '',
         exACategory: '',
-        custcategory: '',
+        custcategory: [],
         exclude_custcategory: '',
         is_inventory: '1',
         is_commission: '0',

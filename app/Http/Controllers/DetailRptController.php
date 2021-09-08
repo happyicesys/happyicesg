@@ -2769,6 +2769,24 @@ class DetailRptController extends Controller
             $deals = $deals->where('items.is_commission', $is_commission);
         } */
 
+        // if($request->is_commission != '') {
+        //     $is_commission = $request->is_commission;
+        //     switch($is_commission) {
+        //         case '0':
+        //             $amountstr .= " AND items.is_commission='".$is_commission."' ";
+        //             $amountstr .= " AND items.is_supermarket_fee='".$is_commission."' ";
+        //             break;
+        //         case '1':
+        //             $amountstr .= " AND items.is_commission=1 ";
+        //             $amountstr .= " AND items.is_supermarket_fee=0 ";
+        //             break;
+        //         case '2':
+        //             $amountstr .= " AND items.is_commission=0 ";
+        //             $amountstr .= " AND items.is_supermarket_fee=1 ";
+        //             break;
+        //     }
+        // }
+
         if($is_commission != '') {
             switch($is_commission) {
                 case '0':
