@@ -2805,10 +2805,13 @@ class DetailRptController extends Controller
         foreach($calculateDeals->get() as $deal) {
             $total_qty += $deal->qty;
             $total_costs += $deal->total_cost;
-            $total_sell_value += $deal->amount;
-            $total_gross_profit += $deal->gross;
-            $total_sf_fee += $deal->sfee;
-            $total_commission += $deal->commission;
+            if($deal->is_commission or $deal->is_supermarket_fee) {
+                $total_sf_fee += $deal->sfee;
+                $total_commission += $deal->commission;
+            }else {
+                $total_sell_value += $deal->amount;
+                $total_gross_profit += $deal->gross;
+            }
         }
 
         $totals = [
@@ -3899,7 +3902,7 @@ class DetailRptController extends Controller
                 ->select(
                     'deals.divisor', 'deals.dividend',
                     'profiles.id AS profile_id', 'profiles.name AS profile_name', 'transactions.gst', 'transactions.gst_rate',
-                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark', 'items.is_supermarket_fee',
+                    'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark', 'items.is_supermarket_fee', 'items.is_commission',
                     DB::raw('ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfee'),
                     DB::raw('ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commission'),
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
