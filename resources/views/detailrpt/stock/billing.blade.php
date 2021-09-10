@@ -206,7 +206,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('is_commission', 'Include Comm & SFee', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
+                    {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all'], null,
                         [
                             'class'=>'select form-control',
                             'ng-model'=>'search.is_commission',
@@ -269,7 +269,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            Total Gross Profit $
+                            Product Gross Profit ($)
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
@@ -279,7 +279,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            Gross Profit %
+                            Product Gross Profit (%)
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
@@ -301,7 +301,17 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            Gross Profit After SFee
+                            VM Comm
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
+                            <strong>
+                                @{{total_commission ? total_commission : 0.00 | currency: "": 2}}
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            Gross Profit ($)
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
@@ -311,7 +321,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            Gross Profit % After SFee
+                            Gross Profit (%)
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>

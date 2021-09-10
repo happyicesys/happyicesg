@@ -2800,6 +2800,7 @@ class DetailRptController extends Controller
         $total_sell_value = 0;
         $total_gross_profit = 0;
         $total_sf_fee = 0;
+        $total_commission = 0;
         $calculateDeals = clone $deals;
         foreach($calculateDeals->get() as $deal) {
             $total_qty += $deal->qty;
@@ -2807,6 +2808,7 @@ class DetailRptController extends Controller
             $total_sell_value += $deal->amount;
             $total_gross_profit += $deal->gross;
             $total_sf_fee += $deal->sfee;
+            $total_commission += $deal->commission;
         }
 
         $totals = [
@@ -2816,8 +2818,11 @@ class DetailRptController extends Controller
             'total_gross_profit' => $total_gross_profit,
             'total_gross_profit_percent' => $total_gross_profit/ $total_sell_value * 100,
             'total_sf_fee' => $total_sf_fee,
-            'total_gross_after_sf_fee' => $total_gross_profit + $total_sf_fee,
-            'total_gross_after_sf_fee_percent' => ($total_gross_profit + $total_sf_fee)/ $total_sell_value * 100
+            'total_commission' => $total_commission,
+            'total_gross_after_sf_fee' => $total_gross_profit + $total_sf_fee + $total_commission,
+            'total_gross_after_sf_fee_percent' => ($total_gross_profit + $total_sf_fee + $total_commission)/ $total_sell_value * 100,
+
+
         ];
         return $totals;
     }
@@ -3896,6 +3901,7 @@ class DetailRptController extends Controller
                     'profiles.id AS profile_id', 'profiles.name AS profile_name', 'transactions.gst', 'transactions.gst_rate',
                     'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.is_inventory', 'items.unit', 'items.remark AS item_remark', 'items.is_supermarket_fee',
                     DB::raw('ROUND(SUM(CASE WHEN items.is_supermarket_fee=1 THEN deals.amount ELSE 0 END), 2) AS sfee'),
+                    DB::raw('ROUND(SUM(CASE WHEN items.is_commission=1 THEN deals.amount ELSE 0 END), 2) AS commission'),
                     DB::raw('ROUND(SUM(deals.qty), 4) AS qty'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END / SUM(deals.qty), 2) AS avg_unit_cost'),
                     DB::raw('ROUND(CASE WHEN deals.unit_cost IS NOT NULL THEN SUM(deals.unit_cost * deals.qty) ELSE SUM(unitcosts.unit_cost * deals.qty) END, 2) AS total_cost'),

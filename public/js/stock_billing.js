@@ -32,8 +32,8 @@ function stockBillingController($scope, $http) {
         exACategory: '',
         custcategory: [],
         exclude_custcategory: '',
-        is_inventory: '1',
-        is_commission: '0',
+        is_inventory: '',
+        is_commission: '',
         pageNum: 100,
         sortBy: true,
         sortName: '',
@@ -158,6 +158,7 @@ function stockBillingController($scope, $http) {
             $scope.total_gross_profit = data.totals.total_gross_profit.toFixed(2);
             $scope.total_gross_profit_percent = data.totals.total_gross_profit_percent.toFixed(2);
             $scope.total_sf_fee = data.totals.total_sf_fee.toFixed(2);
+            $scope.total_commission = data.totals.total_commission.toFixed(2);
             $scope.total_gross_after_sf_fee = data.totals.total_gross_after_sf_fee.toFixed(2);
             $scope.total_gross_after_sf_fee_percent = data.totals.total_gross_after_sf_fee_percent.toFixed(2);
             $scope.spinner = false;
