@@ -452,6 +452,8 @@ class ItemController extends Controller
         $is_inventory = $request->is_inventory;
         $base_unit = $request->base_unit;
         $itemcategories = $request->itemcategories;
+        $is_supermarket_fee = $request->is_supermarket_fee;
+        $is_commission = $request->is_commission;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'. $product_id . '%');
@@ -479,6 +481,14 @@ class ItemController extends Controller
             }
 
             $items = $items->whereIn('items.itemcategory_id', $itemcategories);
+        }
+
+        if($is_supermarket_fee != '') {
+            $items = $items->where('items.is_supermarket_fee', $is_supermarket_fee);
+        }
+
+        if($is_commission != '') {
+            $items = $items->where('items.is_commission', $is_commission);
         }
 
         return $items;

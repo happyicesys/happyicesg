@@ -97,6 +97,32 @@
             </select>
             </div>
         </div>
+        <div class="col-md-3 col-sm-4 col-xs-12">
+            <div class="form-group">
+            {!! Form::label('is_supermarket_fee', 'Supermarket Fee?', ['class'=>'control-label search-title']) !!}
+            {!! Form::select('is_supermarket_fee',
+                [
+                    '1'=>'Yes',
+                    '0'=>'No'
+                ],
+                null,
+                ['class'=>'select form-control', 'ng-model'=>'search.is_supermarket_fee', 'ng-init'=>'search.is_supermarket_fee = "0"', 'ng-change'=>'searchDB()'])
+            !!}
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-12">
+            <div class="form-group">
+            {!! Form::label('is_commission', 'Commission?', ['class'=>'control-label search-title']) !!}
+            {!! Form::select('is_commission',
+                [
+                    '1'=>'Yes',
+                    '0'=>'No'
+                ],
+                null,
+                ['class'=>'select form-control', 'ng-model'=>'search.is_commission', 'ng-init'=>'search.is_commission = "0"', 'ng-change'=>'searchDB()'])
+            !!}
+            </div>
+        </div>
     </div>
 
     <div class="row">

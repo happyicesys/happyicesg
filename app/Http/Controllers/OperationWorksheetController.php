@@ -109,6 +109,7 @@ class OperationWorksheetController extends Controller
             }
         }else {
             $opsdate = new Operationdate;
+            $opsdate->created_by = auth()->user()->id;
             $opsdate->person_id = $person_id;
             $opsdate->delivery_date = $delivery_date;
             $opsdate->color = 'Yellow';
@@ -1170,6 +1171,7 @@ class OperationWorksheetController extends Controller
             $opsdate = $prevOpsDate;
         }else {
             $opsdate = new Operationdate;
+            $opsdate->created_by = auth()->user()->id;
         }
 
         switch($transaction->status) {

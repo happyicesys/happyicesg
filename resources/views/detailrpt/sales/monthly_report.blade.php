@@ -274,6 +274,14 @@
 
   <div class="row" style="padding-left: 15px; padding-top:20px;">
       <div class="col-md-8 col-xs-12">
+            <span class="row" ng-if="search.edited">
+                <small>You have edited the filter, search?</small>
+            </span>
+            <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+                Search
+                <i class="fa fa-search" ng-show="!spinner"></i>
+                <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+            </button>
             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
                 <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
             @endif

@@ -85,6 +85,7 @@ function custDetailController($scope, $http) {
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
         getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.merchandiserInit = function (userId) {
@@ -138,6 +139,7 @@ function custSummaryController($scope, $http) {
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
+        edited: false,
         profile_id: '',
         current_month: moment().month() + 1 + '-' + moment().year(),
         id_prefix: '',
@@ -158,7 +160,7 @@ function custSummaryController($scope, $http) {
         sortName: '',
     }
     // init page load
-    getPage(1, true);
+    // getPage(1, true);
 
     angular.element(document).ready(function () {
         $('.select').select2();
@@ -197,10 +199,23 @@ function custSummaryController($scope, $http) {
     }
 
     // when hitting search button
+    // $scope.searchDB = function () {
+    //     $scope.search.sortName = '';
+    //     $scope.search.sortBy = true;
+    //     getPage(1, false);
+    // }
+    // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.merchandiserInit = function (userId) {
@@ -254,6 +269,7 @@ function custSummaryGroupController($scope, $http) {
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
+        edited: false,
         profile_id: '',
         current_month: moment().month() + 1 + '-' + moment().year(),
         id_prefix: '',
@@ -274,7 +290,7 @@ function custSummaryGroupController($scope, $http) {
         sortName: '',
     }
     // init page load
-    getPage(1, true);
+    // getPage(1, true);
 
     angular.element(document).ready(function () {
         $('.select').select2();
@@ -314,9 +330,16 @@ function custSummaryGroupController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.merchandiserInit = function (userId) {
@@ -370,6 +393,7 @@ function productMonthDetailController($scope, $http) {
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
+        edited: false,
         profile_id: '',
         current_month: moment().month() + 1 + '-' + moment().year(),
         product_id: '',
@@ -389,7 +413,7 @@ function productMonthDetailController($scope, $http) {
         sortName: ''
     }
     // init page load
-    getPage(1, true);
+    // getPage(1, true);
 
     angular.element(document).ready(function () {
         $('.select').select2();
@@ -422,9 +446,16 @@ function productMonthDetailController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.merchandiserInit = function (userId) {
@@ -467,6 +498,7 @@ function monthlyReportController($scope, $http) {
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
+        edited: false,
         profile_id: '',
         current_year: moment().format('YYYY'),
         id_prefix: '',
@@ -492,7 +524,7 @@ function monthlyReportController($scope, $http) {
         sortBy: true
     }
     // init page load
-    getPage(1, true);
+    // getPage(1, true);
 
     angular.element(document).ready(function () {
         $('.select').select2();
@@ -528,9 +560,16 @@ function monthlyReportController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.merchandiserInit = function (userId) {
@@ -584,6 +623,7 @@ function productDayDetailController($scope, $http) {
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.search = {
+        edited: false,
         cust_id: '',
         delivery_from: $scope.today,
         product_id: '',
@@ -607,7 +647,7 @@ function productDayDetailController($scope, $http) {
         sortName: ''
     }
     // init page load
-    getPage(1, true);
+    // getPage(1, true);
 
     angular.element(document).ready(function () {
         $('.select').select2();
@@ -667,9 +707,16 @@ function productDayDetailController($scope, $http) {
 
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
-        $scope.search.sortBy = '';
-        getPage(1, false);
+        $scope.search.sortBy = true;
+        getPage(1);
+        $scope.search.edited = false;
     }
 
     $scope.driverInit = function (driver) {

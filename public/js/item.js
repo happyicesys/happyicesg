@@ -186,6 +186,8 @@ function itemNonInventoryController($scope, $http) {
         remark: '',
         is_active: 1,
         is_inventory: 0,
+        is_supermarket_fee: 0,
+        is_commission: 0,
         pageNum: 100
     }
 
