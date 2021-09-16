@@ -454,6 +454,7 @@ class ItemController extends Controller
         $itemcategories = $request->itemcategories;
         $is_supermarket_fee = $request->is_supermarket_fee;
         $is_commission = $request->is_commission;
+        $item_group_id = $request->item_group_id;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'. $product_id . '%');
@@ -489,6 +490,10 @@ class ItemController extends Controller
 
         if($is_commission != '') {
             $items = $items->where('items.is_commission', $is_commission);
+        }
+
+        if($item_group_id != '') {
+            $items = $items->where('items.item_group_id', $item_group_id);
         }
 
         return $items;

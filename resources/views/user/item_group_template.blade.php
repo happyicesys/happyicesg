@@ -79,7 +79,7 @@
             </div>
             <div class="form-group col-md-4 col-sm-6 col-xs-12">
                 {!! Form::label('item_id', 'Item', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('item_id', [''=>'All'] + $items::orderBy('name')->pluck('name', 'id')->all(),
+                {!! Form::select('item_id', [''=>'All']+$items::where('is_active', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->orderBy('product_id', 'asc')->pluck('full', 'id')->all(),
                     null,
                     [
                         'class'=>'selectmultiple form-control',
