@@ -61,6 +61,11 @@ class Item extends Model
         return $this->belongsTo('App\Itemcategory');
     }
 
+    public function itemGroup()
+    {
+        return $this->belongsTo('App\ItemGroup');
+    }
+
     public function fprice()
     {
         return $this->hasOne('App\Fprice');

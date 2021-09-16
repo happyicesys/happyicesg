@@ -54,7 +54,7 @@ class ItemController extends Controller
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
         $items = Item::withoutGlobalScopes()
-                    ->with('itemcategory');
+                    ->with(['itemcategory', 'itemGroup']);
                     // ->leftJoin('itemcategories', 'items.itemcategory_id', '=', 'itemcategories.id');
         // dd($request->all());
         // reading whether search input is filled

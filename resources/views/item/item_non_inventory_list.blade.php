@@ -124,6 +124,21 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-4 col-xs-12">
+            <div class="form-group">
+            {!! Form::label('item_group_id', 'Item Group', ['class'=>'control-label search-title']) !!}
+            <select name="item_group_id" class="select form-control" ng-model="search.item_group_id" ng-change="searchDB()">
+                <option value="">All</option>
+                @foreach($itemGroups->orderBy('name')->get() as $itemGroup)
+                    <option value="{{$itemGroup->id}}">
+                        {{$itemGroup->name}}
+                    </option>
+                @endforeach
+            </select>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-3 col-sm-4 col-xs-12">
@@ -188,6 +203,9 @@
                 </th>
                 <th class="col-md-1 text-center">
                     Category
+                </th>
+                <th class="col-md-1 text-center">
+                    Group
                 </th>
                 <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('unit')">
@@ -255,6 +273,9 @@
                     </td>
                     <td class="col-md-1">
                         @{{ item.itemcategory ? item.itemcategory.name : null }}
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ item.item_group.name }}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{ item.unit }}

@@ -1,4 +1,5 @@
 @inject('itemcategories', 'App\Itemcategory')
+@inject('itemGroups', 'App\ItemGroup')
 @extends('template')
 @section('title')
 {{ $ITEM_TITLE }}

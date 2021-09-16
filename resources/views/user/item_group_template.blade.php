@@ -1,12 +1,12 @@
-@inject('custcategories', 'App\Custcategory')
-@inject('custcategoryGroups', 'App\CustcategoryGroup')
+@inject('items', 'App\Item')
+@inject('itemGroups', 'App\ItemGroup')
 
 <div class="row">
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="panel-title">
-                Create Custcategory Group
+                Create Item Group
             </div>
         </div>
         <div class="panel-body">
@@ -14,9 +14,9 @@
                 <label for="name" class="control-label">
                     Group Name
                 </label>
-                <input type="text" name="name" class="form-control" ng-model="form.name" placeholder="Tag Name">
+                <input type="text" name="name" class="form-control" ng-model="form.name" placeholder="Name">
             </div>
-            <button class="btn btn-success btn-md" ng-click="onCustcategoryGroupNameCreateClicked()">
+            <button class="btn btn-success btn-md" ng-click="onItemGroupNameCreateClicked()">
                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 Create
             </button>
@@ -35,32 +35,32 @@
         </div>
         <div class="panel-body">
             <div class="form-group">
-                <label for="tag_name" class="control-label">
+                <label for="item_group_name" class="control-label">
                     Group Name
                 </label>
-                <select name="persontag_id" class="form-control select" ng-model="form.custcategory_group_id">
+                <select name="item_group_name" class="form-control select" ng-model="form.item_group_id">
                     <option value=""></option>
-                    @foreach($custcategoryGroups->orderBy('name', 'asc')->get() as $custcategoryGroup)
-                        <option value="{{$custcategoryGroup->id}}">
-                            {{$custcategoryGroup->name}}
+                    @foreach($itemGroups->orderBy('name', 'asc')->get() as $itemGroup)
+                        <option value="{{$itemGroup->id}}">
+                            {{$itemGroup->name}}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group">
-                <label for="person_id" class="control-label">
-                    Custcategory Name
+                <label for="item_id" class="control-label">
+                    Item Name
                 </label>
-                <select name="person_id" class="form-control select" ng-model="form.custcategory_id">
+                <select name="item_id" class="form-control select" ng-model="form.item_id">
                     <option value=""></option>
-                    @foreach($custcategories->orderBy('name', 'asc')->get() as $custcategory)
-                        <option value="{{$custcategory->id}}">
-                            {{$custcategory->name}}
+                    @foreach($items->orderBy('name', 'asc')->get() as $item)
+                        <option value="{{$item->id}}">
+                            {{$item->product_id}} - {{$item->name}}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <button class="btn btn-warning btn-md" ng-click="onCustcategoryGroupBindingClicked()">
+            <button class="btn btn-warning btn-md" ng-click="onItemGroupBindingClicked()">
                 <i class="fa fa-retweet" aria-hidden="true"></i>
                 Binding
             </button>
@@ -78,23 +78,12 @@
                 {!! Form::text('name', null, ['class'=>'form-control input-sm', 'ng-model'=>'search.name', 'placeholder'=>'Name', 'ng-change' => "searchDB()"]) !!}
             </div>
             <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-{{--
-                <label class="pull-right">
-                    <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
-                    <span style="margin-top: 5px; margin-right: 5px;">
-                        P
-                    </span>
-                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                    <span style="margin-top: 5px;">
-                        Exclude
-                    </span>
-                </label> --}}
-                {!! Form::select('custcategory_id', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                {!! Form::label('item_id', 'Item', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('item_id', [''=>'All'] + $items::orderBy('name')->pluck('name', 'id')->all(),
                     null,
                     [
                         'class'=>'selectmultiple form-control',
-                        'ng-model'=>'search.custcategory_id',
+                        'ng-model'=>'search.item_id',
                         'multiple'=>'multiple',
                         'ng-change' => "searchDB()"
                     ])
@@ -124,7 +113,7 @@
         </div>
 
         <div class="row"></div>
-        <div class="table-responsive" id="exportable_custcategory_group">
+        <div class="table-responsive" id="exportable_item_group">
             <table class="table table-list-search table-hover table-bordered">
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">
@@ -138,31 +127,31 @@
                         </a>
                     </th>
                     <th class="col-md-6 text-center">
-                        <a href="#" ng-click="sortType = 'custcategories'; sortReverse = !sortReverse">
-                        Custcategories
-                        <span ng-show="sortType == 'custcategories' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'custcategories' && sortReverse" class="fa fa-caret-up"></span>
+                        <a href="#" ng-click="sortType = 'items'; sortReverse = !sortReverse">
+                        Items
+                        <span ng-show="sortType == 'items' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'items' && sortReverse" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                 </tr>
 
                 <tbody>
-                    <tr dir-paginate="data in alldata | itemsPerPage:itemsPerPage" pagination-id="custcategoryGroups" total-items="totalCount" current-page="currentPage">
+                    <tr dir-paginate="data in alldata | itemsPerPage:itemsPerPage" pagination-id="itemGroups" total-items="totalCount" current-page="currentPage">
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
                         </td>
                         <td class="col-md-2 text-center">
                             @{{ data.name }} <br>
-                            <button class="btn btn-danger btn-xs" ng-click="onCustcategoryGroupDelete(data)">
+                            <button class="btn btn-danger btn-xs" ng-click="onItemGroupDelete(data)">
                                 Delete
                             </button>
                         </td>
                         <td class="col-md-9 text-left">
-                            <ul ng-repeat="custcategory in data.custcategories">
+                            <ul ng-repeat="item in data.items">
                                 <li>
-                                    @{{custcategory.name}} &nbsp;
+                                    @{{item.product_id}} - @{{item.name}} &nbsp;
 
-                                    <button class="btn btn-warning btn-xs" ng-click="onCustcategoryGroupUnbind(custcategory.id)">
+                                    <button class="btn btn-warning btn-xs" ng-click="onItemGroupUnbind(item.id)">
                                         Unbind
                                     </button>
                                 </li>
@@ -178,6 +167,6 @@
     </div>
 
     <div>
-        <dir-pagination-controls max-size="5" pagination-id="custcategoryGroups" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+        <dir-pagination-controls max-size="5" pagination-id="itemGroups" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
     </div>
 </div>

@@ -393,6 +393,12 @@ Route::delete('/item/data/{id}', 'ItemController@destroyAjax');
 Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
 Route::resource('item', 'ItemController');
 
+Route::post('/api/item/group', 'ItemGroupController@getItemGroupsIndexApi');
+Route::delete('/api/item/group/{id}/destroy', 'ItemGroupController@deleteItemGroupApi');
+Route::post('/api/item/group/{id}/unbind', 'ItemGroupController@unbindItemGroupAttachment');
+Route::post('/api/item/group/create', 'ItemGroupController@createItemGroupApi');
+Route::post('/api/item/group/bind', 'ItemGroupController@bindItemGroupAttachesApi');
+
 Route::get('/api/itemcategories', 'ItemcategoryController@getIndexApi');
 Route::get('/api/items/itemcategory/{itemcategory_id}', 'ItemcategoryController@getItemsByItemcategory');
 Route::get('/api/itemcategory/{id}', 'ItemcategoryController@getItemcategoryApi');
