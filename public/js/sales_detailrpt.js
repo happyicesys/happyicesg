@@ -31,6 +31,7 @@ function custDetailController($scope, $http) {
         is_commission: '0',
         is_gst_inclusive: '',
         gst_rate: '',
+        item_id: [],
         account_manager: '',
         product_id: '',
         item_name: '',

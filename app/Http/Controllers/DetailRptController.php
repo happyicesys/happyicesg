@@ -3382,7 +3382,11 @@ class DetailRptController extends Controller
         }
 
         if($item_id) {
-            $transactions = $transactions->where('items.id', $item_id);
+            $items = $item_id;
+            if(count($items) == 1) {
+                $items = [$items];
+            }
+            $transactions = $transactions->whereIn('items.id', $items);
         }
 
         if($zone_id) {
@@ -3533,8 +3537,11 @@ class DetailRptController extends Controller
             $query .= " AND items.name LIKE '%".$item_name."%' ";
         }
         if($item_id) {
-            $query .= " AND items.id='".$item_id."' ";
+            $items = $item_id;
+            $itemsStr = implode(",", $items);
+            $query .= " AND items.id IN (".$itemsStr.") ";
         }
+
         if($zone_id) {
             $query .= " AND people.zone_id='".$zone_id."' ";
         }
