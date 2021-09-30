@@ -349,8 +349,13 @@ class PersonController extends Controller
     public function destroy($id)
     {
         $person = Person::findOrFail($id);
-        $person->delete();
-        return redirect('person');
+        if($person->transactions) {
+            Flash::error('Transaction(s) found under this customer profile');
+            return Redirect::action('PersonController@edit', $id);
+        }else {
+            $person->delete();
+            return redirect('person');
+        }
     }
 
     public function destroyAjax($id)
