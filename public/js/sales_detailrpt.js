@@ -643,6 +643,7 @@ function productDayDetailController($scope, $http) {
         driver: [],
         zone_id: '',
         account_manager: '',
+        item_id: [],
         pageNum: 'All',
         sortBy: true,
         sortName: ''

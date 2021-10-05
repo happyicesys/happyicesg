@@ -291,6 +291,24 @@
             </div>
         </div>
     </div>
+{{--
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
+                {!! Form::select('item_id',
+                        [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
+                        null,
+                        [
+                            'class'=>'selectmultiple form-control',
+                            'ng-model'=>'search.item_id',
+                            'ng-change'=>'searchDB()',
+                            'multiple'=>'multiple'
+                        ])
+                !!}
+            </div>
+        </div>
+    </div> --}}
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">

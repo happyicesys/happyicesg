@@ -49,9 +49,10 @@
                         [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
                         null,
                         [
-                            'class'=>'select form-control',
+                            'class'=>'selectmultiple form-control',
                             'ng-model'=>'search.item_id',
-                            'ng-change'=>'searchDB()'
+                            'ng-change'=>'searchDB()',
+                            'multiple'=>'multiple'
                         ])
                 !!}
             </div>

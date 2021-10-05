@@ -1204,6 +1204,13 @@ class DetailRptController extends Controller
             }
         }
 
+        // if($item_id = $request->item_id) {
+        //     $item_id = implode(",", $item_id);
+        //     // dd($item_id);
+
+        //     $amountstr .= " AND items.id IN ('".$item_id."')";
+        // }
+
         // profile and custcategory filter
         $amountstr = $this->filterUserDBRawProfile($amountstr);
         $amountstr = $this->filterUserDBRawCustcategory($amountstr);
@@ -3727,7 +3734,10 @@ class DetailRptController extends Controller
             }
         }
         if($item_id) {
-            $items = $items->where('items.id', $item_id);
+            if(count($item_id) == 1) {
+                $item_id = [$item_id];
+            }
+            $items = $items->whereIn('items.id', $item_id);
         }
         if($cust_id){
             if($strictCustId) {
