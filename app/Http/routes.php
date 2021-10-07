@@ -8,14 +8,14 @@ if (version_compare(PHP_VERSION, '7.2.0', '>=')) {
 
 Route::get('/', function ()
 {
-	// return view('auth.login');
+	return view('auth.login');
 
-	$url = request()->url();
-	if (strpos($url, 'my') !== false) {
-		return view('auth.login');
-	}else {
-		return view('client.index');
-	}
+	// $url = request()->url();
+	// if (strpos($url, 'my') !== false) {
+	// 	return view('auth.login');
+	// }else {
+	// 	return view('client.index');
+	// }
 });
 
 Route::get('/admin', function () {
