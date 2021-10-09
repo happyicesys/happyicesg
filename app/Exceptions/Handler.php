@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
 
         if($e instanceof \Illuminate\Session\TokenMismatchException){
             Flash::error('Your session has expired');
-            return redirect('/admin');
+            return redirect('/');
         }
 
         return parent::render($request, $e);

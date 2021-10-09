@@ -17,6 +17,8 @@
                 <li><a href="#freezer" role="tab" data-toggle="tab">Freezer</a></li>
                 <li><a href="#accessory" role="tab" data-toggle="tab">Accessory</a></li>
                 <li><a href="#payterm" role="tab" data-toggle="tab">Pay Term</a></li>
+            @endif
+            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('supervisor'))
                 <li><a href="#cust_cat_group" role="tab" data-toggle="tab">Customer Category Group</a></li>
                 <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
             @endif
