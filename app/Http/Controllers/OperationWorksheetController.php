@@ -941,7 +941,7 @@ class OperationWorksheetController extends Controller
                         DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color') */
                     );
 
-                    dd($people->get());
+                    // dd($people->get());
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
