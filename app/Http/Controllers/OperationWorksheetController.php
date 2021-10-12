@@ -850,23 +850,23 @@ class OperationWorksheetController extends Controller
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id";
 
-        $last3 = $prevStr;
-        $last2 = $prevStr;
+        // $last3 = $prevStr;
+        // $last2 = $prevStr;
         $last = $prevStr;
 
-        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date DESC, a.created_at DESC
-                LIMIT 2,1
-                )
-            GROUP BY y.id
-        ) last3";
+        // $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+        //         ORDER BY a.delivery_date DESC, a.created_at DESC
+        //         LIMIT 2,1
+        //         )
+        //     GROUP BY y.id
+        // ) last3";
 
-        $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-                ORDER BY a.delivery_date DESC, a.created_at DESC
-                LIMIT 1,1
-                )
-            GROUP BY y.id
-        ) last2";
+        // $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+        //         ORDER BY a.delivery_date DESC, a.created_at DESC
+        //         LIMIT 1,1
+        //         )
+        //     GROUP BY y.id
+        // ) last2";
 
         $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date DESC, a.created_at DESC
@@ -875,8 +875,6 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last";
 
-        // $last3 = DB::raw($last3);
-        // $last2 = DB::raw($last2);
         $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
@@ -917,6 +915,17 @@ class OperationWorksheetController extends Controller
                         'profiles.id AS profile_id',
                         'custcategories.id AS custcategory_id', 'custcategories.name AS custcategory', 'custcategories.map_icon_file',
                         'last.transaction_id AS ops_transac', 'last.delivery_date AS ops_deldate', 'last.day AS ops_day', 'last.total AS ops_total', 'last.total_qty AS ops_total_qty',
+                        // 'last2.transaction_id AS ops2_transac', 'last2.delivery_date AS ops2_deldate', 'last2.day AS ops2_day', 'last2.total AS ops2_total', 'last2.total_qty AS ops2_total_qty', 'last2.delivery_date AS last2_deldate',
+                        // 'last3.transaction_id AS ops3_transac', 'last3.delivery_date AS ops3_deldate', 'last3.day AS ops3_day', 'last3.total AS ops3_total', 'last3.total_qty AS ops3_total_qty', 'last3.delivery_date AS last3_deldate',
+/*
+                        DB::raw('CASE
+                                    WHEN (DATEDIFF(now(), last.delivery_date) >= 8 AND DATEDIFF(now(), last.delivery_date) < 15)
+                                    THEN "blue"
+                                    WHEN DATEDIFF(now(), last.delivery_date) >= 15
+                                    THEN "red"
+                                ELSE
+                                    "black"
+                                END AS last_date_color'), */
                         'outlet_visits.date AS outletvisit_date', 'outlet_visits.day AS outletvisit_day', 'outlet_visits.outcome',
                         DB::raw('CASE
                                     WHEN (DATEDIFF(now(), outlet_visits.date) >= 7 AND DATEDIFF(now(), outlet_visits.date) < 14)
@@ -926,7 +935,13 @@ class OperationWorksheetController extends Controller
                                 ELSE
                                     "black"
                                 END AS outletvisit_date_color')
+/*
+                        DB::raw('(CASE WHEN last.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last_color'),
+                        DB::raw('(CASE WHEN last2.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last2_color'),
+                        DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color') */
                     );
+
+                    dd($people->get());
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
@@ -937,11 +952,10 @@ class OperationWorksheetController extends Controller
         // $dtdmember = clone $people;
 
         // rules for normal exclude D and H code
-        // $people = $people->where('cust_id', 'NOT LIKE', 'H%')
-                        // ->where('cust_id', 'NOT LIKE', 'D%');
+        $people = $people->where('cust_id', 'NOT LIKE', 'H%')
+                        ->where('cust_id', 'NOT LIKE', 'D%');
 
         // filter H codes who has transactions within the dates
-
         // $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
         //                         ->whereExists(function($q) use ($datesVar) {
         //                             $q->select('*')
@@ -954,7 +968,6 @@ class OperationWorksheetController extends Controller
         //                         });
 
         // filter H codes who has transactions within the dates
-
         // $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
         //                         ->whereExists(function($q) use ($datesVar) {
         //                             $q->select('*')
@@ -968,11 +981,6 @@ class OperationWorksheetController extends Controller
 
         // union
         // $people = $people->union($dtdpeople)->union($dtdmember);
-
-/*
-                $people = $people->where(function($query) {
-                    $query->where('people.cust_id', '')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
-                });*/
 
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
