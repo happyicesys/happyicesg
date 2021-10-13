@@ -850,23 +850,23 @@ class OperationWorksheetController extends Controller
                 SELECT a.id FROM transactions a
                 WHERE a.person_id=y.id";
 
-        // $last3 = $prevStr;
-        // $last2 = $prevStr;
+        $last3 = $prevStr;
+        $last2 = $prevStr;
         $last = $prevStr;
 
-        // $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-        //         ORDER BY a.delivery_date DESC, a.created_at DESC
-        //         LIMIT 2,1
-        //         )
-        //     GROUP BY y.id
-        // ) last3";
+        $last3 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                ORDER BY a.delivery_date DESC, a.created_at DESC
+                LIMIT 2,1
+                )
+            GROUP BY y.id
+        ) last3";
 
-        // $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
-        //         ORDER BY a.delivery_date DESC, a.created_at DESC
-        //         LIMIT 1,1
-        //         )
-        //     GROUP BY y.id
-        // ) last2";
+        $last2 .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
+                ORDER BY a.delivery_date DESC, a.created_at DESC
+                LIMIT 1,1
+                )
+            GROUP BY y.id
+        ) last2";
 
         $last .= " AND (a.status='Delivered' OR a.status='Verified Owe' OR a.status='Verified Paid' OR a.status='Cancelled')
                 ORDER BY a.delivery_date DESC, a.created_at DESC
@@ -875,6 +875,8 @@ class OperationWorksheetController extends Controller
             GROUP BY y.id
         ) last";
 
+        // $last3 = DB::raw($last3);
+        // $last2 = DB::raw($last2);
         $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
@@ -940,47 +942,50 @@ class OperationWorksheetController extends Controller
                         DB::raw('(CASE WHEN last2.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last2_color'),
                         DB::raw('(CASE WHEN last3.status = "Cancelled" THEN "Red" ELSE "Black" END) AS last3_color') */
                     );
-
-                    // dd($people->get());
         $people = $this->peopleOperationWorksheetDBFilter($people, $datesVar);
 
         // only active customers
         $people = $people->where('active', 'Yes');
         // $people = $people->load(['outletVisits', 'outletVisits.creator']);
 
-        // $dtdpeople = clone $people;
-        // $dtdmember = clone $people;
+        $dtdpeople = clone $people;
+        $dtdmember = clone $people;
 
         // rules for normal exclude D and H code
         $people = $people->where('cust_id', 'NOT LIKE', 'H%')
                         ->where('cust_id', 'NOT LIKE', 'D%');
 
         // filter H codes who has transactions within the dates
-        // $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
-        //                         ->whereExists(function($q) use ($datesVar) {
-        //                             $q->select('*')
-        //                             ->from('deals')
-        //                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        //                             ->whereRaw('transactions.person_id = people.id')
-        //                             ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
-        //                             ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
-        //                             ->where('deals.qty', '>', '0');
-        //                         });
+        $dtdpeople = $dtdpeople->where('cust_id', 'LIKE', 'H%')
+                                ->whereExists(function($q) use ($datesVar) {
+                                    $q->select('*')
+                                    ->from('deals')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                    ->whereRaw('transactions.person_id = people.id')
+                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+                                    ->where('deals.qty', '>', '0');
+                                });
 
         // filter H codes who has transactions within the dates
-        // $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
-        //                         ->whereExists(function($q) use ($datesVar) {
-        //                             $q->select('*')
-        //                             ->from('deals')
-        //                             ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-        //                             ->whereRaw('transactions.person_id = people.id')
-        //                             ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
-        //                             ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
-        //                             ->where('deals.qty', '>', '0');
-        //                         });
+        $dtdmember = $dtdmember->where('cust_id', 'LIKE', 'D%')
+                                ->whereExists(function($q) use ($datesVar) {
+                                    $q->select('*')
+                                    ->from('deals')
+                                    ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                                    ->whereRaw('transactions.person_id = people.id')
+                                    ->whereDate('transactions.delivery_date', '>=', $datesVar['earliest'])
+                                    ->whereDate('transactions.delivery_date', '<=', $datesVar['latest'])
+                                    ->where('deals.qty', '>', '0');
+                                });
 
         // union
-        // $people = $people->union($dtdpeople)->union($dtdmember);
+        $people = $people->union($dtdpeople)->union($dtdmember);
+
+/*
+                $people = $people->where(function($query) {
+                    $query->where('people.cust_id', '')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid');
+                });*/
 
         if(request('sortName')){
             $people = $people->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
