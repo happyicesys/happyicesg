@@ -14,7 +14,7 @@
         }
         table{
             font-size: 15px;
-            font-family: 'Times New Roman';
+            font-family: 'Verdana';
         }
         label {
             font-size: 12px;
