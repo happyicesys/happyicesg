@@ -9,17 +9,18 @@
             display:inline;
         }
         body{
-            font-size: 12px;
+            font-family: 'Helvetica';
+            font-size: 13px;
         }
         table{
-            font-size: 12px;
+            font-size: 13px;
             font-family: 'Times New Roman';
         }
         label {
-            font-size: 10px;
+            font-size: 11px;
         }
         th{
-            font-size: 12px;
+            font-size: 13px;
         }
         footer{
             position: absolute;
