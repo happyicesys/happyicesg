@@ -10,14 +10,14 @@
         }
         body{
             font-family: 'Helvetica';
-            font-size: 13px;
+            font-size: 15px;
         }
         table{
-            font-size: 13px;
+            font-size: 15px;
             font-family: 'Times New Roman';
         }
         label {
-            font-size: 11px;
+            font-size: 12px;
         }
         th{
             font-size: 13px;
@@ -32,7 +32,7 @@
             height: 100%;
         }
         pre{
-            font-size: 14px;
+            font-size: 15px;
             font-family: 'Times New Roman';
             background-color: transparent;
         }
