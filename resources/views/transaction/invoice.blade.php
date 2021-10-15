@@ -178,7 +178,7 @@
                                         <span class="inline"><strong>DO/Inv#:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7" style="font-size: 120%;">
+                                <div class="col-xs-7" style="font-size: 130%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <strong>
                                             <span class="inline">{{$inv_id}}</span>

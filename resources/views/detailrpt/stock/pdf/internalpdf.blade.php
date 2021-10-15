@@ -9,15 +9,16 @@
             display:inline;
         }
         body{
-            font-size: 10px;
+            font-family: 'Helvetica';
+            font-size: 13px;
             line-height: 1.2;
         }
         table{
-            font-size: 10px;
-            font-family: 'Times New Roman';
+            font-size: 13px;
+            font-family: 'Verdana';
         }
         th{
-            font-size: 10px;
+            font-size: 12px;
         }
         footer{
             position: absolute;
