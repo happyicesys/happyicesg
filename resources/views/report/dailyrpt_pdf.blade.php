@@ -10,14 +10,15 @@
                 display:inline;
             }
             body{
-                font-size: 10px;
+                font-family: 'Helvetica';
+                font-size: 13px;
             }
             table{
-                font-size: 10px;
-                font-family: 'Times New Roman';
+                font-size: 13px;
+                font-family: 'Verdana';
             }
             th{
-                font-size: 10px;
+                font-size: 12px;
             }
             footer{
                 position: absolute;
@@ -29,7 +30,7 @@
                 height: 100%;
             }
             pre{
-                font-size: 11px;
+                font-size: 13px;
                 font-family: 'Times New Roman';
                 background-color: transparent;
             }
