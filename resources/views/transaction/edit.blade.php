@@ -53,7 +53,7 @@
         }
     @endphp
 
-    {!! Form::model($transaction, ['id'=>'log', 'method'=>'POST', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
+    {!! Form::model($transaction, ['id'=>'log', 'method'=>'GET', 'action'=>['TransactionController@generateLogs', $transaction->id]]) !!}
     {!! Form::close() !!}
 
     {!! Form::model($transaction, ['id'=>'replicate', 'method'=>'POST', 'action'=>['TransactionController@replicateTransaction', $transaction->id]]) !!}

@@ -457,7 +457,7 @@ Route::get('/transaction/person/latest/{person_id}', 'TransactionController@show
 Route::get('/transaction/status/{transaction_id}', 'TransactionController@changeStatus');
 Route::post('/transaction/singlestatus/{transaction_id}', 'TransactionController@changeSingleStatus');
 Route::post('/transaction/daterange', 'TransactionController@searchDateRange');
-Route::post('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
+Route::get('/transaction/log/{trans_id}', 'TransactionController@generateLogs');
 Route::post('/transaction/replicate/{transaction_id}', 'TransactionController@replicateTransaction');
 Route::get('/transaction/download/{trans_id}', 'TransactionController@generateInvoice');
 Route::post('/transaction/data', 'TransactionController@getData');
