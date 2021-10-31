@@ -1857,6 +1857,7 @@ class DetailRptController extends Controller
             $prevyearSfeetotalStr .= " GROUP BY profiles.id, custcategory_groups.id) prevyearsfeetotal";
 
             $thisyeartotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisyeartotal";
+            $thisYearCommSfeeTotalStr .= " GROUP BY profiles.id, custcategory_groups.id) thisYearCommSfeeTotal";
         }else  {
             $thistotalStr .= " GROUP BY custcategory_groups.id) thistotal";
             $thiscommtotalStr .= " GROUP BY custcategory_groups.id) thiscommtotal";
