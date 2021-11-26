@@ -4,6 +4,7 @@
 @inject('custcategoryGroups', 'App\CustcategoryGroup')
 @inject('franchisees', 'App\User')
 @inject('items', 'App\Item')
+@inject('persontags', 'App\Persontag')
 @inject('users', 'App\User')
 @inject('zones', 'App\Zone')
 

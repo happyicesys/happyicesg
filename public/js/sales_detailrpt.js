@@ -36,6 +36,7 @@ function custDetailController($scope, $http) {
         product_id: '',
         item_name: '',
         zone_id: '',
+        tags: [],
         pageNum: 100,
         sortName: '',
         sortBy: true

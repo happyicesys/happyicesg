@@ -3256,6 +3256,7 @@ class DetailRptController extends Controller
         $item_name = $request->item_name;
         $item_id = $request->item_id;
         $zone_id = $request->zone_id;
+        // $tags = $request->tags;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3400,6 +3401,17 @@ class DetailRptController extends Controller
         if($zone_id) {
             $transactions = $transactions->where('people.zone_id', $zone_id);
         }
+
+        // if($tags) {
+        //     if (count($tags) == 1) {
+        //         $tags = [$tags];
+        //     }
+        //     $transactions = $transactions->whereHas('person', function($query) use ($tags) {
+        //         $query->whereHas('persontags', function($query) use ($tags) {
+        //             $query->whereIn('persontags.id', $tags);
+        //         });
+        //     });
+        // }
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');

@@ -117,7 +117,14 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_active', [''=>'All', 'Yes'=>'Active', 'No'=>'Deactive', 'Pending'=>'Pending'], null,
+                {!! Form::select('is_active', [
+                    ''=>'All',
+                    'Potential'=>'Potential',
+                    'New'=>'New',
+                    'Yes'=>'Active',
+                    'Pending'=>'Pending',
+                    'No'=>'Inactive',
+                ], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.is_active'
