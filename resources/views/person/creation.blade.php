@@ -113,7 +113,7 @@
             @endif
         </div>
 
-        <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+        <div class="table-responsive" id="exportable_creation" style="padding-top: 20px;">
             <table class="table table-list-search table-bordered" style="font-size: 14px;">
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">

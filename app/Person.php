@@ -243,11 +243,6 @@ class Person extends Baum\Node
         return $this->hasMany(OutletVisit::class);
     }
 
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
     // getter and setter
 
     public function setDobAttribute($date)

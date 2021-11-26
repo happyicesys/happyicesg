@@ -66,7 +66,7 @@ class PersonController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager', 'updatedBy'])
+        $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
         ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
         ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')

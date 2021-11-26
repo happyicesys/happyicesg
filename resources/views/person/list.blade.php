@@ -448,7 +448,7 @@
             <hr class="row">
         </div>
 
-        <div class="table-responsive" id="exportable" style="padding-top: 20px;">
+        <div class="table-responsive" id="exportable_people_list" style="padding-top: 20px; overflow: scroll">
             <table class="table table-list-search table-hover table-bordered" style="font-size: 14px;">
                 <tr style="background-color: #DDFDF8">
                     <th class="col-md-1 text-center">
@@ -587,13 +587,9 @@
                             / @{{ person.alt_contact }}
                             </span>
                         </td>
-                        <td class="col-md-3">
-                            <span class="col-md-10">
-                                @{{ person.del_address }}
-                            </span>
-                            <span class="col-md-2">
+                        <td class="col-md-2" style="max-width: 200px;">
                                 <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(person, $index, 1)"><i class="fa fa-map-o"></i></button>
-                            </span>
+                                @{{ person.del_address }}
                         </td>
                         <td class="col-md-1 text-center">@{{ person.del_postcode }}</td>
                         <td class="col-md-1 text-left" style="max-width: 160; font-size: 13px;">

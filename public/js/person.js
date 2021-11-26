@@ -65,7 +65,7 @@ function personController($scope, $http) {
     });
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_people_list').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
