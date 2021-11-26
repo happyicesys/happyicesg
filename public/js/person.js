@@ -37,6 +37,7 @@ function personController($scope, $http) {
         excludeCustCat: '',
         freezers: '',
         edited: false,
+        updated_by: '',
     }
     $scope.assignForm = {
         name: '',
