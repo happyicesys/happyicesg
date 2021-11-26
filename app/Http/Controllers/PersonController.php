@@ -315,7 +315,7 @@ class PersonController extends Controller
                 $request->merge([$type => 1]);
             }
         }
-
+        $request->merge(['updated_by' => auth()->user()->id]);
         $input = $request->all();
         unset($input['type']);
         $person->update($input);
@@ -344,6 +344,7 @@ class PersonController extends Controller
 
         // tagging feature sync
         $this->syncPersonTags($person, $request);
+
 
         return Redirect::action('PersonController@edit', $person->id);
     }
