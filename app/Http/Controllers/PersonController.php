@@ -66,19 +66,21 @@ class PersonController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
-        $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
+        $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager', 'updatedBy'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
         ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
         ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
+        ->leftJoin('users AS updater', 'updater.id', '=', 'people.updated_by')
         ->select(
-            'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng',
-            DB::raw('DATE(people.created_at) AS created_at'),
+            'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng', 'people.remark',
+            DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at',
             'custcategories.name as custcategory_name', 'custcategories.map_icon_file', 'custcategory_groups.name AS custcategory_group_name',
             'profiles.id AS profile_id', 'profiles.name AS profile_name',
             'account_managers.name AS account_manager_name',
-            'zones.name AS zone_name'
+            'zones.name AS zone_name',
+            'updater.name AS updated_by'
         );
 
         // reading whether search input is filled

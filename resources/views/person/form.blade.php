@@ -124,12 +124,13 @@
             {!! Form::label('active', 'Status', ['class'=>'control-label']) !!}
             {!! Form::select('active',
                     [
-                        'Yes' => 'Active',
+                        'Potential' => 'Potential',
                         'New' => 'New',
+                        'Yes' => 'Active',
                         'Pending' => 'Pending',
-                        'No' => 'Inactive'
+                        'No' => 'Inactive',
 
-                    ], null, ['id'=>'payterm', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
+                    ], null, ['id'=>'active', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 </div>

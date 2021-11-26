@@ -106,11 +106,12 @@
                     {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
                     <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB($event)" multiple>
                         <option value="">All</option>
-                        <option value="Yes">Active</option>
+                        <option value="Potential">Potential</option>
                         <option value="New">New</option>
+                        <option value="Yes">Active</option>
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            <option value="No">Inactive</option>
                             <option value="Pending">Pending</option>
+                            <option value="No">Inactive</option>
                         @endif
                     </select>
                 </div>
@@ -513,6 +514,9 @@
                     <th class="col-md-1 text-center">
                         Freezer(s)
                     </th>
+                    <th class="col-md-2 text-center">
+                        Remarks
+                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('zone_id')">
                         Zone
@@ -524,6 +528,18 @@
                         Payterm
                         <span ng-if="search.sortName == 'payterm' && !search.sortBy" class="fa fa-caret-down"></span>
                         <span ng-if="search.sortName == 'payterm' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('updated_at')">
+                        Updated At
+                        <span ng-if="search.sortName == 'updated_at' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'updated_at' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('updated_by')">
+                        Updated By
+                        <span ng-if="search.sortName == 'updated_by' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'updated_by' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('created_at')">
@@ -602,10 +618,15 @@
                                 </li>
                             </ul> --}}
                         </td>
+                        <td class="col-md-2 text-left">
+                            @{{ person.remark }}
+                        </td>
                         <td class="col-md-1 text-center">
                             @{{ person.zone_name }}
                         </td>
                         <td class="col-md-1 text-center">@{{person.payterm}}</td>
+                        <td class="col-md-1 text-center">@{{ person.updated_at }}</td>
+                        <td class="col-md-1 text-center">@{{ person.updated_by }}</td>
                         <td class="col-md-1 text-center">@{{ person.created_at }}</td>
                         <td class="col-md-1 text-center">@{{ person.active }}</td>
                     </tr>

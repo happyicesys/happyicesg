@@ -78,7 +78,8 @@ class Person extends Baum\Node
         'zone_id' => 'Zone',
         'bank_id' => 'Bank',
         'account_number' => 'Account Number',
-        'bill_postcode' => 'Billing Postcode'
+        'bill_postcode' => 'Billing Postcode',
+        'updated_by' => 'Updated By'
     );
 
     protected $fillable = [
@@ -91,7 +92,8 @@ class Person extends Baum\Node
     'vending_monthly_utilities', 'vending_clocker_adjustment', 'is_profit_sharing_report', 'operation_note',
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
-    'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method'
+    'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
+    'updated_by'
     ];
 
     protected $dates = ['deleted_at'];
@@ -239,6 +241,11 @@ class Person extends Baum\Node
     public function outletVisits()
     {
         return $this->hasMany(OutletVisit::class);
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     // getter and setter
