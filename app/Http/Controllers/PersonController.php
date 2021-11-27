@@ -1108,6 +1108,12 @@ class PersonController extends Controller
         return $people;
     }
 
+    public function potentialIndex()
+    {
+        $month_options = $this->getMonthOptions();
+        return view('person.potential-index', compact('month_options'));
+    }
+
     // conditional filter parser(Collection $query, Formrequest $request)
     private function searchPeopleDBFilter($people, $request)
     {

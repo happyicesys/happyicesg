@@ -275,8 +275,12 @@
                 @endif
 
                 @if($potential_customer_access)
+                    <li class="{{ Request::segment(1) == 'potential' ? 'active' : '' }}">
+                        <a href="/potential"><i class="fa fa-address-card-o"></i> Potential Customer</a>
+                    </li>
+
                     <li class="{{ Request::segment(1) == 'potential-customer' ? 'active' : '' }}">
-                        <a href="/potential-customer"><i class="fa fa-address-card-o"></i> Potential Customer</a>
+                        <a href="/potential-customer"><i class="fa fa-address-card-o"></i> GT Sales Lead</a>
                     </li>
                 @endif
 
