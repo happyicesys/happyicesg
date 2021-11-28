@@ -16,8 +16,8 @@ function personController($scope, $http) {
     $scope.itemsPerPage = 'All';
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
-    $scope.sortBy = true;
-    $scope.sortName = '';
+    $scope.sortBy = false;
+    $scope.sortName = 'created_at';
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.showBatchFunctionPanel = false;
