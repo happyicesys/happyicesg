@@ -16,8 +16,8 @@ function personController($scope, $http) {
     $scope.itemsPerPage = 'All';
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
-    $scope.sortBy = false;
-    $scope.sortName = 'created_at';
+    $scope.sortBy = true;
+    $scope.sortName = '';
     $scope.headerTemp = '';
     $scope.today = moment().format("YYYY-MM-DD");
     $scope.showBatchFunctionPanel = false;
@@ -39,6 +39,8 @@ function personController($scope, $http) {
         edited: false,
         updated_by: '',
         updated_at: '',
+        sortBy: false,
+        sortName: 'updated_at',
     }
     $scope.assignForm = {
         name: '',
