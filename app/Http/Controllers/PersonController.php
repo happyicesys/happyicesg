@@ -1133,6 +1133,8 @@ class PersonController extends Controller
         $excludeCustCat = $request->excludeCustCat;
         $freezers = $request->freezers;
         $createdMonth = $request->created_month;
+        $updatedAt = $request->updated_at;
+        $updatedBy = $request->updated_by;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1235,6 +1237,16 @@ class PersonController extends Controller
                 $dateTo = $searchTiming->copy()->endOfMonth()->toDateString();
                 $people = $people->whereDate('people.created_at', '>=', $dateFrom)->whereDate('people.created_at', '<=', $dateTo);
             }
+        }
+
+        if($updatedAt) {
+            $people = $people->whereDate('people.updated_at', '=', $updatedAt);
+        }
+
+        if($updatedBy) {
+            $people = $people->whereHas('updatedBy', function($query) use ($updatedBy){
+                $query->where('id', $updatedBy);
+            });
         }
 
         return $people;

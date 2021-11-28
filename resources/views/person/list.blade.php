@@ -514,9 +514,6 @@
                     <th class="col-md-1 text-center">
                         Freezer(s)
                     </th>
-                    <th class="col-md-2 text-center">
-                        Remarks
-                    </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('zone_id')">
                         Zone
@@ -613,9 +610,6 @@
                                     @{{freezer.name}}
                                 </li>
                             </ul> --}}
-                        </td>
-                        <td class="col-md-2 text-left">
-                            @{{ person.remark }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.zone_name }}

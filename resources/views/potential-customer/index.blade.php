@@ -5,18 +5,18 @@
 @extends('template')
 
 @section('title')
-Potential Customer
+GT Sales Lead
 @stop
 @section('content')
 
     <div class="row">
-        <a class="title_hyper pull-left" href="/potential-customer"><h1>Potential Customer <i class="fa fa-address-card-o"></i></h1></a>
+        <a class="title_hyper pull-left" href="/potential-customer"><h1>GT Sales Lead <i class="fa fa-address-card-o"></i></h1></a>
     </div>
     <div ng-app="app">
         <div class="panel panel-default" ng-cloak>
             <div class="panel-heading">
                 <ul class="nav nav-pills nav-justified" role="tablist">
-                    <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab">Potential Customer</a></li>
+                    <li class="active"><a href="#potential_customer" role="tab" data-toggle="tab">GT Sales Lead</a></li>
                     <li><a href="#performance" role="tab" data-toggle="tab">Performance</a></li>
                     <li><a href="#meeting_minute" role="tab" data-toggle="tab">Meeting Minutes</a></li>
                 </ul>

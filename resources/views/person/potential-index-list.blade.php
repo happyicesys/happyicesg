@@ -128,15 +128,6 @@
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
-                    {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
-                        'class'=>'select form-control',
-                        'ng-model'=>'search.franchisee_id',
-                        'ng-change' => 'searchDB($event)'
-                        ])
-                    !!}
-                </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                     @if(auth()->user()->hasRole('merchandiser'))
                         <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB($event)" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
@@ -172,29 +163,7 @@
                             ])
                     !!}
                 </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('freezers', 'Freezer', ['class'=>'control-label search-title']) !!}
-                    <select name="freezers" id="freezers" class="selectmultiple form-control" ng-model="search.freezers" ng-change="searchDB($event)" multiple>
-                        @foreach($freezers::orderBy('name')->get() as $freezer)
-                            <option value="{{$freezer->id}}">
-                                {{$freezer->name}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
                 @endif
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
-                    {!! Form::label('created_month', 'Created Month', ['class'=>'control-label search-title']) !!}
-                    <select class="select form-control" name="created_month" ng-model="search.created_month" ng-change="searchDB()">
-                        <option value="">All</option>
-                        @foreach($month_options as $key => $value)
-                            <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
-                        @endforeach
-                        <option value="-1">Earlier than that</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
                     <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
@@ -205,6 +174,34 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('updated_by', 'Updated By', ['class'=>'control-label search-title']) !!}
+                    {!! Form::select('updated_by',
+                            [''=>'All']+$users::whereIn('type', ['staff', 'admin'])->lists('name', 'id')->all(),
+                            null,
+                            [
+                                'class'=>'select form-control',
+                                'ng-model'=>'search.updated_by',
+                                'ng-change'=>'searchDB($event)',
+                            ])
+                    !!}
+                </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('updated_at', 'Updated At', ['class'=>'control-label search-title']) !!}
+                    <div class="input-group">
+                        <datepicker>
+                            <input
+                                type = "text"
+                                class = "form-control input-sm"
+                                placeholder = "Updated At"
+                                ng-model = "search.updated_at"
+                                ng-change = "searchDateChange('updated_at', search.updated_at)"
+                            />
+                        </datepicker>
+                        <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('updated_at', search.updated_at)"></span>
+                        <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('updated_at', search.updated_at)"></span>
+                    </div>
                 </div>
             </div>
 

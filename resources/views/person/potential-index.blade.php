@@ -19,7 +19,7 @@
 @stop
 @section('content')
     <div class="row">
-        <a class="title_hyper pull-left person-color" href="/person"><h1>{{ $PERSON_TITLE }} <i class="fa fa-users"></i></h1></a>
+        <a class="title_hyper pull-left person-color" href="/person"><h1>Potential Customer <i class="fa fa-users"></i></h1></a>
     </div>
     <div ng-app="app">
         <div class="panel panel-default" ng-cloak>

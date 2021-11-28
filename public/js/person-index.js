@@ -38,6 +38,7 @@ function personController($scope, $http) {
         freezers: '',
         edited: false,
         updated_by: '',
+        updated_at: '',
     }
     $scope.assignForm = {
         name: '',
@@ -158,6 +159,20 @@ function personController($scope, $http) {
         }
     }
 
+    $scope.searchDateChange = function (scopeName, date) {
+        if (date) {
+            $scope.search[scopeName] = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+    }
+
+    $scope.onPrevSingleClicked = function (scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    }
+
+    $scope.onNextSingleClicked = function (scope_name, date) {
+        $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+    }
+
     $scope.onMapClicked = function (singleperson = null, index = null, type = null) {
         var url = window.location.href;
         var location = '';
@@ -250,7 +265,7 @@ function personController($scope, $http) {
         } else {
             $scope.coordsArr = [];
             $scope.alldata.forEach(function (person, key) {
-                let custString = person.cust_id + ' - ' + person.company + ' - ' + person.custcategory;
+                let custString = person.cust_id + ' - ' + person.company + ' - ' + person.remark;
                 var contentString = '<span style=font-size:10px;>' +
                     '<b>' +
                     custString +
@@ -284,7 +299,7 @@ function personController($scope, $http) {
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        title: person.cust_id + ' - ' + person.company + ' - ' + person.remark,
                         label: { fontSize: '13px', text: '(' + (key + $scope.indexFrom).toString() + ')' + custString, fontWeight: 'bold' },
                         icon: {
                             labelOrigin: new google.maps.Point(15, 10),
