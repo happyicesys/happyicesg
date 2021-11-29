@@ -591,7 +591,7 @@
                                 </li>
                             </ul> --}}
                         </td>
-                        <td class="col-md-2 text-left" style="max-width: 200px;">
+                        <td class="col-md-2 text-left">
                             @{{ person.remark }}
                         </td>
                         <td class="col-md-1 text-center">
