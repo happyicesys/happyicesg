@@ -211,7 +211,7 @@ function personController($scope, $http) {
         if (singleperson) {
             var contentString = '<span style=font-size:10px;>' +
                 '<b>' +
-                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company +
+                '(' + singleperson.id + ') ' + singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.remark +
                 '</b>' +
                 // '<br>' +
                 // '<span style="font-size:13px">' + '<b>' + singleperson.del_postcode + '</b>' + '</span>' + ' ' + singleperson.del_address +
@@ -248,7 +248,7 @@ function personController($scope, $http) {
                         var marker = new google.maps.Marker({
                             position: pos,
                             map: map,
-                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.custcategory,
+                            title: singleperson.cust_id + ' - ' + singleperson.company + ' - ' + singleperson.remark,
                             label: { fontSize: '15px', text: '(' + singleperson.cust_id + ') ' + singleperson.company, fontWeight: 'bold' },
                             icon: {
                                 labelOrigin: new google.maps.Point(15, 10),
@@ -312,7 +312,7 @@ function personController($scope, $http) {
                     var marker = new google.maps.Marker({
                         position: pos,
                         map: map,
-                        title: person.cust_id + ' - ' + person.company + ' - ' + person.custcategory,
+                        title: person.cust_id + ' - ' + person.company + ' - ' + person.remark,
                         label: { fontSize: '15px', text: (key + $scope.indexFrom).toString(), fontWeight: 'bold' },
                         icon: {
                             labelOrigin: new google.maps.Point(15, 10),

@@ -591,8 +591,11 @@
                                 </li>
                             </ul> --}}
                         </td>
-                        <td class="col-md-2 text-left">
-                            @{{ person.remark }}
+                        <td class="col-md-2 text-left" style="word-wrap: break-word; min-width:160px; max-width: 200px; white-space:normal;">
+                            <p>
+                                @{{ person.remark }}
+                            </p>
+
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.zone_name }}
