@@ -237,6 +237,9 @@ class PersonController extends Controller
     // batch update files name (int $person_id)
     public function updateFilesName($person_id)
     {
+        if(request()->has('removeFile')) {
+            $this->removeFile(request()->input('removeFile'));
+        }
         $filesname = request('file_name');
 
         foreach ($filesname as $index => $filename) {

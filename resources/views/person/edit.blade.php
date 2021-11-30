@@ -373,7 +373,7 @@
     </div>
 
     <div class="panel-body">
-        {!! Form::open(['id'=>'update_names', 'action'=>['PersonController@updateFilesName', $person->id]]) !!}
+        {!! Form::open(['action'=>['PersonController@updateFilesName', $person->id]]) !!}
         <div class="table-responsive">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
@@ -426,8 +426,23 @@
                             {{ $index + 1 }}
                         </td>
                         <td class="col-md-4">
-                            @if(pathinfo($file->path)['extension'] == 'pdf')
-                                <embed src="{{$file->path}}" width="200" height="200" type='application/pdf' >
+                            @php
+                                $fileType = strtolower(end(explode(".",$file->path)));
+                                // dd($fileType);
+                                // $fileType = explode('/', $mimeType)[0];
+                            @endphp
+                            @if($fileType === 'pdf')
+                                <embed src="{{$file->path}}" width="200" height="200" type="application/pdf">
+                            @elseif($fileType === 'mov' or $fileType === 'mp4')
+                                <span class="text-danger">
+                                    (Video file) please open and watch >>
+                                </span>
+
+                                {{-- <embed src="{{$file->path}}" width="300" height="300" > --}}
+                                {{-- <video src="{{$file->path}}" width="200" height="200" controls></video> --}}
+                                {{-- <div class="embed-responsive embed-responsive-4by3"> --}}
+                                    {{-- <iframe class="embed-responsive-item" src="{{$file->path}}"></iframe> --}}
+                                {{-- </div> --}}
                             @else
                                 <img src="{{$file->path}}" alt="{{$file->name}}" style="width:200px; height:200px;">
                             @endif
@@ -439,7 +454,7 @@
                         <td class="col-md-2 text-center">{{$file->created_at}}</td>
                         <td class="col-md-2 text-center">
                             @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                                <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                <button type="submit" name="removeFile" value="{{$file->id}}" onclick='return confirm("Are you sure you want to delete?")' class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
                             @endif
                             <a href="{{$file->path}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                         </td>
@@ -449,15 +464,15 @@
             </tbody>
         </table>
         </div>
+        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+            <button type="submit" class="btn btn-success pull-right"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
+        @endif
         {!! Form::close() !!}
-
+{{--
         @if(count($files) > 0)
             {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['PersonController@removeFile', $file->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
             {!! Form::close() !!}
-        @endif
-        @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-            <button type="submit" class="btn btn-success pull-right" form="update_names"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
-        @endif
+        @endif --}}
     </div>
 
     <div class="panel-footer">
