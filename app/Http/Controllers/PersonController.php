@@ -239,6 +239,8 @@ class PersonController extends Controller
     {
         if(request()->has('removeFile')) {
             $this->removeFile(request()->input('removeFile'));
+
+            return redirect()->action('PersonController@edit', $person_id);
         }
         $filesname = request('file_name');
 
