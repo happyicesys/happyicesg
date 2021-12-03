@@ -312,7 +312,8 @@ class DetailRptController extends Controller
                                     'paysummaryinfos.remark',
                                     'paysummaryinfos.is_verified',
                                     DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
-                                    DB::raw('SUM(ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
+                                    'transactions.id as transaction_id', 'transactions.total', 'transactions.is_gst_inclusive'
+                                    // DB::raw('SUM(ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to or $request->bankin_from or $request->bankin_to){
@@ -321,12 +322,18 @@ class DetailRptController extends Controller
         // paid conditions
         $transactions = $transactions->where('transactions.pay_status', 'Paid')->whereNotNull('transactions.pay_method');
 
+        // status conditions
+        // $transactions = $transactions->where('transactions.status', 'Delivered')
+        $transactions = $transactions->where(function($query) {
+            $query->where('transactions.status', 'Delivered')->orWhere('transactions.status', 'Verified Owe')->orWhere('transactions.status', 'Verified Paid')->orWhere('transactions.status', 'Confirmed');
+        });
+
         // add user profile filters
         $transactions = $this->filterUserDbProfile($transactions);
         $transactions = $this->filterUserDbCustcategory($transactions);
 
         $totals = $this->calAccPaySummary($transactions);
-
+        // dd($transactions->get());
         $transactions = $transactions->groupBy(DB::raw('Date(transactions.paid_at)'), 'profiles.id', 'transactions.pay_method')->orderBy('transactions.paid_at', 'profiles.id');
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
