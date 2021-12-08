@@ -312,8 +312,10 @@ class DetailRptController extends Controller
                                     'paysummaryinfos.remark',
                                     'paysummaryinfos.is_verified',
                                     DB::raw('DATE(paysummaryinfos.bankin_date) AS bankin_date'),
-                                    'transactions.id as transaction_id', 'transactions.total', 'transactions.is_gst_inclusive'
-                                    // DB::raw('SUM(ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
+                                    'transactions.id as transaction_id',
+                                    // 'transactions.total',
+                                    'transactions.is_gst_inclusive',
+                                    DB::raw('SUM(ROUND((CASE WHEN transactions.gst=1 THEN (CASE WHEN transactions.is_gst_inclusive=0 THEN (transactions.total * (100+transactions.gst_rate)/100) ELSE transactions.total END) ELSE transactions.total END) + (CASE WHEN transactions.delivery_fee>0 THEN transactions.delivery_fee ELSE 0 END), 2)) AS total')
                                 );
         // reading whether search input is filled
         if($request->profile_id or $request->payment_from or $request->payment_to or $request->bankin_from or $request->bankin_to){

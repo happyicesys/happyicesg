@@ -261,6 +261,7 @@ class PersonController extends Controller
     public function removeFileApi()
     {
         $file = StoreFile::findOrFail(request('file_id'));
+        $file->person->update();
 
         $file->delete();
     }
@@ -382,6 +383,7 @@ class PersonController extends Controller
         Storage::put('person_asset/file/'.$name, file_get_contents($file->getRealPath()), 'public');
         $url = (Storage::url('person_asset/file/'.$name));
         $person->files()->create(['path' => $url]);
+        $person->save();
 
         // $file->move('person_asset/file', $name);
         // $person->files()->create(['path' => "/person_asset/file/{$name}"]);
