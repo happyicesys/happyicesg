@@ -122,10 +122,10 @@ Vending Machine
                                 <span ng-if="search.sortName == 'type' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('router')">
-                                Router
-                                <span ng-if="search.sortName == 'router' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'router' && search.sortBy" class="fa fa-caret-up"></span>
+                                <a href="" ng-click="sortTable('simcard_id')">
+                                Sim Card
+                                <span ng-if="search.sortName == 'simcard_id' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'simcard_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortTable('desc')">
@@ -159,7 +159,7 @@ Vending Machine
                                     @{{ vm.type }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    @{{ vm.router }}
+                                    @{{ vm.simcard_id }}
                                 </td>
                                 <td class="col-md-2 text-left">
                                     @{{ vm.desc }}
