@@ -470,6 +470,9 @@
                         <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
+                        Serial No
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('custcategory')">
                         Cat
                         <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -567,6 +570,9 @@
                         </td>
                         <td class="col-md-2">
                             @{{ person.company }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ person.serial_number }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.custcategory_name }}
