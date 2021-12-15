@@ -108,6 +108,10 @@
                         $dailyreport_access = true;
                     }
 
+                    if(auth()->user()->hasRole('technician')) {
+                        $vending_access = true;
+                    }
+
                     if(auth()->user()->hasRole('salesperson')) {
                         $access = true;
                         $transaction_access = true;
@@ -151,6 +155,7 @@
                         $dailyreport_access = true;
                         $operation_access = true;
                         $user_access = true;
+                        $vending_access = true;
                     }
 
                     if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus')) {
@@ -178,6 +183,7 @@
                         $operation_access = true;
                         $dailyreport_access = true;
                         $route_template = true;
+                        $vending_access = true;
                     }
 
                     if(auth()->user()->hasRole('supervisor_msia')) {
