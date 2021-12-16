@@ -328,8 +328,10 @@ class PersonController extends Controller
             $vending->save();
         }else {
             $vending = Vending::wherePersonId($person->id)->first();
-            $vending->person_id = null;
-            $vending->save();
+            if($vending) {
+                $vending->person_id = null;
+                $vending->save();
+            }
         }
 
         $request->merge(['updated_by' => auth()->user()->id]);
