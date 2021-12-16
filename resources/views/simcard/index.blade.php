@@ -45,7 +45,7 @@ SIM Card
                     </div>
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
                         {!! Form::label('telco_name', 'Telco Name', ['class'=>'control-label search-title']) !!}
-                        {!! Form::select('telco_name', [''=>'All', 'Singtel'=>'Singtel', 'Singtel_M2M'=>'Singtel M2M', 'Starhub'=>'Starhub', 'M1'=>'M1', 'Redone'=>'Redone'], null,
+                        {!! Form::select('telco_name', [''=>'All', 'Singtel_IMSI'=>'Singtel (IMSI)', 'Starhub_ICCID'=>'Starhub (ICCID)', 'M1'=>'M1', 'Redone'=>'Redone'], null,
                             [
                             'class'=>'select2 form-control',
                             'ng-model'=>'search.telco_name',
@@ -142,7 +142,9 @@ SIM Card
                                     @{{ simcard.updated_at }}
                                 </td>
                                 <td class="col-md-1 text-center">
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="removeSimcard($event, simcard.id)"><i class="fa fa-times"></i></button>
+                                    @if(auth()->user()->hasRole('admin'))
+                                        <button class="btn btn-danger btn-sm btn-delete" ng-click="removeSimcard($event, simcard.id)"><i class="fa fa-times"></i></button>
+                                    @endif
                                 </td>
                             </tr>
                             <tr ng-if="!alldata || alldata.length == 0">
@@ -179,9 +181,8 @@ SIM Card
                                 Telco Name
                             </label>
                             <select name="telco_name" id="telco_name" class="select form-control" ng-model="form.telco_name">
-                                <option value="Singtel">Singtel</option>
-                                <option value="Singtel_M2M">Singtel M2M</option>
-                                <option value="Starhub">Starhub</option>
+                                <option value="Singtel_IMSI">Singtel (IMSI)</option>
+                                <option value="Starhub_ICCID">Starhub (ICCID)</option>
                                 <option value="M1">M1</option>
                                 <option value="Redone">Redone</option>
                             </select>
@@ -209,7 +210,7 @@ SIM Card
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" ng-click="createSimcard()" data-dismiss="modal" ng-if="!form.id">Create</button>
-                    <button type="button" class="btn btn-success" ng-click="editSimcard()" data-dismiss="modal" ng-if="form.id">Save</button>
+                    <button type="button" class="btn btn-success" ng-click="editSimcard(form.id)" data-dismiss="modal" ng-if="form.id">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

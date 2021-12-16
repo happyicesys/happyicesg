@@ -5,6 +5,7 @@
 @inject('dtdprice', 'App\DtdPrice')
 @inject('people', 'App\Person')
 @inject('outletVisits', 'App\OutletVisit')
+@inject('vendings', 'App\Vending')
 
 @extends('template')
 

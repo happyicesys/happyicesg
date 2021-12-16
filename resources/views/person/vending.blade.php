@@ -77,7 +77,15 @@
             </div>
         </div>
         @endif
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+
+                </div>
+            </div>
+        </div>
         <div class="row col-md-12 col-sm-12 col-xs-12">
+            @if(!$person->vending)
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('serial_number', 'Serial Number', ['class'=>'control-label']) !!}
@@ -104,6 +112,7 @@
                     ], null, ['class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
                 </div>
             </div>
+            @endif
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('cms_serial_number', 'CMS Serial Number', ['class'=>'control-label']) !!}
@@ -119,23 +128,28 @@
                 </div>
             </div>
         </div>
-        @if($person->vending)
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
-                {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
-                <a href="/vm/{{$person->vending->id}}/edit">
-                    {!! Form::text('serial_no', $person->vending->serial_no, ['class'=>'form-control', 'readonely'=>'readonly']) !!}
-                </a>
+                {!! Form::label('vending_id', 'Binded Vending', ['class'=>'control-label']) !!}
+                <select name="vending_id" class="form-control select">
+                    <option value="">Not Binding</option>
+                    @foreach($vendings::whereNull('person_id')->orWhere('person_id', '=', $person->id)->latest()->get() as $vending)
+                        <option value="{{$vending->id}}" {{isset($person->vending) && $person->vending->id == $vending->id ? 'selected' : ''}}>
+                            {{$vending->serial_no}}
+                            @if($vending->type)
+                             - {{$vending->type}}
+                            @endif
+                            @if($vending->simcard)
+                             ({{$vending->simcard->telco_name}} - {{$vending->simcard->simcard_no}})
+                            @endif
+                            @if($vending->cashlessTerminal)
+                             ({{$vending->cashlessTerminal->provider_name}} - {{$vending->cashlessTerminal->terminal_id}})
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
             </div>
         </div>
-        @else
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="form-group">
-                {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
-                {!! Form::text('serial_no', 'Not yet bind to machine', ['class'=>'form-control', 'readonly'=>'readonly']) !!}
-            </div>
-        </div>
-        @endif
         </div>
     </div>
 </div>

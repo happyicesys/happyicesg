@@ -8,10 +8,10 @@ use Chrisbjr\ApiGuard\Models\Mixins\Apikeyable;
 class Vending extends Model
 {
     // use Apikeyable;
-    
+
     protected $fillable = [
         'vend_id', 'serial_no', 'type', 'router', 'desc',
-        'person_id', 'updated_by', 'simcard_id'
+        'person_id', 'updated_by', 'simcard_id', 'cashless_terminal_id',
     ];
 
     // relationships
@@ -28,10 +28,15 @@ class Vending extends Model
     public function updater()
     {
         return $this->belongsTo('App\User', 'updated_by');
-    }    
+    }
 
     public function simcard()
     {
         return $this->belongsTo('App\Simcard');
+    }
+
+    public function cashlessTerminal()
+    {
+        return $this->belongsTo('App\CashlessTerminal');
     }
 }

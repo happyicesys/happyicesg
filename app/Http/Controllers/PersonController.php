@@ -23,6 +23,7 @@ use App\AddFreezer;
 use App\AddAccessory;
 use App\Deal;
 use App\User;
+use App\Vending;
 use App\Personmaintenance;
 use App\OutletVisit;
 use App\HasMonthOptions;
@@ -321,6 +322,16 @@ class PersonController extends Controller
                 $request->merge([$type => 1]);
             }
         }
+        if($request->vending_id) {
+            $vending = Vending::find($request->vending_id);
+            $vending->person_id = $person->id;
+            $vending->save();
+        }else {
+            $vending = Vending::wherePersonId($person->id)->first();
+            $vending->person_id = null;
+            $vending->save();
+        }
+
         $request->merge(['updated_by' => auth()->user()->id]);
         $input = $request->all();
         unset($input['type']);

@@ -1,25 +1,39 @@
 @inject('people', 'App\Person')
 @inject('simcards', 'App\Simcard')
+@inject('cashlessTerminals', 'App\CashlessTerminal')
 
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
-        <div class="form-group">
-            {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
-            {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('serial_no', 'Serial Num', ['class'=>'control-label']) !!}
+                {!! Form::text('serial_no', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('type', 'Type', ['class'=>'control-label']) !!}
+                {!! Form::select('type', ['FVM'=>'FVM', 'DVM'=>'DVM', 'COMBI'=>'COMBI', 'Model-E'=>'Model-E'], null, ['class'=>'select form-control']) !!}
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('type', 'Type', ['class'=>'control-label']) !!}
-                {!! Form::select('type', ['FVM'=>'FVM', 'DVM'=>'DVM', 'COMBI'=>'COMBI', 'Model-E'=>'Model-E'], null, ['class'=>'select form-control']) !!}
+                {!! Form::label('simcard_id', 'Simcard Num', ['class'=>'control-label']) !!}
+                {!! Form::select('simcard_id', [''=>null] + $simcards::select(DB::raw("CONCAT(simcard_no,' - ',telco_name,' - ',phone_no) AS full, id"))->orderBy('telco_name')->lists('full', 'id')->all(),
+                            null,
+                            ['class'=>'select form-control']) !!}
             </div>
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('simcard_id', 'Simcard Num', ['class'=>'control-label']) !!}
-                {!! Form::select('simcard_id', [''=>null] + $simcards::select(DB::raw("CONCAT(simcard_no,' - ',telco_name,' - ',phone_no) AS full, id"))->orderBy('telco_name')->lists('full', 'id')->all(),
+                {!! Form::label('cashless_terminal_id', 'Cashless Terminal', ['class'=>'control-label']) !!}
+                {!! Form::select('cashless_terminal_id', [''=>null] + $cashlessTerminals::select(DB::raw("CONCAT(terminal_id,' - ',provider_name) AS full, id"))->orderBy('provider_name')->lists('full', 'id')->all(),
                             null,
                             ['class'=>'select form-control']) !!}
             </div>

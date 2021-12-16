@@ -408,6 +408,7 @@
                             @endif
                             <li class="text-left"><a href="/vm"> Machine</a></li>
                             <li class="text-left"><a href="/simcard"> SIM card</a></li>
+                            <li class="text-left"><a href="/cashless"> Cashless</a></li>
                         </ul>
                     </li>
                 @endif

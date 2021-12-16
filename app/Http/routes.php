@@ -23,7 +23,18 @@ Route::get('/admin', function () {
 });
 
 
-Route::post('/api/simcard/update', 'VMController@updateSimcardApi');
+Route::post('/api/cashless/update/{id}', 'VMController@updateCashlessApi');
+Route::delete('/api/cashless/{id}/delete', 'VMController@destroyCashlessApi');
+Route::post('/api/cashless/create', 'VMController@createCashlessApi');
+Route::patch('/cashless/{id}/update', 'VMController@updateCashless');
+Route::get('/cashless/{id}/edit', 'VMController@editCashless');
+Route::delete('/cashless/{id}/destroy', 'VMController@destroyCashless');
+Route::post('/cashless/store', 'VMController@storeCashless');
+Route::get('/cashless/create', 'VMController@getCashlessCreate');
+Route::post('/api/cashless/data', 'VMController@getCashlessIndexApi');
+Route::get('/cashless', 'VMController@cashlessIndex');
+
+Route::post('/api/simcard/update/{id}', 'VMController@updateSimcardApi');
 Route::delete('/api/simcard/{id}/delete', 'VMController@destroySimcardApi');
 Route::post('/api/simcard/create', 'VMController@createSimcardApi');
 

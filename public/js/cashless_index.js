@@ -5,7 +5,7 @@ var app = angular.module('app', [
     '720kb.datepicker'
 ]);
 
-function simcardController($scope, $http) {
+function cashlessController($scope, $http) {
     // init the variables
     $scope.alldata = [];
     $scope.totalCount = 0;
@@ -14,20 +14,17 @@ function simcardController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.search = {
-        phone_no: '',
-        telco_name: '',
-        itemsPerPage: 100,
+        provider_id: '',
+        itemsPerPage: 'All',
         sortName: '',
         sortBy: true
     }
 
     $scope.form = {
         id: '',
-        phone_no: '',
-        telco_name: '',
-        simcard_no: '',
-        vending_id: '',
-        serial_no: ''
+        provider_id: '',
+        terminal_id: '',
+        start_date: '',
     }
 
     // init page load
@@ -39,11 +36,11 @@ function simcardController($scope, $http) {
 
     $scope.exportData = function (event) {
         event.preventDefault();
-        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportableCashless').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "SimcardRpt" + now + ".xls");
+        saveAs(blob, "CashlessTerminalRpt" + now + ".xls");
     };
 
     // switching page
@@ -56,6 +53,12 @@ function simcardController($scope, $http) {
         $scope.currentPage = 1
         getPage(1)
     };
+
+    $scope.onStartDateChanged = function (date) {
+        if (date) {
+            $scope.form.start_date = moment(new Date(date)).format('YYYY-MM-DD');
+        }
+    }
 
     $scope.sortTable = function (sortName) {
         $scope.search.sortName = sortName;
@@ -73,22 +76,22 @@ function simcardController($scope, $http) {
     // retrieve page w/wo search
     function getPage(pageNumber) {
         $scope.spinner = true;
-        $http.post('/api/simcard/data?page=' + pageNumber, $scope.search).success(function (data) {
-            if (data.simcards.data) {
-                $scope.alldata = data.simcards.data;
-                $scope.totalCount = data.simcards.total;
-                $scope.currentPage = data.simcards.current_page;
-                $scope.indexFrom = data.simcards.from;
-                $scope.indexTo = data.simcards.to;
+        $http.post('/api/cashless/data?page=' + pageNumber, $scope.search).success(function (data) {
+            if (data.cashlessTerminals.data) {
+                $scope.alldata = data.cashlessTerminals.data;
+                $scope.totalCount = data.cashlessTerminals.total;
+                $scope.currentPage = data.cashlessTerminals.current_page;
+                $scope.indexFrom = data.cashlessTerminals.from;
+                $scope.indexTo = data.cashlessTerminals.to;
             } else {
-                $scope.alldata = data.simcards;
-                $scope.totalCount = data.simcards.length;
+                $scope.alldata = data.cashlessTerminals;
+                $scope.totalCount = data.cashlessTerminals.length;
                 $scope.currentPage = 1;
                 $scope.indexFrom = 1;
-                $scope.indexTo = data.simcards.length;
+                $scope.indexTo = data.cashlessTerminals.length;
             }
             // get total count
-            $scope.All = data.simcards.length;
+            $scope.All = data.cashlessTerminals.length;
 
             // return total amount
             $scope.total_amount = data.total_amount;
@@ -98,40 +101,36 @@ function simcardController($scope, $http) {
         });
     }
 
-    $scope.createSimcardModal = function () {
+    $scope.createCashlessModal = function () {
         $scope.form = {
             id: '',
-            phone_no: '',
-            telco_name: '',
-            simcard_no: '',
-            vending_id: '',
-            serial_no: ''
+            provider_id: '',
+            terminal_id: '',
+            start_date: '',
         }
     }
 
 
-    $scope.createSimcard = function () {
-        $http.post('/api/simcard/create', $scope.form).success(function (data) {
+    $scope.createCashless = function () {
+        $http.post('/api/cashless/create', $scope.form).success(function (data) {
             getPage(1);
 
             $scope.form = {
                 id: '',
-                phone_no: '',
-                telco_name: '',
-                simcard_no: '',
-                vending_id: '',
-                serial_no: ''
+                provider_id: '',
+                terminal_id: '',
+                start_date: '',
             }
         }).error(function (data, status) {
             $scope.formErrors = data;
         });
     }
 
-    $scope.removeSimcard = function (event, id) {
+    $scope.removeCashless = function (event, id) {
         event.preventDefault();
-        var isConfirmDelete = confirm('Are you sure to DELETE this simcard?');
+        var isConfirmDelete = confirm('Are you sure to DELETE this Cashless Terminal?');
         if (isConfirmDelete) {
-            $http.delete('/api/simcard/' + id + '/delete').success(function (data) {
+            $http.delete('/api/cashless/' + id + '/delete').success(function (data) {
                 getPage(1);
             });
         } else {
@@ -139,23 +138,23 @@ function simcardController($scope, $http) {
         }
     }
 
-    $scope.editSimcardModal = function (simcard) {
-        fetchSingleSimcard(simcard);
+    $scope.editCashlessModal = function (cashless) {
+        fetchSingleCashlesss(cashless);
+        $('.select2').select2();
     }
 
-    function fetchSingleSimcard(simcard) {
+    function fetchSingleCashlesss(cashless) {
         $scope.form = {
-            id: simcard.id,
-            phone_no: simcard.phone_no,
-            telco_name: simcard.telco_name,
-            simcard_no: simcard.simcard_no,
-            vending_id: simcard.vending_id,
-            serial_no: simcard.serial_no
+            id: cashless.id,
+            provider_id: cashless.provider_id,
+            provider_name: cashless.provider_name,
+            terminal_id: cashless.terminal_id,
+            start_date: cashless.start_date,
         }
     }
 
-    $scope.editSimcard = function (id) {
-        $http.post('/api/simcard/update/' + id, $scope.form)
+    $scope.editCashless = function (id) {
+        $http.post('/api/cashless/update/' + id, $scope.form)
             .success(function (data) {
                 getPage(1);
             })
@@ -164,6 +163,7 @@ function simcardController($scope, $http) {
                 return false;
             });
     }
+
 }
 
 app.filter('delDate', [
@@ -174,4 +174,4 @@ app.filter('delDate', [
     }
 ]);
 
-app.controller('simcardController', simcardController);
+app.controller('cashlessController', cashlessController);

@@ -32,11 +32,11 @@ Vending Machine
             <div class="panel-body">
                 <div class="row">
                     <div class="form-group col-md-3 col-sm-6 col-xs-12">
-                        {!! Form::label('id', 'Vend ID', ['class'=>'control-label search-title']) !!}
-                        {!! Form::text('id', null,
+                        {!! Form::label('type', 'Type', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('type', null,
                                                     [
                                                         'class'=>'form-control input-sm',
-                                                        'ng-model'=>'search.vend_id',
+                                                        'ng-model'=>'search.type',
                                                         'ng-change'=>'searchDB()',
                                                         'placeholder'=>'Vend ID',
                                                         'ng-model-options'=>'{ debounce: 500 }'
@@ -75,6 +75,20 @@ Vending Machine
                             'ng-model'=>'search.custcategory',
                             'ng-change'=>'searchDB()'
                             ])
+                        !!}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('desc', 'Desc', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('desc', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.desc',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'Vend ID',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
                         !!}
                     </div>
                 </div>
@@ -121,11 +135,17 @@ Vending Machine
                                 <span ng-if="search.sortName == 'type' && !search.sortBy" class="fa fa-caret-down"></span>
                                 <span ng-if="search.sortName == 'type' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
-                            <th class="col-md-1 text-center">
-                                <a href="" ng-click="sortTable('simcard_id')">
+                            <th class="col-md-2 text-center">
+                                <a href="" ng-click="sortTable('telco_name')">
                                 Sim Card
-                                <span ng-if="search.sortName == 'simcard_id' && !search.sortBy" class="fa fa-caret-down"></span>
-                                <span ng-if="search.sortName == 'simcard_id' && search.sortBy" class="fa fa-caret-up"></span>
+                                <span ng-if="search.sortName == 'telco_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'telco_name' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-2 text-center">
+                                <a href="" ng-click="sortTable('provider_name')">
+                                Cashless
+                                <span ng-if="search.sortName == 'provider_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'provider_name' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-2 text-center">
                                 <a href="" ng-click="sortTable('desc')">
@@ -158,14 +178,23 @@ Vending Machine
                                 <td class="col-md-1 text-center">
                                     @{{ vm.type }}
                                 </td>
-                                <td class="col-md-1 text-center">
-                                    @{{ vm.simcard_id }}
+                                <td class="col-md-2 text-left">
+                                    @{{ vm.simcard_no }}
+                                        @{{ vm.simcard_no && vm.telco_name ? '-' : '' }}
+                                    @{{vm.telco_name}}
+                                        @{{ vm.telco_name && vm.phone_no ? '-' : '' }}
+                                    @{{vm.phone_no}}
+                                </td>
+                                <td class="col-md-2 text-left">
+                                    @{{ vm.provider_name }}
+                                        @{{vm.terminal_id ? '-' : ''}}
+                                    @{{vm.terminal_id}}
                                 </td>
                                 <td class="col-md-2 text-left">
                                     @{{ vm.desc }}
                                 </td>
                                 <td class="col-md-2 text-left">
-                                    <a href="/person/@{{ vm.person_id }}">
+                                    <a href="/person/@{{ vm.person_id }}" ng-if="vm.person_id">
                                         @{{ vm.cust_id}} - @{{vm.company}}
                                     </a>
                                 </td>

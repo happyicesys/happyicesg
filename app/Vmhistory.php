@@ -18,5 +18,5 @@ class Vmhistory extends Model
     public function people()
     {
         return $this->belongsToMany('App\Person');
-    }    
+    }
 }
