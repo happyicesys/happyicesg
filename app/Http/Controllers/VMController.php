@@ -289,7 +289,7 @@ class VMController extends Controller
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory',
                 'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no',
-                'cashless_terminals.provider_name', 'cashless_terminals.terminal_id',
+                'cashless_terminals.provider_name', 'cashless_terminals.terminal_id'
             );
 
         // reading whether search input is filled
