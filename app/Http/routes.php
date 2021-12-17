@@ -34,6 +34,7 @@ Route::get('/cashless/create', 'VMController@getCashlessCreate');
 Route::post('/api/cashless/data', 'VMController@getCashlessIndexApi');
 Route::get('/cashless', 'VMController@cashlessIndex');
 
+// Route::post('/simcard/update/{id}', 'VMController@updateSimcard');
 Route::post('/api/simcard/update/{id}', 'VMController@updateSimcardApi');
 Route::delete('/api/simcard/{id}/delete', 'VMController@destroySimcardApi');
 Route::post('/api/simcard/create', 'VMController@createSimcardApi');

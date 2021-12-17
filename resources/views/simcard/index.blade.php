@@ -20,10 +20,11 @@ SIM Card
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#simcard_modal" ng-click="createSimcardModal()">
+                            <a href="/simcard/create" class="btn btn-success">
                                 <i class="fa fa-plus"></i>
                                 Add SIM Card
                             </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -123,17 +124,15 @@ SIM Card
                             <tr dir-paginate="simcard in alldata | itemsPerPage:itemsPerPage | orderBy:sortType:sortReverse" total-items="totalCount">
                                 <td class="col-md-1 text-center">@{{ $index + indexFrom }} </td>
                                 <td class="col-md-2 text-center">
-                                    <a href="#" data-toggle="modal" data-target="#simcard_modal" ng-click="editSimcardModal(simcard)">
-                                        @{{ simcard.phone_no }}
+                                    @{{ simcard.phone_no }}
+                                </td>
+                                <td class="col-md-2 text-center">
+                                    <a href="/simcard/@{{simcard.id}}/edit" ng-if="simcard.id">
+                                        @{{ simcard.telco_name }}
                                     </a>
                                 </td>
                                 <td class="col-md-2 text-center">
-                                    @{{ simcard.telco_name }}
-                                </td>
-                                <td class="col-md-2 text-center">
-                                    <a href="#" data-toggle="modal" data-target="#simcard_modal" ng-click="editSimcardModal(simcard)">
-                                        @{{ simcard.simcard_no }}
-                                    </a>
+                                    @{{ simcard.simcard_no }}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @{{ simcard.updater }}
@@ -156,64 +155,6 @@ SIM Card
                 <div>
                     <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
                 </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="simcard_modal" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">
-                    @{{form.id ? 'Edit SIM Card' : 'Create SIM Card'}}
-                </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Phone Num
-                            </label>
-                            <input type="text" name="phone_no" class="form-control" ng-model="form.phone_no">
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                Telco Name
-                            </label>
-                            <select name="telco_name" id="telco_name" class="select form-control" ng-model="form.telco_name">
-                                <option value="Singtel_IMSI">Singtel (IMSI)</option>
-                                <option value="Starhub_ICCID">Starhub (ICCID)</option>
-                                <option value="M1">M1</option>
-                                <option value="Redone">Redone</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                            <label class="control-label">
-                                SIM Card Num
-                            </label>
-                            <input type="text" name="simcard_no" class="form-control" ng-model="form.simcard_no">
-                        </div>
-
-
-                        <div class="col-md-12 col-sm-12 col-xs-12" ng-if="form.vending_id">
-                            <div class="form-group">
-                                {!! Form::label('serial_no', 'Binded Serial', ['class'=>'control-label']) !!}
-                                <a href="/vm/@{{form.vending_id}}/edit">
-                                    <input type="text" name="serial_no" class="form-control" ng-model=form.serial_no readonly>
-                                </a>
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" ng-click="createSimcard()" data-dismiss="modal" ng-if="!form.id">Create</button>
-                    <button type="button" class="btn btn-success" ng-click="editSimcard(form.id)" data-dismiss="modal" ng-if="form.id">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 

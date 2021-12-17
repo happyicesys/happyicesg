@@ -252,18 +252,26 @@ class VMController extends Controller
     // update simcard entry(Request request, integer id)
     public function updateSimcardApi(Request $request, $id)
     {
-        // $telcoName = $request->telco_name;
-        // if($telcoName) {
-        //     if($telcoName === 'Singtel_IMSI') {
-        //         $this->validate($request, [
-        //             'simcard_no' => 'digits:15'
-        //         ]);
-        //     }else if($telcoName === 'Starhub_ICCID') {
-        //         $this->validate($request, [
-        //             'simcard_no' => 'digits:18'
-        //         ]);
-        //     }
-        // }
+        $telcoName = $request->telco_name;
+        if($telcoName) {
+            if($telcoName === 'Singtel_IMSI') {
+                $this->validate($request, [
+                    'simcard_no' => 'digits:15'
+                ], [
+                  'simcard_no.digits' => 'Please enter 15 digits for Singtel',
+                ]);
+            }else if($telcoName === 'Starhub_ICCID') {
+                $this->validate($request, [
+                    'simcard_no' => 'digits:18'
+                ], [
+                    'simcard_no.digits' => 'Please enter 18 digits for Starhub',
+                ]);
+            }
+        }
+
+        $this->validate($request, [
+            'telco_name' => 'required'
+        ]);
 
         $input = $request->all();
 
@@ -271,7 +279,38 @@ class VMController extends Controller
 
         $simcard->update($input);
 
-        return redirect('simcard');
+        return back();
+    }
+
+    // store simcard entry(Request request, integer id)
+    public function storeSimcard(Request $request)
+    {
+        $telcoName = $request->telco_name;
+        if($telcoName) {
+            if($telcoName === 'Singtel_IMSI') {
+                $this->validate($request, [
+                    'simcard_no' => 'digits:15'
+                ], [
+                  'simcard_no.digits' => 'Please enter 15 digits for Singtel',
+                ]);
+            }else if($telcoName === 'Starhub_ICCID') {
+                $this->validate($request, [
+                    'simcard_no' => 'digits:18'
+                ], [
+                    'simcard_no.digits' => 'Please enter 18 digits for Starhub',
+                ]);
+            }
+        }
+
+        $this->validate($request, [
+            'telco_name' => 'required'
+        ]);
+
+        $input = $request->all();
+
+        $simcard = Simcard::create($input);
+
+        return view('simcard.index');
     }
 
     // retrieve vms data ()
@@ -288,7 +327,7 @@ class VMController extends Controller
                 'vendings.vend_id', 'vendings.serial_no', 'vendings.type', 'vendings.router', 'vendings.desc', 'vendings.updated_by', 'vendings.created_at', 'vendings.id', 'vendings.updated_at', 'vendings.id AS id',
                 'profiles.id as profile_id',
                 'custcategories.name as custcategory',
-                'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no',
+                'simcards.phone_no', 'simcards.telco_name', 'simcards.simcard_no', 'simcards.id AS simcard_id',
                 'cashless_terminals.provider_name', 'cashless_terminals.terminal_id'
             );
 
@@ -346,9 +385,7 @@ class VMController extends Controller
             );
 
         // reading whether search input is filled
-        if (request('phone_no') or request('telco_name')) {
-            $simcards = $this->searchSimcardDBFilter($simcards);
-        }
+        $simcards = $this->searchSimcardDBFilter($simcards);
 
         return $simcards;
     }

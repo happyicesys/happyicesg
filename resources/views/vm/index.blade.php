@@ -179,11 +179,13 @@ Vending Machine
                                     @{{ vm.type }}
                                 </td>
                                 <td class="col-md-2 text-left">
-                                    @{{ vm.simcard_no }}
-                                        @{{ vm.simcard_no && vm.telco_name ? '-' : '' }}
-                                    @{{vm.telco_name}}
-                                        @{{ vm.telco_name && vm.phone_no ? '-' : '' }}
-                                    @{{vm.phone_no}}
+                                    <a href="/simcard/@{{vm.simcard_id}}/edit" ng-if="vm.simcard_id">
+                                        @{{ vm.simcard_no }}
+                                            @{{ vm.simcard_no && vm.telco_name ? '-' : '' }}
+                                        @{{vm.telco_name}}
+                                            @{{ vm.telco_name && vm.phone_no ? '-' : '' }}
+                                        @{{vm.phone_no}}
+                                        </a>
                                 </td>
                                 <td class="col-md-2 text-left">
                                     @{{ vm.provider_name }}
