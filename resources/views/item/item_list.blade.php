@@ -155,7 +155,7 @@
         </div>
     </div>
 
-    <div class="table-responsive" id="exportable_item" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_itemlist" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">

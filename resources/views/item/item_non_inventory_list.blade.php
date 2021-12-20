@@ -144,7 +144,7 @@
         <div class="col-md-3 col-sm-4 col-xs-12">
 
             @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
-                <button class="btn btn-primary" ng-click="exportData()">Export Excel</button>
+                <button class="btn btn-primary" ng-click="exportDataNonInventory()">Export Excel</button>
             @endif
         </div>
 {{--
@@ -183,7 +183,7 @@
         </div>
     </div>
 
-    <div class="table-responsive" id="exportable_item" style="padding-top: 20px;">
+    <div class="table-responsive" id="exportable_non_inventory" style="padding-top: 20px;">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">

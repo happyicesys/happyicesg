@@ -98,7 +98,7 @@ function itemController($scope, $http) {
     }
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_itemlist').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
@@ -205,12 +205,12 @@ function itemNonInventoryController($scope, $http) {
         });
     });
 
-    $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable_item').innerHTML], {
+    $scope.exportDataNonInventory = function () {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_non_inventory').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "Items" + now + ".xls");
+        saveAs(blob, "NonInventoryRpt" + now + ".xls");
     };
 
     // switching page
