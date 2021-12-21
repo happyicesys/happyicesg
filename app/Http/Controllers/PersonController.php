@@ -661,6 +661,7 @@ class PersonController extends Controller
         $rep_person->del_lat = null;
         $rep_person->del_lng = null;
         $rep_person->bank_id = null;
+        $rep_person->account_number = null;
         $rep_person->account_manager = auth()->user()->id;
         $rep_person->save();
 
