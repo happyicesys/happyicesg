@@ -289,13 +289,13 @@ class VMController extends Controller
         if($telcoName) {
             if($telcoName === 'Singtel_IMSI') {
                 $this->validate($request, [
-                    'simcard_no' => 'digits:15'
+                    'simcard_no' => 'required|digits:15'
                 ], [
                   'simcard_no.digits' => 'Please enter 15 digits for Singtel',
                 ]);
             }else if($telcoName === 'Starhub_ICCID') {
                 $this->validate($request, [
-                    'simcard_no' => 'digits:18'
+                    'simcard_no' => 'required|digits:18'
                 ], [
                     'simcard_no.digits' => 'Please enter 18 digits for Starhub',
                 ]);
@@ -303,6 +303,7 @@ class VMController extends Controller
         }
 
         $this->validate($request, [
+            'simcard_no' => 'required',
             'telco_name' => 'required'
         ]);
 
