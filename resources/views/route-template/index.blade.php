@@ -318,7 +318,7 @@ Route Template
                           </tr>
                           <tr ng-repeat="item in form.route_template_items | orderBy:'sequence'">
                             <td class="col-md-1 text-center">
-                              <input type="text" class=" text-center" style="width:40px" ng-model="item.sequence" ng-value="item.sequence = item.sequence ? item.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onFormSequenceChanged(item, form.id)">
+                              <input type="text" class=" text-center" style="width:40px" ng-model="item.sequence" ng-value="item.sequence = item.sequence ? item.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }">
                             </td>
                             <td class="col-md-1 text-center">
                               <a href="/person/@{{ item.person.id }}/edit">

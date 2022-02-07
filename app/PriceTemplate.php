@@ -19,6 +19,6 @@ class PriceTemplate extends Model
 
     public function priceTemplateItems()
     {
-        return $this->hasMany(PriceTemplateItem::class);
+        return $this->hasMany(PriceTemplateItem::class)->orderBy('sequence');
     }
 }

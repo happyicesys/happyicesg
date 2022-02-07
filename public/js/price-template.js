@@ -96,10 +96,10 @@ function priceTemplateController($scope, $http) {
         }
     }
 
-    $scope.onPriceTemplateItemUnbind = function (id) {
+    $scope.onPriceTemplatePersonUnbind = function (id) {
         $http({
             method: 'POST',
-            url: '/api/price-template/item/' + id + '/unbind'
+            url: '/api/price-template/person/' + id + '/unbind'
         })
             .success(function (data) {
                 getPage(1, false);
@@ -118,19 +118,50 @@ function priceTemplateController($scope, $http) {
         $scope.form.price_template_items.push({
             item: item,
             sequence: sequence,
-            retail_price: retail_price,
-            quote_price: quote_price,
+            retail_price: retail_price.toFixed(2),
+            quote_price: quote_price.toFixed(2),
         });
         $scope.form.sequence = ''
         $scope.form.retail_price = ''
         $scope.form.quote_price = ''
     }
 
+    // single edit entry clicked
+    $scope.onSinglePriceTemplateClicked = function (data) {
+        $scope.form = getDefaultForm()
+        $('.select').select2({
+            placeholder: 'Select...'
+        });
+        console.log(data);
+        $scope.form = data
+    }
+
+    // delete single entry api
+    $scope.onSingleEntryDeleted = function (item) {
+        let index = $scope.form.price_template_items.indexOf(item);
+        $scope.form.price_template_items.splice(index, 1)
+    }
+
     // bind
     $scope.onPriceTemlatePersonBindingClicked = function () {
         $http.post('/api/price-template/person/bind', $scope.form).success(function (data) {
-            $scope.form.custcategory_id = '';
+            $scope.form.price_template_id = '';
+            $scope.form.person_id = '';
+            $('.select').select2({
+                placeholder: 'Select...'
+            });
             getPage(1, false);
+        });
+    }
+
+    // upon form submit
+    $scope.onFormSubmitClicked = function () {
+        $http.post('/api/price-template/store-update', $scope.form).success(function (data) {
+            $scope.form = getDefaultForm()
+            $('.select').select2({
+                placeholder: 'Select...'
+            });
+            getPage(1)
         });
     }
 
@@ -154,6 +185,7 @@ function priceTemplateController($scope, $http) {
             $scope.spinner = false;
         });
     }
+
 }
 
 app.controller('priceTemplateController', priceTemplateController);

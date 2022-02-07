@@ -11,7 +11,7 @@ Price Template
 <div class="row">
     <a class="title_hyper pull-left" href="/price-template"><h1>Price Template <i class="fa fa-usd"></i></h1></a>
 </div>
-<div ng-app="app" ng-controller="priceTemplateController">
+<div ng-app="app" ng-controller="priceTemplateController" ng-cloak>
     <div class="row" style="padding-top: 10px;">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="pull-right">
@@ -56,7 +56,7 @@ Price Template
                         @endforeach
                     </select>
                 </div>
-                <button class="btn btn-warning btn-md" ng-click="onPriceTemplateBindingClicked()">
+                <button class="btn btn-warning btn-md" ng-click="onPriceTemlatePersonBindingClicked()">
                     <i class="fa fa-retweet" aria-hidden="true"></i>
                     Binding
                 </button>
@@ -134,16 +134,21 @@ Price Template
                             </td>
                             <td class="col-md-2 text-center">
                                 @{{ data.name }} <br>
-                                <button class="btn btn-danger btn-xs" ng-click="onPriceTemplateDelete(data)">
-                                    Delete
-                                </button>
+                                <div class="btn-group">
+                                    <button class="btn btn-default btn-xs" ng-click="onSinglePriceTemplateClicked(data)" data-toggle="modal" data-target="#price-template-modal">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-xs" ng-click="onPriceTemplateDelete(data)">
+                                        Delete
+                                    </button>
+                                </div>
                             </td>
                             <td class="col-md-9 text-left">
                                 <ul ng-repeat="person in data.people">
                                     <li>
-                                        @{{person.cust_id}} - @{{person.name}} &nbsp;
+                                        @{{person.cust_id}} - @{{person.company}} &nbsp;
 
-                                        <button class="btn btn-warning btn-xs" ng-click="onPriceTemplateUnbind(person.id)">
+                                        <button class="btn btn-warning btn-xs" ng-click="onPriceTemplatePersonUnbind(person.id)">
                                             Unbind
                                         </button>
                                     </li>
@@ -197,6 +202,7 @@ Price Template
                                     <label for="item">
                                         Item
                                     </label>
+                                    <label style="color: red;">*</label>
                                     <select class="select form-control" ng-model="form.item">
                                         <option value=""></option>
                                         @foreach($items::with(['itemCategory', 'itemGroup'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
@@ -212,7 +218,7 @@ Price Template
                                     <label for="sequence">
                                         Sequence
                                     </label>
-                                    <input type="text" class="form-control" ng-model="form.sequence">
+                                    <input type="number" class="form-control" ng-model="form.sequence">
                                 </div>
                             </div>
                         </div>
@@ -223,13 +229,13 @@ Price Template
                                 <label for="retail_price">
                                     Retail Price
                                 </label>
-                                <input type="text" class="form-control" ng-model="form.retail_price">
+                                <input type="number" class="form-control" ng-model="form.retail_price">
                               </div>
                               <div class="col-md-6 col-sm-6 col-xs-12">
                                 <label for="quote_price">
                                     Quote Price
                                 </label>
-                                <input type="text" class="form-control" ng-model="form.quote_price">
+                                <input type="number" class="form-control" ng-model="form.quote_price">
                               </div>
                           </div>
                       </div>
@@ -272,7 +278,7 @@ Price Template
                         </tr>
                         <tr ng-repeat="priceTemplateItem in form.price_template_items | orderBy:'sequence'">
                           <td class="col-md-1 text-center">
-                            <input type="text" class=" text-center" style="width:40px" ng-model="item.sequence" ng-value="priceTemplateItem.sequence = priceTemplateItem.sequence ? priceTemplateItem.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }" ng-change="onFormSequenceChanged(priceTemplateItem, form.id)">
+                            <input type="text" class=" text-center" style="width:40px" ng-model="priceTemplateItem.sequence" ng-value="priceTemplateItem.sequence = priceTemplateItem.sequence ? priceTemplateItem.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }">
                           </td>
                           <td class="col-md-1 text-center">
                             <a href="/item/@{{ priceTemplateItem.item.id }}/edit">

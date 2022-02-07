@@ -32,7 +32,11 @@ class PriceTemplateController extends Controller
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
-        $query = PriceTemplate::with(['priceTemplateItems', 'people']);
+        $query = PriceTemplate::with([
+                                        'priceTemplateItems',
+                                        'priceTemplateItems.item',
+                                        'people'
+                                    ]);
 
         if(request('name')) {
             $query = $query->where('name', 'LIKE', '%'.request('name').'%');
@@ -62,6 +66,34 @@ class PriceTemplateController extends Controller
         return [
             'priceTemplates' => $query
         ];
+    }
+
+    // store new price template api(Request $request)
+    public function storeUpdatePriceTemplateApi(Request $request)
+    {
+        $id = $request->id;
+        $priceTemplateItems = $request->price_template_items;
+        $name = $request->name;
+        $remarks = $request->remarks;
+        $currentUserId = auth()->user()->id;
+
+        if($id) {
+            $priceTemplate = PriceTemplate::findOrFail($id);
+            $priceTemplate->name = $name;
+            $priceTemplate->remarks = $remarks;
+            $priceTemplate->save();
+            $priceTemplate->priceTemplateItems()->delete();
+        }else {
+            $priceTemplate = PriceTemplate::create([
+                'name' => $name,
+                'remarks' => $remarks,
+            ]);
+        }
+        if($priceTemplateItems) {
+            foreach($priceTemplateItems as $item) {
+                $this->syncPriceTemplateItem($item, $priceTemplate->id);
+            }
+        }
     }
 
     // destroy single
@@ -97,8 +129,8 @@ class PriceTemplateController extends Controller
         }
     }
 
-    // bind category with group
-    public function bindPriceTemplateItemApi(Request $request)
+    // bind price template with person
+    public function bindPriceTemplatePersonApi(Request $request)
     {
         $price_template_id = $request->price_template_id;
         $person_id = $request->person_id;
@@ -108,6 +140,25 @@ class PriceTemplateController extends Controller
             $model->price_template_id = $price_template_id;
             $model->save();
         }
+    }
+
+    // sync new route template items
+    private function syncPriceTemplateItem($priceTemplateItem, $id)
+    {
+
+        $itemId = $priceTemplateItem['item']['id'];
+        $priceTemplateId = $id;
+        $sequence = $priceTemplateItem['sequence'];
+        $retailPrice = $priceTemplateItem['retail_price'];
+        $quotePrice = $priceTemplateItem['quote_price'];
+
+        PriceTemplateItem::create([
+            'item_id' => $itemId,
+            'price_template_id' => $priceTemplateId,
+            'sequence' => $sequence,
+            'retail_price' => $retailPrice,
+            'quote_price' => $quotePrice,
+        ]);
     }
 
 }

@@ -326,6 +326,8 @@ Route::post('/api/price-template', 'PriceTemplateController@getPriceTemplatesApi
 Route::post('/api/price-template/create', 'PriceTemplateController@createPriceTemplateApi');
 Route::post('/api/price-template/store-update', 'PriceTemplateController@storeUpdatePriceTemplateApi');
 Route::post('/api/price-template/generate', 'PriceTemplateController@generateTemplateInvoiceApi');
+Route::post('/api/price-template/person/bind', 'PriceTemplateController@bindPriceTemplatePersonApi');
+Route::post('/api/price-template/person/{id}/unbind', 'PriceTemplateController@unbindPriceTemplatePerson');
 Route::delete('/api/price-template/delete/{id}', 'PriceTemplateController@deletePriceTemplateApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');

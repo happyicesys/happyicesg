@@ -213,6 +213,11 @@ class Person extends Baum\Node
         return $this->hasMany('App\Personmaintenance');
     }
 
+    public function priceTemplate()
+    {
+        return $this->belongsTo('App\PriceTemplate');
+    }
+
     public function vending()
     {
         return $this->hasOne('App\Vending');

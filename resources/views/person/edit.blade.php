@@ -4,6 +4,7 @@
 @inject('prices', 'App\Price')
 @inject('dtdprice', 'App\DtdPrice')
 @inject('people', 'App\Person')
+@inject('priceTemplates', 'App\PriceTemplate')
 @inject('outletVisits', 'App\OutletVisit')
 @inject('vendings', 'App\Vending')
 
@@ -109,6 +110,20 @@
                 @if(($person->is_vending === 1 or $person->is_dvm) and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
                     @include('person.vending')
                 @endif
+                <div class="form-group">
+                    {!! Form::label('price_template_id', 'Price Template', ['class'=>'control-label']) !!}
+                    <select name="price_template_id" class="selectnotclear form-control" {{$disabled ? 'disabled' : ''}}>
+                        <option value="-1">Customise Pricing</option>
+                        @foreach($priceTemplates->all() as $priceTemplate)
+                            <option value="{{ $priceTemplate->id }}" {{$person->price_template_id == $priceTemplate->id ? 'selected' : ''}}>
+                                {{ $priceTemplate->name }}
+                                @if($priceTemplate->remarks)
+                                    ({{ $priceTemplate->remarks }})
+                                @endif
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -277,67 +292,116 @@
             </div>
         </div>
 
-        <div class="panel-body">
-            {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
-            {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
+        @if($person->priceTemplate()->exists())
+            <div class="panel-body">
+                <label for="price_template">
+                    Binded Price Template: {{$person->priceTemplate->name}} @if($person->priceTemplate->remarks) ({{$person->priceTemplate->remarks}}) @endif
+                </label>
+                <div class="table-responsive">
+                    <table class="table table-list-search table-hover table-bordered table-condensed">
+                        <tr style="background-color: #DDFDF8">
+                            <th class="col-md-8 text-center">
+                                Item
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Retail Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Quote Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
+                            </th>
+                        </tr>
 
-            <div class="table-responsive">
-                <table class="table table-list-search table-hover table-bordered table-condensed">
-                    <tr style="background-color: #DDFDF8">
-                        <th class="col-md-8 text-center">
-                            Item
-                        </th>
-                        <th class="col-md-2 text-center">
-                            Retail Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
-                        </th>
-                        <th class="col-md-2 text-center">
-                            Quote Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
-                        </th>
-                    </tr>
+                        <tbody>
+                            @foreach($person->priceTemplate->priceTemplateItems as $priceTemplateItem)
+                            <tr class="form-group">
+                                <td class="col-md-8">
+                                    {{$priceTemplateItem->item->product_id}} - {{$priceTemplateItem->item->name}} - {{$priceTemplateItem->item->remark}}
+                                </td>
+                                <td class="col-md-2 text-right">
+                                    <strong>
+                                        {{$priceTemplateItem->retail_price}}
+                                    </strong>
+                                </td>
+                                <td class="col-md-2 text-right">
+                                    <strong>
+                                        {{$priceTemplateItem->quote_price}}
+                                    </strong>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @if(count($person->priceTemplate->priceTemplateItems) == 0)
+                            <tr>
+                                <td colspan="4" class="text-center">No Records Found!</td>
+                            </tr>
+                            @endif
 
-                    <tbody>
-
-                    @php
-                        $disable = false;
-
-                        if($person->cust_id[0] === 'H') {
-                            $disable = false;
-                        }
-
-                        if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB') {
-                            $disable = true;
-                        }
-                    @endphp
-
-                    <tr ng-repeat="item in items" class="form-group">
-                        <td class="col-md-8">
-                            @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
-                        </td>
-                        <td class="col-md-2">
-                            <strong>
-                                <input type="text" name="retail[@{{item.item_id}}]" class="text-right form-control" ng-model="item.retail_price" ng-change="calQuotePrice($index, item)" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
-                            </strong>
-                        </td>
-                        <td class="col-md-2">
-                            <strong>
-                                <input type="text" name="quote[@{{item.item_id}}]" class="text-right form-control" ng-model="item.quote_price" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
-                            </strong>
-                        </td>
-                    </tr>
-                    <tr ng-if="items.length == 0 || ! items.length">
-                        <td colspan="4" class="text-center">No Records Found!</td>
-                    </tr>
-                    {{-- @endif --}}
-                    </tbody>
-                </table>
-                <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
-                @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                    {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
-                @endif
+                        </tbody>
+                    </table>
+                    <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
+                </div>
             </div>
-            {!! Form::close() !!}
+        @else
+            <div class="panel-body">
+                {!! Form::model($price = new \App\Price, ['action'=>'PriceController@store']) !!}
+                {!! Form::hidden('person_id', $person->id, ['id'=>'person_id']) !!}
 
-        </div>
+                <div class="table-responsive">
+                    <table class="table table-list-search table-hover table-bordered table-condensed">
+                        <tr style="background-color: #DDFDF8">
+                            <th class="col-md-8 text-center">
+                                Item
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Retail Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Quote Price ({{$person->profile->currency ? $person->profile->currency->symbol: '$'}})
+                            </th>
+                        </tr>
+
+                        <tbody>
+
+                        @php
+                            $disable = false;
+
+                            if($person->cust_id[0] === 'H') {
+                                $disable = false;
+                            }
+
+                            if($person->cust_type === 'OM' or $person->cust_type === 'OE' or $person->cust_type === 'AM' or $person->cust_type === 'AB') {
+                                $disable = true;
+                            }
+                        @endphp
+
+                        <tr ng-repeat="item in items" class="form-group">
+                            <td class="col-md-8">
+                                @{{item.product_id}} - @{{item.name}} - @{{item.remark}}
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="retail[@{{item.item_id}}]" class="text-right form-control" ng-model="item.retail_price" ng-change="calQuotePrice($index, item)" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
+                                </strong>
+                            </td>
+                            <td class="col-md-2">
+                                <strong>
+                                    <input type="text" name="quote[@{{item.item_id}}]" class="text-right form-control" ng-model="item.quote_price" {{$disable == true ? 'readonly' : ''}} {{$disabledStr}}/>
+                                </strong>
+                            </td>
+                        </tr>
+                        <tr ng-if="items.length == 0 || ! items.length">
+                            <td colspan="4" class="text-center">No Records Found!</td>
+                        </tr>
+                        {{-- @endif --}}
+                        </tbody>
+                    </table>
+                    <label ng-if="prices" class="pull-left totalnum" for="totalnum">@{{prices.length}} price(s) created/ @{{items.length}} items</label>
+                    @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                        {!! Form::submit('Save Prices', ['name'=>'done', 'class'=> 'btn btn-success pull-right', 'style'=>'margin-top:17px;']) !!}
+                    @endif
+                </div>
+                {!! Form::close() !!}
+            </div>
+        @endif
     </div>
 
 @endunless
