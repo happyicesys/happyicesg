@@ -321,6 +321,13 @@ Route::get('/position/data', 'PositionController@getData');
 Route::delete('/position/data/{id}', 'PositionController@destroyAjax');
 Route::resource('position', 'PositionController');
 
+Route::get('/price-template', 'PriceTemplateController@getPriceTemplateIndex');
+Route::post('/api/price-template', 'PriceTemplateController@getPriceTemplatesApi');
+Route::post('/api/price-template/create', 'PriceTemplateController@createPriceTemplateApi');
+Route::post('/api/price-template/store-update', 'PriceTemplateController@storeUpdatePriceTemplateApi');
+Route::post('/api/price-template/generate', 'PriceTemplateController@generateTemplateInvoiceApi');
+Route::delete('/api/price-template/delete/{id}', 'PriceTemplateController@deletePriceTemplateApi');
+
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');
 Route::post('/api/route-template/store-update', 'RouteTemplateController@storeUpdateRouteTemplateApi');

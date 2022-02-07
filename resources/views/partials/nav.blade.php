@@ -289,6 +289,12 @@
                         <a href="/potential-customer"><i class="fa fa-address-card-o"></i> GT Sales Lead</a>
                     </li>
                 @endif
+{{--
+                @if($person_access)
+                    <li class="{{ Request::segment(1) == 'price-template' ? 'active' : '' }}">
+                        <a href="/price-template"><i class="fa fa-usd"></i> Price Template</a>
+                    </li>
+                @endif --}}
 
                 @if($route_template)
                     <li class="{{ Request::segment(1) == 'route-template' ? 'active' : '' }}">

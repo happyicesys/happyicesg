@@ -41,6 +41,7 @@
                             @if(!auth()->user()->hasRole('driver-supervisor'))
                                 @if(Auth::user()->hasRole('admin'))
                                     <li><a href="#unit_cost" role="tab" data-toggle="tab">Unit Cost</a></li>
+                                    <li><a href="#price_template" role="tab" data-toggle="tab">Price Template</a></li>
                                 @endif
                             @endif
                             @endcannot
@@ -60,6 +61,9 @@
                             </div>
                             <div class="tab-pane" id="unit_cost">
                                 @include('item.unit_cost')
+                            </div>
+                            <div class="tab-pane" id="price_template">
+                                @include('item.price_template')
                             </div>
                         </div>
                     </div>

@@ -67,6 +67,12 @@ class PersonController extends Controller
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
 
+        $earliestTransaction = DB::raw("(
+                                SELECT delivery_date, id, person_id FROM transactions
+                                GROUP BY person_id
+                                ORDER BY delivery_date ASC
+                            ) earliestTransaction ");
+
         $people = Person::with(['persontags', 'custcategory', 'profile', 'freezers', 'zone', 'accountManager'])
         ->leftJoin('custcategories', 'people.custcategory_id', '=', 'custcategories.id')
         ->leftJoin('custcategory_groups', 'custcategories.custcategory_group_id', '=', 'custcategory_groups.id')
@@ -74,6 +80,7 @@ class PersonController extends Controller
         ->leftJoin('users AS account_managers', 'account_managers.id', '=', 'people.account_manager')
         ->leftJoin('zones', 'zones.id', '=', 'people.zone_id')
         ->leftJoin('users AS updater', 'updater.id', '=', 'people.updated_by')
+        ->leftJoin($earliestTransaction, 'earliestTransaction.person_id', '=', 'people.id')
         ->select(
             'people.id', 'people.cust_id', 'people.company', 'people.name', 'people.contact', 'people.alt_contact', 'people.del_address', 'people.del_postcode', 'people.bill_postcode', 'people.active', 'people.payterm', 'people.del_lat', 'people.del_lng', 'people.remark',
             DB::raw('DATE(people.created_at) AS created_at'), 'people.updated_at', 'people.serial_number',
@@ -81,7 +88,8 @@ class PersonController extends Controller
             'profiles.id AS profile_id', 'profiles.name AS profile_name',
             'account_managers.name AS account_manager_name',
             'zones.name AS zone_name',
-            'updater.name AS updated_by'
+            'updater.name AS updated_by',
+            DB::raw('DATE(earliestTransaction.delivery_date) AS earliest_delivery_date')
         );
 
         // reading whether search input is filled

@@ -78,6 +78,8 @@
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
+                    <input type="text" class="form-control input-sm" ng-model="search.company" placeholder="ID Name" ng-change="searchDB($event)" ng-keydown="$event.keyCode === 13 && searchDB($event)" ng-model-options="{ debounce: 500 }">
+{{--
                     {!! Form::text('company', null,
                                                     [
                                                         'class'=>'form-control input-sm',
@@ -87,7 +89,7 @@
                                                         'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
                                                         'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
-                    !!}
+                    !!} --}}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('contact', 'Contact', ['class'=>'control-label search-title']) !!}
@@ -470,7 +472,10 @@
                         <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
-                        Serial No
+                        <a href="" ng-click="sortTable('earliest_delivery_date')">
+                        First Inv Date
+                        <span ng-if="search.sortName == 'earliest_delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'earliest_delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('custcategory')">
@@ -572,7 +577,7 @@
                             @{{ person.company }}
                         </td>
                         <td class="col-md-1 text-center">
-                            @{{ person.serial_number }}
+                            @{{ person.earliest_delivery_date }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.custcategory_name }}
