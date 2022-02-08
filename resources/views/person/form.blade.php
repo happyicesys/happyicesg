@@ -147,7 +147,7 @@
         <div class="form-group">
             {!! Form::label('franchisee_id', 'Assign Customer to User', ['class'=>'control-label']) !!}
             {!! Form::select('franchisee_id',
-                            [''=> null] + $franchisees::filterUserFranchise()->pluck('name', 'id')->all(),
+                            ['0'=> 'Nil'] + $franchisees::filterUserFranchise()->pluck('name', 'id')->all(),
                             $franchisee,
                             ['id'=>'franchisee_id', 'class'=>'select form-control', 'disabled'=>$disabled]) !!}
         </div>
