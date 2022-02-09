@@ -577,14 +577,9 @@ class VendingController extends Controller
                                             END
                                             )) * people.vending_piece_price
                                         ELSE
-                                            vend_received.vend_received +
-                                            (CASE WHEN
-                                                cashless_received.cashless_received
-                                            THEN
-                                                cashless_received.cashless_received
-                                            ELSE
-                                                0
-                                            END)
+                                            COALESCE(vend_received.vend_received, 0)
+                                            +
+                                            COALESCE(cashless_received.cashless_received, 0)
                                         END
                                         AS subtotal_sales'
                                     ),
@@ -637,14 +632,11 @@ class VendingController extends Controller
                                                 END
                                                     )) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing)
                                             ELSE
-                                                ((vend_received.vend_received +
-                                                    (CASE WHEN
-                                                        cashless_received.cashless_received
-                                                    THEN
-                                                        cashless_received.cashless_received
-                                                    ELSE
-                                                        0
-                                                    END))
+                                                ((
+                                                    COALESCE(vend_received.vend_received, 0)
+                                                    +
+                                                    COALESCE(cashless_received.cashless_received, 0)
+                                                    )
                                                 * people.vending_profit_sharing/100)
                                             END
                                         ELSE
@@ -676,14 +668,8 @@ class VendingController extends Controller
                                                     people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
                                                 END
                                             ELSE
-                                                ((vend_received.vend_received +
-                                                (CASE WHEN
-                                                    cashless_received.cashless_received
-                                                THEN
-                                                    cashless_received.cashless_received
-                                                ELSE
-                                                    0
-                                                END))
+                                                ((COALESCE(vend_received.vend_received, 0) +
+                                                COALESCE(cashless_received.cashless_received, 0))
                                                 * people.vending_profit_sharing/100) +  people.vending_monthly_utilities + people.vending_monthly_rental
                                             END
                                         ELSE
@@ -710,14 +696,9 @@ class VendingController extends Controller
                                                 ELSE 0
                                                 END)) * people.vending_piece_price
                                             ELSE
-                                                vend_received.vend_received +
-                                                (CASE WHEN
-                                                    cashless_received.cashless_received
-                                                THEN
-                                                    cashless_received.cashless_received
-                                                ELSE
-                                                    0
-                                                END)
+                                                COALESCE(vend_received.vend_received, 0)
+                                                +
+                                                COALESCE(cashless_received.cashless_received, 0)
                                             END)
                                             -
                                             (
@@ -743,14 +724,8 @@ class VendingController extends Controller
                                                         analog_first.analog_clock
                                                     END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0))
                                                 ELSE
-                                                    (vend_received.vend_received +
-                                                    ((CASE WHEN
-                                                        cashless_received.cashless_received
-                                                    THEN
-                                                        cashless_received.cashless_received
-                                                    ELSE
-                                                        0
-                                                    END))
+                                                    (COALESCE(vend_received.vend_received, 0) +
+                                                    (COALESCE(cashless_received.cashless_received, 0))
                                                     * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
                                                 END
                                             ELSE
@@ -784,14 +759,9 @@ class VendingController extends Controller
                                                 0
                                             END)) * people.vending_piece_price
                                         ELSE
-                                            vend_received.vend_received +
-                                            (CASE WHEN
-                                                cashless_received.cashless_received
-                                            THEN
-                                                cashless_received.cashless_received
-                                            ELSE
-                                                0
-                                            END)
+                                            COALESCE(vend_received.vend_received, 0)
+                                            +
+                                            COALESCE(cashless_received.cashless_received, 0)
                                         END)
                                         -
                                         (
@@ -806,14 +776,10 @@ class VendingController extends Controller
                                             THEN analog_start.analog_clock
                                             ELSE analog_first.analog_clock
                                             END)) * people.vending_clocker_adjustment/ 100)) * people.vending_profit_sharing), 0) + COALESCE(people.vending_monthly_utilities, 0) + COALESCE(people.vending_monthly_rental, 0))
-                                        ELSE ((vend_received.vend_received +
-                                            (CASE WHEN
-                                                cashless_received.cashless_received
-                                            THEN
-                                                cashless_received.cashless_received
-                                            ELSE
-                                                0
-                                            END))
+                                        ELSE (
+                                            (COALESCE(vend_received.vend_received, 0)
+                                            +
+                                            COALESCE(cashless_received.cashless_received, 0))
                                         * people.vending_profit_sharing/100) +  people.vending_monthly_utilities
                                         END))/ (
                                         CASE WHEN people.commission_type = 1
@@ -857,7 +823,7 @@ class VendingController extends Controller
         }
 
         $transactions = $transactions->groupBy('people.id');
-
+        // dd($transactions->get());
         $clonetrans = clone $transactions;
         $clonetrans = $clonetrans->get();
 
