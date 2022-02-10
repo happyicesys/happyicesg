@@ -103,20 +103,29 @@ class VendingController extends Controller
                 $transaction->gst_rate = $person->gst_rate;
                 $daysdiff = Carbon::parse($person->begin_date)->diffInDays(Carbon::parse($person->end_date)) + 1;
                 $remarkStr = '';
-                // dd($person->commission_type);
+
+                $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString();
 
                 if($person->cooperate_method == 2) {
-                    $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", Rental: ".$person->vending_monthly_rental;
+                    $remarkStr .= "\n Begin Analog Clock: ".$person->begin_analog."\n Rental: ".$person->vending_monthly_rental;
                 }else {
                     if($person->commission_type == 1) {
-                        $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
+                        $remarkStr .= "\n Begin Analog Clock: ".$person->begin_analog."\n End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
                     }else if($person->commission_type == 2) {
                         if($person->is_dvm) {
-                            $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                            $remarkStr .= "\n Num of Days: ".$daysdiff;
                         }else {
-                            $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                            $remarkStr .= "\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales;
                         }
+                        $remarkStr .= "\n Total Revenue: $".number_format($person->subtotal_sales, 2);
+                        if($person->subtotal_sales == 0) {
+                            $remarkStr .= "\n (No collection of sales from machine)";
+                        }
+                        $remarkStr .= "\n Commission Rate: ".$person->profit_sharing.' %';
                     }
+                }
+                if($person->commission_package == 2) {
+                    $remarkStr .= "\n Plan: ".$person->vending_profit_sharing.'% or $'.$person->vending_monthly_utilities.' (whichever higher)';
                 }
 
 
@@ -235,16 +244,7 @@ class VendingController extends Controller
         }*/
 
         if($is_rental) {
-            switch($is_rental) {
-                case 'Rental':
-                    $transactions = $transactions->where('people.vending_monthly_rental', '>', 0)->where('people.vending_profit_sharing', '=', 0);
-                    break;
-                case 'Profit':
-                    $transactions = $transactions->where('people.vending_monthly_rental', '=', 0)->where('people.vending_profit_sharing', '>', 0);
-                    break;
-                case 'Others':
-                    $transactions = $transactions->where('people.vending_monthly_rental', '=', 0)->where('people.vending_profit_sharing', '=', 0);
-            }
+            $transactions = $transactions->where('people.cooperate_method', $is_rental);
         }
 
         if($is_active) {
@@ -541,7 +541,7 @@ class VendingController extends Controller
                         ->leftJoin($sales_count, 'people.id', '=', 'sales_count.person_id')
                         ->select(
                                     'items.is_commission',
-                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type', 'people.cooperate_method', 'people.commission_package',
+                                    'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.del_address', 'people.contact', 'people.del_postcode', 'people.bill_address', 'people.is_vending', 'people.is_dvm', 'people.active', 'people.is_gst_inclusive', 'people.gst_rate', 'people.commission_type', 'people.cooperate_method', 'people.commission_package', 'people.vending_monthly_rental', 'people.vending_profit_sharing', 'people.vending_monthly_utilities',
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',

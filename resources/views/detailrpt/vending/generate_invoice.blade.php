@@ -106,7 +106,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_rental', 'Coorperate Method', ['class'=>'control-label search-title']) !!}
-                {!! Form::select('is_rental', [''=>'All', 'Rental'=>'Rental Based', 'Profit'=>'Profit Sharing', 'Others'=>'Others'], null,
+                {!! Form::select('is_rental', [''=>'All', '2'=>'Rental Based', '1'=>'Profit Sharing'], null,
                     [
                     'class'=>'select form-control',
                     'ng-model'=>'search.is_rental'
