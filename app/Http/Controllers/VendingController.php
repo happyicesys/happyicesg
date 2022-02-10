@@ -111,7 +111,11 @@ class VendingController extends Controller
                     if($person->commission_type == 1) {
                         $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString().", Begin Analog Clock: ".$person->begin_analog."\n End Date: ".Carbon::parse($person->end_date)->toDateString().", End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
                     }else if($person->commission_type == 2) {
-                        $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                        if($person->is_dvm) {
+                            $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                        }else {
+                            $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString()."\n Num of Days: ".$daysdiff."\n Quantity: ".$person->sales." \n Total Revenue: $".number_format($person->subtotal_sales, 2)."\n Commission Rate: ".$person->profit_sharing.' %';
+                        }
                     }
                 }
 
@@ -543,7 +547,7 @@ class VendingController extends Controller
                                     'custcategories.name as custcategory',
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN (CASE WHEN analog_start.delivery_date THEN analog_start.delivery_date ELSE analog_first.delivery_date END) ELSE (CASE WHEN fvm_start.delivery_date THEN fvm_start.delivery_date ELSE fvm_first.delivery_date END) END AS begin_date'),
                                     DB::raw('(CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END) AS begin_analog'),
-                                    DB::raw('CASE WHEN people.commission_type = 1 THEN analog_end.delivery_date ELSE vend_received.max_delivery_date END AS end_date'),
+                                    DB::raw('CASE WHEN people.commission_type = 1 THEN analog_end.delivery_date ELSE (CASE WHEN vend_received.max_delivery_date THEN vend_received.max_delivery_date ELSE "'.$this_month_end.'" END) END AS end_date'),
                                     'analog_end.analog_clock AS end_analog',
                                     DB::raw('(analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) AS clocker_delta'),
                                     DB::raw('(analog_lastmonth_end.analog_clock - (CASE WHEN analog_lastmonth_start.analog_clock THEN analog_lastmonth_start.analog_clock ELSE analog_lastmonth_first.analog_clock END)) AS last_clocker_delta'),
