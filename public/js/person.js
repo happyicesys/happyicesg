@@ -36,6 +36,7 @@ function personController($scope, $http) {
         franchisee_id: '',
         excludeCustCat: '',
         freezers: '',
+        priceTemplates: [],
         edited: false,
         updated_by: '',
     }
@@ -45,7 +46,9 @@ function personController($scope, $http) {
         account_manager: '',
         zone_id: '',
         tag_id: '',
+        price_template_id: '',
         detach: '',
+        detach_price_template: '',
         driver: '',
         delivery_date: $scope.today,
         transremark: ''
@@ -138,14 +141,7 @@ function personController($scope, $http) {
         event.preventDefault();
         $scope.assignForm.name = assignName;
         $http.post('/api/person/batch-update', { people: $scope.alldata, assignForm: $scope.assignForm }).success(function (data) {
-            // console.log('here1');
-            // $scope.searchDB();
             $scope.checkall = false;
-            // $('#checkAll').change(function () {
-            //     var all = this;
-            //     $(this).closest('table').find('input[type="checkbox"]').prop('checked', false);
-            // });
-            // console.log(JSON.parse(JSON.stringify(data)));
             if (data.transactions.length > 0) {
                 alert('Invoices ' + data.transactions + ' created');
             }

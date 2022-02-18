@@ -208,7 +208,19 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('price_templates', 'Price Template', ['class'=>'control-label search-title']) !!}
+                    <select name="price_templates" id="price_templates" class="selectmultiple form-control" ng-model="search.priceTemplates" ng-change="searchDB($event)" multiple>
+                        <option value="">All</option>
+                        @foreach($priceTemplates::latest()->get() as $priceTemplate)
+                            <option value="{{$priceTemplate->id}}">
+                                {{$priceTemplate->name}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
+
 
             <div class="row" style="padding-top: 20px;">
                 <div class="col-md-8 col-xs-12">
@@ -318,6 +330,53 @@
                         <label class="control-label"></label>
                         <div class="btn-group-control">
                             <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'zone_id')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Assign Zone</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="assign_price_templates" class="control-label search-title">
+                                Batch
+                                <span ng-if="!assignForm.detach_price_template">
+                                    Assign
+                                </span>
+                                <span ng-if="assignForm.detach_price_template">
+                                    Detach
+                                </span>
+                                Price Template
+                            </label>
+                            {{-- <label class="pull-right">
+                                <input type="checkbox" name="detach_price_template" ng-model="assignForm.detach_price_template">
+                                <span style="margin-top: 5px; margin-right: 5px;">
+                                    Detach
+                                </span>
+                            </label> --}}
+                            <select name="tag" class="select form-control" ng-model="assignForm.price_template_id">
+                                <option value="">None</option>
+                                <option value="-1">-- Detach --</option>
+                                @foreach($priceTemplates::latest()->get() as $priceTemplate)
+                                    <option value="{{$priceTemplate->id}}">
+                                        {{$priceTemplate->name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                        <label class="control-label"></label>
+                        <div class="btn-group-control">
+                            <button type="submit" class="btn btn-sm btn-info" ng-click="onBatchAssignClicked($event, 'price_template_id')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                <span ng-if="!assignForm.detach_price_template">
+                                    Assign
+                                </span>
+                                <span ng-if="assignForm.detach_price_template">
+                                    Detach
+                                </span>
+                                Price Template
+                            </button>
                         </div>
                         </div>
                     </div>

@@ -965,6 +965,13 @@ class PersonController extends Controller
                                     $this->detachTagPerson($person->id, $value);
                                 }
                                 break;
+                            case 'price_template_id':
+                                if(!$assignForm['detach_price_template']) {
+                                    $this->attachPriceTemplatePerson($person->id, $value);
+                                }else {
+                                    $this->detachPriceTemplatePerson($person->id, $value);
+                                }
+                                break;
                             case 'transactions':
                                 $data['delivery_date'] = $assignForm['delivery_date'];
                                 $data['driver'] = $assignForm['driver'];
@@ -981,12 +988,16 @@ class PersonController extends Controller
                 }
             }
         }
-        // dd($transactions);
-        Flash::success(count($transactions).' Invoices successfully created :'.implode(", ", $transactions));
+        if($assignForm['name'] == 'transactions') {
+            Flash::success(count($transactions).' Invoices successfully created :'.implode(", ", $transactions));
+            return [
+                'transactions' => $transactions
+            ];
+        }else {
+            Flash::success('Entries successfully updated');
+            return redirect('person');
+        }
 
-        return [
-            'transactions' => $transactions
-        ];
     }
 
     // fast generate single invoice by person id
@@ -1155,6 +1166,7 @@ class PersonController extends Controller
         $contact = $request->contact;
         $active = $request->active;
         $tags = $request->tags;
+        $priceTemplates = $request->priceTemplates;
         $profile_id = $request->profile_id;
         $franchisee_id = $request->franchisee_id;
         $accountManager = $request->account_manager;
@@ -1219,6 +1231,15 @@ class PersonController extends Controller
             }
             $people = $people->whereHas('persontags', function($query) use ($tags) {
                 $query->whereIn('persontags.id', $tags);
+            });
+        }
+
+        if($priceTemplates) {
+            if (count($priceTemplates) == 1) {
+                $priceTemplates = [$priceTemplates];
+            }
+            $people = $people->whereHas('priceTemplate', function($query) use ($priceTemplates) {
+                $query->whereIn('price_templates.id', $priceTemplates);
             });
         }
 
@@ -1447,6 +1468,22 @@ class PersonController extends Controller
         if($persontagattach) {
             $persontagattach->delete();
         }
+    }
+
+    // attach price template to person
+    private function attachPriceTemplatePerson($personId, $priceTemplateId)
+    {
+        $person = Person::findOrFail($personId);
+        $person->price_template_id = $priceTemplateId;
+        $person->save();
+    }
+
+    // detach price template from person
+    private function detachPriceTemplatePerson($personId, $priceTemplateId)
+    {
+        $person = Person::findOrFail($personId);
+        $person->price_template_id = null;
+        $person->save();
     }
 
     // logic applicable for driver on transactions view
