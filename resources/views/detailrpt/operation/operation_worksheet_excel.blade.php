@@ -10,6 +10,8 @@
         <th>Note</th>
         <th>Lat</th>
         <th>Lng</th>
+        <th>Last2</th>
+        <th>Last</th>
         @foreach($dates as $date)
         <th>
             {{\Carbon\Carbon::parse($date)->format('y-m-d')}} ({{\Carbon\Carbon::parse($date)->format('D')}})
@@ -29,6 +31,18 @@
                 <td>{{$person->operation_note}}</td>
                 <td>{{$person->del_lat}}</td>
                 <td>{{$person->del_lng}}</td>
+                <td>
+                    {{$person->ops2_deldate}}<br>
+                    {{$person->ops2_day}}<br>
+                    {{$person->ops2_total_qty}}<br>
+                    {{$person->ops2_total}}
+                </td>
+                <td>
+                    {{$person->ops_deldate}}<br>
+                    {{$person->ops_day}}<br>
+                    {{$person->ops_total_qty}}<br>
+                    {{$person->ops_total}}
+                </td>
 
             @if($alldata[$indexpeople])
                 @foreach($alldata[$indexpeople] as $data)
