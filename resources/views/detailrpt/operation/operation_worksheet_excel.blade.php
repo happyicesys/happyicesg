@@ -32,15 +32,15 @@
                 <td>{{$person->del_lat}}</td>
                 <td>{{$person->del_lng}}</td>
                 <td>
-                    {{$person->ops2_deldate}}<br>
-                    {{$person->ops2_day}}<br>
-                    {{$person->ops2_total_qty}}<br>
+                    {{$person->ops2_deldate}};
+                    {{$person->ops2_day}};
+                    {{$person->ops2_total_qty}};
                     {{$person->ops2_total}}
                 </td>
                 <td>
-                    {{$person->ops_deldate}}<br>
-                    {{$person->ops_day}}<br>
-                    {{$person->ops_total_qty}}<br>
+                    {{$person->ops_deldate}};
+                    {{$person->ops_day}};
+                    {{$person->ops_total_qty}};
                     {{$person->ops_total}}
                 </td>
 
