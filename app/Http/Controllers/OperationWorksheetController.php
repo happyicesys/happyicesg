@@ -876,7 +876,7 @@ class OperationWorksheetController extends Controller
         ) last";
 
         // $last3 = DB::raw($last3);
-        // $last2 = DB::raw($last2);
+        $last2 = DB::raw($last2);
         $last = DB::raw($last);
 
         $outletVisits = DB::raw( "(
@@ -896,7 +896,7 @@ class OperationWorksheetController extends Controller
                     ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin($last, 'people.id', '=', 'last.person_id')
-                    // ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
+                    ->leftJoin($last2, 'people.id', '=', 'last2.person_id')
                     // ->leftJoin($last3, 'people.id', '=', 'last3.person_id')
                     ->join('persontagattaches', 'persontagattaches.person_id', '=', 'people.id', 'left outer')
                     ->leftJoin('persontags', 'persontags.id', '=', 'persontagattaches.persontag_id')
