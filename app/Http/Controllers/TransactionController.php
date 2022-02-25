@@ -2065,10 +2065,266 @@ class TransactionController extends Controller
         }
     }
 
+    // import excel to generate batch invoices with different unit prices
+    public function importExcelTransactionDifferentUnitPrice(Request $request)
+    {
+        $file = '';
+        $importStatusArr = [
+            'success' => [],
+            'item_failure' => [],
+            'failure' => []
+        ];
+        if($file = request()->file('excel_file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $resultfilename = 'Imported_'.$name;
+            $loadfile = $file->move('import_excel', $name);
+
+            $reader = Excel::load($loadfile, function($reader){})->get();
+                $results = $reader->toArray();
+                $headers = $reader->first()->toArray();
+                $items = [];
+                foreach($headers as $index => $header) {
+                    if(strpos($index, '[') and strpos($index, ']')) {
+                        $product = $this->getStringBetween($index, '[', ']');
+                        if(strpos($product, ';')) {
+                            $productArr = explode(';', $product);
+                            $items[$index] = [
+                                'product_id' => $productArr[0],
+                                'multiplier' => isset($productArr[1]) ? $productArr[1] : 1,
+                            ];
+                        }
+                    }
+                }
+
+                if($headers)
+                  foreach($results as $resultindex => $result) {
+                    $po_no = '';
+
+                    if(!$result['customer_id'] and !$result['delivery_date']) {
+                        continue;
+                    }
+
+                    if($person = Person::where('cust_id', $result['customer_id'])->first()) {
+
+                        if($po_no = $result['po_no']) {
+                            $po_no = trim($po_no);
+
+                            if($person->cust_id[0] == 'P') {
+                                $searchTransactionPo = Transaction::where('po_no', $po_no)->first();
+                                if($searchTransactionPo) {
+                                    array_push($importStatusArr['failure'], [
+                                        'po_no' => $po_no,
+                                        'cust_id' => $result['customer_id'],
+                                        'del_postcode' => $result['del_postcode'],
+                                        'reason' => 'Duplicated PO',
+                                        'row_number' => $resultindex + 2
+                                    ]);
+                                    continue;
+                                }
+                            }
+                        }
+
+                        $model = new Transaction();
+                        if($cust_id = $result['customer_id']) {
+                            $model->person_id = $person->id;
+                            $model->person_code = $person->cust_id;
+                            $model->gst = $person->profile->gst;
+                            $model->gst_rate = $person->gst_rate;
+                            $model->is_gst_inclusive = $person->is_gst_inclusive;
+                            $model->po_no = $po_no;
+                            $model->updated_by = 'system';
+                            $model->created_by = 100129;
+                        }
+                        $del_postcode = isset($result['del_postcode']) ? $result['del_postcode'] : $person->del_postcode;
+                        $del_address = isset($result['del_address']) ? $result['del_address'] : $person->del_address;
+                        $order_date = isset($result['order_date']) ? Carbon::parse($result['order_date'])->toDateString() : Carbon::today()->toDateString();
+                        $delivery_date = isset($result['delivery_date']) ? Carbon::parse($result['delivery_date'])->toDateString() : Carbon::today()->toDateString();
+                        $total_amount = isset($result['total_amount']) ? $result['total_amount'] : '';
+                        $delivery_fee = isset($result['delivery_fee']) ? $result['delivery_fee'] : '';
+                        $attn_name = isset($result['attn_name']) ? $result['attn_name'] : $person->name;
+                        $attn_contact = isset($result['attn_contact']) ? $result['attn_contact'] : $person->contact;
+                        $attn_email = isset($result['attn_email']) ? $result['attn_email'] : $person->email;
+                        $transremark = isset($result['transremark']) ? $result['transremark'] : '';
+                        $payment_date = isset($result['payment_date']) ? $result['payment_date'] : '';
+                        $dealArr = [];
+                        $invoice_amount = 0;
+                        $quantityArr = [];
+                        $quoteArr = [];
+                        $amountArr = [];
+
+                        if($del_postcode) {
+                            $model->del_postcode = $del_postcode;
+                        }
+                        if($del_address) {
+                            $model->del_address = $del_address;
+                        }
+                        if($order_date) {
+                            $model->order_date = $order_date;
+                        }
+                        if($delivery_date) {
+                            $model->delivery_date = $delivery_date;
+                        }
+                        if($total_amount) {
+                            $model->total = $total_amount;
+                        }
+                        if($attn_name) {
+                            $model->name = $attn_name;
+                        }
+                        if($attn_contact) {
+                            $model->contact = $attn_contact;
+                        }
+                        if($attn_email) {
+                            $model->email = $attn_email;
+                        }
+                        if($transremark) {
+                            $model->transremark = $transremark;
+                            $model->is_important = 1;
+                        }
+                        if($payment_date) {
+                            $model->paid_at = $payment_date;
+                            $model->paid_by = auth()->user()->name;
+                            $model->pay_method = 'cash';
+                            $model->pay_status = 'Paid';
+                        }
+                        $model->status = 'Confirmed';
+                        $model->save();
+
+                        array_push($importStatusArr['success'], [
+                            'transaction_id' => $model->id,
+                            'cust_id' => $result['customer_id'],
+                            'del_postcode' => $result['del_postcode'],
+                            'po_no' => $po_no
+                        ]);
+
+                        foreach($items as $itemindex => $itemExcel) {
+                            $priceObj = 0;
+                            $inputQty = 0;
+                            $qty = 0;
+                            if($price = $result[$itemindex]) {
+                                $item = Item::where('product_id', $itemExcel['product_id'])->first();
+
+                                if(!$item) {
+                                    array_push($importStatusArr['item_failure'], [
+                                        'transaction_id' => $model ? $model->id : '',
+                                        'cust_id' => $result['customer_id'],
+                                        'del_postcode' => $del_postcode,
+                                        'po_no' => $po_no,
+                                        'item' => $itemExcel['product_id'],
+                                        'qty' => $itemExcel['multiplier'],
+                                        'reason' => 'Product ID error'
+                                    ]);
+                                    continue;
+                                }
+
+                                $qty = $itemExcel['multiplier'];
+
+                                $invoice_amount += $price;
+
+                                if($item) {
+                                    array_push($dealArr, [
+                                        'item_id' => $item->id,
+                                        'qty' => $qty,
+                                        'quote' => $price,
+                                        'amount' => $price
+                                    ]);
+                                }
+                            }
+                        }
+
+                        if($delivery_fee) {
+                            if($delivery_fee != 0) {
+                                array_push($dealArr, [
+                                    'item_id' => 308,
+                                    'qty' => 1,
+                                    'quote' => $delivery_fee,
+                                    'amount' => $delivery_fee
+                                ]);
+                                $invoice_amount += $delivery_fee;
+                            }
+                        }
+
+                        if($total_amount) {
+                            $total_amount = number_format($total_amount, 2);
+                            $invoice_amount = number_format($invoice_amount, 2);
+                            $diff_amount = $total_amount - $invoice_amount;
+
+                            if($invoice_amount != $total_amount and $diff_amount != 0) {
+                                array_push($dealArr, [
+                                    'item_id' => 21,
+                                    'qty' => 1,
+                                    'quote' => $diff_amount,
+                                    'amount' => $diff_amount
+                                ]);
+                            }
+                        }
+
+                        $itemArrErrors = $this->syncDeal($model, $dealArr, 1);
+
+                        if(count($itemArrErrors) > 0) {
+                            foreach($itemArrErrors as $errorItem) {
+                                array_push($importStatusArr['item_failure'], [
+                                    'transaction_id' => $model ? $model->id : '',
+                                    'cust_id' => $result['customer_id'],
+                                    'del_postcode' => $del_postcode,
+                                    'po_no' => $po_no,
+                                    'item' => $errorItem,
+                                    'reason' => 'Insufficient Stock'
+                                ]);
+                            }
+                        }
+                    }else {
+                        array_push($importStatusArr['failure'], [
+                            'po_no' => $po_no,
+                            'cust_id' => $result['customer_id'],
+                            'del_postcode' => $result['del_postcode'],
+                            'reason' => 'Invalid Customer ID',
+                            'syntax' => $result,
+                            'row_number' => $resultindex + 2
+                        ]);
+                    }
+                }
+
+            Excel::create($resultfilename, function($excel) use ($importStatusArr) {
+                $excel->sheet('sheet1', function($sheet) use ($importStatusArr) {
+                    $sheet->setColumnFormat(array('A:P' => '@'));
+                    $sheet->getPageSetup()->setPaperSize('A4');
+                    $sheet->setAutoSize(true);
+                    $sheet->loadView('transaction.upload_excel_result', compact('importStatusArr'));
+                });
+            })->store('xlsx', public_path('import_excel_result'));
+
+                ImportTransactionExcel::create([
+                    'upload_date' => Carbon::today()->toDateString(),
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_url' => '/import_excel/'.$name,
+                    'result_url' => '/import_excel_result/'.$resultfilename.'.xlsx',
+                    'uploaded_by' => auth()->user()->id,
+                    'type' => 2,
+                ]);
+        }
+        if(count($importStatusArr['failure']) > 0 or count($importStatusArr['item_failure']) > 0 or count($importStatusArr['success']) == 0) {
+            return 'false';
+        }else {
+            return 'true';
+        }
+    }
+
     // retrieve upload excel history
-    public function getLatestImportExcelHistory()
+    public function getLatestImportExcelHistoryNormal()
     {
         $histories = ImportTransactionExcel::with('uploader')
+                    ->whereType(1)
+                    ->latest()
+                    ->limit(5)
+                    ->get();
+
+        return $histories;
+    }
+
+    public function getLatestImportExcelHistoryDifferentUnitPrice()
+    {
+        $histories = ImportTransactionExcel::with('uploader')
+                    ->whereType(2)
                     ->latest()
                     ->limit(5)
                     ->get();

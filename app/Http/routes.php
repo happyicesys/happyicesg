@@ -442,9 +442,11 @@ Route::resource('price', 'PriceController');
 
 Route::post('/api/transaction/batch/status', 'TransactionController@batchUpdateStatus');
 Route::post('/api/transaction/transremark/{id}', 'TransactionController@updateTransremarkById');
-Route::get('/api/transaction/excel/histories', 'TransactionController@getLatestImportExcelHistory');
+Route::get('/api/transaction/excel/histories', 'TransactionController@getLatestImportExcelHistoryNormal');
+Route::get('/api/transaction/excel/histories/unit-price', 'TransactionController@getLatestImportExcelHistoryDifferentUnitPrice');
 Route::post('/api/transaction/batch/paymentstatus', 'TransactionController@batchUpdatePaymentStatus');
 Route::post('/api/transaction/excel/import', 'TransactionController@importExcelTransaction');
+Route::post('/api/transaction/excel/import/unit-price', 'TransactionController@importExcelTransactionDifferentUnitPrice');
 Route::post('/api/transaction/jobassign/refreshdriver', 'TransactionController@jobAssignRefreshDriver');
 Route::post('/api/transaction/initsequence', 'TransactionController@initTransactionsSequence');
 Route::post('/api/transaction/sequence/{id}', 'TransactionController@updateTransactionSequence');

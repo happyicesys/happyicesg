@@ -767,6 +767,41 @@
                             </div>
                         </div>
                         <hr class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label for="files">
+                                        Upload Excel Batch Create Invoice (Different Unit Price)
+                                    </label>
+                                    <input type="file" ng-files="setTheFiles($files)" id="excel_file_unit_price"  class="form-control">
+                                    <div class="btn-group-control">
+                                        <button ng-click="uploadExcelUnitPrice($event)" class="btn btn-primary" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
+                                            Upload Excel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label for="history">
+                                        Latest 5 Upload Histories
+                                    </label>
+                                    <ul>
+                                            <li ng-repeat="import in excelHistoriesUnitPrice">
+                                                <a href="@{{import.file_url}}">
+                                                    @{{import.file_name}}
+                                                </a>
+                                                (<a href="@{{import.result_url}}">Result</a>)
+                                                <small>
+                                                    @{{import.created_at}}
+                                                    @{{import.uploader.name}}
+                                                </small>
+                                            </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="row">
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-6 col-sm-6 col-xs-12">
