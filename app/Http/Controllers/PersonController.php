@@ -379,7 +379,7 @@ class PersonController extends Controller
     public function destroy($id)
     {
         $person = Person::findOrFail($id);
-        if($person->transactions) {
+        if($person->transactions()->exists()) {
             Flash::error('Transaction(s) found under this customer profile');
             return Redirect::action('PersonController@edit', $id);
         }else {
