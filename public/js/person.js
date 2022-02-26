@@ -39,6 +39,7 @@ function personController($scope, $http) {
         priceTemplates: [],
         edited: false,
         updated_by: '',
+        is_pwp: '',
     }
     $scope.assignForm = {
         name: '',

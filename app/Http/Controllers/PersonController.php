@@ -1176,6 +1176,7 @@ class PersonController extends Controller
         $createdMonth = $request->created_month;
         $updatedAt = $request->updated_at;
         $updatedBy = $request->updated_by;
+        $isPwp = $request->is_pwp;
 
         if ($cust_id) {
             if($strictCustId) {
@@ -1297,6 +1298,10 @@ class PersonController extends Controller
             $people = $people->whereHas('updatedBy', function($query) use ($updatedBy){
                 $query->where('id', $updatedBy);
             });
+        }
+
+        if($isPwp != '') {
+            $people = $people->where('people.is_pwp', $isPwp);
         }
 
         return $people;

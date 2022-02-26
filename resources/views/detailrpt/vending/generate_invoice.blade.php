@@ -132,6 +132,16 @@
                 !!}
             </div>
         </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('is_pwp', 'Is PWP?', ['class'=>'control-label search-title']) !!}
+                <select name="is_pwp" id="is_pwp" class="select form-control" ng-model="search.is_pwp" ng-change="searchDB($event)">
+                    <option value="">All</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>
     </div>
     <hr>
     <div class="row">

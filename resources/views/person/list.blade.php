@@ -219,6 +219,14 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                    {!! Form::label('is_pwp', 'Is PWP?', ['class'=>'control-label search-title']) !!}
+                    <select name="is_pwp" id="is_pwp" class="select form-control" ng-model="search.is_pwp" ng-change="searchDB($event)">
+                        <option value="">All</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
             </div>
 
 

@@ -121,11 +121,15 @@ class VendingController extends Controller
                         if($person->subtotal_sales == 0) {
                             $remarkStr .= "\n (No collection of sales from machine)";
                         }
-                        $remarkStr .= "\n Commission Rate: ".$person->profit_sharing.' %';
                     }
                 }
+
+                if($person->commission_package == 1) {
+                    $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% + $'.$person->vending_monthly_utilities;
+                }
+
                 if($person->commission_package == 2) {
-                    $remarkStr .= "\n Plan: ".$person->vending_profit_sharing.'% or $'.$person->vending_monthly_utilities.' (whichever higher)';
+                    $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% or $'.$person->vending_monthly_utilities.' (whichever higher)';
                 }
 
 
@@ -194,6 +198,7 @@ class VendingController extends Controller
         // $is_profit_sharing_report = request('is_profit_sharing_report');
         $is_rental = request('is_rental');
         $is_active = request('is_active');
+        $isPwp = request('is_pwp');
 
         if($profile_id) {
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -249,6 +254,10 @@ class VendingController extends Controller
 
         if($is_active) {
             $transactions = $transactions->where('people.active', $is_active);
+        }
+
+        if($isPwp != '') {
+            $transactions = $transactions->where('people.is_pwp', $isPwp);
         }
 
         return $transactions;
@@ -554,47 +563,49 @@ class VendingController extends Controller
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END AS sales'),
                                     DB::raw('
-                                        (CASE
-                                        WHEN
-                                            people.commission_type = 1
-                                        THEN
-                                            FLOOR((analog_end.analog_clock - (
-                                            CASE WHEN
-                                                analog_start.analog_clock THEN analog_start.analog_clock
-                                            ELSE
-                                                analog_first.analog_clock
-                                            END
-                                            ))- (
-                                            CASE WHEN
-                                                people.vending_clocker_adjustment
-                                            THEN
-                                            ((analog_end.analog_clock - (
-                                                CASE WHEN
-                                                    analog_start.analog_clock
+                                        ROUND(
+                                            (CASE
+                                                WHEN
+                                                    people.commission_type = 1
                                                 THEN
-                                                    analog_start.analog_clock
-                                                ELSE analog_first.analog_clock
-                                                END
-                                                )) * people.vending_clocker_adjustment/ 100)
-                                            ELSE
-                                                0
-                                            END
-                                            )) * people.vending_piece_price
-                                        ELSE
-                                            COALESCE(vend_received.vend_received, 0)
-                                            +
-                                            COALESCE(cashless_received.cashless_received, 0)
-                                        END)
-                                        *
-                                        (
-                                            CASE WHEN
-                                                people.is_pwp
-                                            THEN
-                                                (100 - people.pwp_adj_rate) / 100
-                                            ELSE
-                                                1
-                                            END
-                                        )
+                                                    FLOOR((analog_end.analog_clock - (
+                                                    CASE WHEN
+                                                        analog_start.analog_clock THEN analog_start.analog_clock
+                                                    ELSE
+                                                        analog_first.analog_clock
+                                                    END
+                                                    ))- (
+                                                    CASE WHEN
+                                                        people.vending_clocker_adjustment
+                                                    THEN
+                                                    ((analog_end.analog_clock - (
+                                                        CASE WHEN
+                                                            analog_start.analog_clock
+                                                        THEN
+                                                            analog_start.analog_clock
+                                                        ELSE analog_first.analog_clock
+                                                        END
+                                                        )) * people.vending_clocker_adjustment/ 100)
+                                                    ELSE
+                                                        0
+                                                    END
+                                                    )) * people.vending_piece_price
+                                                ELSE
+                                                    COALESCE(vend_received.vend_received, 0)
+                                                    +
+                                                    COALESCE(cashless_received.cashless_received, 0)
+                                                END)
+                                                *
+                                                (
+                                                    CASE WHEN
+                                                        people.is_pwp
+                                                    THEN
+                                                        (100 - people.pwp_adj_rate) / 100
+                                                    ELSE
+                                                        1
+                                                    END
+                                                )
+                                            , 1)
                                         AS subtotal_sales'
                                     ),
                                     DB::raw('
@@ -819,9 +830,7 @@ class VendingController extends Controller
                                     'vend_received.vend_received AS vend_received', 'cashless_received.cashless_received AS cashless_received', 'vend_received.max_delivery_date AS max_vend_date', 'vend_received.min_delivery_date AS min_vend_date'
                                 );
 
-        if(request('profile_id') or request('current_month') or request('cust_id') or request('id_prefix') or request('company') or request('custcategory') or request('status') or request('is_rental') or request('is_active')){
-            $transactions = $this->searchTransactionDBFilter($transactions);
-        }
+        $transactions = $this->searchTransactionDBFilter($transactions);
 
         $transactions = $transactions
                         ->where('transactions.is_required_analog', 1)
