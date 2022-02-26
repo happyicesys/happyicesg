@@ -128,6 +128,24 @@
                 </div>
             </div>
         </div>
+        <div class="row col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('is_pwp', 'Is Purchase w Purchase? (PWP)', ['class'=>'control-label']) !!}
+                    {!! Form::select('is_pwp',
+                    [
+                        '0'=>'No',
+                        '1'=>'Yes',
+                    ], null, ['id'=>'is_pwp', 'class'=>'selectnotclear form-control', 'disabled'=>$disabled]) !!}
+                </div>
+            </div>
+            <div class="isPwpDiv col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('pwp_adj_rate', 'PWP Adjustment Rate (%)', ['class'=>'control-label']) !!}
+                    {!! Form::text('pwp_adj_rate', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('vending_id', 'Binded Vending', ['class'=>'control-label']) !!}

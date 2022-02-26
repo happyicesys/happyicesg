@@ -554,7 +554,7 @@ class VendingController extends Controller
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END AS sales'),
                                     DB::raw('
-                                        CASE
+                                        (CASE
                                         WHEN
                                             people.commission_type = 1
                                         THEN
@@ -584,7 +584,17 @@ class VendingController extends Controller
                                             COALESCE(vend_received.vend_received, 0)
                                             +
                                             COALESCE(cashless_received.cashless_received, 0)
-                                        END
+                                        END)
+                                        *
+                                        (
+                                            CASE WHEN
+                                                people.is_pwp
+                                            THEN
+                                                (100 - people.pwp_adj_rate) / 100
+                                            ELSE
+                                                1
+                                            END
+                                        )
                                         AS subtotal_sales'
                                     ),
                                     DB::raw('
