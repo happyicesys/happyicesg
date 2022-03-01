@@ -379,16 +379,16 @@
                     Zone
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('last2.delivery_date')">
+                    <a href="" ng-click="sortTable('ops2_deldate')">
                     Last 2 Transac
-                    <span ng-if="search.sortName == 'last2.delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'last2.delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'ops2_deldate' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'ops2_deldate' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center">
-                    <a href="" ng-click="sortTable('last.delivery_date')">
+                    <a href="" ng-click="sortTable('ops_deldate')">
                     Last Transac
-                    <span ng-if="search.sortName == 'last.delivery_date' && !search.sortBy" class="fa fa-caret-down"></span>
-                    <span ng-if="search.sortName == 'last.delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
+                    <span ng-if="search.sortName == 'ops_deldate' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'ops_deldate' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-1 text-center" ng-repeat="date in dates" ng-class="todayDateChecker(date)">
                     @{{date | date : "yy-MM-dd"}}
