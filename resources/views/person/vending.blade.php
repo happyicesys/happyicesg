@@ -151,7 +151,7 @@
                 {!! Form::label('vending_id', 'Binded Vending', ['class'=>'control-label']) !!}
                 <select name="vending_id" class="form-control select">
                     <option value="">Not Binding</option>
-                    @foreach($vendings::whereNull('person_id')->orWhere('person_id', '=', $person->id)->latest()->get() as $vending)
+                    @foreach($vendings::whereNull('person_id')->orWhere('person_id', '=', 0)->orWhere('person_id', '=', $person->id)->latest()->get() as $vending)
                         <option value="{{$vending->id}}" {{isset($person->vending) && $person->vending->id == $vending->id ? 'selected' : ''}}>
                             {{$vending->serial_no}}
                             @if($vending->type)
