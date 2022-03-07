@@ -136,7 +136,7 @@
                     <select name="driver" class="form-control select" ng-model="driver" ng-change="driverChange(driver)">
                         <option value="">All</option>
                         @foreach($users::where('is_active', 1)->orderBy('name')->get() as $user)
-                            @if($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->hasRole('account') or $user->hasRole('accountadmin') or $user->hasRole('supervisor') or $user->hasRole('merchandiser') or $user->hasRole('merchandiser_plus'))
+                            @if($user->hasRole('driver') or $user->hasRole('technician') or $user->hasRole('driver-supervisor') or $user->hasRole('account') or $user->hasRole('accountadmin') or $user->hasRole('supervisor') or $user->hasRole('merchandiser') or $user->hasRole('merchandiser_plus') or $user->hasRole('admin'))
                                 <option value="{{$user->name}}">
                                     {{$user->name}}
                                 </option>
