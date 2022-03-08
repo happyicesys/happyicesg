@@ -353,6 +353,9 @@ class VMController extends Controller
         if (request('cust_id')) {
             $vendings = $vendings->where('people.cust_id', 'LIKE', '%' . request('cust_id') . '%');
         }
+        if (request('serial_no')) {
+            $vendings = $vendings->where('vendings.serial_no', 'LIKE', '%' . request('serial_no') . '%');
+        }
         if (request('company')) {
             $com = request('company');
             $vendings = $vendings->where(function ($query) use ($com) {

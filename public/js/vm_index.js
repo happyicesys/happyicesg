@@ -18,6 +18,7 @@ function vmController($scope, $http) {
         cust_id: '',
         company: '',
         custcategory: '',
+        serial_no: '',
         itemsPerPage: 100,
         sortName: '',
         sortBy: true
@@ -97,7 +98,7 @@ function vmController($scope, $http) {
         if (isConfirmDelete) {
             $http({
                 method: 'DELETE',
-                url: '/vm/' + id +'/destroy'
+                url: '/vm/' + id + '/destroy'
             }).success(function (data) {
                 location.reload();
             }).error(function (data) {
