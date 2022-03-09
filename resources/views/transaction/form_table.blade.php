@@ -84,7 +84,7 @@
                                     <strong>
                                         <input type="text" name="quote[{{$priceTemplateItem->item->id}}]"
                                         value="{{$priceTemplateItem->quote_price}}"
-                                        class="text-right form-control quoteClass" readonly="readonly"/>
+                                        class="text-right form-control quoteClass" {{$priceTemplateItem->item->is_editable_price_template ? '' : 'disabled'}}/>
                                     </strong>
                                 </td>
                                 <td class="col-md-2 col-xs-2">

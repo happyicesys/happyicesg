@@ -208,7 +208,15 @@
             </div>
         </div>
     </div>
+    <div class="row form-group">
+        <div class="col-md-3 col-sm-3 col-xs-6">
+            <div class="form-group">
+                {!! Form::checkbox('is_editable_price_template', $item->is_editable_price_template) !!}
+                {!! Form::label('is_editable_price_template', 'Is Price Template Editable?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+            </div>
+        </div>
 
+    </div>
 </div>
 
 @section('footer')

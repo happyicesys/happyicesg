@@ -106,6 +106,7 @@ class ItemController extends Controller
         request()->merge(array('is_supermarket_fee' => request()->has('is_supermarket_fee') ? 1 : 0));
         request()->merge(array('is_healthier' => request()->has('is_healthier') ? 1 : 0));
         request()->merge(array('is_halal' => request()->has('is_halal') ? 1 : 0));
+        request()->merge(array('is_editable_price_template' => request()->has('is_editable_price_template') ? 1 : 0));
 
         $item = Item::create(request()->all());
 
@@ -169,6 +170,7 @@ class ItemController extends Controller
         request()->merge(array('is_supermarket_fee' => request()->has('is_supermarket_fee') ? 1 : 0));
         request()->merge(array('is_healthier' => request()->has('is_healthier') == 'true' ? 1 : 0));
         request()->merge(array('is_halal' => request()->has('is_halal') == 'true' ? 1 : 0));
+        request()->merge(array('is_editable_price_template' => request()->has('is_editable_price_template') ? 1 : 0));
 
         $item = Item::withoutGlobalScopes()->findOrFail($id);
         $item->update(request()->all());
