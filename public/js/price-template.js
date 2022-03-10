@@ -145,11 +145,6 @@ function priceTemplateController($scope, $http) {
     // bind
     $scope.onPriceTemlatePersonBindingClicked = function () {
         $http.post('/api/price-template/person/bind', $scope.form).success(function (data) {
-            $scope.form.price_template_id = '';
-            $scope.form.person_id = '';
-            $('.select').select2({
-                placeholder: 'Select...'
-            });
             getPage(1, false);
         });
     }
