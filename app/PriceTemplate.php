@@ -12,6 +12,11 @@ class PriceTemplate extends Model
     ];
 
     // relationships
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'modelable');
+    }
+
     public function people()
     {
         return $this->hasMany(Person::class);

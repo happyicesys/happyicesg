@@ -74,7 +74,7 @@
                             </td>
                             {{-- unit price --}}
                             @if(!$transaction->is_discard)
-                                <td class="col-md-1 text-right" ng-if="! deal.unit_price">@{{ (deal.amount / deal.qty) | currency: ""}}</td>
+                                <td class="col-md-1 text-right" ng-if="!deal.unit_price">@{{ (deal.amount / deal.dividend * deal.divisor) | currency: ""}}</td>
                                 <td class="col-md-1 text-right" ng-if="deal.unit_price">@{{ deal.unit_price | currency: "" }}</td>
                                 {{-- deal amount --}}
                             @endif

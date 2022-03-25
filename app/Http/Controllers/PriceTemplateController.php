@@ -89,6 +89,19 @@ class PriceTemplateController extends Controller
                 'remarks' => $remarks,
             ]);
         }
+
+
+        if($file = request()->file('file')){
+            $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+            $url = 'price-template/'.$priceTemplate->id.'/'.$name;
+            $urlStore = Storage::put($url, file_get_contents($file->getRealPath()), 'public');
+            $fullUrl = Storage::url($urlStore);
+            $priceTemplate->attachments()->create([
+                'url' => $url,
+                'fullUrl' => $fullUrl,
+            ]);
+        }
+
         if($priceTemplateItems) {
             foreach($priceTemplateItems as $item) {
                 $this->syncPriceTemplateItem($item, $priceTemplate->id);
