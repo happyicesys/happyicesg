@@ -7,6 +7,7 @@
     <div class="col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('name', 'Name', ['class'=>'control-label']) !!}
+            <label for="*" style="color: red;">*</label>
             {!! Form::text('name', null, ['class'=>'form-control']) !!}
         </div>
     </div>
@@ -21,35 +22,28 @@
     <div class="col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('contact', 'Phone', ['class'=>'control-label']) !!}
+            <label for="*" style="color: red;">*</label>
             {!! Form::text('contact', null, ['class'=>'form-control']) !!}
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-8 col-sm-8 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('username', 'Username', ['class'=>'control-label']) !!}
+            <label for="*" style="color: red;">*</label>
             {!! Form::text('username', null, ['class'=>'form-control']) !!}
         </div>
     </div>
     <div class="col-md-4 col-sm-4 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('user_code', 'User ID', ['class'=>'control-label']) !!}
-            {!! Form::text('user_code', null, ['class'=>'form-control']) !!}
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('password', 'Password', ['class'=>'control-label']) !!}
             {!! Form::password('password', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
         </div>
     </div>
 
-    <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('password_confirmation', 'Password Confirmation', ['class'=>'control-label']) !!}
             {!! Form::password('password_confirmation', ['class'=>'form-control', 'placeholder'=>$pass_text]) !!}
@@ -63,6 +57,7 @@
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('role', 'Position', ['class'=>'control-label']) !!}
+            <label for="*" style="color: red;">*</label>
             {!! Form::select('role_list[]', $roles::lists('label', 'id'), null, ['id'=>'role', 'class'=>'select form-control']) !!}
         </div>
     </div>
@@ -90,7 +85,7 @@
 <div class="row">
     <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-            {!! Form::label('fin_no', 'FIN No', ['class'=>'control-label']) !!}
+            {!! Form::label('fin_no', 'IC/ FIN No', ['class'=>'control-label']) !!}
             {!! Form::text('fin_no', null, ['class'=>'form-control']) !!}
         </div>
     </div>

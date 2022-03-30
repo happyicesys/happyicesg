@@ -29,7 +29,15 @@ class UserRequest extends Request
             'name'=>'required|min:3',
             'username'=>'required|min:3|unique:users,username,'.$user,
             'email'=>'email|unique:users,email,'.$user,
-            'contact'=>array('regex:/^([0-9\s\-\+\(\)]*)$/'),
+            'contact'=>'required|regex:/^([0-9\s\-\+\(\)]*)$/',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'contact.required' => 'The phone number is required',
+            'contact.regex' => 'The phone number format is not valid',
         ];
     }
 }
