@@ -23,6 +23,7 @@
                 <li><a href="#cust_cat" role="tab" data-toggle="tab">Customer Category</a></li>
             @endif
                 <li><a href="#cust_tags" role="tab" data-toggle="tab">Customer Tags</a></li>
+                <li><a href="#truck" role="tab" data-toggle="tab">Truck(s)</a></li>
             @if(auth()->user()->hasRole('admin'))
                 <li><a href="#itemcategory" role="tab" data-toggle="tab">Item Category</a></li>
                 <li><a href="#itemGroup" role="tab" data-toggle="tab">Item Group</a></li>
@@ -385,6 +386,10 @@
 
             <div class="tab-pane" id="cust_tags" ng-controller="custTagsController">
                 @include('user.cust_tags_template')
+            </div>
+
+            <div class="tab-pane" id="truck" ng-controller="truckController">
+                @include('user.truck_template')
             </div>
 
             <div class="tab-pane" id="itemcategory" ng-controller="itemcategoryController">

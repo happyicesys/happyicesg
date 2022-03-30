@@ -49,7 +49,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(CustcategoryGroupSeeder::class);
 
         // $this->call(ItemcategorySeeder::class);
-        $this->call(TruckSeeder::class);
+        // $this->call(TruckSeeder::class);
+        $this->call(CountrySeeder::class);
         Model::reguard();
     }
 }

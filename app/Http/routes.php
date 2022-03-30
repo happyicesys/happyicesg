@@ -430,6 +430,12 @@ Route::get('/itemcategory/data', 'ItemcategoryController@getData');
 Route::delete('/itemcategory/data/{id}', 'ItemcategoryController@destroyAjax');
 Route::resource('itemcategory', 'ItemcategoryController');
 
+Route::get('/api/trucks', 'TruckController@getIndexApi');
+Route::get('/api/truck/{id}', 'TruckController@getTruckApi');
+Route::get('/truck/data', 'TruckController@getData');
+Route::delete('/truck/data/{id}', 'TruckController@destroyAjax');
+Route::resource('truck', 'TruckController');
+
 Route::post('/api/pricematrix/override', 'PriceController@overridePriceMatrixApi');
 Route::post('/api/prices/person', 'PriceController@getPersonPricesApi');
 Route::post('/pricematrix/batchconfirm', 'PriceController@batchConfirmPriceMatrix');

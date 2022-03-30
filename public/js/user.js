@@ -603,6 +603,43 @@ function itemcategoryController($scope, $http) {
     }
 }
 
+function truckController($scope, $http) {
+    $scope.currentPage10 = 1;
+    $scope.itemsPerPage10 = 100;
+
+    $http.get('/api/trucks').success(function (trucks) {
+        $scope.trucks = trucks;
+    });
+
+    // export cust cat excel
+    $scope.exportTruckExcel = function (event) {
+        event.preventDefault();
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_truck').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Truck" + now + ".xls");
+    };
+
+    $scope.confirmDelete10 = function (id) {
+        var isConfirmDelete = confirm('Are you sure you want to delete this truck?');
+        if (isConfirmDelete) {
+            $http({
+                method: 'DELETE',
+                url: '/truck/data/' + id
+            })
+                .success(function (data) {
+                    location.reload();
+                })
+                .error(function (data) {
+                    alert('Unable to delete');
+                })
+        } else {
+            return false;
+        }
+    }
+}
+
 function repeatController($scope) {
     $scope.$watch('$index', function (index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -639,6 +676,12 @@ function repeatController6($scope) {
     })
 }
 
+function repeatController10($scope) {
+    $scope.$watch('$index', function (index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage10 - 1) * $scope.itemsPerPage10;
+    })
+}
+
 app.controller('userController', userController);
 app.controller('custCategoryController', custCategoryController);
 app.controller('repeatController', repeatController);
@@ -647,10 +690,12 @@ app.controller('repeatController3', repeatController3);
 app.controller('repeatController4', repeatController4);
 app.controller('repeatController5', repeatController5);
 app.controller('repeatController6', repeatController6);
+app.controller('repeatController10', repeatController10);
 app.controller('custTagsController', custTagsController);
 app.controller('custCategoryGroupController', custCategoryGroupController);
 app.controller('itemcategoryController', itemcategoryController);
 app.controller('itemGroupController', itemGroupController);
+app.controller('truckController', truckController);
 
 $(function () {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

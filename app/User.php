@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -16,6 +17,12 @@ class User extends Model implements AuthenticatableContract,
                                     CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword, SoftDeletes, HasRoles;
+
+    const SEXES = [
+        '1'=>'Male',
+        '2'=>'Female',
+        '3'=>'Unknown',
+    ];
 
     /**
      * The database table used by the model.
@@ -32,7 +39,8 @@ class User extends Model implements AuthenticatableContract,
     protected $fillable = [
         'name', 'email', 'password',
         'username', 'contact', 'can_access_inv', 'user_code', 'company_name',
-        'bill_address', 'is_active', 'master_franchisee_id'
+        'bill_address', 'is_active', 'master_franchisee_id', 'nationality_country_id', 'birth_country_id',
+        'fin_no', 'permit_no', 'permit_expiry_date', 'dob', 'sex_id', 'truck_id',
     ];
 
     /**
@@ -73,6 +81,16 @@ class User extends Model implements AuthenticatableContract,
         return $this->roles->lists('id')->all();
     }
 
+    public function getDobAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getPermitExpiryDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
     //relationships
     public function transactions()
     {
@@ -82,6 +100,21 @@ class User extends Model implements AuthenticatableContract,
     public function transSubscription()
     {
         return $this->hasOne('App\TransSubscription');
+    }
+
+    public function truck()
+    {
+        return $this->belongsTo(Truck::class);
+    }
+
+    public function nationalityCountry()
+    {
+        return $this->belongsTo(Country::class, 'nationality_country_id');
+    }
+
+    public function birthCountry()
+    {
+        return $this->belongsTo(Country::class, 'birth_country_id');
     }
 
     /**

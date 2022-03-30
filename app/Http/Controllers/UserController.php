@@ -77,6 +77,7 @@ class UserController extends Controller
         $user = User::create($input);
         $this->syncRole($user, $request->input('role_list'));
         $this->assignType($user);
+        $this->syncTruckUnique($user);
         return redirect('user');
     }
 
@@ -110,6 +111,8 @@ class UserController extends Controller
 
         $this->syncRole($user, $request->input('role_list'));
         $this->assignType($user);
+        $this->syncTruckUnique($user);
+
         return redirect()->action('UserController@edit', ['id' => $user->id]);
     }
 
@@ -254,6 +257,22 @@ class UserController extends Controller
             $user->type = 'staff';
         }
         $user->save();
+    }
+
+    private function syncTruckUnique($user)
+    {
+        if($user->truck) {
+            $sameTruckUsers = User::where('truck_id', $user->truck->id)->get();
+
+            if($sameTruckUsers) {
+                foreach($sameTruckUsers as $sameTruckUser) {
+                    if($sameTruckUser->id != $user->id) {
+                        $sameTruckUser->truck_id = null;
+                        $sameTruckUser->save();
+                    }
+                }
+            }
+        }
     }
 
 }
