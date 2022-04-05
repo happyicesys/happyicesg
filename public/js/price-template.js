@@ -30,6 +30,7 @@ function priceTemplateController($scope, $http) {
             id: '',
             name: '',
             desc: '',
+            files: [],
             item: '',
             sequence: '',
             price_template_items: []
@@ -76,6 +77,10 @@ function priceTemplateController($scope, $http) {
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
         getPage(1, false);
+    }
+
+    $scope.onPriceTemplateCreateClicked = function () {
+        $scope.form = getDefaultForm();
     }
 
     $scope.onPriceTemplateDelete = function (data) {
@@ -132,7 +137,6 @@ function priceTemplateController($scope, $http) {
         $('.select').select2({
             placeholder: 'Select...'
         });
-        console.log(data);
         $scope.form = data
     }
 
@@ -159,6 +163,45 @@ function priceTemplateController($scope, $http) {
             getPage(1)
         });
     }
+
+    $scope.errors = [];
+    $scope.attachments = [];
+    var formData = new FormData();
+
+    $scope.setTheFile = function ($attachments) {
+        angular.forEach($attachments, function (value, key) {
+            formData.append('attachments', value);
+        });
+    };
+
+    $scope.uploadFile = function (event) {
+        event.preventDefault();
+        var request = {
+            method: 'POST',
+            url: '/api/price-template/attachment',
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.attachments = e.data.attachments;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#price_template_attachment');
+                fileElement.value = '';
+                if (e.data === 'true') {
+                    alert("Attachment uploaded");
+                } else {
+                    alert("Upload failure");
+                }
+                $scope.searchDB();
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload failure, please try again')
+            });
+    };
 
     // retrieve page w/wo search
     function getPage(pageNumber, first) {

@@ -15,7 +15,7 @@ Price Template
     <div class="row" style="padding-top: 10px;">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="pull-right">
-                <button class="btn btn-success" data-toggle="modal" data-target="#price-template-modal" ng-click="onPriceTemplateCreateClicked()">
+                <button class="btn btn-success" ng-click="onPriceTemplateCreateClicked()" data-toggle="modal" data-target="#price-template-modal" >
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     Create Price Template
                 </button>
@@ -194,6 +194,18 @@ Price Template
                     </label>
                     <textarea class="form-control" ng-model="form.remarks" rows="3"></textarea>
                   </div>
+{{--
+                  <div class="form-group" ng-if="form.id">
+                    <label for="attachment">
+                      Attachment
+                    </label>
+                    <input type="file" ng-files="setTheFile($attachments)" id="price_template_attachment"  class="form-control">
+                    <div class="btn-group-control">
+                        <button ng-click="uploadFile($event)" class="btn btn-primary" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
+                            Upload File
+                        </button>
+                    </div>
+                  </div> --}}
                   <hr class="row">
                       <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">

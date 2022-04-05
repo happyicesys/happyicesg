@@ -102,11 +102,12 @@
             {!! Form::label('is_supermarket_fee', 'Supermarket Fee?', ['class'=>'control-label search-title']) !!}
             {!! Form::select('is_supermarket_fee',
                 [
+                    '' => 'All',
                     '1'=>'Yes',
                     '0'=>'No'
                 ],
                 null,
-                ['class'=>'select form-control', 'ng-model'=>'search.is_supermarket_fee', 'ng-init'=>'search.is_supermarket_fee = "0"', 'ng-change'=>'searchDB()'])
+                ['class'=>'select form-control', 'ng-model'=>'search.is_supermarket_fee', 'ng-init'=>'search.is_supermarket_fee = ""', 'ng-change'=>'searchDB()'])
             !!}
             </div>
         </div>
@@ -115,11 +116,12 @@
             {!! Form::label('is_commission', 'Commission?', ['class'=>'control-label search-title']) !!}
             {!! Form::select('is_commission',
                 [
+                    '' => 'All',
                     '1'=>'Yes',
                     '0'=>'No'
                 ],
                 null,
-                ['class'=>'select form-control', 'ng-model'=>'search.is_commission', 'ng-init'=>'search.is_commission = "0"', 'ng-change'=>'searchDB()'])
+                ['class'=>'select form-control', 'ng-model'=>'search.is_commission', 'ng-init'=>'search.is_commission = ""', 'ng-change'=>'searchDB()'])
             !!}
             </div>
         </div>

@@ -9,6 +9,7 @@ class PriceTemplate extends Model
     protected $fillable = [
         'name',
         'remarks',
+        'file',
     ];
 
     // relationships

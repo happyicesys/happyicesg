@@ -90,8 +90,18 @@ class PriceTemplateController extends Controller
             ]);
         }
 
+        if($priceTemplateItems) {
+            foreach($priceTemplateItems as $item) {
+                $this->syncPriceTemplateItem($item, $priceTemplate->id);
+            }
+        }
+    }
 
+    public function uploadAttachment(Request $request)
+    {
+        dd($request->all());
         if($file = request()->file('file')){
+            dd($file);
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $url = 'price-template/'.$priceTemplate->id.'/'.$name;
             $urlStore = Storage::put($url, file_get_contents($file->getRealPath()), 'public');
@@ -100,12 +110,6 @@ class PriceTemplateController extends Controller
                 'url' => $url,
                 'fullUrl' => $fullUrl,
             ]);
-        }
-
-        if($priceTemplateItems) {
-            foreach($priceTemplateItems as $item) {
-                $this->syncPriceTemplateItem($item, $priceTemplate->id);
-            }
         }
     }
 
