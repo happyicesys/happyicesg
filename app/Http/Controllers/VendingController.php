@@ -554,7 +554,24 @@ class VendingController extends Controller
                                     'profiles.name as profile_name', 'profiles.id as profile_id', 'profiles.gst',
                                     'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                                     'custcategories.name as custcategory',
-                                    DB::raw('CASE WHEN people.commission_type = 1 THEN (CASE WHEN analog_start.delivery_date THEN analog_start.delivery_date ELSE analog_first.delivery_date END) ELSE (CASE WHEN fvm_start.delivery_date THEN fvm_start.delivery_date ELSE fvm_first.delivery_date END) END AS begin_date'),
+                                    DB::raw('
+                                        CASE WHEN people.commission_type = 1
+                                        THEN (
+                                            CASE WHEN analog_start.delivery_date
+                                            THEN analog_start.delivery_date
+                                            ELSE analog_first.delivery_date
+                                            END)
+                                        ELSE (
+                                            CASE WHEN fvm_start.delivery_date
+                                            THEN analog_start.delivery_date
+                                            ELSE analog_first.delivery_date
+                                            END)
+                                        END
+                                        AS begin_date'),
+                                        // CASE WHEN fvm_start.delivery_date
+                                        // THEN fvm_start.delivery_date
+                                        // ELSE fvm_first.delivery_date
+                                        // END)
                                     DB::raw('(CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END) AS begin_analog'),
                                     DB::raw('CASE WHEN people.commission_type = 1 THEN analog_end.delivery_date ELSE (CASE WHEN vend_received.max_delivery_date THEN vend_received.max_delivery_date ELSE "'.$this_month_end.'" END) END AS end_date'),
                                     'analog_end.analog_clock AS end_analog',
@@ -570,7 +587,9 @@ class VendingController extends Controller
                                                 THEN
                                                     FLOOR((analog_end.analog_clock - (
                                                     CASE WHEN
-                                                        analog_start.analog_clock THEN analog_start.analog_clock
+                                                        analog_start.analog_clock
+                                                    THEN
+                                                        analog_start.analog_clock
                                                     ELSE
                                                         analog_first.analog_clock
                                                     END
