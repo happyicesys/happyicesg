@@ -304,10 +304,10 @@ Price Template
                             @{{ priceTemplateItem.item.remark }}
                           </td>
                           <td class="col-md-2 text-right">
-                            @{{ priceTemplateItem.retail_price }}
+                            <input type="text" class="form-control text-center" ng-model="priceTemplateItem.retail_price" ng-model-options="{ debounce: 1000 }">
                           </td>
                           <td class="col-md-2 text-right">
-                            @{{ priceTemplateItem.quote_price }}
+                            <input type="text" class="form-control text-center" ng-model="priceTemplateItem.quote_price" ng-model-options="{ debounce: 1000 }">
                           </td>
                           <td class="col-md-1 text-center">
                             <button class="btn btn-danger btn-sm" ng-click="onSingleEntryDeleted(priceTemplateItem)">
@@ -323,6 +323,9 @@ Price Template
                   </div>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
+                        Replicate
+                    </button>
                     <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
                     <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

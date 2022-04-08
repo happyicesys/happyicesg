@@ -323,6 +323,7 @@ Route::resource('position', 'PositionController');
 
 Route::get('/price-template', 'PriceTemplateController@getPriceTemplateIndex');
 Route::post('/api/price-template', 'PriceTemplateController@getPriceTemplatesApi');
+Route::post('/api/price-template/replicate', 'PriceTemplateController@replicatePriceTemplateApi');
 Route::post('/api/price-template/create', 'PriceTemplateController@createPriceTemplateApi');
 Route::post('/api/price-template/store-update', 'PriceTemplateController@storeUpdatePriceTemplateApi');
 Route::post('/api/price-template/generate', 'PriceTemplateController@generateTemplateInvoiceApi');

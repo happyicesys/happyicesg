@@ -203,6 +203,18 @@ function priceTemplateController($scope, $http) {
             });
     };
 
+    $scope.onReplicatePriceTemplateClicked = function (data) {
+        console.log(data);
+        $http.post('/api/price-template/replicate', { id: data.id }).success(function (data) {
+            $scope.form = getDefaultForm()
+            $('.select').select2({
+                placeholder: 'Select...'
+            });
+            getPage(1)
+            $('#price-template-modal').modal('hide');
+        });
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;

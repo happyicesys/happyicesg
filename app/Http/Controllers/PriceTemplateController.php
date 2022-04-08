@@ -58,9 +58,9 @@ class PriceTemplateController extends Controller
         }
 
         if($pageNum == 'All'){
-            $query = $query->orderBy('name', 'asc')->get();
+            $query = $query->orderBy('created_at', 'desc')->get();
         }else{
-            $query = $query->orderBy('name', 'asc')->paginate($pageNum);
+            $query = $query->orderBy('created_at', 'desc')->paginate($pageNum);
         }
 
         return [
@@ -156,6 +156,23 @@ class PriceTemplateController extends Controller
             $model = Person::findOrFail($person_id);
             $model->price_template_id = $price_template_id;
             $model->save();
+        }
+    }
+
+    public function replicatePriceTemplateApi(Request $request)
+    {
+        $model = PriceTemplate::findOrFail($request->id);
+
+        $replicatedModel = $model->replicate();
+        $replicatedModel->name = $replicatedModel->name.'-replicated';
+        $replicatedModel->save();
+
+        if($model->priceTemplateItems()->exists()) {
+            foreach($model->priceTemplateItems as $priceTemplateItem) {
+                $replicatedPriceTemplateItem = $priceTemplateItem->replicate();
+                $replicatedPriceTemplateItem->price_template_id = $replicatedModel->id;
+                $replicatedPriceTemplateItem->save();
+            }
         }
     }
 
