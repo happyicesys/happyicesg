@@ -640,6 +640,43 @@ function truckController($scope, $http) {
     }
 }
 
+function zoneController($scope, $http) {
+    $scope.currentPage11 = 1;
+    $scope.itemsPerPage11 = 100;
+
+    $http.get('/api/zones/all').success(function (zones) {
+        $scope.zones = zones;
+    });
+
+    // export cust cat excel
+    $scope.exportZoneExcel = function (event) {
+        event.preventDefault();
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_zone').innerHTML], {
+            type: "application/vnd.ms-excel;charset=charset=utf-8"
+        });
+        var now = Date.now();
+        saveAs(blob, "Zone" + now + ".xls");
+    };
+
+    $scope.confirmDelete11 = function (id) {
+        var isConfirmDelete = confirm('Are you sure you want to delete this zone?');
+        if (isConfirmDelete) {
+            $http({
+                method: 'DELETE',
+                url: '/zone/data/' + id
+            })
+                .success(function (data) {
+                    location.reload();
+                })
+                .error(function (data) {
+                    alert('Unable to delete');
+                })
+        } else {
+            return false;
+        }
+    }
+}
+
 function repeatController($scope) {
     $scope.$watch('$index', function (index) {
         $scope.number = ($scope.$index + 1) + ($scope.currentPage - 1) * $scope.itemsPerPage;
@@ -682,6 +719,12 @@ function repeatController10($scope) {
     })
 }
 
+function repeatController11($scope) {
+    $scope.$watch('$index', function (index) {
+        $scope.number = ($scope.$index + 1) + ($scope.currentPage11 - 1) * $scope.itemsPerPage11;
+    })
+}
+
 app.controller('userController', userController);
 app.controller('custCategoryController', custCategoryController);
 app.controller('repeatController', repeatController);
@@ -691,11 +734,13 @@ app.controller('repeatController4', repeatController4);
 app.controller('repeatController5', repeatController5);
 app.controller('repeatController6', repeatController6);
 app.controller('repeatController10', repeatController10);
+app.controller('repeatController11', repeatController11);
 app.controller('custTagsController', custTagsController);
 app.controller('custCategoryGroupController', custCategoryGroupController);
 app.controller('itemcategoryController', itemcategoryController);
 app.controller('itemGroupController', itemGroupController);
 app.controller('truckController', truckController);
+app.controller('zoneController', zoneController);
 
 $(function () {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {

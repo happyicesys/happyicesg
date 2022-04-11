@@ -190,6 +190,13 @@ Route::get('/operation/merchandiser', 'OperationWorksheetController@getMerchandi
 Route::get('/operation/merchandiser-mobile', 'OperationWorksheetController@getMerchandiserMobileIndex');
 
 
+Route::get('/api/zones/all', 'ZoneController@getIndexApi');
+Route::get('/api/zone/{id}', 'ZoneController@getTruckApi');
+Route::get('/zone/data', 'ZoneController@getData');
+Route::delete('/zone/data/{id}', 'ZoneController@destroyAjax');
+Route::resource('zone', 'ZoneController');
+
+
 Route::post('/detailrpt/vending/batch/generate', 'VendingController@batchGenerateVendingInvoice');
 Route::post('/api/detailrpt/vending/invoice', 'VendingController@getVendingGenerateInvoiceApi');
 Route::get('/detailrpt/vending', 'VendingController@getVendingIndex');
