@@ -1020,7 +1020,8 @@ class PersonController extends Controller
             'del_lat' => $person->del_lat,
             'del_lng' => $person->del_lng,
             'driver' => $driver ? $driver : null,
-            'transremark' => $transremark
+            'transremark' => $transremark,
+            'order_date' => Carbon::today(),
         ]);
 
         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $date)->first();

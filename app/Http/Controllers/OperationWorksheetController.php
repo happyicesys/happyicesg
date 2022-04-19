@@ -160,7 +160,8 @@ class OperationWorksheetController extends Controller
                         'del_address' => $person->del_address,
                         'del_lat' => $person->del_lat,
                         'del_lng' => $person->del_lng,
-                        'driver' => $driver
+                        'driver' => $driver,
+                        'order_date' => Carbon::today(),
                     ]);
 
                     $prevOpsDate = Operationdate::where('person_id', $person->person_id)->whereDate('delivery_date', '=', $date)->first();
