@@ -1591,11 +1591,13 @@ class TransactionController extends Controller
     // api for changing is service($id)
     public function isServiceChanged($id)
     {
-        $transaction = Transaction::findOrFail($id);
-        $transaction->is_service = !$transaction->is_service;
-        $transaction->save();
+        if(!auth()->user()->hasRole('driver')) {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->is_service = !$transaction->is_service;
+            $transaction->save();
 
-        return $transaction;
+            return $transaction;
+        }
     }
 
     // api for batch assign driver
