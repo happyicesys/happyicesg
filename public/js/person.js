@@ -52,7 +52,8 @@ function personController($scope, $http) {
         detach_price_template: '',
         driver: '',
         delivery_date: $scope.today,
-        transremark: ''
+        transremark: '',
+        is_service: 'false'
     }
     // init page load
     getPage(1, true);

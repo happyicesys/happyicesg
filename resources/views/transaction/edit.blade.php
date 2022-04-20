@@ -13,12 +13,19 @@
             @if($transaction->is_discard)
                 <span class="label label-danger">Discard</span>
             @endif
-            @if($transaction->status == 'Cancelled')
-                <del><strong>Invoice : {{$transaction->id}}</strong>
+            @if($transaction->is_service)
+                <i class="fa fa-wrench" aria-hidden="true"></i>
+                <strong>Service : {{$transaction->id}}</strong>
+                ({{$transaction->status}})
             @else
-                <strong>Invoice : {{$transaction->id}}</strong>
-                ({{$transaction->status}}) - {{$transaction->pay_status}}
+                @if($transaction->status == 'Cancelled')
+                    <del><strong>Invoice : {{$transaction->id}}</strong>
+                @else
+                    <strong>Invoice : {{$transaction->id}}</strong>
+                    ({{$transaction->status}}) - {{$transaction->pay_status}}
+                @endif
             @endif
+
             {!! Form::text('transaction_id', $transaction->id, ['id'=>'transaction_id','class'=>'hidden form-control']) !!}
         </h4>
         </div>
@@ -69,10 +76,12 @@
                 <div class="pull-right">
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
-                        {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard', 'form'=>'new_transaction']) !!}
-                        {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
-                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                            {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}
+                        @if(!$transaction->is_service)
+                            {!! Form::submit('Discard Item(s)', ['class'=> 'btn btn-danger', 'type'=>'button', 'name'=>'discard', 'form'=>'new_transaction']) !!}
+                            {{-- @if(!auth()->user()->hasRole('hd_user')) --}}
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                                {!! Form::submit('Replicate', ['class'=> 'btn btn-default', 'form'=>'replicate']) !!}
+                            @endif
                         @endif
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
                         {{-- @endif --}}
@@ -84,30 +93,31 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id], 'autocomplete'=>'off']) !!}
                         @include('transaction.form_cust')
-
+                    @if(!$transaction->is_service)
                     <div class="row">
                         <div class="col-md-12" style="padding-top:15px;">
                             @include('transaction.form_dealtable')
                         </div>
                     </div>
                     @if(!auth()->user()->hasRole('hd_user'))
-                    @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
-                        <div class="row">
-                            <div class="col-md-12" style="padding-top:15px;">
-                                @include('transaction.form_table')
+                        @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
+                            <div class="row">
+                                <div class="col-md-12" style="padding-top:15px;">
+                                    @include('transaction.form_table')
+                                </div>
                             </div>
-                        </div>
-                    @else
-                        @cannot('transaction_view')
-                        @cannot('supervisor_view')
-                        <div class="row">
-                            <div class="col-md-12" style="padding-top:15px;">
-                                @include('transaction.form_table')
+                        @else
+                            @cannot('transaction_view')
+                            @cannot('supervisor_view')
+                            <div class="row">
+                                <div class="col-md-12" style="padding-top:15px;">
+                                    @include('transaction.form_table')
+                                </div>
                             </div>
-                        </div>
-                        @endcannot
-                        @endcannot
-                    @endunless
+                            @endcannot
+                            @endcannot
+                        @endunless
+                    @endif
                     @endif
                     {!! Form::close() !!}
 
@@ -165,6 +175,9 @@
                     <div class="pull-left">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @if(!$transaction->deals()->exists() and !$transaction->is_service)
+                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                            @endif
                         @endif
                     </div>
                     <div class="pull-right">
@@ -187,12 +200,17 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                                @if(!$transaction->is_service)
+                                    {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                                @endif
                             @endunless
-                            @if($transaction->pay_status === 'Owe')
-                                {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
-                            @else
-                                @if(!auth()->user()->hasRole('driver'))
-                                    {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            @if(!$transaction->is_service)
+                                @if($transaction->pay_status === 'Owe')
+                                    {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
+                                @else
+                                    @if(!auth()->user()->hasRole('driver'))
+                                        {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                    @endif
                                 @endif
                             @endif
 
@@ -209,12 +227,14 @@
                             {{-- {!! Form::submit('Delivered', ['name'=>'del', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!} --}}
                         @endif
                         {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                        <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
-                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                            <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
+                            @if(!$transaction->is_service)
+                                <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                            @endif
                         @endif
-                        {{-- @if($transaction->is_deliveryorder) --}}
+                        @if(!$transaction->is_service)
                             <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
-                        {{-- @endif --}}
+                        @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
                 </div>
@@ -225,10 +245,12 @@
                     <div class="pull-left">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @if($transaction->pay_status === 'Owe')
-                                {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
-                            @else
-                                {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                            @if(!$transaction->is_service)
+                                @if($transaction->pay_status === 'Owe')
+                                    {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
+                                @else
+                                    {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
+                                @endif
                             @endif
                         @endif
                     </div>
@@ -242,10 +264,10 @@
                             {!! Form::submit('Update', ['name'=>'update', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                         @endif
                         <a href="/transaction/download/{{$transaction->id}}" class="btn btn-primary">Print Invoice</a>
-                        {{-- @if($transaction->is_deliveryorder) --}}
+                        @if(!$transaction->is_service)
                             <a href="/transaction/download/{{$transaction->id}}?value=do" class="btn btn-primary">Print DO</a>
-                        {{-- @endif --}}
-                        <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                            <a href="/transaction/emailInv/{{$transaction->id}}" class="btn btn-primary">Send Inv Email</a>
+                        @endif
                         <a href="/transaction" class="btn btn-default">Back</a>
                     </div>
                 </div>
@@ -258,6 +280,9 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
                             {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
+                            @if(!$transaction->deals()->exists())
+                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                            @endif
                         @endif
                         @endcan
                         <a href="/transaction" class="btn btn-default">Back</a>

@@ -449,7 +449,9 @@ class PersonController extends Controller
                 'people.is_vending',
                 'people.is_dvm',
                 DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
-                'transactions.is_deliveryorder'
+                'transactions.is_deliveryorder',
+                DB::raw('(SELECT COUNT(*) FROM deals WHERE transactions.id = deals.transaction_id) AS deal_count'),
+                'transactions.is_service'
             )
             ->where('people.id', '=', $person_id);
 
@@ -976,6 +978,7 @@ class PersonController extends Controller
                                 $data['delivery_date'] = $assignForm['delivery_date'];
                                 $data['driver'] = $assignForm['driver'];
                                 $data['transremark'] = $assignForm['transremark'];
+                                $data['is_service'] = $assignForm['is_service'];
                                 $transaction = $this->generateSingleInvoiceByPersonId($person->id, $data);
                                 array_push($transactions, $transaction->id);
                                 break;
@@ -1006,6 +1009,7 @@ class PersonController extends Controller
         $date = $data['delivery_date'];
         $driver = $data['driver'];
         $transremark = $data['transremark'];
+        $isService = $data['is_service'];
         $person = Person::findOrFail($person_id);
 
         $transaction = Transaction::create([
@@ -1022,6 +1026,7 @@ class PersonController extends Controller
             'driver' => $driver ? $driver : null,
             'transremark' => $transremark,
             'order_date' => Carbon::today(),
+            'is_service' => $isService == 'true' ? 1 : 0,
         ]);
 
         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $date)->first();
@@ -1319,6 +1324,7 @@ class PersonController extends Controller
         $delivery_to = $request->delivery_to;
         $driver = $request->driver;
         $po_no = $request->po_no;
+        $is_service = $request->is_service;
 
         if($id) {
             $transactions = $transactions->where('transactions.id', 'LIKE', '%' . $id . '%');
@@ -1346,6 +1352,9 @@ class PersonController extends Controller
         }
         if($po_no) {
             $transactions = $transactions->where('transactions.po_no', 'LIKE', '%' . $po_no . '%');
+        }
+        if($is_service) {
+            $transactions = $transactions->where('transactions.is_service', $is_service == 'true' ? 1 : 0);
         }
         return $transactions;
     }

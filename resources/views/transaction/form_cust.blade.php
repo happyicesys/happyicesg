@@ -230,7 +230,7 @@
                         !!}
                     </div>
 
-                    @if(!$transaction->is_discard)
+                    @if(!$transaction->is_discard and !$transaction->is_service)
                         <div class="col-md-4 form-group">
                             {!! Form::label('paid_by', 'Payment Received By', ['class'=>'control-label']) !!}
                             {!! Form::select('paid_by',
@@ -251,7 +251,7 @@
                 @endcannot
             @endif
 
-            @if($transaction->status === 'Verified Paid' or $transaction->pay_status === 'Paid')
+            @if(($transaction->status === 'Verified Paid' or $transaction->pay_status === 'Paid') and !$transaction->is_service)
                 <div class="col-md-4 form-group">
                     {!! Form::label('pay_method', 'Payment Method', ['class'=>'control-label']) !!}
                     {!! Form::select('pay_method',
@@ -261,10 +261,12 @@
                     !!}
                 </div>
             @endif
-            <div class="col-md-4 form-group">
-                {!! Form::label('note', 'Payment Ref', ['class'=>'control-label']) !!}
-                {!! Form::text('note', null, ['class'=>'form-control', 'disabled'=> $disabled]) !!}
-            </div>
+            @if(!$transaction->is_service)
+                <div class="col-md-4 form-group">
+                    {!! Form::label('note', 'Payment Ref', ['class'=>'control-label']) !!}
+                    {!! Form::text('note', null, ['class'=>'form-control', 'disabled'=> $disabled]) !!}
+                </div>
+            @endif
         </div>
         @endif
 
@@ -397,7 +399,7 @@
 
 
 
-        @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm === 1) and !$transaction->is_deliveryorder)
+        @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm === 1) and !$transaction->is_deliveryorder and !$transaction->is_service)
             <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
               <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                 {{$transaction->person->is_vending && !$transaction->person->is_dvm ? 'Fun' : ''}}

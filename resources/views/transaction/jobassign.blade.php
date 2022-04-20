@@ -489,6 +489,23 @@ Job Assign
                         !!}
                     </div>
                     @endif
+
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('is_service', 'Service Notice', ['class'=>'control-label search-title']) !!}
+                        {!! Form::select('is_service',
+                        [
+                            '' => 'All',
+                            'true' => 'Yes',
+                            'false' => 'No'
+                        ],
+                        null,
+                        [
+                            'class'=>'select form-control',
+                            'ng-model'=>'search.is_service',
+                            'ng-change' => 'searchDB()'
+                        ])
+                    !!}
+                    </div>
                 </div>
 
                 <div class="row">
@@ -859,6 +876,9 @@ Job Assign
                                     <span class="col-md-12">
                                         <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
                                         <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, driverkey, transactionkey)"></i>
+
+                                        <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_service && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, driverkey, transactionkey)"></i>
+                                        <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_service && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, driverkey, transactionkey)"></i>
                                     </span>
                                 </td>
 

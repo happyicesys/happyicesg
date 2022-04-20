@@ -495,6 +495,15 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="driver" class="control-label search-title">
+                                    Is Service Notice?
+                                </label>
+                                <select name="is_service" class="form-control select" ng-model="assignForm.is_service">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="control-label search-title">
                                     Transremark
                                 </label>

@@ -159,15 +159,21 @@
                         <div class="form-group" style="padding-left:10px; margin-top:-5px;">
                             <div class="col-xs-12 row">
                                 <div style="font-size: 130%;" class="text-center">
-                                    @if($transaction->is_vending_generate)
-                                        <strong>SALES REPORT</strong>
-                                    @elseif($type == 'do')
-                                        <strong>DELIVERY ORDER</strong>
+                                    @if($transaction->is_service)
+                                        <strong>
+                                            Service
+                                        </strong>
                                     @else
-                                        @if($transaction->gst)
-                                        <strong>DO/ TAX INVOICE</strong>
+                                        @if($transaction->is_vending_generate)
+                                            <strong>SALES REPORT</strong>
+                                        @elseif($type == 'do')
+                                            <strong>DELIVERY ORDER</strong>
                                         @else
-                                        <strong>DO/ INVOICE</strong>
+                                            @if($transaction->gst)
+                                            <strong>DO/ TAX INVOICE</strong>
+                                            @else
+                                            <strong>DO/ INVOICE</strong>
+                                            @endif
                                         @endif
                                     @endif
                                 </div>
@@ -536,6 +542,7 @@
             </div>
             @endif
 
+            @if(!$transaction->is_service)
             <div class="avoid">
                 <div class="row">
                 @if($transaction->is_deliveryorder)
@@ -769,19 +776,22 @@
                     </table>
                 </div>
             </div>
+            @endif
 
         {{-- <footer class="footer"> --}}
                 <div class="row">
-                    <div class="col-xs-12">
-                        @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D' or $person->is_vending or $person->is_dvm)
-                            Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
-                        @endunless
-                    </div>
-                    <div class="col-xs-12">
-                        @if($person->profile->paynow_uen)
-                            {{$person->profile->name}} PayNow UEN : {{$person->profile->paynow_uen}}
-                        @endif
-                    </div>
+                    @if(!$transaction->is_service)
+                        <div class="col-xs-12">
+                            @unless($person->cust_id[0] == 'H' or $person->cust_id[0] == 'D' or $person->is_vending or $person->is_dvm)
+                                Payment by cheque should be crossed and made payable to "{{$person->profile->name}}"
+                            @endunless
+                        </div>
+                        <div class="col-xs-12">
+                            @if($person->profile->paynow_uen)
+                                {{$person->profile->name}} PayNow UEN : {{$person->profile->paynow_uen}}
+                            @endif
+                        </div>
+                    @endif
                     <div class="col-xs-12" style="padding-top:10px">
                         <div class="form-group">
                             @if($transaction->transremark or $person->remark)

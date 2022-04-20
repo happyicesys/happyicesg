@@ -59,6 +59,7 @@ function transController($scope, $http) {
         item_id: '',
         account_manager: '',
         zone_id: '',
+        is_service: '',
         itemsPerPage: 200,
         sortName: '',
         sortBy: true
@@ -350,6 +351,12 @@ function transController($scope, $http) {
     $scope.onIsImportantClicked = function (transaction_id, index) {
         $http.post('/api/transaction/is_important/' + transaction_id).success(function (data) {
             $scope.alldata[index].is_important = data.is_important;
+        });
+    }
+
+    $scope.onIsServiceClicked = function (transaction_id, index) {
+        $http.post('/api/transaction/is_service/' + transaction_id).success(function (data) {
+            $scope.alldata[index].is_service = data.is_service;
         });
     }
 

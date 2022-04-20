@@ -27,6 +27,7 @@ function personEditController($scope, $http) {
         delivery_from: '',
         delivery_to: '',
         driver: '',
+        is_service: '',
         pageNum: 20,
     }
 
@@ -103,6 +104,7 @@ function personEditController($scope, $http) {
             placeholder: 'Select..',
             allowClear: true
         });
+        $('.selectNormal').select2();
         $('.selectnotclear').select2({
             placeholder: 'Select..'
         });

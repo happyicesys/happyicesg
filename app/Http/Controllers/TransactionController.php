@@ -585,7 +585,7 @@ class TransactionController extends Controller
                 $this->updateIsWarehouseTransactionpersonassets($transaction->id);
             }
 
-            if(count($deals) == 0){
+            if(count($deals) == 0 and !$transaction->is_service){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
@@ -602,7 +602,7 @@ class TransactionController extends Controller
                 $this->updateIsWarehouseTransactionpersonassets($transaction->id);
             }
 
-            if(count($deals) == 0){
+            if(count($deals) == 0 and !$transaction->is_service){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
@@ -618,7 +618,7 @@ class TransactionController extends Controller
                 $this->updateIsWarehouseTransactionpersonassets($transaction->id);
             }
 
-            if(count($deals) == 0){
+            if(count($deals) == 0 and !$transaction->is_service){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
@@ -633,7 +633,7 @@ class TransactionController extends Controller
             }
             $request->merge(array('paid_at' => Carbon::now()->format('Y-m-d h:i A')));
 
-            if(count($deals) == 0){
+            if(count($deals) == 0 and !$transaction->is_service){
                 Flash::error('Please entry the list');
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
@@ -717,7 +717,13 @@ class TransactionController extends Controller
             }else {
                 $this->vendingMachineValidation($request, $id);
             }
+        }elseif($request->input('is_service')) {
+            $request->merge(array('is_service' => true));
+            $request->merge(array('pay_status' => 'Owe'));
+            $request->merge(array('paid_by' => null));
+            $request->merge(array('paid_at' => null));
         }
+        // dd($request->all());
 
         // validate unique prefix for P
         // dd($request->all(), $transaction->person->cust_id[0]);
@@ -1577,6 +1583,16 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
         $transaction->is_important = !$transaction->is_important;
+        $transaction->save();
+
+        return $transaction;
+    }
+
+    // api for changing is service($id)
+    public function isServiceChanged($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->is_service = !$transaction->is_service;
         $transaction->save();
 
         return $transaction;
@@ -2589,7 +2605,7 @@ class TransactionController extends Controller
                                     'transactions.total_qty', 'transactions.pay_status', 'transactions.is_deliveryorder',
                                     'transactions.updated_by', 'transactions.updated_at', 'transactions.delivery_fee', 'transactions.id',
                                     'transactions.po_no', 'transactions.name', 'transactions.contact', 'transactions.del_address',
-                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence', 'transactions.is_discard',
+                                    'transactions.del_lat', 'transactions.del_lng', 'transactions.is_important', 'transactions.transremark', 'transactions.sequence', 'transactions.is_discard', 'transactions.is_service',
                                     DB::raw('DATE(transactions.delivery_date) AS del_date'),
                                     DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                 CASE
@@ -2608,7 +2624,8 @@ class TransactionController extends Controller
                                     DB::raw('SUBSTRING(people.area_group, 7, 1) AS sup'),
                                     DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
                                     DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
-                                    'creator.id AS creator_id', 'creator.name AS creator_name'
+                                    'creator.id AS creator_id', 'creator.name AS creator_name',
+                                    DB::raw('(SELECT COUNT(*) FROM deals WHERE transactions.id = deals.transaction_id) AS deal_count')
                                 );
 
         $transactions = $this->searchDBFilter($transactions);
@@ -3364,6 +3381,10 @@ class TransactionController extends Controller
 
         if($zone_id = request('zone_id')) {
             $transactions = $transactions->where('people.zone_id', $zone_id);
+        }
+
+        if(request('is_service')) {
+            $transactions = $transactions->where('transactions.is_service', request('is_service') == 'true' ? 1 : 0);
         }
 
         if(request('sortName')){

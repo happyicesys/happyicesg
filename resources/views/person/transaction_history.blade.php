@@ -120,6 +120,22 @@
                 </div>
             </div>
             {{-- @endif --}}
+            <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                {!! Form::label('is_service', 'Service Notice', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('is_service',
+                [
+                    '' => 'All',
+                    'true' => 'Yes',
+                    'false' => 'No'
+                ],
+                null,
+                [
+                    'class'=>'selectNormal form-control',
+                    'ng-model'=>'search.is_service',
+                    'ng-change' => 'searchDB()'
+                ])
+            !!}
+            </div>
         </div>
     </div>
 </div>
@@ -338,6 +354,12 @@
                     <a href="/market/deal/@{{ transaction.id }}/edit" ng-if="transaction.cust_id[0] === 'H'">
                         @{{ transaction.id }}
                     </a>
+                    <span class="col-md-12">
+                        <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
+                        <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
+                        <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_service && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
+                        <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_service  && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
+                    </span>
                     <span class="label label-danger" ng-if="transaction.is_discard">
                         Discard
                     </span>
@@ -389,8 +411,8 @@
                     <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
                     @cannot('transaction_view')
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user'))
-                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe'">Verify Owe</a>
-                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid'">Verify Paid</a>
+                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-warning btn-sm" ng-if="transaction.status == 'Delivered' && transaction.pay_status == 'Owe' && !transaction.is_service">Verify Owe</a>
+                        <a href="/transaction/status/@{{ transaction.id }}" class="btn btn-success btn-sm" ng-if="(transaction.status == 'Verified Owe' || transaction.status == 'Delivered') && transaction.pay_status == 'Paid' && !transaction.is_service">Verify Paid</a>
                     @endif
                     @endcannot
                 </td>
