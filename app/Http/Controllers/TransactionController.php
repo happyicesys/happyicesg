@@ -2568,6 +2568,29 @@ class TransactionController extends Controller
         $transaction->save();
     }
 
+    // batch update files name (int $transactionId)
+    public function updateFilesName($transactionId)
+    {
+        // if(request()->has('removeFile')) {
+        //     $this->removeFile(request()->input('removeFile'));
+
+        //     return redirect()->action('PersonController@edit', $person_id);
+        // }
+        $filesname = request('name');
+
+        foreach ($filesname as $index => $filename) {
+            if ($filename) {
+                $file = Invattachment::findOrFail($index);
+                $file->name = $filename;
+                $file->save();
+            }
+        }
+
+        Flash::success('Entries updated');
+
+        return redirect()->action('TransactionController@edit', $transactionId);
+    }
+
     // mass update qty status
     private function massUpdateQtyStatus($transaction_id, $qty_status)
     {

@@ -200,7 +200,7 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                                @if(!$transaction->is_service)
+                                @if(!$transaction->is_service and !$transaction->deals()->exists())
                                     {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                                 @endif
                             @endunless
@@ -338,13 +338,17 @@
                 Printable Attachment(s)
             </div>
             <div class="panel-body">
+                {!! Form::open(['action'=>['TransactionController@updateFilesName', $transaction->id]]) !!}
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">
                             #
                         </th>
-                        <th class="col-md-10 text-center">
+                        <th class="col-md-5 text-center">
                             Image
+                        </th>
+                        <th class="col-md-5 text-center">
+                            Name
                         </th>
                         <th class="col-md-1 text-center">
                             Action
@@ -365,7 +369,7 @@
                                 <td class="col-md-1 text-center">
                                     {{ $index + 1 }}
                                 </td>
-                                <td class="col-md-10">
+                                <td class="col-md-5">
                                     @if($ext == 'pdf')
                                         <embed src="{{$invattachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
                                     @else
@@ -373,6 +377,10 @@
                                             <img src="{{$invattachment->path}}" alt="{{$invattachment->name}}" style="max-width:350px; max-height:350px;">
                                         </a>
                                     @endif
+                                </td>
+                                <td class="col-md-5">
+                                    {{-- <input type="text" class="form-control" name="file_name[{{$file->id}}]" value="{{$file->name}}" style="min-width: 300px;"> --}}
+                                        <textarea class="form-control" name="name[{{$invattachment->id}}]" rows="5" style="min-width: 300px;">{{$invattachment->name}}</textarea>
                                 </td>
                                 <td class="col-md-1 text-center">
                                     @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
@@ -385,8 +393,14 @@
                             </tr>
                             @endforeach
                         @endunless
+                        <tr>
+                            <td colspan="4">
+                                <button type="submit" class="btn btn-success pull-right"><i class="fa fa-check"></i> <span class="hidden-xs">Save Files Name</span></button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+                {!! Form::close() !!}
 
                 @if(count($invattachments) > 0)
                     {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['TransactionController@removeAttachment', $invattachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}

@@ -513,6 +513,7 @@ Route::get('/transaction/item/{person_id}', 'TransactionController@getItem');
 Route::get('/transaction/person/{person_id}/item/{item_id}', 'TransactionController@getPrice');
 Route::post('/transaction/signature/submit/{transaction_id}', 'TransactionController@saveSignature');
 Route::get('/transaction/signature/delete/{transaction_id}', 'TransactionController@deleteSignature');
+Route::post('/transaction/files/update/{transaction_id}', 'TransactionController@updateFilesName');
 Route::resource('transaction', 'TransactionController');
 
 Route::get('/hdprofile/transation', 'TransactionController@hdprofileIndex');
