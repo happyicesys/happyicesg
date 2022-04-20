@@ -280,7 +280,7 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
                             {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
-                            @if(!$transaction->deals()->exists())
+                            @if(!$transaction->deals()->exists() and !$transaction->is_service)
                                 {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                             @endif
                         @endif
