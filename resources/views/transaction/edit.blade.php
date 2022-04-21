@@ -339,6 +339,7 @@
             </div>
             <div class="panel-body">
                 {!! Form::open(['action'=>['TransactionController@updateFilesName', $transaction->id]]) !!}
+                <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
                         <th class="col-md-1 text-center">
@@ -400,6 +401,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 {!! Form::close() !!}
 
                 @if(count($invattachments) > 0)
