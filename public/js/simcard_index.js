@@ -16,6 +16,7 @@ function simcardController($scope, $http) {
     $scope.search = {
         phone_no: '',
         telco_name: '',
+        simcard_no: '',
         itemsPerPage: 100,
         sortName: '',
         sortBy: true

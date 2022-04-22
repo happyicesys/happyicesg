@@ -54,6 +54,18 @@ SIM Card
                             ])
                         !!}
                     </div>
+                    <div class="form-group col-md-3 col-sm-6 col-xs-12">
+                        {!! Form::label('simcard_no', 'SimCard No', ['class'=>'control-label search-title']) !!}
+                        {!! Form::text('simcard_no', null,
+                                                    [
+                                                        'class'=>'form-control input-sm',
+                                                        'ng-model'=>'search.simcard_no',
+                                                        'ng-change'=>'searchDB()',
+                                                        'placeholder'=>'SimCard No',
+                                                        'ng-model-options'=>'{ debounce: 500 }'
+                                                    ])
+                        !!}
+                    </div>
                 </div>
 
 

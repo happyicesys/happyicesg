@@ -403,6 +403,9 @@ class VMController extends Controller
         if (request('telco_name')) {
             $simcards = $simcards->where('simcards.telco_name', 'LIKE', '%' . request('telco_name') . '%');
         }
+        if (request('simcard_no')) {
+            $simcards = $simcards->where('simcards.simcard_no', 'LIKE', '%' . request('simcard_no') . '%');
+        }
         if (request('sortName')) {
             $simcards = $simcards->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
         }
