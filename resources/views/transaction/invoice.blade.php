@@ -814,7 +814,7 @@
                                 }else {
                                     $pathName = public_path().$invattachment->path;
                                 }
-                                $img = \App\Image::make($pathName)->orientate();
+                                $img = \Intervention\Image\ImageManagerStatic::make($pathName)->orientate();
                             @endphp
 
 
