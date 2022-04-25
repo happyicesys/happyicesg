@@ -818,7 +818,7 @@
                             @endphp
 
 
-                            <img src="{{$pathName}}" style="width: 200px; height: 300px;">
+                            <img src="{{$pathName}}" style="width: 300px; height: 200px;">
                             <span>
                                 {{$invattachment->name}}
                             </span>
