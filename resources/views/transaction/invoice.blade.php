@@ -814,14 +814,11 @@
                                 }else {
                                     $pathName = public_path().$invattachment->path;
                                 }
-                                $img = \Intervention\Image\ImageManagerStatic::make($pathName)->orientate();
+                                $img = Intervention\Image\ImageManagerStatic::make($pathName)->orientate();
                             @endphp
 
 
-                            {{-- <img src="{{$pathName}}" style="width: 300px; height: 200px;"> --}}
-                            <span>
-                                {{$img}}
-                            </span>
+                            <img src="{{$img}}">
                         @endforeach
                     </div>
                     @endif
