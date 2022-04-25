@@ -48,7 +48,9 @@
 		.page-break {
 		    page-break-after: always;
 		}
-
+        img {
+            image-orientation: from-image; /* Use EXIF data from the image */
+        }
     </style>
     </head>
 
