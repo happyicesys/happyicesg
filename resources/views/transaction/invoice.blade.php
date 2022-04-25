@@ -48,6 +48,7 @@
 		.page-break {
 		    page-break-after: always;
 		}
+
     </style>
     </head>
 
@@ -814,11 +815,13 @@
                                 }else {
                                     $pathName = public_path().$invattachment->path;
                                 }
-                                $img = Intervention\Image\ImageManagerStatic::make($pathName)->orientate();
                             @endphp
 
 
-                            <img src="{{$img}}">
+                            <img src="{{$pathName}}" style="width: 300px; height: 200px;">
+                            <span>
+                                {{$invattachment->name}}
+                            </span>
                         @endforeach
                     </div>
                     @endif
