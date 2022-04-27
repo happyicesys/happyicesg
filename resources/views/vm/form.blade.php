@@ -53,12 +53,29 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('person_id', 'Current Customer', ['class'=>'control-label']) !!}
+{{--
                 {!! Form::select('person_id', [''=>null,
                     $people::whereHas('profile', function($q){
                         $q->filterUserProfile();
                     })->where(function ($query) {
                         $query->whereDoesntHave('vending')->orWhereHas('vending', function($query) {
                             $query->where('person_id', 0);
+                        });
+                    })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all()],
+                    null,
+                    [
+                        'class'=>'select form-control',
+                    ])
+                !!} --}}
+
+                {!! Form::select('person_id', [''=>null,
+                    $people::whereHas('profile', function($q){
+                        $q->filterUserProfile();
+                    })->where(function ($query) use ($vending){
+                        $query->whereDoesntHave('vending')->orWhereHas('vending', function($query) {
+                            $query->where('person_id', 0);
+                        })->orWhereHas('vending', function($query) use ($vending) {
+                            $query->where('person_id', $vending->person->id);
                         });
                     })->select(DB::raw("CONCAT(cust_id,' - ',company) AS full, id"))->orderBy('cust_id')->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->lists('full', 'id')->all()],
                     null,
