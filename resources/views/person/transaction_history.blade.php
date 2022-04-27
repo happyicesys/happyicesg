@@ -271,6 +271,9 @@
                 <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
             </th>
             <th class="col-md-1 text-center">
+                Remarks
+            </th>
+            <th class="col-md-1 text-center">
                 <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                 Attn Name
                 <span ng-if="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
@@ -390,6 +393,7 @@
                 @endif
                 <td class="col-md-1 text-center">@{{ transaction.po_no}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.del_postcode}}</td>
+                <td class="col-md-1 text-left">@{{ transaction.transremark}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.name}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
                 @if(!auth()->user()->hasRole('hd_user'))

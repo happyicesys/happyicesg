@@ -1014,6 +1014,7 @@
                                     <span ng-if="search.sortName == 'transactions.po_no' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'transactions.po_no' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
+{{--
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('transactions.name')">
                                     Attn Name
@@ -1025,7 +1026,7 @@
                                     Contact
                                     <span ng-if="search.sortName == 'transactions.contact' && !search.sortBy" class="fa fa-caret-down"></span>
                                     <span ng-if="search.sortName == 'transactions.contact' && search.sortBy" class="fa fa-caret-up"></span>
-                                </th>
+                                </th> --}}
                                 @if(!auth()->user()->hasRole('hd_user'))
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('delivery_date')">
@@ -1047,6 +1048,9 @@
                                     <span ng-if="search.sortName == 'delivery_date1' && search.sortBy" class="fa fa-caret-up"></span>
                                 </th>
                                 @endif
+                                <th class="col-md-1 text-center">
+                                    Remarks
+                                </th>
                                 <th class="col-md-1 text-center">
                                     <a href="" ng-click="sortTable('total')">
                                     Total Amount
@@ -1164,8 +1168,9 @@
                                     </td>
                                     {{-- status by color ended --}}
                                     <td class="col-md-1 text-center">@{{ transaction.po_no}}</td>
+{{--
                                     <td class="col-md-1 text-center">@{{ transaction.name}}</td>
-                                    <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
+                                    <td class="col-md-1 text-center">@{{ transaction.contact}}</td> --}}
                                     @if(!auth()->user()->hasRole('hd_user'))
                                     <td class="col-md-1 text-center">@{{ transaction.del_date}}</td>
                                     <td class="col-md-1 text-center">
@@ -1184,6 +1189,9 @@
                                     @else
                                     <td class="col-md-1 text-center">@{{ transaction.delivery_date1}}</td>
                                     @endif
+                                    <td class="col-md-1 text-left">
+                                        @{{ transaction.transremark }}
+                                    </td>
                                     <td class="col-md-1 text-right">
                                         @{{ transaction.total | currency: "": 2}}
                                     </td>

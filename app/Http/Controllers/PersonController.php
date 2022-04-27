@@ -446,6 +446,7 @@ class PersonController extends Controller
                 'profiles.name AS profile_name',
                 'transactions.gst',
                 'transactions.gst_rate',
+                'transactions.transremark',
                 'people.is_vending',
                 'people.is_dvm',
                 DB::raw('DATE(deliveryorders.delivery_date1) AS delivery_date1'),
