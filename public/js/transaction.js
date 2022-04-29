@@ -239,15 +239,15 @@ function transactionController($scope, $http) {
         });
 
 
-        $scope.submitSignature = function() {
+        $scope.submitSignature = function () {
             var signdata = signaturePad.toDataURL();
-            $http.post('/transaction/signature/submit/' + $trans_id.val(), {'data': signdata}).success(function (data) {
+            $http.post('/transaction/signature/submit/' + $trans_id.val(), { 'data': signdata }).success(function (data) {
                 loadDealTable();
             });
             location.reload();
         }
 
-        $scope.clearSignature = function() {
+        $scope.clearSignature = function () {
             // Clears the canvas
             signaturePad.clear();
         }
@@ -257,10 +257,10 @@ function transactionController($scope, $http) {
         $scope.people = people;
     });
 
-    $scope.onIsImportantClicked = function(transaction_id, index, driver_role = false) {
+    $scope.onIsImportantClicked = function (transaction_id, index, driver_role = false) {
         console.log(driver_role)
-        if(!driver_role) {
-            $http.post('/api/transaction/is_important/' + transaction_id).success(function(data) {
+        if (!driver_role) {
+            $http.post('/api/transaction/is_important/' + transaction_id).success(function (data) {
                 location.reload();
             });
         }
@@ -307,7 +307,7 @@ function transactionController($scope, $http) {
                 is_deliveryorder: data.transaction.is_deliveryorder
             }
 
-            if(data.transaction.deliveryorder) {
+            if (data.transaction.deliveryorder) {
                 var dodata = data.transaction.deliveryorder;
                 $scope.doform = {
                     job_type: dodata.job_type,
@@ -338,11 +338,11 @@ function transactionController($scope, $http) {
                     requester_notification_emails: dodata.requester_notification_emails
                 }
 
-                if($scope.doform.from_happyice) {
+                if ($scope.doform.from_happyice) {
                     $scope.showpersonassetSelection = false;
                 }
 
-                if($scope.doform.to_happyice) {
+                if ($scope.doform.to_happyice) {
                     $scope.showpersonassetSelection = true;
                 }
             }
@@ -351,7 +351,7 @@ function transactionController($scope, $http) {
 
 
     function transactionpersonasset() {
-        $http.get('/api/transactionpersonasset/index/' + $trans_id.val()).success(function(data) {
+        $http.get('/api/transactionpersonasset/index/' + $trans_id.val()).success(function (data) {
             $scope.alldata = data.data;
         });
     }
@@ -381,7 +381,7 @@ function transactionController($scope, $http) {
         }
     }
 
-    $scope.onAssetqtyChanged = function() {
+    $scope.onAssetqtyChanged = function () {
         $scope.assetformitems = [];
         var i;
 
@@ -394,14 +394,14 @@ function transactionController($scope, $http) {
         }
     }
 
-    $scope.submitTransactionpersonasset = function() {
+    $scope.submitTransactionpersonasset = function () {
         $http.post('/api/transactionpersonasset/create', {
             items: $scope.assetformitems,
             personasset_id: $scope.assetform.personasset_id,
             transactionpersonasset_id: $scope.assetform.transactionpersonasset_id,
             transaction_id: $('#transaction_id').val(),
             qty: $scope.assetform.personasset_qty
-        }).success(function(data) {
+        }).success(function (data) {
             $scope.assetformitems = [];
             $scope.assetform = {
                 personasset_id: '',
@@ -435,7 +435,7 @@ function transactionController($scope, $http) {
             $http.delete('/api/transactionpersonasset/' + id + '/delete').success(function (data) {
                 transactionpersonasset();
             });
-        }else {
+        } else {
             return false;
         }
     }
@@ -465,9 +465,9 @@ function transactionController($scope, $http) {
         });
     }
 
-    $scope.onFromHappyiceChanged = function() {
+    $scope.onFromHappyiceChanged = function () {
 
-        if($scope.doform.from_happyice) {
+        if ($scope.doform.from_happyice) {
             $scope.doform.pickup_attn = 'Kent';
             $scope.doform.pickup_contact = '96977973';
             $scope.doform.pickup_location_name = 'Happy Ice';
@@ -475,7 +475,7 @@ function transactionController($scope, $http) {
             $scope.doform.pickup_postcode = '659526';
             $scope.doform.to_happyice = false;
             $scope.showpersonassetSelection = false;
-        }else {
+        } else {
             $scope.doform.pickup_attn = '';
             $scope.doform.pickup_contact = '';
             $scope.doform.pickup_location_name = '';
@@ -517,33 +517,37 @@ function transactionController($scope, $http) {
         $('.selectassetform').val(null).trigger('change.select2');
     }
 
-    $scope.onPickupDate = function(date) {
+    $scope.onPickupDate = function (date) {
         console.log('here');
-        if(date) {
+        if (date) {
             $scope.doform.pickup_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
     }
 
-    $scope.onSignatureCaretClicked = function() {
+    $scope.onSignatureCaretClicked = function () {
         $scope.hideSignature = !$scope.hideSignature;
     }
 
-    $scope.deleteSignature = function() {
-        $http.get('/transaction/signature/delete/' + $trans_id.val()).success(function(data) {
+    $scope.deleteSignature = function () {
+        $http.get('/transaction/signature/delete/' + $trans_id.val()).success(function (data) {
             loadDealTable();
         });
     }
 
-    $scope.requesterNameChanged = function() {
+    $scope.requesterNameChanged = function () {
         var requester_name = $scope.doform.requester_name;
         console.log(requester_name);
-        for(var i=0; i<$scope.requesterSelections.length; i++) {
+        for (var i = 0; i < $scope.requesterSelections.length; i++) {
             var looprequester = $scope.requesterSelections[i];
             if (looprequester.name == requester_name) {
                 $scope.doform.requester_contact = looprequester.contact;
                 $scope.doform.requester_notification_emails = looprequester.email;
             }
         }
+    }
+
+    $scope.onNewServiceClicked = function ($event) {
+        $event.preventDefault();
     }
 
 }

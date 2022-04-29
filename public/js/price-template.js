@@ -204,7 +204,6 @@ function priceTemplateController($scope, $http) {
     };
 
     $scope.onReplicatePriceTemplateClicked = function (data) {
-        console.log(data);
         $http.post('/api/price-template/replicate', { id: data.id }).success(function (data) {
             $scope.form = getDefaultForm()
             $('.select').select2({
@@ -213,6 +212,23 @@ function priceTemplateController($scope, $http) {
             getPage(1)
             $('#price-template-modal').modal('hide');
         });
+    }
+
+    $scope.onSortSequenceClicked = function (event) {
+        event.preventDefault();
+        $http.post('/api/price-template/sort-sequence', { form: $scope.form }).success(function (data) {
+            $scope.form = data;
+        });
+    }
+
+    $scope.onRenumberSequenceClicked = function (event) {
+        event.preventDefault();
+        let isConfirm = confirm('Are you sure to generate sequence based on this arrangement?')
+        if (isConfirm) {
+            $http.post('/api/price-template/renumber-sequence', { form: $scope.form }).success(function (data) {
+                $scope.form = data;
+            });
+        }
     }
 
     // retrieve page w/wo search

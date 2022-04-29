@@ -338,6 +338,8 @@ Route::post('/api/price-template/person/bind', 'PriceTemplateController@bindPric
 Route::post('/api/price-template/person/{id}/unbind', 'PriceTemplateController@unbindPriceTemplatePerson');
 Route::post('/api/price-template/attachment', 'PriceTemplateController@uploadAttachment');
 Route::delete('/api/price-template/delete/{id}', 'PriceTemplateController@deletePriceTemplateApi');
+Route::post('/api/price-template/sort-sequence', 'PriceTemplateController@sortSequenceApi');
+Route::post('/api/price-template/renumber-sequence', 'PriceTemplateController@renumberSequenceApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');

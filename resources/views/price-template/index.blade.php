@@ -266,6 +266,17 @@ Price Template
                     <div class="table-responsive">
                       <table class="table table-bordered table-hover">
                         <tr style="background-color: #DDFDF8">
+                            <th colspan="7">
+                                <button type="button" class="btn btn-xs btn-warning" ng-click="onSortSequenceClicked($event)">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    Sort
+                                </button>
+                                <button class="btn btn-xs btn-default" ng-click="onRenumberSequenceClicked($event)">
+                                    Re-number
+                                </button>
+                            </th>
+                        </tr>
+                        <tr style="background-color: #DDFDF8">
                           <th class="col-md-1 text-center">
                             #
                           </th>
@@ -288,7 +299,7 @@ Price Template
                             Action
                           </th>
                         </tr>
-                        <tr ng-repeat="priceTemplateItem in form.price_template_items | orderBy:'sequence'">
+                        <tr ng-repeat="priceTemplateItem in form.price_template_items">
                           <td class="col-md-1 text-center">
                             <input type="text" class=" text-center" style="width:40px" ng-model="priceTemplateItem.sequence" ng-value="priceTemplateItem.sequence = priceTemplateItem.sequence ? priceTemplateItem.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }">
                           </td>

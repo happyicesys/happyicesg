@@ -33,7 +33,9 @@ class PriceTemplateController extends Controller
         $pageNum = request('pageNum') ? request('pageNum') : 100;
 
         $query = PriceTemplate::with([
-                                        'priceTemplateItems',
+                                        'priceTemplateItems' => function($query) {
+                                            $query->orderBy('sequence');
+                                        },
                                         'priceTemplateItems.item',
                                         'people'
                                     ]);
@@ -174,6 +176,36 @@ class PriceTemplateController extends Controller
                 $replicatedPriceTemplateItem->save();
             }
         }
+    }
+
+    public function sortSequenceApi(Request $request)
+    {
+        $form = $request->form;
+
+        if($form) {
+            $keys = array_column($form['price_template_items'], 'sequence');
+            array_multisort($keys, SORT_ASC, $form['price_template_items']);
+        }
+
+        return $form;
+    }
+
+    public function renumberSequenceApi(Request $request)
+    {
+        $form = request('form');
+
+        if($form) {
+            $assignindex = 1;
+            foreach($form['price_template_items'] as $index => $item) {
+                $priceTemplateItem = PriceTemplateItem::findOrFail($item['id']);
+                $priceTemplateItem->sequence = $assignindex;
+                $priceTemplateItem->save();
+                $form['price_template_items'][$index]['sequence'] = $assignindex;
+                // dd($transaction, $transaction['sequence']);
+                $assignindex ++;
+            }
+        }
+        return $form;
     }
 
     // sync new route template items
