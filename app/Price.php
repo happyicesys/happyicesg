@@ -12,24 +12,24 @@ class Price extends Model
     public static function boot()
     {
         parent::boot();
-    }  
+    }
 
     public function identifiableName()
     {
         return $this->title;
-    }  
+    }
 
     protected $dontKeepRevisionOf = array(
         'person_id'
-    );        
+    );
 
     protected $revisionEnabled = true;
 
     //Remove old revisions (works only when used with $historyLimit)
-    protected $revisionCleanup = true; 
+    protected $revisionCleanup = true;
 
     //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500; 
+    protected $historyLimit = 200;
 
     //storing new creation
     protected $revisionCreationsEnabled = true;

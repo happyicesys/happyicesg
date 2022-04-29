@@ -30,7 +30,7 @@ class DtdTransaction extends Model
     protected $revisionCleanup = true;
 
     //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
-    protected $historyLimit = 500;
+    protected $historyLimit = 200;
 
     //storing new creation
     protected $revisionCreationsEnabled = true;

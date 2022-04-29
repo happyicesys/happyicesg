@@ -94,30 +94,34 @@
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id], 'autocomplete'=>'off']) !!}
                         @include('transaction.form_cust')
                     @if(!$transaction->is_service)
-                    <div class="row">
-                        <div class="col-md-12" style="padding-top:15px;">
-                            @include('transaction.form_dealtable')
+                        <div class="row">
+                            <div class="col-md-12" style="padding-top:15px;">
+                                @include('transaction.form_dealtable')
+                            </div>
                         </div>
-                    </div>
-                    @if(!auth()->user()->hasRole('hd_user'))
-                        @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
-                            <div class="row">
-                                <div class="col-md-12" style="padding-top:15px;">
-                                    @include('transaction.form_table')
+                        @if(!auth()->user()->hasRole('hd_user'))
+                            @unless($transaction->status == 'Delivered' and $transaction->pay_status == 'Paid')
+                                <div class="row">
+                                    <div class="col-md-12" style="padding-top:15px;">
+                                        @include('transaction.form_table')
+                                    </div>
                                 </div>
-                            </div>
-                        @else
-                            @cannot('transaction_view')
-                            @cannot('supervisor_view')
-                            <div class="row">
-                                <div class="col-md-12" style="padding-top:15px;">
-                                    @include('transaction.form_table')
+                            @else
+                                @cannot('transaction_view')
+                                @cannot('supervisor_view')
+                                <div class="row">
+                                    <div class="col-md-12" style="padding-top:15px;">
+                                        @include('transaction.form_table')
+                                    </div>
                                 </div>
-                            </div>
-                            @endcannot
-                            @endcannot
-                        @endunless
-                    @endif
+                                @endcannot
+                                @endcannot
+                            @endunless
+                        @endif
+                    @else
+                        <div class="row" style="padding-top:15px;">
+                            {{-- @include('transaction.form_service') --}}
+                        </div>
                     @endif
                     {!! Form::close() !!}
 

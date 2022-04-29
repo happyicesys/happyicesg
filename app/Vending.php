@@ -7,7 +7,39 @@ use Chrisbjr\ApiGuard\Models\Mixins\Apikeyable;
 
 class Vending extends Model
 {
-    // use Apikeyable;
+    use \Venturecraft\Revisionable\RevisionableTrait;
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+
+    protected $revisionEnabled = true;
+
+    //Remove old revisions (works only when used with $historyLimit)
+    protected $revisionCleanup = true;
+
+    //Maintain a maximum of 500 changes at any point of time, while cleaning up old revisions.
+    protected $historyLimit = 30;
+
+    //storing new creation
+    protected $revisionCreationsEnabled = true;
+
+    //revision appear format name
+    protected $revisionFormattedFieldNames = array(
+        'vend_id' => 'Vend ID',
+        'serial_no' => 'Serial No',
+        'type' => 'Type',
+        'router' => 'Router',
+        'desc' => 'Desc',
+        'person_id' => 'Customer',
+        'simcard_id' => 'Simcard ID',
+        'cashless_terminal_id' => 'Cashless Terminal ID',
+    );
+
+    protected $dontKeepRevisionOf = array(
+        'updated_by',
+    );
 
     protected $fillable = [
         'vend_id', 'serial_no', 'type', 'router', 'desc',

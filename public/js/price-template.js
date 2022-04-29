@@ -123,8 +123,8 @@ function priceTemplateController($scope, $http) {
         $scope.form.price_template_items.push({
             item: item,
             sequence: sequence,
-            retail_price: retail_price.toFixed(2),
-            quote_price: quote_price.toFixed(2),
+            retail_price: retail_price ? retail_price.toFixed(2) : 0,
+            quote_price: quote_price ? quote_price.toFixed(2) : 0,
         });
         $scope.form.sequence = ''
         $scope.form.retail_price = ''

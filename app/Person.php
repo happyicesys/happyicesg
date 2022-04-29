@@ -39,7 +39,7 @@ class Person extends Baum\Node
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
-    protected $historyLimit = 500;
+    protected $historyLimit = 200;
     protected $revisionCreationsEnabled = true;
     protected $revisionFormattedFieldNames = array(
         'contact' => 'Contact Number',
