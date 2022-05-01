@@ -200,12 +200,55 @@ Price Template
                       Attachment
                     </label>
                     <input type="file" ng-files="setTheFile($attachments)" id="price_template_attachment"  class="form-control">
-                    <div class="btn-group-control">
-                        <button ng-click="uploadFile($event)" class="btn btn-primary" style="margin-top: 9px;"> <i class="fa fa-upload" aria-hidden="true"></i>
-                            Upload File
-                        </button>
-                    </div>
                   </div> --}}
+                    <div ng-if="form.attachments && form.id">
+                        <div class="table-responsive">
+                            <table class="table table-list-search table-hover table-bordered">
+                                <tr style="background-color: #DDFDF8">
+                                    <th class="col-md-1 text-center">
+                                        #
+                                    </th>
+                                    <th class="col-md-9 text-center">
+                                        Path
+                                    </th>
+                                    <th class="col-md-2 text-center">
+                                        Action
+                                    </th>
+                                </tr>
+
+                                <tbody>
+                                    <tr ng-repeat="attachment in form.attachments">
+                                        <td class="col-md-1 text-center">
+                                            @{{$index + 1}}
+                                        </td>
+                                        <td class="col-md-9">
+                                            <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
+                                        </td>
+                                        <td class="col-md-2 text-center">
+                                            <div class="btn-group">
+                                                <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(attachment.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
+                                                <a href="@{{attachment.url}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="form.attachments.length == 0">
+                                        <td class="text-center" colspan="7">No Records Found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                    </div>
+                    <div ng-if="form.id" class="form-group">
+                        <div class="form-group">
+                            <label for="files">Upload Image</label>
+                            <input type="file" ng-files="setTheFiles($files)" id="image_file" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" ng-click="uploadFile($event, form.id)"><i class="fa fa-upload"></i> Upload File</button>
+                            {{-- <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button> --}}
+                        </div>
+                    </div>
+
                   <hr class="row">
                       <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -334,12 +377,14 @@ Price Template
                   </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
-                        Replicate
-                    </button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="btn-group">
+                        <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
+                            Replicate
+                        </button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
 

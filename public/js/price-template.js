@@ -164,44 +164,44 @@ function priceTemplateController($scope, $http) {
         });
     }
 
-    $scope.errors = [];
-    $scope.attachments = [];
-    var formData = new FormData();
+    // $scope.errors = [];
+    // $scope.attachments = [];
+    // var formData = new FormData();
 
-    $scope.setTheFile = function ($attachments) {
-        angular.forEach($attachments, function (value, key) {
-            formData.append('attachments', value);
-        });
-    };
+    // $scope.setTheFile = function ($attachments) {
+    //     angular.forEach($attachments, function (value, key) {
+    //         formData.append('attachments', value);
+    //     });
+    // };
 
-    $scope.uploadFile = function (event) {
-        event.preventDefault();
-        var request = {
-            method: 'POST',
-            url: '/api/price-template/attachment',
-            data: formData,
-            headers: {
-                'Content-Type': undefined
-            }
-        };
-        $http(request)
-            .then(function success(e) {
-                $scope.attachments = e.data.attachments;
-                $scope.errors = [];
-                // clear uploaded file
-                var fileElement = angular.element('#price_template_attachment');
-                fileElement.value = '';
-                if (e.data === 'true') {
-                    alert("Attachment uploaded");
-                } else {
-                    alert("Upload failure");
-                }
-                $scope.searchDB();
-            }, function error(e) {
-                $scope.errors = e.data.errors;
-                alert('Upload failure, please try again')
-            });
-    };
+    // $scope.uploadFile = function (event) {
+    //     event.preventDefault();
+    //     var request = {
+    //         method: 'POST',
+    //         url: '/api/price-template/attachment',
+    //         data: formData,
+    //         headers: {
+    //             'Content-Type': undefined
+    //         }
+    //     };
+    //     $http(request)
+    //         .then(function success(e) {
+    //             $scope.attachments = e.data.attachments;
+    //             $scope.errors = [];
+    //             // clear uploaded file
+    //             var fileElement = angular.element('#price_template_attachment');
+    //             fileElement.value = '';
+    //             if (e.data === 'true') {
+    //                 alert("Attachment uploaded");
+    //             } else {
+    //                 alert("Upload failure");
+    //             }
+    //             $scope.searchDB();
+    //         }, function error(e) {
+    //             $scope.errors = e.data.errors;
+    //             alert('Upload failure, please try again')
+    //         });
+    // };
 
     $scope.onReplicatePriceTemplateClicked = function (data) {
         $http.post('/api/price-template/replicate', { id: data.id }).success(function (data) {
@@ -231,6 +231,82 @@ function priceTemplateController($scope, $http) {
         }
     }
 
+    $scope.onImageClicked = function (id, data = null) {
+        if (!$scope.form.id) {
+            $scope.onSingleEntryEdit(data)
+        }
+        getImagePage(1, id)
+    }
+
+    // removing file
+    $scope.removeFile = function (attachmentId) {
+        $http.post('/api/price-template/attachment/delete', { 'attachmentId': attachmentId }).success(function (data) {
+            getPage(1);
+            location.reload();
+        });
+    }
+
+    $scope.errors = [];
+    $scope.files = [];
+    var formData = new FormData();
+
+    // $scope.uploadFile = function (priceTemplateId) {
+    //     var request = {
+    //         method: 'POST',
+    //         url: '/api/price-template/' + priceTemplateId + '/attachment',
+    //         data: formData,
+    //         headers: {
+    //             'Content-Type': undefined
+    //         }
+    //     };
+    //     $http(request)
+    //         .then(function success(e) {
+    //             $scope.files = e.data.files;
+    //             $scope.errors = [];
+    //             // clear uploaded file
+    //             var fileElement = angular.element('#image_file');
+    //             fileElement.value = '';
+    //             getPage(1, false)
+    //             alert("Image has been uploaded successfully!");
+    //         }, function error(e) {
+    //             $scope.errors = e.data.errors;
+    //         });
+    // };
+
+    $scope.uploadFile = function (event, priceTemplateId) {
+        event.preventDefault();
+        var request = {
+            method: 'POST',
+            url: '/api/price-template/' + priceTemplateId + '/attachment',
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#image_file');
+                fileElement.value = '';
+                if (e.data === 'true') {
+                    alert("Upload Successful");
+                }
+                $scope.searchDB();
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload unsuccessful, please try again')
+            });
+    };
+
+    $scope.setTheFiles = function ($files) {
+        angular.forEach($files, function (value, key) {
+            //   console.log(value)
+            formData.append('image_file', value);
+        });
+    };
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -253,5 +329,33 @@ function priceTemplateController($scope, $http) {
     }
 
 }
+
+app.directive('ngFiles', ['$parse', function ($parse) {
+
+    function file_links(scope, element, attrs) {
+        var onChange = $parse(attrs.ngFiles);
+        element.on('change', function (event) {
+            onChange(scope, { $files: event.target.files });
+        });
+    }
+    return {
+        link: file_links
+    }
+}]);
+
+app.directive('ngConfirmClick', [
+    function () {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }]);
 
 app.controller('priceTemplateController', priceTemplateController);

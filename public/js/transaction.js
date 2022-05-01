@@ -57,6 +57,11 @@ function transactionController($scope, $http) {
         requester_contact: '',
         requester_notification_emails: ''
     }
+    $scope.formService = {
+        desc: '',
+        before: '',
+        after: '',
+    }
     $scope.jobtypeSelection = [
         {
             id: 'Delivery_Job',
@@ -115,11 +120,15 @@ function transactionController($scope, $http) {
 
     $scope.showpersonassetSelection = true;
     $scope.hideSignature = true;
+    $scope.errors = [];
+    $scope.files = [];
+    var formData = new FormData();
 
     loadDealTable();
     transactionpersonasset();
 
     angular.element(document).ready(function () {
+        loadServiceTable($trans_id.val());
         $('.date').datetimepicker({
             format: 'YYYY-MM-DD'
         });
@@ -265,6 +274,14 @@ function transactionController($scope, $http) {
             });
         }
     }
+
+    function loadServiceTable(transactionId) {
+        $http.get('/api/transaction/' + transactionId + '/services').success(function (data) {
+            $scope.services = data.services;
+            $scope.servicesTotal = data.services.length;
+        });
+    }
+
 
     function loadDealTable() {
         $http.get('/api/transaction/edit/' + $trans_id.val()).success(function (data) {
@@ -536,7 +553,6 @@ function transactionController($scope, $http) {
 
     $scope.requesterNameChanged = function () {
         var requester_name = $scope.doform.requester_name;
-        console.log(requester_name);
         for (var i = 0; i < $scope.requesterSelections.length; i++) {
             var looprequester = $scope.requesterSelections[i];
             if (looprequester.name == requester_name) {
@@ -548,6 +564,142 @@ function transactionController($scope, $http) {
 
     $scope.onNewServiceClicked = function ($event) {
         $event.preventDefault();
+        $scope.formService = {}
+    }
+
+    $scope.editService = function ($event, serviceItem) {
+        $event.preventDefault();
+        $scope.formService = serviceItem;
+    }
+
+    $scope.uploadExcel = function (event) {
+        event.preventDefault();
+        var request = {
+            method: 'POST',
+            url: '/api/transaction/excel/import',
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement = angular.element('#attachment1');
+                fileElement.value = '';
+                if (e.data === 'true') {
+                    alert("Excel file uploaded and transactions loaded");
+                } else {
+                    alert("Invoice or Item creation failure, please refer to the Result file");
+                }
+                $scope.searchDB();
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload unsuccessful, please make sure only have one excel sheet, check the customer id, and try again')
+            });
+    };
+
+    $scope.setAttachment1 = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('attachment1', value);
+        });
+    };
+
+    $scope.setAttachment2 = function ($files) {
+        angular.forEach($files, function (value, key) {
+            formData.append('attachment2', value);
+        });
+    };
+
+    $scope.onServiceSubmitClicked = function (event, transactionId) {
+        formData.append('desc', $scope.formService.desc);
+        event.preventDefault();
+        var request = {
+            method: 'POST',
+            url: '/api/transaction/' + transactionId + '/service/store',
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement1 = angular.element('#attachment1');
+                var fileElement2 = angular.element('#attachment2');
+                fileElement1.value = '';
+                fileElement2.value = '';
+                if (e.data === 'true') {
+                    alert("Entry created");
+                }
+                location.reload();
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload unsuccessful, please try again')
+            });
+    }
+
+    $scope.onServiceUpdated = function (event, serviceId) {
+        formData.append('desc', $scope.formService.desc);
+        event.preventDefault();
+        var request = {
+            method: 'POST',
+            url: '/api/transaction/service/' + serviceId + '/update',
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                $scope.files = e.data.files;
+                $scope.errors = [];
+                // clear uploaded file
+                var fileElement1 = angular.element('#attachment1');
+                var fileElement2 = angular.element('#attachment2');
+                fileElement1.value = '';
+                fileElement2.value = '';
+                if (e.data === 'true') {
+                    alert("Entry created");
+                }
+                location.reload();
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload unsuccessful, please try again')
+            });
+    }
+
+    $scope.removeAttachment = function (event, formServiceId, formServiceAttachmentId) {
+        // event.preventDefault();
+        $http.post('/api/transaction/service/' + formServiceId + '/attachment/' + formServiceAttachmentId + '/delete').success(function (data) {
+            loadServiceTable($trans_id.val());
+            location.reload();
+        });
+    }
+
+    $scope.deleteService = function (event, formServiceId) {
+        $http.post('/api/transaction/service/' + formServiceId + '/delete').success(function (data) {
+            loadServiceTable($trans_id.val());
+            location.reload();
+        });
+    }
+
+    $scope.cancelService = function (event, formServiceId) {
+        $http.post('/api/transaction/service/' + formServiceId + '/cancel').success(function (data) {
+            loadServiceTable($trans_id.val());
+            location.reload();
+        });
+    }
+
+    $scope.completeService = function (event, formServiceId) {
+        $http.post('/api/transaction/service/' + formServiceId + '/complete').success(function (data) {
+            loadServiceTable($trans_id.val());
+            location.reload();
+        });
     }
 
 }
@@ -561,5 +713,33 @@ app.filter('removeZero', ['$filter', function ($filter) {
         return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 }]);
+
+app.directive('ngFiles', ['$parse', function ($parse) {
+
+    function file_links(scope, element, attrs) {
+        var onChange = $parse(attrs.ngFiles);
+        element.on('change', function (event) {
+            onChange(scope, { $files: event.target.files });
+        });
+    }
+    return {
+        link: file_links
+    }
+}]);
+
+app.directive('ngConfirmClick', [
+    function () {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }]);
 
 app.controller('transactionController', transactionController);

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Attachment;
 use App\Person;
 use App\PriceTemplate;
 use App\PriceTemplateItem;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Redis;
 
 class PriceTemplateController extends Controller
@@ -36,6 +38,7 @@ class PriceTemplateController extends Controller
                                         'priceTemplateItems' => function($query) {
                                             $query->orderBy('sequence');
                                         },
+                                        'attachments',
                                         'priceTemplateItems.item',
                                         'people'
                                     ]);
@@ -73,6 +76,8 @@ class PriceTemplateController extends Controller
     // store new price template api(Request $request)
     public function storeUpdatePriceTemplateApi(Request $request)
     {
+        // dd($request->all());
+
         $id = $request->id;
         $priceTemplateItems = $request->price_template_items;
         $name = $request->name;
@@ -206,6 +211,32 @@ class PriceTemplateController extends Controller
             }
         }
         return $form;
+    }
+
+    // upload attachment file()
+    public function storeAttachmentApi(Request $request, $priceTemplateId)
+    {
+        $priceTemplate = PriceTemplate::findOrFail($priceTemplateId);
+        // $priceTemplate->updated_by = auth()->user()->id;
+        $priceTemplate->updated_at = Carbon::now();
+        $priceTemplate->save();
+
+        if($image = request()->file('image_file')){
+            $name = (Carbon::now()->format('dmYHi')).$image->getClientOriginalName();
+            $image->move('price_template/'.$priceTemplate->id.'/', $name);
+            $priceTemplate->attachments()->create([
+                'url' => '/price_template/'.$priceTemplate->id.'/'.$name,
+                'full_url' => '/price_template/'.$priceTemplate->id.'/'.$name,
+            ]);
+        }
+    }
+
+    public function deleteAttachmentApi()
+    {
+        $attachmentId = request('attachmentId');
+
+        $attachment = Attachment::findOrFail($attachmentId);
+        $attachment->delete();
     }
 
     // sync new route template items

@@ -221,6 +221,11 @@ class Transaction extends Model
         return $this->belongsTo('App\User', 'created_by');
     }
 
+    public function serviceItems()
+    {
+        return $this->hasMany(ServiceItem::class);
+    }
+
     public function transactionpersonassets()
     {
         return $this->hasMany('App\Transactionpersonasset');

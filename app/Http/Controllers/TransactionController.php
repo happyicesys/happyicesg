@@ -16,6 +16,7 @@ use Auth;
 use Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Attachment;
 use App\Transaction;
 use App\Unitcost;
 use App\Item;
@@ -36,6 +37,7 @@ use App\ImportTransactionExcel;
 use App\Invattachment;
 use App\Operationdate;
 use App\TransSubscription;
+use App\ServiceItem;
 use App\User;
 use App\Deliveryorder;
 use App\Transactionpersonasset;
@@ -2591,6 +2593,138 @@ class TransactionController extends Controller
         Flash::success('Entries updated');
 
         return redirect()->action('TransactionController@edit', $transactionId);
+    }
+
+    public function getServicesApi($transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+
+        return ['services' => $transaction->serviceItems()->with(['attachment1', 'attachment2'])->get()];
+    }
+
+    public function createService($transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+
+        return view('transaction.service.create', compact('transaction'));
+    }
+
+    public function editService($serviceItemId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceItemId);
+
+        return view('transaction.service.edit', compact('serviceItem'));
+    }
+
+    public function storeServiceApi(Request $request, $transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+
+        $serviceItem = ServiceItem::create([
+            'desc' => $request->desc,
+        ]);
+        $transaction->serviceItems()->save($serviceItem);
+
+        if($attachment1 = request()->file('attachment1')){
+            $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
+            $attachment1->move('service_attachments/', $name1);
+            $savedAttachment1 = $serviceItem->attachments()->create([
+                'url' => '/service_attachments/'.$name1,
+                'full_url' => '/service_attachments/'.$name1,
+            ]);
+            $serviceItem->attachment1 = $savedAttachment1->id;
+            $serviceItem->save();
+        }
+
+        if($attachment2 = request()->file('attachment2')){
+            $name2 = (Carbon::now()->format('dmYHi')).$attachment2->getClientOriginalName();
+            $attachment2->move('service_attachments/', $name2);
+            $savedAttachment2 = $serviceItem->attachments()->create([
+                'url' => '/service_attachments/'.$name2,
+                'full_url' => '/service_attachments/'.$name2,
+            ]);
+            $serviceItem->attachment2 = $savedAttachment2->id;
+            $serviceItem->save();
+        }
+    }
+
+    public function updateServiceApi(Request $request, $serviceId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+        $serviceItem->desc = $request->desc;
+
+        if($attachment1 = request()->file('attachment1')){
+            if($serviceItem->attachment1) {
+                File::delete(public_path().$serviceItem->attachment1->url);
+            }
+            $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
+            $attachment1->move('service_attachments/', $name1);
+            $savedAttachment1 = $serviceItem->attachments()->create([
+                'url' => '/service_attachments/'.$name1,
+                'full_url' => '/service_attachments/'.$name1,
+            ]);
+            $serviceItem->attachment1 = $savedAttachment1->id;
+        }
+
+        if($attachment2 = request()->file('attachment2')){
+            if($serviceItem->attachment2) {
+                File::delete(public_path().$serviceItem->attachment2->url);
+            }
+            $name2 = (Carbon::now()->format('dmYHi')).$attachment2->getClientOriginalName();
+            $attachment2->move('service_attachments/', $name2);
+            $savedAttachment2 = $serviceItem->attachments()->create([
+                'url' => '/service_attachments/'.$name2,
+                'full_url' => '/service_attachments/'.$name2,
+            ]);
+            $serviceItem->attachment2 = $savedAttachment2->id;
+        }
+        $serviceItem->save();
+    }
+
+    public function deleteServiceAttachmentApi($serviceId, $attachmentId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+
+        if($serviceItem->attachment1 and ($serviceItem->attachment1->id == $attachmentId)) {
+            $serviceItem->attachment1 = null;
+            $serviceItem->save();
+        }
+
+        if($serviceItem->attachment2 and ($serviceItem->attachment2->id == $attachmentId)) {
+            $serviceItem->attachment2 = null;
+            $serviceItem->save();
+        }
+
+        $attachment = Attachment::findOrFail($attachmentId);
+        File::delete(public_path().$attachment->url);
+        $attachment->delete();
+    }
+
+    public function deleteServiceApi($serviceId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+
+        if($serviceItem->attachments()->exists()) {
+            foreach($serviceItem->attachments as $attachment) {
+                File::delete(public_path().$attachment->url);
+                $attachment->delete();
+            }
+        }
+        $serviceItem->delete();
+    }
+
+    public function cancelServiceApi($serviceId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+        $serviceItem->status = 99;
+        $serviceItem->save();
+    }
+
+    public function completeServiceApi($serviceId)
+    {
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+        $serviceItem->status = 2;
+        $serviceItem->save();
     }
 
     // mass update qty status

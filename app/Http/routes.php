@@ -340,6 +340,8 @@ Route::post('/api/price-template/attachment', 'PriceTemplateController@uploadAtt
 Route::delete('/api/price-template/delete/{id}', 'PriceTemplateController@deletePriceTemplateApi');
 Route::post('/api/price-template/sort-sequence', 'PriceTemplateController@sortSequenceApi');
 Route::post('/api/price-template/renumber-sequence', 'PriceTemplateController@renumberSequenceApi');
+Route::post('/api/price-template/{id}/attachment', 'PriceTemplateController@storeAttachmentApi');
+Route::post('/api/price-template/attachment/delete', 'PriceTemplateController@deleteAttachmentApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');
@@ -516,6 +518,15 @@ Route::get('/transaction/person/{person_id}/item/{item_id}', 'TransactionControl
 Route::post('/transaction/signature/submit/{transaction_id}', 'TransactionController@saveSignature');
 Route::get('/transaction/signature/delete/{transaction_id}', 'TransactionController@deleteSignature');
 Route::post('/transaction/files/update/{transaction_id}', 'TransactionController@updateFilesName');
+Route::get('/transaction/{id}/service/create', 'TransactionController@createService');
+Route::post('/transaction/service/store', 'TransactionController@storeService');
+Route::post('/api/transaction/{id}/service/store', 'TransactionController@storeServiceApi');
+Route::post('/api/transaction/service/{id}/update', 'TransactionController@updateServiceApi');
+Route::get('/api/transaction/{id}/services', 'TransactionController@getServicesApi');
+Route::post('/api/transaction/service/{serviceId}/delete', 'TransactionController@deleteServiceApi');
+Route::post('/api/transaction/service/{serviceId}/cancel', 'TransactionController@cancelServiceApi');
+Route::post('/api/transaction/service/{serviceId}/complete', 'TransactionController@completeServiceApi');
+Route::post('/api/transaction/service/{serviceId}/attachment/{attachmentId}/delete', 'TransactionController@deleteServiceAttachmentApi');
 Route::resource('transaction', 'TransactionController');
 
 Route::get('/hdprofile/transation', 'TransactionController@hdprofileIndex');

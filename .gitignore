@@ -5,6 +5,8 @@
 /public/bom_asset
 /public/inv_attachments
 /public/custsignature
+/public/price_template
+/public/service_attachments
 /storage/invoice
 Homestead.yaml
 Homestead.json

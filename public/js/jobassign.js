@@ -326,7 +326,6 @@ function transController($scope, $http, $window) {
         if (isConfirm) {
             $http.post('/api/transaction/initsequence', { driverkey: driverkey, drivers: $scope.drivers }).success(function (data) {
                 $scope.drivers = data;
-                console.log(data)
                 $scope.form.checkall = false;
             });
         }
