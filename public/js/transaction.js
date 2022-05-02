@@ -122,6 +122,9 @@ function transactionController($scope, $http) {
     $scope.hideSignature = true;
     $scope.errors = [];
     $scope.files = [];
+    $scope.service = {};
+    $scope.currentAttachmentId = '';
+    $scope.attachmentType = '';
     var formData = new FormData();
 
     loadDealTable();
@@ -275,10 +278,26 @@ function transactionController($scope, $http) {
         }
     }
 
+    function getServiceDefaultForm() {
+        return {
+            id: '',
+            status: '',
+            desc: '',
+            attachment1: '',
+            attachment2: '',
+        }
+    }
+
     function loadServiceTable(transactionId) {
         $http.get('/api/transaction/' + transactionId + '/services').success(function (data) {
             $scope.services = data.services;
-            $scope.servicesTotal = data.services.length;
+            // console.log($scope.services)
+            if ($scope.services.length < 5) {
+                var total = 5 - $scope.services.length;
+                for (var i = 0; i < total; i++) {
+                    $scope.services.push(getServiceDefaultForm());
+                }
+            }
         });
     }
 
@@ -564,7 +583,7 @@ function transactionController($scope, $http) {
 
     $scope.onNewServiceClicked = function ($event) {
         $event.preventDefault();
-        $scope.formService = {}
+        $scope.services.push(getServiceDefaultForm());
     }
 
     $scope.editService = function ($event, serviceItem) {
@@ -601,17 +620,45 @@ function transactionController($scope, $http) {
             });
     };
 
-    $scope.setAttachment1 = function ($files) {
+    $scope.setAttachment1 = function ($files, serviceId, reload = false) {
         angular.forEach($files, function (value, key) {
             formData.append('attachment1', value);
         });
+        formData.append('desc', $scope.formService.desc);
+        uploadFile('/api/transaction/service/' + serviceId + '/update');
+        if (reload) {
+            location.reload();
+        }
     };
 
-    $scope.setAttachment2 = function ($files) {
+    $scope.setAttachment2 = function ($files, serviceId, reload = false) {
         angular.forEach($files, function (value, key) {
             formData.append('attachment2', value);
         });
+        formData.append('desc', $scope.formService.desc);
+        uploadFile('/api/transaction/service/' + serviceId + '/update');
+        if (reload) {
+            location.reload();
+        }
     };
+
+    function uploadFile(url) {
+        var request = {
+            method: 'POST',
+            url: url,
+            data: formData,
+            headers: {
+                'Content-Type': undefined
+            }
+        };
+        $http(request)
+            .then(function success(e) {
+                loadServiceTable($trans_id.val());
+            }, function error(e) {
+                $scope.errors = e.data.errors;
+                alert('Upload unsuccessful, please try again')
+            });
+    }
 
     $scope.onServiceSubmitClicked = function (event, transactionId) {
         formData.append('desc', $scope.formService.desc);
@@ -702,8 +749,29 @@ function transactionController($scope, $http) {
         });
     }
 
-}
+    $scope.onServiceDescChanged = function (serviceIndex) {
+        $http.post('/api/transaction/service/sync', { service: $scope.services[serviceIndex], transactionId: $trans_id.val() }).success(function (data) {
+            loadServiceTable($trans_id.val());
+            // location.reload();
+        });
+    }
 
+    $scope.onStatusClicked = function (event, serviceId, statusCode) {
+        event.preventDefault();
+        $http.post('/api/transaction/service/' + serviceId + '/status', { statusCode: statusCode }).success(function (data) {
+            loadServiceTable($trans_id.val());
+        });
+    }
+
+    $scope.onAttachmentModalClicked = function (service, attachmentId) {
+        $scope.service = service;
+        if (service.attachment1 && (service.attachment1.id == attachmentId)) {
+            $scope.attachmentType = 1;
+        } else if (service.attachment2 && service.attachment2.id == attachmentId) {
+            $scope.attachmentType = 2;
+        }
+    }
+}
 
 
 app.filter('removeZero', ['$filter', function ($filter) {

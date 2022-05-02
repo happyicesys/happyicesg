@@ -527,6 +527,8 @@ Route::post('/api/transaction/service/{serviceId}/delete', 'TransactionControlle
 Route::post('/api/transaction/service/{serviceId}/cancel', 'TransactionController@cancelServiceApi');
 Route::post('/api/transaction/service/{serviceId}/complete', 'TransactionController@completeServiceApi');
 Route::post('/api/transaction/service/{serviceId}/attachment/{attachmentId}/delete', 'TransactionController@deleteServiceAttachmentApi');
+Route::post('/api/transaction/service/sync', 'TransactionController@syncServiceApi');
+Route::post('/api/transaction/service/{serviceId}/status', 'TransactionController@changeServiceStatus');
 Route::resource('transaction', 'TransactionController');
 
 Route::get('/hdprofile/transation', 'TransactionController@hdprofileIndex');

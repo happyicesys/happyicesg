@@ -2651,7 +2651,7 @@ class TransactionController extends Controller
     public function updateServiceApi(Request $request, $serviceId)
     {
         $serviceItem = ServiceItem::findOrFail($serviceId);
-        $serviceItem->desc = $request->desc;
+        // $serviceItem->desc = $request->desc;
 
         if($attachment1 = request()->file('attachment1')){
             if($serviceItem->attachment1) {
@@ -2681,6 +2681,38 @@ class TransactionController extends Controller
         $serviceItem->save();
     }
 
+    public function syncServiceApi(Request $request)
+    {
+
+        $transactionId = $request->transactionId;
+        $serviceForm = $request->service;
+        if($serviceForm['id']) {
+            $serviceItem = ServiceItem::findOrFail($serviceForm['id']);
+            $serviceItem->desc = $serviceForm['desc'];
+            $serviceItem->updated_by = auth()->user()->id;
+            $serviceItem->save();
+        }else {
+            $serviceItem = new ServiceItem();
+            $serviceItem->desc = $serviceForm['desc'];
+            $serviceItem->transaction_id = $transactionId;
+            $serviceItem->created_by = auth()->user()->id;
+            $serviceItem->save();
+        }
+
+        if($serviceForm['id'] and !$serviceForm['desc'] and !$serviceForm['attachment1'] and !$serviceForm['attachment2']) {
+            ServiceItem::findOrFail($serviceForm['id'])->delete();
+        }
+    }
+
+    public function changeServiceStatus(Request $request, $serviceId)
+    {
+        $statusCode = $request->statusCode;
+
+        $serviceItem = ServiceItem::findOrFail($serviceId);
+        $serviceItem->status = $statusCode;
+        $serviceItem->save();
+    }
+
     public function deleteServiceAttachmentApi($serviceId, $attachmentId)
     {
         $serviceItem = ServiceItem::findOrFail($serviceId);
@@ -2698,6 +2730,10 @@ class TransactionController extends Controller
         $attachment = Attachment::findOrFail($attachmentId);
         File::delete(public_path().$attachment->url);
         $attachment->delete();
+
+        if(!$serviceItem->desc and !$serviceItem->attachment1()->exists() and !$serviceItem->attachment2()->exists()) {
+            $serviceItem->delete();
+        }
     }
 
     public function deleteServiceApi($serviceId)

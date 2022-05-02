@@ -120,7 +120,7 @@
                         @endif
                     @else
                         <div class="row" style="padding-top:15px;">
-                            {{-- @include('transaction.form_service') --}}
+                            @include('transaction.form_service_2')
                         </div>
                     @endif
                     {!! Form::close() !!}
