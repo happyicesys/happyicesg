@@ -6,6 +6,46 @@
 
 <div class="create_edit">
 <div class="panel panel-primary" ng-app="app" ng-controller="transactionController" ng-cloak>
+    @php
+        //state 1 = cancel inv - confirm - cancel (pending)
+        //state 2 = cancel inv - del paid - del owe - update - print - send inv - cancel (confirmed)
+        //state 3 = cancel inv - paid - update - print - send inv - cancel (delivered unpaid)
+        //state 4 = delete inv - undo - cancel (cancelled)
+        //state 5 = cancel inv - unpaid - update - print - send inv - cancel (delivered paid)
+        //state 6 = LOCKED label - cancel (is freeze true)
+
+        $state = '';
+        $status = $transaction->status;
+        $pay_status = $transaction->pay_status;
+
+        if($transaction->is_freeze) {
+            $state = 6;
+        }else {
+            switch($status) {
+                case 'Pending':
+                    $state = 1;
+                    break;
+                case 'Confirmed':
+                    $state = 2;
+                    break;
+                case 'Delivered':
+                    $state = 3;
+                case 'Verified Owe':
+                case 'Verified Paid':
+                    if($pay_status === 'Paid') {
+                        $state = 6;
+                    }else {
+                        $state = 4;
+                    }
+                    break;
+                case 'Cancelled':
+                    $state = 5;
+                    break;
+                default:
+                    $state = 7;
+            }
+        }
+    @endphp
 
     <div class="panel-heading">
         <div class="col-md-6 col-xs-12">
@@ -73,7 +113,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                <div class="pull-right">
+                <div class="pull-right btn-group">
                     @if(!auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                         <button type="submit" class="btn btn-success" form="new_transaction"><i class="fa fa-plus"></i> New Transaction - {{$transaction->person->cust_id}}</button>
                         @if(!$transaction->is_service)
@@ -84,6 +124,11 @@
                             @endif
                         @endif
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
+                        @if(!$transaction->deals()->exists() and !$transaction->is_service and !auth()->user()->hasRole('driver'))
+                            @if($state == 1 or $state == 2 or $state == 5)
+                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                            @endif
+                        @endif
                         {{-- @endif --}}
                     @endif
                 </div>
@@ -132,56 +177,12 @@
                 </div>
             </div>
 
-            @php
-                //state 1 = cancel inv - confirm - cancel (pending)
-                //state 2 = cancel inv - del paid - del owe - update - print - send inv - cancel (confirmed)
-                //state 3 = cancel inv - paid - update - print - send inv - cancel (delivered unpaid)
-                //state 4 = delete inv - undo - cancel (cancelled)
-                //state 5 = cancel inv - unpaid - update - print - send inv - cancel (delivered paid)
-                //state 6 = LOCKED label - cancel (is freeze true)
-
-                $state = '';
-                $status = $transaction->status;
-                $pay_status = $transaction->pay_status;
-
-                if($transaction->is_freeze) {
-                    $state = 6;
-                }else {
-                    switch($status) {
-                        case 'Pending':
-                            $state = 1;
-                            break;
-                        case 'Confirmed':
-                            $state = 2;
-                            break;
-                        case 'Delivered':
-                            $state = 3;
-                        case 'Verified Owe':
-                        case 'Verified Paid':
-                            if($pay_status === 'Paid') {
-                                $state = 6;
-                            }else {
-                                $state = 4;
-                            }
-                            break;
-                        case 'Cancelled':
-                            $state = 5;
-                            break;
-                        default:
-                            $state = 7;
-                    }
-                }
-            @endphp
-
             @if($state === 1)
             <div class="row">
                 <div class="col-md-12" >
                     <div class="pull-left">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                            @if(!$transaction->deals()->exists() and !$transaction->is_service and !auth()->user()->hasRole('driver'))
-                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                            @endif
                         @endif
                     </div>
                     <div class="pull-right">
@@ -204,9 +205,6 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
                                 {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
-                                @if(!$transaction->is_service and !$transaction->deals()->exists() and !auth()->user()->hasRole('driver'))
-                                    {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                                @endif
                             @endunless
                             @if(!$transaction->is_service)
                                 @if($transaction->pay_status === 'Owe')
@@ -284,9 +282,6 @@
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             {!! Form::submit('Delete Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_wipe']) !!}
                             {!! Form::submit('Undo Cancel', ['class'=> 'btn btn-warning', 'form'=>'form_reverse', 'name'=>'form_reverse']) !!}
-                            @if(!$transaction->deals()->exists() and !$transaction->is_service and !auth()->user()->hasRole('driver'))
-                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
-                            @endif
                         @endif
                         @endcan
                         <a href="/transaction" class="btn btn-default">Back</a>
@@ -336,6 +331,7 @@
             @endif
     </div>
 
+    @if(!$transaction->is_service)
     <div class="panel-footer">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -459,6 +455,7 @@
             </div>
         @endif
     </div>
+    @endif
 </div>
 </div>
 @stop

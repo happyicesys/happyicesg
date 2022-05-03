@@ -67,7 +67,7 @@
                             </div>
                         </td>
                         <td class="col-md-3 text-left">
-                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id"></textarea>
+                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id" style="min-width: 130px;"></textarea>
                             <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="!service.id"></textarea>
                         </td>
                         <td class="col-md-3 text-center">
