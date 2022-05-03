@@ -45,23 +45,29 @@
                             <div style="padding-top: 10px;">
                                 <span ng-if="(service.status != 2 || !service.status) && service.id">
                                     <button class="btn btn-success btn-sm btn-block" ng-click="onStatusClicked($event, service.id, 2)">
-                                        Done 完成
+                                        Done
+                                        <br>
+                                        完成
                                     </button>
                                 </span>
                                 <span ng-if="(service.status != 90 || !service.status) && service.id">
                                     <button class="btn btn-warning btn-sm btn-block" ng-click="onStatusClicked($event, service.id, 90)">
-                                        Incomplete 未能完成
+                                        Incomplete
+                                        <br>
+                                        未能完成
                                     </button>
                                 </span>
                                 <span ng-if="(service.status != 99 || !service.status) && service.id">
                                     <button class="btn btn-danger btn-sm btn-block" ng-click="onStatusClicked($event, service.id, 99)">
-                                        Cancelled 取消
+                                        Cancelled
+                                        <br>
+                                        取消
                                     </button>
                                 </span>
                             </div>
                         </td>
                         <td class="col-md-3 text-left">
-                            <textarea name="desc" rows="8" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id"></textarea>
+                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id"></textarea>
                             <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="!service.id"></textarea>
                         </td>
                         <td class="col-md-3 text-center">
