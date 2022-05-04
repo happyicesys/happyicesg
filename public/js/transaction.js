@@ -751,7 +751,7 @@ function transactionController($scope, $http) {
 
     $scope.onServiceDescChanged = function (serviceIndex) {
         $http.post('/api/transaction/service/sync', { service: $scope.services[serviceIndex], transactionId: $trans_id.val() }).success(function (data) {
-            loadServiceTable($trans_id.val());
+            //loadServiceTable($trans_id.val());
             // location.reload();
         });
     }
