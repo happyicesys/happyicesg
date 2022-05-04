@@ -165,7 +165,7 @@
                         @endif
                     @else
                         <div class="row" style="padding-top:15px;">
-                            @include('transaction.form_service_2')
+                            {{-- @include('transaction.form_service_2') --}}
                         </div>
                     @endif
                     {!! Form::close() !!}
@@ -331,7 +331,7 @@
             @endif
     </div>
 
-    @if(!$transaction->is_service)
+    {{-- @if(!$transaction->is_service) --}}
     <div class="panel-footer">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -455,7 +455,7 @@
             </div>
         @endif
     </div>
-    @endif
+    {{-- @endif --}}
 </div>
 </div>
 @stop
