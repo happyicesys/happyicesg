@@ -626,9 +626,8 @@ function transactionController($scope, $http) {
         });
         formData.append('desc', $scope.formService.desc);
         uploadFile('/api/transaction/service/' + serviceId + '/update');
-        angular.element('#attachment1').value = '';
-        angular.element('#attachment2').value = '';
         if (reload) {
+            loadServiceTable($trans_id.val());
             location.reload();
         }
     };
@@ -639,9 +638,8 @@ function transactionController($scope, $http) {
         });
         formData.append('desc', $scope.formService.desc);
         uploadFile('/api/transaction/service/' + serviceId + '/update');
-        angular.element('#attachment1').value = '';
-        angular.element('#attachment2').value = '';
         if (reload) {
+            loadServiceTable($trans_id.val());
             location.reload();
         }
     };
@@ -657,7 +655,7 @@ function transactionController($scope, $http) {
         };
         $http(request)
             .then(function success(e) {
-                loadServiceTable($trans_id.val());
+
             }, function error(e) {
                 $scope.errors = e.data.errors;
                 alert('Upload unsuccessful, please try again')
