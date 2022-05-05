@@ -826,6 +826,7 @@
                             <tr>
                                 <td class="col-xs-1 text-center">
                                     {{$serviceItemIndex + 1}}
+                                    <br>
                                     @if($serviceItem->status == 1)
                                         <span class="badge badge-info">
                                             New
