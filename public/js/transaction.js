@@ -655,7 +655,7 @@ function transactionController($scope, $http) {
         };
         $http(request)
             .then(function success(e) {
-
+                location.reload();
             }, function error(e) {
                 $scope.errors = e.data.errors;
                 alert('Upload unsuccessful, please try again')
