@@ -628,7 +628,7 @@ function transactionController($scope, $http) {
         uploadFile('/api/transaction/service/' + serviceId + '/update');
         if (reload) {
             loadServiceTable($trans_id.val());
-            location.reload();
+            // location.reload();
         }
     };
 
@@ -640,7 +640,7 @@ function transactionController($scope, $http) {
         uploadFile('/api/transaction/service/' + serviceId + '/update');
         if (reload) {
             loadServiceTable($trans_id.val());
-            location.reload();
+            // location.reload();
         }
     };
 

@@ -826,6 +826,23 @@
                             <tr>
                                 <td class="col-xs-1 text-center">
                                     {{$serviceItemIndex + 1}}
+                                    @if($serviceItem->status == 1)
+                                        <span class="badge badge-info">
+                                            New
+                                        </span>
+                                    @elseif($serviceItem->status == 90)
+                                        <span class="badge badge-warning" style="background-color: orange;">
+                                            Incompleted
+                                        </span>
+                                    @elseif($serviceItem->status == 2)
+                                        <span class="badge badge-success" style="background-color: green;">
+                                            Completed
+                                        </span>
+                                    @elseif($serviceItem->status == 99)
+                                        <span class="badge badge-danger" style="background-color: red;">
+                                            Cancelled
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="col-xs-5 text-left">
                                     {{$serviceItem->desc}}
