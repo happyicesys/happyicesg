@@ -758,8 +758,6 @@ function transactionController($scope, $http) {
             if (!$scope.services[serviceIndex].id || !$scope.services[serviceIndex].desc) {
                 loadServiceTable($trans_id.val());
             }
-            // loadServiceTable($trans_id.val());
-            // location.reload();
         });
     }
 
