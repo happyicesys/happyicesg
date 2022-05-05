@@ -2713,18 +2713,8 @@ class TransactionController extends Controller
     {
         $serviceItem = ServiceItem::findOrFail($serviceId);
 
-        // if($serviceItem->attachment1 and ($serviceItem->attachment1->id == $attachmentId)) {
-        //     $serviceItem->attachment1 = null;
-        //     $serviceItem->save();
-        // }
-
-        // if($serviceItem->attachment2 and ($serviceItem->attachment2->id == $attachmentId)) {
-        //     $serviceItem->attachment2 = null;
-        //     $serviceItem->save();
-        // }
-
         $attachment = Attachment::findOrFail($attachmentId);
-        File::delete(public_path().$attachment->url);
+        Storage::delete($attachment->url);
         $attachment->delete();
 
         if(!$serviceItem->desc and !$serviceItem->attachments()->exists()) {
