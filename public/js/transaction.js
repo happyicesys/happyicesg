@@ -771,7 +771,8 @@ function transactionController($scope, $http) {
         $scope.attachmentType = isPrimary;
     }
 
-    $scope.downloadAttachment = function (attachmentId) {
+    $scope.downloadAttachment = function (event, attachmentId) {
+        event.preventDefault();
         $http.get('/api/transaction/service/attachment/' + attachmentId).success(function (data) {
         });
     }
