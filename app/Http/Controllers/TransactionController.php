@@ -609,6 +609,17 @@ class TransactionController extends Controller
                 return Redirect::action('TransactionController@edit', $transaction->id);
             }
         }elseif($request->input('del')) {
+
+            if($transaction->is_service) {
+                $serviceItemsCount = $transaction->serviceItems()->count();
+                $serviceItemsCompletedCount = $transaction->serviceItems()->where('status', '>', 1)->count();
+
+                if($serviceItemsCompletedCount < $serviceItemsCount) {
+                    Flash::error('Not able to complete due to item without progress status, 无法完成这维修单，请在每个维修项目，提供状况进展');
+                    return Redirect::action('TransactionController@edit', $transaction->id);
+                }
+            }
+
             $this->vendingMachineValidation($request, $id);
             $request->merge(array('status' => 'Delivered'));
 
@@ -2756,6 +2767,23 @@ class TransactionController extends Controller
         $attachment = Attachment::findOrFail($attachmentId);
 
         return Storage::download($attachment->url);
+    }
+
+    public function checkServiceCompletion($transactionId)
+    {
+        $completionStatus = true;
+
+        $transaction = Transaction::findOrFail($transactionId);
+
+        if($transaction->is_service) {
+            $serviceItemsCount = ServiceItem::where('transaction_id', $transactionId)->count();
+            $serviceItemsCompletedCount = ServiceItem::where('transaction_id', $transactionId)->where('status', '>', 1)->count();
+            if($serviceItemsCount != $serviceItemsCompletedCount) {
+                $completionStatus = false;
+            }
+        }
+
+        return $completionStatus;
     }
 
     // mass update qty status

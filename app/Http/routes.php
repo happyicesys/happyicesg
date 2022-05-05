@@ -530,6 +530,7 @@ Route::post('/api/transaction/service/{serviceId}/attachment/{attachmentId}/dele
 Route::post('/api/transaction/service/sync', 'TransactionController@syncServiceApi');
 Route::post('/api/transaction/service/{serviceId}/status', 'TransactionController@changeServiceStatus');
 Route::get('/api/transaction/service/attachment/{id}', 'TransactionController@attachmentId');
+Route::get('/api/transaction/{id}/service/completion', 'TransactionController@checkServiceCompletion');
 Route::resource('transaction', 'TransactionController');
 
 Route::get('/hdprofile/transation', 'TransactionController@hdprofileIndex');

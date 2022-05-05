@@ -67,13 +67,28 @@
                             </div>
                         </td>
                         <td class="col-md-3 text-left">
-                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 1000}" ng-if="service.id" style="min-width: 130px;"></textarea>
-                            <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 1000}" ng-if="!service.id"></textarea>
+                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id" style="min-width: 130px;"></textarea>
+                            <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{updateOn:'default change blur',debounce:{default:8000,blur:0,change:0}}" ng-if="!service.id"></textarea>
                         </td>
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, true)" data-toggle="modal" data-target="#attachment-modal" ng-if="attachment.is_primary">
-                                    <img src="@{{attachment.full_url}}" class="center-block" alt="@{{attachment.full_url}}" style="max-height:300px; max-width:300px;">
+                                    <div ng-switch="attachment.full_url.split('.').pop().toLowerCase()">
+                                        <embed ng-src="@{{attachment.full_url | trusted}}" type="application/pdf" style="min-height:300px; max-height:500px;" ng-switch-when="pdf">
+                                        <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mp4">
+                                            <video class=" embed-responsive-item video-js" controls>
+                                                <source ng-src="@{{attachment.full_url | trusted}}">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mov">
+                                            <video class=" embed-responsive-item video-js" controls>
+                                                <source ng-src="@{{attachment.full_url | trusted}}">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <img src="@{{attachment.full_url}}" class="center-block" alt="@{{attachment.full_url}}" style="max-height:300px; max-width:300px;" ng-switch-default>
+                                    </div>
                                 </a>
                             </span>
                             <span ng-if="service.id">
@@ -83,7 +98,22 @@
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, false)" data-toggle="modal" data-target="#attachment-modal" ng-if="!attachment.is_primary">
-                                    <img src="@{{attachment.full_url}}" class="center-block" alt="@{{attachment.full_url}}" style="max-height:300px; max-width:300px;">
+                                    <div ng-switch="attachment.full_url.split('.').pop().toLowerCase()">
+                                        <embed ng-src="@{{attachment.full_url | trusted}}" type="application/pdf" style="min-height:300px; max-height:500px;" ng-switch-when="pdf">
+                                        <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mp4">
+                                            <video class=" embed-responsive-item video-js" controls>
+                                                <source ng-src="@{{attachment.full_url | trusted}}">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mov">
+                                            <video class=" embed-responsive-item video-js" controls>
+                                                <source ng-src="@{{attachment.full_url | trusted}}">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                        <img src="@{{attachment.full_url}}" class="center-block" alt="@{{attachment.full_url}}" style="max-height:300px; max-width:300px;" ng-switch-default>
+                                    </div>
                                 </a>
                             </span>
                             <span ng-if="service.id">
@@ -135,7 +165,23 @@
                     <table class="table table-list-search table-hover table-bordered">
                         <tr ng-repeat="attachment in service.attachments">
                             <td class="text-center">
-                                <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType">
+                                {{-- <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType"> --}}
+                                <div ng-switch="attachment.full_url.split('.').pop().toLowerCase()">
+                                    <embed ng-src="@{{attachment.full_url | trusted}}" type="application/pdf" style="min-height:400px; max-height:800px;" ng-switch-when="pdf" ng-if="attachment.is_primary == attachmentType">
+                                    <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mp4" ng-if="attachment.is_primary == attachmentType">
+                                        <video class=" embed-responsive-item" controls>
+                                            <source ng-src="@{{attachment.full_url | trusted}}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mov" ng-if="attachment.is_primary == attachmentType">
+                                        <video class=" embed-responsive-item video-js" autoplay>
+                                            <source ng-src="@{{attachment.full_url | trusted}}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <img src="@{{attachment.full_url}}" class="center-block img-responsive" alt="@{{attachment.full_url}}"  ng-switch-default ng-if="attachment.is_primary == attachmentType">
+                                </div>
 
                                 <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == true)">
                                     <a href="@{{attachment.full_url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>

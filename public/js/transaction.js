@@ -125,6 +125,7 @@ function transactionController($scope, $http) {
     $scope.service = {};
     $scope.currentAttachmentId = '';
     $scope.attachmentType = '';
+    $scope.showServiceCompletionError = false;
     var formData = new FormData();
 
     loadDealTable();
@@ -776,6 +777,16 @@ function transactionController($scope, $http) {
         $http.get('/api/transaction/service/attachment/' + attachmentId).success(function (data) {
         });
     }
+
+    // $scope.checkServiceCompletion = function (event) {
+    //     event.preventDefault();
+    //     $http.get('/api/transaction/' + $trans_id.val() + '/service/completion').success(function (data) {
+    //         if (!data) {
+    //             event.stopPropagation();
+    //             $scope.showServiceCompletionError = true;
+    //         }
+    //     });
+    // }
 }
 
 
@@ -814,5 +825,11 @@ app.directive('ngConfirmClick', [
             }
         };
     }]);
+
+app.filter('trusted', ['$sce', function ($sce) {
+    return function (url) {
+        return $sce.trustAsResourceUrl(url);
+    };
+}]);
 
 app.controller('transactionController', transactionController);

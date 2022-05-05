@@ -215,8 +215,10 @@
                                     @endif
                                 @endif
                             @endif
-
                             {!! Form::submit('Delivered', ['name'=>'del', 'class'=> 'btn btn-warning', 'form'=>'form_cust', 'onclick'=>'clicked(event)']) !!}
+                            {{-- <span ng-if="showServiceCompletionError" style="color: red">
+                                **
+                            </span> --}}
                         @endif
                     </div>
 
