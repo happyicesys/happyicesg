@@ -138,11 +138,11 @@
                                 <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType">
 
                                 <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == true)">
-                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="@{{attachment.full_url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
                                     <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
                                 </div>
                                 <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == false)">
-                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="@{{attachment.full_url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
                                     <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
                                 </div>
                             </td>
