@@ -73,7 +73,7 @@
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, true)" data-toggle="modal" data-target="#attachment-modal" ng-if="attachment.is_primary">
-                                    <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
+                                    <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
                             <span ng-if="service.id">
@@ -83,7 +83,7 @@
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, false)" data-toggle="modal" data-target="#attachment-modal" ng-if="!attachment.is_primary">
-                                    <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
+                                    <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
                             <span ng-if="service.id">
@@ -135,14 +135,14 @@
                     <table class="table table-list-search table-hover table-bordered">
                         <tr ng-repeat="attachment in service.attachments">
                             <td class="text-center">
-                                <img src="@{{attachment.url}}" alt="@{{attachment.url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType">
+                                <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType">
 
                                 <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == true)">
-                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="#" ng-click="downloadAttachment(attachment.id)" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
                                     <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
                                 </div>
                                 <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == false)">
-                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="#" ng-click="downloadAttachment(attachment.id)" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
                                     <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
                                 </div>
                             </td>

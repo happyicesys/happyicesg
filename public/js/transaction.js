@@ -770,6 +770,11 @@ function transactionController($scope, $http) {
         $scope.service = service;
         $scope.attachmentType = isPrimary;
     }
+
+    $scope.downloadAttachment = function (attachmentId) {
+        $http.get('/api/transaction/service/attachment/' + attachmentId).success(function (data) {
+        });
+    }
 }
 
 

@@ -850,14 +850,14 @@
                                 <td class="col-xs-3 text-center">
                                     @if($serviceItem->attachments()->where('is_primary', 1)->get())
                                         @foreach($serviceItem->attachments()->where('is_primary', 1)->get() as $attachment)
-                                            <img src="{{$attachment->url}}" class="col-xs-12" style="width: 300px; height: 300px;">
+                                            <img src="{{$attachment->full_url}}" class="col-xs-12" style="width: 300px; height: 300px;">
                                         @endforeach
                                     @endif
                                 </td>
                                 <td class="col-xs-3 text-center">
                                     @if($serviceItem->attachments()->where('is_primary', 0)->get())
                                         @foreach($serviceItem->attachments()->where('is_primary', 0)->get() as $attachment)
-                                            <img src="{{$attachment->url}}" class="col-xs-12" style="width: 300px; height: 300px;">
+                                            <img src="{{$attachment->full_url}}" class="col-xs-12" style="width: 300px; height: 300px;">
                                         @endforeach
                                     @endif
                                 </td>

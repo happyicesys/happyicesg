@@ -2630,7 +2630,7 @@ class TransactionController extends Controller
             Storage::put('service_attachments/'.$name1, file_get_contents($attachment1->getRealPath()), 'public');
             $url1 = (Storage::url('service_attachments/'.$name1));
             $savedAttachment1 = $serviceItem->attachments()->create([
-                'url' => $url1,
+                'url' => 'service_attachments/'.$name1,
                 'full_url' => $url1,
                 'is_primary' => true,
             ]);
@@ -2641,7 +2641,7 @@ class TransactionController extends Controller
             Storage::put('service_attachments/'.$name2, file_get_contents($attachment2->getRealPath()), 'public');
             $url2 = (Storage::url('service_attachments/'.$name2));
             $savedAttachment2 = $serviceItem->attachments()->create([
-                'url' => $url2,
+                'url' => 'service_attachments/'.$name2,
                 'full_url' => $url2,
                 'is_primary' => false,
             ]);
@@ -2658,7 +2658,7 @@ class TransactionController extends Controller
             Storage::put('service_attachments/'.$name1, file_get_contents($attachment1->getRealPath()), 'public');
             $url1 = (Storage::url('service_attachments/'.$name1));
             $savedAttachment1 = $serviceItem->attachments()->create([
-                'url' => $url1,
+                'url' => 'service_attachments/'.$name1,
                 'full_url' => $url1,
                 'is_primary' => true,
             ]);
@@ -2670,7 +2670,7 @@ class TransactionController extends Controller
             Storage::put('service_attachments/'.$name2, file_get_contents($attachment2->getRealPath()), 'public');
             $url2 = (Storage::url('service_attachments/'.$name2));
             $savedAttachment2 = $serviceItem->attachments()->create([
-                'url' => $url2,
+                'url' => 'service_attachments/'.$name2,
                 'full_url' => $url2,
                 'is_primary' => false,
             ]);
@@ -2747,6 +2747,13 @@ class TransactionController extends Controller
         $serviceItem = ServiceItem::findOrFail($serviceId);
         $serviceItem->status = 2;
         $serviceItem->save();
+    }
+
+    public function downloadAttachment($attachmentId)
+    {
+        $attachment = Attachment::findOrFail($attachmentId);
+
+        return Storage::download($attachment->url);
     }
 
     // mass update qty status
