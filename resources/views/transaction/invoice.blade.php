@@ -805,6 +805,50 @@
                             @endif
                         </div>
                     </div>
+
+                    @if($transaction->serviceItems)
+                        <table class="table table-bordered table-condensed">
+                            <tr>
+                                <th class="text-center">
+                                    #
+                                </th>
+                                <th class="text-center">
+                                    Description
+                                </th>
+                                <th class="text-center">
+                                    Photo (before)
+                                </th>
+                                <th class="text-center">
+                                    Photo (after)
+                                </th>
+                            </tr>
+                            @foreach($transaction->serviceItems as $serviceItemIndex => $serviceItem)
+                            <tr>
+                                <td class="col-xs-1 text-center">
+                                    {{$serviceItemIndex + 1}}
+                                </td>
+                                <td class="col-xs-5 text-left">
+                                    {{$serviceItem->desc}}
+                                </td>
+                                <td class="col-xs-3 text-center">
+                                    @if($serviceItem->attachments()->where('is_primary', 1)->get())
+                                        @foreach($serviceItem->attachments()->where('is_primary', 1)->get() as $attachment)
+                                            <img src="{{$attachment->url}}" class="col-xs-12" style="width: 300px; height: 300px;">
+                                        @endforeach
+                                    @endif
+                                </td>
+                                <td class="col-xs-3 text-center">
+                                    @if($serviceItem->attachments()->where('is_primary', 0)->get())
+                                        @foreach($serviceItem->attachments()->where('is_primary', 0)->get() as $attachment)
+                                            <img src="{{$attachment->url}}" class="col-xs-12" style="width: 300px; height: 300px;">
+                                        @endforeach
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    @endif
+
                     @if($transaction->invattachments)
                     <div class="col-xs-12" style="padding-bottom: 30px;">
                         @foreach($transaction->invattachments()->oldest()->get() as $invattachment)

@@ -20,4 +20,9 @@ class Attachment extends Model
     {
         return $this->morphTo();
     }
+
+    public function getIsPrimaryAttribute($value)
+    {
+        return $value ? true : false;
+    }
 }

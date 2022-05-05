@@ -2599,7 +2599,7 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($transactionId);
 
-        return ['services' => $transaction->serviceItems()->with(['attachment1', 'attachment2'])->get()];
+        return ['services' => $transaction->serviceItems()->with(['attachments'])->get()];
     }
 
     public function createService($transactionId)
@@ -2654,27 +2654,31 @@ class TransactionController extends Controller
         // $serviceItem->desc = $request->desc;
 
         if($attachment1 = request()->file('attachment1')){
-            if($serviceItem->attachment1) {
-                File::delete(public_path().$serviceItem->attachment1->url);
-            }
+
+            // if($serviceItem->attachment1) {
+            //     File::delete(public_path().$serviceItem->attachment1->url);
+            // }
             $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
             $attachment1->move('service_attachments/', $name1);
             $savedAttachment1 = $serviceItem->attachments()->create([
                 'url' => '/service_attachments/'.$name1,
                 'full_url' => '/service_attachments/'.$name1,
+                'is_primary' => true,
             ]);
             $serviceItem->attachment1 = $savedAttachment1->id;
         }
 
         if($attachment2 = request()->file('attachment2')){
-            if($serviceItem->attachment2) {
-                File::delete(public_path().$serviceItem->attachment2->url);
-            }
+
+            // if($serviceItem->attachment2) {
+            //     File::delete(public_path().$serviceItem->attachment2->url);
+            // }
             $name2 = (Carbon::now()->format('dmYHi')).$attachment2->getClientOriginalName();
             $attachment2->move('service_attachments/', $name2);
             $savedAttachment2 = $serviceItem->attachments()->create([
                 'url' => '/service_attachments/'.$name2,
                 'full_url' => '/service_attachments/'.$name2,
+                'is_primary' => false,
             ]);
             $serviceItem->attachment2 = $savedAttachment2->id;
         }
@@ -2699,7 +2703,7 @@ class TransactionController extends Controller
             $serviceItem->save();
         }
 
-        if($serviceForm['id'] and !$serviceForm['desc'] and !$serviceForm['attachment1'] and !$serviceForm['attachment2']) {
+        if($serviceForm['id'] and !$serviceForm['desc'] and !$serviceForm['attachments']) {
             ServiceItem::findOrFail($serviceForm['id'])->delete();
         }
     }
@@ -2717,21 +2721,21 @@ class TransactionController extends Controller
     {
         $serviceItem = ServiceItem::findOrFail($serviceId);
 
-        if($serviceItem->attachment1 and ($serviceItem->attachment1->id == $attachmentId)) {
-            $serviceItem->attachment1 = null;
-            $serviceItem->save();
-        }
+        // if($serviceItem->attachment1 and ($serviceItem->attachment1->id == $attachmentId)) {
+        //     $serviceItem->attachment1 = null;
+        //     $serviceItem->save();
+        // }
 
-        if($serviceItem->attachment2 and ($serviceItem->attachment2->id == $attachmentId)) {
-            $serviceItem->attachment2 = null;
-            $serviceItem->save();
-        }
+        // if($serviceItem->attachment2 and ($serviceItem->attachment2->id == $attachmentId)) {
+        //     $serviceItem->attachment2 = null;
+        //     $serviceItem->save();
+        // }
 
         $attachment = Attachment::findOrFail($attachmentId);
         File::delete(public_path().$attachment->url);
         $attachment->delete();
 
-        if(!$serviceItem->desc and !$serviceItem->attachment1()->exists() and !$serviceItem->attachment2()->exists()) {
+        if(!$serviceItem->desc and !$serviceItem->attachments()->exists()) {
             $serviceItem->delete();
         }
     }

@@ -125,7 +125,7 @@
                         @endif
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
                         @if(!$transaction->deals()->exists() and !$transaction->is_service and !auth()->user()->hasRole('driver'))
-                            @if($state == 1 or $state == 2 or $state == 5)
+                            @if($state == 2 or $state == 5)
                                 {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
                             @endif
                         @endif
@@ -331,7 +331,7 @@
             @endif
     </div>
 
-    @if(!$transaction->is_service)
+    {{-- @if(!$transaction->is_service) --}}
     <div class="panel-footer">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -455,7 +455,7 @@
             </div>
         @endif
     </div>
-    @endif
+    {{-- @endif --}}
 </div>
 </div>
 @stop

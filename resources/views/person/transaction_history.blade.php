@@ -1,5 +1,11 @@
 @inject('caldeals', 'App\Deal')
 
+<style>
+    td {
+        white-space: normal !important; // To consider whitespace.
+    }
+</style>
+
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row">
@@ -270,7 +276,7 @@
                 <span ng-if="sortType == 'del_postcode' && !sortReverse" class="fa fa-caret-down"></span>
                 <span ng-if="sortType == 'del_postcode' && sortReverse" class="fa fa-caret-up"></span>
             </th>
-            <th class="col-md-1 text-center">
+            <th class="col-md-1 text-center" style="min-width: 200px; max-width: 200px;">
                 Remarks
             </th>
             <th class="col-md-1 text-center">
@@ -360,8 +366,8 @@
                     <span class="col-md-12">
                         <i class="fa fa-flag" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
                         <i class="fa fa-flag" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_important" ng-click="onIsImportantClicked(transaction.id, $index)"></i>
-                        <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_service && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
-                        <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_service  && transaction.deal_count == 0" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
+                        <i class="fa fa-wrench" aria-hidden="true" style="color:red; cursor:pointer;" ng-if="transaction.is_service && transaction.deal_count == 0 && transaction.status !='Pending'" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
+                        <i class="fa fa-wrench" aria-hidden="true" style="color:grey; cursor:pointer;" ng-if="!transaction.is_service  && transaction.deal_count == 0 && transaction.status !='Pending'" ng-click="onIsServiceClicked(transaction.id, $index)"></i>
                     </span>
                     <span class="label label-danger" ng-if="transaction.is_discard">
                         Discard
@@ -393,7 +399,11 @@
                 @endif
                 <td class="col-md-1 text-center">@{{ transaction.po_no}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.del_postcode}}</td>
-                <td class="col-md-1 text-left">@{{ transaction.transremark}}</td>
+                <td class="col-md-1 text-left" style="min-width: 200px; max-width: 200px; word-wrap: break-word;">
+                    <pre>
+                    @{{ transaction.transremark}}
+                    </pre>
+                </td>
                 <td class="col-md-1 text-center">@{{ transaction.name}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
                 @if(!auth()->user()->hasRole('hd_user'))

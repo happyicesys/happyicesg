@@ -626,6 +626,8 @@ function transactionController($scope, $http) {
         });
         formData.append('desc', $scope.formService.desc);
         uploadFile('/api/transaction/service/' + serviceId + '/update');
+        angular.element('#attachment1').value = '';
+        angular.element('#attachment2').value = '';
         if (reload) {
             location.reload();
         }
@@ -637,6 +639,8 @@ function transactionController($scope, $http) {
         });
         formData.append('desc', $scope.formService.desc);
         uploadFile('/api/transaction/service/' + serviceId + '/update');
+        angular.element('#attachment1').value = '';
+        angular.element('#attachment2').value = '';
         if (reload) {
             location.reload();
         }
@@ -751,7 +755,10 @@ function transactionController($scope, $http) {
 
     $scope.onServiceDescChanged = function (serviceIndex) {
         $http.post('/api/transaction/service/sync', { service: $scope.services[serviceIndex], transactionId: $trans_id.val() }).success(function (data) {
-            loadServiceTable($trans_id.val());
+            if (!$scope.services[serviceIndex].id || !$scope.services[serviceIndex].desc) {
+                loadServiceTable($trans_id.val());
+            }
+            // loadServiceTable($trans_id.val());
             // location.reload();
         });
     }
@@ -763,13 +770,9 @@ function transactionController($scope, $http) {
         });
     }
 
-    $scope.onAttachmentModalClicked = function (service, attachmentId) {
+    $scope.onAttachmentModalClicked = function (service, isPrimary = false) {
         $scope.service = service;
-        if (service.attachment1 && (service.attachment1.id == attachmentId)) {
-            $scope.attachmentType = 1;
-        } else if (service.attachment2 && service.attachment2.id == attachmentId) {
-            $scope.attachmentType = 2;
-        }
+        $scope.attachmentType = isPrimary;
     }
 }
 

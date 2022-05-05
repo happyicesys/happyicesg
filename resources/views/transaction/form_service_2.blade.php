@@ -67,27 +67,27 @@
                             </div>
                         </td>
                         <td class="col-md-3 text-left">
-                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="service.id" style="min-width: 130px;"></textarea>
-                            <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 500}" ng-if="!service.id"></textarea>
+                            <textarea name="desc" rows="9" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 1000}" ng-if="service.id" style="min-width: 130px;"></textarea>
+                            <textarea name="desc" rows="1" class="form-control" ng-model='service.desc' ng-change="onServiceDescChanged(serviceKey)" ng-model-options="{debounce: 1000}" ng-if="!service.id"></textarea>
                         </td>
                         <td class="col-md-3 text-center">
-                            <span ng-if="service.attachment1">
-                                <a href="#" ng-click="onAttachmentModalClicked(service, service.attachment1.id)" data-toggle="modal" data-target="#attachment-modal">
-                                    <img src="@{{service.attachment1.url}}" alt="@{{service.attachment1.url}}" style="width:200px; height:200px;">
+                            <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
+                                <a href="#" ng-click="onAttachmentModalClicked(service, true)" data-toggle="modal" data-target="#attachment-modal" ng-if="attachment.is_primary">
+                                    <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
-                            <span ng-if="!service.attachment1 && service.id">
-                                <input type="file" ng-files="setAttachment1($files, service.id)" id="attachment1"  class="form-control">
+                            <span ng-if="service.id">
+                                <input type="file" ng-files="setAttachment1($files, service.id, true)" id="attachment1"  class="form-control">
                             </span>
                         </td>
                         <td class="col-md-3 text-center">
-                            <span ng-if="service.attachment2">
-                                <a href="#" ng-click="onAttachmentModalClicked(service, service.attachment2.id)" data-toggle="modal" data-target="#attachment-modal">
-                                    <img src="@{{service.attachment2.url}}" alt="@{{service.attachment2.url}}" style="width:200px; height:200px;">
+                            <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
+                                <a href="#" ng-click="onAttachmentModalClicked(service, false)" data-toggle="modal" data-target="#attachment-modal" ng-if="!attachment.is_primary">
+                                    <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
-                            <span ng-if="!service.attachment2 && service.id">
-                                <input type="file" ng-files="setAttachment2($files, service.id)" id="attachment2"  class="form-control">
+                            <span ng-if="service.id">
+                                <input type="file" ng-files="setAttachment2($files, service.id, true)" id="attachment2"  class="form-control">
                             </span>
                         </td>
                     </tr>
@@ -119,52 +119,37 @@
                     <table class="table table-list-search table-hover table-bordered">
                         <tr style="background-color: #DDFDF8">
                             <th class="text-center">
-                                @{{attachmentType == 1 ? 'Before' : 'After'}}
+                                @{{ attachmentType ? 'Before' : 'After'}}
                             </th>
                         </tr>
+                        <tr>
+                            <td>
+                                <input type="file" ng-files="setAttachment1($files, service.id, true)" id="attachment1"  class="form-control" ng-if="attachmentType">
+                                <input type="file" ng-files="setAttachment2($files, service.id, true)" id="attachment2"  class="form-control" ng-if="!attachmentType">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <input type="file" ng-files="setAttachment1($files, service.id, true)" id="attachment1"  class="form-control" ng-if="attachmentType == 1">
-                                    <input type="file" ng-files="setAttachment2($files, service.id, true)" id="attachment2"  class="form-control" ng-if="attachmentType == 2">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <img src="@{{service.attachment1.url}}" alt="@{{service.attachment1.url}}" class="img-responsive" ng-if="attachmentType == 1">
-                                    <img src="@{{service.attachment2.url}}" alt="@{{service.attachment2.url}}" class="img-responsive" ng-if="attachmentType == 2">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    <div ng-if="attachmentType == 1">
-                                        <a href="@{{service.attachment1.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
-                                        <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, service.attachment1.id)" ><i class="fa fa-trash"></i> Delete</a>
-                                    </div>
-                                    <div ng-if="attachmentType == 2">
-                                        <a href="@{{service.attachment2.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
-                                        <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, service.attachment2.id)" ><i class="fa fa-trash"></i> Delete</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                <div class="table-responsive">
+                    <table class="table table-list-search table-hover table-bordered">
+                        <tr ng-repeat="attachment in service.attachments">
+                            <td class="text-center">
+                                <img src="@{{attachment.url}}" alt="@{{attachment.url}}" class="img-responsive" ng-if="attachment.is_primary == attachmentType">
+
+                                <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == true)">
+                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
+                                </div>
+                                <div ng-if="(attachment.is_primary == attachmentType) && (attachment.is_primary == false)">
+                                    <a href="@{{attachment.url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, service.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
+                                </div>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
-{{--
-            <div class="modal-footer">
-                <div class="btn-group hidden-xs">
-                  <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!formService.id" ng-click="onServiceSubmitClicked($event, {{$transaction->id}})" ng-disabled="!form.name">Create</button>
-                  <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="formService.id" ng-click="onServiceUpdated($event, formService.id)" ng-disabled="!form.name">Save</button>
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-                <div class="visible-xs">
-                    <button type="button" class="btn btn-success btn-block" data-dismiss="modal" ng-if="!formService.id" ng-click="onServiceSubmitClicked($event, {{$transaction->id}})" ng-disabled="!form.name">Create</button>
-                    <button type="button" class="btn btn-success btn-block" data-dismiss="modal" ng-if="formService.id" ng-click="onServiceUpdated($event, formService.id)" ng-disabled="!form.name">Save</button>
-                    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Close</button>
-                  </div>
-            </div> --}}
         </div>
     </div>
 </div>

@@ -980,6 +980,9 @@ class PersonController extends Controller
                                 $data['driver'] = $assignForm['driver'];
                                 $data['transremark'] = $assignForm['transremark'];
                                 $data['is_service'] = $assignForm['is_service'];
+                                if($data['is_service']) {
+                                    $data['status'] = $assignForm['Confirmed'];
+                                }
                                 $transaction = $this->generateSingleInvoiceByPersonId($person->id, $data);
                                 array_push($transactions, $transaction->id);
                                 break;
@@ -1011,6 +1014,7 @@ class PersonController extends Controller
         $driver = $data['driver'];
         $transremark = $data['transremark'];
         $isService = $data['is_service'];
+        $status = $data['status'];
         $person = Person::findOrFail($person_id);
 
         $transaction = Transaction::create([
