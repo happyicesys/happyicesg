@@ -2627,24 +2627,24 @@ class TransactionController extends Controller
 
         if($attachment1 = request()->file('attachment1')){
             $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
-            $attachment1->move('service_attachments/', $name1);
+            Storage::put('service_attachments/'.$name1, file_get_contents($attachment1->getRealPath()), 'public');
+            $url1 = (Storage::url('service_attachments/'.$name1));
             $savedAttachment1 = $serviceItem->attachments()->create([
-                'url' => '/service_attachments/'.$name1,
-                'full_url' => '/service_attachments/'.$name1,
+                'url' => $url1,
+                'full_url' => $url1,
+                'is_primary' => true,
             ]);
-            $serviceItem->attachment1 = $savedAttachment1->id;
-            $serviceItem->save();
         }
 
         if($attachment2 = request()->file('attachment2')){
             $name2 = (Carbon::now()->format('dmYHi')).$attachment2->getClientOriginalName();
-            $attachment2->move('service_attachments/', $name2);
+            Storage::put('service_attachments/'.$name2, file_get_contents($attachment2->getRealPath()), 'public');
+            $url2 = (Storage::url('service_attachments/'.$name2));
             $savedAttachment2 = $serviceItem->attachments()->create([
-                'url' => '/service_attachments/'.$name2,
-                'full_url' => '/service_attachments/'.$name2,
+                'url' => $url2,
+                'full_url' => $url2,
+                'is_primary' => false,
             ]);
-            $serviceItem->attachment2 = $savedAttachment2->id;
-            $serviceItem->save();
         }
     }
 
@@ -2654,35 +2654,27 @@ class TransactionController extends Controller
         // $serviceItem->desc = $request->desc;
 
         if($attachment1 = request()->file('attachment1')){
-
-            // if($serviceItem->attachment1) {
-            //     File::delete(public_path().$serviceItem->attachment1->url);
-            // }
             $name1 = (Carbon::now()->format('dmYHi')).$attachment1->getClientOriginalName();
-            $attachment1->move('service_attachments/', $name1);
+            Storage::put('service_attachments/'.$name1, file_get_contents($attachment1->getRealPath()), 'public');
+            $url1 = (Storage::url('service_attachments/'.$name1));
             $savedAttachment1 = $serviceItem->attachments()->create([
-                'url' => '/service_attachments/'.$name1,
-                'full_url' => '/service_attachments/'.$name1,
+                'url' => $url1,
+                'full_url' => $url1,
                 'is_primary' => true,
             ]);
-            $serviceItem->attachment1 = $savedAttachment1->id;
         }
+
 
         if($attachment2 = request()->file('attachment2')){
-
-            // if($serviceItem->attachment2) {
-            //     File::delete(public_path().$serviceItem->attachment2->url);
-            // }
             $name2 = (Carbon::now()->format('dmYHi')).$attachment2->getClientOriginalName();
-            $attachment2->move('service_attachments/', $name2);
+            Storage::put('service_attachments/'.$name2, file_get_contents($attachment2->getRealPath()), 'public');
+            $url2 = (Storage::url('service_attachments/'.$name2));
             $savedAttachment2 = $serviceItem->attachments()->create([
-                'url' => '/service_attachments/'.$name2,
-                'full_url' => '/service_attachments/'.$name2,
+                'url' => $url2,
+                'full_url' => $url2,
                 'is_primary' => false,
             ]);
-            $serviceItem->attachment2 = $savedAttachment2->id;
         }
-        $serviceItem->save();
     }
 
     public function syncServiceApi(Request $request)
