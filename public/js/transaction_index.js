@@ -357,6 +357,7 @@ function transController($scope, $http) {
     $scope.onIsServiceClicked = function (transaction_id, index) {
         $http.post('/api/transaction/is_service/' + transaction_id).success(function (data) {
             $scope.alldata[index].is_service = data.is_service;
+            getPage(1);
         });
     }
 

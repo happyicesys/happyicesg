@@ -73,7 +73,7 @@
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, true)" data-toggle="modal" data-target="#attachment-modal" ng-if="attachment.is_primary">
-                                    <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
+                                    <img src="@{{attachment.full_url}}" class="col-md-12 col-sm-12 col-xs-12" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
                             <span ng-if="service.id">
@@ -83,7 +83,7 @@
                         <td class="col-md-3 text-center">
                             <span ng-if="service.attachments" ng-repeat="attachment in service.attachments">
                                 <a href="#" ng-click="onAttachmentModalClicked(service, false)" data-toggle="modal" data-target="#attachment-modal" ng-if="!attachment.is_primary">
-                                    <img src="@{{attachment.full_url}}" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
+                                    <img src="@{{attachment.full_url}}" class="col-md-12 col-sm-12 col-xs-12" alt="@{{attachment.full_url}}" style="width:200px; height:200px;">
                                 </a>
                             </span>
                             <span ng-if="service.id">

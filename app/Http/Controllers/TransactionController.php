@@ -720,6 +720,7 @@ class TransactionController extends Controller
                 $this->vendingMachineValidation($request, $id);
             }
         }elseif($request->input('is_service')) {
+            $request->merge(array('status' => 'Confirmed'));
             $request->merge(array('is_service' => true));
             $request->merge(array('pay_status' => 'Owe'));
             $request->merge(array('paid_by' => null));
@@ -1595,6 +1596,7 @@ class TransactionController extends Controller
     {
         if(!auth()->user()->hasRole('driver')) {
             $transaction = Transaction::findOrFail($id);
+            $transaction->status = 'Confirmed';
             $transaction->is_service = !$transaction->is_service;
             $transaction->save();
 
