@@ -272,7 +272,7 @@
             </div>
         </div>
     </div>
-{{--
+
     <div class="row">
         <div class="col-md-4 col-xs-6">
             <div class="form-group">
@@ -287,8 +287,7 @@
                 </select>
             </div>
         </div>
-    </div> --}}
-
+    </div>
 </div>
 
 <div class="row" style="padding-left: 15px; padding-top:20px;">

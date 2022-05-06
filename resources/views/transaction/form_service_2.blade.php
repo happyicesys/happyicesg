@@ -15,15 +15,19 @@
                     <tr style="background-color: #DDFDF8;">
                         <th class="text-center">
                             #
+                            <br>进展状况
                         </th>
                         <th class="text-center">
                             Description
+                            <br>维修项目
                         </th>
                         <th class="text-center">
-                            Photo (Before)
+                            Photo/Video
+                            <br>(Before) 维修前
                         </th>
                         <th class="text-center">
-                            Photo (After)
+                            Photo/Video
+                            <br>(After) 维修后
                         </th>
                     </tr>
                     <tr ng-repeat="(serviceKey, service) in services">

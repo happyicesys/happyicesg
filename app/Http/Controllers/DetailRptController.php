@@ -17,6 +17,7 @@ use Auth;
 use DB;
 use PDF;
 use App\Profile;
+use App\Persontagattach;
 use Laracasts\Flash\Flash;
 use App\GeneralSetting;
 
@@ -964,6 +965,14 @@ class DetailRptController extends Controller
             $prevyrqty .= " AND custcategories.id IN (".$custcategoryIdStr.")";
         }
 
+        if($request->tags) {
+            $tagsStr = implode(",", $request->tags);
+            $thistotal .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+            $prevqty .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+            $prev2qty .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+            $prevyrqty .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+        }
+
         if($request->profile_id) {
             $thistotal .= " GROUP BY item_id, profile_id) thistotal";
             $prevqty .= " GROUP BY item_id, profile_id) prevqty";
@@ -1045,6 +1054,14 @@ class DetailRptController extends Controller
                     $items = $items->where('items.is_supermarket_fee', 1);
                     break;
             }
+        }
+
+        if($tags = request('tags')) {
+            if (count($tags) == 1) {
+                $tags = [$tags];
+            }
+            $persontagattachPersonIdArr = Persontagattach::whereIn('persontag_id', $tags)->lists('person_id')->toArray();
+            $items = $items->whereIn('people.id', $persontagattachPersonIdArr);
         }
 
         if(request('zone_id') != '') {
@@ -1211,6 +1228,11 @@ class DetailRptController extends Controller
                     $amountstr .= " AND items.is_supermarket_fee=1 ";
                     break;
             }
+        }
+
+        if($request->tags) {
+            $tagsStr = implode(",", $request->tags);
+            $amountstr .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
         }
 
         // if($item_id = $request->item_id) {
@@ -3412,15 +3434,22 @@ class DetailRptController extends Controller
         }
 
         if($tags) {
+            // $tagsStr = implode(",", $tags);
             if (count($tags) == 1) {
                 $tags = [$tags];
             }
-            $transactions = $transactions->whereHas('person', function($query) use ($tags) {
-                $query->whereHas('persontags', function($query) use ($tags) {
-                    $query->whereIn('persontags.id', $tags);
-                });
-            });
+            // $transactions = $transactions->whereHas('person', function($query) use ($tags) {
+            //     $query->whereHas('persontags', function($query) use ($tags) {
+            //         $query->whereIn('persontags.id', $tags);
+            //     });
+            // });
+            $persontagattachPersonIdArr = Persontagattach::whereIn('persontag_id', $tags)->lists('person_id')->toArray();
+            $transactions = $transactions->whereIn('people.id', $persontagattachPersonIdArr);
         }
+        // if($tags) {
+        //     $tagsStr = implode(",", $tags);
+        //     $query .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+        // }
 
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
@@ -3576,10 +3605,10 @@ class DetailRptController extends Controller
             $query .= " AND people.zone_id='".$zone_id."' ";
         }
 
-        // if($tags) {
-        //     $tagsStr = implode(",", $tags);
-        //     $query .= " AND EXISTS (SELECT ;
-        // }
+        if($tags) {
+            $tagsStr = implode(",", $tags);
+            $query .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+        }
 /*
         if($sortName){
             $sortByOrder = $sortBy ? 'ASC' : 'DESC';

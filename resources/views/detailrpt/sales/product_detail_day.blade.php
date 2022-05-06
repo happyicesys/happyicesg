@@ -292,6 +292,21 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
+                <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
+                    <option value="">All</option>
+                    @foreach($persontags::orderBy('name')->get() as $persontag)
+                        <option value="{{$persontag->id}}">
+                            {{$persontag->name}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
 {{--
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
