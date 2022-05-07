@@ -408,7 +408,7 @@
             </tr>
 
             <tr style="background-color: #DDFDF8">
-                <th colspan="5"></th>
+                <th colspan="6"></th>
                 <th class="col-md-1 text-right" style="font-size: 13px;">
                     <span class="pull-left" style="font-size:11px;">
                         Trans:
@@ -514,7 +514,11 @@
                         </a>
                     </td>
                     <td class="col-md-1 text-center">
-                        @{{ transaction.active }}
+                        <span ng-if="transaction.active == 'Yes'">Active</span>
+                        <span ng-if="transaction.active == 'No'">Inactive</span>
+                        <span ng-if="transaction.active != 'No' && transaction.active != 'Yes'">
+                            @{{ transaction.active }}
+                        </span>
                     </td>
                     <td class="col-md-1 text-center">
                         @{{transaction.account_manager_name}}
