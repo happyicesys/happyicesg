@@ -604,7 +604,7 @@ class DetailRptController extends Controller
                         ->leftJoin($prevyearsfeetotal, 'people.id', '=', 'prevyearsfeetotal.person_id')
                         ->select(
                             'items.is_commission', 'items.product_id', 'items.name AS item_name',
-                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                            'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.active',
                             'profiles.name as profile_name', 'profiles.id as profile_id', 'account_manager.name AS account_manager_name', 'transactions.gst', 'transactions.gst_rate',
                             'transactions.id', 'transactions.status', 'transactions.delivery_date', 'transactions.pay_status', 'transactions.delivery_fee', 'transactions.paid_at', 'transactions.created_at',
                             'custcategories.name as custcategory',
@@ -3492,6 +3492,7 @@ class DetailRptController extends Controller
         $sortName = $request->sortName;
         $sortBy = $request->sortBy;
         $tags = $request->tags;
+        $actives = $request->active;
 
         if($profile_id){
             $query .= " AND profiles.id='".$profile_id."' ";
@@ -3608,6 +3609,12 @@ class DetailRptController extends Controller
         if($tags) {
             $tagsStr = implode(",", $tags);
             $query .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
+        }
+
+        if($actives) {
+            $activesStr = implode("','", $actives);
+            // dd($activesStr);
+            $query .= " AND people.active IN ('".$activesStr."') ";
         }
 /*
         if($sortName){

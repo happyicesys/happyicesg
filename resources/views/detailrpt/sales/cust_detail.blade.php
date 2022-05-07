@@ -287,6 +287,21 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-xs-6">
+            <div class="form-group">
+                {!! Form::label('active', 'Customer Status', ['class'=>'control-label search-title']) !!}
+                <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB($event)" multiple>
+                    <option value="">All</option>
+                    <option value="Potential">Potential</option>
+                    <option value="New">New</option>
+                    <option value="Yes">Active</option>
+                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                        <option value="Pending">Pending</option>
+                        <option value="No">Inactive</option>
+                    @endif
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -344,6 +359,12 @@
                     ID Name
                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
+                </th>
+                <th class="col-md-2 text-center">
+                    <a href="" ng-click="sortTable('active')">
+                    Cust Status
+                    <span ng-if="search.sortName == 'active' && !search.sortBy" class="fa fa-caret-down"></span>
+                    <span ng-if="search.sortName == 'active' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
                 <th class="col-md-2 text-center">
                     <a href="" ng-click="sortTable('people.account_manager')">
@@ -491,6 +512,9 @@
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
+                    </td>
+                    <td class="col-md-1 text-center">
+                        @{{ transaction.active }}
                     </td>
                     <td class="col-md-1 text-center">
                         @{{transaction.account_manager_name}}
