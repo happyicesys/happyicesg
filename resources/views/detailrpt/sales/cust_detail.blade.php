@@ -360,13 +360,13 @@
                     <span ng-if="search.sortName == 'company' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'company' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-2 text-center">
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('active')">
                     Cust Status
                     <span ng-if="search.sortName == 'active' && !search.sortBy" class="fa fa-caret-down"></span>
                     <span ng-if="search.sortName == 'active' && search.sortBy" class="fa fa-caret-up"></span>
                 </th>
-                <th class="col-md-2 text-center">
+                <th class="col-md-1 text-center">
                     <a href="" ng-click="sortTable('people.account_manager')">
                     Acc Manager
                     <span ng-if="search.sortName == 'account_manager' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -508,12 +508,12 @@
                     <td class="col-md-1 text-center">
                         @{{ transaction.cust_id }}
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-left">
                         <a href="/person/@{{ transaction.person_id }}">
                             @{{ transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company }}
                         </a>
                     </td>
-                    <td class="col-md-1 text-center">
+                    <td class="col-md-1 text-center" >
                         <span ng-if="transaction.active == 'Yes'">Active</span>
                         <span ng-if="transaction.active == 'No'">Inactive</span>
                         <span ng-if="transaction.active != 'No' && transaction.active != 'Yes'">
