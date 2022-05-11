@@ -2157,6 +2157,238 @@ class DetailRptController extends Controller
         return view('detailrpt.invbreakdown.detail', compact('request' ,'transactionsId', 'itemsId', 'person_id'));
     }
 
+
+        // retrieve invoice breakdown detail version2 (Formrequest $request)
+    public function getInvoiceBreakdownDetailv2(Request $request)
+    {
+        $itemsId = [];
+        $transactionsId = [];
+        $custcategories = $request->custcategories;
+        $custcategoryGroups = $request->custcategoryGroups;
+        $actives = $request->actives;
+        $statuses = $request->statuses;
+        $delivery_from = $request->delivery_from ? $request->delivery_from : Carbon::today()->toDateString();
+        $delivery_to = $request->delivery_to ? $request->delivery_to : Carbon::today()->toDateString();
+        $personTags = $request->personTags;
+
+        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id');
+
+        if($statuses) {
+            if (count($statuses) == 1) {
+                $statuses = [$statuses];
+            }
+            if(in_array('Delivered', $statuses)) {
+                array_push($statuses, 'Verified Owe');
+                array_push($statuses, 'Verified Paid');
+            }else {
+                if(($key1 = array_search('Verified Owe', $statuses)) !== false) {
+                    unset($statuses[$key1]);
+                }
+                if(($key2 = array_search('Verified Paid', $statuses)) !== false) {
+                    unset($statuses[$key2]);
+                }
+            }
+            $deals = $deals->whereHas('transaction', function($query) use ($statuses) {
+                $query->whereIn('transactions.status', $statuses);
+            });
+        }
+
+        if($custcategories) {
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                $query->whereIn('id', $custcategories);
+            });
+        }
+
+        if($custcategoryGroups) {
+            if (count($custcategoryGroups) == 1) {
+                $custcategoryGroups = [$custcategoryGroups];
+            }
+            $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
+                $query->whereIn('id', $custcategoryGroups);
+            });
+        }
+
+        if($actives) {
+            if (count($actives) == 1) {
+                $actives = [$actives];
+            }
+            $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
+                $query->whereIn('active', $actives);
+            });
+        }
+
+        if($delivery_from){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_from) {
+                $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
+            });
+        }
+        if($delivery_to){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
+                $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
+            });
+        }
+
+        if($personTags) {
+            if (count($personTags) == 1) {
+                $personTags = [$personTags];
+            }
+            $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
+                $query->whereIn('id', $personTags);
+            });
+        }
+
+        $deals = $deals->groupBy('items.product_id')
+                ->select(
+                    'items.id AS id',
+                    'items.product_id',
+                    'items.name',
+                    DB::raw('SUM(qty) AS qty'),
+                    DB::raw('SUM(amount) AS amount'),
+                    DB::raw('SUM(qty * unit_cost) AS cost'),
+                    DB::raw('SUM(amount) - SUM(qty * unit_cost) AS gross'),
+                    DB::raw('ROUND((SUM(amount) - SUM(qty * unit_cost))/ SUM(amount) * 100, 2) AS gross_percent')
+                );
+
+
+
+        $totals = $this->multipleTotalFields($deals, [
+            'qty',
+            'amount',
+            'cost',
+            'gross',
+        ]);
+
+        $deals = $deals->get();
+
+        // if($request->export_excel) {
+        //     $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
+        // }
+
+        return view('detailrpt.invbreakdown.detailv2', compact('request' ,'deals', 'totals'));
+    }
+
+    public function getInvoiceBreakdownDetailv2Api(Request $request)
+    {
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+        $custcategories = $request->custcategories;
+        $custcategoryGroups = $request->custcategoryGroups;
+        $actives = $request->actives;
+        $statuses = $request->statuses;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+        $personTags = $request->personTags;
+
+        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id');
+
+        if($statuses) {
+            if (count($statuses) == 1) {
+                $statuses = [$statuses];
+            }
+            if(in_array('Delivered', $statuses)) {
+                array_push($statuses, 'Verified Owe');
+                array_push($statuses, 'Verified Paid');
+            }else {
+                if(($key1 = array_search('Verified Owe', $statuses)) !== false) {
+                    unset($statuses[$key1]);
+                }
+                if(($key2 = array_search('Verified Paid', $statuses)) !== false) {
+                    unset($statuses[$key2]);
+                }
+            }
+            $deals = $deals->whereHas('transaction', function($query) use ($statuses) {
+                $query->whereIn('transactions.status', $statuses);
+            });
+        }
+
+        if($custcategories) {
+            if (count($custcategories) == 1) {
+                $custcategories = [$custcategories];
+            }
+            $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                $query->whereIn('id', $custcategories);
+            });
+        }
+
+        if($custcategoryGroups) {
+            if (count($custcategoryGroups) == 1) {
+                $custcategoryGroups = [$custcategoryGroups];
+            }
+            $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
+                $query->whereIn('id', $custcategoryGroups);
+            });
+        }
+
+        if($actives) {
+            if (count($actives) == 1) {
+                $actives = [$actives];
+            }
+            $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
+                $query->whereIn('active', $actives);
+            });
+        }
+
+        if($delivery_from){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_from) {
+                $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
+            });
+        }
+        if($delivery_to){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
+                $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
+            });
+        }
+
+        if($personTags) {
+            if (count($personTags) == 1) {
+                $personTags = [$personTags];
+            }
+            $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
+                $query->whereIn('persontags.id', $personTags);
+            });
+        }
+
+        $deals = $deals->groupBy('items.product_id')
+                ->select(
+                    'items.id AS id',
+                    'items.product_id',
+                    'items.name',
+                    DB::raw('SUM(qty) AS qty'),
+                    DB::raw('SUM(amount) AS amount'),
+                    DB::raw('SUM(qty * unit_cost) AS cost'),
+                    DB::raw('SUM(amount) - SUM(qty * unit_cost) AS gross'),
+                    DB::raw('ROUND((SUM(amount) - SUM(qty * unit_cost))/ SUM(amount) * 100, 2) AS gross_percent')
+                );
+
+        $totals = $this->multipleTotalFields($deals, [
+            'qty',
+            'amount',
+            'cost',
+            'gross',
+        ]);
+
+        if($request->sortName){
+            $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }else {
+            $deals = $deals->orderBy('items.product_id');
+        }
+
+        if($pageNum == 'All'){
+            $deals = $deals->get();
+        }else{
+            $deals = $deals->paginate($pageNum);
+        }
+
+        $data = [
+            'deals' => $deals,
+            'totals' => $totals,
+        ];
+
+        return $data;
+    }
+
     // get invoice breakdown page()
     public function getInvoiceBreakdownSummary()
     {

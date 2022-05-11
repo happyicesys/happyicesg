@@ -8,28 +8,24 @@ var app = angular.module('app', [
     'datePicker'
 ]);
 
-function invbreakdownSummaryController($scope, $http) {
+function invbreakdownDetailv2Controller($scope, $http) {
     // init the variables
     $scope.alldata = [];
-    $scope.datasetTemp = {};
-    $scope.totalCountTemp = {};
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
     $scope.itemsPerPage = 100;
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
-    $scope.headerTemp = '';
     $scope.search = {
-        profile_id: '',
-        delivery_from: moment().startOf('month').format('YYYY-MM-DD'),
+        excludeCustCat: '',
+        custcategories: [],
+        custcategoryGroups: [],
+        actives: [],
+        delivery_from: moment().format("YYYY-MM-DD"),
         delivery_to: moment().format("YYYY-MM-DD"),
-        status: 'Delivered',
-        cust_id: '',
-        company: '',
-        person_id: '',
-        custcategory: '',
-        is_commission: '0',
+        statuses: [],
+        personTags: [],
         pageNum: 'All',
         sortBy: true,
         sortName: ''
@@ -39,15 +35,20 @@ function invbreakdownSummaryController($scope, $http) {
     getPage(1, true);
 
     angular.element(document).ready(function () {
-        $('.select').select2();
+        $('.select').select2({
+            placeholder: 'Select...'
+        });
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
+        });
     });
 
     $scope.exportData = function () {
-        var blob = new Blob(["\ufeff", document.getElementById('exportable_invbreakdownsummary').innerHTML], {
+        var blob = new Blob(["\ufeff", document.getElementById('exportable_invbreakdownDetailv2').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "Invoice Breakdown Summary" + now + ".xls");
+        saveAs(blob, "Invoice Breakdown Detailv2" + now + ".xls");
     };
 
     $scope.onDeliveryFromChanged = function (date) {
@@ -64,6 +65,10 @@ function invbreakdownSummaryController($scope, $http) {
         $scope.searchDB();
     }
 
+    $scope.dateChanged = function (modelName, date) {
+        $scope.form[modelName] = moment(new Date(date)).format('YYYY-MM-DD');
+    }
+
     // switching page
     $scope.pageChanged = function (newPage) {
         getPage(newPage, false);
@@ -75,6 +80,24 @@ function invbreakdownSummaryController($scope, $http) {
         getPage(1, false)
     };
 
+    $scope.onPrevDateClicked = function (scope_from, scope_to) {
+        $scope.search[scope_from] = moment(new Date($scope.search[scope_from])).subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.search[scope_to] = moment(new Date($scope.search[scope_to])).subtract(1, 'days').format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onTodayDateClicked = function (scope_from, scope_to) {
+        $scope.search[scope_from] = moment().format('YYYY-MM-DD');
+        $scope.search[scope_to] = moment().format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
+    $scope.onNextDateClicked = function (scope_from, scope_to) {
+        $scope.search[scope_from] = moment(new Date($scope.search[scope_from])).add(1, 'days').format('YYYY-MM-DD');
+        $scope.search[scope_to] = moment(new Date($scope.search[scope_to])).add(1, 'days').format('YYYY-MM-DD');
+        $scope.searchDB();
+    }
+
     $scope.onPrevSingleClicked = function (scope_name, date) {
         $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
         $scope.searchDB();
@@ -85,11 +108,18 @@ function invbreakdownSummaryController($scope, $http) {
         $scope.searchDB();
     }
 
+
     // when hitting search button
     $scope.searchDB = function () {
+        $scope.search.edited = true;
+    }
+
+    // search button transaction index
+    $scope.onSearchButtonClicked = function (event) {
+        event.preventDefault();
         $scope.search.sortName = '';
         $scope.search.sortBy = true;
-        getPage(1, false);
+        getPage(1);
     }
 
     $scope.sortTable = function (sortName) {
@@ -101,7 +131,7 @@ function invbreakdownSummaryController($scope, $http) {
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
-        $http.post('/api/detailrpt/invbreakdown/summary?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+        $http.post('/api/detailrpt/invbreakdown/detailv2?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
             if (data.deals.data) {
                 $scope.alldata = data.deals.data;
                 $scope.totalCount = data.deals.total;
@@ -117,37 +147,7 @@ function invbreakdownSummaryController($scope, $http) {
             }
             // get total count
             $scope.All = data.deals.length;
-            // return fixed total amount
-            $scope.grand_total = data.fixedtotals.grand_total.toFixed(2);
-            $scope.taxtotal = data.fixedtotals.taxtotal.toFixed(2);
-            $scope.subtotal = data.fixedtotals.subtotal.toFixed(2);
-            $scope.fixed_total_gross_money = data.fixedtotals.total_gross_money.toFixed(2);
-            $scope.fixed_total_gross_percent = data.fixedtotals.total_gross_percent.toFixed(2);
-
-            $scope.avg_grand_total = data.dynamictotals.avg_grand_total.toFixed(2);
-            $scope.avg_subtotal = data.dynamictotals.avg_subtotal.toFixed(2);
-            $scope.avg_cost = data.dynamictotals.avg_cost.toFixed(2);
-            $scope.avg_gross_money = data.dynamictotals.avg_gross_money.toFixed(2);
-            $scope.avg_gross_percent = data.dynamictotals.avg_gross_percent.toFixed(2);
-            $scope.avg_vending_piece_price = data.dynamictotals.avg_vending_piece_price.toFixed(2);
-            $scope.avg_vending_monthly_rental = data.dynamictotals.avg_vending_monthly_rental.toFixed(2);
-            $scope.avg_sales_qty = data.dynamictotals.avg_sales_qty.toFixed(2);
-            $scope.avg_sales_avg_day = data.dynamictotals.avg_sales_avg_day.toFixed(2);
-            $scope.avg_difference = data.dynamictotals.avg_difference.toFixed(2);
-            $scope.avg_vm_stock_value = data.dynamictotals.avg_vm_stock_value.toFixed(2);
-
-            $scope.total_grand_total = data.dynamictotals.total_grand_total.toFixed(2);
-            $scope.total_subtotal = data.dynamictotals.total_subtotal.toFixed(2);
-            $scope.total_gsttotal = data.dynamictotals.total_gsttotal.toFixed(2);
-            $scope.total_cost = data.dynamictotals.total_cost.toFixed(2);
-            $scope.total_gross_money = data.dynamictotals.total_gross_money.toFixed(2);
-            $scope.total_gross_percent = data.dynamictotals.total_gross_percent.toFixed(2);
-            $scope.total_owe = data.dynamictotals.total_owe.toFixed(2);
-            $scope.total_paid = data.dynamictotals.total_paid.toFixed(2);
-            $scope.total_vending_monthly_rental = data.dynamictotals.total_vending_monthly_rental.toFixed(2);
-            $scope.total_sales_qty = data.dynamictotals.total_sales_qty.toFixed(2);
-            $scope.total_difference = data.dynamictotals.total_difference.toFixed(2);
-            $scope.total_vm_stock_value = data.dynamictotals.total_vm_stock_value.toFixed(2);
+            $scope.totals = data.totals;
             $scope.spinner = false;
         });
     }
@@ -184,4 +184,4 @@ app.config(function ($provide) {
     });
 });
 
-app.controller('invbreakdownSummaryController', invbreakdownSummaryController);
+app.controller('invbreakdownDetailv2Controller', invbreakdownDetailv2Controller);

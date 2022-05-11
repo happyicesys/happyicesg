@@ -340,6 +340,7 @@
                             @if(!auth()->user()->hasRole('supervisor') and !auth()->user()->hasRole('driver-supervisor') and !auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('merchandiser') and !auth()->user()->hasRole('merchandiser_plus') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                 <li class="text-left"><a href="/detailrpt/account"> Account</a></li>
                                 <li class="text-left"><a href="/detailrpt/invbreakdown/detail"> InvBreakdown Detail</a></li>
+                                <li class="text-left"><a href="/detailrpt/invbreakdown/detail/v2"> InvBreakdown Detail v2</a></li>
                                 <li class="text-left"><a href="/detailrpt/invbreakdown/summary"> InvBreakdown Summary</a></li>
                                 <li class="text-left"><a href="/detailrpt/stock/date"> Stock Sold (Date)</a></li>
                                 <li class="text-left"><a href="/detailrpt/stock/customer"> Stock Sold (Customer)</a></li>
