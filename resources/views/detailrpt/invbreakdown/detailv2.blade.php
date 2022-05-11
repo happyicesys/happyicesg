@@ -182,17 +182,17 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
-                                    <strong>@{{totals['gross'] ? totals['gross'] : 0.00 | currency: "": 2}}</strong>
+                                    @{{totals['gross'] ? totals['gross'] : 0.00 | currency: "": 2}}
                                 </strong>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" ng-if="totals['gross'] > 0">
                             <div class="col-md-6 col-sm-6 col-xs-6">
                                 Gross Earning (%):
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                                 <strong>
-                                    <strong>@{{totals['amount'] ? totals['gross']/ totals['amount'] * 100 : 0.00 | currency: "": 0}}</strong>
+                                    @{{totals['amount'] ? (totals['gross']/ totals['amount'] * 100) : 0.00 | currency: "": 0}}
                                 </strong>
                             </div>
                         </div>

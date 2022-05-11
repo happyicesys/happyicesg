@@ -2355,19 +2355,21 @@ class DetailRptController extends Controller
                     'items.id AS id',
                     'items.product_id',
                     'items.name',
-                    DB::raw('SUM(qty) AS qty'),
-                    DB::raw('SUM(amount) AS amount'),
-                    DB::raw('SUM(qty * unit_cost) AS cost'),
-                    DB::raw('SUM(amount) - SUM(qty * unit_cost) AS gross'),
-                    DB::raw('ROUND((SUM(amount) - SUM(qty * unit_cost))/ SUM(amount) * 100, 2) AS gross_percent')
+                    'unit_cost',
+                    DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+                    DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+                    DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+                    DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
                 );
 
+                // dd($deals->get()->toArray());
         $totals = $this->multipleTotalFields($deals, [
             'qty',
             'amount',
             'cost',
             'gross',
         ]);
+        // dd($totals);
 
         if($request->sortName){
             $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
