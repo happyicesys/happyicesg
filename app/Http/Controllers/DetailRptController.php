@@ -2234,9 +2234,10 @@ class DetailRptController extends Controller
 
     public function getInvoiceBreakdownDetailv2Api(Request $request)
     {
-        $pageNum = $request->pageNum ? $request->pageNum : 100;
+        // dd($request->all(), 'here');
         $custcategories = $request->custcategories;
         $custcategoryGroups = $request->custcategoryGroups;
+        $excludeCustcategory = $request->excludeCustcategory;
         $actives = $request->actives;
         $statuses = $request->statuses;
         $delivery_from = $request->delivery_from;
@@ -2271,9 +2272,15 @@ class DetailRptController extends Controller
             if (count($custcategories) == 1) {
                 $custcategories = [$custcategories];
             }
-            $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
-                $query->whereIn('id', $custcategories);
-            });
+            if($excludeCustcategory) {
+                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                    $query->whereNotIn('id', $custcategories);
+                });
+            }else{
+                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                    $query->whereIn('id', $custcategories);
+                });
+            }
         }
 
         if($custcategoryGroups) {
@@ -2314,59 +2321,68 @@ class DetailRptController extends Controller
             });
         }
 
-        // $deals = $deals->groupBy('items.product_id')
-        //         ->select(
-        //             'items.id AS id',
-        //             'items.product_id',
-        //             'items.name',
-        //             'unit_cost',
-        //             DB::raw('COALESCE(SUM(qty), 1) AS qty'),
-        //             DB::raw('COALESCE(SUM(amount), 0) AS amount'),
-        //             DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
-        //             DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
-        //         );
+        if($request->exportProfileSummaryExcel) {
+            $personFirstTransac = DB::raw('
+                                        (SELECT delivery_date, person_id FROM transactions
+                                        LEFT JOIN people ON people.id = transactions.person_id
+                                        GROUP BY people.id
+                                        ORDER BY delivery_date ASC
+                                        ) AS personFirstTransac
+                                        ');
 
-        $deals = $deals->groupBy('people.id')
-                ->select(
-                    'people.id AS id',
-                    'people.cust_id',
-                    'people.company',
-                    'unit_cost',
-                    DB::raw('COALESCE(SUM(qty), 1) AS qty'),
-                    DB::raw('COALESCE(SUM(amount), 0) AS amount'),
-                    DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
-                    DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
-                );
+            $deals = $deals
+            ->leftJoin($personFirstTransac, 'personFirstTransac.person_id', '=', 'people.id')
+            ->groupBy('people.id')
+            ->select(
+                'people.id AS id',
+                'people.cust_id',
+                'people.company',
+                'unit_cost',
+                DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+                DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+                DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+                DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross'),
+                'personFirstTransac.delivery_date AS first_inv'
+            );
 
-        $totals = $this->multipleTotalFields($deals, [
-            'qty',
-            'amount',
-            'cost',
-            'gross',
-        ]);
-        // dd($totals);
+            $totals = $this->multipleTotalFields($deals, [
+                'qty',
+                'amount',
+                'cost',
+                'gross',
+            ]);
 
-        if($request->sortName){
-            $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
-        }else {
-            // $deals = $deals->orderBy('items.product_id');
-            $deals = $deals->orderBy('people.cust_id');
+            $deals = $deals->orderBy('people.cust_id')->get();
+
+            $this->exportBatchProfileExcel($request, $deals, $totals, 1);
         }
 
-        if($pageNum == 'All'){
-            $deals = $deals->get();
-        }else{
-            $deals = $deals->paginate($pageNum);
+        if($request->exportProfileDetailExcel) {
+            $deals = $deals->groupBy('items.product_id')
+            ->select(
+                'items.id AS id',
+                'items.product_id',
+                'items.name',
+                'unit_cost',
+                DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+                DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+                DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+                DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
+            );
+
+            $totals = $this->multipleTotalFields($deals, [
+                'qty',
+                'amount',
+                'cost',
+                'gross',
+            ]);
+
+            $deals = $deals->orderBy('items.product_id')->get();
+
+            $this->exportBatchProfileExcel($request, $deals, $totals, 2);
         }
 
-        dd($deals->toArray());
-
-        $data = [
-            'deals' => $deals,
-            'totals' => $totals,
-        ];
-
-        return $data;
+        return true;
     }
 
     // get invoice breakdown page()
@@ -4159,6 +4175,23 @@ class DetailRptController extends Controller
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
                 $sheet->loadView('detailrpt.invoicebreakdown_excel', compact('request', 'transactionsId', 'itemsId', 'person_id'));
+            });
+        })->download('xlsx');
+    }
+
+    private function exportBatchProfileExcel($request, $deals, $totals, $type)
+    {
+        if($type == 1) {
+            $title = 'BatchProfileSummary';
+        }else {
+            $title = 'BatchProfileDetail';
+        }
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $deals, $totals, $type) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $deals, $totals, $type) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.batch_profile_excel', compact('request', 'deals', 'totals', 'type'));
             });
         })->download('xlsx');
     }

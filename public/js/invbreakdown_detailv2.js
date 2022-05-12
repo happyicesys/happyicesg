@@ -24,7 +24,7 @@ function invbreakdownDetailv2Controller($scope, $http) {
         actives: [],
         delivery_from: moment().format("YYYY-MM-DD"),
         delivery_to: moment().format("YYYY-MM-DD"),
-        statuses: [],
+        statuses: ['Delivered'],
         personTags: [],
         pageNum: 'All',
         sortBy: true,

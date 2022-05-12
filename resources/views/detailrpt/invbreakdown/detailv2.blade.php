@@ -7,33 +7,33 @@
 
 @extends('template')
 @section('title')
-    {{$DETAILRPT_TITLE}}
+    Batch Profile Excel
 @stop
 @section('content')
 
 <div class="row">
-    <a class="title_hyper pull-left" href="/detailrpt/invbreakdown/detail/v2"><h1>Invoice Breakdown - Detail v2</h1></a>
+    <a class="title_hyper pull-left" href="/detailrpt/invbreakdown/detail/v2"><h1>Batch Profile Excel</h1></a>
 </div>
 
 <div class="panel panel-primary" ng-app="app" ng-controller="invbreakdownDetailv2Controller" ng-cloak>
     <div class="panel-heading">
-        Invoice Breakdown v2
+        Batch Profile Excel
     </div>
 
     <div class="panel-body">
 
-        {!! Form::open(['id'=>'submit_invoicebreakdown', 'method'=>'POST', 'action'=>['DetailRptController@getInvoiceBreakdownDetailv2']]) !!}
+        {!! Form::open(['id'=>'submit_invoicebreakdown', 'method'=>'POST', 'action'=>['DetailRptController@getInvoiceBreakdownDetailv2Api']]) !!}
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategories', 'Cust Category', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
-                        <input type="checkbox" ng-model="search.excludeCustCat" ng-change="searchDB()" ng-model-options="{debounce: 500}">
+                        <input type="checkbox" name="excludeCustcategory" ng-model="search.excludeCustCat" ng-change="searchDB()" ng-model-options="{debounce: 500}">
                         <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
                             Exclude
                         </span>
                     </label>
-                    <select ng-model="search.custcategories" class="selectmultiple form-control" multiple  ng-change="searchDB()">
+                    <select ng-model="search.custcategories" name="custcategories[]" class="selectmultiple form-control" ng-change="searchDB()" multiple>
                         @foreach($custcategories::orderBy('name')->get() as $custcategory)
                             <option value="{{$custcategory->id}}" {{in_array($custcategory->id, $request->custcategories) ? 'selected' : ''}}>
                                 {{$custcategory->name}}
@@ -45,7 +45,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategoryGroups', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
-                    <select ng-model="search.custcategoryGroups" class="selectmultiple form-control" multiple ng-change="searchDB()">
+                    <select ng-model="search.custcategoryGroups" name="custcategoryGroups[]" class="selectmultiple form-control" multiple ng-change="searchDB()">
                         @foreach($custcategoryGroups::orderBy('name')->get() as $custcategoryGroup)
                             <option value="{{$custcategoryGroup->id}}" {{in_array($custcategoryGroup->id, $request->custcategoryGroups) ? 'selected' : ''}}>
                                 {{$custcategoryGroup->name}}
@@ -57,7 +57,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('active', 'Cust Status', ['class'=>'control-label search-title']) !!}
-                    <select ng-model="search.actives" id="active" class="selectmultiple form-control" multiple ng-change="searchDB()">
+                    <select ng-model="search.actives" id="active" name="actives[]" class="selectmultiple form-control" multiple ng-change="searchDB()">
                         <option value="Potential" {{in_array('Potential', $request->actives) ? 'selected' : ''}}>Potential</option>
                         <option value="New" {{in_array('New', $request->actives) ? 'selected' : ''}}>New</option>
                         <option value="Yes" {{in_array('Yes', $request->actives) ? 'selected' : ''}}>Active</option>
@@ -69,7 +69,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('statuses', 'Status', ['class'=>'control-label search-title']) !!}
-                    <select name="statuses" class="selectmultiple form-control" multiple ng-model="search.statuses" ng-change="searchDB()">
+                    <select name="statuses[]" class="selectmultiple form-control" multiple ng-model="search.statuses" ng-change="searchDB()">
                         <option value="Pending" {{in_array('Pending', $request->statuses) ? 'selected' : ''}}>Pending</option>
                         <option value="Confirmed" {{in_array('Confirmed', $request->statuses) ? 'selected' : ''}}>Confirmed</option>
                         <option value="Delivered" {{in_array('Delivered', $request->statuses) ? 'selected' : ''}}>Delivered</option>
@@ -134,7 +134,7 @@
             <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('personTags', 'Tags', ['class'=>'control-label search-title']) !!}
-                    <select name="personTags" class="selectmultiple form-control" multiple ng-model="search.personTags" ng-change="searchDB()">
+                    <select name="personTags[]" class="selectmultiple form-control" multiple ng-model="search.personTags" ng-change="searchDB()">
                         @foreach($persontags::orderBy('name')->get() as $persontag)
                             <option value="{{$persontag->id}}" {{in_array($persontag->id, $request->personTags) ? 'selected' : ''}}>
                                 {{$persontag->name}}
@@ -148,18 +148,19 @@
         <div class="row form-group">
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="btn-group">
+{{--
                     <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
                         Search
                         <i class="fa fa-search" ng-show="!spinner"></i>
                         <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
-                    </button>
-                    <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
-                    {{-- <button type="submit" class="btn btn-warning">Export Profile Excel</button> --}}
+                    </button> --}}
+                    {{-- <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button> --}}
+                    <button type="submit" class="btn btn-warning" name="exportProfileSummaryExcel" value="exportProfileSummaryExcel">Export Batch Profile Summary</button>
                 </div>
             </div>
         </div>
         {!! Form::close() !!}
-        <div id="exportable_invbreakdownDetailv2">
+        {{-- <div id="exportable_invbreakdownDetailv2">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-5 col-sm-5 col-xs-12">
@@ -201,8 +202,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </div> --}}
+{{--
             <div class="table-responsive" style="padding-top: 20px;">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
@@ -239,10 +240,7 @@
                         <td colspan="14" class="text-center">No results found</td>
                     </tr>
                 </table>
-                <div>
-                    {{-- <dir-pagination-controls max-size="5" pagination-id="invbreakdown_detailv2" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls> --}}
-                </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
