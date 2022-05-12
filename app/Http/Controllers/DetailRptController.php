@@ -877,6 +877,7 @@ class DetailRptController extends Controller
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                         WHERE transactions.delivery_date>='".$thismonth->startOfMonth()->toDateString()."'
                         AND transactions.delivery_date<='".$thismonth->endOfMonth()->toDateString()."'";
         $prevqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -886,6 +887,7 @@ class DetailRptController extends Controller
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
                     LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                    LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                     WHERE transactions.delivery_date>='".$prevMonth->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prevMonth->endOfMonth()->toDateString()."'";
         $prev2qty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -895,6 +897,7 @@ class DetailRptController extends Controller
                     LEFT JOIN people ON people.id=transactions.person_id
                     LEFT JOIN profiles ON profiles.id=people.profile_id
                     LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                    LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                     WHERE transactions.delivery_date>='".$prev2Months->startOfMonth()->toDateString()."'
                     AND transactions.delivery_date<='".$prev2Months->endOfMonth()->toDateString()."'";
         $prevyrqty = "(SELECT ROUND(SUM(qty), 4) AS qty, deals.item_id, profiles.name AS profile_name, profiles.id AS profile_id, deals.id
@@ -904,6 +907,7 @@ class DetailRptController extends Controller
                         LEFT JOIN people ON people.id=transactions.person_id
                         LEFT JOIN profiles ON profiles.id=people.profile_id
                         LEFT JOIN custcategories ON custcategories.id=people.custcategory_id
+                        LEFT JOIN custcategory_groups ON custcategory_groups.id=custcategories.custcategory_group_id
                         WHERE transactions.delivery_date>='".$prevYear->startOfMonth()->toDateString()."'
                         AND transactions.delivery_date<='".$prevYear->endOfMonth()->toDateString()."'";
 
@@ -965,6 +969,30 @@ class DetailRptController extends Controller
             $prevyrqty .= " AND custcategories.id IN (".$custcategoryIdStr.")";
         }
 
+        if($request->custcategories) {
+            $custcategoryStr = implode(",", $request->custcategories);
+
+            if($request->exclude_custcategory) {
+                $thistotal .= " AND custcategories.id NOT IN (".$custcategoryStr.")";
+                $prevqty .= " AND custcategories.id NOT IN (".$custcategoryStr.")";
+                $prev2qty .= " AND custcategories.id NOT IN (".$custcategoryStr.")";
+                $prevyrqty .= " AND custcategories.id NOT IN (".$custcategoryStr.")";
+            }else {
+                $thistotal .= " AND custcategories.id IN (".$custcategoryStr.")";
+                $prevqty .= " AND custcategories.id IN (".$custcategoryStr.")";
+                $prev2qty .= " AND custcategories.id IN (".$custcategoryStr.")";
+                $prevyrqty .= " AND custcategories.id IN (".$custcategoryStr.")";
+            }
+        }
+
+        if($request->custcategory_group) {
+            $custcategoryGroupStr = implode(",", $request->custcategory_group);
+            $thistotal .= " AND custcategory_groups.id IN (".$custcategoryGroupStr.")";
+            $prevqty .= " AND custcategory_groups.id IN (".$custcategoryGroupStr.")";
+            $prev2qty .= " AND custcategory_groups.id IN (".$custcategoryGroupStr.")";
+            $prevyrqty .= " AND custcategory_groups.id IN (".$custcategoryGroupStr.")";
+        }
+
         if($request->tags) {
             $tagsStr = implode(",", $request->tags);
             $thistotal .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
@@ -994,6 +1022,7 @@ class DetailRptController extends Controller
                 ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                 ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                 ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                 ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                 ->leftJoin($thistotal, function($join) use ($profile_id) {
                     if($profile_id) {
@@ -1064,6 +1093,24 @@ class DetailRptController extends Controller
             $items = $items->whereIn('people.id', $persontagattachPersonIdArr);
         }
 
+        if($custcategorySearch = request('custcategory')) {
+            if (count($custcategorySearch) == 1) {
+                $custcategorySearch = [$custcategorySearch];
+            }
+            if($request->exclude_custcategory) {
+                $items = $items->whereNotIn('custcategories.id', $custcategorySearch);
+            }else {
+                $items = $items->whereIn('custcategories.id', $custcategorySearch);
+            }
+        }
+
+        if($custcategoryGroupSearch = request('custcategory_group')) {
+            if (count($custcategoryGroupSearch) == 1) {
+                $custcategoryGroupSearch = [$custcategoryGroupSearch];
+            }
+            $items = $items->whereIn('custcategory_groups.id', $custcategoryGroupSearch);
+        }
+
         if(request('zone_id') != '') {
             $items = $items->where('people.zone_id', request('zone_id'));
         }
@@ -1107,8 +1154,28 @@ class DetailRptController extends Controller
         // dd($input);
         // initiate the page num when null given
         $pageNum = $request->pageNum ? $request->pageNum : 100;
-
-        $amountstr = "SELECT ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS thisamount, ROUND(SUM(deals.qty), 4) AS thisqty, item_id, transaction_id
+        $amountstr = "SELECT ROUND(SUM(
+                                    CASE WHEN transactions.gst=1
+                                    THEN(
+                                        CASE WHEN transactions.is_gst_inclusive=0
+                                        THEN deals.amount
+                                        ELSE deals.amount/ (100 + transactions.gst_rate) * 100
+                                        END)
+                                    ELSE deals.amount
+                                    END), 2) AS thisamount,
+                            ROUND(SUM(deals.qty), 4) AS thisqty,
+                            COALESCE(SUM(deals.qty * deals.unit_cost), 0) AS cost,
+                            COALESCE(ROUND(SUM(
+                                    CASE WHEN transactions.gst=1
+                                    THEN(
+                                        CASE WHEN transactions.is_gst_inclusive=0
+                                        THEN deals.amount
+                                        ELSE deals.amount/ (100 + transactions.gst_rate) * 100
+                                        END)
+                                    ELSE deals.amount
+                                    END), 2), 0) - COALESCE(SUM(deals.qty * deals.unit_cost), 0) AS gross,
+                            item_id,
+                            transaction_id
                         FROM deals
                         LEFT JOIN items ON items.id=deals.item_id
                         LEFT JOIN transactions ON transactions.id=deals.transaction_id
@@ -1267,7 +1334,9 @@ class DetailRptController extends Controller
                         ->leftJoin($totals, 'items.id', '=', 'totals.item_id')
                         ->select(
                                     'items.name AS product_name', 'items.remark', 'items.product_id',
-                                    'totals.thisamount AS amount', 'totals.thisqty AS qty'
+                                    'totals.thisamount AS amount', 'totals.thisqty AS qty',
+                                    'totals.cost AS cost',
+                                    'totals.gross AS gross'
                                 );
 
         if($request->is_inventory) {
@@ -1294,11 +1363,10 @@ class DetailRptController extends Controller
             $items = $items->orderBy('items.product_id')->paginate($pageNum);
         }
 
-        $totals_arr = $this->calItemTotals($items);
+        $totals = $this->calItemTotals($items);
 
         $data = [
-            'total_qty' => $totals_arr['total_qty'],
-            'total_amount' => $totals_arr['total_amount'],
+            'totals' => $totals,
             'items' => $items,
         ];
 
@@ -4055,15 +4123,21 @@ class DetailRptController extends Controller
     {
         $total_amount = 0;
         $total_qty = 0;
+        $total_cost = 0;
+        $total_gross = 0;
 
         foreach($items as $item) {
             $total_amount += $item->amount;
             $total_qty += $item->qty;
+            $total_cost += $item->cost;
+            $total_gross += $item->gross;
         }
 
         $totals = [
             'total_amount' => $total_amount,
-            'total_qty' => $total_qty
+            'total_qty' => $total_qty,
+            'total_cost' => $total_cost,
+            'total_gross' => $total_gross
         ];
 
         return $totals;

@@ -291,7 +291,7 @@
         <span class="row" ng-if="search.edited">
             <small>You have edited the filter, search?</small>
         </span>
-        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+        <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
             Search
             <i class="fa fa-search" ng-show="!spinner"></i>
             <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>

@@ -401,6 +401,7 @@ function productMonthDetailController($scope, $http) {
         product_id: '',
         product_name: '',
         custcategory: [],
+        custcategory_group: [],
         exclude_custcategory: '',
         status: 'Delivered',
         person_active: [],
@@ -760,8 +761,7 @@ function productDayDetailController($scope, $http) {
                 $scope.indexTo = data.items.length;
             }
             $scope.All = data.items.length;
-            $scope.total_amount = data.total_amount;
-            $scope.total_qty = data.total_qty.toFixed(4);
+            $scope.totals = data.totals;
             $scope.spinner = false;
         });
     }

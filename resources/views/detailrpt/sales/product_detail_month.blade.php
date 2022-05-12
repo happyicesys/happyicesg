@@ -147,7 +147,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-xs-6">
+        <div class="col-md-4 col-sm-6">
             <div class="form-group">
                 {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
                 <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
@@ -160,6 +160,44 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                      <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
+                      <span style="margin-top: 5px; margin-right: 5px;">
+                          Ex A
+                      </span>
+                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB($event)">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>
+                </label>
+                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory',
+                        'multiple'=>'multiple',
+                        'ng-change' => 'searchDB($event)'
+                    ])
+                !!}
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="form-group">
+                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory_group',
+                        'multiple'=>'multiple',
+                        'ng-change' => "searchDB($event)"
+                    ])
+                !!}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -168,7 +206,7 @@
         <span class="row" ng-if="search.edited">
             <small>You have edited the filter, search?</small>
         </span>
-        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+        <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
             Search
             <i class="fa fa-search" ng-show="!spinner"></i>
             <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>

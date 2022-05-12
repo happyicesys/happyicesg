@@ -117,65 +117,7 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                <label class="pull-right">
-                    <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
-                    <span style="margin-top: 5px; margin-right: 5px;">
-                        Ex A
-                    </span>
-                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                    <span style="margin-top: 5px;">
-                        Exclude
-                    </span>
-                </label>
-                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
-                    null,
-                    [
-                        'class'=>'selectmultiple form-control',
-                        'ng-model'=>'search.custcategory',
-                        'multiple'=>'multiple',
-                        'ng-change' => 'searchDB()'
-                    ])
-                !!}
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 col-xs-6">
-            <div class="form-group">
-                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
-                <label class="pull-right">
-                    {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
-                    <span style="margin-top: 5px; margin-right: 5px;">
-                        P
-                    </span>
-                    <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                    <span style="margin-top: 5px;">
-                        Exclude
-                    </span>--}}
-                </label>
-                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
-                    null,
-                    [
-                        'class'=>'selectmultiple form-control',
-                        'ng-model'=>'search.custcategory_group',
-                        'multiple'=>'multiple',
-                        'ng-change' => "searchDB()"
-                    ])
-                !!}
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="form-group">
                 {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
-{{--
-                {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
-                    [
-                    'class'=>'select form-control',
-                    'ng-model'=>'search.status',
-                    'ng-change'=>'searchDB()'
-                    ])
-                !!} --}}
                 <select name="statuses" class="selectmultiple form-control" ng-model="search.statuses" ng-change="searchDB()" multiple>
                     <option value="">All</option>
                     <option value="Pending">Pending</option>
@@ -185,6 +127,8 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
@@ -212,8 +156,6 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
@@ -252,6 +194,8 @@
                 @endif
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
@@ -291,8 +235,6 @@
                 @endif
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
@@ -304,6 +246,46 @@
                         </option>
                     @endforeach
                 </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
+                <label class="pull-right">
+                    <input type="checkbox" name="exACategory" ng-model="search.exACategory" ng-change="onExACategoryChanged()">
+                    <span style="margin-top: 5px; margin-right: 5px;">
+                        Ex A
+                    </span>
+                    <input type="checkbox" name="exclude_custcategory" ng-model="search.exclude_custcategory" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
+                    <span style="margin-top: 5px;">
+                        Exclude
+                    </span>
+                </label>
+                {!! Form::select('custcategory', [''=>'All'] + $custcategories::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory',
+                        'multiple'=>'multiple',
+                        'ng-change' => 'searchDB()'
+                    ])
+                !!}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
+                {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
+                    null,
+                    [
+                        'class'=>'selectmultiple form-control',
+                        'ng-model'=>'search.custcategory_group',
+                        'multiple'=>'multiple',
+                        'ng-change' => "searchDB()"
+                    ])
+                !!}
             </div>
         </div>
     </div>
@@ -332,7 +314,7 @@
         <span class="row" ng-if="search.edited">
             <small>You have edited the filter, search?</small>
         </span>
-        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+        <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
             Search
             <i class="fa fa-search" ng-show="!spinner"></i>
             <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
@@ -348,7 +330,7 @@
                 Total Amount:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_amount ? total_amount : 0 | currency: "": 2}}</strong>
+                <strong>@{{ totals['total_amount'] ? totals['total_amount'] : 0 | currency: "": 2}}</strong>
             </div>
         </div>
         <div class="row">
@@ -356,7 +338,31 @@
                 Total Qty:
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ total_qty ? total_qty : 0 | currency: "": 4 }}</strong>
+                <strong>@{{ totals['total_qty'] ? totals['total_qty'] : 0 | currency: "": 4 }}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Total Cost:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals['total_cost'] ? totals['total_cost'] : 0 | currency: "": 2 }}</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                Total Gross:
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals['total_gross'] ? totals['total_gross'] : 0 | currency: "": 2 }}</strong>
+            </div>
+        </div>
+        <div class="row" ng-if="totals['total_gross'] > 0">
+            <div class="col-md-6 col-xs-6">
+                Total Gross (%):
+            </div>
+            <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
+                <strong>@{{ totals['total_amount'] ? (totals['total_gross']/ totals['total_amount'] * 100) : 0 | currency: "": 0 }}</strong>
             </div>
         </div>
     </div>

@@ -75,16 +75,6 @@
               </div>
           </div>
           <div class="col-md-3 col-xs-6">
-  {{--
-              <div class="form-group">
-                  {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                  <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
-                      <option value="">All</option>
-                      @foreach($custcategories::orderBy('name')->get() as $custcategory)
-                      <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
-                      @endforeach
-                  </select>
-              </div> --}}
               <div class="form-group">
                   {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                   <label class="pull-right">
@@ -111,16 +101,6 @@
             <div class="col-md-3 col-xs-6">
                 <div class="form-group">
                     {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
-                    <label class="pull-right">
-                        {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
-                        <span style="margin-top: 5px; margin-right: 5px;">
-                            P
-                        </span>
-                        <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                        <span style="margin-top: 5px;">
-                            Exclude
-                        </span>--}}
-                    </label>
                     {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
                         null,
                         [
@@ -294,7 +274,7 @@
             <span class="row" ng-if="search.edited">
                 <small>You have edited the filter, search?</small>
             </span>
-            <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+            <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
                 Search
                 <i class="fa fa-search" ng-show="!spinner"></i>
                 <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
