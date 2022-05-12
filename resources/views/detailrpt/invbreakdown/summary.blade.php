@@ -176,6 +176,7 @@
                 @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
                     <button class="btn btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
                 @endif
+                <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
             </div>
             <div class="col-md-7 col-sm-7 col-xs-12">
                 <div class="col-md-6 col-sm-6 col-xs-6">
@@ -185,7 +186,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{grand_total | currency: "": 2}}
+                                @{{grand_total ? grand_total : 0.00 |  currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -195,7 +196,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{taxtotal | currency: "": 2}}
+                                @{{taxtotal ? taxtotal : 0.00 | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -205,7 +206,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{subtotal | currency: "": 2}}
+                                @{{subtotal ? subtotal : 0.00 | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -217,7 +218,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{fixed_total_gross_money | currency: "": 2}}
+                                @{{fixed_total_gross_money ? fixed_total_gross_money : 0.00 | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
@@ -227,7 +228,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{fixed_total_gross_percent | currency: "": 2}}
+                                @{{fixed_total_gross_percent ? fixed_total_gross_percent : 0 | currency: "": 0}}
                             </strong>
                         </div>
                     </div>

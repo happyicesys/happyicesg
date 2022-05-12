@@ -144,18 +144,21 @@
                 </div>
             </div>
         </div>
-        {!! Form::close() !!}
 
         <div class="row form-group">
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
-                    Search
-                    <i class="fa fa-search" ng-show="!spinner"></i>
-                    <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
-                </button>
-                <button class="btn btn-primary" ng-click="exportData($event)">Export All Excel</button>
+                <div class="btn-group">
+                    <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
+                        Search
+                        <i class="fa fa-search" ng-show="!spinner"></i>
+                        <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                    </button>
+                    <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button>
+                    {{-- <button type="submit" class="btn btn-warning">Export Profile Excel</button> --}}
+                </div>
             </div>
         </div>
+        {!! Form::close() !!}
         <div id="exportable_invbreakdownDetailv2">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -245,15 +248,4 @@
 </div>
 
 <script src="/js/invbreakdown_detailv2.js"></script>
-    <script>
-        $('.date').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('.select').select2({
-            placeholder: 'Select...'
-        });
-        $('.selectmultiple').select2({
-            placeholder: 'Choose one or many..'
-        });
-    </script>
 @stop

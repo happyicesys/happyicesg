@@ -572,7 +572,7 @@ Route::get('/detailrpt/stock/billing', 'DetailRptController@getStockBilling');
 Route::post('/api/detailrpt/stock/billing', 'DetailRptController@getStockBillingApi');
 Route::match(['get', 'post'], '/detailrpt/stock/customer', 'DetailRptController@getStockPerCustomer');
 Route::match(['get', 'post'], '/detailrpt/invbreakdown/detail', 'DetailRptController@getInvoiceBreakdownDetail');
-Route::match(['get', 'post'], '/detailrpt/invbreakdown/detail/v2', 'DetailRptController@getInvoiceBreakdownDetailv2');
+Route::get('/detailrpt/invbreakdown/detail/v2', 'DetailRptController@getInvoiceBreakdownDetailv2');
 Route::post('/api/detailrpt/invbreakdown/detailv2', 'DetailRptController@getInvoiceBreakdownDetailv2Api');
 Route::get('/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummary');
 Route::post('/api/detailrpt/invbreakdown/summary', 'DetailRptController@getInvoiceBreakdownSummaryApi');

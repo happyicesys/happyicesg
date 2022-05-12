@@ -801,7 +801,8 @@ function invoiceBreakdownController($scope, $http) {
         $scope.searchDB();
     }
 
-    $scope.exportData = function () {
+    $scope.exportData = function (event) {
+        event.preventDefault();
         var blob = new Blob(["\ufeff", document.getElementById('exportable_invoicebreakdown').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });

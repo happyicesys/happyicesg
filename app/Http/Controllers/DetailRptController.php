@@ -2227,115 +2227,9 @@ class DetailRptController extends Controller
 
 
         // retrieve invoice breakdown detail version2 (Formrequest $request)
-    public function getInvoiceBreakdownDetailv2(Request $request)
+    public function getInvoiceBreakdownDetailv2()
     {
-        $itemsId = [];
-        $transactionsId = [];
-        $custcategories = $request->custcategories;
-        $custcategoryGroups = $request->custcategoryGroups;
-        $actives = $request->actives;
-        $statuses = $request->statuses;
-        $delivery_from = $request->delivery_from ? $request->delivery_from : Carbon::today()->toDateString();
-        $delivery_to = $request->delivery_to ? $request->delivery_to : Carbon::today()->toDateString();
-        $personTags = $request->personTags;
-
-        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id');
-
-        if($statuses) {
-            if (count($statuses) == 1) {
-                $statuses = [$statuses];
-            }
-            if(in_array('Delivered', $statuses)) {
-                array_push($statuses, 'Verified Owe');
-                array_push($statuses, 'Verified Paid');
-            }else {
-                if(($key1 = array_search('Verified Owe', $statuses)) !== false) {
-                    unset($statuses[$key1]);
-                }
-                if(($key2 = array_search('Verified Paid', $statuses)) !== false) {
-                    unset($statuses[$key2]);
-                }
-            }
-            $deals = $deals->whereHas('transaction', function($query) use ($statuses) {
-                $query->whereIn('transactions.status', $statuses);
-            });
-        }
-
-        if($custcategories) {
-            if (count($custcategories) == 1) {
-                $custcategories = [$custcategories];
-            }
-            $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
-                $query->whereIn('id', $custcategories);
-            });
-        }
-
-        if($custcategoryGroups) {
-            if (count($custcategoryGroups) == 1) {
-                $custcategoryGroups = [$custcategoryGroups];
-            }
-            $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
-                $query->whereIn('id', $custcategoryGroups);
-            });
-        }
-
-        if($actives) {
-            if (count($actives) == 1) {
-                $actives = [$actives];
-            }
-            $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
-                $query->whereIn('active', $actives);
-            });
-        }
-
-        if($delivery_from){
-            $deals = $deals->whereHas('transaction', function($query) use ($delivery_from) {
-                $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
-            });
-        }
-        if($delivery_to){
-            $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
-                $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
-            });
-        }
-
-        if($personTags) {
-            if (count($personTags) == 1) {
-                $personTags = [$personTags];
-            }
-            $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
-                $query->whereIn('id', $personTags);
-            });
-        }
-
-        $deals = $deals->groupBy('items.product_id')
-                ->select(
-                    'items.id AS id',
-                    'items.product_id',
-                    'items.name',
-                    DB::raw('SUM(qty) AS qty'),
-                    DB::raw('SUM(amount) AS amount'),
-                    DB::raw('SUM(qty * unit_cost) AS cost'),
-                    DB::raw('SUM(amount) - SUM(qty * unit_cost) AS gross'),
-                    DB::raw('ROUND((SUM(amount) - SUM(qty * unit_cost))/ SUM(amount) * 100, 2) AS gross_percent')
-                );
-
-
-
-        $totals = $this->multipleTotalFields($deals, [
-            'qty',
-            'amount',
-            'cost',
-            'gross',
-        ]);
-
-        $deals = $deals->get();
-
-        // if($request->export_excel) {
-        //     $this->exportInvoiceBreakdownExcel($request, $transactionsId, $itemsId, $person_id);
-        // }
-
-        return view('detailrpt.invbreakdown.detailv2', compact('request' ,'deals', 'totals'));
+        return view('detailrpt.invbreakdown.detailv2');
     }
 
     public function getInvoiceBreakdownDetailv2Api(Request $request)
@@ -2349,7 +2243,9 @@ class DetailRptController extends Controller
         $delivery_to = $request->delivery_to;
         $personTags = $request->personTags;
 
-        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id');
+        $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id')
+                        ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id');
 
         if($statuses) {
             if (count($statuses) == 1) {
@@ -2418,11 +2314,23 @@ class DetailRptController extends Controller
             });
         }
 
-        $deals = $deals->groupBy('items.product_id')
+        // $deals = $deals->groupBy('items.product_id')
+        //         ->select(
+        //             'items.id AS id',
+        //             'items.product_id',
+        //             'items.name',
+        //             'unit_cost',
+        //             DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+        //             DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+        //             DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+        //             DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
+        //         );
+
+        $deals = $deals->groupBy('people.id')
                 ->select(
-                    'items.id AS id',
-                    'items.product_id',
-                    'items.name',
+                    'people.id AS id',
+                    'people.cust_id',
+                    'people.company',
                     'unit_cost',
                     DB::raw('COALESCE(SUM(qty), 1) AS qty'),
                     DB::raw('COALESCE(SUM(amount), 0) AS amount'),
@@ -2430,7 +2338,6 @@ class DetailRptController extends Controller
                     DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
                 );
 
-                // dd($deals->get()->toArray());
         $totals = $this->multipleTotalFields($deals, [
             'qty',
             'amount',
@@ -2442,7 +2349,8 @@ class DetailRptController extends Controller
         if($request->sortName){
             $deals = $deals->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }else {
-            $deals = $deals->orderBy('items.product_id');
+            // $deals = $deals->orderBy('items.product_id');
+            $deals = $deals->orderBy('people.cust_id');
         }
 
         if($pageNum == 'All'){
@@ -2450,6 +2358,8 @@ class DetailRptController extends Controller
         }else{
             $deals = $deals->paginate($pageNum);
         }
+
+        dd($deals->toArray());
 
         $data = [
             'deals' => $deals,
@@ -2477,13 +2387,8 @@ class DetailRptController extends Controller
         }else {
             $date_diff = 1;
         }
-/*
-        if(request('is_commission') != '') {
-            $isCommissionStr = " items.is_commission='".request('is_commission')."' ";
-        }else {
-            $isCommissionStr = " 1=1 ";
-        } */
 
+        $isCommissionStr = " 1=1 ";
         if($request->is_commission != '') {
             $is_commission = $request->is_commission;
             switch($is_commission) {
@@ -2500,8 +2405,6 @@ class DetailRptController extends Controller
                     $isCommissionStr .= " AND items.is_supermarket_fee=1 ";
                     break;
             }
-        }else {
-            $isCommissionStr = " 1=1 ";
         }
 
         $first_date = DB::raw("(SELECT MIN(DATE(transactions.delivery_date)) AS delivery_date, people.id AS person_id FROM transactions
