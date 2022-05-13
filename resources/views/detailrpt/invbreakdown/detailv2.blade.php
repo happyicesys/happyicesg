@@ -155,6 +155,7 @@
                     </button>
                     {{-- <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button> --}}
                     <button type="submit" class="btn btn-warning" name="exportProfileSummaryExcel" value="exportProfileSummaryExcel">Export Batch Profile Summary</button>
+                    {{-- <button type="submit" class="btn btn-primary" name="exportProfileDetailExcel" value="exportProfileDetailExcel">Export Batch Profile Detail</button> --}}
                 </div>
             </div>
         </div>
@@ -212,10 +213,16 @@
                         <th class="col-md-3 text-center">
                             Customer
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-1 text-center">
+                            CustCat
+                        </th>
+                        <th class="col-md-1 text-center">
+                            CustCatGroup
+                        </th>
+                        <th class="col-md-1 text-center">
                             Revenue ($)
                         </th>
-                        <th class="col-md-2 text-center">
+                        <th class="col-md-1 text-center">
                             Cost ($)
                         </th>
                         <th class="col-md-1 text-center">
@@ -236,10 +243,16 @@
                         <td class="col-md-3">
                             @{{deal.cust_id}} - @{{deal.company}}
                         </td>
-                        <td class="col-md-2 text-right">
+                        <td class="col-md-1 text-left">
+                            @{{deal.custcategory_name}}
+                        </td>
+                        <td class="col-md-1 text-left">
+                            @{{deal.custcategory_group_name}}
+                        </td>
+                        <td class="col-md-1 text-right">
                             @{{deal.amount | currency: "": 2}}
                         </td>
-                        <td class="col-md-2 text-right">
+                        <td class="col-md-1 text-right">
                             @{{deal.cost | currency: "": 2}}
                         </td>
                         <td class="col-md-1 text-right">

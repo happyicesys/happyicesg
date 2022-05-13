@@ -2244,15 +2244,23 @@ class DetailRptController extends Controller
         $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                         ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                        ->leftJoin('custcategories', 'custcategories.id', '=', 'people.custcategory_id')
+                        ->leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
                         ->leftJoin($personFirstTransac, 'personFirstTransac.person_id', '=', 'people.id');
 
         $deals = $this->detailv2Filters($request, $deals);
 
-        $deals = $deals->select(
-            'people.id AS id',
+        $dealsSummary = clone $deals;
+        $dealsDetail = clone $deals;
+        $items = clone $deals;
+
+        $dealsSummary = $dealsSummary->select(
+            'people.id AS person_id',
             'people.cust_id',
             'people.company',
             'unit_cost',
+            'custcategories.name AS custcategory_name',
+            'custcategory_groups.name AS custcategory_group_name',
             DB::raw('COALESCE(SUM(qty), 1) AS qty'),
             DB::raw('COALESCE(SUM(amount), 0) AS amount'),
             DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
@@ -2260,47 +2268,65 @@ class DetailRptController extends Controller
             DB::raw('DATE(personFirstTransac.delivery_date) AS first_inv')
         );
 
-        $totals = $this->multipleTotalFields($deals, [
+        $summaryTotals = $this->multipleTotalFields($dealsSummary, [
             'qty',
             'amount',
             'cost',
             'gross',
         ]);
 
-        $deals = $deals->orderBy('people.id')->groupBy('people.id')->get();
+        $dealsSummary = $dealsSummary->orderBy('people.id')->groupBy('people.id')->get();
 
         if($request->exportProfileSummaryExcel) {
-            $this->exportBatchProfileExcel($request, $deals, $totals, 1);
+            $this->exportBatchProfileSummaryExcel($request, $dealsSummary, $summaryTotals);
         }
 
         if($request->exportProfileDetailExcel) {
-            $deals = $deals->groupBy('items.product_id')
+            $dealsDetail = $dealsDetail->groupBy('items.id', 'people.id')
             ->select(
-                'items.id AS id',
+                'items.id AS item_id',
                 'items.product_id',
                 'items.name',
-                'unit_cost',
+                'people.cust_id',
+                'people.company',
+                'people.id AS person_id',
                 DB::raw('COALESCE(SUM(qty), 1) AS qty'),
                 DB::raw('COALESCE(SUM(amount), 0) AS amount'),
                 DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
                 DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
             );
 
-            $totals = $this->multipleTotalFields($deals, [
+            $detailTotals = $this->multipleTotalFields($dealsDetail, [
                 'qty',
                 'amount',
                 'cost',
                 'gross',
             ]);
 
-            $deals = $deals->orderBy('items.product_id')->get();
+            $dealsDetail = $dealsDetail->orderBy('items.product_id', 'people.cust_id')->get();
 
-            $this->exportBatchProfileExcel($request, $deals, $totals, 2);
+            $items = $items->groupBy('items.id')->orderBy('items.product_id')->get();
+            // dd($totals, $deals->toArray());
+            $dataArr = [];
+            if($dealsSummary and $dealsDetail) {
+                foreach($dealsSummary as $dealSummary) {
+                    foreach($dealsDetail as $dealDetail) {
+                        if($dealSummary->person_id == $dealDetail->person_id) {
+                            $dataArr[$dealSummary->person_id][$dealDetail->item_id] = [
+                                'qty' => $dealDetail->qty,
+                                'amount' => $dealDetail->amount,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            $this->exportBatchProfileDetailExcel($request, $dataArr, $dealsSummary, $summaryTotals, $items);
         }
 
         return [
-            'deals' => $deals,
-            'totals' => $totals,
+            'deals' => $dealsSummary,
+            'totals' => $summaryTotals,
         ];
     }
 
@@ -4171,19 +4197,28 @@ class DetailRptController extends Controller
         })->download('xlsx');
     }
 
-    private function exportBatchProfileExcel($request, $deals, $totals, $type)
+    private function exportBatchProfileSummaryExcel($request, $deals, $totals)
     {
-        if($type == 1) {
-            $title = 'BatchProfileSummary';
-        }else {
-            $title = 'BatchProfileDetail';
-        }
-        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $deals, $totals, $type) {
-            $excel->sheet('sheet1', function($sheet) use ($request, $deals, $totals, $type) {
+        $title = 'BatchProfileSummary';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $deals, $totals) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $deals, $totals) {
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                $sheet->loadView('detailrpt.batch_profile_excel', compact('request', 'deals', 'totals', 'type'));
+                $sheet->loadView('detailrpt.batch_profile_excel', compact('request', 'deals', 'totals'));
+            });
+        })->download('xlsx');
+    }
+
+    private function exportBatchProfileDetailExcel($request, $dataArr, $summaryDeals, $summaryTotals, $items)
+    {
+        $title = 'BatchProfileDetail';
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $dataArr, $summaryDeals, $summaryTotals, $items) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $dataArr, $summaryDeals, $summaryTotals, $items) {
+                $sheet->setColumnFormat(array('A:P' => '@'));
+                $sheet->getPageSetup()->setPaperSize('A4');
+                $sheet->setAutoSize(true);
+                $sheet->loadView('detailrpt.batch_profile_detail_excel', compact('request', 'dataArr', 'summaryDeals', 'summaryTotals', 'items'));
             });
         })->download('xlsx');
     }

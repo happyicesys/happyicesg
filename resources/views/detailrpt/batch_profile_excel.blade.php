@@ -59,6 +59,8 @@
         <tr></tr>
         <tr>
             <th align="center">Customer</th>
+            <th align="center">CustCat</th>
+            <th align="center">CustCatGroup</th>
             <th align="center">Revenue ($)</th>
             <th align="center">Cost ($)</th>
             <th align="center">Gross Earning ($)</th>
@@ -68,6 +70,8 @@
         @foreach($deals as $deal)
         <tr>
             <td>{{$deal->cust_id}} - {{$deal->company}}</td>
+            <td>{{$deal->custcategory_name}}</td>
+            <td>{{$deal->custcategory_group_name}}</td>
             <td data-format="0.00">{{$deal->amount}}</td>
             <td data-format="0.00">{{$deal->cost}}</td>
             <td data-format="0.00">{{$deal->gross}}</td>
