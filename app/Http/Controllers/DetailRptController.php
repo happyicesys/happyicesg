@@ -2198,7 +2198,6 @@ class DetailRptController extends Controller
                 $transactions = $transactions->where('transactions.status', $status);
             }
         }
-        // $allTransactions = $allTransactions->latest()->get();
 
         if($delivery_from){
             $transactions = $transactions->whereDate('transactions.delivery_date', '>=', $delivery_from);
@@ -2249,9 +2248,6 @@ class DetailRptController extends Controller
                         ->leftJoin('people', 'people.id', '=', 'transactions.person_id');
 
         if($statuses) {
-            if (count($statuses) == 1) {
-                $statuses = [$statuses];
-            }
             if(in_array('Delivered', $statuses)) {
                 array_push($statuses, 'Verified Owe');
                 array_push($statuses, 'Verified Paid');
@@ -2269,9 +2265,6 @@ class DetailRptController extends Controller
         }
 
         if($custcategories) {
-            if (count($custcategories) == 1) {
-                $custcategories = [$custcategories];
-            }
             if($excludeCustcategory) {
                 $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
                     $query->whereNotIn('id', $custcategories);
@@ -2284,18 +2277,12 @@ class DetailRptController extends Controller
         }
 
         if($custcategoryGroups) {
-            if (count($custcategoryGroups) == 1) {
-                $custcategoryGroups = [$custcategoryGroups];
-            }
             $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
                 $query->whereIn('id', $custcategoryGroups);
             });
         }
 
         if($actives) {
-            if (count($actives) == 1) {
-                $actives = [$actives];
-            }
             $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
                 $query->whereIn('active', $actives);
             });
@@ -2306,6 +2293,7 @@ class DetailRptController extends Controller
                 $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
             });
         }
+
         if($delivery_to){
             $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
                 $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
@@ -2313,9 +2301,6 @@ class DetailRptController extends Controller
         }
 
         if($personTags) {
-            if (count($personTags) == 1) {
-                $personTags = [$personTags];
-            }
             $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
                 $query->whereIn('persontags.id', $personTags);
             });
@@ -2332,7 +2317,7 @@ class DetailRptController extends Controller
 
             $deals = $deals
             ->leftJoin($personFirstTransac, 'personFirstTransac.person_id', '=', 'people.id')
-            ->groupBy('people.id')
+            ->groupBy('transactions.person_id')
             ->select(
                 'people.id AS id',
                 'people.cust_id',
