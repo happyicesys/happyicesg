@@ -148,19 +148,18 @@
         <div class="row form-group">
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="btn-group">
-{{--
                     <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
                         Search
                         <i class="fa fa-search" ng-show="!spinner"></i>
                         <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
-                    </button> --}}
+                    </button>
                     {{-- <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button> --}}
                     <button type="submit" class="btn btn-warning" name="exportProfileSummaryExcel" value="exportProfileSummaryExcel">Export Batch Profile Summary</button>
                 </div>
             </div>
         </div>
         {!! Form::close() !!}
-        {{-- <div id="exportable_invbreakdownDetailv2">
+        <div id="exportable_invbreakdownDetailv2">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-5 col-sm-5 col-xs-12">
@@ -202,45 +201,64 @@
                         </div>
                     </div>
                 </div>
-            </div> --}}
-{{--
+            </div>
+
             <div class="table-responsive" style="padding-top: 20px;">
                 <table class="table table-list-search table-hover table-bordered">
                     <tr style="background-color: #DDFDF8">
-                        <th class="col-md-6 text-center">Item</th>
-                        <th class="col-md-2 text-center">Total Qty</th>
-                        <th class="col-md-2 text-center">Total $</th>
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-3 text-center">
+                            Customer
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Revenue ($)
+                        </th>
+                        <th class="col-md-2 text-center">
+                            Cost ($)
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Gross ($)
+                        </th>
+                        <th class="col-md-1 text-center">
+                            Gross (%)
+                        </th>
+                        <th class="col-md-2 text-center">
+                            First Inv Date
+                        </th>
                     </tr>
 
                     <tr dir-paginate="deal in alldata | itemsPerPage:itemsPerPage" pagination-id="invbreakdown_detailv2" total-items="totalCount" current-page="currentPage">
-                        <td class="col-md-6">
-                            @{{deal.product_id}} - @{{deal.name}}
+                        <td class="col-md-1 text-center">
+                            @{{ $index + indexFrom }}
                         </td>
-                        <td class="col-md-2 text-right">
-                            @{{deal.qty | currency: "": 4}}
+                        <td class="col-md-3">
+                            @{{deal.cust_id}} - @{{deal.company}}
                         </td>
                         <td class="col-md-2 text-right">
                             @{{deal.amount | currency: "": 2}}
                         </td>
+                        <td class="col-md-2 text-right">
+                            @{{deal.cost | currency: "": 2}}
+                        </td>
+                        <td class="col-md-1 text-right">
+                            @{{deal.gross | currency: "": 2}}
+                        </td>
+                        <td class="col-md-1 text-right">
+                            <span ng-if="deal.gross > 0">
+                                @{{deal.gross/ deal.amount * 100 | currency: "": 0}}
+                            </span>
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @{{deal.first_inv}}
+                        </td>
                     </tr>
-
-                    <div ng-if="alldata || alldata.length > 0">
-                        <tr>
-                            <th class="col-md-4">Total</th>
-                            <th class="col-md-1 text-right">
-                                <strong>@{{totals['qty'] ? totals['qty'] : 0.0000 | currency: "": 4}}</strong>
-                            </th>
-                            <th class="col-md-1 text-right">
-                                <strong>@{{totals['amount'] ? totals['amount'] : 0.00 | currency: "": 2}}</strong>
-                            </th>
-
-                        </tr>
-                    </div>
                     <tr ng-if="!alldata || alldata.length == 0">
                         <td colspan="14" class="text-center">No results found</td>
                     </tr>
                 </table>
-            </div> --}}
+            </div>
         </div>
     </div>
 </div>

@@ -14,7 +14,7 @@ function invbreakdownDetailv2Controller($scope, $http) {
     $scope.totalCount = 0;
     $scope.totalPages = 0;
     $scope.currentPage = 1;
-    $scope.itemsPerPage = 100;
+    $scope.itemsPerPage = 'All';
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.search = {

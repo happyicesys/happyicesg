@@ -2233,112 +2233,43 @@ class DetailRptController extends Controller
 
     public function getInvoiceBreakdownDetailv2Api(Request $request)
     {
-        // dd($request->all(), 'here');
-        $custcategories = $request->custcategories;
-        $custcategoryGroups = $request->custcategoryGroups;
-        $excludeCustcategory = $request->excludeCustcategory;
-        $actives = $request->actives;
-        $statuses = $request->statuses;
-        $delivery_from = $request->delivery_from;
-        $delivery_to = $request->delivery_to;
-        $personTags = $request->personTags;
+        $personFirstTransac = DB::raw('
+        (SELECT delivery_date, person_id FROM transactions
+        LEFT JOIN people ON people.id = transactions.person_id
+        GROUP BY people.id
+        ORDER BY delivery_date ASC
+        ) AS personFirstTransac
+        ');
 
         $deals = Deal::leftJoin('items', 'items.id', '=', 'deals.item_id')
                         ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
-                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id');
+                        ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
+                        ->leftJoin($personFirstTransac, 'personFirstTransac.person_id', '=', 'people.id');
 
-        if($statuses) {
-            if(in_array('Delivered', $statuses)) {
-                array_push($statuses, 'Verified Owe');
-                array_push($statuses, 'Verified Paid');
-            }else {
-                if(($key1 = array_search('Verified Owe', $statuses)) !== false) {
-                    unset($statuses[$key1]);
-                }
-                if(($key2 = array_search('Verified Paid', $statuses)) !== false) {
-                    unset($statuses[$key2]);
-                }
-            }
-            $deals = $deals->whereHas('transaction', function($query) use ($statuses) {
-                $query->whereIn('transactions.status', $statuses);
-            });
-        }
+        $deals = $this->detailv2Filters($request, $deals);
 
-        if($custcategories) {
-            if($excludeCustcategory) {
-                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
-                    $query->whereNotIn('id', $custcategories);
-                });
-            }else{
-                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
-                    $query->whereIn('id', $custcategories);
-                });
-            }
-        }
+        $deals = $deals->select(
+            'people.id AS id',
+            'people.cust_id',
+            'people.company',
+            'unit_cost',
+            DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+            DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+            DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+            DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross'),
+            DB::raw('DATE(personFirstTransac.delivery_date) AS first_inv')
+        );
 
-        if($custcategoryGroups) {
-            $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
-                $query->whereIn('id', $custcategoryGroups);
-            });
-        }
+        $totals = $this->multipleTotalFields($deals, [
+            'qty',
+            'amount',
+            'cost',
+            'gross',
+        ]);
 
-        if($actives) {
-            $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
-                $query->whereIn('active', $actives);
-            });
-        }
-
-        if($delivery_from){
-            $deals = $deals->whereHas('transaction', function($query) use ($delivery_from) {
-                $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
-            });
-        }
-
-        if($delivery_to){
-            $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
-                $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
-            });
-        }
-
-        if($personTags) {
-            $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
-                $query->whereIn('persontags.id', $personTags);
-            });
-        }
+        $deals = $deals->orderBy('people.id')->groupBy('people.id')->get();
 
         if($request->exportProfileSummaryExcel) {
-            $personFirstTransac = DB::raw('
-                                        (SELECT delivery_date, person_id FROM transactions
-                                        LEFT JOIN people ON people.id = transactions.person_id
-                                        GROUP BY people.id
-                                        ORDER BY delivery_date ASC
-                                        ) AS personFirstTransac
-                                        ');
-
-            $deals = $deals
-            ->leftJoin($personFirstTransac, 'personFirstTransac.person_id', '=', 'people.id')
-            ->groupBy('transactions.person_id')
-            ->select(
-                'people.id AS id',
-                'people.cust_id',
-                'people.company',
-                'unit_cost',
-                DB::raw('COALESCE(SUM(qty), 1) AS qty'),
-                DB::raw('COALESCE(SUM(amount), 0) AS amount'),
-                DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
-                DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross'),
-                'personFirstTransac.delivery_date AS first_inv'
-            );
-
-            $totals = $this->multipleTotalFields($deals, [
-                'qty',
-                'amount',
-                'cost',
-                'gross',
-            ]);
-
-            $deals = $deals->orderBy('people.cust_id')->get();
-
             $this->exportBatchProfileExcel($request, $deals, $totals, 1);
         }
 
@@ -2367,7 +2298,10 @@ class DetailRptController extends Controller
             $this->exportBatchProfileExcel($request, $deals, $totals, 2);
         }
 
-        return true;
+        return [
+            'deals' => $deals,
+            'totals' => $totals,
+        ];
     }
 
     // get invoice breakdown page()
@@ -2895,6 +2829,79 @@ class DetailRptController extends Controller
         }else {
             Flash::error('Please choose at least 1 checkbox');
         }
+    }
+
+    private function detailv2Filters($request, $deals)
+    {
+        $custcategories = $request->custcategories;
+        $custcategoryGroups = $request->custcategoryGroups;
+        $excludeCustcategory = $request->excludeCustcategory;
+        $actives = $request->actives;
+        $statuses = $request->statuses;
+        $delivery_from = $request->delivery_from;
+        $delivery_to = $request->delivery_to;
+        $personTags = $request->personTags;
+
+        if($statuses) {
+            if(in_array('Delivered', $statuses)) {
+                array_push($statuses, 'Verified Owe');
+                array_push($statuses, 'Verified Paid');
+            }else {
+                if(($key1 = array_search('Verified Owe', $statuses)) !== false) {
+                    unset($statuses[$key1]);
+                }
+                if(($key2 = array_search('Verified Paid', $statuses)) !== false) {
+                    unset($statuses[$key2]);
+                }
+            }
+            $deals = $deals->whereHas('transaction', function($query) use ($statuses) {
+                $query->whereIn('transactions.status', $statuses);
+            });
+        }
+
+        if($custcategories) {
+            if($excludeCustcategory) {
+                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                    $query->whereNotIn('id', $custcategories);
+                });
+            }else{
+                $deals = $deals->whereHas('transaction.person.custcategory', function($query) use ($custcategories) {
+                    $query->whereIn('id', $custcategories);
+                });
+            }
+        }
+
+        if($custcategoryGroups) {
+            $deals = $deals->whereHas('transaction.person.custcategory.custcategoryGroup', function($query) use ($custcategoryGroups) {
+                $query->whereIn('id', $custcategoryGroups);
+            });
+        }
+
+        if($actives) {
+            $deals = $deals->whereHas('transaction.person', function($query) use ($actives) {
+                $query->whereIn('active', $actives);
+            });
+        }
+
+        if($delivery_from){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_from) {
+                $query->whereDate('transactions.delivery_date', '>=', $delivery_from);
+            });
+        }
+
+        if($delivery_to){
+            $deals = $deals->whereHas('transaction', function($query) use ($delivery_to) {
+                $query->whereDate('transactions.delivery_date', '<=', $delivery_to);
+            });
+        }
+
+        if($personTags) {
+            $deals = $deals->whereHas('transaction.person.persontags', function($query) use ($personTags) {
+                $query->whereIn('persontags.id', $personTags);
+            });
+        }
+
+        return $deals;
     }
 
     // filters function for stock (formrequest request(), query deals)
