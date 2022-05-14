@@ -155,7 +155,15 @@
                     </button>
                     {{-- <button class="btn btn-primary" ng-click="exportData($event)">Export Excel</button> --}}
                     <button type="submit" class="btn btn-warning" name="exportProfileSummaryExcel" value="exportProfileSummaryExcel">Export Batch Profile Summary</button>
-                    {{-- <button type="submit" class="btn btn-primary" name="exportProfileDetailExcel" value="exportProfileDetailExcel">Export Batch Profile Detail</button> --}}
+                    <button type="submit" class="btn btn-sm btn-primary" name="exportProfileDetailExcel" value="exportProfileDetailExcel">Export Batch Profile Detail
+                        <br>
+                        <small>
+                            **Please use with filter**
+                        </small>
+                    </button>
+
+
+
                 </div>
             </div>
         </div>

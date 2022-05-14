@@ -42,7 +42,7 @@
         <tr>
             <th>Total Revenue ($)</th>
             @foreach($summaryDeals as $summaryDeal)
-                <td colspan="2" data-format="0.00">
+                <td colspan="2" align="right" data-format="0.00">
                     {{$summaryDeal->amount}}
                 </td>
             @endforeach
@@ -50,7 +50,7 @@
         <tr>
             <th>Total Cost ($)</th>
             @foreach($summaryDeals as $summaryDeal)
-                <td colspan="2" data-format="0.00">
+                <td colspan="2" align="right" data-format="0.00">
                     {{$summaryDeal->cost}}
                 </td>
             @endforeach
@@ -58,7 +58,7 @@
         <tr>
             <th>Total Gross ($)</th>
             @foreach($summaryDeals as $summaryDeal)
-                <td colspan="2" data-format="0.00">
+                <td colspan="2" align="right" data-format="0.00">
                     {{$summaryDeal->gross}}
                 </td>
             @endforeach
@@ -66,7 +66,7 @@
         <tr>
             <th>Total Gross (%)</th>
             @foreach($summaryDeals as $summaryDeal)
-                <td colspan="2" data-format="0">
+                <td colspan="2" align="right" data-format="0">
                     @if($summaryDeal->gross > 0)
                         {{$summaryDeal->gross/ $summaryDeal->amount * 100}}
                     @endif
@@ -76,7 +76,7 @@
         <tr>
             <th>First Inv Date</th>
             @foreach($summaryDeals as $summaryDeal)
-                <td colspan="2">
+                <td colspan="2" align="center">
                     {{$summaryDeal->first_inv}}
                 </td>
             @endforeach
@@ -94,15 +94,42 @@
             <td>
                 {{$item->product_id}} - {{$item->name}}
             </td>
+
             @foreach($summaryDeals as $summaryDeal)
-                <td data-format="0.0000">
-                    {{$dataArr[$summaryDeal->person_id][$item->id]['qty']}}
+                @php
+                    $dealResult = clone $dealsDetailQuery;
+                    $dealResult =  $dealResult
+                                    ->where('people.id', $summaryDeal->person_id)
+                                    ->where('items.id', $item->item_id)
+                                    ->select(
+                                        DB::raw('SUM(qty) AS qty'),
+                                        DB::raw('SUM(amount) AS amount')
+                                    )
+                                    ->first();
+                @endphp
+                <td @if($dealResult->qty > 0) data-format="0.0000" align="right" @endif>
+                    @if($dealResult->qty > 0)
+                        {{number_format($dealResult->qty, 4)}}
+                    @endif
                 </td>
-                <td data-format="0.00">
-                    {{$dataArr[$summaryDeal->person_id][$item->id]['amount']}}
+                <td @if($dealResult->amount > 0) data-format="0.00" align="right" @endif>
+                    @if($dealResult->amount > 0)
+                        {{number_format($dealResult->amount, 2)}}
+                    @endif
                 </td>
             @endforeach
         </tr>
         @endforeach
+        <tr>
+            <th align="center">Total</th>
+            @foreach($summaryDeals as $summaryDeal)
+                <th align="right" data-format="0.0000">
+                    {{$summaryDeal->qty}}
+                </th>
+                <th align="right" data-format="0.00">
+                    {{$summaryDeal->amount}}
+                </th>
+            @endforeach
+        </tr>
     </tbody>
 </table>

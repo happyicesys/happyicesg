@@ -2251,7 +2251,7 @@ class DetailRptController extends Controller
         $deals = $this->detailv2Filters($request, $deals);
 
         $dealsSummary = clone $deals;
-        $dealsDetail = clone $deals;
+        $dealsDetailQuery = clone $deals;
         $items = clone $deals;
 
         $dealsSummary = $dealsSummary->select(
@@ -2282,46 +2282,54 @@ class DetailRptController extends Controller
         }
 
         if($request->exportProfileDetailExcel) {
-            $dealsDetail = $dealsDetail->groupBy('items.id', 'people.id')
-            ->select(
-                'items.id AS item_id',
-                'items.product_id',
-                'items.name',
-                'people.cust_id',
-                'people.company',
-                'people.id AS person_id',
-                DB::raw('COALESCE(SUM(qty), 1) AS qty'),
-                DB::raw('COALESCE(SUM(amount), 0) AS amount'),
-                DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
-                DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
-            );
+            // $dealsDetail = $dealsDetail->groupBy('items.id', 'people.id')
+            // ->select(
+            //     'items.id AS item_id',
+            //     'items.product_id',
+            //     'items.name',
+            //     'people.cust_id',
+            //     'people.company',
+            //     'people.id AS person_id',
+            //     DB::raw('COALESCE(SUM(qty), 1) AS qty'),
+            //     DB::raw('COALESCE(SUM(amount), 0) AS amount'),
+            //     DB::raw('COALESCE(SUM(qty * unit_cost), 0) AS cost'),
+            //     DB::raw('COALESCE(SUM(amount), 0) - COALESCE(SUM(qty * unit_cost), 0) AS gross')
+            // );
 
-            $detailTotals = $this->multipleTotalFields($dealsDetail, [
-                'qty',
-                'amount',
-                'cost',
-                'gross',
-            ]);
+            // $detailTotals = $this->multipleTotalFields($dealsDetail, [
+            //     'qty',
+            //     'amount',
+            //     'cost',
+            //     'gross',
+            // ]);
 
-            $dealsDetail = $dealsDetail->orderBy('items.product_id', 'people.cust_id')->get();
+            // $dealsDetail = $dealsDetail->orderBy('items.product_id', 'people.cust_id');
 
-            $items = $items->groupBy('items.id')->orderBy('items.product_id')->get();
+            $items = $items
+                        ->select(
+                            'items.product_id',
+                            'items.name',
+                            'items.id AS item_id'
+                        )
+                        ->groupBy('items.id')
+                        ->orderBy('items.product_id')
+                        ->get();
             // dd($totals, $deals->toArray());
-            $dataArr = [];
-            if($dealsSummary and $dealsDetail) {
-                foreach($dealsSummary as $dealSummary) {
-                    foreach($dealsDetail as $dealDetail) {
-                        if($dealSummary->person_id == $dealDetail->person_id) {
-                            $dataArr[$dealSummary->person_id][$dealDetail->item_id] = [
-                                'qty' => $dealDetail->qty,
-                                'amount' => $dealDetail->amount,
-                            ];
-                        }
-                    }
-                }
-            }
+            // $dataArr = [];
+            // if($dealsSummary and $dealsDetail) {
+            //     foreach($dealsSummary as $dealSummary) {
+            //         foreach($dealsDetail as $dealDetail) {
+            //             if($dealSummary->person_id == $dealDetail->person_id) {
+            //                 $dataArr[$dealSummary->person_id][$dealDetail->item_id] = [
+            //                     'qty' => $dealDetail->qty,
+            //                     'amount' => $dealDetail->amount,
+            //                 ];
+            //             }
+            //         }
+            //     }
+            // }
 
-            $this->exportBatchProfileDetailExcel($request, $dataArr, $dealsSummary, $summaryTotals, $items);
+            $this->exportBatchProfileDetailExcel($request, $dealsDetailQuery, $dealsSummary, $summaryTotals, $items);
         }
 
         return [
@@ -4210,15 +4218,15 @@ class DetailRptController extends Controller
         })->download('xlsx');
     }
 
-    private function exportBatchProfileDetailExcel($request, $dataArr, $summaryDeals, $summaryTotals, $items)
+    private function exportBatchProfileDetailExcel($request, $dealsDetailQuery, $summaryDeals, $summaryTotals, $items)
     {
         $title = 'BatchProfileDetail';
-        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $dataArr, $summaryDeals, $summaryTotals, $items) {
-            $excel->sheet('sheet1', function($sheet) use ($request, $dataArr, $summaryDeals, $summaryTotals, $items) {
+        Excel::create($title.'_'.Carbon::now()->format('dmYHis'), function($excel) use ($request, $dealsDetailQuery, $summaryDeals, $summaryTotals, $items) {
+            $excel->sheet('sheet1', function($sheet) use ($request, $dealsDetailQuery, $summaryDeals, $summaryTotals, $items) {
                 $sheet->setColumnFormat(array('A:P' => '@'));
                 $sheet->getPageSetup()->setPaperSize('A4');
                 $sheet->setAutoSize(true);
-                $sheet->loadView('detailrpt.batch_profile_detail_excel', compact('request', 'dataArr', 'summaryDeals', 'summaryTotals', 'items'));
+                $sheet->loadView('detailrpt.batch_profile_detail_excel', compact('request', 'dealsDetailQuery', 'summaryDeals', 'summaryTotals', 'items'));
             });
         })->download('xlsx');
     }
