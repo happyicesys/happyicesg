@@ -32,10 +32,14 @@ class Vending extends Model
         'type' => 'Type',
         'router' => 'Router',
         'desc' => 'Desc',
-        'person_id' => 'Customer',
+        'person_id' => 'Current Customer',
         'simcard_id' => 'Simcard ID',
         'cashless_terminal_id' => 'Cashless Terminal ID',
     );
+
+    protected $revisionFormattedFields = [
+        'created_at'   => 'datetime:Y-m-d g:i A',
+    ];
 
     protected $dontKeepRevisionOf = array(
         'updated_by',

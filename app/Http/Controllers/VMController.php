@@ -84,8 +84,9 @@ class VMController extends Controller
     public function editVending($id)
     {
         $vending = Vending::findOrFail($id);
+        $revisionHistories = $vending->revisionHistory;
 
-        return view('vm.edit', compact('vending'));
+        return view('vm.edit', compact('vending', 'revisionHistories'));
     }
 
     public function updateVending(Request $request, $id)

@@ -18,6 +18,12 @@ class Simcard extends Model
         'vending_id', 'updated_by'
     ];
 
+
+    public function identifiableName()
+    {
+        return $this->simcard_no.' - '.$this->telco_name;
+    }
+
     // relationships
     public function vending()
     {

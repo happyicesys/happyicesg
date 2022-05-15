@@ -22,6 +22,11 @@ class CashlessTerminal extends Model
         'vending_id',
     ];
 
+    public function identifiableName()
+    {
+        return $this->terminal_id.' - '.$this->provider_name;
+    }
+
     // relationships
     public function vending()
     {

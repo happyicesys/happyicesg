@@ -26,10 +26,7 @@ class Person extends Baum\Node
     {
         parent::boot();
     }
-    public function identifiableName()
-    {
-        return $this->title;
-    }
+
     protected $dontKeepRevisionOf = array(
         'cust_id', 'profile_id', 'salutation',
         'user_id', 'parent_name', 'parent_id',
@@ -97,6 +94,11 @@ class Person extends Baum\Node
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function identifiableName()
+    {
+        return $this->cust_id.' - '.$this->company;
+    }
 
     public function bank()
     {
