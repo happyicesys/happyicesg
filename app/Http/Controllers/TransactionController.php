@@ -231,11 +231,12 @@ class TransactionController extends Controller
         $filename = 'JobAssign_';
         if($request->driver) {
             $filename .= $request->driver.'_';
+            $pdf = PDF::loadView('transaction.jobassign_single_pdf', $data);
         }else {
             $filename .= 'All_';
+            $pdf = PDF::loadView('transaction.jobassign_pdf', $data);
         }
         $filename .= Carbon::today()->format('Ymd').'.pdf';
-        $pdf = PDF::loadView('transaction.jobassign_pdf', $data);
         $pdf->setPaper('a4');
         $pdf->setOption('enable-javascript', true);
         $pdf->setOption('javascript-delay', 8000);

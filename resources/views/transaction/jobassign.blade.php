@@ -690,11 +690,10 @@ Job Assign
                                         Re-number
                                     </button>
                                 @endif
-{{--
                                 <button class="btn btn-xs btn-primary" ng-click="onExportPdfClicked($event, driver.name)">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     Export PDF
-                                </button> --}}
+                                </button>
 {{--
                                 <span class="pull-right">
 
