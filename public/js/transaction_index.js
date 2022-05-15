@@ -461,7 +461,6 @@ function transController($scope, $http) {
         $scope.search.account_manager = userId;
     }
 
-
     $scope.onMapClicked = function (singleperson = null, index = null) {
         var url = window.location.href;
         var location = '';

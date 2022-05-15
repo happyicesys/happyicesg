@@ -59,7 +59,23 @@
                 ({{$transaction->status}})
             @else
                 @if($transaction->status == 'Cancelled')
-                    <del><strong>Invoice : {{$transaction->id}}</strong>
+                    <del><strong>Invoice : {{$transaction->id}}</strong></del>
+                    <br>
+                    @if($transaction->cancel_reason_option)
+                        <span>
+                            @if($transaction->cancel_reason_option == 1)
+                                (Customer cancel 客户取消单)
+                            @elseif($transaction->cancel_reason_option == 2)
+                                (Supervisor cancel 主管取消单)
+                            @elseif($transaction->cancel_reason_option == 3)
+                                (Wrong invoice/SN 开错单)
+                            @elseif($transaction->cancel_reason_option == 4)
+                                <p>
+                                    (Other Reason: {{$transaction->cancel_reason_remarks}})
+                                </p>
+                            @endif
+                        </span>
+                    @endif
                 @else
                     <strong>Invoice : {{$transaction->id}}</strong>
                     ({{$transaction->status}}) - {{$transaction->pay_status}}
@@ -182,7 +198,13 @@
                 <div class="col-md-12" >
                     <div class="pull-left">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
+                                    Cancel Invoice
+                                </button>
+                            @else
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @endif
                         @endif
                     </div>
                     <div class="pull-right">
@@ -204,7 +226,13 @@
                     <div class="pull-left btn-toolbar">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                             @unless(auth()->user()->hasRole('driver') and $transaction->deals()->exists())
-                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                                @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
+                                        Cancel Invoice
+                                    </button>
+                                @else
+                                    {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                                @endif
                             @endunless
                             @if(!$transaction->is_service)
                                 @if($transaction->pay_status === 'Owe')
@@ -248,7 +276,14 @@
                 <div class="row">
                     <div class="pull-left">
                         @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
+                                    Cancel Invoice
+                                </button>
+                            @else
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @endif
+
                             @if(!$transaction->is_service)
                                 @if($transaction->pay_status === 'Owe')
                                     {!! Form::submit('Paid', ['name'=>'paid', 'class'=> 'btn btn-success', 'form'=>'form_cust']) !!}
@@ -298,7 +333,13 @@
                         @cannot('transaction_view')
                         @cannot('supervisor_view')
                         @if(!auth()->user()->hasRole('franchisee')and !auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('hd_user') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                            {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @if(auth()->user()->hasRole('driver') or auth()->user()->hasRole('technician') or auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#cancelConfirmationModal">
+                                    Cancel Invoice
+                                </button>
+                            @else
+                                {!! Form::submit('Cancel Invoice', ['class'=> 'btn btn-danger', 'form'=>'form_delete', 'name'=>'form_delete']) !!}
+                            @endif
                             {!! Form::submit('Unpaid', ['name'=>'unpaid', 'class'=> 'btn btn-warning', 'form'=>'form_cust']) !!}
                         @endif
                         @endcannot
@@ -458,6 +499,59 @@
         @endif
     </div>
     {{-- @endif --}}
+
+    <div id="cancelConfirmationModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Please choose a cancel reason</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="cancel_reason_option">
+                            Reason to Cancel
+                        </label>
+                        <label for="*" style="color: red;">*</label>
+                        <select name="cancel_reason_option" class="select form-control" ng-model="cancelForm.cancel_reason_option">
+                            <option value="">Select...</option>
+                            <option value="1">
+                                Customer cancel 客户取消单
+                            </option>
+                            <option value="2">
+                                Supervisor cancel 主管取消单
+                            </option>
+                            <option value="3">
+                                Wrong invoice/SN 开错单
+                            </option>
+                            <option value="4">
+                                Others 其它原因
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-if="cancelForm.cancel_reason_option == 4">
+                        <label for="cancel_reason_remarks">
+                            Please state your reason
+                        </label>
+                        <label for="*" style="color: red;">*</label>
+                        <textarea name="cancel_reason_remarks" class="form-control" ng-model="cancelForm.cancel_reason_remarks" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button class="btn btn-success pull-right" ng-click="onCancelConfirmationClicked($event)" ng-disabled="!cancelForm.cancel_reason_option || (cancelForm.cancel_reason_option == 4 && !cancelForm.cancel_reason_remarks)">
+                            Submit
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 </div>
 @stop

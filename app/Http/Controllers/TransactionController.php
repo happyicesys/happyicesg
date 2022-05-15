@@ -931,12 +931,16 @@ class TransactionController extends Controller
      */
     public function destroy($id, Request $request)
     {
+        // dd($request->all());
         if($request->input('form_delete')){
-
             $transaction = Transaction::findOrFail($id);
             $transaction->cancel_trace = $transaction->status;
             $transaction->status = 'Cancelled';
             $transaction->updated_by = auth()->user()->name;
+            if($request->cancelForm) {
+                $transaction->cancel_reason_option = $request->cancelForm['cancel_reason_option'];
+                $transaction->cancel_reason_remarks = $request->cancelForm['cancel_reason_remarks'];
+            }
             $transaction->save();
 
         // operation worksheet management

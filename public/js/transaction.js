@@ -778,6 +778,13 @@ function transactionController($scope, $http) {
         });
     }
 
+    $scope.onCancelConfirmationClicked = function (event) {
+        event.preventDefault();
+        $http.post('/api/transaction/' + $trans_id.val() + '/cancelConfirmation', { form_delete: 'form_delete', cancelForm: $scope.cancelForm }).success(function (data) {
+            location.reload();
+        });
+    }
+
     // $scope.checkServiceCompletion = function (event) {
     //     event.preventDefault();
     //     $http.get('/api/transaction/' + $trans_id.val() + '/service/completion').success(function (data) {
