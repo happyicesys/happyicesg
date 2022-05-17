@@ -204,7 +204,7 @@ function transController($scope, $http, $window) {
         $scope.driverOptionShowing = !$scope.driverOptionShowing;
     }
 
-    $scope.onExportPdfClicked = function (event, driverName = null) {
+    $scope.onExportPdfClicked = function (event, type = 1, driverName = null) {
         $scope.spinner = true;
         event.preventDefault();
         if (driverName) {
@@ -214,7 +214,7 @@ function transController($scope, $http, $window) {
         $http({
             method: 'POST',
             responseType: 'arraybuffer',
-            url: '/api/transaction/jobassign/pdf',
+            url: '/api/transaction/jobassign/pdf/' + type,
             data: $scope.search
         })
             .then(function (response) {

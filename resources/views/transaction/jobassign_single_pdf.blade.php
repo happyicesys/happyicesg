@@ -71,7 +71,7 @@
                             <th colspan="2" class="text-center">
                                 {{$request['delivery_to']}}
                             </th>
-                            <th colspan="3" class="text-center">
+                            <th colspan="4" class="text-center">
                                 {{$driverResult && $driverResult->truck ? $driverResult->truck->name : null}} ({{$driver['name']}})
                             </th>
                             <th colspan="2" class="text-center">
@@ -82,10 +82,10 @@
                             </th>
                         </tr>
                         <tr style="background-color: lightgrey !important;">
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 2%;">
                               #
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 4%;">
                               INV #
                             </th>
                             <th class="col-xs-2 text-center">
@@ -93,6 +93,9 @@
                             </th>
                             <th class="col-xs-1 text-center">
                               Postcode
+                            </th>
+                            <th class="col-xs-1 text-center">
+                                Contact
                             </th>
                             <th class="col-xs-2 text-center">
                               注释<br>
@@ -122,10 +125,10 @@
                         @else
                             @foreach($driver['transactions'] as $transaction)
                             <tr>
-                                <td class="col-xs-1 text-center">
-                                  {{$transaction->sequence ?? rtrim($transaction->sequence, "0")}}
+                                <td class="col-xs-1 text-center" style="width: 2%;">
+                                    {{$transaction->sequence ? (float)$transaction->sequence : null}}
                                 </td>
-                                <td class="col-xs-1 text-center">
+                                <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->id }}
                                 </td>
                                 <td class="col-xs-2 text-left">
@@ -134,6 +137,9 @@
                                 </td>
                                 <td class="col-xs-1 text-center">
                                     {{ $transaction->del_postcode }}
+                                </td>
+                                <td class="col-xs-1 text-center">
+                                    {{ $transaction->contact }}
                                 </td>
                                 <td class="col-xs-2 text-center">
                                     {{ $transaction->transremark }}

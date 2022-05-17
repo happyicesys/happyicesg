@@ -221,7 +221,7 @@ class TransactionController extends Controller
         return $collections;
     }
 
-    public function getJobAssignPdf(Request $request)
+    public function getJobAssignPdf(Request $request, $type = 1)
     {
         // dd($request->all());
         $now = Carbon::now()->format('d-m-Y H:i');
@@ -229,13 +229,14 @@ class TransactionController extends Controller
         $data = $this->getJobAssignData();
         $data['request'] = $request->all();
         $filename = 'JobAssign_';
-        if($request->driver) {
-            $filename .= $request->driver.'_';
-            $pdf = PDF::loadView('transaction.jobassign_single_pdf', $data);
-        }else {
+        if($type == 1) {
             $filename .= 'All_';
             $pdf = PDF::loadView('transaction.jobassign_pdf', $data);
+        }else {
+            $filename .= $request->driver.'_';
+            $pdf = PDF::loadView('transaction.jobassign_single_pdf', $data);
         }
+
         $filename .= Carbon::today()->format('Ymd').'.pdf';
         $pdf->setPaper('a4');
         $pdf->setOption('enable-javascript', true);

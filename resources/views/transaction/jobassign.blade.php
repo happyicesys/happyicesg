@@ -732,7 +732,7 @@ Job Assign
                                         Re-number
                                     </button>
                                 @endif
-                                <button class="btn btn-xs btn-primary" ng-click="onExportPdfClicked($event, driver.name)">
+                                <button class="btn btn-xs btn-primary" ng-click="onExportPdfClicked($event, 2, driver.name)">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     Export PDF
                                 </button>

@@ -121,10 +121,10 @@
                           </th>
                         </tr>
                         <tr style="background-color: lightgrey !important;">
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center"  style="width: 2%;">
                               #
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 4%;">
                               INV #
                             </th>
                             <th class="col-xs-1 text-center">
@@ -155,16 +155,15 @@
                             </th>
                         </tr>
 
-
                         @if(count($driver['transactions']) == 0)
                             <td class="text-center" colspan="18">No Records Found</td>
                         @else
                             @foreach($driver['transactions'] as $transaction)
                             <tr>
-                                <td class="col-xs-1 text-center">
-                                  {{$transaction->sequence ?? rtrim($transaction->sequence, "0")}}
+                                <td class="col-xs-1 text-center" style="width: 2%;">
+                                  {{$transaction->sequence ? (float)$transaction->sequence : null}}
                                 </td>
-                                <td class="col-xs-1 text-center">
+                                <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->id }}
                                 </td>
                                 <td class="col-xs-1 text-center">
