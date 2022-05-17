@@ -806,7 +806,7 @@
                         </div>
                     </div>
 
-                    @if($transaction->serviceItems)
+                    @if($transaction->is_service and $transaction->serviceItems)
                         <table class="table table-bordered table-condensed">
                             <tr>
                                 <th class="text-center">
