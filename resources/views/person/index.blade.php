@@ -13,6 +13,11 @@
     .person-color {
         color:  #6D3A9C;
     }
+
+    td {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
 </style>
 
 @section('title')

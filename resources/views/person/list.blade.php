@@ -227,25 +227,48 @@
                     <span class="row" ng-if="search.edited">
                         <small>You have edited the filter, search?</small>
                     </span>
-                    <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
-                        Search
-                        <i class="fa fa-search" ng-show="!spinner"></i>
-                        <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
-                    </button>
-                    @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
-                            <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
-                        @endif
-                    @endif
-                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 1)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 2)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Map with ID & Name</button>
-                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
-                            Batch Function
-                            <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
-                            <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                    <div class="btn-group hidden-xs">
+                        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+                            Search
+                            <i class="fa fa-search" ng-show="!spinner"></i>
+                            <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
                         </button>
-                    @endif
+                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                                <button class="btn btn-sm btn-primary" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            @endif
+                        @endif
+                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 1)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 2)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Map with ID & Name</button>
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
+                        @endif
+                    </div>
+                    <div class="visible-xs" style="margin-top: 20px; margin-bottom: 30px;">
+                        <button class="btn btn-sm btn-success btn-block" ng-click="onSearchButtonClicked($event)">
+                            Search
+                            <i class="fa fa-search" ng-show="!spinner"></i>
+                            <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                        </button>
+                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
+                                <button class="btn btn-sm btn-primary btn-block" ng-click="exportData()"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
+                            @endif
+                        @endif
+                        <button type="button" class="btn btn-sm btn-info btn-block" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 1)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        <button type="button" class="btn btn-sm btn-default btn-block" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, null, 2)" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Map with ID & Name</button>
+                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-primary btn-block" ng-click="onBatchFunctionClicked($event)">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
+                        @endif
+                    </div>
                     <i class="fa fa-spinner fa-2x fa-spin" ng-show="spinner"></i>
                 </div>
                 <div class="col-md-4 col-xs-12 text-right">
@@ -636,7 +659,7 @@
                         <td class="col-md-1 text-center">
                             @{{ $index + indexFrom }}
                         </td>
-                        <td class="col-md-1">
+                        <td class="col-md-1" style="max-width: 100px;">
                             <a href="/person/@{{ person.id }}/edit">
                             @{{ person.cust_id }}
                             </a>
@@ -656,7 +679,7 @@
                         <td class="col-md-1 text-center">
                             @{{ person.account_manager_name }}
                         </td>
-                        <td class="col-md-1">@{{ person.name }}</td>
+                        <td class="col-md-1" style="max-width: 100px;">@{{ person.name }}</td>
                         <td class="col-md-1">
                             @{{ person.contact }}
                             <span ng-show="person.alt_contact.length > 0">

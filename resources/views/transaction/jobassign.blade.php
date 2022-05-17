@@ -510,45 +510,87 @@ Job Assign
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                            <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
-                        @endif
-                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
-                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
-                            <span ng-if="driverOptionShowing === true">
-                                Hide Extra Buttons
-                            </span>
-                            <span ng-if="driverOptionShowing === false">
-                                Show Extra Buttons
-                            </span>
-                        </button>
+                        <div class="btn-group hidden-xs">
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                                <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
+                            @endif
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
+                                <span ng-if="driverOptionShowing === true">
+                                    Hide Extra Buttons
+                                </span>
+                                <span ng-if="driverOptionShowing === false">
+                                    Show Extra Buttons
+                                </span>
+                            </button>
 
-                        <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
-                            Batch Function
-                            <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
-                            <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
-                        </button>
+                            <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
 
-                        <button class="btn btn-sm btn-info" ng-click="onRouteTemplateClicked($event)">
-                            Save Route Template
-                            <span ng-if="!showRouteTemplatePanel" class="fa fa-caret-down"></span>
-                            <span ng-if="showRouteTemplatePanel" class="fa fa-caret-up"></span>
-                        </button>
-                        @endif
-                        @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        <button class="btn btn-sm btn-primary" ng-click="onExportPdfClicked($event)">
-                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                            Export PDF
-                        </button>
-                        @endif
-                        @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
-                        <button class="btn btn-sm btn-warning" ng-click="onRefreshTableClicked($event)">
-                            <i class="fa fa-refresh" aria-hidden="true"></i>
-                        </button>
-                        @endif
-                        <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
+                            <button class="btn btn-sm btn-info" ng-click="onRouteTemplateClicked($event)">
+                                Save Route Template
+                                <span ng-if="!showRouteTemplatePanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showRouteTemplatePanel" class="fa fa-caret-up"></span>
+                            </button>
+                            @endif
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-primary" ng-click="onExportPdfClicked($event)">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                Export PDF
+                            </button>
+                            @endif
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-warning" ng-click="onRefreshTableClicked($event)">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                            </button>
+                            @endif
+                        </div>
+                        <div class="visible-xs">
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                                <button class="btn btn-sm btn-primary btn-block" ng-click="exportData($event)">Export All Excel</button>
+                            @endif
+                            <button type="button" class="btn btn-sm btn-info btn-block" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="drivers.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-default btn-block" ng-click="onDriverAssignToggleClicked($event)">
+                                <span ng-if="driverOptionShowing === true">
+                                    Hide Extra Buttons
+                                </span>
+                                <span ng-if="driverOptionShowing === false">
+                                    Show Extra Buttons
+                                </span>
+                            </button>
+
+                            <button class="btn btn-sm btn-primary btn-block" ng-click="onBatchFunctionClicked($event)" style="margin-top: 30px;">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
+
+                            <button class="btn btn-sm btn-info btn-block" ng-click="onRouteTemplateClicked($event)">
+                                Save Route Template
+                                <span ng-if="!showRouteTemplatePanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showRouteTemplatePanel" class="fa fa-caret-up"></span>
+                            </button>
+                            @endif
+                            @if(!auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-primary btn-block" ng-click="onExportPdfClicked($event)">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                Export PDF
+                            </button>
+                            @endif
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                            <button class="btn btn-sm btn-warning btn-block" ng-click="onRefreshTableClicked($event)">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                            </button>
+                            @endif
+                        </div>
+                        <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
                     </div>
+
 
                 </div>
                 <div ng-show="showBatchFunctionPanel">

@@ -17,6 +17,12 @@
 @stop
 @section('content')
 
+<style>
+    td {
+        white-space: normal !important;
+        word-wrap: break-word;
+    }
+</style>
     <div ng-app="app" ng-controller="transController">
 
     <div class="row">
@@ -28,22 +34,24 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="pull-right">
-                            @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
-                                <a href="/transaction/create" class="btn btn-success">
-                                    <i class="fa fa-plus"></i>
-                                    <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                            <div class="btn-group">
+                                @if(!auth()->user()->hasRole('franchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('subfranchisee'))
+                                    <a href="/transaction/create" class="btn btn-success">
+                                        <i class="fa fa-plus"></i>
+                                        <span class="hidden-xs"> New {{ $TRANS_TITLE }} </span>
+                                    </a>
+                                @endif
+                                @if(Auth::user()->hasRole('admin'))
+                                <a href="/transaction/freeze/date" class="btn btn-primary">
+                                    <i class="fa fa-clock-o"></i>
+                                    <span class="hidden-xs">Freeze Transaction Invoice </span>
                                 </a>
-                            @endif
-                            @if(Auth::user()->hasRole('admin'))
-                            <a href="/transaction/freeze/date" class="btn btn-primary">
-                                <i class="fa fa-clock-o"></i>
-                                <span class="hidden-xs">Freeze Transaction Invoice </span>
-                            </a>
-                            <a href="/transaction/email/subscription/" class="btn btn-default">
-                                <i class="fa fa-calendar"></i>
-                                <span class="hidden-xs">Weekly Email Subscription </span>
-                            </a>
-                            @endif
+                                <a href="/transaction/email/subscription/" class="btn btn-default">
+                                    <i class="fa fa-calendar"></i>
+                                    <span class="hidden-xs">Weekly Email Subscription </span>
+                                </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -597,23 +605,43 @@
                         <span class="row" ng-if="search.edited">
                             <small>You have edited the filter, search?</small>
                         </span>
-                        <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+                        <div class="btn-group hidden-xs">
+                            <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">
+                                Search
+                                <i class="fa fa-search" ng-show="!spinner"></i>
+                                <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                            @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
+                            <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
+                                <span ng-if="driverOptionShowing === true">
+                                    Hide Map & Driver Assign
+                                </span>
+                                <span ng-if="driverOptionShowing === false">
+                                    Show Map & Driver Assign
+                                </span>
+                            </button>
+
+                            <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                                Batch Function
+                                <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
+                                <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
+                            </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="visible-xs" style="margin-top:20px; margin-bottom: 30px;">
+                        <button class="btn btn-sm btn-success btn-block" ng-click="onSearchButtonClicked($event)">
                             Search
                             <i class="fa fa-search" ng-show="!spinner"></i>
                             <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
                         </button>
-                        <button class="btn btn-sm btn-primary" ng-click="exportData($event)">Export All Excel</button>
-{{--
-                        @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('operation'))
-                            <button class="btn btn-sm btn-default" ng-click="enableAccConsolidate($event)">
-                                Export Acc Consolidate
-                                <span ng-if="!show_acc_consolidate_div" class="fa fa-caret-down"></span>
-                                <span ng-if="show_acc_consolidate_div" class="fa fa-caret-up"></span>
-                            </button>
-                        @endif --}}
-                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
+                        <button class="btn btn-sm btn-primary btn-block" ng-click="exportData($event)">Export All Excel</button>
+                        <button type="button" class="btn btn-sm btn-info btn-block" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked()" ng-if="alldata.length > 0"><i class="fa fa-map-o"></i> Generate Map</button>
                         @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                        <button class="btn btn-sm btn-default" ng-click="onDriverAssignToggleClicked($event)">
+                        <button class="btn btn-sm btn-default btn-block" ng-click="onDriverAssignToggleClicked($event)">
                             <span ng-if="driverOptionShowing === true">
                                 Hide Map & Driver Assign
                             </span>
@@ -622,7 +650,7 @@
                             </span>
                         </button>
 
-                        <button class="btn btn-sm btn-primary" ng-click="onBatchFunctionClicked($event)">
+                        <button class="btn btn-sm btn-primary btn-block" ng-click="onBatchFunctionClicked($event)">
                             Batch Function
                             <span ng-if="!showBatchFunctionPanel" class="fa fa-caret-down"></span>
                             <span ng-if="showBatchFunctionPanel" class="fa fa-caret-up"></span>
@@ -1117,14 +1145,18 @@
                                     </td>
 
                                     @if(!auth()->user()->hasRole('hd_user'))
-                                    <td class="col-md-1 text-center">@{{ transaction.cust_id }} </td>
-                                    <td class="col-md-1 text-center"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></td>
+                                    <td class="col-md-1 text-center" style="max-width: 80px;">@{{ transaction.cust_id }} </td>
+                                    <td class="col-md-1 text-left" style="max-width: 180px;"><a href="/person/@{{ transaction.person_id }}">@{{transaction.cust_id[0] == 'D' || transaction.cust_id[0] == 'H' ? transaction.name : transaction.company}}</a></td>
                                     <td class="col-md-1 text-center">
                                         {{-- print invoice         --}}
-                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">Print</a>
+                                        <a href="/transaction/download/@{{ transaction.id }}" class="btn btn-primary btn-sm btn-block" ng-if="transaction.status != 'Pending' && transaction.status != 'Cancelled'">
+                                            <i class="fa fa-print" aria-hidden="true"></i>
+                                        </a>
                                         {{-- button view shown when cancelled --}}
-                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default" ng-if="transaction.status == 'Cancelled'">View</a>
-                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, $index)" ng-if="driverOptionShowing"><i class="fa fa-map-o"></i> Map</button>
+                                        <a href="/transaction/@{{ transaction.id }}/edit" class="btn btn-sm btn-default btn-block" ng-if="transaction.status == 'Cancelled'">View</a>
+                                        <button type="button" class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(transaction, $index)" ng-if="driverOptionShowing">
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                        </button>
                                     </td>
                                     <td class="col-md-1 text-center">@{{ transaction.custcategory }} </td>
                                     <td class="col-md-1 text-center">@{{ transaction.del_postcode }}</td>
