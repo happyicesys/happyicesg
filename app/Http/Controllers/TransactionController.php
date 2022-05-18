@@ -243,6 +243,10 @@ class TransactionController extends Controller
         $pdf->setOption('javascript-delay', 8000);
         $pdf->setOption('enable-smart-shrinking', true);
         $pdf->setOption('no-stop-slow-scripts', true);
+        $pdf->setOption('margin-bottom', 3);
+        $pdf->setOption('margin-left', 3);
+        $pdf->setOption('margin-right', 3);
+        $pdf->setOption('margin-top', 3);
 
         return $pdf->download($filename);
     }
@@ -2849,7 +2853,8 @@ class TransactionController extends Controller
                                     DB::raw('SUBSTRING(people.area_group, 9, 1) AS ops'),
                                     DB::raw('SUBSTRING(people.area_group, 11, 1) AS north'),
                                     'creator.id AS creator_id', 'creator.name AS creator_name',
-                                    DB::raw('(SELECT COUNT(*) FROM deals WHERE transactions.id = deals.transaction_id) AS deal_count')
+                                    DB::raw('(SELECT COUNT(*) FROM deals WHERE transactions.id = deals.transaction_id) AS deal_count'),
+                                    'custcategory_groups.name AS custcategory_group_name'
                                 );
 
         $transactions = $this->searchDBFilter($transactions);

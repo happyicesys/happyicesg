@@ -736,6 +736,7 @@ Job Assign
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     Export PDF
                                 </button>
+                                <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
 {{--
                                 <span class="pull-right">
 

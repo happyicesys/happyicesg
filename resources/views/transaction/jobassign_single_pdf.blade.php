@@ -74,11 +74,11 @@
                             <th colspan="4" class="text-center">
                                 {{$driverResult && $driverResult->truck ? $driverResult->truck->name : null}} ({{$driver['name']}})
                             </th>
-                            <th colspan="2" class="text-center">
-                                Count: {{count($driver['transactions'])}}
+                            <th colspan="3" class="text-center">
+                                点数 Location counts: {{count($driver['transactions'])}}
                             </th>
                             <th colspan="3" class="text-center">
-                                *冰淇淋补货都要收钱*
+                                冰淇淋补货都要收钱
                             </th>
                         </tr>
                         <tr style="background-color: lightgrey !important;">
@@ -88,32 +88,34 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                               INV #
                             </th>
-                            <th class="col-xs-2 text-center">
+                            <th class="col-xs-1 text-center" style="width: 6%;">
                               ID
                             </th>
-                            <th class="col-xs-1 text-center">
-                              Postcode
+                            <th class="col-xs-2 text-center" style="width: 8%;">
+                                ID Name
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 3%;">
+                                Postal
+                            </th>
+                            <th class="col-xs-1 text-center" style="width: 4%;">
                                 Contact
                             </th>
-                            <th class="col-xs-2 text-center">
-                              注释<br>
+                            <th class="col-xs-2 text-center" style="width: 23%;">
                               T.Remark
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-2 text-center" style="width: 22%;">
+                                Ops Note
+                            </th>
+                            <th class="col-xs-1 text-center" style="width: 4%;">
                                 Status
                             </th>
-                            <th class="col-xs-1 text-center">
-                                CustCat
-                            </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 8%;">
                                 收钱
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 8%;">
                                 欠钱
                             </th>
-                            <th class="col-xs-1 text-center">
+                            <th class="col-xs-1 text-center" style="width: 8%;">
                                 收钱<br>
                                 旧单
                             </th>
@@ -131,21 +133,25 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->id }}
                                 </td>
-                                <td class="col-xs-2 text-left">
-                                    {{ $transaction->cust_id }}<br>
+                                <td class="col-xs-1 text-center" style="width: 6%;">
+                                    {{ $transaction->cust_id }}
+                                </td>
+                                <td class="col-xs-2 text-left" style="width: 8%;">
                                     {{ $transaction->company }}
                                 </td>
-                                <td class="col-xs-1 text-center">
+                                <td class="col-xs-1 text-center" style="width: 3%;">
                                     {{ $transaction->del_postcode }}
                                 </td>
-                                <td class="col-xs-1 text-center">
+                                <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->contact }}
                                 </td>
-                                <td class="col-xs-2 text-center">
+                                <td class="col-xs-2 text-left" style="width: 23%;">
                                     {{ $transaction->transremark }}
                                 </td>
-
-                                <td class="col-xs-1 text-center">
+                                <td class="col-xs-2 text-left" style="width: 22%;">
+                                    {{ $transaction->operation_note }}
+                                </td>
+                                <td class="col-xs-1 text-center" style="width: 4%;">
                                     @if($transaction->status == 'Pending')
                                         <span style="color: red;">
                                             {{$transaction->status}}
@@ -164,13 +170,9 @@
                                         </span>
                                     @endif
                                 </td>
-
-                                <td class="col-xs-1 text-center">
-                                    {{ $transaction->custcategory }}
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td style="width: 8%;"></td>
+                                <td style="width: 8%;"></td>
+                                <td style="width: 8%;"></td>
                             </tr>
                             @endforeach
                         @endif
