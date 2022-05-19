@@ -1,4 +1,5 @@
 @inject('banks', 'App\Bank')
+@inject('countries', 'App\Country')
 @inject('payterm', 'App\Payterm')
 @inject('profiles', 'App\Profile')
 @inject('custcategories', 'App\Custcategory')
@@ -18,7 +19,7 @@
     }
 @endphp
 <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('cust_id', 'ID', ['class'=>'control-label']) !!}
             {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
@@ -26,20 +27,42 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
             {!! Form::label('company', 'ID Name', ['class'=>'control-label']) !!}
             {!! Form::label('art', '*', ['class'=>'control-label', 'style'=>'color:red;']) !!}
             {!! Form::text('company', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
+            {!! Form::text('com_remark', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group" style="padding-top:35px;">
+            {{-- {!! Form::checkbox('is_same_address', $person->is_same_address, null, ['disabled'=>$disabled]) !!} --}}
+            {!! Form::checkbox('is_same_address', 1, $person->is_same_address ? true : false, ['ng-model'=>'form.is_same_address', 'ng-checked'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
+            <label>Delivery Address Same as Billing Address</label>
+        </div>
+
         <div class="form-group">
-            {!! Form::label('com_remark', 'Company', ['class'=>'control-label']) !!}
-            {!! Form::text('com_remark', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
+            {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
+            {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.bill_postcode']) !!}
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+            {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.bill_address']) !!}
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('billing_country_id', 'Billing Country', ['class'=>'control-label']) !!}
+            {!! Form::select('billing_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'billing_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -47,34 +70,24 @@
             {!! Form::label('site_name', 'Delivery Location Name', ['class'=>'control-label']) !!}
             {!! Form::text('site_name', null, ['class'=>'form-control', 'disabled'=>$disabled]) !!}
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
-        <div class="form-group">
-            {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
-            {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled]) !!}
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
-            {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled]) !!}
-        </div>
-    </div>
-
-    <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="form-group">
             {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
-            {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled]) !!}
+            {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.del_postcode']) !!}
         </div>
 
         <div class="form-group">
             {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
-            {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled]) !!}
+            {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.del_address']) !!}
+        </div>
+
+        <div class="form-group">
+            {!! Form::label('delivery_country_id', 'Delivery Country', ['class'=>'control-label']) !!}
+            {!! Form::select('delivery_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'delivery_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
     </div>
 </div>
+
+<hr>
 
 <div class="row">
     <div class="col-md-4 col-sm-4 col-xs-12">

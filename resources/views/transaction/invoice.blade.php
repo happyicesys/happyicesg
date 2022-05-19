@@ -86,7 +86,7 @@
                                     <div style="border: solid thin; height:120px; padding-bottom: 15px;">
                                     {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
                                     <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
-                                    <span class="col-xs-offset-1">{{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
+                                    <span class="col-xs-offset-1">{{$transaction->deliveryCountry ? $transaction->deliveryCountry->name : $person->deliveryCountry->name}} {{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
                                     </div>
                                 </div>
                             @else
@@ -99,7 +99,7 @@
                                     @else --}}
                                         <span class="col-xs-12">{{$person->com_remark}}</span>
                                         <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
-                                        <span class="col-xs-offset-1">{{$transaction->bill_postcode ? $transaction->bill_postcode : $person->bill_postcode}}</span>
+                                        <span class="col-xs-offset-1">{{$transaction->billingCountry ? $transaction->billingCountry->name : $person->billingCountry->name}} {{$transaction->bill_postcode ? $transaction->bill_postcode : $person->bill_postcode}}</span>
                                     {{-- @endif --}}
                                     </div>
                                 </div>

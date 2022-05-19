@@ -77,7 +77,7 @@ class Transaction extends Model
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
         'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
         'driver_id', 'del_lat', 'del_lng', 'is_important', 'sequence', 'merchandiser', 'is_sync_inventory', 'bill_postcode', 'is_discard',
-        'is_service', 'cancel_reason_option', 'cancel_reason_remarks'
+        'is_service', 'cancel_reason_option', 'cancel_reason_remarks', 'billing_country_id', 'delivery_country_id', 'is_same_address',
     ];
 
     protected $dates =[
@@ -184,6 +184,21 @@ class Transaction extends Model
         }else {
             return null;
         }
+    }
+
+    public function getIsSameAddressAttribute($value)
+    {
+        return $value ? true : false;
+    }
+
+    public function billingCountry()
+    {
+        return $this->belongsTo(Country::class, 'billing_country_id');
+    }
+
+    public function deliveryCountry()
+    {
+        return $this->belongsTo(Country::class, 'delivery_country_id');
     }
 
     public function person()

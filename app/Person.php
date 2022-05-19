@@ -90,7 +90,7 @@ class Person extends Baum\Node
     'is_gst_inclusive', 'del_lat', 'del_lng', 'franchisee_id', 'gst_rate', 'is_dvm', 'serial_number',
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
     'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
-    'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate',
+    'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'is_same_address', 'billing_country_id', 'delivery_country_id',
     ];
 
     protected $dates = ['deleted_at'];
@@ -103,6 +103,16 @@ class Person extends Baum\Node
     public function bank()
     {
         return $this->belongsTo(Bank::class);
+    }
+
+    public function billingCountry()
+    {
+        return $this->belongsTo(Country::class, 'billing_country_id');
+    }
+
+    public function deliveryCountry()
+    {
+        return $this->belongsTo(Country::class, 'delivery_country_id');
     }
 
     public function roles()
@@ -317,6 +327,10 @@ class Person extends Baum\Node
         return $this->attribute['cust_id'].'-'.$this->attribute['name'];
     }
 
+    public function getIsSameAddressAttribute($value)
+    {
+        return $value ? true : false;
+    }
 
     // scopes
     public function scopeSearchName($query, $name)

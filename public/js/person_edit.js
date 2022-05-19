@@ -322,22 +322,6 @@ function personEditController($scope, $http) {
         $scope.getRetailChange = function (retailModel) {
             $scope.afterChange = (retailModel * person.cost_rate / 100).toFixed(2);
         }
-        /*
-                    $scope.noteSave = function(note){
-                        console.log(note);
-                        $http({
-                            method: 'POST',
-                            url: '/person/' + person.id + '/note',
-                            data: $.param(note: 'note'),
-                        }).success(function(){
-                            });
-
-                    }   */
-        /*            $scope.noteSave = function(note){
-                        $http.post({'/note', note})
-                                .success(function(){
-                                });
-                    }*/
 
     });
 
@@ -432,6 +416,19 @@ function personEditController($scope, $http) {
     $scope.changeRemarks = function (id, remarks) {
         $http.post('/api/franchisee/remarks/' + id, { 'remarks': remarks }).success(function (data) {
         });
+    }
+
+    $scope.onIsSameAddressChecked = function () {
+        if ($scope.form.is_same_address) {
+            $scope.form.del_postcode = $scope.form.bill_postcode;
+            $scope.form.del_address = $scope.form.bill_address;
+            $scope.form.delivery_country_id = $scope.form.billing_country_id;
+        } else {
+            $scope.form.del_postcode = '';
+            $scope.form.del_address = '';
+            $scope.form.delivery_country_id = 2;
+        }
+        $('.selectNormal').select2();
     }
 
     getVendPage(1);

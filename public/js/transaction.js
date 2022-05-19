@@ -144,6 +144,7 @@ function transactionController($scope, $http) {
         $('.selectassetform').select2({
             placeholder: 'Please Select'
         });
+        $('.selectNormal').select2();
 
         $(".qtyClass").keyup(multInputs);
         $(".quoteClass").keyup(multInputs);
@@ -336,6 +337,9 @@ function transactionController($scope, $http) {
                 bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
                 del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
                 bill_postcode: data.transaction.bill_postcode ? data.transaction.bill_postcode : data.transaction.person.bill_postcode,
+                is_same_address: data.transaction.is_same_address ? data.transaction.is_same_address : data.transaction.person.is_same_address,
+                billing_country_id: data.transaction.billing_country_id ? data.transaction.billing_country_id : data.transaction.person.billing_country_id,
+                delivery_country_id: data.transaction.delivery_country_id ? data.transaction.delivery_country_id : data.transaction.person.delivery_country_id,
                 attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,
                 contact: data.transaction.contact ? data.transaction.contact : data.transaction.person.contact,
                 order_date: data.transaction.order_date ? data.transaction.order_date : moment().format("YYYY-MM-DD"),
@@ -783,6 +787,19 @@ function transactionController($scope, $http) {
         $http.post('/api/transaction/' + $trans_id.val() + '/cancelConfirmation', { form_delete: 'form_delete', cancelForm: $scope.cancelForm }).success(function (data) {
             location.reload();
         });
+    }
+
+    $scope.onIsSameAddressChecked = function () {
+        if ($scope.form.is_same_address) {
+            $scope.form.del_postcode = $scope.form.bill_postcode;
+            $scope.form.del_address = $scope.form.bill_address;
+            $scope.form.delivery_country_id = $scope.form.billing_country_id;
+        } else {
+            $scope.form.del_postcode = '';
+            $scope.form.del_address = '';
+            $scope.form.delivery_country_id = 2;
+        }
+        $('.selectNormal').select2();
     }
 
     // $scope.checkServiceCompletion = function (event) {

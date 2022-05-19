@@ -1,3 +1,4 @@
+@inject('countries', 'App\Country')
 @inject('payterms', 'App\Payterm')
 @inject('people', 'App\Person')
 @inject('users', 'App\User')
@@ -26,6 +27,28 @@
         @endphp
 
         <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('bill_postcode', 'Billing Postcode', ['class'=>'control-label']) !!}
+                    {!! Form::text('bill_postcode', null, ['class'=>'form-control', 'id'=>'bill_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.bill_postcode']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('bill_address', null, ['class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.bill_address']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('billing_country_id', 'Billing Country', ['class'=>'control-label']) !!}
+                    {!! Form::select('billing_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'billing_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+                </div>
+                <div class="form-group" style="padding-top:5px;">
+                    {{-- {!! Form::checkbox('is_same_address', $person->is_same_address, null, ['disabled'=>$disabled]) !!} --}}
+                    {!! Form::checkbox('is_same_address', 1, $person->is_same_address ? true : false, ['ng-model'=>'form.is_same_address', 'ng-checked'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
+                    <label>Delivery Address Same as Billing Address</label>
+                </div>
+            </div>
+{{--
             <div class="col-md-6">
                 <div class="form-group">
                     {!! Form::label('bill_address', 'Billing Address', ['class'=>'control-label']) !!}
@@ -53,11 +76,26 @@
                     @endif
                     @endif
                 </div>
-            </div>
+            </div> --}}
 
             <div class="col-md-6">
                 <div class="form-group">
-                    {{-- haagen daz user disable --}}
+                    {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
+                    {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.del_postcode']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('del_address', 'Delivery Address', ['class'=>'control-label']) !!}
+                    {!! Form::textarea('del_address', null, ['id'=>'del_address', 'class'=>'form-control', 'rows'=>'2', 'disabled'=>$disabled, 'ng-model'=>'form.del_address']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('delivery_country_id', 'Delivery Country', ['class'=>'control-label']) !!}
+                    {!! Form::select('delivery_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'delivery_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+                </div>
+{{--
+                <div class="form-group">
+
                     @if(!$transaction->is_deliveryorder)
                         @if($transaction->status == 'Cancelled' or (Auth::user()->can('transaction_view') and $transaction->status === 'Delivered'))
                                 {!! Form::label('del_address', 'Delivery Add', ['class'=>'control-label']) !!}
@@ -92,10 +130,10 @@
                             'ng-model'=>'form.del_postcode']) !!}
                     @endif
                     @endif
-                </div>
+                </div> --}}
             </div>
         </div>
-
+        <hr>
 
         <div class="row">
         @if(!$transaction->is_deliveryorder)
