@@ -33,8 +33,8 @@
                 font-family: 'Times New Roman';
                 background-color: transparent;
             }
-            tr {
-                page-break-inside: avoid;
+            table, tr, td, th, tbody, thead, tfoot {
+                page-break-inside: avoid !important;
             }
         </style>
         <script>
@@ -68,10 +68,10 @@
                                     $driverResult = \App\User::where('name', $driver['name'])->first();
                                 }
                             @endphp
-                            <th colspan="2" class="text-center">
+                            <th colspan="3" class="text-center">
                                 {{$request['delivery_to']}}
                             </th>
-                            <th colspan="4" class="text-center">
+                            <th colspan="3" class="text-center">
                                 {{$driverResult && $driverResult->truck ? $driverResult->truck->name : null}} ({{$driver['name']}})
                             </th>
                             <th colspan="3" class="text-center">
