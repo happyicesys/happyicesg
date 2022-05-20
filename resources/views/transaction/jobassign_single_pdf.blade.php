@@ -125,7 +125,7 @@
                             <td class="text-center" colspan="18">No Records Found</td>
                         @else
                             @foreach($driver['transactions'] as $transaction)
-                            <tr style="page-break-inside: avoid !important; height: 70%; overflow: hidden;">
+                            <tr style="page-break-inside: avoid !important;">
                                 <td class="col-xs-1 text-center" style="width: 2%;">
                                     {{$transaction->sequence ? (float)$transaction->sequence : null}}
                                 </td>
@@ -135,7 +135,7 @@
                                 <td class="col-xs-1 text-center" style="width: 6%;">
                                     {{ $transaction->cust_id }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 8%;">
+                                <td class="col-xs-2 text-left" style="width: 8%;  height: 70%; overflow: hidden;">
                                     {{ $transaction->company }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">
