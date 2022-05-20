@@ -33,7 +33,7 @@
                 font-family: 'Times New Roman';
                 background-color: transparent;
             }
-            table, tr, td, th, tbody, thead, tfoot {
+            tr {
                 page-break-inside: avoid !important;
             }
         </style>
@@ -125,7 +125,7 @@
                             <td class="text-center" colspan="18">No Records Found</td>
                         @else
                             @foreach($driver['transactions'] as $transaction)
-                            <tr style="page-break-inside: avoid !important;">
+                            <tr style="page-break-inside: avoid !important; height: 70%; overflow: hidden;">
                                 <td class="col-xs-1 text-center" style="width: 2%;">
                                     {{$transaction->sequence ? (float)$transaction->sequence : null}}
                                 </td>
