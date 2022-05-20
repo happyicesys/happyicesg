@@ -83,7 +83,7 @@
                             @if($person->cust_id[0] == 'H')
                                 <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                     <div style="font-size:14px"><strong>Send To:</strong></div>
-                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                    <div style="border: solid thin; height:125px; padding-bottom: 15px;">
                                     {{-- <span class="col-xs-12"> {{$person->block}}, #{{$person->floor}} - {{$person->unit}}</span> --}}
                                     <span class="col-xs-12">{{$transaction->del_address ? $transaction->del_address : $person->del_address}}</span>
                                     <span class="col-xs-12">{{$transaction->deliveryCountry ? $transaction->deliveryCountry->name : $person->deliveryCountry->name}} {{$transaction->del_postcode ? $transaction->del_postcode : $person->del_postcode}}</span>
@@ -92,14 +92,14 @@
                             @else
                                 <div class="form-group" style="padding-top: 3px; margin-bottom: 0px;">
                                     <div style="font-size:14px"><strong>Bill To:</strong></div>
-                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                    <div style="border: solid thin; height:125px; padding-bottom: 15px;">
     {{--                                 @if($person->franchisee)
                                         <span class="col-xs-12"> {{$person->franchisee->company_name}}</span>
                                         <span class="col-xs-12">{{$person->franchisee->bill_address}}</span>
                                     @else --}}
                                         <span class="col-xs-12">{{$person->com_remark}}</span>
                                         <span class="col-xs-12">{{$transaction->bill_address ? $transaction->bill_address : $person->bill_address}}</span>
-                                        <span class="col-12">{{$transaction->billingCountry ? $transaction->billingCountry->name : $person->billingCountry->name}} {{$transaction->bill_postcode ? $transaction->bill_postcode : $person->bill_postcode}}</span>
+                                        <span class="col-xs-12">{{$transaction->billingCountry ? $transaction->billingCountry->name : $person->billingCountry->name}} {{$transaction->bill_postcode ? $transaction->bill_postcode : $person->bill_postcode}}</span>
                                     {{-- @endif --}}
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
                                 @else --}}
                                 <div class="form-group" style="padding: 3px 0px 0px 10px">
                                     <div style="font-size:14px"><strong>Send To:</strong></div>
-                                    <div style="border: solid thin; height:120px; padding-bottom: 15px;">
+                                    <div style="border: solid thin; height:125px; padding-bottom: 15px;">
 
                                         @if($person->site_name)
                                             <span class="col-xs-12">{{$person->site_name}}</span>
