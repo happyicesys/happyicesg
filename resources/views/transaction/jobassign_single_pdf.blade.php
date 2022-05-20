@@ -88,10 +88,10 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                               INV #
                             </th>
-                            <th class="col-xs-1 text-center" style="width: 6%;">
+                            <th class="col-xs-1 text-center" style="width: 7%;">
                               ID
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 8%;">
+                            <th class="col-xs-2 text-center" style="width: 11%;">
                                 ID Name
                             </th>
                             <th class="col-xs-1 text-center" style="width: 3%;">
@@ -100,22 +100,22 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                                 Contact
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 23%;">
+                            <th class="col-xs-2 text-center" style="width: 24%;">
                               T.Remark
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 22%;">
+                            <th class="col-xs-2 text-center" style="width: 23%;">
                                 Ops Note
                             </th>
                             <th class="col-xs-1 text-center" style="width: 4%;">
                                 Status
                             </th>
-                            <th class="col-xs-1 text-center" style="width: 8%;">
+                            <th class="col-xs-1 text-center" style="width: 6%;">
                                 收钱
                             </th>
-                            <th class="col-xs-1 text-center" style="width: 8%;">
+                            <th class="col-xs-1 text-center" style="width: 6%;">
                                 欠钱
                             </th>
-                            <th class="col-xs-1 text-center" style="width: 8%;">
+                            <th class="col-xs-1 text-center" style="width: 6%;">
                                 旧单
                             </th>
                         </tr>
@@ -132,10 +132,10 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->id }}
                                 </td>
-                                <td class="col-xs-1 text-center" style="width: 6%;">
+                                <td class="col-xs-1 text-center" style="width: 7%;">
                                     {{ $transaction->cust_id }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 8%;  height: 70%; overflow: hidden;">
+                                <td class="col-xs-2 text-left" style="width: 11%;  height: 70%; overflow: hidden;">
                                     {{ $transaction->company }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">
@@ -144,10 +144,10 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->contact }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 23%;">
+                                <td class="col-xs-2 text-left" style="width: 24%;">
                                     {{ $transaction->transremark }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 22%;">
+                                <td class="col-xs-2 text-left" style="width: 23%;">
                                     {{ $transaction->operation_note }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 4%;">
@@ -169,9 +169,9 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td style="width: 8%;"></td>
-                                <td style="width: 8%;"></td>
-                                <td style="width: 8%;"></td>
+                                <td style="width: 6%;"></td>
+                                <td style="width: 6%;"></td>
+                                <td style="width: 6%;"></td>
                             </tr>
                             @endforeach
                         @endif
