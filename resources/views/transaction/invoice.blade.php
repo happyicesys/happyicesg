@@ -328,7 +328,7 @@
 
             @if($transaction->is_deliveryorder)
             <div class="row page-break">
-                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <div style="width: 100%; height: 35px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Pick-up Detail
                 </span>
@@ -401,7 +401,7 @@
                     </div>
                 </div>
 
-                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <div style="width: 100%; height: 35px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Delivery Detail
                 </span>
@@ -477,7 +477,7 @@
                 </div>
 
             <div class="row" style="padding-top:20px;">
-                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <div style="width: 100%; height: 35px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Asset and Quantity
                 </span>
@@ -546,7 +546,7 @@
             <div class="avoid">
                 <div class="row">
                 @if($transaction->is_deliveryorder)
-                <div style="width: 100%; height: 30px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
+                <div style="width: 100%; height: 35px; border-bottom: 1px solid black; text-align: center; margin: 15px 0 20px 0;">
                 <span style="font-size: 20px; background-color: #F3F5F6; padding: 0 20px;">
                     Items
                 </span>
