@@ -116,7 +116,6 @@
                                 欠钱
                             </th>
                             <th class="col-xs-1 text-center" style="width: 8%;">
-                                收钱<br>
                                 旧单
                             </th>
                         </tr>
@@ -126,7 +125,7 @@
                             <td class="text-center" colspan="18">No Records Found</td>
                         @else
                             @foreach($driver['transactions'] as $transaction)
-                            <tr>
+                            <tr style="page-break-inside: avoid !important;">
                                 <td class="col-xs-1 text-center" style="width: 2%;">
                                     {{$transaction->sequence ? (float)$transaction->sequence : null}}
                                 </td>
