@@ -91,7 +91,7 @@
                             <th class="col-xs-1 text-center" style="width: 7%;">
                               ID
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 11%;">
+                            <th class="col-xs-2 text-center" style="width: 12%;">
                                 ID Name
                             </th>
                             <th class="col-xs-1 text-center" style="width: 3%;">
@@ -100,7 +100,7 @@
                             <th class="col-xs-1 text-center" style="width: 4%;">
                                 Contact
                             </th>
-                            <th class="col-xs-2 text-center" style="width: 24%;">
+                            <th class="col-xs-2 text-center" style="width: 23%;">
                               T.Remark
                             </th>
                             <th class="col-xs-2 text-center" style="width: 23%;">
@@ -135,7 +135,7 @@
                                 <td class="col-xs-1 text-center" style="width: 7%;">
                                     {{ $transaction->cust_id }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 11%;  height: 70%; overflow: hidden;">
+                                <td class="col-xs-2 text-left" style="width: 12%;  height: 70%; overflow: hidden;">
                                     {{ $transaction->company }}
                                 </td>
                                 <td class="col-xs-1 text-center" style="width: 3%;">
@@ -144,7 +144,7 @@
                                 <td class="col-xs-1 text-center" style="width: 4%;">
                                     {{ $transaction->contact }}
                                 </td>
-                                <td class="col-xs-2 text-left" style="width: 24%;">
+                                <td class="col-xs-2 text-left" style="width: 23%;">
                                     {{ $transaction->transremark }}
                                 </td>
                                 <td class="col-xs-2 text-left" style="width: 23%;">
