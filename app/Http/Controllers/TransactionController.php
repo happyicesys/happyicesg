@@ -574,8 +574,6 @@ class TransactionController extends Controller
             $delivery_date = $request->delivery_date;
         }
 
-        $request->merge(array('is_same_address' => true ? 1 : 0));
-
         if($request->input('save')){
             $request->merge(array('status' => 'Pending'));
         }else if($request->input('del_paid')){

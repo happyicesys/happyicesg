@@ -327,11 +327,6 @@ class Person extends Baum\Node
         return $this->attribute['cust_id'].'-'.$this->attribute['name'];
     }
 
-    public function getIsSameAddressAttribute($value)
-    {
-        return $value ? true : false;
-    }
-
     // scopes
     public function scopeSearchName($query, $name)
     {

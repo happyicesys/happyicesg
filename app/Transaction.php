@@ -186,11 +186,6 @@ class Transaction extends Model
         }
     }
 
-    public function getIsSameAddressAttribute($value)
-    {
-        return $value ? true : false;
-    }
-
     public function billingCountry()
     {
         return $this->belongsTo(Country::class, 'billing_country_id');

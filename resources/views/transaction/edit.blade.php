@@ -490,7 +490,7 @@
             @endif
     </div>
 
-    {{-- @if(!$transaction->is_service) --}}
+    @if(!$transaction->is_service)
     <div class="panel-footer">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -614,7 +614,7 @@
             </div>
         @endif
     </div>
-    {{-- @endif --}}
+    @endif
 
     <div id="cancelConfirmationModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">

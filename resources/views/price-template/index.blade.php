@@ -85,6 +85,17 @@ Price Template
                         ])
                     !!}
                 </div>
+                <div class="form-group col-md-4 col-sm-5 col-xs-12">
+                    {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
+                    <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB()" multiple>
+                        <option value="">All</option>
+                        <option value="Potential">Potential</option>
+                        <option value="New">New</option>
+                        <option value="Yes">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="No">Inactive</option>
+                    </select>
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4 col-xs-12">
@@ -131,6 +142,8 @@ Price Template
                         <tr dir-paginate="data in alldata | itemsPerPage:itemsPerPage" pagination-id="priceTemplates" total-items="totalCount" current-page="currentPage">
                             <td class="col-md-1 text-center">
                                 @{{ $index + indexFrom }}
+                                <br>
+                                [@{{data.people.length}}]
                             </td>
                             <td class="col-md-2 text-center">
                                 @{{ data.name }} <br>
@@ -222,7 +235,7 @@ Price Template
                                             @{{$index + 1}}
                                         </td>
                                         <td class="col-md-9">
-                                            <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="width:200px; height:200px;">
+                                            <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="max-width:300px;">
                                         </td>
                                         <td class="col-md-2 text-center">
                                             <div class="btn-group">

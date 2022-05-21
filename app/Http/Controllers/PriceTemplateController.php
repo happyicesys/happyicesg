@@ -33,14 +33,16 @@ class PriceTemplateController extends Controller
         $total_amount = 0;
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
-
+        // dd(request()->all());
         $query = PriceTemplate::with([
                                         'priceTemplateItems' => function($query) {
                                             $query->orderBy('sequence');
                                         },
                                         'attachments',
                                         'priceTemplateItems.item',
-                                        'people'
+                                        'people'  => function($query) {
+                                            $query->orderBy('cust_id');
+                                        }
                                     ]);
 
         if(request('name')) {
@@ -49,12 +51,17 @@ class PriceTemplateController extends Controller
 
         if(request('person_id')) {
             $people = request('person_id');
-            if (count($people) == 1) {
-                $people = [$people];
-            }
 
-            $query = $query->whereHas('people', function($query) use ($items) {
-                $query->whereIn('id', $items);
+            $query = $query->whereHas('people', function($query) use ($people) {
+                $query->whereIn('id', $people);
+            });
+        }
+
+        if(request('active')) {
+            $active = request('active');
+
+            $query = $query->whereHas('people', function($query) use ($active) {
+                $query->whereIn('active', $active);
             });
         }
 

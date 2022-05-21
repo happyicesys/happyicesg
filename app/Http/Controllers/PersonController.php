@@ -284,8 +284,6 @@ class PersonController extends Controller
             $request->merge(array('is_gst_inclusive' => 0 ));
         }
 
-        $request->merge(array('is_same_address' => $request->is_same_address == true ? 1 : 0));
-
         $person = Person::findOrFail($id);
 
         // detect if changing profile, will copy the original is gst inclusive

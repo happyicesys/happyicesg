@@ -16,6 +16,8 @@ function priceTemplateController($scope, $http) {
     $scope.indexTo = 0;
     $scope.search = {
         name: '',
+        person_id: [],
+        active: ['Yes'],
         priceTemplates: [],
         pageNum: 100,
         sortBy: true,
