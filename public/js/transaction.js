@@ -337,7 +337,6 @@ function transactionController($scope, $http) {
                 bill_address: data.transaction.bill_address ? data.transaction.bill_address : data.transaction.person.bill_address,
                 del_postcode: data.transaction.del_postcode ? data.transaction.del_postcode : data.transaction.person.del_postcode,
                 bill_postcode: data.transaction.bill_postcode ? data.transaction.bill_postcode : data.transaction.person.bill_postcode,
-                is_same_address: data.transaction.is_same_address ? data.transaction.is_same_address : data.transaction.person.is_same_address,
                 billing_country_id: data.transaction.billing_country_id ? data.transaction.billing_country_id : data.transaction.person.billing_country_id,
                 delivery_country_id: data.transaction.delivery_country_id ? data.transaction.delivery_country_id : data.transaction.person.delivery_country_id,
                 attn_name: data.transaction.name ? data.transaction.name : data.transaction.person.name,

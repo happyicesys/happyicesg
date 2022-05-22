@@ -58,7 +58,7 @@
             {!! Form::select('billing_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'billing_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
         </div>
         <div class="form-group" style="padding-top:20px;">
-            {!! Form::checkbox('is_same_address', 1, $person->is_same_address ? true : false, ['ng-model'=>'form.is_same_address', 'ng-checked'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
+            {!! Form::checkbox('is_same_address', 1, $person->is_same_address ? true : false, ['ng-model'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
             <label>Delivery Address Same as Billing Address</label>
         </div>
     </div>
@@ -268,14 +268,17 @@
     </div> --}}
 </div>
 <hr>
+
+@if($person->is_vending)
 <div class="row">
-    <div class="col-md-4 col-sm-4 col-xs-12">
+    <div class="col-md-4 col-sm-4 col-xs-12" ng-if="form.is_vending">
         <div class="form-group">
             {!! Form::checkbox('is_stock_balance_count_required', $person->is_stock_balance_count_required) !!}
             {!! Form::label('is_stock_balance_count_required', 'Is Stock Balance Field Compulsory?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
         </div>
     </div>
 </div>
+@endif
 
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">

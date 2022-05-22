@@ -77,8 +77,7 @@ class Transaction extends Model
         'is_required_analog', 'ftransaction_id', 'sales_count', 'sales_amount', 'is_vending_generate',
         'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
         'driver_id', 'del_lat', 'del_lng', 'is_important', 'sequence', 'merchandiser', 'is_sync_inventory', 'bill_postcode', 'is_discard',
-        'is_service', 'cancel_reason_option', 'cancel_reason_remarks', 'billing_country_id', 'delivery_country_id', 'is_same_address',
-        'stock_balance_count',
+        'is_service', 'cancel_reason_option', 'cancel_reason_remarks', 'billing_country_id', 'delivery_country_id', 'stock_balance_count',
     ];
 
     protected $dates =[
@@ -114,10 +113,10 @@ class Transaction extends Model
 
     public function setStockBalanceCountAttribute($value)
     {
-        if($value) {
-            $this->attributes['stock_balance_count'] = $value;
-        }else {
+        if($value == null) {
             $this->attributes['stock_balance_count'] = null;
+        }else {
+            $this->attributes['stock_balance_count'] = $value;
         }
     }
 

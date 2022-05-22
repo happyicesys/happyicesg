@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group" style="padding-top:5px;">
                     {{-- {!! Form::checkbox('is_same_address', $person->is_same_address, null, ['disabled'=>$disabled]) !!} --}}
-                    {!! Form::checkbox('is_same_address', 1, $person->is_same_address ? true : false, ['ng-model'=>'form.is_same_address', 'ng-checked'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
+                    {!! Form::checkbox('is_same_address', 1, null, ['ng-model'=>'form.is_same_address', 'ng-change'=>'onIsSameAddressChecked()', 'disabled' => $disabled]) !!}
                     <label>Delivery Address Same as Billing Address</label>
                 </div>
             </div>
