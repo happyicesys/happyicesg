@@ -237,7 +237,7 @@
     <div class="col-md-4 col-sm-4 col-xs-6">
         <div class="form-group">
             <input type="radio" name="type" value="is_vending" {{$person->is_vending ? 'checked' : null}} {{$disabled ? 'disabled' : null}}>
-            {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
+            {!! Form::label('is_vending', 'Fun Vending Machine', ['class'=>'control-label', 'style'=>'padding-left:5px;', 'ng-model'=>'form.is_vending']) !!}
         </div>
     </div>
 
@@ -266,6 +266,15 @@
             {!! Form::label('is_profit_percent', 'Profit Sharing by Percentage?', ['class'=>'control-label', 'style'=>'padding-left:5px;']) !!}
         </div>
     </div> --}}
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="form-group">
+            {!! Form::checkbox('is_stock_balance_count_required', $person->is_stock_balance_count_required) !!}
+            {!! Form::label('is_stock_balance_count_required', 'Is Stock Balance Field Compulsory?', ['class'=>'control-label', 'style'=>'padding-left:10px;']) !!}
+        </div>
+    </div>
 </div>
 
 <div class="row">

@@ -78,6 +78,7 @@ class Transaction extends Model
         'gst', 'is_gst_inclusive', 'gst_rate', 'is_deliveryorder', 'created_by', 'sign_url',
         'driver_id', 'del_lat', 'del_lng', 'is_important', 'sequence', 'merchandiser', 'is_sync_inventory', 'bill_postcode', 'is_discard',
         'is_service', 'cancel_reason_option', 'cancel_reason_remarks', 'billing_country_id', 'delivery_country_id', 'is_same_address',
+        'stock_balance_count',
     ];
 
     protected $dates =[
@@ -108,6 +109,15 @@ class Transaction extends Model
             $this->attributes['paid_at'] = Carbon::parse($date);
         }else {
             $this->attributes['paid_at'] = null;
+        }
+    }
+
+    public function setStockBalanceCountAttribute($value)
+    {
+        if($value) {
+            $this->attributes['stock_balance_count'] = $value;
+        }else {
+            $this->attributes['stock_balance_count'] = null;
         }
     }
 

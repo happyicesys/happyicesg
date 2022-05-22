@@ -815,6 +815,13 @@ class TransactionController extends Controller
             }
         }
 
+        if($transaction->person->is_vending and $transaction->person->is_stock_balance_count_required) {
+            if(request('stock_balance_count') == null) {
+                Flash::error('Stock Balance must be filled');
+                return redirect()->action('TransactionController@edit', $transaction->id);
+            }
+        }
+
         // analog required validate by roles
         if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('operation')) {
             $request->merge(array('is_required_analog' => $request->has('is_required_analog') ? 1 : 0));

@@ -446,13 +446,13 @@
               </span>
             </div>
             <div class="row">
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-3 col-sm-3 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('digital_clock', 'Digital Clocker 电子码表', ['class'=>'control-label']) !!}
                         {!! Form::text('digital_clock', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-3 col-sm-3 col-xs-12">
                     @cannot('transaction_view')
                     <div class="col-md-8 col-sm-8 col-xs-8">
                     @endcannot
@@ -469,12 +469,24 @@
                     @endcannot
                 </div>
 
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-3 col-sm-3 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('balance_coin', 'Balance Coin 零钱($)', ['class'=>'control-label']) !!}
                         {!! Form::text('balance_coin', null, ['class'=>'form-control']) !!}
                     </div>
                 </div>
+                <div class="col-md-3 col-sm-3 col-xs-12">
+                    <div class="form-group">
+                        {!! Form::label('stock_balance_count', 'Stock Balance 存货 (支/pc） ', ['class'=>'control-label']) !!}
+                        @if($transaction->person->is_stock_balance_count_required)
+                        <label for="*" style="color: red;">
+                            *
+                        </label>
+                        @endif
+                        {!! Form::text('stock_balance_count', null, ['class'=>'form-control']) !!}
+                    </div>
+                </div>
+
             </div>
             @if($transaction->person->is_dvm)
             <div class="row">

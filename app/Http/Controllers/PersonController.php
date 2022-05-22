@@ -284,6 +284,8 @@ class PersonController extends Controller
             $request->merge(array('is_gst_inclusive' => 0 ));
         }
 
+        $request->merge(array('is_stock_balance_count_required' => $request->has('is_stock_balance_count_required') == 'true' ? 1 : 0));
+
         $person = Person::findOrFail($id);
 
         // detect if changing profile, will copy the original is gst inclusive

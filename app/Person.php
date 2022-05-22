@@ -91,6 +91,7 @@ class Person extends Baum\Node
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
     'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
     'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'is_same_address', 'billing_country_id', 'delivery_country_id',
+    'is_stock_balance_count_required', 'is_analog_clocker_required'
     ];
 
     protected $dates = ['deleted_at'];
