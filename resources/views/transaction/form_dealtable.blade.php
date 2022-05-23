@@ -11,28 +11,28 @@
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                     @endunless
                 </div>
-                @if($transaction->status == 'Confirmed')
+                @if($transaction->status == 'Confirmed' and ($transaction->person->is_vending or $transaction->person->is_dvm or $transaction->person->is_combi))
                     <div class="pull-right">
                         <div class="hidden-xs btn-group">
-                            <button class="btn btn-success btn-md" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                            <button class="btn btn-success btn-md" ng-click="onStockButtonClicked($event, 1)" ng-disabled="isStockAction">
                                 Stock In 补货
                             </button>
-                            <button class="btn btn-warning btn-md" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                            <button class="btn btn-warning btn-md" ng-click="onStockButtonClicked($event, -1)" ng-disabled="isStockAction">
                                 Stock Rtn 退货
                             </button>
-                            <button class="btn btn-danger btn-md" ng-click="onStockButtonClicked($event, false, ['051b'])" ng-disabled="isStockAction">
+                            <button class="btn btn-danger btn-md" ng-click="onStockButtonClicked($event, 0, ['051b'])" ng-disabled="isStockAction">
                                 Melted 溶货
                             </button>
                         </div>
                     </div>
                     <div class="visible-xs">
-                        <button class="btn btn-success btn-block" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                        <button class="btn btn-success btn-block" ng-click="onStockButtonClicked($event, 1)" ng-disabled="isStockAction">
                             Stock In 补货
                         </button>
-                        <button class="btn btn-warning btn-block" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                        <button class="btn btn-warning btn-block" ng-click="onStockButtonClicked($event, -1)" ng-disabled="isStockAction">
                             Stock Rtn 退货
                         </button>
-                        <button class="btn btn-danger btn-block" ng-click="onStockButtonClicked($event, false, ['051b'])" ng-disabled="isStockAction">
+                        <button class="btn btn-danger btn-block" ng-click="onStockButtonClicked($event, 0, ['051b'])" ng-disabled="isStockAction">
                             Melted 溶货
                         </button>
                     </div>

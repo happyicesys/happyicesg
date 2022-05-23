@@ -802,9 +802,9 @@ function transactionController($scope, $http) {
         $('.selectNormal').select2();
     }
 
-    $scope.onStockButtonClicked = function (event, isSyncInventory = true, extraDealProductId = []) {
+    $scope.onStockButtonClicked = function (event, inventoryMovementType, extraDealProductId = []) {
         event.preventDefault();
-        $http.post('/api/transaction/' + $trans_id.val() + '/sync-stock-action-deals', { isSyncInventory: isSyncInventory, extraDealProductId: extraDealProductId }).success(function (data) {
+        $http.post('/api/transaction/' + $trans_id.val() + '/sync-stock-action-deals', { inventoryMovementType: inventoryMovementType, extraDealProductId: extraDealProductId }).success(function (data) {
             loadDealTable();
         });
     }

@@ -2577,43 +2577,107 @@ class TransactionController extends Controller
 
     public function syncStockActionDeals(Request $request, $transactionId)
     {
-        $isSyncInventory = $request->isSyncInventory;
+        $inventoryMovementType = $request->inventoryMovementType;
         $extraDealProductId = $request->extraDealProductId;
 
         $transaction = Transaction::findOrFail($transactionId);
         $inventoryDeals = $transaction->deals()->whereHas('item', function($query) {
                             $query->where('is_inventory', true);
                         });
-        $inventoryDealsAmount = $inventoryDeals->sum('amount');
 
-        $deal = Deal::create([
-            'item_id' => 61,
-            'transaction_id' => $transactionId,
-            'qty' => 1,
-            'dividend' => 1,
-            'divisor' => 1,
-            'amount' => -$inventoryDealsAmount,
-            'unit_price' => -$inventoryDealsAmount,
-            'qty_status' => 1,
-            'is_stock_action' => true,
-        ]);
+        switch($inventoryMovementType) {
+            case 1:
+                if($deals = $inventoryDeals->get()) {
+                    foreach($deals as $deal) {
+                        // dd($deal->toArray());
+                        $deal->qty = abs($deal->qty);
+                        $deal->unit_price = $deal->unit_price ? abs($deal->unit_price) : abs($deal->amount/ $deal->dividend * $deal->divisor);
+                        $deal->amount = abs($deal->amount);
+                        $deal->save();
+                    }
+                    $inventoryDealsAmount = $inventoryDeals->sum('amount');
+                    Deal::create([
+                        'item_id' => 61,
+                        'transaction_id' => $transactionId,
+                        'qty' => 1,
+                        'dividend' => 1,
+                        'divisor' => 1,
+                        'amount' => -$inventoryDealsAmount,
+                        'unit_price' => -$inventoryDealsAmount,
+                        'qty_status' => 1,
+                        'is_stock_action' => true,
+                    ]);
+                }
+                break;
+            case -1:
+                if($deals = $inventoryDeals->get()) {
+                    foreach($deals as $deal) {
+                        $deal->qty = -abs($deal->qty);
+                        $deal->unit_price = $deal->unit_price ? -abs($deal->unit_price) : -abs($deal->amount/ $deal->dividend * $deal->divisor);
+                        $deal->amount = -abs($deal->amount);
+                        $deal->save();
+                    }
+                    $inventoryDealsAmount = $inventoryDeals->sum('amount');
+                    Deal::create([
+                        'item_id' => 61,
+                        'transaction_id' => $transactionId,
+                        'qty' => 1,
+                        'dividend' => 1,
+                        'divisor' => 1,
+                        'amount' => -$inventoryDealsAmount,
+                        'unit_price' => -$inventoryDealsAmount,
+                        'qty_status' => 1,
+                        'is_stock_action' => true,
+                    ]);
+                }
+                break;
+            case 0:
+                if($deals = $inventoryDeals->get()) {
+                    foreach($deals as $deal) {
+                        $deal->qty = -abs($deal->qty);
+                        $deal->unit_price = $deal->unit_price ? -abs($deal->unit_price) : -abs($deal->amount/ $deal->dividend * $deal->divisor);
+                        $deal->amount = -abs($deal->amount);
+                        $deal->qty_status = 99;
+                        $deal->save();
+                    }
+                    $inventoryDealsAmount = $inventoryDeals->sum('amount');
+                    $balancedDeal = Deal::create([
+                        'item_id' => 61,
+                        'transaction_id' => $transactionId,
+                        'qty' => 1,
+                        'dividend' => 1,
+                        'divisor' => 1,
+                        'amount' => -$inventoryDealsAmount,
+                        'unit_price' => -$inventoryDealsAmount,
+                        'qty_status' => 1,
+                        'is_stock_action' => true,
+                    ]);
 
-        if($extraDealProductId) {
-            foreach($extraDealProductId as $productId) {
-                $item = Item::where('product_id', $productId)->first();
+                    foreach($extraDealProductId as $productId) {
+                        $item = Item::where('product_id', $productId)->first();
 
-                Deal::create([
-                    'item_id' => $item->id,
-                    'transaction_id' => $transactionId,
-                    'qty' => 1,
-                    'dividend' => 1,
-                    'divisor' => 1,
-                    'amount' => -$deal->amount,
-                    'unit_price' => -$deal->unit_price,
-                    'qty_status' => 1,
-                    'is_stock_action' => true,
-                ]);
-            }
+                        Deal::create([
+                            'item_id' => $item->id,
+                            'transaction_id' => $transactionId,
+                            'qty' => 1,
+                            'dividend' => 1,
+                            'divisor' => 1,
+                            'amount' => -$balancedDeal->amount,
+                            'unit_price' => -$balancedDeal->unit_price,
+                            'qty_status' => 1,
+                            'is_stock_action' => true,
+                        ]);
+                    }
+
+                    if($inventoryDealsCollections = $inventoryDeals->get()) {
+                        foreach($inventoryDealsCollections as $inventoryDealsCollection) {
+                            $inventoryDealsCollection->unit_price = 0;
+                            $inventoryDealsCollection->amount = 0;
+                            $inventoryDealsCollection->save();
+                        }
+                    }
+                }
+                break;
         }
 
         $this->transactionDealSyncOrder($transactionId);
