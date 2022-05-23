@@ -991,6 +991,9 @@ class PersonController extends Controller
                             case 'remark':
                                 $person->remark = $value;
                                 break;
+                            case 'operation_note':
+                                $person->operation_note = $value;
+                                break;
                         }
                         $person->save();
                     }

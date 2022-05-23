@@ -366,7 +366,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
-                            {!! Form::label('remark', 'Batch Change Remarks', ['class'=>'control-label search-title']) !!}
+                            {!! Form::label('remark', 'Batch Change Customer Remarks', ['class'=>'control-label search-title']) !!}
                             <textarea name="remark" class="form-control" rows="6" ng-model="assignForm.remark"></textarea>
                         </div>
                     </div>
@@ -375,6 +375,22 @@
                         <label class="control-label"></label>
                         <div class="btn-group-control">
                             <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'remark')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Update Remarks</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            {!! Form::label('operation_note', 'Batch Change Ops Note', ['class'=>'control-label search-title']) !!}
+                            <textarea name="operation_note" class="form-control" rows="6" ng-model="assignForm.operation_note"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                        <label class="control-label"></label>
+                        <div class="btn-group-control">
+                            <button type="submit" class="btn btn-sm btn-warning" ng-click="onBatchAssignClicked($event, 'operation_note')" style="margin-top: 9px;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Update Ops Note</button>
                         </div>
                         </div>
                     </div>
