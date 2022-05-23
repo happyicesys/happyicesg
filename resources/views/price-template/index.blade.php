@@ -127,10 +127,15 @@ Price Template
                             #
                         </th>
                         <th class="col-md-2 text-center">
-                            <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                            <a href="" ng-click="sortTable('name')">
+                            Name
+                            <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
+                            <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
+{{--
+                            <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                             Name
                             <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span> --}}
                             </a>
                         </th>
                         <th class="col-md-6 text-center">
