@@ -312,6 +312,7 @@ function transactionController($scope, $http) {
             $scope.subtotalModel = data.subtotal;
             $scope.taxModel = data.tax;
             $scope.totalqtyModel = data.total_qty.toFixed(4);
+            $scope.isStockAction = data.isStockAction;
 
             // console.log($scope.totalModel);
             // console.log($scope.subtotalModel);
@@ -801,15 +802,12 @@ function transactionController($scope, $http) {
         $('.selectNormal').select2();
     }
 
-    // $scope.checkServiceCompletion = function (event) {
-    //     event.preventDefault();
-    //     $http.get('/api/transaction/' + $trans_id.val() + '/service/completion').success(function (data) {
-    //         if (!data) {
-    //             event.stopPropagation();
-    //             $scope.showServiceCompletionError = true;
-    //         }
-    //     });
-    // }
+    $scope.onStockButtonClicked = function (event, isSyncInventory = true, extraDealProductId = []) {
+        event.preventDefault();
+        $http.post('/api/transaction/' + $trans_id.val() + '/sync-stock-action-deals', { isSyncInventory: isSyncInventory, extraDealProductId: extraDealProductId }).success(function (data) {
+            loadDealTable();
+        });
+    }
 }
 
 

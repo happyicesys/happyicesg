@@ -42,12 +42,12 @@ class Deal extends Model
     );
 
     protected $dontKeepRevisionOf = array(
-        'qty_status', 'dividend', 'divisor', 'qty_before', 'qty_after'
+        'qty_status', 'dividend', 'divisor', 'qty_before', 'qty_after', 'is_stock_action'
     );
 
     protected $fillable = [
         'item_id', 'transaction_id', 'qty', 'amount', 'unit_price', 'qty_status',
-        'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after'
+        'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after', 'is_stock_action',
     ];
 
     // relationships

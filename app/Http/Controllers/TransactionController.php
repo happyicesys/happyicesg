@@ -478,7 +478,7 @@ class TransactionController extends Controller
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                     ->select(
-                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id',
+                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id', 'deals.is_stock_action',
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
                                 'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
                                 'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver',
@@ -508,9 +508,13 @@ class TransactionController extends Controller
         $tax = 0;
         $total = $transaction->total;
         $total_qty = 0;
-
+        $isStockAction = false;
         foreach($deals as $deal) {
             $total_qty += $deal->qty;
+
+            if($deal->is_stock_action) {
+                $isStockAction = true;
+            }
         }
 
         if($transaction->gst) {
@@ -544,7 +548,8 @@ class TransactionController extends Controller
             'tax' => $tax,
             'total' => $total,
             'total_qty' => $total_qty,
-            'delivery_fee' => $delivery_fee
+            'delivery_fee' => $delivery_fee,
+            'isStockAction' => $isStockAction,
         ];
 
     }
@@ -1205,6 +1210,7 @@ class TransactionController extends Controller
             $replicated_deal->unit_cost = $deal->unit_cost;
             $replicated_deal->qty_before = $deal->qty_before;
             $replicated_deal->qty_after = $deal->qty_after;
+            $replicated_deal->is_stock_action = $deal->is_stock_action;
             $replicated_deal->save();
         }
         return Redirect::action('TransactionController@edit', $replicated_transaction->id);
@@ -2569,6 +2575,51 @@ class TransactionController extends Controller
         }
     }
 
+    public function syncStockActionDeals(Request $request, $transactionId)
+    {
+        $isSyncInventory = $request->isSyncInventory;
+        $extraDealProductId = $request->extraDealProductId;
+
+        $transaction = Transaction::findOrFail($transactionId);
+        $inventoryDeals = $transaction->deals()->whereHas('item', function($query) {
+                            $query->where('is_inventory', true);
+                        });
+        $inventoryDealsAmount = $inventoryDeals->sum('amount');
+
+        $deal = Deal::create([
+            'item_id' => 61,
+            'transaction_id' => $transactionId,
+            'qty' => 1,
+            'dividend' => 1,
+            'divisor' => 1,
+            'amount' => -$inventoryDealsAmount,
+            'unit_price' => -$inventoryDealsAmount,
+            'qty_status' => 1,
+            'is_stock_action' => true,
+        ]);
+
+        if($extraDealProductId) {
+            foreach($extraDealProductId as $productId) {
+                $item = Item::where('product_id', $productId)->first();
+
+                Deal::create([
+                    'item_id' => $item->id,
+                    'transaction_id' => $transactionId,
+                    'qty' => 1,
+                    'dividend' => 1,
+                    'divisor' => 1,
+                    'amount' => -$deal->amount,
+                    'unit_price' => -$deal->unit_price,
+                    'qty_status' => 1,
+                    'is_stock_action' => true,
+                ]);
+            }
+        }
+
+        $this->transactionDealSyncOrder($transactionId);
+        $this->syncTransactionTotalAmountQty($transactionId);
+    }
+
     private function dealMakeOrder($transaction_id, $qty_status)
     {
         $transaction = Transaction::findOrFail($transaction_id);
@@ -2900,6 +2951,14 @@ class TransactionController extends Controller
         $this->syncItems($transaction, $request);
     }
 
+    private function syncTransactionTotalAmountQty($transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+        $transaction->total = $transaction->deals()->sum('amount');
+        $transaction->total_qty = $transaction->deals()->sum('qty');
+        $transaction->save();
+    }
+
     private function syncItems($transaction, $request)
     {
         if ( ! $request->has('item_list'))
@@ -2935,7 +2994,8 @@ class TransactionController extends Controller
             $errors = [];
             foreach($dealArr as $dealObj) {
 
-                if($transaction->is_discard) {
+                // discarded and melted ice cream
+                if($transaction->is_discard or $transaction->deals()->where('item_id', 76)->count() > 0) {
                     $status = 99;
                 }
 

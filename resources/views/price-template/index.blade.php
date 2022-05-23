@@ -164,8 +164,10 @@ Price Template
                             <td class="col-md-9 text-left">
                                 <ul ng-repeat="person in data.people">
                                     <li>
-                                        @{{person.cust_id}} - @{{person.company}} &nbsp;
-
+                                        <a href="/person/@{{ person.id }}/edit">
+                                            @{{person.cust_id}} - @{{person.company}}
+                                        </a>
+                                        &nbsp;
                                         <button class="btn btn-warning btn-xs" ng-click="onPriceTemplatePersonUnbind(person.id)">
                                             Unbind
                                         </button>

@@ -4,13 +4,39 @@
     <div class="panel panel-success row">
         <div class="panel-heading">
             <div class="panel-title">
-                <div class="pull-left display_panel_title">
+                <div class="pull-left display_panel_title" style="margin-bottom: 15px;">
                     @unless($transaction->status == 'Cancelled' or $transaction->status == 'Deleted')
                     <h3 class="panel-title"><strong>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</strong></h3>
                     @else
                     <h3 class="panel-title"><strong><del>Selected : {{$person->cust_id}} - {{$person->company}} ({{$person->name}})</del></strong></h3>
                     @endunless
                 </div>
+                @if($transaction->status == 'Confirmed')
+                    <div class="pull-right">
+                        <div class="hidden-xs btn-group">
+                            <button class="btn btn-success btn-md" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                                Stock In 补货
+                            </button>
+                            <button class="btn btn-warning btn-md" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                                Stock Rtn 退货
+                            </button>
+                            <button class="btn btn-danger btn-md" ng-click="onStockButtonClicked($event, false, ['051b'])" ng-disabled="isStockAction">
+                                Melted 溶货
+                            </button>
+                        </div>
+                    </div>
+                    <div class="visible-xs">
+                        <button class="btn btn-success btn-block" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                            Stock In 补货
+                        </button>
+                        <button class="btn btn-warning btn-block" ng-click="onStockButtonClicked($event, true)" ng-disabled="isStockAction">
+                            Stock Rtn 退货
+                        </button>
+                        <button class="btn btn-danger btn-block" ng-click="onStockButtonClicked($event, false, ['051b'])" ng-disabled="isStockAction">
+                            Melted 溶货
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -120,9 +146,8 @@
                                         $valid = false;
                                     }
                                 @endphp
-
                                 @if($valid)
-                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.deal_id)">Delete</button>
+                                    <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.deal_id)" ng-disabled="isStockAction && !deal.is_stock_action && deal.is_inventory">Delete</button>
                                 @else
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, deal.deal_id)" disabled>Delete</button>
                                 @endif
