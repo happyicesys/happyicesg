@@ -27,20 +27,26 @@ class PriceTemplateController extends Controller
     }
 
     // get index api
-    public function getPriceTemplatesApi()
+    public function getPriceTemplatesApi(Request $request)
     {
         // showing total amount init
         $total_amount = 0;
         // initiate the page num when null given
         $pageNum = request('pageNum') ? request('pageNum') : 100;
-        // dd(request()->all());
+
         $query = PriceTemplate::with([
                                         'priceTemplateItems' => function($query) {
                                             $query->orderBy('sequence');
                                         },
                                         'attachments',
                                         'priceTemplateItems.item',
-                                        'people'  => function($query) {
+                                        'people'  => function($query) use ($request){
+                                            if($request->person_id) {
+                                                $query->whereIn('id', $request->person_id);
+                                            }
+                                            if($request->active) {
+                                                $query->whereIn('active', $request->active);
+                                            }
                                             $query->orderBy('cust_id');
                                         }
                                     ]);
