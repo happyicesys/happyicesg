@@ -2611,9 +2611,11 @@ class TransactionController extends Controller
                 break;
             case -1:
                 if($deals = $inventoryDeals->get()) {
+                    // dd('here');
                     foreach($deals as $deal) {
                         $deal->qty = -abs($deal->qty);
-                        $deal->unit_price = $deal->unit_price ? -abs($deal->unit_price) : -abs($deal->amount/ $deal->dividend * $deal->divisor);
+                        $deal->dividend = -abs($deal->dividend);
+                        $deal->unit_price = $deal->unit_price ? abs($deal->unit_price) : abs($deal->amount/ $deal->dividend * $deal->divisor);
                         $deal->amount = -abs($deal->amount);
                         $deal->save();
                     }
@@ -2671,6 +2673,7 @@ class TransactionController extends Controller
 
                     if($inventoryDealsCollections = $inventoryDeals->get()) {
                         foreach($inventoryDealsCollections as $inventoryDealsCollection) {
+                            $inventoryDealsCollection->qty = -abs($inventoryDealsCollection->qty);
                             $inventoryDealsCollection->unit_price = 0;
                             $inventoryDealsCollection->amount = 0;
                             $inventoryDealsCollection->save();
