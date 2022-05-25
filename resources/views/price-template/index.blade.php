@@ -131,11 +131,13 @@ Price Template
                             Name
                             <span ng-if="search.sortName == 'name' && !search.sortBy" class="fa fa-caret-down"></span>
                             <span ng-if="search.sortName == 'name' && search.sortBy" class="fa fa-caret-up"></span>
-{{--
-                            <a href="" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                            Name
-                            <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                            <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span> --}}
+                            </a>
+                        </th>
+                        <th class="col-md-3 text-center">
+                            <a href="" ng-click="sortTable('remarks')">
+                                Desc
+                                <span ng-if="search.sortName == 'remarks' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'remarks' && search.sortBy" class="fa fa-caret-up"></span>
                             </a>
                         </th>
                         <th class="col-md-6 text-center">
@@ -161,7 +163,10 @@ Price Template
                                     </button>
                                 </div>
                             </td>
-                            <td class="col-md-9 text-left">
+                            <td class="col-md-3 text-left">
+                                @{{ data.remarks }}
+                            </td>
+                            <td class="col-md-6 text-left">
                                 <ul ng-repeat="person in data.people">
                                     <li>
                                         <a href="/person/@{{ person.id }}/edit">

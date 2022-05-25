@@ -143,7 +143,10 @@
                                 Delete
                             </button>
                         </td>
-                        <td class="col-md-9 text-left">
+                        <td class="col-md-4 text-left">
+                            @{{ data.remarks }}
+                        </td>
+                        <td class="col-md-5 text-left">
                             <ul ng-repeat="person in data.people">
                                 <li>
                                     @{{person.cust_id}} - @{{person.name}} &nbsp;
