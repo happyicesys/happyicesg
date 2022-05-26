@@ -27,6 +27,7 @@ use App\Vending;
 use App\Personmaintenance;
 use App\OutletVisit;
 use App\HasMonthOptions;
+use App\ServiceItem;
 use Auth;
 use DB;
 use App\HasProfileAccess;
@@ -982,8 +983,11 @@ class PersonController extends Controller
                                 $data['driver'] = $assignForm['driver'];
                                 $data['transremark'] = $assignForm['transremark'];
                                 $data['is_service'] = $assignForm['is_service'];
-                                if($data['is_service']) {
-                                    $data['status'] = $assignForm['Confirmed'];
+                                if($data['is_service'] == 'true') {
+                                    $data['status'] = 'Confirmed';
+                                    if($assignForm['serviceNotices']) {
+                                        $data['serviceNotices'] = $assignForm['serviceNotices'];
+                                    }
                                 }
                                 $transaction = $this->generateSingleInvoiceByPersonId($person->id, $data);
                                 array_push($transactions, $transaction->id);
@@ -1019,6 +1023,7 @@ class PersonController extends Controller
         $driver = $data['driver'];
         $transremark = $data['transremark'];
         $isService = $data['is_service'];
+        $serviceNotices = $data['serviceNotices'];
         $status = $data['status'];
         $person = Person::findOrFail($person_id);
 
@@ -1038,6 +1043,20 @@ class PersonController extends Controller
             'order_date' => Carbon::today(),
             'is_service' => $isService == 'true' ? 1 : 0,
         ]);
+
+        if($serviceNotices and $isService == 'true') {
+            $serviceNoticesArr = explode("\n", $serviceNotices);
+            if($serviceNoticesArr) {
+                foreach($serviceNoticesArr as $serviceNoticesItem) {
+                    ServiceItem::create([
+                        'status' => 1,
+                        'desc' => $serviceNoticesItem,
+                        'transaction_id' => $transaction->id,
+                        'created_by' => auth()->user()->id,
+                    ]);
+                }
+            }
+        }
 
         $prevOpsDate = Operationdate::where('person_id', $person->id)->whereDate('delivery_date', '=', $date)->first();
 

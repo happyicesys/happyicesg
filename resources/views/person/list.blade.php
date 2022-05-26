@@ -540,6 +540,12 @@
                                 </label>
                                 <textarea class="form-control" rows="3" ng-model="assignForm.transremark"></textarea>
                             </div>
+                            <div class="form-group" ng-if="assignForm.is_service == 'true'">
+                                <label for="control-label search-title">
+                                    Batch Create Service Notice (Every line as an item)
+                                </label>
+                                <textarea class="form-control" rows="5" ng-model="assignForm.serviceNotices"></textarea>
+                            </div>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
