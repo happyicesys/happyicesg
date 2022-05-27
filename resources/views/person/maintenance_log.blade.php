@@ -8,6 +8,7 @@
     </div>
 
     <div class="panel-body">
+        <div class="table-responsive">
         <table class="table table-list-search table-hover table-bordered">
             <tr style="background-color: #DDFDF8">
                 <th class="col-md-1 text-center">
@@ -21,10 +22,10 @@
                 </th>
                 <th class="col-md-3 text-center">
                     Repair Details
-                </th> 
+                </th>
                 <th class="col-md-3 text-center">
                     Refund?
-                </th>                                
+                </th>
                 <th class="col-md-2 text-center">
                     Action
                 </th>
@@ -58,6 +59,7 @@
 
             </tbody>
         </table>
+        </div>
         {!! $addfreezers->render() !!}
     </div>
 
