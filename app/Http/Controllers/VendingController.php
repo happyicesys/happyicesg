@@ -563,7 +563,7 @@ class VendingController extends Controller
                                             END)
                                         ELSE (
                                             CASE WHEN fvm_start.delivery_date
-                                            THEN analog_start.delivery_date
+                                            THEN fvm_start.delivery_date
                                             ELSE analog_first.delivery_date
                                             END)
                                         END
