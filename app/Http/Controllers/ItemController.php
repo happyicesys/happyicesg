@@ -429,6 +429,13 @@ class ItemController extends Controller
         return Redirect::action('ItemController@edit', $item->id);
     }
 
+    public function getItemUomApi($itemId)
+    {
+        $item = Item::findOrFail($itemId);
+
+        return $item->itemUoms;
+    }
+
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
     private function exportUnitcostExcel($profiles, $items)
     {

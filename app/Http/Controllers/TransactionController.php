@@ -1626,7 +1626,7 @@ class TransactionController extends Controller
     }
 
     // api for changing is service($id)
-    public function isServiceChanged($id)
+    public function isServiceChanged($id, $type = 2)
     {
         if(!auth()->user()->hasRole('driver')) {
             $transaction = Transaction::findOrFail($id);
@@ -1634,7 +1634,11 @@ class TransactionController extends Controller
             $transaction->is_service = !$transaction->is_service;
             $transaction->save();
 
-            return $transaction;
+            if($type == 1) {
+                return Redirect::action('TransactionController@edit', $transaction->id);
+            }else {
+                return $transaction;
+            }
         }
     }
 

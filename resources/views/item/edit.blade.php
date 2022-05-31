@@ -43,6 +43,63 @@
     {!! Form::open(['id'=>'active_form', 'method'=>'POST', 'action'=>['ItemController@setActiveState', $item->id], 'onsubmit'=>'return confirm("Are you sure you want to activate/deactivate the item?")']) !!}
     {!! Form::close() !!}
 
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h3 class="panel-title">
+                    <strong>
+                        UOM: {{$item->product_id}} - {{$item->name}}
+                    </strong>
+                </h3>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-list-search table-hover table-bordered">
+                    <tr style="background-color: #DDFDF8">
+                        <th class="col-md-1 text-center">
+                            #
+                        </th>
+                        <th class="col-md-3 text-center">
+                            UOM
+                        </th>
+                        <th class="col-md-3 text-center">
+                            Value
+                        </th>
+                        <th class="col-md-3 text-center">
+                            Label
+                        </th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                    <tbody>
+                        <tr ng-repeat="itemUom in itemUoms">
+                            <td class="col-md-1 text-center">
+                                @{{ $index + 1 }}
+                            </td>
+                            <td class="col-md-3 text-center">
+                                @{{ itemUom.uom.name }}
+                            </td>
+                            <td class="col-md-3 text-right">
+                                @{{ itemUom.value }}
+                            </td>
+                            <td class="col-md-3 text-center">
+                                <span ng-if="itemUom.is_base_unit" class="badge badge-primary" style="background-color: #296192">
+                                    Primary
+                                </span>
+                                <span ng-if="itemUom.is_transacted_unit" class="badge badge-success" style="background-color: #5ab55a;">
+                                    Transacted
+                                </span>
+                            </td>
+                            <td class="col-md-2 text-center">
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     {{-- divider --}}
     <div class="panel panel-primary">
         <div class="panel-heading">

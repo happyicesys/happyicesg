@@ -142,7 +142,7 @@
                         {!! Form::submit('Log History', ['class'=> 'btn btn-warning', 'form'=>'log']) !!}
                         @if(!$transaction->deals()->exists() and !$transaction->is_service and !auth()->user()->hasRole('driver'))
                             @if($state == 1 or $state == 2 or $state == 5)
-                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_cust']) !!}
+                                {!! Form::submit('Convert to Service', ['name'=>'is_service', 'class'=> 'btn btn-default', 'form'=>'form_service']) !!}
                             @endif
                         @endif
                         {{-- @endif --}}
@@ -150,6 +150,7 @@
                 </div>
             </div>
         </div>
+
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     {!! Form::model($transaction,['id'=>'form_cust', 'method'=>'PATCH','action'=>['TransactionController@update', $transaction->id], 'autocomplete'=>'off']) !!}
@@ -189,6 +190,8 @@
                     {!! Form::open([ 'id'=>'form_delete', 'method'=>'DELETE', 'action'=>['TransactionController@destroy', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to cancel invoice?")']) !!}
                     {!! Form::close() !!}
                     {!! Form::open([ 'id'=>'form_reverse', 'method'=>'POST', 'action'=>['TransactionController@reverse', $transaction->id], 'onsubmit'=>'return confirm("Are you sure you want to reverse the cancellation?")']) !!}
+                    {!! Form::close() !!}
+                    {!! Form::open(['id'=>'form_service', 'method'=>'POST','action'=>['TransactionController@isServiceChanged', $transaction->id, 1]]) !!}
                     {!! Form::close() !!}
                 </div>
             </div>

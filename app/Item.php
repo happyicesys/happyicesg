@@ -46,6 +46,11 @@ class Item extends Model
         return $this->hasMany('App\InvRecord');
     }
 
+    public function itemUoms()
+    {
+        return $this->hasMany(ItemUom::class)->with(['item', 'uom']);
+    }
+
     public function onlineprice()
     {
         return $this->hasOne('App\OnlinePrice');
