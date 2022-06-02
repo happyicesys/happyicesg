@@ -109,7 +109,8 @@ class CustcategoryController extends Controller
     public function edit($id)
     {
     	$custcat = Custcategory::findOrFail($id);
-    	return view('user.custcat.edit', compact('custcat'));
+        $attachments = $custcat->attachments;
+    	return view('user.custcat.edit', compact('attachments', 'custcat'));
     }
 
     // update cust category(FormRequest $request, int $custcategory_id)
