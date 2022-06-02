@@ -642,7 +642,7 @@ Route::get('/api/custcat/{id}', 'CustcategoryController@getCustcategoryApi');
 Route::post('/custcat/data', 'CustcategoryController@getData');
 Route::delete('/custcat/data/{id}', 'CustcategoryController@destroyAjax');
 Route::post('/custcat/{id}/attachment/create', 'CustcategoryController@createAttachment');
-Route::delete('/custcat/{id}/attachment/{attachmentId}/delete', 'CustcategoryController@removeAttachment');
+Route::delete('/custcat/{id}/attachment/{attachmentId}/delete/{type}', 'CustcategoryController@removeAttachment');
 // Route::post('/api/custcat/{id}/attachment/{attachmentId}/')
 Route::resource('custcat', 'CustcategoryController');
 

@@ -187,7 +187,7 @@
 
                                 <div>
                                     <a href="@{{attachment.full_url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
-                                    <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, custcategory.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
+                                    <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, custcategory.id, attachment.id, 1)" ><i class="fa fa-trash"></i> Delete</a>
                                 </div>
                             </td>
                         </tr>

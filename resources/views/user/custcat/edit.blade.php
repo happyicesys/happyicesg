@@ -92,7 +92,7 @@ Customer Category
         </div>
 
         @if(count($attachments) > 0)
-            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['CustcategoryController@removeAttachment', $custcat->id, $attachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['CustcategoryController@removeAttachment', $custcat->id, $attachment->id, 2], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
             {!! Form::close() !!}
         @endif
 

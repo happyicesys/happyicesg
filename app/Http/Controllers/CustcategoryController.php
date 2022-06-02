@@ -174,14 +174,18 @@ class CustcategoryController extends Controller
     }
 
     // remove attachment from the custcategory(int custcategoryId, int attachmentId)
-    public function removeAttachment($custcategoryId, $attachmentId)
+    public function removeAttachment($custcategoryId, $attachmentId, $type = 1)
     {
         $attachment = Attachment::findOrFail($attachmentId);
         Storage::delete($attachment->url);
         $attachment->delete();
 
-        return redirect()->action(
-            'CustcategoryController@edit', ['id' => $custcategoryId]
-        );
+        if($type == 1) {
+            return true;
+        }else {
+            return redirect()->action(
+                'CustcategoryController@edit', ['id' => $custcategoryId]
+            );
+        }
     }
 }
