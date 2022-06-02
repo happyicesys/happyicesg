@@ -106,4 +106,22 @@ Customer Category
 </div>
 </div>
 
+<script>
+    $(document).ready(function() {
+        Dropzone.autoDiscover = false;
+        $('.dropzone').dropzone({
+            init: function()
+            {
+                this.on("complete", function()
+                {
+                  if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    location.reload();
+                  }
+                });
+            }
+
+        });
+    });
+</script>
+
 @stop

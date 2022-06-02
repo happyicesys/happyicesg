@@ -133,6 +133,9 @@
                         </td>
                         <td class="col-md-2 text-center">
                             <div class="btn-group">
+                                <a href="#" class="btn btn-default btn-sm" ng-click="onAttachmentModalClicked($event, data)" data-toggle="modal" data-target="#attachment-modal" ng-if="data.attachments.length > 0">
+                                    <i class="fa fa-picture-o" aria-hidden="true"></i>
+                                </a>
                                 <a href="/custcat/@{{ data.id }}/edit" class="btn btn-sm btn-primary">Edit</a>
                                 <button class="btn btn-danger btn-sm btn-delete" ng-click="onCustcategoryDelete(data)">Delete</button>
                             </div>
@@ -148,6 +151,50 @@
 
     <div>
         <dir-pagination-controls max-size="5" pagination-id="exportable_custcategory" direction-links="true" boundary-links="true" class="pull-left" on-page-change="pageChanged(newPageNumber)"> </dir-pagination-controls>
+    </div>
+</div>
+
+<div id="attachment-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">
+                    Attachment for @{{custcategory.name}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-list-search table-hover table-bordered">
+                        <tr ng-repeat="attachment in custcategory.attachments">
+                            <td class="text-center">
+                                <div ng-switch="attachment.full_url.split('.').pop().toLowerCase()">
+                                    <embed ng-src="@{{attachment.full_url | trusted}}" type="application/pdf" style="min-height:400px; max-height:800px;" ng-switch-when="pdf">
+                                    <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mp4">
+                                        <video class=" embed-responsive-item" controls>
+                                            <source ng-src="@{{attachment.full_url | trusted}}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <div class="embed-responsive embed-responsive-16by9" ng-switch-when="mov">
+                                        <video class=" embed-responsive-item video-js" autoplay>
+                                            <source ng-src="@{{attachment.full_url | trusted}}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <img src="@{{attachment.full_url}}" class="center-block img-responsive" alt="@{{attachment.full_url}}"  ng-switch-default>
+                                </div>
+
+                                <div>
+                                    <a href="@{{attachment.full_url}}" download="@{{attachment.url}}" class="btn btn-sm btn-info btn-block"><i class="fa fa-download"></i> Download</a>
+                                    <a href="" class="btn btn-sm btn-danger btn-block" ng-confirm-click="Are you sure to delete?" confirmed-click="removeAttachment($event, custcategory.id, attachment.id)" ><i class="fa fa-trash"></i> Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

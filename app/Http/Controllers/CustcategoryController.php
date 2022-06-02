@@ -39,7 +39,7 @@ class CustcategoryController extends Controller
             $active = [];
         }
 
-        $query = Custcategory::with('custcategoryGroup')->withCount(['people' => function($query) use ($active){
+        $query = Custcategory::with(['custcategoryGroup', 'attachments'])->withCount(['people' => function($query) use ($active){
             if($active) {
                 $query->whereIn('active', $active);
             }

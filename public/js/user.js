@@ -127,6 +127,7 @@ function custCategoryController($scope, $http) {
         name: '',
         desc: '',
     }
+    $scope.custcategory = [];
     let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
     const MAP_ICON_FILE = {
         'red': 'red.png',
@@ -149,14 +150,6 @@ function custCategoryController($scope, $http) {
             placeholder: 'Choose one or many..'
         });
     });
-
-    // $http.get('/custcat/data').success(function (custcats) {
-    //     $scope.custcats = custcats;
-
-    //     angular.forEach($scope.custcats, function (value, key) {
-    //         $scope.custcats[key].map_icon_file = map_icon_base + MAP_ICON_FILE[value.map_icon_file]
-    //     });
-    // });
 
     $scope.exportData = function (event) {
         event.preventDefault();
@@ -222,6 +215,17 @@ function custCategoryController($scope, $http) {
         $http.post('/api/custcat/group/bind', $scope.form).success(function (data) {
             $scope.form.custcategory_id = '';
             getPage(1, false);
+        });
+    }
+
+    $scope.onAttachmentModalClicked = function (event, custcategory) {
+        event.preventDefault();
+        $scope.custcategory = custcategory;
+    }
+
+    $scope.removeAttachment = function (event, custcategoryId, attachmentId) {
+        $http.delete('/custcat/' + custcategoryId + '/attachment/' + attachmentId + '/delete').success(function (data) {
+            location.reload();
         });
     }
 
@@ -841,6 +845,27 @@ $(function () {
         $('[href="' + lastTab + '"]').tab('show');
     }
 });
+
+app.directive('ngConfirmClick', [
+    function () {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$eval(clickAction)
+                    }
+                });
+            }
+        };
+    }]);
+
+app.filter('trusted', ['$sce', function ($sce) {
+    return function (url) {
+        return $sce.trustAsResourceUrl(url);
+    };
+}]);
 
 
 
