@@ -226,7 +226,8 @@ function custCategoryController($scope, $http) {
     $scope.removeAttachment = function (event, custcategoryId, attachmentId) {
         event.preventDefault();
         $http.post('/api/custcat/' + custcategoryId + '/attachment/' + attachmentId + '/delete').success(function (data) {
-            location.reload();
+            getPage(1, false);
+            // location.reload();
         });
     }
 
