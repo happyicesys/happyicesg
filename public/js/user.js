@@ -223,8 +223,8 @@ function custCategoryController($scope, $http) {
         $scope.custcategory = custcategory;
     }
 
-    $scope.removeAttachment = function (event, custcategoryId, attachmentId) {
-        $http.delete('/custcat/' + custcategoryId + '/attachment/' + attachmentId + '/delete').success(function (data) {
+    $scope.removeAttachment = function (event, custcategoryId, attachmentId, type) {
+        $http.delete('/custcat/' + custcategoryId + '/attachment/' + attachmentId + '/delete/' + type).success(function (data) {
             location.reload();
         });
     }
