@@ -24,6 +24,11 @@ class Custcategory extends Model
     ];
 
     // relationships
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'modelable');
+    }
+
     public function custcategoryGroup()
     {
         return $this->belongsTo(CustcategoryGroup::class);
@@ -31,7 +36,7 @@ class Custcategory extends Model
 
     public function people()
     {
-    	return $this->belongsToMany('App\Person');
+    	return $this->hasMany(Person::class);
     }
 
     public function bomtemplates()

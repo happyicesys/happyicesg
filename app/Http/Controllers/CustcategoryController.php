@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests\CustcategoryRequest;
 use App\Http\Requests;
+use App\Attachment;
 use App\Custcategory;
 use App\User;
+use Storage;
 
 class CustcategoryController extends Controller
 {
@@ -20,8 +22,62 @@ class CustcategoryController extends Controller
     // retrieve customer categories index api()
     public function getData()
     {
-    	$custcats = Custcategory::orderBy('name')->get();
-    	return $custcats;
+    	// $custcats = Custcategory::orderBy('name')->get();
+    	// return $custcats;
+                // showing total amount init
+        $total_amount = 0;
+        // initiate the page num when null given
+        $pageNum = request('pageNum') ? request('pageNum') : 100;
+
+        if(request('active')) {
+            $active = request('active');
+            if (count($active) == 1) {
+                $active = [$active];
+            }
+        }else {
+            $active = [];
+        }
+
+        $query = Custcategory::with('custcategoryGroup')->withCount(['people' => function($query) use ($active){
+            if($active) {
+                $query->whereIn('active', $active);
+            }
+        }]);
+
+        if(request('name')) {
+            $query = $query->where('name', 'LIKE', '%'.request('name').'%');
+        }
+
+        if(request('custcategory_groups')) {
+            $custcategory_groups = request('custcategory_groups');
+            if (count($custcategory_groups) == 1) {
+                $custcategory_groups = [$custcategory_groups];
+            }
+
+            $query = $query->whereHas('custcategoryGroup', function($query) use ($custcategory_groups) {
+                $query->whereIn('id', $custcategory_groups);
+            });
+        }
+
+        if($active) {
+            $query = $query->whereHas('people', function($query) use ($active) {
+                $query->whereIn('active', $active);
+            });
+        }
+
+        if(request('sortName')){
+            $query = $query->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
+        }
+
+        if($pageNum == 'All'){
+            $query = $query->orderBy('name', 'asc')->get();
+        }else{
+            $query = $query->orderBy('name', 'asc')->paginate($pageNum);
+        }
+
+        return [
+            'custcategories' => $query
+        ];
     }
 
     // return create new cust category page()
@@ -98,5 +154,28 @@ class CustcategoryController extends Controller
 
             return $custcategories;
         }
+    }
+
+    // create attachment by custcategory(int custcategoryId)
+    public function createAttachment($custcategoryId)
+    {
+        $custcategory = Custcategory::findOrFail($custcategoryId);
+        $file = request()->file('file');
+
+        $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
+        Storage::put('custcat_attachments/'.$name, file_get_contents($file->getRealPath()), 'public');
+        $url = (Storage::url('custcat_attachments/'.$name));
+        $custcategory->attachments()->create([
+            'url' => 'custcat_attachments/'.$name,
+            'full_url' => $url,
+        ]);
+    }
+
+    // remove attachment from the custcategory(int attachmentId)
+    public function removeAttachment($attachmentId)
+    {
+        $attachment = Attachment::findOrFail($attachmentId);
+        Storage::delete($attachment->url);
+        $attachment->delete();
     }
 }

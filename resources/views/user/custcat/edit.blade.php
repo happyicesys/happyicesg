@@ -26,11 +26,82 @@ Customer Category
                         </div>
                         <div class="pull-right">
                             {!! Form::submit('Edit', ['class'=> 'btn btn-primary', 'form'=>'edit_custcat']) !!}
-                            <a href="/user" class="btn btn-default">Cancel</a>
+                            <a href="/user" class="btn btn-default">Back</a>
                         </div>
                     </div>
                 </div>
             </div>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Attachment(s)
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+        <table class="table table-list-search table-hover table-bordered">
+            <tr style="background-color: #DDFDF8">
+                <th class="col-md-1 text-center">
+                    #
+                </th>
+                <th class="col-md-9 text-center">
+                    Image
+                </th>
+                <th class="col-md-2 text-center">
+                    Action
+                </th>
+            </tr>
+
+            <tbody>
+                @unless(count($attachments)>0)
+                    <td class="text-center" colspan="12">No Records Found</td>
+                @else
+                    @foreach($attachments as $index => $attachment)
+
+                    @php
+                        $ext = pathinfo($attachment->path, PATHINFO_EXTENSION);
+                    @endphp
+
+                    <tr>
+                        <td class="col-md-1 text-center">
+                            {{ $index + 1 }}
+                        </td>
+                        <td class="col-md-9">
+                            @if($ext == 'pdf')
+                                <embed src="{{$attachment->path}}" type="application/pdf" style="max-width:350px; max-height:500px;">
+                            @else
+                                <a href="{{$attachment->path}}">
+                                    <img src="{{$attachment->path}}" alt="{{$attachment->name}}" style="max-width:350px; max-height:350px;">
+                                </a>
+                            @endif
+                        </td>
+                        <td class="col-md-2 text-center">
+                            @if(!auth()->user()->hasRole('subfranchisee') and !auth()->user()->hasRole('watcher') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
+                                <button type="submit" form="remove_file" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> <span class="hidden-xs">Delete</span></button>
+                                @if($ext == 'pdf')
+                                    <a href="{{$attachment->path}}" class="btn btn-sm btn-info">Download</a>
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                @endunless
+            </tbody>
+        </table>
+        </div>
+
+        @if(count($attachments) > 0)
+            {!! Form::open(['id'=>'remove_file', 'method'=>'DELETE', 'action'=>['CustcategoryController@removeAttachment', $attachment->id], 'onsubmit'=>'return confirm("Are you sure you want to delete?")']) !!}
+            {!! Form::close() !!}
+        @endif
+
+        {!! Form::open(['action'=>['CustcategoryController@createAttachment', $custcat->id], 'class'=>'dropzone', 'style'=>'margin-top:20px']) !!}
+
+        {!! Form::close() !!}
+        <label class="pull-right totalnum" for="totalnum">
+            Total of {{count($attachments)}} entries
+        </label>
     </div>
 </div>
 </div>

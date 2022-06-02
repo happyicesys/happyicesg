@@ -639,8 +639,10 @@ Route::post('/api/custcat/group/bind', 'CustcategoryGroupController@bindCustcate
 
 Route::get('/api/custcat/user/{userId}/{type}', 'CustcategoryController@getCustcategoryByUserIdApi');
 Route::get('/api/custcat/{id}', 'CustcategoryController@getCustcategoryApi');
-Route::get('/custcat/data', 'CustcategoryController@getData');
+Route::post('/custcat/data', 'CustcategoryController@getData');
 Route::delete('/custcat/data/{id}', 'CustcategoryController@destroyAjax');
+Route::post('/custcat/attachment/create', 'CustcategoryController@createAttachment');
+Route::delete('/custcat/attachment/{id}/delete', 'CustcategoryController@removeAttachment');
 Route::resource('custcat', 'CustcategoryController');
 
 // Authentication routes...

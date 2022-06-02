@@ -107,9 +107,26 @@ function userController($scope, $http) {
 }
 
 function custCategoryController($scope, $http) {
-    $scope.currentPage5 = 1;
-    $scope.itemsPerPage5 = 100;
-
+    // init the variables
+    $scope.alldata = [];
+    $scope.totalCount = 0;
+    $scope.totalPages = 0;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 'All';
+    $scope.indexFrom = 0;
+    $scope.indexTo = 0;
+    $scope.search = {
+        name: '',
+        custcategories: [],
+        active: [],
+        pageNum: 'All',
+        sortBy: true,
+        sortName: ''
+    }
+    $scope.form = {
+        name: '',
+        desc: '',
+    }
     let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
     const MAP_ICON_FILE = {
         'red': 'red.png',
@@ -121,34 +138,68 @@ function custCategoryController($scope, $http) {
         'yellow': 'yellow.png',
         'orange': 'orange.png'
     };
+    // init page load
+    getPage();
 
-    $http.get('/custcat/data').success(function (custcats) {
-        $scope.custcats = custcats;
-
-        angular.forEach($scope.custcats, function (value, key) {
-            $scope.custcats[key].map_icon_file = map_icon_base + MAP_ICON_FILE[value.map_icon_file]
+    angular.element(document).ready(function () {
+        $('.select').select2({
+            placeholder: 'Select..'
+        });
+        $('.selectmultiple').select2({
+            placeholder: 'Choose one or many..'
         });
     });
 
-    // export cust cat excel
-    $scope.exportCustCatExcel = function (event) {
+    // $http.get('/custcat/data').success(function (custcats) {
+    //     $scope.custcats = custcats;
+
+    //     angular.forEach($scope.custcats, function (value, key) {
+    //         $scope.custcats[key].map_icon_file = map_icon_base + MAP_ICON_FILE[value.map_icon_file]
+    //     });
+    // });
+
+    $scope.exportData = function (event) {
         event.preventDefault();
         var blob = new Blob(["\ufeff", document.getElementById('exportable_custcategory').innerHTML], {
             type: "application/vnd.ms-excel;charset=charset=utf-8"
         });
         var now = Date.now();
-        saveAs(blob, "CustCat" + now + ".xls");
+        saveAs(blob, "Custcategory" + now + ".xls");
     };
 
-    $scope.confirmDelete5 = function (id) {
-        var isConfirmDelete = confirm('Are you sure you want to delete entry ID: ' + id);
+    // switching page
+    $scope.pageChanged = function (newPage) {
+        getPage(newPage, false);
+    };
+
+    $scope.pageNumChanged = function () {
+        $scope.search['pageNum'] = $scope.itemsPerPage
+        $scope.currentPage = 1
+        getPage(1, false)
+    };
+
+    $scope.sortTable = function (sortName) {
+        $scope.search.sortName = sortName;
+        $scope.search.sortBy = !$scope.search.sortBy;
+        getPage(1, false);
+    }
+
+    // when hitting search button
+    $scope.searchDB = function () {
+        $scope.search.sortName = '';
+        $scope.search.sortBy = true;
+        getPage(1, false);
+    }
+
+    $scope.onCustcategoryDelete = function (data) {
+        var isConfirmDelete = confirm('Are you sure you want to delete the custcategory & detach its binding(s)?');
         if (isConfirmDelete) {
             $http({
                 method: 'DELETE',
-                url: '/custcat/data/' + id
+                url: '/custcat/data/' + data.id
             })
                 .success(function (data) {
-                    location.reload();
+                    getPage(1, false);
                 })
                 .error(function (data) {
                     alert('Unable to delete');
@@ -156,6 +207,46 @@ function custCategoryController($scope, $http) {
         } else {
             return false;
         }
+    }
+
+    // create
+    $scope.onCustcategoryGroupNameCreateClicked = function () {
+        $http.post('/api/custcat/group/create', $scope.form).success(function (data) {
+            $scope.form.name = '';
+            getPage(1, false);
+        });
+    }
+
+    // bind
+    $scope.onCustcategoryGroupBindingClicked = function () {
+        $http.post('/api/custcat/group/bind', $scope.form).success(function (data) {
+            $scope.form.custcategory_id = '';
+            getPage(1, false);
+        });
+    }
+
+    // retrieve page w/wo search
+    function getPage(pageNumber, first) {
+        $scope.spinner = true;
+        $http.post('/custcat/data?page=' + pageNumber + '&init=' + first, $scope.search).success(function (data) {
+            if (data.custcategories.data) {
+                $scope.alldata = data.custcategories.data;
+                $scope.totalCount = data.custcategories.total;
+                $scope.currentPage = data.custcategories.current_page;
+                $scope.indexFrom = data.custcategories.from;
+                $scope.indexTo = data.custcategories.to;
+            } else {
+                $scope.alldata = data.custcategories;
+                $scope.totalCount = data.custcategories.length;
+                $scope.currentPage = 1;
+                $scope.indexFrom = 1;
+                $scope.indexTo = data.custcategories.length;
+            }
+            $scope.spinner = false;
+            angular.forEach($scope.alldata, function (value, key) {
+                $scope.alldata[key].map_icon_file = map_icon_base + MAP_ICON_FILE[value.map_icon_file]
+            });
+        });
     }
 }
 
@@ -295,7 +386,6 @@ function custTagsController($scope, $http) {
         });
     }
 }
-
 
 function custCategoryGroupController($scope, $http) {
     // init the variables
