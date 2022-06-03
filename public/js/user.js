@@ -118,7 +118,7 @@ function custCategoryController($scope, $http) {
     $scope.search = {
         name: '',
         custcategories: [],
-        active: [],
+        active: ['Yes'],
         pageNum: 'All',
         sortBy: true,
         sortName: ''

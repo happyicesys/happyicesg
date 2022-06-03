@@ -127,6 +127,12 @@
                     {!! Form::text('key_lock_number', null, ['class'=>'form-control']) !!}
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('unit_number', '# of Unit', ['class'=>'control-label']) !!}
+                    {!! Form::text('unit_number', null, ['class'=>'form-control']) !!}
+                </div>
+            </div>
         </div>
         <div class="row col-md-12 col-sm-12 col-xs-12">
             <div class="col-md-6 col-sm-6 col-xs-12">

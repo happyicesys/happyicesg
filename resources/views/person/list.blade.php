@@ -591,6 +591,12 @@
                         <span ng-if="search.sortName == 'earliest_delivery_date' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="" ng-click="sortTable('unit_number')">
+                        # of Unit
+                        <span ng-if="search.sortName == 'unit_number' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-if="search.sortName == 'unit_number' && search.sortBy" class="fa fa-caret-up"></span>
+                    </th>
+                    <th class="col-md-1 text-center">
                         <a href="" ng-click="sortTable('custcategory')">
                         Cat
                         <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
@@ -691,6 +697,9 @@
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.earliest_delivery_date }}
+                        </td>
+                        <td class="col-md-1 text-center">
+                            @{{ person.unit_number }}
                         </td>
                         <td class="col-md-1 text-center">
                             @{{ person.custcategory_name }}
