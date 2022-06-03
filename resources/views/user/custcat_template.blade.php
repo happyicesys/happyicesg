@@ -76,35 +76,38 @@
                         #
                     </th>
                     <th class="col-md-1 text-center">
-                        <a href="#" ng-click="sortType = 'map_icon_file'; sortReverse = !sortReverse">
+                        <a href="#" ng-click="sortTable('map_icon_file')">
                         Map Icon
-                        <span ng-show="sortType == 'map_icon_file' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'map_icon_file' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="search.sortName == 'map_icon_file' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-show="search.sortName == 'map_icon_file' && search.sortBy" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-2 text-center">
-                        <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                        <a href="#" ng-click="sortTable('custcategories.name')">
                         Name
-                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="search.sortName == 'custcategories.name' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-show="search.sortName == 'custcategories.name' && search.sortBy" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-3 text-center">
-                        <a href="#" ng-click="sortType = 'desc'; sortReverse = !sortReverse">
+                        <a href="#" ng-click="sortTable('custcategories.desc')">
                         Description
-                        <span ng-show="sortType == 'desc' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'desc' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="search.sortName == 'custcategories.desc' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-show="search.sortName == 'custcategories.desc' && search.sortBy" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-2 text-center">
-                        <a href="#" ng-click="sortType = 'desc'; sortReverse = !sortReverse">
+                        <a href="#" ng-click="sortTable('custcategory_group_name')">
                         Custcat Group
-                        <span ng-show="sortType == 'desc' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'desc' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="search.sortName == 'custcategory_group_name' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-show="search.sortName == 'custcategory_group_name' && search.sortBy" class="fa fa-caret-up"></span>
                         </a>
                     </th>
                     <th class="col-md-1 text-center">
+                        <a href="#" ng-click="sortTable('people_count')">
                         Cust Count
+                        <span ng-show="search.sortName == 'people_count' && !search.sortBy" class="fa fa-caret-down"></span>
+                        <span ng-show="search.sortName == 'people_count' && search.sortBy" class="fa fa-caret-up"></span>
                     </th>
                     <th class="col-md-2 text-center">
                         Action

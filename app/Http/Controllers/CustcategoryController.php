@@ -39,14 +39,23 @@ class CustcategoryController extends Controller
             $active = [];
         }
 
-        $query = Custcategory::with(['custcategoryGroup', 'attachments'])->withCount(['people' => function($query) use ($active){
-            if($active) {
-                $query->whereIn('active', $active);
-            }
-        }]);
+        $query = Custcategory::leftJoin('custcategory_groups', 'custcategory_groups.id', '=', 'custcategories.custcategory_group_id')
+                        ->select(
+                            '*',
+                            'custcategories.id',
+                            'custcategories.name',
+                            'custcategory_groups.name AS custcategory_group_name',
+                            'custcategories.desc',
+                            )
+                        ->with(['custcategoryGroup', 'attachments'])
+                        ->withCount(['people' => function($query) use ($active){
+                            if($active) {
+                                $query->whereIn('active', $active);
+                            }
+                        }]);
 
         if(request('name')) {
-            $query = $query->where('name', 'LIKE', '%'.request('name').'%');
+            $query = $query->where('custcategories.name', 'LIKE', '%'.request('name').'%');
         }
 
         if(request('custcategory_groups')) {
@@ -71,9 +80,9 @@ class CustcategoryController extends Controller
         }
 
         if($pageNum == 'All'){
-            $query = $query->orderBy('name', 'asc')->get();
+            $query = $query->get();
         }else{
-            $query = $query->orderBy('name', 'asc')->paginate($pageNum);
+            $query = $query->paginate($pageNum);
         }
 
         return [
