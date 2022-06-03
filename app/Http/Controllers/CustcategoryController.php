@@ -45,7 +45,7 @@ class CustcategoryController extends Controller
                             'custcategories.id',
                             'custcategories.name',
                             'custcategory_groups.name AS custcategory_group_name',
-                            'custcategories.desc',
+                            'custcategories.desc'
                             )
                         ->with(['custcategoryGroup', 'attachments'])
                         ->withCount(['people' => function($query) use ($active){
