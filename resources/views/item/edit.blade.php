@@ -91,7 +91,14 @@
                                 </span>
                             </td>
                             <td class="col-md-2 text-center">
-
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-default btn-sm" ng-click="onItemUomEditClicked($event)">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-sm" ng-click="onItemUomDeleteClicked($event)">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
