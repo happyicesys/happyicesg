@@ -578,7 +578,23 @@ class VendingController extends Controller
                                     DB::raw('(analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) AS clocker_delta'),
                                     DB::raw('(analog_lastmonth_end.analog_clock - (CASE WHEN analog_lastmonth_start.analog_clock THEN analog_lastmonth_start.analog_clock ELSE analog_lastmonth_first.analog_clock END)) AS last_clocker_delta'),
                                     'people.vending_clocker_adjustment AS clocker_adjustment',
-                                    DB::raw('CASE WHEN people.commission_type = 1 THEN FLOOR((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END))- (CASE WHEN people.vending_clocker_adjustment THEN ((analog_end.analog_clock - (CASE WHEN analog_start.analog_clock THEN analog_start.analog_clock ELSE analog_first.analog_clock END)) * people.vending_clocker_adjustment/ 100) ELSE 0 END)) ELSE sales_count.sales_count END AS sales'),
+                                    DB::raw('
+                                        CASE WHEN people.commission_type = 1
+                                        THEN FLOOR((analog_end.analog_clock - (
+                                            CASE WHEN analog_start.analog_clock
+                                            THEN analog_start.analog_clock
+                                            ELSE analog_first.analog_clock
+                                            END))- (
+                                            CASE WHEN people.vending_clocker_adjustment
+                                            THEN ((analog_end.analog_clock - (
+                                                CASE WHEN analog_start.analog_clock
+                                                THEN analog_start.analog_clock
+                                                ELSE analog_first.analog_clock
+                                                END)) * people.vending_clocker_adjustment/ 100)
+                                            ELSE 0
+                                            END))
+                                        ELSE sales_count.sales_count
+                                        END AS sales'),
                                     DB::raw('
                                         ROUND(
                                             (CASE

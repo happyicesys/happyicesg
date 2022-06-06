@@ -84,10 +84,10 @@
                             </td>
                             <td class="col-md-3 text-center">
                                 <span ng-if="itemUom.is_base_unit" class="badge badge-primary" style="background-color: #296192">
-                                    Primary
+                                    Base UOM
                                 </span>
                                 <span ng-if="itemUom.is_transacted_unit" class="badge badge-success" style="background-color: #5ab55a;">
-                                    Transacted
+                                    Transacted UOM
                                 </span>
                             </td>
                             <td class="col-md-2 text-center">
