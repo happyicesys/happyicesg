@@ -820,7 +820,7 @@ class TransactionController extends Controller
             }
         }
 
-        if($transaction->person->is_vending and $transaction->person->is_stock_balance_count_required) {
+        if($transaction->person->is_vending and $transaction->person->is_stock_balance_count_required and !$transaction->is_service) {
             if(request('stock_balance_count') == null) {
                 Flash::error('Stock Balance must be filled 库存必须填上');
                 return redirect()->action('TransactionController@edit', $transaction->id);
