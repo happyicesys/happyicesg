@@ -46,11 +46,15 @@
     <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title">
-                <h3 class="panel-title">
+                <span class="pull-left">
                     <strong>
                         UOM: {{$item->product_id}} - {{$item->name}}
                     </strong>
-                </h3>
+                </span>
+                <button class="btn btn-success pull-right" >
+                    <i class="fa fa-plus"></i>
+                    Create
+                </button>
             </div>
         </div>
         <div class="panel-body">
@@ -100,6 +104,9 @@
                                     </a>
                                 </div>
                             </td>
+                        </tr>
+                        <tr ng-if="!itemUoms || itemUoms.length == 0">
+                            <td colspan="24" class="text-center">No Records Found</td>
                         </tr>
                     </tbody>
                 </table>
@@ -173,6 +180,222 @@
         </div>
     </div>
     {{-- divider --}}
+</div>
+
+<div id="uom-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">
+                  @{{formUom.id ? 'Edit UOM' : 'New UOM'}}
+                  <span ng-if="form.id">
+                    @{{formUom.name}}
+                  </span>
+                </h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="template-name">
+                  Name
+                </label>
+                <label style="color: red;">*</label>
+                <input type="text" class="form-control" ng-model="formUom.name">
+              </div>
+              <div class="form-group">
+                <label for="template-name">
+                  Template Desc
+                </label>
+                <textarea class="form-control" ng-model="form.remarks" rows="3"></textarea>
+              </div>
+                <div ng-if="form.attachments && form.id">
+                    <div class="table-responsive">
+                        <table class="table table-list-search table-hover table-bordered">
+                            <tr style="background-color: #DDFDF8">
+                                <th class="col-md-1 text-center">
+                                    #
+                                </th>
+                                <th class="col-md-9 text-center">
+                                    Path
+                                </th>
+                                <th class="col-md-2 text-center">
+                                    Action
+                                </th>
+                            </tr>
+
+                            <tbody>
+                                <tr ng-repeat="attachment in form.attachments">
+                                    <td class="col-md-1 text-center">
+                                        @{{$index + 1}}
+                                    </td>
+                                    <td class="col-md-9">
+                                        <img src="@{{attachment.url}}" alt="@{{attachment.url}}" style="max-width:300px;">
+                                    </td>
+                                    <td class="col-md-2 text-center">
+                                        <div class="btn-group">
+                                            <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(attachment.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
+                                            <a href="@{{attachment.url}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-if="form.attachments.length == 0">
+                                    <td class="text-center" colspan="7">No Records Found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                </div>
+                <div ng-if="form.id" class="form-group">
+                    <div class="form-group">
+                        <label for="files">Upload Image</label>
+                        <input type="file" ng-files="setTheFiles($files)" id="image_file" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success" ng-click="uploadFile($event, form.id)"><i class="fa fa-upload"></i> Upload File</button>
+                        {{-- <button class="btn btn-danger" ng-click="deleteFile(form.id)"><i class="fa fa-times"></i> Remove File(s)</button> --}}
+                    </div>
+                </div>
+
+              <hr class="row">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <div class="form-group">
+                                <label for="item">
+                                    Item
+                                </label>
+                                <label style="color: red;">*</label>
+                                <select class="select form-control" ng-model="form.item">
+                                    <option value=""></option>
+                                    @foreach($items::with(['itemCategory', 'itemGroup'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
+                                    <option value="{{$item}}">
+                                        {{$item->product_id}} - {{$item->name}} {{$item->remark}}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="sequence">
+                                    Sequence
+                                </label>
+                                <input type="number" class="form-control" ng-model="form.sequence">
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label for="retail_price">
+                                Retail Price
+                            </label>
+                            <input type="number" class="form-control" ng-model="form.retail_price">
+                          </div>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label for="quote_price">
+                                Quote Price
+                            </label>
+                            <input type="number" class="form-control" ng-model="form.quote_price">
+                          </div>
+                      </div>
+                  </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="btn-group pull-left" style="padding-top: 10px;">
+                                <button type="button" class="btn btn-success" ng-click="onAddPriceTemplateItemClicked()" ng-disabled="!form.item">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                Add Pricing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+              <div class="form-group" style="padding-top: 20px;">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-hover">
+                    <tr style="background-color: #DDFDF8">
+                        <th colspan="7">
+                            <button type="button" class="btn btn-xs btn-warning" ng-click="onSortSequenceClicked($event)">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                Sort
+                            </button>
+                            <button class="btn btn-xs btn-default" ng-click="onRenumberSequenceClicked($event)">
+                                Re-number
+                            </button>
+                        </th>
+                    </tr>
+                    <tr style="background-color: #DDFDF8">
+                      <th class="col-md-1 text-center">
+                        #
+                      </th>
+                      <th class="col-md-1 text-center">
+                        ID
+                      </th>
+                      <th class="col-md-3 text-center">
+                        Product
+                      </th>
+                      <th class="col-md-2 text-center">
+                        Desc
+                      </th>
+                      <th class="col-md-2 text-center">
+                        Retail Price
+                      </th>
+                      <th class="col-md-2 text-center">
+                        Quote Price
+                      </th>
+                      <th class="col-md-1 text-center">
+                        Action
+                      </th>
+                    </tr>
+                    <tr ng-repeat="priceTemplateItem in form.price_template_items">
+                      <td class="col-md-1 text-center">
+                        <input type="text" class=" text-center" style="width:40px" ng-model="priceTemplateItem.sequence" ng-value="priceTemplateItem.sequence = priceTemplateItem.sequence ? priceTemplateItem.sequence * 1 : '' " ng-model-options="{ debounce: 1000 }">
+                      </td>
+                      <td class="col-md-1 text-center">
+                        <a href="/item/@{{ priceTemplateItem.item.id }}/edit">
+                        @{{ priceTemplateItem.item.product_id }}
+                        </a>
+                      </td>
+                      <td class="col-md-3 text-left">
+                        @{{ priceTemplateItem.item.name }}
+                      </td>
+                      <td class="col-md-2 text-left">
+                        @{{ priceTemplateItem.item.remark }}
+                      </td>
+                      <td class="col-md-2 text-right">
+                        <input type="text" class="form-control text-center" ng-model="priceTemplateItem.retail_price" ng-model-options="{ debounce: 1000 }">
+                      </td>
+                      <td class="col-md-2 text-right">
+                        <input type="text" class="form-control text-center" ng-model="priceTemplateItem.quote_price" ng-model-options="{ debounce: 1000 }">
+                      </td>
+                      <td class="col-md-1 text-center">
+                        <button class="btn btn-danger btn-sm" ng-click="onSingleEntryDeleted(priceTemplateItem)">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr ng-if="!form.price_template_items || form.price_template_items.length == 0">
+                      <td colspan="14" class="text-center">No Records Found</td>
+                  </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <button class="btn btn-info" ng-click="onReplicatePriceTemplateClicked(form)">
+                        Replicate
+                    </button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="!form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Submit</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-if="form.id" ng-click="onFormSubmitClicked()" ng-disabled="!form.name">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script src="/js/item_edit.js"></script>
