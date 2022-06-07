@@ -24,4 +24,9 @@ class PriceTemplateItem extends Model
     {
         return $this->belongsTo(PriceTemplate::class);
     }
+
+    public function priceTemplateItemUom()
+    {
+        return $this->hasMany(PriceTemplateItemUom::class);
+    }
 }

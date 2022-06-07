@@ -40,6 +40,7 @@ class PriceTemplateController extends Controller
                                         },
                                         'attachments',
                                         'priceTemplateItems.item',
+                                        'priceTemplateItems.priceTemplateItemUom',
                                         'people'  => function($query) use ($request){
                                             if($request->person_id) {
                                                 $query->whereIn('id', $request->person_id);
