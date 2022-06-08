@@ -411,6 +411,7 @@ function productMonthDetailController($scope, $http) {
         account_manager: '',
         cust_id: '',
         strictCustId: '',
+        item_group_id: [],
         pageNum: 'All',
         sortBy: true,
         sortName: ''

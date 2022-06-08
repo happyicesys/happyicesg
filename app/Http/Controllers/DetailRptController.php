@@ -4025,6 +4025,7 @@ class DetailRptController extends Controller
         $item_id = $request->item_id;
         $cust_id = $request->cust_id;
         $strictCustId = $request->strictCustId;
+        $itemGroupId = $request->item_group_id;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -4056,6 +4057,12 @@ class DetailRptController extends Controller
             }else {
                 $items = $items->where('people.cust_id', 'LIKE', '%'.$cust_id.'%');
             }
+        }
+        if($itemGroupId) {
+            if(count($itemGroupId) == 1) {
+                $itemGroupId = [$itemGroupId];
+            }
+            $items = $items->whereIn('items.item_group_id', $itemGroupId);
         }
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
