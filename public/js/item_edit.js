@@ -7,6 +7,16 @@ function itemController($scope, $q, $http) {
     $scope.currentPage = 1;
     $scope.itemsPerPage = 30;
 
+    function getDefaultFormUom() {
+        return {
+            id: '',
+            name: '',
+            value: '',
+            is_base_unit: false,
+            is_transacted_unit: false,
+        }
+    }
+
     $http.get('/item/image/' + item_id).success(function (images) {
         $scope.images = images;
         $scope.imageLength = images.length;
@@ -58,6 +68,11 @@ function itemController($scope, $q, $http) {
         } else {
             return false;
         }
+    }
+
+    $scope.onItemUomCreateClicked = function (event) {
+        event.preventDefault();
+        $scope.formUom = getDefaultFormUom();
     }
 }
 
