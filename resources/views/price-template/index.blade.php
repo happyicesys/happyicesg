@@ -252,7 +252,7 @@ Price Template
                                         <td class="col-md-2 text-center">
                                             <div class="btn-group">
                                                 <a href="" class="btn btn-sm btn-danger" ng-confirm-click="Are you sure to delete?" confirmed-click="removeFile(attachment.id)"><i class="fa fa-trash"></i> <span class="hidden-xs">Delete</span></a>
-                                                <a href="@{{attachment.url}}" class="btn btn-sm btn-success"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
+                                                <a href="@{{attachment.url}}" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
                                             </div>
                                         </td>
                                     </tr>

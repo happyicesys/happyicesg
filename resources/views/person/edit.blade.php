@@ -294,6 +294,43 @@
 
         @if($person->priceTemplate()->exists())
             <div class="panel-body">
+
+                @if($person->priceTemplate->attachments()->exists())
+                <div class="table-responsive">
+                    <table class="table table-list-search table-hover table-bordered">
+                        <tr style="background-color: #DDFDF8">
+                            <th class="col-md-1 text-center">
+                                #
+                            </th>
+                            <th class="col-md-9 text-center">
+                                Path
+                            </th>
+                            <th class="col-md-2 text-center">
+                                Action
+                            </th>
+                        </tr>
+
+                        <tbody>
+                            @foreach($person->priceTemplate->attachments as $index => $attachment)
+                            <tr>
+                                <td class="col-md-1 text-center">
+                                    @{{$index + 1}}
+                                </td>
+                                <td class="col-md-9">
+                                    <img src="{{$attachment->url}}" alt="{{$attachment->url}}" style="max-width:300px;">
+                                </td>
+                                <td class="col-md-2 text-center">
+                                    <div class="btn-group">
+                                        <a href="{{$attachment->url}}" class="btn btn-sm btn-success" target="_blank"><i class="fa fa-download"></i> <span class="hidden-xs">Open</span></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @endif
+
                 <label for="price_template">
                     Binded Price Template: {{$person->priceTemplate->name}} @if($person->priceTemplate->remarks) ({{$person->priceTemplate->remarks}}) @endif
                 </label>
