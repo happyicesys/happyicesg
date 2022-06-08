@@ -107,7 +107,7 @@ class VendingController extends Controller
                 $remarkStr = "Vending Machine Commission Report:\n Begin Date: ".Carbon::parse($person->begin_date)->toDateString()."\n End Date: ".Carbon::parse($person->end_date)->toDateString();
 
                 if($person->cooperate_method == 2) {
-                    $remarkStr .= "\n Begin Analog Clock: ".$person->begin_analog."\n Rental: ".$person->vending_monthly_rental;
+                    $remarkStr .= "\n Rental: ".$person->vending_monthly_rental;
                 }else {
                     if($person->commission_type == 1) {
                         $remarkStr .= "\n Begin Analog Clock: ".$person->begin_analog."\n End Analog Clock: ".$person->end_analog."\n Delta: ".$person->clocker_delta."\n Adjustment Rate: ".$person->clocker_adjustment."%\n Sales # Ice Cream: ".$person->sales;
@@ -122,16 +122,15 @@ class VendingController extends Controller
                             $remarkStr .= "\n (No collection of sales from machine)";
                         }
                     }
-                }
 
-                if($person->commission_package == 1) {
-                    $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% + $'.$person->vending_monthly_utilities;
-                }
+                    if($person->commission_package == 1) {
+                        $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% + $'.$person->vending_monthly_utilities;
+                    }
 
-                if($person->commission_package == 2) {
-                    $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% or $'.$person->vending_monthly_utilities.' (whichever higher)';
+                    if($person->commission_package == 2) {
+                        $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% or $'.$person->vending_monthly_utilities.' (whichever higher)';
+                    }
                 }
-
 
                 $transaction->transremark = $remarkStr;
                 $transaction->is_required_analog = 0;
