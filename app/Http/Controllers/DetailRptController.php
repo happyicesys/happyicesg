@@ -1302,6 +1302,12 @@ class DetailRptController extends Controller
             $amountstr .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
         }
 
+        if($request->item_group_id) {
+            $itemGroupId = implode(",", $request->item_group_id);
+
+            $amountstr = $amountstr." AND items.item_group_id IN (".$itemGroupId.")";
+        }
+
         // if($item_id = $request->item_id) {
         //     $item_id = implode(",", $item_id);
         //     // dd($item_id);
@@ -1348,6 +1354,11 @@ class DetailRptController extends Controller
         if($request->product_name) {
             // dd($request->product_name);
             $items = $items->where('items.name', 'LIKE', '%'.$request->product_name.'%');
+        }
+
+        if($request->item_group_id) {
+            $itemGroupId = implode(",", $request->item_group_id);
+            $amountstr = $amountstr." AND items.item_group_id IN (".$itemGroupId.")";
         }
 
         // hide null
@@ -1496,10 +1507,6 @@ class DetailRptController extends Controller
         $profile_id = $request->profile_id;
         $request->merge(array('delivery_from' => $delivery_from));
         $request->merge(array('delivery_to' => $delivery_to));
-
-
-
-
 
         $queryStr = "(
                     SELECT transactions.id AS transaction_id, people.id AS person_id,ROUND(SUM(CASE WHEN transactions.gst=1 THEN(CASE WHEN transactions.is_gst_inclusive=0 THEN deals.amount ELSE deals.amount/ (100 + transactions.gst_rate) * 100 END) ELSE deals.amount END), 2) AS salestotal,
@@ -3535,6 +3542,7 @@ class DetailRptController extends Controller
         $item_id = $request->item_id;
         $zone_id = $request->zone_id;
         $tags = $request->tags;
+        $itemGroupId = $request->item_group_id;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3693,6 +3701,12 @@ class DetailRptController extends Controller
             $persontagattachPersonIdArr = Persontagattach::whereIn('persontag_id', $tags)->lists('person_id')->toArray();
             $transactions = $transactions->whereIn('people.id', $persontagattachPersonIdArr);
         }
+        if($itemGroupId) {
+            if (count($itemGroupId) == 1) {
+                $itemGroupId = [$itemGroupId];
+            }
+            $transactions = $transactions->whereIn('items.item_group_id', $itemGroupId);
+        }
         // if($tags) {
         //     $tagsStr = implode(",", $tags);
         //     $query .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
@@ -3740,6 +3754,7 @@ class DetailRptController extends Controller
         $sortBy = $request->sortBy;
         $tags = $request->tags;
         $actives = $request->active;
+        $itemGroupId = $request->item_group_id;
 
         if($profile_id){
             $query .= " AND profiles.id='".$profile_id."' ";
@@ -3862,6 +3877,10 @@ class DetailRptController extends Controller
             $activesStr = implode("','", $actives);
             // dd($activesStr);
             $query .= " AND people.active IN ('".$activesStr."') ";
+        }
+        if($itemGroupId) {
+            $itemGroupIdStr = implode(",", $itemGroupId);
+            $query .= " AND items.item_group_id IN (".$itemGroupIdStr.") ";
         }
 /*
         if($sortName){

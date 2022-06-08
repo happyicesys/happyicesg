@@ -37,6 +37,7 @@ function custDetailController($scope, $http) {
         item_name: '',
         zone_id: '',
         tags: [],
+        item_group_id: [],
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -157,6 +158,7 @@ function custSummaryController($scope, $http) {
         zone_id: '',
         cust_id: '',
         company: '',
+        item_group_id: [],
         pageNum: 100,
         sortBy: true,
         sortName: '',
@@ -287,6 +289,7 @@ function custSummaryGroupController($scope, $http) {
         zone_id: '',
         cust_id: '',
         company: '',
+        item_group_id: [],
         pageNum: 100,
         sortBy: true,
         sortName: '',
@@ -523,6 +526,7 @@ function monthlyReportController($scope, $http) {
         zone_id: '',
         account_manager: '',
         exACategory: '',
+        item_group_id: [],
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -647,6 +651,7 @@ function productDayDetailController($scope, $http) {
         zone_id: '',
         account_manager: '',
         item_id: [],
+        item_group_id: [],
         pageNum: 'All',
         sortBy: true,
         sortName: ''
