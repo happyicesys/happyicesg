@@ -469,6 +469,7 @@ class TransactionController extends Controller
         $total = 0;
         $subtotal = 0;
         $tax = 0;
+        $priceTemplateItems = [];
 
         $transaction = Transaction::with(['person', 'deliveryorder'])->findOrFail($transaction_id);
 
@@ -540,8 +541,21 @@ class TransactionController extends Controller
             $total += number_format($delivery_fee, 2);
         }
 
+        if($transaction->person->priceTemplate()->exists()) {
+            if($transaction->person->priceTemplate->priceTemplateItems()->exists()) {
+                $priceTemplateItems = $transaction
+                                        ->person
+                                        ->priceTemplate
+                                        ->priceTemplateItems()
+                                        ->with(['item', 'priceTemplate', 'priceTemplateItemUoms'])
+                                        ->orderBy('sequence')
+                                        ->get();
+            }
+        }
+
         // die(var_dump($transaction));
         return $data = [
+            'priceTemplateItems' => $priceTemplateItems,
             'transaction' => $transaction,
             'deals' => $deals,
             'subtotal' => $subtotal,

@@ -126,6 +126,7 @@ function transactionController($scope, $http) {
     $scope.currentAttachmentId = '';
     $scope.attachmentType = '';
     $scope.showServiceCompletionError = false;
+    $scope.priceTemplateItems = [];
     var formData = new FormData();
 
     loadDealTable();
@@ -306,6 +307,7 @@ function transactionController($scope, $http) {
 
     function loadDealTable() {
         $http.get('/api/transaction/edit/' + $trans_id.val()).success(function (data) {
+            $scope.priceTemplateItems = data.priceTemplateItems;
             $scope.delivery = data.delivery_fee;
             $scope.deals = data.deals;
             $scope.totalModel = data.total;
@@ -313,6 +315,7 @@ function transactionController($scope, $http) {
             $scope.taxModel = data.tax;
             $scope.totalqtyModel = data.total_qty.toFixed(4);
             $scope.isStockAction = data.isStockAction;
+
 
             // console.log($scope.totalModel);
             // console.log($scope.subtotalModel);
