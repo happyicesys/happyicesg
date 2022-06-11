@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Uom extends Model
 {
     protected $fillable = [
-        'name'
+        'name', 'sequence'
     ];
+
 }

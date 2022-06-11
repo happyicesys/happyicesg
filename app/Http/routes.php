@@ -429,7 +429,9 @@ Route::get('/item/data', 'ItemController@getData');
 Route::delete('/item/data/{id}', 'ItemController@destroyAjax');
 Route::get('/api/item/{id}/item-uom', 'ItemController@getItemUomApi');
 Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
-
+Route::post('/api/item/{id}/uom/create-update', 'ItemController@createUpdateItemUomApi');
+Route::delete('/api/item/item-uom/{itemUomId}', 'ItemController@deleteItemUomApi');
+Route::get('/api/uoms', 'ItemController@getAllUomApi');
 Route::resource('item', 'ItemController');
 
 Route::post('/api/item/group', 'ItemGroupController@getItemGroupsIndexApi');

@@ -275,66 +275,69 @@ Price Template
                     </div>
 
                   <hr class="row">
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="col-md-8 col-sm-8 col-xs-12">
-                                <div class="form-group">
-                                    <label for="item">
-                                        Item
-                                    </label>
-                                    <label style="color: red;">*</label>
-                                    <select class="select form-control" ng-model="form.item">
-                                        <option value=""></option>
-                                        @foreach($items::with(['itemCategory', 'itemGroup'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
-                                        <option value="{{$item}}">
-                                            {{$item->product_id}} - {{$item->name}} {{$item->remark}}
-                                        </option>
-                                        @endforeach
-                                    </select>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Create new Pricing
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <div class="form-group">
+                                            <label for="item">
+                                                Item
+                                            </label>
+                                            <label style="color: red;">*</label>
+                                            <select class="select form-control" ng-model="form.item" ng-change="onFormItemSelected(form.item)">
+                                                <option value=""></option>
+                                                @foreach($items::with(['itemCategory', 'itemGroup', 'itemUoms', 'itemUoms.uom'])->whereIsActive(1)->orderBy('product_id')->get() as $item)
+                                                <option value="{{$item}}">
+                                                    {{$item->product_id}} - {{$item->name}} {{$item->remark}}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label for="sequence">
+                                                Sequence
+                                            </label>
+                                            <input type="number" class="form-control" ng-model="form.sequence">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="sequence">
-                                        Sequence
-                                    </label>
-                                    <input type="number" class="form-control" ng-model="form.sequence">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label for="retail_price">
+                                            Retail Price
+                                        </label>
+                                        <input type="number" class="form-control" ng-model="form.retail_price">
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <label for="quote_price">
+                                            Quote Price
+                                        </label>
+                                        <input type="number" class="form-control" ng-model="form.quote_price">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                      </div>
-                      <div class="row">
-                          <div class="col-md-12 col-sm-12 col-xs-12">
-                              <div class="col-md-6 col-sm-6 col-xs-12">
-                                <label for="retail_price">
-                                    Retail Price
-                                </label>
-                                <input type="number" class="form-control" ng-model="form.retail_price">
-                              </div>
-                              <div class="col-md-6 col-sm-6 col-xs-12">
-                                <label for="quote_price">
-                                    Quote Price
-                                </label>
-                                <input type="number" class="form-control" ng-model="form.quote_price">
-                              </div>
-                          </div>
-                      </div>
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="btn-group pull-left" style="padding-top: 10px;">
-                                    <button type="button" class="btn btn-success" ng-click="onAddPriceTemplateItemClicked()" ng-disabled="!form.item">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                    Add Pricing
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="panel-footer">
+                            <button type="button" class="btn btn-success" ng-click="onAddPriceTemplateItemClicked()" ng-disabled="!form.item">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Add Pricing
+                            </button>
                         </div>
+                    </div>
 
                   <div class="form-group" style="padding-top: 20px;">
                     <div class="table-responsive">
                       <table class="table table-bordered table-hover">
                         <tr style="background-color: #DDFDF8">
-                            <th colspan="7">
+                            <th colspan="12">
                                 <button type="button" class="btn btn-xs btn-warning" ng-click="onSortSequenceClicked($event)">
                                     <i class="fa fa-refresh" aria-hidden="true"></i>
                                     Sort
@@ -351,7 +354,7 @@ Price Template
                           <th class="col-md-1 text-center">
                             ID
                           </th>
-                          <th class="col-md-3 text-center">
+                          <th class="col-md-2 text-center">
                             Product
                           </th>
                           <th class="col-md-2 text-center">
@@ -362,6 +365,9 @@ Price Template
                           </th>
                           <th class="col-md-2 text-center">
                             Quote Price
+                          </th>
+                          <th class="col-md-1 text-center" ng-repeat="uom in uoms">
+                            @{{uom.name}}
                           </th>
                           <th class="col-md-1 text-center">
                             Action
@@ -376,7 +382,7 @@ Price Template
                             @{{ priceTemplateItem.item.product_id }}
                             </a>
                           </td>
-                          <td class="col-md-3 text-left">
+                          <td class="col-md-2 text-left">
                             @{{ priceTemplateItem.item.name }}
                           </td>
                           <td class="col-md-2 text-left">
@@ -387,6 +393,18 @@ Price Template
                           </td>
                           <td class="col-md-2 text-right">
                             <input type="text" class="form-control text-center" ng-model="priceTemplateItem.quote_price" ng-model-options="{ debounce: 1000 }">
+                          </td>
+                          <td class="col-md-1 text-center" ng-repeat="uom in uoms">
+                            <span ng-if="!priceTemplateItem.item.is_inventory && $index == 0">
+                                <input type="checkbox" checked disabled>
+                            </span>
+                            <span ng-if="priceTemplateItem.item.is_inventory" ng-repeat="itemUom in priceTemplateItem.item.item_uoms">
+                                <span ng-if="itemUom.uom_id == uom.id">
+                                    {{-- @{{itemUom.id}} --}}
+                                    {{-- @{{priceTemplateItem.price_template_item_uom}} --}}
+                                    <input type="checkbox" ng-model="priceTemplateItem.price_template_item_uoms[checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).priceTemplateItemUomId]" ng-checked="checkExistPriceTemplateItemUom(itemUom.id, priceTemplateItem).result" ng-true-value=true ng-false-value=false >
+                                </span>
+                            </span>
                           </td>
                           <td class="col-md-1 text-center">
                             <button class="btn btn-danger btn-sm" ng-click="onSingleEntryDeleted(priceTemplateItem)">

@@ -22,11 +22,7 @@
                         </th>
                         <th class="text-center">
                             Qty
-                            {{-- Ctn --}}
                         </th>
-                        {{-- <th class="text-center">
-                            Pieces
-                        </th> --}}
                         @if(!$transaction->is_discard)
                             <th class="text-center">
                                 Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})

@@ -25,7 +25,7 @@ class PriceTemplateItem extends Model
         return $this->belongsTo(PriceTemplate::class);
     }
 
-    public function priceTemplateItemUom()
+    public function priceTemplateItemUoms()
     {
         return $this->hasMany(PriceTemplateItemUom::class);
     }

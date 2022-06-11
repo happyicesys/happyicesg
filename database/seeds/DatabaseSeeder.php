@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(CountrySeeder::class);
         $this->call(UomSeeder::class);
         $this->call(ItemUomSeeder::class);
+        $this->call(PriceTemplateItemUomSeeder::class);
         Model::reguard();
     }
 }

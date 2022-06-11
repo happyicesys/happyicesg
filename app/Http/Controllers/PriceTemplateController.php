@@ -9,6 +9,7 @@ use App\Attachment;
 use App\Person;
 use App\PriceTemplate;
 use App\PriceTemplateItem;
+use App\PriceTemplateItemUom;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Redis;
 
@@ -40,7 +41,8 @@ class PriceTemplateController extends Controller
                                         },
                                         'attachments',
                                         'priceTemplateItems.item',
-                                        'priceTemplateItems.priceTemplateItemUom',
+                                        'priceTemplateItems.item.itemUoms',
+                                        'priceTemplateItems.priceTemplateItemUoms',
                                         'people'  => function($query) use ($request){
                                             if($request->person_id) {
                                                 $query->whereIn('id', $request->person_id);
@@ -94,8 +96,6 @@ class PriceTemplateController extends Controller
     // store new price template api(Request $request)
     public function storeUpdatePriceTemplateApi(Request $request)
     {
-        // dd($request->all());
-
         $id = $request->id;
         $priceTemplateItems = $request->price_template_items;
         $name = $request->name;
@@ -107,7 +107,18 @@ class PriceTemplateController extends Controller
             $priceTemplate->name = $name;
             $priceTemplate->remarks = $remarks;
             $priceTemplate->save();
-            $priceTemplate->priceTemplateItems()->delete();
+            $debugArr = [];
+            if($priceTemplate->priceTemplateItems()->exists()) {
+                foreach($priceTemplate->priceTemplateItems as $priceTemplateItem) {
+                    if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+                        foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+                            $priceTemplateItemUom->delete();
+                        }
+                    }
+                    $priceTemplateItem->delete();
+                }
+            }
+
         }else {
             $priceTemplate = PriceTemplate::create([
                 'name' => $name,
@@ -124,9 +135,7 @@ class PriceTemplateController extends Controller
 
     public function uploadAttachment(Request $request)
     {
-        dd($request->all());
         if($file = request()->file('file')){
-            dd($file);
             $name = (Carbon::now()->format('dmYHi')).$file->getClientOriginalName();
             $url = 'price-template/'.$priceTemplate->id.'/'.$name;
             $urlStore = Storage::put($url, file_get_contents($file->getRealPath()), 'public');
@@ -258,22 +267,45 @@ class PriceTemplateController extends Controller
     }
 
     // sync new route template items
-    private function syncPriceTemplateItem($priceTemplateItem, $id)
+    private function syncPriceTemplateItem($prevPriceTemplateItem, $id)
     {
-
-        $itemId = $priceTemplateItem['item']['id'];
+        $prevPriceTemplateId =  $prevPriceTemplateItem['id'];
+        $itemId = $prevPriceTemplateItem['item']['id'];
         $priceTemplateId = $id;
-        $sequence = $priceTemplateItem['sequence'];
-        $retailPrice = $priceTemplateItem['retail_price'];
-        $quotePrice = $priceTemplateItem['quote_price'];
+        $sequence = $prevPriceTemplateItem['sequence'];
+        $retailPrice = $prevPriceTemplateItem['retail_price'];
+        $quotePrice = $prevPriceTemplateItem['quote_price'];
+        $prevPriceTemplateItemUoms = $prevPriceTemplateItem['price_template_item_uoms'];
 
-        PriceTemplateItem::create([
+        $priceTemplateItem = PriceTemplateItem::create([
             'item_id' => $itemId,
             'price_template_id' => $priceTemplateId,
             'sequence' => $sequence,
             'retail_price' => $retailPrice,
             'quote_price' => $quotePrice,
         ]);
+
+        if(!$prevPriceTemplateId) {
+            if($itemUoms = $priceTemplateItem->item->itemUoms) {
+                foreach($itemUoms as $itemUom) {
+                    PriceTemplateItemUom::create([
+                        'price_template_item_id' => $priceTemplateItem->id,
+                        'item_uom_id' => $itemUom->id,
+                    ]);
+                }
+            }
+        }
+
+        if($prevPriceTemplateItemUoms) {
+            foreach($prevPriceTemplateItemUoms as $prevPriceTemplateItemUom) {
+                PriceTemplateItemUom::create([
+                    'price_template_item_id' => $priceTemplateItem->id,
+                    'item_uom_id' => $prevPriceTemplateItemUom['item_uom_id'],
+                ]);
+
+                // PriceTemplateItemUom::findOrFail($prevPriceTemplateItemUom['id'])->delete();
+            }
+        }
     }
 
 }

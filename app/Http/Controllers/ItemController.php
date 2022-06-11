@@ -14,12 +14,16 @@ use Maatwebsite\Excel\Facades\Excel;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
 use App\Item;
+use App\ItemUom;
 use App\Profile;
+use App\PriceTemplateItem;
+use App\PriceTemplateItemUom;
 use App\Unitcost;
 use App\ImageItem;
 use App\Transaction;
 use App\Price;
 use App\Person;
+use App\Uom;
 use DB;
 
 class ItemController extends Controller
@@ -429,11 +433,86 @@ class ItemController extends Controller
         return Redirect::action('ItemController@edit', $item->id);
     }
 
+    public function getAllUomApi()
+    {
+        return Uom::orderBy('sequence', 'desc')->get();
+    }
+
     public function getItemUomApi($itemId)
     {
         $item = Item::findOrFail($itemId);
 
-        return $item->itemUoms;
+        $data = [
+            'itemUoms' => $item->itemUoms()->leftJoin('uoms', 'uoms.id', '=', 'item_uoms.uom_id')->orderBy('sequence')->select('*', 'item_uoms.id')->get(),
+            'baseItemUom' => $item->itemUoms()->where('is_base_unit', true)->first(),
+        ];
+
+        return $data;
+    }
+
+    public function createUpdateItemUomApi(Request $request, $itemId)
+    {
+        $itemUomId = $request->id;
+        $uomId = $request->uom_id;
+        $value = $request->value;
+        $isBaseUnit = $request->is_base_unit;
+        $isTransactedUnit = $request->is_transacted_unit;
+
+        if($itemUomId) {
+            $itemUom = ItemUom::findOrFail($itemUomId);
+            if($isBaseUnit) {
+                if($isBaseUnitItemUoms = $itemUom->item->itemUoms()->where('is_base_unit', true)->get()) {
+                    foreach($isBaseUnitItemUoms as $isBaseUnitItemUom) {
+                        $isBaseUnitItemUom->is_base_unit = false;
+                        $isBaseUnitItemUom->save();
+                    }
+                }
+            }
+            if($isTransactedUnit) {
+                if($isTransactedUnitUoms = $itemUom->item->itemUoms()->where('is_transacted_unit', true)->get()) {
+                    foreach($isTransactedUnitUoms as $isTransactedUnitUom) {
+                        $isTransactedUnitUom->is_transacted_unit = false;
+                        $isTransactedUnitUom->save();
+                    }
+                }
+            }
+            $itemUom->update([
+                'is_base_unit' => $isBaseUnit ? true : false,
+                'is_transacted_unit' => $isTransactedUnit ? true : false,
+                'value' => $value,
+            ]);
+        }else {
+            $itemUom = ItemUom::create([
+                'item_id' => $itemId,
+                'uom_id' => $uomId,
+                'is_base_unit' => $isBaseUnit ? true : false,
+                'is_transacted_unit' => $isTransactedUnit ? true : false,
+                'value' => $value,
+            ]);
+
+            // linkup newly created itemuom to pricetemplateitem
+            $priceTemplateItems = PriceTemplateItem::whereHas('item', function($query) use ($itemUom){
+                $query->where('is_inventory', true)->where('id', $itemUom->item_id);
+            })->get();
+
+            if($priceTemplateItems and $itemUom) {
+                foreach($priceTemplateItems as $priceTemplateItem) {
+                    PriceTemplateItemUom::create([
+                        'price_template_item_id' => $priceTemplateItem->id,
+                        'item_uom_id' => $itemUom->id,
+                    ]);
+                }
+            }
+        }
+
+        // base unit checker
+        if(!$itemUom->item->itemUoms()->where('is_base_unit', true)->first()) {
+            $forceBaseItemUnit = $itemUom->item->itemUoms()->orderBy('value')->first();
+            if($forceBaseItemUnit) {
+                $forceBaseItemUnit->is_base_unit = true;
+                $forceBaseItemUnit->save();
+            }
+        }
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
@@ -449,6 +528,22 @@ class ItemController extends Controller
                 $sheet->loadView('item.excel_unitcost', compact('profiles', 'items'));
             });
         })->download('xls');
+    }
+
+    public function deleteItemUomApi($itemUomId)
+    {
+        $itemUom = ItemUom::findOrFail($itemUomId);
+
+        // base unit checker
+        if($itemUom->is_base_unit) {
+            $forceBaseItemUnit = $itemUom->item->itemUoms()->orderBy('value')->first();
+            if($forceBaseItemUnit) {
+                $forceBaseItemUnit->is_base_unit = true;
+                $forceBaseItemUnit->save();
+            }
+        }
+
+        $itemUom->delete();
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

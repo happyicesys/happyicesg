@@ -13,15 +13,18 @@ class UomSeeder extends Seeder
     public function run()
     {
         Uom::create([
-            'name' => 'pcs'
+            'name' => 'pcs',
+            'sequence' => 1,
         ]);
 
         Uom::create([
-            'name' => 'box'
+            'name' => 'box',
+            'sequence' => 2,
         ]);
 
         Uom::create([
-            'name' => 'ctn'
+            'name' => 'ctn',
+            'sequence' => 3,
         ]);
     }
 }
