@@ -266,6 +266,30 @@ class PriceTemplateController extends Controller
         $attachment->delete();
     }
 
+    public function togglePriceTemplateItemUomApi($priceTemplateItemId, $itemUomId)
+    {
+        $priceTemplateItem = PriceTemplateItem::findOrFail($priceTemplateItemId);
+
+        if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+            $priceTemplateItemUomObj = $priceTemplateItem->priceTemplateItemUoms()->whereHas('itemUom', function($query) use ($itemUomId) {
+                $query->where('id', $itemUomId);
+            })->first();
+            if($priceTemplateItemUomObj) {
+                $priceTemplateItemUomObj->delete();
+            }else {
+                PriceTemplateItemUom::create([
+                    'price_template_item_id' => $priceTemplateItemId,
+                    'item_uom_id' => $itemUomId,
+                ]);
+            }
+        }else {
+            PriceTemplateItemUom::create([
+                'price_template_item_id' => $priceTemplateItemId,
+                'item_uom_id' => $itemUomId,
+            ]);
+        }
+    }
+
     // sync new route template items
     private function syncPriceTemplateItem($prevPriceTemplateItem, $id)
     {

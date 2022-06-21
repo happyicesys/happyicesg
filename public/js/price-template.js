@@ -346,6 +346,12 @@ function priceTemplateController($scope, $http) {
         });
     };
 
+    $scope.onPriceTemplateItemUomChanged = function (priceTemplateItem, itemUom) {
+        $http.post('/api/price-template-item/' + priceTemplateItem.id + '/item-uom/' + itemUom.id + '/toggle').success(function (data) {
+            getPage(1, false);
+        });
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;

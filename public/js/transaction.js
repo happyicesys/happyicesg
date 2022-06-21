@@ -127,6 +127,10 @@ function transactionController($scope, $http) {
     $scope.attachmentType = '';
     $scope.showServiceCompletionError = false;
     $scope.priceTemplateItems = [];
+    $scope.priceItems = [];
+    $scope.transaction;
+    $scope.uoms;
+    $scope.totalAmount = 0.00;
     var formData = new FormData();
 
     loadDealTable();
@@ -273,7 +277,7 @@ function transactionController($scope, $http) {
     });
 
     $scope.onIsImportantClicked = function (transaction_id, index, driver_role = false) {
-        console.log(driver_role)
+        // console.log(driver_role)
         if (!driver_role) {
             $http.post('/api/transaction/is_important/' + transaction_id).success(function (data) {
                 location.reload();
@@ -315,6 +319,9 @@ function transactionController($scope, $http) {
             $scope.taxModel = data.tax;
             $scope.totalqtyModel = data.total_qty.toFixed(4);
             $scope.isStockAction = data.isStockAction;
+            $scope.priceItems = data.priceItems;
+            $scope.transaction = data.transaction;
+            $scope.uoms = data.uoms;
 
 
             // console.log($scope.totalModel);
@@ -562,7 +569,7 @@ function transactionController($scope, $http) {
     }
 
     $scope.onPickupDate = function (date) {
-        console.log('here');
+        // console.log('here');
         if (date) {
             $scope.doform.pickup_date = moment(new Date(date)).format('YYYY-MM-DD');
         }
@@ -810,6 +817,61 @@ function transactionController($scope, $http) {
         $http.post('/api/transaction/' + $trans_id.val() + '/sync-stock-action-deals', { inventoryMovementType: inventoryMovementType, extraDealProductId: extraDealProductId }).success(function (data) {
             loadDealTable();
         });
+    }
+
+    $scope.checkIsActiveUom = function (uomId, priceItem) {
+        let isActive = false;
+        if (priceItem.price_template_item_uoms.length) {
+            angular.forEach(priceItem.price_template_item_uoms, function (value, key) {
+                if (value.item_uom && value.item_uom.uom.id == uomId) {
+                    isActive = true;
+                }
+            });
+        }
+        if (uomId == 3 && priceItem.item.is_inventory == 0) {
+            isActive = true;
+        }
+        return isActive;
+    }
+
+    $scope.syncAmount = function (priceItem) {
+        // console.log(priceItem);
+        let subTotalAmount = 0;
+        let grandTotalAmount = 0.00;
+        if (priceItem.qty) {
+            if (!priceItem.item.is_inventory || !$scope.transaction.person.price_template) {
+                oldQtyValue = priceItem.qty['ctn'] ? eval(priceItem.qty['ctn']) : 0;
+                subTotalAmount = oldQtyValue * priceItem.quote_price;
+            } else {
+                let baseUom = {}
+                let transactedUom = {}
+                angular.forEach(priceItem.item.item_uoms, function (itemUom, itemUomKey) {
+                    if (itemUom && itemUom.is_base_unit) {
+                        baseUom = itemUom;
+                    }
+                    if (itemUom && itemUom.is_transacted_unit) {
+                        transactedUom = itemUom;
+                    }
+                });
+                angular.forEach(priceItem.qty, function (qtyValue, qtyKey) {
+                    qtyValue = qtyValue ? qtyValue : 0;
+                    angular.forEach(priceItem.price_template_item_uoms, function (itemUom, itemUomKey) {
+                        if (itemUom.item_uom && qtyKey == itemUom.item_uom.uom.name) {
+                            subTotalAmount += (parseInt(qtyValue) * parseInt(itemUom.item_uom.value)) / parseInt(transactedUom.value) * parseFloat(priceItem.quote_price);
+                        }
+                    });
+                });
+            }
+
+        }
+        priceItem.amount = subTotalAmount.toFixed(2);
+
+        if ($scope.priceItems) {
+            angular.forEach($scope.priceItems, function (priceItem, priceItemIndex) {
+                grandTotalAmount += priceItem.amount ? parseFloat(priceItem.amount) : 0;
+            });
+            $scope.totalAmount = grandTotalAmount.toFixed(2);
+        }
     }
 }
 

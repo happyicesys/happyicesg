@@ -23,16 +23,19 @@
                         <th class="text-center">
                             Item
                         </th>
-                        @if($uoms)
-                            @foreach($uoms as $uom)
+                        @if($transaction->person->priceTemplate()->exists())
+                            @if($uoms)
+                                @foreach($uoms as $uom)
+                                <th class="text-center">
+                                    {{$uom->name}}
+                                </th>
+                                @endforeach
+                            @endif
+                        @else
                             <th class="text-center">
-                                {{$uom->name}}
+                                Qty
                             </th>
-                            @endforeach
                         @endif
-                        {{-- <th class="text-center">
-                            Qty
-                        </th> --}}
                         @if(!$transaction->is_discard)
                             <th class="text-center">
                                 Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
@@ -47,7 +50,7 @@
                     </tr>
 
                     @if($transaction->person->priceTemplate()->exists())
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="price_template">
                                 Binded Price Template: {{$transaction->person->priceTemplate->name}} @if($transaction->person->priceTemplate->remarks) {{$transaction->person->priceTemplate->remarks}} @endif
                             </label>
@@ -95,17 +98,6 @@
                                         {{$priceTemplateItem->item->name}}<br>
                                         <small>{{$priceTemplateItem->item->remark}}</small>
                                 </td>
-                                {{-- <td class="col-md-1 col-xs-2">
-                                    @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                                    <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                                    @else
-                                        @can('transaction_view')
-                                        <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
-                                        @else
-                                        <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                                        @endcan
-                                    @endif
-                                </td> --}}
                                 @if($itemUomArr)
                                     @foreach($itemUomArr as $itemUom)
                                     <th class="col-md-1 col-xs-1">
@@ -143,14 +135,14 @@
                                 @endif
                             </tr>
                         @endforeach
-                        @endunless
+                        @endunless --}}
+
                     @else
                         @unless(count($prices)>0)
                         <td class="text-center" colspan="7">No Records Found</td>
                         @else
                         @foreach($prices as $price)
                             @if($price->is_active)
-                            {{-- @if(($transaction->is_discard and $price->is_inventory) or !$transaction->is_discard) --}}
                             <tr class="txtMult">
                                 <td class="col-md-5 col-xs-4 hidden-xs">
                                         <strong>{{$price->product_id}}</strong></span>
@@ -193,7 +185,6 @@
                                         class="text-right form-control quoteClass" {{$disabledStr}}/>
                                     @endif
                                     </strong>
-                                    {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                                 </td>
                                 <td class="col-md-2 col-xs-2">
                                     <input type="text" name="amount[{{$price->item_id}}]"
@@ -201,7 +192,6 @@
                                 </td>
                                 @endif
                             </tr>
-                            {{-- @endif --}}
                             @endif
                         @endforeach
                         @endunless

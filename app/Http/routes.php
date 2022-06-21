@@ -342,6 +342,7 @@ Route::post('/api/price-template/sort-sequence', 'PriceTemplateController@sortSe
 Route::post('/api/price-template/renumber-sequence', 'PriceTemplateController@renumberSequenceApi');
 Route::post('/api/price-template/{id}/attachment', 'PriceTemplateController@storeAttachmentApi');
 Route::post('/api/price-template/attachment/delete', 'PriceTemplateController@deleteAttachmentApi');
+Route::post('/api/price-template-item/{priceTemplateItemId}/item-uom/{itemUomId}/toggle', 'PriceTemplateController@togglePriceTemplateItemUomApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');
