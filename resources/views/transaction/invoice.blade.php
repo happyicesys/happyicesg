@@ -560,13 +560,21 @@
                             <th class="col-xs-6 text-center">
                                 Description
                             </th>
-                            <th class="col-xs-2 text-center">
-                                @if($transaction->is_vending_generate)
-                                    Sales
-                                @else
-                                    Quantity
-                                @endif
-                            </th>
+                            @if($transaction->person->price_template_id)
+                                @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                                    <th class="col-xs-1 text-center">
+                                        {{$uom->name}}
+                                    </th>
+                                @endforeach
+                            @else
+                                <th class="col-xs-2 text-center">
+                                    @if($transaction->is_vending_generate)
+                                        Sales
+                                    @else
+                                        Quantity
+                                    @endif
+                                </th>
+                            @endif
                             @if($type == 'invoice')
                             <th class="col-xs-1 text-center">
                                 @if($transaction->is_vending_generate)
@@ -613,22 +621,32 @@
                                     {{ $deal->item->name}} {{ $deal->item->remark }}
                                 </td>
 
-                                @if($deal->divisor and $deal->item->is_inventory === 1)
-                                    <td class="col-xs-2 text-right">
-                                        {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
-                                    </td>
-                                @elseif($deal->item->is_inventory === 0)
-                                    <td class="col-xs-2 text-left">
-                                        @if($deal->dividend === 1)
-                                            1 Unit
-                                        @else
-                                            {{$deal->dividend ? $deal->dividend + 0 : 1}} Unit
-                                        @endif
-                                    </td>
+                                @if($deal->transaction->person->price_template_id and $deal->qty_json)
+                                    @foreach(\App\Uom::orderBy('sequence', 'desc')->get() as $uom)
+                                        <td class="col-xs-1 text-right">
+                                            @if(isset($deal->qty_json[$uom->name]))
+                                                {{$deal->qty_json[$uom->name]}}
+                                            @endif
+                                        </td>
+                                    @endforeach
                                 @else
-                                    <td class="col-xs-2 text-right">
-                                        {{ $deal->qty + 0 }}
-                                    </td>
+                                    @if($deal->divisor and $deal->item->is_inventory === 1)
+                                        <td class="col-xs-1 text-right" colspan="{{count(\App\Uom::all())}}">
+                                            {{ $deal->divisor == 1 ? $deal->qty + 0 : ($deal->dividend + 0).'/'.($deal->divisor + 0)}} {{ $deal->item->unit }}
+                                        </td>
+                                    @elseif($deal->item->is_inventory === 0)
+                                        <td class="col-xs-1 text-left" colspan="{{count(\App\Uom::all())}}">
+                                            @if($deal->dividend === 1)
+                                                1 Unit
+                                            @else
+                                                {{$deal->dividend ? $deal->dividend + 0 : 1}} Unit
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td class="col-xs-1 text-right" colspan="{{count(\App\Uom::all())}}">
+                                            {{ $deal->qty + 0 }}
+                                        </td>
+                                    @endif
                                 @endif
 
                                 @if($type == 'invoice')
@@ -688,7 +706,11 @@
                             <td colspan="2" class="text-right">
                                 <strong>Delivery Fee</strong>
                             </td>
-                            <td colspan="2"></td>
+                            @if($transaction->person->price_template_id)
+                                <td colspan="{{count(\App\Uom::all()) + 1}}"></td>
+                            @else
+                                <td colspan="2"></td>
+                            @endif
                             <td class="text-right">
                                 {{ number_format(($transaction->delivery_fee), 2)}}
                             </td>
@@ -700,7 +722,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                @if($transaction->person->price_template_id)
+                                    <td colspan="{{count(\App\Uom::all()) + 1}}"></td>
+                                @else
+                                    <td colspan="2"></td>
+                                @endif
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
@@ -709,7 +735,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Exclude GST</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                @if($transaction->person->price_template_id)
+                                    <td colspan="{{count(\App\Uom::all()) + 1}}"></td>
+                                @else
+                                    <td colspan="2"></td>
+                                @endif
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
@@ -718,9 +748,16 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-2 text-right">
-                                    {{$totalqty}}
-                                </td>
+                                @if($transaction->person->price_template_id)
+                                    <td class="col-xs-2 text-right" colspan="{{count(\App\Uom::all())}}">
+                                        {{$totalqty}}
+                                    </td>
+                                @else
+                                    <td class="col-xs-2 text-right">
+                                        {{$totalqty}}
+                                    </td>
+                                @endif
+
                                 <td></td>
                                 <td class="text-right">
                                     <strong>{{$total}}</strong>
@@ -731,7 +768,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>SubTotal</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                @if($transaction->person->price_template_id)
+                                    <td colspan="{{count(\App\Uom::all()) + 1}}"></td>
+                                @else
+                                    <td colspan="2"></td>
+                                @endif
                                 <td class="text-right">
                                     {{$subtotal}}
                                 </td>
@@ -740,7 +781,11 @@
                                 <td colspan="2" class="text-right">
                                     <strong>GST ({{$transaction->gst_rate + 0}}%)</strong>
                                 </td>
-                                <td colspan="2"></td>
+                                @if($transaction->person->price_template_id)
+                                    <td colspan="{{count(\App\Uom::all()) + 1}}"></td>
+                                @else
+                                    <td colspan="2"></td>
+                                @endif
                                 <td class="text-right">
                                     {{$gst}}
                                 </td>
@@ -749,9 +794,15 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-1 text-right">
-                                    {{$totalqty}}
-                                </td>
+                                @if($transaction->person->price_template_id)
+                                    <td class="col-xs-2 text-right" colspan="{{count(\App\Uom::all())}}">
+                                        {{$totalqty}}
+                                    </td>
+                                @else
+                                    <td class="col-xs-2 text-right">
+                                        {{$totalqty}}
+                                    </td>
+                                @endif
                                 <td></td>
                                 <td class="text-right">
                                     <strong>{{$total}}</strong>
@@ -762,9 +813,15 @@
                                 <td colspan="2" class="text-right">
                                     <strong>Total</strong>
                                 </td>
-                                <td class="col-xs-1 text-right">
-                                    {{$totalqty}}
-                                </td>
+                                @if($transaction->person->price_template_id)
+                                    <td class="col-xs-2 text-right" colspan="{{count(\App\Uom::all())}}">
+                                        {{$totalqty}}
+                                    </td>
+                                @else
+                                    <td class="col-xs-2 text-right">
+                                        {{$totalqty}}
+                                    </td>
+                                @endif
                                 <td></td>
                                 <td class="text-right">
                                     <strong>{{$total}}</strong>
