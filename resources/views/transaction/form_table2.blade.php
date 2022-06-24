@@ -76,6 +76,9 @@
                                 </div>
                                 <div class="col-md-9 col-xs-7">
                                     @{{priceItem.item.name}}
+                                    <small ng-if="priceItem.item.remark">
+                                        <br>@{{priceItem.item.remark}}
+                                    </small>
                                 </div>
                             </div>
                         </td>
@@ -130,6 +133,9 @@
                         <strong>
                             @{{priceItem.item.product_id}} -  @{{priceItem.item.name}}
                         </strong>
+                        <small ng-if="priceItem.item.remark">
+                            <br>@{{priceItem.item.remark}}
+                        </small>
                     </div>
                     <div class="row" style="padding-top:5px;">
                         <div class="table-responsive">
@@ -144,7 +150,6 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right col-md-1 col-xs-2" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
-                                        {{-- <input type="text" name="@{{uom.name}}[@{{priceItem.id}}]" ng-model="uom.name[priceItem.id]" class="form-control text-right" ng-disabled="!checkIsActiveUom(uom.id, priceItem)"/> --}}
                                         <input type="number" name="@{{uom.name}}[@{{priceItem.id}}]" ng-model="priceItem.qty[uom.name]" ng-change="syncAmount(priceItem)" class="form-control text-right" ng-disabled="!checkIsActiveUom(uom.id, priceItem)"/>
                                     </td>
                                     <td class="text-right col-md-1 col-xs-2" ng-if="!transaction.person.price_template">

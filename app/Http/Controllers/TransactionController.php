@@ -566,7 +566,24 @@ class TransactionController extends Controller
                                     ->get();
         }
 
+        // $uomsArr = [];
+
+        // if($priceItems) {
+        //     foreach($priceItems as $priceItem) {
+        //         if(isset($priceItem->priceTemplateItemUoms) and $priceItem->priceTemplateItemUoms()->exists()) {
+        //             foreach($priceItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+
+        //             }
+        //             dd($priceItem->toArray());
+        //         }else {
+
+        //         }
+        //     }
+        // }
+        // dd($priceItems->toArray());
         $uoms = Uom::orderBy('sequence', 'desc')->get();
+
+
 
         // die(var_dump($transaction));
         return $data = [

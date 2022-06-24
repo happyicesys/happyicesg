@@ -323,9 +323,31 @@ function transactionController($scope, $http) {
             $scope.transaction = data.transaction;
             $scope.uoms = data.uoms;
 
+            if ($scope.priceItems.length) {
+                angular.forEach($scope.uoms, function (uomValue, uomKey) {
+                    let isShowField = false;
+                    angular.forEach($scope.priceItems, function (priceItemValue, priceItemKey) {
+                        if (priceItemValue.price_template_item_uoms.length) {
+                            angular.forEach(priceItemValue.price_template_item_uoms, function (priceTemplateItemUomValue, priceTemplateItemUomKey) {
+                                if (priceTemplateItemUomValue.item_uom && priceTemplateItemUomValue.item_uom.uom.id == uomValue.id) {
+                                    isShowField = true;
+                                }
 
-            // console.log($scope.totalModel);
-            // console.log($scope.subtotalModel);
+                                if (uomValue.id == 3 && priceItemValue.item.is_inventory == 0) {
+                                    isShowField = true;
+                                }
+                            })
+                        }
+                    })
+                    uomValue['is_active'] = isShowField;
+                });
+            }
+
+            $scope.uoms = $scope.uoms.filter(function (value, index, arr) {
+                return value.is_active;
+            });
+
+            console.log($scope.uoms);
             // console.log($scope.taxModel);
 
             $scope.getTotalPieces = function () {

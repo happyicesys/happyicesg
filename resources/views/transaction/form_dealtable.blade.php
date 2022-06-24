@@ -56,6 +56,13 @@
                         <th class="col-md-1 text-center">
                             T.Qty (pcs)
                         </th>
+                        <th class="col-md-1 text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                            @{{uom.name}}
+                        </th>
+                        <th class="col-md-1 text-center" ng-if="!transaction.person.price_template">
+                            Qty
+                        </th>
+{{--
                         @if($transaction->person->price_template_id)
                             @foreach($uoms::orderBy('sequence', 'desc')->get() as $uom)
                                 <th class="col-md-1 text-center">
@@ -66,7 +73,7 @@
                             <th class="col-md-1 text-center">
                                 Quantity
                             </th>
-                        @endif
+                        @endif --}}
 
                         @if(!$transaction->is_discard)
                             <th class="col-md-1 text-center">
@@ -90,58 +97,56 @@
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
                             <td class="col-md-1 text-right">@{{ deal.pieces }}</td>
-                            @if($transaction->person->price_template_id)
-                                <td class="col-md-1 text-right" ng-repeat="uom in uoms" style="background-color: @{{uom.color}}" ng-if="deal.qty_json">
-                                    <span ng-if="deal.qty_json[uom.name]">
-                                        <strong>
-                                            @{{deal.qty_json[uom.name]}}
-                                        </strong>
-                                    </span>
-                                </td>
-                                <td class="col-md-1 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}" colspan="@{{uoms.length}}" ng-if="!deal.qty_json">
-                                    <span>
-                                        <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
-                                            @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
-                                        </span>
-                                        <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
-                                            @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
-                                        </span>
-                                        <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
-                                            @{{deal.qty}}
-                                        </span>
-                                        <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
-                                            1 Unit
-                                        </span>
-                                        <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
-                                            @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
-                                        </span>
-                                    </span>
-                                </td>
 
-                            @else
-                                <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}">
-                                    <span ng-if="!deal.qty_json">
-                                        <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
-                                            @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
-                                        </span>
-                                        <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
-                                            @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
-                                        </span>
-                                        <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
-                                            @{{deal.qty}}
-                                        </span>
-                                        <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
-                                            1 Unit
-                                        </span>
-                                        <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
-                                            @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
-                                        </span>
+                            <td class="col-md-1 text-right" ng-repeat="uom in uoms" style="background-color: @{{uom.color}}" ng-if="deal.qty_json && transaction.person.price_template">
+                                <span ng-if="deal.qty_json[uom.name]">
+                                    <strong>
+                                        @{{deal.qty_json[uom.name]}}
+                                    </strong>
+                                </span>
+                            </td>
+                            <td class="col-md-1 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}" colspan="@{{uoms.length}}" ng-if="!deal.qty_json && transaction.person.price_template">
+                                <span>
+                                    <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
+                                        @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
                                     </span>
-                                    <span ng-if="deal.qty_json">
-                                        @{{deal.qty_json}}
+                                    <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
+                                        @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
                                     </span>
-                                </td>
-                            @endif
+                                    <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
+                                        @{{deal.qty}}
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
+                                        1 Unit
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
+                                        @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
+                                    </span>
+                                </span>
+                            </td>
+
+                            <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}" ng-if="!transaction.person.price_template">
+                                <span ng-if="!deal.qty_json">
+                                    <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
+                                        @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
+                                    </span>
+                                    <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
+                                        @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
+                                    </span>
+                                    <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
+                                        @{{deal.qty}}
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
+                                        1 Unit
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
+                                        @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
+                                    </span>
+                                </span>
+                                <span ng-if="deal.qty_json">
+                                    @{{deal.qty_json}}
+                                </span>
+                            </td>
 
                             {{-- unit price --}}
                             @if(!$transaction->is_discard)
