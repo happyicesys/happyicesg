@@ -156,6 +156,10 @@
                                         <input type="text" name="qty[@{{priceItem.id}}]"  ng-model="priceItem.qty['ctn']" ng-change="syncAmount(priceItem)" class="form-control text-right"/>
                                     </td>
                                 </tr>
+                            </table>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed">
                                 <tr>
                                     <td class="text-center" ng-if="!transaction.is_discard">
                                         <label>
