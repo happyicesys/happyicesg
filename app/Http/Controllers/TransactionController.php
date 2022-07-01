@@ -1202,7 +1202,7 @@ class TransactionController extends Controller
                 ->setOption('enable-javascript', true)
                 ->setOption('javascript-delay', 3000)
                 ->setOption('enable-smart-shrinking', false)
-                ->setOption('print-media-type', true)
+                // ->setOption('print-media-type', true)
                 ->setOption('zoom', 2)
                 ->setOption('margin-top', 10)
                 ->setOption('margin-right', 6)
