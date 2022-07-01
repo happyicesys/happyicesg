@@ -8,8 +8,8 @@ return array(
         'binary' => '/usr/local/bin/wkhtmltopdf',
         'timeout' => false,
         'options' => array(
-                            'print-media-type' => true,
-                            'outline' => true,
+                            // 'print-media-type' => true,
+                            // 'outline' => true,
                             // 'dpi' => 96,
                             'dpi' => 85,
                             'page-size' => 'A4',
