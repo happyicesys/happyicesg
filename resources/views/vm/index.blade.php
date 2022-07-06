@@ -172,6 +172,12 @@ Vending Machine
                                 <span ng-if="search.sortName == 'cust_id' && search.sortBy" class="fa fa-caret-up"></span>
                             </th>
                             <th class="col-md-1 text-center">
+                                <a href="" ng-click="sortTable('custcategory')">
+                                CustCat
+                                <span ng-if="search.sortName == 'custcategory' && !search.sortBy" class="fa fa-caret-down"></span>
+                                <span ng-if="search.sortName == 'custcategory' && search.sortBy" class="fa fa-caret-up"></span>
+                            </th>
+                            <th class="col-md-1 text-center">
                                 Action
                             </th>
                         </tr>
@@ -211,6 +217,9 @@ Vending Machine
                                     <a href="/person/@{{ vm.person_id }}" ng-if="vm.person_id">
                                         @{{ vm.cust_id}} - @{{vm.company}}
                                     </a>
+                                </td>
+                                <td class="col-md-1 text-center">
+                                    @{{ vm.custcategory}}
                                 </td>
                                 <td class="col-md-1 text-center">
                                     <button class="btn btn-danger btn-sm btn-delete" ng-click="confirmDelete($event, vm.id)"><i class="fa fa-times"></i></button>

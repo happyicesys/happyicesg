@@ -124,7 +124,10 @@ class VendingController extends Controller
                     }
 
                     if($person->commission_package == 1) {
-                        $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'% + $'.$person->vending_monthly_utilities;
+                        $remarkStr .= "\n Commission Plan: ".$person->vending_profit_sharing.'%';
+                        if($person->vending_monthly_utilities > 0) {
+                            $remarkStr .= ' + $'.$person->vending_monthly_utilities;
+                        }
                     }
 
                     if($person->commission_package == 2) {
