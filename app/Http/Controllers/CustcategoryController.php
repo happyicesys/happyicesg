@@ -47,7 +47,7 @@ class CustcategoryController extends Controller
                             'custcategory_groups.name AS custcategory_group_name',
                             'custcategories.desc'
                             )
-                        ->with(['custcategoryGroup', 'attachments'])
+                        ->with(['custcategoryGroup', 'attachments', 'people'])
                         ->withCount(['people' => function($query) use ($active){
                             if($active) {
                                 $query->whereIn('active', $active);
@@ -69,17 +69,17 @@ class CustcategoryController extends Controller
             });
         }
 
-        if($active) {
-            $query = $query->where(function ($query) use ($active) {
-                $query->whereHas('people', function($query) use ($active) {
-                    $query->whereIn('active', $active);
-                });
-                if($active) {
-                    $custcategoryIdsWithoutPeople = Custcategory::doesntHave('people')->lists('id');
-                    $query->orWhereIn('custcategories.id', $custcategoryIdsWithoutPeople);
-                }
-            });
-        }
+        // if($active) {
+        //     $query = $query->where(function ($query) use ($active) {
+        //         $query->whereHas('people', function($query) use ($active) {
+        //             $query->whereIn('active', $active);
+        //         });
+        //         if($active) {
+        //             $custcategoryIdsWithoutPeople = Custcategory::doesntHave('people')->lists('id');
+        //             $query->orWhereIn('custcategories.id', $custcategoryIdsWithoutPeople);
+        //         }
+        //     });
+        // }
 
         if(request('sortName')){
             $query = $query->orderBy(request('sortName'), request('sortBy') ? 'asc' : 'desc');
