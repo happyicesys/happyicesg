@@ -16,7 +16,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
                 {!! Form::label('type', 'Type', ['class'=>'control-label']) !!}
-                {!! Form::select('type', ['FVM'=>'FVM', 'DVM'=>'DVM', 'COMBI'=>'COMBI', 'Model-E'=>'Model-E', 'Model-F'=>'Model-F'], null, ['class'=>'select form-control']) !!}
+                {!! Form::select('type', ['FVM'=>'FVM', 'DVM'=>'DVM', 'COMBI'=>'COMBI', 'Model-E'=>'Model-E', 'F'=>'F'], null, ['class'=>'select form-control']) !!}
             </div>
         </div>
     </div>
