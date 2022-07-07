@@ -70,8 +70,14 @@ class CustcategoryController extends Controller
         }
 
         if($active) {
-            $query = $query->whereHas('people', function($query) use ($active) {
-                $query->whereIn('active', $active);
+            $query = $query->where(function ($query) use ($active) {
+                $query->whereHas('people', function($query) use ($active) {
+                    $query->whereIn('active', $active);
+                });
+                if($active) {
+                    $custcategoryIdsWithoutPeople = Custcategory::doesntHave('people')->lists('id');
+                    $query->orWhereIn('custcategories.id', $custcategoryIdsWithoutPeople);
+                }
             });
         }
 
