@@ -47,7 +47,7 @@ class CustcategoryController extends Controller
                             'custcategory_groups.name AS custcategory_group_name',
                             'custcategories.desc'
                             )
-                        ->with(['custcategoryGroup', 'attachments', 'people'])
+                        ->with(['custcategoryGroup', 'attachments'])
                         ->withCount(['people' => function($query) use ($active){
                             if($active) {
                                 $query->whereIn('active', $active);
