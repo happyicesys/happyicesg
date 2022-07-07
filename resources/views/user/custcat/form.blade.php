@@ -19,7 +19,7 @@
 
 <div class="form-group">
     {!! Form::label('desc', 'Description', ['class'=>'control-label']) !!}
-    {!! Form::textarea('desc', null, ['class'=>'form-control', 'rows'=>'2']) !!}
+    {!! Form::textarea('desc', null, ['class'=>'form-control', 'rows'=>'5']) !!}
 </div>
 
 <div class="form-group">

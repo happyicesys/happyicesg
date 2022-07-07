@@ -126,7 +126,7 @@
                             @{{ data.name }}
                         </td>
                         <td class="col-md-3 text-left">
-                            @{{ data.desc }}
+                            <span style="white-space: pre-line">@{{ data.desc }}</span>
                         </td>
                         <td class="col-md-2 text-left">
                             @{{ data.custcategory_group.name }}
