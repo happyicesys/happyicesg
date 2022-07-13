@@ -193,7 +193,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-5" style="font-size: 90%;">
+                                <div class="col-xs-5" style="font-size: 85%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline"><strong>PO#:</strong></span>
                                     </div>
@@ -208,9 +208,9 @@
                             </div>
                             @if(!$transaction->is_deliveryorder)
                                 <div class="row">
-                                    <div class="col-xs-5" style="font-size: 90%;">
+                                    <div class="col-xs-5" style="font-size: 85%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>OrderDate:</strong></span>
+                                            <span class="inline"><strong>Order Date:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
@@ -220,9 +220,9 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-5" style="font-size: 90%;">
+                                    <div class="col-xs-5" style="font-size: 85%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>DeliveryDate:</strong></span>
+                                            <span class="inline"><strong>Delivery Date:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
@@ -233,9 +233,9 @@
                                 </div>
                             @else
                                 <div class="row">
-                                    <div class="col-xs-5" style="font-size: 90%;">
+                                    <div class="col-xs-5" style="font-size: 85%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>SubmitOn:</strong></span>
+                                            <span class="inline"><strong>Submit On:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
@@ -248,7 +248,7 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <div class="col-xs-5" style="font-size: 90%;">
+                                <div class="col-xs-5" style="font-size: 85%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <span class="inline"><strong>Term:</strong></span>
                                     </div>
@@ -261,9 +261,9 @@
                             </div>
                             @if(!$transaction->is_deliveryorder)
                                 <div class="row">
-                                    <div class="col-xs-5" style="font-size: 90%;">
+                                    <div class="col-xs-5" style="font-size: 85%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>CreatedBy:</strong></span>
+                                            <span class="inline"><strong>Created By:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
@@ -274,9 +274,9 @@
                                 </div>
                             @else
                                 <div class="row">
-                                    <div class="col-xs-5" style="font-size: 90%;">
+                                    <div class="col-xs-5" style="font-size: 85%;">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <span class="inline"><strong>RequestBy:</strong></span>
+                                            <span class="inline"><strong>Request By:</strong></span>
                                         </div>
                                     </div>
                                     <div class="col-xs-7" style="font-size: 120%;">
@@ -288,12 +288,12 @@
                             @endif
                             @if($transaction->driver)
                             <div class="row">
-                                <div class="col-xs-5" style="font-size: 90%;">
+                                <div class="col-xs-5" style="font-size: 85%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
-                                        <span class="inline" ><strong>DeliveredBy:</strong></span>
+                                        <span class="inline" ><strong>Delivered By:</strong></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-7" style="font-size: 125%;">
+                                <div class="col-xs-7" style="font-size: 120%;">
                                     <div class="form-group" style="margin-bottom: 0px;">
                                         <strong>
                                         <span class="inline">
