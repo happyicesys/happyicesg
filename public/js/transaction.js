@@ -625,29 +625,27 @@ function transactionController($scope, $http) {
             });
     };
 
-    $scope.setAttachment1 = function ($files, serviceId, reload = false) {
+    $scope.setAttachment = function ($files, serviceId, reload = false, type) {
         angular.forEach($files, function (value, key) {
-            formData.append('attachment1', value);
+            formData.append('attachment', value);
         });
         formData.append('desc', $scope.formService.desc);
-        uploadFile('/api/transaction/service/' + serviceId + '/update');
+        uploadFile('/api/transaction/service/' + serviceId + '/attachment/' + type);
         if (reload) {
             loadServiceTable($trans_id.val());
-            // location.reload();
         }
     };
 
-    $scope.setAttachment2 = function ($files, serviceId, reload = false) {
-        angular.forEach($files, function (value, key) {
-            formData.append('attachment2', value);
-        });
-        formData.append('desc', $scope.formService.desc);
-        uploadFile('/api/transaction/service/' + serviceId + '/update');
-        if (reload) {
-            loadServiceTable($trans_id.val());
-            // location.reload();
-        }
-    };
+    // $scope.setAttachment2 = function ($files, serviceId, reload = false) {
+    //     angular.forEach($files, function (value, key) {
+    //         formData.append('attachment2', value);
+    //     });
+    //     formData.append('desc', $scope.formService.desc);
+    //     uploadFile('/api/transaction/service/' + serviceId + '/attachment');
+    //     if (reload) {
+    //         loadServiceTable($trans_id.val());
+    //     }
+    // };
 
     function uploadFile(url) {
         var request = {
@@ -771,9 +769,10 @@ function transactionController($scope, $http) {
         });
     }
 
-    $scope.onAttachmentModalClicked = function (service, isPrimary = false) {
+    $scope.onAttachmentModalClicked = function (service, isPrimary = false, isTitle) {
         $scope.service = service;
         $scope.attachmentType = isPrimary;
+        $scope.isTitle = isTitle;
     }
 
     $scope.downloadAttachment = function (event, attachmentId) {

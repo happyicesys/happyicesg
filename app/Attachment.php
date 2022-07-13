@@ -10,6 +10,7 @@ class Attachment extends Model
         'url',
         'full_url',
         'is_primary',
+        'is_title',
         'sequence',
         'modelable_id',
         'modelable_type',

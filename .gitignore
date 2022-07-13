@@ -10,7 +10,7 @@
 /storage/invoice
 Homestead.yaml
 Homestead.json
-.env
+/.env
 .vagrant/
 Vagrantfile
 .DS_Store

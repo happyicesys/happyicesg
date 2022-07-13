@@ -523,7 +523,7 @@ Route::post('/transaction/files/update/{transaction_id}', 'TransactionController
 Route::get('/transaction/{id}/service/create', 'TransactionController@createService');
 Route::post('/transaction/service/store', 'TransactionController@storeService');
 Route::post('/api/transaction/{id}/service/store', 'TransactionController@storeServiceApi');
-Route::post('/api/transaction/service/{id}/update', 'TransactionController@updateServiceApi');
+Route::post('/api/transaction/service/{id}/attachment/{type}', 'TransactionController@uploadAttachmentServiceApi');
 Route::get('/api/transaction/{id}/services', 'TransactionController@getServicesApi');
 Route::post('/api/transaction/service/{serviceId}/delete', 'TransactionController@deleteServiceApi');
 Route::post('/api/transaction/service/{serviceId}/cancel', 'TransactionController@cancelServiceApi');
