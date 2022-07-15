@@ -737,6 +737,10 @@ Job Assign
                                     Export PDF
                                 </button>
                                 <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
+                                <span style="padding-left: 5px;">
+                                    Delivery Date: @{{search.delivery_from}}
+                                </span>
+
 {{--
                                 <span class="pull-right">
 
