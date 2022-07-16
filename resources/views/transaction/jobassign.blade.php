@@ -737,9 +737,25 @@ Job Assign
                                     Export PDF
                                 </button>
                                 <span ng-show="spinner"> <i class="fa fa-spinner fa-1x fa-spin"></i></span>
-                                <span style="padding-left: 5px;">
-                                    Delivery Date: @{{search.delivery_from}}
-                                </span>
+                                <div class="form-inline">
+                                    <label style="margin-top:5px;">
+                                        Delivery Date
+                                    </label>
+                                    <div class="input-group">
+                                        <datepicker>
+                                            <input
+                                                name = "delivery_from"
+                                                type = "text"
+                                                class = "form-control input-sm"
+                                                placeholder = "Delivery Date"
+                                                ng-model = "search.delivery_from"
+                                                ng-change = "dateChange('delivery_from', search.delivery_from)"
+                                            />
+                                        </datepicker>
+                                        <span class="input-group-addon fa fa-backward" ng-click="onPrevSingleClicked('delivery_from', search.delivery_from)"></span>
+                                        <span class="input-group-addon fa fa-forward" ng-click="onNextSingleClicked('delivery_from', search.delivery_from)"></span>
+                                    </div>
+                                </div>
 
 {{--
                                 <span class="pull-right">
