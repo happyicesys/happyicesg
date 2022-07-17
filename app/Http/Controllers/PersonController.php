@@ -47,7 +47,7 @@ class PersonController extends Controller
 
     public function getPersonData($person_id)
     {
-        $person = Person::findOrFail($person_id);
+        $person = Person::with('custcategory')->findOrFail($person_id);
         return $person;
     }
 
