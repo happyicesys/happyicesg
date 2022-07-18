@@ -399,11 +399,16 @@
                 @endif
                 <td class="col-md-1 text-center">@{{ transaction.po_no}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.del_postcode}}</td>
+                <td class="col-md-1 text-left">
+                    <span style="white-space: pre-line">@{{ transaction.transremark}}</span>
+                </td>
+{{--
+                <span style="white-space: pre-line">@{{ data.desc }}</span>
                 <td class="col-md-1 text-left" style="min-width: 200px; max-width: 200px; word-wrap: break-word;">
                     <pre>
                     @{{ transaction.transremark}}
                     </pre>
-                </td>
+                </td> --}}
                 <td class="col-md-1 text-center">@{{ transaction.name}}</td>
                 <td class="col-md-1 text-center">@{{ transaction.contact}}</td>
                 @if(!auth()->user()->hasRole('hd_user'))

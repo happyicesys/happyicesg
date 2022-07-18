@@ -154,7 +154,8 @@ return [
         Msurguy\Honeypot\HoneypotServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Chrisbjr\ApiGuard\Providers\ApiGuardServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+        MaddHatter\LaravelFullcalendar\ServiceProvider::class,
     ],
 
     /*
@@ -209,7 +210,8 @@ return [
         'Honeypot' => Msurguy\Honeypot\HoneypotFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'ApiGuardAuth' => Chrisbjr\ApiGuard\Facades\ApiGuardAuth::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Calendar' => MaddHatter\LaravelFullcalendar\Facades\Calendar::class,
     ],
 
 ];
