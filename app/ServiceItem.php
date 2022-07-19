@@ -16,6 +16,8 @@ class ServiceItem extends Model
         'transaction_id',
         'attachment1',
         'attachment2',
+        'desc1',
+        'desc2',
     ];
 
     // relationships

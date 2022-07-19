@@ -2840,7 +2840,8 @@ class TransactionController extends Controller
         $serviceForm = $request->service;
         if($serviceForm['id']) {
             $serviceItem = ServiceItem::findOrFail($serviceForm['id']);
-            $serviceItem->desc = $serviceForm['desc'];
+            // $serviceItem->desc = $serviceForm['desc'];
+            $serviceItem->update($serviceForm);
             $serviceItem->updated_by = auth()->user()->id;
             $serviceItem->save();
         }else {
