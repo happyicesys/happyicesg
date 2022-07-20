@@ -71,6 +71,13 @@ class TransactionController extends Controller
         $this->dealService = $dealService;
     }
 
+    public function getPersonByTransactionIdApi($transactionId)
+    {
+        $transaction = Transaction::findOrFail($transactionId);
+
+        return $transaction->person;
+    }
+
     // get transactions api data based on delivery date
     public function getData(Request $request)
     {
@@ -470,7 +477,7 @@ class TransactionController extends Controller
         $subtotal = 0;
         $tax = 0;
 
-        $transaction = Transaction::with(['person', 'deliveryorder'])->findOrFail($transaction_id);
+        $transaction = Transaction::with(['person', 'deliveryorder', 'person.custcategory'])->findOrFail($transaction_id);
 
         $deals = DB::table('deals')
                     ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')

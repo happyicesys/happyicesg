@@ -8,8 +8,15 @@ class Holiday extends Model
 {
     protected $fillable = [
         'name',
-        'date',
+        'start_date',
+        'end_date',
         'year'
     ];
+
+    // relationships
+    public function workingShiftItems()
+    {
+        return $this->hasMany(WorkingShiftItem::class);
+    }
 
 }

@@ -78,7 +78,7 @@
                 </div>
             </div> --}}
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('del_postcode', 'Delivery Postcode', ['class'=>'control-label']) !!}
                     {!! Form::text('del_postcode', null, ['class'=>'form-control', 'id'=>'del_postcode', 'disabled'=>$disabled, 'ng-model'=>'form.del_postcode']) !!}
@@ -92,6 +92,12 @@
                 <div class="form-group">
                     {!! Form::label('delivery_country_id', 'Delivery Country', ['class'=>'control-label']) !!}
                     {!! Form::select('delivery_country_id', $countries::orderBy('name', 'desc')->lists('name', 'id'), null, ['id'=>'delivery_country_id', 'class'=>'selectNormal form-control', 'disabled'=>$disabled]) !!}
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-md btn-info" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(form.person_data)">
+                        Map <i class="fa fa-map-o"></i>
+                    </button>
                 </div>
 {{--
                 <div class="form-group">
@@ -920,6 +926,23 @@
             </div>
         </div>
         @endif
+    </div>
+</div>
+
+<div id="mapModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Plotted Map</h4>
+            </div>
+            <div class="modal-body">
+                <div id="map"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 

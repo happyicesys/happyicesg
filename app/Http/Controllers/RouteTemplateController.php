@@ -183,16 +183,18 @@ class RouteTemplateController extends Controller
     // sync new route template items
     private function syncRouteTemplateItem($routeTemplateItem, $id)
     {
-
         $personId = $routeTemplateItem['person']['id'];
+        $person = Person::findOrFail($personId);
         $routeTemplateId = $id;
         $sequence = $routeTemplateItem['sequence'];
 
-        RouteTemplateItem::create([
-            'person_id' => $personId,
-            'route_template_id' => $routeTemplateId,
-            'sequence' => $sequence
-        ]);
+        if($person->active == 'Yes') {
+            RouteTemplateItem::create([
+                'person_id' => $personId,
+                'route_template_id' => $routeTemplateId,
+                'sequence' => $sequence
+            ]);
+        }
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

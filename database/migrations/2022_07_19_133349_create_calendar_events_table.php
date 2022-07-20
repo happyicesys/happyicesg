@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWorkingShiftItemsTable extends Migration
+class CreateCalendarEventsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,16 @@ class CreateWorkingShiftItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('working_shift_items', function (Blueprint $table) {
+        Schema::create('calendar_events', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('is_every_week')->default(true);
-            $table->boolean('is_one_time')->default(false);
-            $table->integer('type');
-            $table->string('label');
-            $table->integer('day_number');
+            $table->string('title');
+            $table->text('desc')->nullable();
             $table->datetime('start_date');
             $table->datetime('end_date');
-            $table->integer('holiday_id')->nullable();
+            $table->string('background_color')->nullable();
+            $table->string('color')->nullable();
+            $table->boolean('is_full_day')->default(true);
+            $table->integer('working_shift_item_id');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateWorkingShiftItemsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('working_shift_items');
+        Schema::drop('calendar_events');
     }
 }

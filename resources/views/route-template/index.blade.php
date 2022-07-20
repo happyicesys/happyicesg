@@ -261,7 +261,7 @@ Route Template
                             </label>
                             <select class="select form-control" ng-model="form.person">
                               <option value=""></option>
-                              @foreach($people::with(['custcategory', 'zone'])->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->orderBy('cust_id')->get() as $person)
+                              @foreach($people::with(['custcategory', 'zone'])->whereActive('Yes')->where('cust_id', 'NOT LIKE', 'H%')->where('active', 'Yes')->orderBy('cust_id')->get() as $person)
                                 <option value="{{$person}}">
                                   {{$person->cust_id}} - {{$person->company}}
                                 </option>

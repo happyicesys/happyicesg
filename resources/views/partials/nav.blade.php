@@ -56,6 +56,7 @@
                 $vending_access = false;
                 $route_template = false;
                 $potential_customer_access = true;
+                $staff_timetable_access = true;
 
                 if(auth()->guest()) {
                     $access = false;
@@ -156,6 +157,7 @@
                         $operation_access = true;
                         $user_access = true;
                         $vending_access = true;
+                        $route_template = true;
                     }
 
                     if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus')) {
@@ -325,6 +327,12 @@
                 @if($profile_access)
                     <li class="{{ Request::segment(1) == 'profile' ? 'active' : '' }}">
                         <a href="/profile"><i class="fa fa-fw fa-building"></i> {{ $PROFILE_TITLE }}</a>
+                    </li>
+                @endif
+                @if($staff_timetable_access)
+                    <li class="{{ Request::segment(1) == 'staff_timetable_access' ? 'active' : '' }}">
+                        <a href="/staff-timetable"><i class="fa fa-calendar" aria-hidden="true"></i>
+                            Staff Timetable</a>
                     </li>
                 @endif
                 @if($user_access)
