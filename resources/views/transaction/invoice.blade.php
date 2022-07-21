@@ -805,6 +805,22 @@
                             @endif
                         </div>
                     </div>
+                    @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
+                    <div class="col-xs-12" style="padding-top:5px;">
+                        <div class="form-group">
+                            Binded VM:  {{$transaction->person->vending->serial_no}}
+                            @if($transaction->person->vending->type)
+                            - {{$transaction->person->vending->type}}
+                            @endif
+                            @if($transaction->person->vending->simcard)
+                                ({{$transaction->person->vending->simcard->telco_name}} - {{$transaction->person->vending->simcard->simcard_no}})
+                            @endif
+                            @if($transaction->person->vending->cashlessTerminal)
+                            ({{$transaction->person->vending->cashlessTerminal->provider_name}} - {{$transaction->person->vending->cashlessTerminal->terminal_id}})
+                            @endif
+                        </div>
+                    </div>
+                    @endif
 
                     @if($transaction->is_service and $transaction->serviceItems)
                         <table class="table table-bordered table-condensed">
