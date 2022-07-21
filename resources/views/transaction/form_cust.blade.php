@@ -11,7 +11,20 @@
             <a href="/person/@{{ form.person }}">
                 {{$transaction->person->cust_id}} - {{$transaction->person->company}}
             </a>
+            @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
+                <label style="padding-left: 5px;">
+                    <small>
+                        (
+                        Binded VM:  {{$transaction->person->vending->serial_no}}
+                        @if($transaction->person->vending->type)
+                        - {{$transaction->person->vending->type}}
+                        @endif
+                        )
+                    </small>
+                </label>
+            @endif
         </label>
+
         {!! Form::text('person_id', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
         {!! Form::text('person_copyid', '@{{form.person}}', ['class'=>'hidden form-control']) !!}
         {!! Form::text('person_code', '@{{form.cust_id}}', ['class'=>'hidden form-control']) !!}
