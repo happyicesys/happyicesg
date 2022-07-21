@@ -806,7 +806,7 @@
                         </div>
                     </div>
                     @if(($transaction->person->is_vending === 1 or $transaction->person->is_dvm) and $transaction->person->vending)
-                    <div class="col-xs-12" style="padding-top:5px;">
+                    <div class="col-xs-12">
                         <div class="form-group">
                             Binded VM:  {{$transaction->person->vending->serial_no}}
                             @if($transaction->person->vending->type)
