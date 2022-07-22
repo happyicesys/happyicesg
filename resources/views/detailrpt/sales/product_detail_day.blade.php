@@ -357,7 +357,7 @@
                 Total Gross (%):
             </div>
             <div class="col-md-6 col-xs-6 text-right" style="border: thin black solid">
-                <strong>@{{ totals['total_amount'] ? (totals['total_gross']/ totals['total_amount'] * 100) : 0 | currency: "": 0 }}</strong>
+                <strong>@{{ totals['total_amount'] ? (totals['total_gross']/ totals['total_amount'] * 100) : 0.00 | currency: "": 2 }}</strong>
             </div>
         </div>
     </div>

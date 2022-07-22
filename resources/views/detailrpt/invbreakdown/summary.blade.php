@@ -228,7 +228,7 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6 text-right" style="border: thin black solid">
                             <strong>
-                                @{{fixed_total_gross_percent ? fixed_total_gross_percent : 0 | currency: "": 0}}
+                                @{{fixed_total_gross_percent ? fixed_total_gross_percent : 0.00 | currency: "": 2}}
                             </strong>
                         </div>
                     </div>
