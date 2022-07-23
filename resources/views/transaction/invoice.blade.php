@@ -864,24 +864,26 @@
                                     {{$serviceItem->desc}}
                                 </td>
                                 <td class="col-xs-4 text-center">
+{{--
                                     @if($serviceItem->attachments()->where('is_primary', 1)->get())
                                         @foreach($serviceItem->attachments()->where('is_primary', 1)->get() as $attachment)
                                             <img src="{{$attachment->full_url}}" class="col-xs-12" style="width: 350px; height: 350px;">
                                         @endforeach
-                                    @endif
+                                    @endif --}}
                                 </td>
                                 <td class="col-xs-4 text-center">
+{{--
                                     @if($serviceItem->attachments()->where('is_primary', 0)->get())
                                         @foreach($serviceItem->attachments()->where('is_primary', 0)->get() as $attachment)
                                             <img src="{{$attachment->full_url}}" class="col-xs-12" style="width: 350px; height: 350px;">
                                         @endforeach
-                                    @endif
+                                    @endif --}}
                                 </td>
                             </tr>
                             @endforeach
                         </table>
                     @endif
-
+{{--
                     @if($transaction->invattachments)
                     <div class="col-xs-12" style="padding-bottom: 30px;">
                         @foreach($transaction->invattachments()->oldest()->get() as $invattachment)
@@ -901,7 +903,7 @@
                             </span>
                         @endforeach
                     </div>
-                    @endif
+                    @endif --}}
 
                     <div class="row">
                     <div class="col-xs-12" style="padding-top: 10px">
