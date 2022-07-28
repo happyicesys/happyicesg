@@ -681,6 +681,121 @@ function transController($scope, $http, $window) {
             map.setCenter(locationLatLng);
         });
     }
+
+    $scope.onMapDirectionClicked = function (driverkey) {
+        var url = window.location.href;
+        var location = '';
+        var locationLatLng = {};
+        let map_icon_base = 'http://maps.google.com/mapfiles/ms/micons/';
+        const MAP_ICON_FILE = {
+            'red': 'red.png',
+            'blue': 'blue.png',
+            'green': 'green.png',
+            'light-blue': 'lightblue.png',
+            'pink': 'pink.png',
+            'purple': 'purple.png',
+            'yellow': 'yellow.png',
+            'orange': 'orange.png'
+        };
+
+        if (url.includes("my")) {
+            location = 'Malaysia';
+            locationLatLng = { lat: 1.4927, lng: 103.7414 };
+        } else if (url.includes("sg")) {
+            location = 'Singapore';
+            locationLatLng = { lat: 1.3521, lng: 103.8198 };
+        }
+
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: locationLatLng,
+            zoom: 12
+        });
+
+        directionsRenderer.setMap(map);
+
+        var geocoder = new google.maps.Geocoder();
+
+        var markers = [];
+
+        $scope.coordsArr = [];
+        var request = {
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        let loopCounter = 0;
+        angular.forEach($scope.drivers[driverkey].transactions, function (person, pkey) {
+            loopCounter++;
+
+            var contentString = '<span style=font-size:10px;>' +
+                '<span style="font-size:13px">' + '<b>' + person.del_postcode + '; ' + person.custcategory + '</b>' + '</span>' +
+                '<br>' +
+                '<b>' + person.id + '</b>' + ', ' + person.cust_id + ', ' + person.company +
+                '<br>' +
+                person.del_address;
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            if (!person.del_lat && !person.del_lng) {
+                $http.get('https://developers.onemap.sg/commonapi/search?searchVal=' + person.del_postcode + '&returnGeom=Y&getAddrDetails=Y').success(function (data) {
+                    let coord = {
+                        transaction_id: person.id,
+                        lat: data.results[0].LATITUDE,
+                        lng: data.results[0].LONGITUDE,
+                    }
+                    $scope.coordsArr.push(coord)
+                    $http.post('/api/transaction/storelatlng/' + person.id, coord).success(function (data) {
+                        $scope.drivers[driverkey].transactions[pkey].del_lat = data.del_lat;
+                        $scope.drivers[driverkey].transactions[pkey].del_lng = data.del_lng;
+                    });
+                });
+            }
+
+            let url = map_icon_base + MAP_ICON_FILE[person.map_icon_file]
+            var pos = new google.maps.LatLng(person.del_lat, person.del_lng);
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: '(' + person.id + ') ' + person.cust_id + ' - ' + person.company,
+                label: { fontSize: '15px', text: '' + person.sequence * 1, fontWeight: 'bold' },
+                icon: {
+                    labelOrigin: new google.maps.Point(15, 10),
+                    url: url
+                }
+            });
+
+            if (loopCounter == 1) {
+                request.origin = marker.getPosition();
+            } else if (loopCounter == Object.keys($scope.drivers[driverkey].transactions).length) {
+                request.destination = marker.getPosition();
+            } else {
+                if (!request.waypoints) request.waypoints = [];
+                request.waypoints.push({
+                    location: marker.getPosition(),
+                    stopover: true
+                });
+            }
+
+            markers.push(marker);
+            marker.addListener('click', function () {
+                infowindow.open(map, marker);
+            });
+        });
+
+        directionsService.route(request, function (result, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsRenderer.setDirections(result);
+            }
+        });
+
+        $("#mapModal").on("shown.bs.modal", function () {
+            google.maps.event.trigger(map, "resize");
+            map.setCenter(locationLatLng);
+        });
+    }
 }
 
 app.filter('delDate', [

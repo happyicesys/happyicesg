@@ -726,6 +726,7 @@ Job Assign
                                 </button>
                                 @endif
                                 <button type="button" class="btn btn-xs btn-default" style="margin-left: 5px;" data-toggle="modal" data-target="#mapModal" ng-click="onMapClicked(null, driverkey, null)" ng-if="driver.total_count > 0"><i class="fa fa-map-o"></i> Driver Map</button>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#mapModal" ng-click="onMapDirectionClicked(driverkey)" ng-if="driver.total_count > 0">Direction</button>
                                 @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician') and !auth()->user()->hasRole('event') and !auth()->user()->hasRole('event_plus'))
                                     <button type="button" class="btn btn-xs btn-warning" ng-click="onDriverRefreshClicked($event, driverkey)"><i class="fa fa-refresh" aria-hidden="true"></i> Sort</button>
                                     <button class="btn btn-xs btn-default" ng-click="onInitTransactionsSequence($event, driverkey)">
