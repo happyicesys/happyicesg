@@ -1719,7 +1719,7 @@ class TransactionController extends Controller
                         if($transaction['check']) {
                             $model = Transaction::findOrFail($transaction['id']);
                             if($delivery_date) {
-                                $this->operationDatesSync($model->id, $delivery_date);
+                                $this->operationDatesSync($model->id, $delivery_date, $model->delivery_date);
                                 $model->delivery_date = $delivery_date;
                             }
                             $model->sequence = null;
@@ -1747,7 +1747,7 @@ class TransactionController extends Controller
                         $model = Transaction::findOrFail($transaction['id']);
 
                         if($delivery_date) {
-                            $this->operationDatesSync($model->id, $delivery_date);
+                            $this->operationDatesSync($model->id, $delivery_date, $model->delivery_date);
                             $model->delivery_date = $delivery_date;
                         }
                         $model->sequence = null;
