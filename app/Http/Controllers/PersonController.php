@@ -42,7 +42,7 @@ class PersonController extends Controller
     //auth-only login can see
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => 'retrieveVendCustomers']);
     }
 
     public function getPersonData($person_id)
@@ -1187,6 +1187,25 @@ class PersonController extends Controller
     {
         $month_options = $this->getMonthOptions();
         return view('person.potential-index', compact('month_options'));
+    }
+
+    public function retrieveVendCustomers()
+    {
+        $people = Person::with([
+                        'bank',
+                        'billingCountry',
+                        'deliveryCountry',
+                        'cashlessTerminal',
+                        'custcategory',
+                        'custcategory.custcategoryGroup',
+                        'profile',
+                        'zone'
+                    ])
+                    ->whereNotNull('vend_code')
+                    ->orderBy('cust_id')
+                    ->get();
+
+        return $people;
     }
 
     // conditional filter parser(Collection $query, Formrequest $request)

@@ -32,7 +32,7 @@ class Person extends Baum\Node
         'user_id', 'parent_name', 'parent_id',
         'block', 'floor', 'unit', 'operation_note', 'del_lat',
         'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary', 'terminal_provider',
-        'commission_package'
+        'commission_package', 'vend_code',
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
@@ -76,7 +76,7 @@ class Person extends Baum\Node
         'bank_id' => 'Bank',
         'account_number' => 'Account Number',
         'bill_postcode' => 'Billing Postcode',
-        'updated_by' => 'Updated By'
+        'updated_by' => 'Updated By',
     );
 
     protected $fillable = [
@@ -91,7 +91,7 @@ class Person extends Baum\Node
     'is_profit_percent', 'preferred_days', 'area_group', 'commission_type', 'terminal_id', 'is_subsidiary', 'cms_serial_number', 'terminal_provider', 'account_manager', 'zone_id',
     'bank_id', 'account_number', 'key_lock_number', 'commission_package', 'bill_postcode', 'is_combi', 'is_non_freezer_point', 'cooperate_method',
     'updated_by', 'price_template_id', 'is_pwp', 'pwp_adj_rate', 'billing_country_id', 'delivery_country_id',
-    'is_stock_balance_count_required', 'is_analog_clocker_required', 'unit_number',
+    'is_stock_balance_count_required', 'is_analog_clocker_required', 'unit_number', 'vend_code',
     ];
 
     protected $dates = ['deleted_at'];
@@ -109,6 +109,11 @@ class Person extends Baum\Node
     public function billingCountry()
     {
         return $this->belongsTo(Country::class, 'billing_country_id');
+    }
+
+    public function cashlessTerminal()
+    {
+        return $this->belongsTo(CashlessTerminal::class, 'terminal_provider');
     }
 
     public function deliveryCountry()
@@ -142,6 +147,11 @@ class Person extends Baum\Node
     }
 
     public function transactions()
+    {
+        return $this->hasMany('App\Transaction');
+    }
+
+    public function firstTransaction()
     {
         return $this->hasMany('App\Transaction');
     }
