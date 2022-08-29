@@ -1199,6 +1199,7 @@ class PersonController extends Controller
                         'custcategory',
                         'custcategory.custcategoryGroup',
                         'profile',
+                        'profile.currency',
                         'zone'
                     ])
                     ->whereNotNull('vend_code')
