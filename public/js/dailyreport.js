@@ -34,10 +34,9 @@ var app = angular.module('app', [
             is_commission: '0',
             pageNum: 100,
             sortBy: true,
-            sortName: ''
+            sortName: '',
+            edited: false,
         }
-        // init page load
-        getPage();
 
         angular.element(document).ready(function () {
             $('.select').select2();
@@ -72,11 +71,18 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
-          // when hitting search button
-        $scope.searchDB = function(){
+            // when hitting search button
+        $scope.searchDB = function () {
+            $scope.search.edited = true;
+        }
+
+        // search button transaction index
+        $scope.onSearchButtonClicked = function (event) {
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
+            $scope.search.edited = false;
         }
 
         $scope.dateFromChanged = function(date){
