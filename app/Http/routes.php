@@ -430,6 +430,7 @@ Route::get('/item/data', 'ItemController@getData');
 Route::delete('/item/data/{id}', 'ItemController@destroyAjax');
 Route::get('/api/item/{id}/item-uom', 'ItemController@getItemUomApi');
 Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
+Route::get('/api/items/options', 'ItemController@getItemsOptionsApi');
 
 Route::resource('item', 'ItemController');
 

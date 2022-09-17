@@ -436,6 +436,22 @@ class ItemController extends Controller
         return $item->itemUoms;
     }
 
+    public function getItemsOptionsApi(Request $request)
+    {
+        // dd($request->all());
+        $isInventory = $request->is_inventory;
+
+        $items = Item::where('is_active', 1);
+
+        if($isInventory) {
+            $items = $items->where('is_inventory', $isInventory);
+        }
+
+        $items = $items->orderBy('product_id')->get();
+
+        return $items;
+    }
+
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
     private function exportUnitcostExcel($profiles, $items)
     {

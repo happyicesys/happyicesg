@@ -1,7 +1,7 @@
 <div ng-controller="monthlyReportController">
   <div class="col-md-12 col-xs-12">
       <div class="row">
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('profile_id', 'Profile', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('profile_id', [''=>'All']+
@@ -16,7 +16,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('current_year', 'Current Year', ['class'=>'control-label search-title']) !!}
                   <select class="select form-control" name="current_year" ng-model="search.current_year" ng-change="searchDB()">
@@ -26,7 +26,7 @@
                   </select>
               </div>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('cust_id', 'Cust ID', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('cust_id', null,
@@ -40,7 +40,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('id_prefix', 'ID Group', ['class'=>'control-label search-title']) !!}
                 <select class="select form-group" name="id_prefix" ng-model="search.id_prefix" ng-change="searchDB()">
@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="row">
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
                   {!! Form::text('company', null,
@@ -74,7 +74,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                   <label class="pull-right">
@@ -98,7 +98,7 @@
                   !!}
               </div>
           </div>
-            <div class="col-md-3 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
@@ -112,7 +112,7 @@
                     !!}
                 </div>
             </div>
-            <div class="col-md-3 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('status', 'Status', ['class'=>'control-label search-title']) !!}
                     {!! Form::select('status', [''=>'All', 'Pending'=>'Pending', 'Confirmed'=>'Confirmed', 'Delivered'=>'Delivered', 'Cancelled'=>'Cancelled'], null,
@@ -126,7 +126,7 @@
             </div>
       </div>
       <div class="row">
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('is_commission', 'Include Commission', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('is_commission', ['0'=>'No', ''=>'Yes, all', '1'=>'VM Commission', '2'=> 'Supermarket Fee'], null,
@@ -138,7 +138,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-3 col-xs-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('franchisee_id', 'Franchisee', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
@@ -149,7 +149,7 @@
                   !!}
               </div>
           </div>
-          <div class="col-md-3 col-sm-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
                   <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
@@ -164,7 +164,7 @@
                   </select>
               </div>
           </div>
-          <div class="col-md-3 col-sm-6">
+          <div class="col-md-3 col-sm-6 col-xs-12">
               <div class="form-group">
                   {!! Form::label('is_gst_inclusive', 'GST', ['class'=>'control-label search-title']) !!}
                   {!! Form::select('is_gst_inclusive',
@@ -197,22 +197,30 @@
                                                   ]) !!}
               </div>
           </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
-                    {!! Form::select('item_id',
-                            [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
-                            null,
-                            [
-                                'class'=>'selectmultiple form-control',
-                                'ng-model'=>'search.item_id',
-                                'ng-change'=>'searchDB()',
-                                'multiple'=>'multiple'
-                            ])
-                    !!}
+                    {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
+                    <select class="select form-control" id="is_inventory4" ng-model="search.is_inventory" ng-change="onProductTypeSelected()">
+                        <option value="1">
+                            Inventory Item
+                        </option>
+                        <option value="">
+                            All
+                        </option>
+                    </select>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
+                    <select class="selectmultiple form-control" id="item_id4" ng-model="search.item_id" ng-change="searchDB()" multiple>
+                        <option ng-repeat="item in itemOptions track by item.id" value="@{{item.id}}">
+                            @{{ item.product_id + ' - ' + item.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('zone_id', 'Zone', ['class'=>'control-label']) !!}
                     {!! Form::select('zone_id',
@@ -226,7 +234,9 @@
                     !!}
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
                 <div class="form-group">
                     {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                     @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
@@ -251,34 +261,33 @@
                     @endif
                 </div>
             </div>
-      </div>
-      <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="form-group">
-                {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
-                <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
+
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                    {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
+                    <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
+                        <option value="">All</option>
+                        @foreach($persontags::orderBy('name')->get() as $persontag)
+                            <option value="{{$persontag->id}}">
+                                {{$persontag->name}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="form-group">
+                {!! Form::label('item_group_id', 'Item Group', ['class'=>'control-label search-title']) !!}
+                <select name="item_group_id" class="selectmultiple form-control" ng-model="search.item_group_id" ng-change="searchDB($event)" multiple>
                     <option value="">All</option>
-                    @foreach($persontags::orderBy('name')->get() as $persontag)
-                        <option value="{{$persontag->id}}">
-                            {{$persontag->name}}
+                    @foreach($itemGroups->orderBy('name')->get() as $itemGroup)
+                        <option value="{{$itemGroup->id}}">
+                            {{$itemGroup->name}}
                         </option>
                     @endforeach
                 </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-xs-6 col-xs-12">
-            <div class="form-group">
-            {!! Form::label('item_group_id', 'Item Group', ['class'=>'control-label search-title']) !!}
-            <select name="item_group_id" class="selectmultiple form-control" ng-model="search.item_group_id" ng-change="searchDB($event)" multiple>
-                <option value="">All</option>
-                @foreach($itemGroups->orderBy('name')->get() as $itemGroup)
-                    <option value="{{$itemGroup->id}}">
-                        {{$itemGroup->name}}
-                    </option>
-                @endforeach
-            </select>
-            </div>
-        </div>
     </div>
   </div>
 

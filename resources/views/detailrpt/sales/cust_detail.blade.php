@@ -1,5 +1,5 @@
 <div ng-controller="custDetailController">
-<div class="col-md-12 col-xs-12">
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
@@ -76,16 +76,6 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
-{{--
-            <div class="form-group">
-                {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
-                <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB()" multiple>
-                    <option value="">All</option>
-                    @foreach($custcategories::orderBy('name')->get() as $custcategory)
-                    <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
-                    @endforeach
-                </select>
-            </div> --}}
             <div class="form-group">
                 {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                 <label class="pull-right">
@@ -112,16 +102,6 @@
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('custcategory_group', 'CustCategory Group', ['class'=>'control-label search-title']) !!}
-                <label class="pull-right">
-                    {{-- <input type="checkbox" name="p_category" ng-model="search.p_category" ng-change="onPCategoryChanged()">
-                    <span style="margin-top: 5px; margin-right: 5px;">
-                        P
-                    </span>
-                    <input type="checkbox" name="exclude_custcategory_group" ng-model="search.exclude_custcategory_group" ng-true-value="'1'" ng-false-value="'0'" ng-change="searchDB()">
-                    <span style="margin-top: 5px;">
-                        Exclude
-                    </span>--}}
-                </label>
                 {!! Form::select('custcategory_group', [''=>'All'] + $custcategoryGroups::orderBy('name')->pluck('name', 'id')->all(),
                     null,
                     [
@@ -161,17 +141,6 @@
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
-{{--
-                {!! Form::label('person_active', 'Customer Status', ['class'=>'control-label search-title']) !!}
-                <select name="person_active" id="person_active" class="selectmultiple form-control" ng-model="search.person_active" ng-change="searchDB()" multiple>
-                    <option value="">All</option>
-                    <option value="Yes">Active</option>
-                    <option value="New">New</option>
-                    @if(!auth()->user()->hasRole('driver') and !auth()->user()->hasRole('technician'))
-                        <option value="No">Inactive</option>
-                        <option value="Pending">Pending</option>
-                    @endif
-                </select> --}}
                 {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                 @if(auth()->user()->hasRole('merchandiser') or auth()->user()->hasRole('merchandiser_plus'))
                     <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB()" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
@@ -230,17 +199,25 @@
     <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
+                {!! Form::label('is_inventory', 'Product Type', ['class'=>'control-label search-title']) !!}
+                <select class="select form-control" id="is_inventory1" ng-model="search.is_inventory" ng-change="onProductTypeSelected()">
+                    <option value="1">
+                        Inventory Item
+                    </option>
+                    <option value="">
+                        All
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="form-group">
                 {!! Form::label('item_id', 'Product', ['class'=>'control-label']) !!}
-                {!! Form::select('item_id',
-                        [''=>'All']+$items::where('is_active', 1)->where('is_inventory', 1)->select(DB::raw("CONCAT(product_id,' - ',name) AS full, id"))->lists('full', 'id')->all(),
-                        null,
-                        [
-                            'class'=>'selectmultiple form-control',
-                            'ng-model'=>'search.item_id',
-                            'ng-change'=>'searchDB()',
-                            'multiple'=>'multiple'
-                        ])
-                !!}
+                <select class="selectmultiple form-control" id="item_id1" ng-model="search.item_id" ng-change="searchDB()" multiple>
+                    <option ng-repeat="item in itemOptions track by item.id" value="@{{item.id}}">
+                        @{{ item.product_id + ' - ' + item.name }}
+                    </option>
+                </select>
             </div>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
@@ -268,6 +245,8 @@
                 !!}
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('tags', 'Cust Tags', ['class'=>'control-label search-title']) !!}
@@ -281,9 +260,7 @@
                 </select>
             </div>
         </div>
-    </div>
 
-    <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
                 {!! Form::label('active', 'Customer Status', ['class'=>'control-label search-title']) !!}
@@ -299,7 +276,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-3 col-xs-6 col-xs-12">
+        <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="form-group">
             {!! Form::label('item_group_id', 'Item Group', ['class'=>'control-label search-title']) !!}
             <select name="item_group_id" class="selectmultiple form-control" ng-model="search.item_group_id" ng-change="searchDB($event)" multiple>

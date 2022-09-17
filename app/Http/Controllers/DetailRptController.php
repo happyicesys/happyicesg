@@ -3543,6 +3543,7 @@ class DetailRptController extends Controller
         $zone_id = $request->zone_id;
         $tags = $request->tags;
         $itemGroupId = $request->item_group_id;
+        $isInventory = $request->is_inventory;
 
         if($profile_id){
             $transactions = $transactions->where('profiles.id', $profile_id);
@@ -3712,6 +3713,10 @@ class DetailRptController extends Controller
         //     $query .= " AND people.id IN (SELECT persontagattaches.person_id FROM persontagattaches WHERE persontagattaches.persontag_id IN (".$tagsStr.")) ";
         // }
 
+        if($isInventory) {
+            $transactions = $transactions->where('items.is_inventory', $isInventory);
+        }
+
         if($request->sortName){
             $transactions = $transactions->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }
@@ -3755,6 +3760,7 @@ class DetailRptController extends Controller
         $tags = $request->tags;
         $actives = $request->active;
         $itemGroupId = $request->item_group_id;
+        $isInventory = $request->is_inventory;
 
         if($profile_id){
             $query .= " AND profiles.id='".$profile_id."' ";
@@ -3881,6 +3887,9 @@ class DetailRptController extends Controller
         if($itemGroupId) {
             $itemGroupIdStr = implode(",", $itemGroupId);
             $query .= " AND items.item_group_id IN (".$itemGroupIdStr.") ";
+        }
+        if($isInventory) {
+            $query .= " AND items.is_inventory='".$isInventory."' ";
         }
 /*
         if($sortName){
@@ -4045,6 +4054,7 @@ class DetailRptController extends Controller
         $cust_id = $request->cust_id;
         $strictCustId = $request->strictCustId;
         $itemGroupId = $request->item_group_id;
+        $isInventory = $request->is_inventory;
 
         if($product_id) {
             $items = $items->where('items.product_id', 'LIKE', '%'.$product_id.'%');
@@ -4083,6 +4093,10 @@ class DetailRptController extends Controller
             }
             $items = $items->whereIn('items.item_group_id', $itemGroupId);
         }
+        if($isInventory) {
+            $items = $items->where('items.is_inventory', $isInventory);
+        }
+
         if($request->sortName){
             $items = $items->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
         }

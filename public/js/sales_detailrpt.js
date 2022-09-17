@@ -16,6 +16,7 @@ function custDetailController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.itemOptions = [];
     $scope.search = {
         edited: false,
         profile_id: '',
@@ -38,6 +39,7 @@ function custDetailController($scope, $http) {
         zone_id: '',
         tags: [],
         item_group_id: [],
+        is_inventory: '1',
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -46,6 +48,7 @@ function custDetailController($scope, $http) {
     // getPage(1, true);
 
     angular.element(document).ready(function () {
+        onProductTypeSelected();
         $('.select').select2();
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
@@ -106,6 +109,17 @@ function custDetailController($scope, $http) {
         $scope.searchDB();
     }
 
+    $("#is_inventory1").on("select2:select", function () {
+        onProductTypeSelected();
+     });
+
+    function onProductTypeSelected () {
+        $http.get('/api/items/options?is_inventory=' + $scope.search.is_inventory).success(function(data) {
+            $scope.itemOptions = data;
+            $('#item_id1').val(null).trigger('change.select2');
+        })
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -141,6 +155,7 @@ function custSummaryController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.itemOptions = [];
     $scope.search = {
         edited: false,
         profile_id: '',
@@ -159,6 +174,7 @@ function custSummaryController($scope, $http) {
         cust_id: '',
         company: '',
         item_group_id: [],
+        is_inventory: '1',
         pageNum: 100,
         sortBy: true,
         sortName: '',
@@ -167,6 +183,7 @@ function custSummaryController($scope, $http) {
     // getPage(1, true);
 
     angular.element(document).ready(function () {
+        onProductTypeSelected();
         $('.select').select2();
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
@@ -237,6 +254,17 @@ function custSummaryController($scope, $http) {
         $scope.searchDB();
     }
 
+    $("#is_inventory2").on("select2:select", function () {
+        onProductTypeSelected();
+     });
+
+    function onProductTypeSelected () {
+        $http.get('/api/items/options?is_inventory=' + $scope.search.is_inventory).success(function(data) {
+            $scope.itemOptions = data;
+            $('#item_id2').val(null).trigger('change.select2');
+        })
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -272,6 +300,7 @@ function custSummaryGroupController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.itemOptions = [];
     $scope.search = {
         edited: false,
         profile_id: '',
@@ -290,6 +319,7 @@ function custSummaryGroupController($scope, $http) {
         cust_id: '',
         company: '',
         item_group_id: [],
+        is_inventory: '1',
         pageNum: 100,
         sortBy: true,
         sortName: '',
@@ -298,6 +328,7 @@ function custSummaryGroupController($scope, $http) {
     // getPage(1, true);
 
     angular.element(document).ready(function () {
+        onProductTypeSelected();
         $('.select').select2();
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
@@ -362,6 +393,17 @@ function custSummaryGroupController($scope, $http) {
         $scope.searchDB();
     }
 
+    $("#is_inventory3").on("select2:select", function () {
+        onProductTypeSelected();
+     });
+
+    function onProductTypeSelected () {
+        $http.get('/api/items/options?is_inventory=' + $scope.search.is_inventory).success(function(data) {
+            $scope.itemOptions = data;
+            $('#item_id3').val(null).trigger('change.select2');
+        })
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -397,6 +439,7 @@ function productMonthDetailController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.itemOptions = [];
     $scope.search = {
         edited: false,
         profile_id: '',
@@ -415,6 +458,7 @@ function productMonthDetailController($scope, $http) {
         cust_id: '',
         strictCustId: '',
         item_group_id: [],
+        is_inventory: '1',
         pageNum: 'All',
         sortBy: true,
         sortName: ''
@@ -422,7 +466,9 @@ function productMonthDetailController($scope, $http) {
     // init page load
     // getPage(1, true);
 
+
     angular.element(document).ready(function () {
+        onProductTypeSelected();
         $('.select').select2();
     });
 
@@ -469,6 +515,17 @@ function productMonthDetailController($scope, $http) {
         $scope.search.account_manager = userId;
     }
 
+    $("#is_inventory5").on("select2:select", function () {
+        onProductTypeSelected();
+     });
+
+    function onProductTypeSelected () {
+        $http.get('/api/items/options?is_inventory=' + $scope.search.is_inventory).success(function(data) {
+            $scope.itemOptions = data;
+            $('#item_id5').val(null).trigger('change.select2');
+        })
+    }
+
     // retrieve page w/wo search
     function getPage(pageNumber, first) {
         $scope.spinner = true;
@@ -504,6 +561,7 @@ function monthlyReportController($scope, $http) {
     $scope.indexFrom = 0;
     $scope.indexTo = 0;
     $scope.today = moment().format("YYYY-MM-DD");
+    $scope.itemOptions = [];
     $scope.search = {
         edited: false,
         profile_id: '',
@@ -527,6 +585,7 @@ function monthlyReportController($scope, $http) {
         account_manager: '',
         exACategory: '',
         item_group_id: [],
+        is_inventory: '1',
         pageNum: 100,
         sortName: '',
         sortBy: true
@@ -535,6 +594,7 @@ function monthlyReportController($scope, $http) {
     // getPage(1, true);
 
     angular.element(document).ready(function () {
+        onProductTypeSelected();
         $('.select').select2();
         $('.selectmultiple').select2({
             placeholder: 'Choose one or many..'
@@ -593,6 +653,17 @@ function monthlyReportController($scope, $http) {
             $scope.search.exclude_custcategory = false;
         }
         $scope.searchDB();
+    }
+
+    $("#is_inventory4").on("select2:select", function () {
+        onProductTypeSelected();
+     });
+
+    function onProductTypeSelected () {
+        $http.get('/api/items/options?is_inventory=' + $scope.search.is_inventory).success(function(data) {
+            $scope.itemOptions = data;
+            $('#item_id4').val(null).trigger('change.select2');
+        })
     }
 
     // retrieve page w/wo search
