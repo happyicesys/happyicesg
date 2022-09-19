@@ -61,13 +61,16 @@
 
     <div class="row" style="padding-left: 15px;">
         <div class="col-md-8 col-sm-12 col-xs-12" style="padding-top: 20px;">
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row" style="padding-left: 15px;">
+                <button class="btn btn-success" ng-click="onSearchButtonClicked($event)">
+                    Search
+                    <i class="fa fa-search" ng-show="!spinner"></i>
+                    <i class="fa fa-spinner fa-1x fa-spin" ng-show="spinner"></i>
+                </button>
                     @if(auth()->user()->hasRole('admin') or auth()->user()->hasRole('account') or auth()->user()->hasRole('accountadmin') or auth()->user()->hasRole('supervisor'))
                         <button class="btn btn-primary" ng-click="exportData($event)"><i class="fa fa-file-excel-o"></i><span class="hidden-xs"></span> Export Excel</button>
                     @endif
                     <span ng-show="spinner"> <i class="fa fa-spinner fa-2x fa-spin"></i></span>
-                </div>
             </div>
         </div>
         <div class="col-md-4 col-xs-12 text-right">

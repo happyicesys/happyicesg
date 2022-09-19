@@ -162,11 +162,9 @@ var app = angular.module('app', [
             driver: '',
             pageNum: 100,
             sortBy: true,
-            sortName: ''
+            sortName: '',
+            edited: false,
         }
-        // init page load
-        getPage();
-
         angular.element(document).ready(function () {
             $('.select').select2();
             $('.selectmultiple').select2({
@@ -200,35 +198,38 @@ var app = angular.module('app', [
             getPage(1, false);
         }
 
-          // when hitting search button
-        $scope.searchDB = function(){
+        // when hitting search button
+        $scope.searchDB = function () {
+            $scope.search.edited = true;
+        }
+
+        // search button transaction index
+        $scope.onSearchButtonClicked = function (event) {
+            event.preventDefault();
             $scope.search.sortName = '';
             $scope.search.sortBy = true;
             getPage(1, false);
+            $scope.search.edited = false;
         }
 
         $scope.dateFromChanged = function(date){
             if(date){
                 $scope.search.date_from = moment(new Date(date)).format('YYYY-MM-DD');
-                $scope.searchDB();
             }
         }
 
         $scope.dateToChanged = function(date){
             if(date){
                 $scope.search.date_to = moment(new Date(date)).format('YYYY-MM-DD');
-                $scope.searchDB();
             }
         }
 
         $scope.onPrevSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).subtract(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-            $scope.searchDB();
         }
 
         $scope.onNextSingleClicked = function(scope_name, date) {
             $scope.search[scope_name] = date ? moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-            $scope.searchDB();
         }
 
         $scope.updateLocationCount = function(result) {
@@ -252,7 +253,7 @@ var app = angular.module('app', [
         // retrieve page w/wo search
         function getPage(pageNumber, first){
             $scope.spinner = true;
-            $http.post('/api/dailyreport/index/2?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
+            $http.post('/api/dailyreport/location-count?page=' + pageNumber + '&init=' + first, $scope.search).success(function(data){
                 if(data.alldeals.data){
                     $scope.alldata = data.alldeals.data;
                     $scope.totalCount = data.alldeals.total;

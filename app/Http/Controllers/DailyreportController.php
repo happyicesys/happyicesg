@@ -259,10 +259,8 @@ class DailyreportController extends Controller
                 $deals = $deals->where('transactions.driver', auth()->user()->name);
             }
         }
-// dd($deals->get());
+
         $deals = $deals->groupBy(DB::raw('DATE(transactions.delivery_date)'))->groupBy('users.id');
-        // $deals = $deals->groupBy('transactions.delivery_date')->groupBy('transactions.driver');
-        // dd($deals->get());
 
         $alldeals = clone $deals;
         $subtotal_query = clone $deals;
@@ -336,6 +334,85 @@ class DailyreportController extends Controller
             'driver' => $driver,
             'extra_location_total' => $extra_location_total,
             'online_location_total' => $online_location_total
+        ];
+
+        return $data;
+    }
+
+        // return daily report index api
+    public function getLocationCountApi(Request $request)
+    {
+
+        $deals = DB::table('deals')
+            ->leftJoin('items', 'items.id', '=', 'deals.item_id')
+            ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
+            ->leftJoin('users', 'users.name', '=', 'transactions.driver')
+            ->rightJoin('role_user', 'role_user.user_id', '=', 'users.id')
+            ->leftJoin('driver_locations', function($join) {
+                $join->on(DB::raw('DATE(driver_locations.delivery_date)'), '=', DB::raw('DATE(transactions.delivery_date)'));
+                $join->on('driver_locations.user_id', '=', 'users.id');
+            })
+            ->leftJoin('users AS updater', 'updater.id', 'LIKE', 'driver_locations.updated_by')
+            ->leftJoin('users AS approver', 'approver.id', 'LIKE', 'driver_locations.approved_by')
+
+            ->select(
+                'transactions.driver', 'transactions.status',
+                DB::raw('DATE(transactions.delivery_date) AS delivery_date'),
+                DB::raw('DAYNAME(transactions.delivery_date) AS delivery_day'),
+                'users.id AS user_id', 'driver_locations.location_count', 'driver_locations.online_location_count', 'driver_locations.status AS submission_status', 'driver_locations.submission_date',
+                DB::raw('DAYNAME(driver_locations.submission_date) AS submission_day'),
+                'updater.name AS updated_by', 'approver.name AS approved_by', 'driver_locations.approved_at', 'driver_locations.daily_limit',
+                'driver_locations.remarks',
+                DB::raw('(driver_locations.location_count - driver_locations.daily_limit) AS extra_location_count')
+            );
+
+        // only include drivers
+
+        $deals = $deals->whereIn('role_user.role_id', [6, 16]);
+
+        if($request->date_from) {
+            $deals = $deals->whereDate('transactions.delivery_date', '>=', $request->date_from);
+        }
+        if($request->date_to) {
+            $deals = $deals->whereDate('transactions.delivery_date', '<=', $request->date_to);
+        }
+
+        $driver = '';
+
+        if($request->driver) {
+            $driver_role = User::where('name', $request->driver)->first();
+            if($driver_role->hasRole('driver')) {
+                $driver = 'driver';
+                $deals = $deals->where('transactions.driver', $request->driver);
+            }else if($driver_role->hasRole('technician')) {
+                $driver = 'technician';
+                $deals = $deals->where('items.product_id', '051');
+            }
+        }
+
+        $deals = $deals->groupBy(DB::raw('DATE(transactions.delivery_date)'))->groupBy('users.id');
+
+        $alldeals = clone $deals;
+
+        if($request->sortName){
+            $alldeals = $alldeals
+            ->orderBy($request->sortName, $request->sortBy ? 'asc' : 'desc');
+        }else {
+            $alldeals = $alldeals
+            ->orderBy('transactions.delivery_date', 'desc')
+            ->orderBy('transactions.driver');
+        }
+
+        // dd($alldeals->toSql());
+        $pageNum = $request->pageNum ? $request->pageNum : 100;
+        if($pageNum == 'All'){
+            $alldeals = $alldeals->get();
+        }else{
+            $alldeals = $alldeals->paginate($pageNum);
+        }
+
+        $data = [
+            'alldeals' => $alldeals,
         ];
 
         return $data;
