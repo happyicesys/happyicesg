@@ -1031,7 +1031,7 @@ class PersonController extends Controller
             'delivery_date' => $date,
             'person_id' => $person->id,
             'status' => 'Confirmed',
-            'pay_status' => 'Owe',
+            'pay_status' => $isService == 'true' ? 'Paid' : 'Owe',
             'updated_by' => auth()->user()->name,
             'created_by' => auth()->user()->id,
             'del_postcode' => $person->del_postcode,

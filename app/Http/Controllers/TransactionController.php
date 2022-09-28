@@ -1638,6 +1638,7 @@ class TransactionController extends Controller
         if(!auth()->user()->hasRole('driver')) {
             $transaction = Transaction::findOrFail($id);
             $transaction->status = 'Confirmed';
+            $transaction->pay_status = 'Paid';
             $transaction->is_service = !$transaction->is_service;
             $transaction->save();
 
