@@ -350,7 +350,7 @@ function transController($scope, $http, $window) {
         if (transaction.contact) {
             contactnumber = transaction.contact.split(" ").join("")
             po_no = transaction.po_no
-            $window.open(encodeURI('https://wa.me/65' + contactnumber + '?text=This is Happy Ice, we are delivering your ice cream order PO "' + po_no + '" in 90 mins time.'), '_blank');
+            $window.open(encodeURI('https://wa.me/65' + contactnumber + '?text=This is Happy Ice, we are delivering your online order PO "' + po_no + '" in 90 mins time.'), '_blank');
         }
     }
 
