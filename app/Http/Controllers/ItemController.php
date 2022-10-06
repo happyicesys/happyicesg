@@ -27,7 +27,7 @@ class ItemController extends Controller
     //auth-only login can see
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => 'retrieveItems']);
     }
 
     // item index page items api
@@ -450,6 +450,18 @@ class ItemController extends Controller
         $items = $items->orderBy('product_id')->get();
 
         return $items;
+    }
+
+    public function retrieveItems()
+    {
+        $items = Item::with([
+                        'itemcategory',
+                        'itemGroup',
+                    ])
+                    ->orderBy('product_id')
+                    ->get();
+
+        return $people;
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)

@@ -417,6 +417,8 @@ Route::get('/profile/data', 'ProfileController@getData');
 Route::delete('/api/profile/{profile_id}/destroy', 'ProfileController@destroyApi');
 Route::resource('profile', 'ProfileController');
 
+
+Route::get('/api/items/migrate', 'ItemController@retrieveItems');
 Route::post('/api/items', 'ItemController@getItemsApi');
 Route::post('/item/active/{item_id}', 'ItemController@setActiveState');
 Route::get('/item/qtyorder/{item_id}', 'ItemController@getItemQtyOrder');
