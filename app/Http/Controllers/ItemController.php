@@ -461,7 +461,7 @@ class ItemController extends Controller
                     ->orderBy('product_id')
                     ->get();
 
-        return $people;
+        return $items;
     }
 
     // export unit cost excel(Collection $profiles, Collection $items, Collection $unitcosts)
