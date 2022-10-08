@@ -350,7 +350,7 @@ Route::post('/api/route-template/generate', 'RouteTemplateController@generateTem
 Route::post('/api/route-template/jobassign/create', 'RouteTemplateController@createRouteTemplateFromJobassignApi');
 Route::delete('/api/route-template/delete/{id}', 'RouteTemplateController@deleteRouteTemplateApi');
 
-Route::get('/api/person/vend-code', 'PersonController@retrieveVendCustomers');
+Route::get('/api/person/migrate', 'PersonController@retrieveVendCustomers');
 Route::post('/api/person/edit/{id}', 'PersonController@editApi');
 Route::post('/api/person/batch-update', 'PersonController@batchAssignPeople');
 Route::get('/api/outletvisit/outcomes', 'PersonController@getOutletVisitOutcomesApi');
