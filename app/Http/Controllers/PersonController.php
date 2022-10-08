@@ -42,7 +42,7 @@ class PersonController extends Controller
     //auth-only login can see
     public function __construct()
     {
-        $this->middleware('auth', ['except' => 'retrieveVendCustomers']);
+        $this->middleware('auth', ['except' => 'retrieveCustomerMigration']);
     }
 
     public function getPersonData($person_id)
@@ -1189,7 +1189,7 @@ class PersonController extends Controller
         return view('person.potential-index', compact('month_options'));
     }
 
-    public function retrieveVendCustomers()
+    public function retrieveCustomerMigration()
     {
         $people = Person::with([
                         'bank',
@@ -1204,8 +1204,8 @@ class PersonController extends Controller
                     ])
                     // ->whereNotNull('vend_code')
                     ->where('custcategory_id', '<>', 43)
-                    ->whereRaw('LEFT(cust_id) != "H"')
-                    ->whereRaw('LEFT(cust_id) != "D"')
+                    ->where('people.cust_id', 'NOT LIKE', 'H%')
+                    ->where('people.cust_id', 'NOT LIKE', 'D%')
                     ->orderBy('cust_id')
                     ->get();
 
