@@ -1192,6 +1192,7 @@ class PersonController extends Controller
     public function retrieveCustomerMigration()
     {
         $people = Person::with([
+                        'accountManager',
                         'bank',
                         'billingCountry',
                         'deliveryCountry',
