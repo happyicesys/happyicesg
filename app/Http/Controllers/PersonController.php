@@ -1202,7 +1202,10 @@ class PersonController extends Controller
                         'profile.currency',
                         'zone'
                     ])
-                    ->whereNotNull('vend_code')
+                    // ->whereNotNull('vend_code')
+                    ->where('custcategory_id', '<>', 43)
+                    ->whereRaw('LEFT(cust_id) <> "H"')
+                    ->whereRaw('LEFT(cust_id) <> "D"')
                     ->orderBy('cust_id')
                     ->get();
 
