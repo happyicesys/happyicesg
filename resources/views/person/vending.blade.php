@@ -9,6 +9,13 @@
                 @include('person._assignVending')
             </assignVending>
         </div> --}}
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="form-group">
+                {!! Form::label('vend_code', 'Vend ID#', ['class'=>'control-label']) !!}
+                {!! Form::text('vend_code', null, ['class'=>'form-control']) !!}
+            </div>
+        </div>
+
 
         <div class="form-group">
             {!! Form::label('cooperate_method', 'Cooperate Method', ['class'=>'control-label']) !!}

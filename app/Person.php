@@ -32,7 +32,7 @@ class Person extends Baum\Node
         'user_id', 'parent_name', 'parent_id',
         'block', 'floor', 'unit', 'operation_note', 'del_lat',
         'del_lng', 'franchisee_id', 'preferred_days', 'is_subsidiary', 'terminal_provider',
-        'commission_package', 'vend_code',
+        'commission_package',
     );
     protected $revisionEnabled = true;
     protected $revisionCleanup = true;
