@@ -49,7 +49,7 @@ class GetVendCodeFromCustId extends Command
                 and ($person->is_vending or $person->is_dvm or $person->is_combi)
             ) {
                 $vendCode = abs((int) filter_var($person->cust_id, FILTER_SANITIZE_NUMBER_INT));
-                $person->vend_code = $vendCode;
+                $person->vend_code = $vendCode ? $vendCode : null;
                 $person->save();
             }
         }
