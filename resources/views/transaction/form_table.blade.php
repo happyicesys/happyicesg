@@ -14,19 +14,28 @@
 
     <div class="panel-body">
         <div>
+            @php
+                $uoms = \App\Uom::orderBy('sequence', 'desc')->get();
+            @endphp
             <div class="table-responsive">
                 <table class="table table-list-search table-hover table-bordered table-condensed">
                     <tr style="background-color: #DDFDF8;">
                         <th class="text-center">
                             Item
                         </th>
-                        <th class="text-center">
-                            Qty
-                            {{-- Ctn --}}
-                        </th>
-                        {{-- <th class="text-center">
-                            Pieces
-                        </th> --}}
+                        @if($transaction->person->priceTemplate()->exists())
+                            @if($uoms)
+                                @foreach($uoms as $uom)
+                                <th class="text-center">
+                                    {{$uom->name}}
+                                </th>
+                                @endforeach
+                            @endif
+                        @else
+                            <th class="text-center">
+                                Qty
+                            </th>
+                        @endif
                         @if(!$transaction->is_discard)
                             <th class="text-center">
                                 Retail Price ({{$transaction->person->profile->currency ? $transaction->person->profile->currency->symbol: '$'}})
@@ -41,15 +50,43 @@
                     </tr>
 
                     @if($transaction->person->priceTemplate()->exists())
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="price_template">
                                 Binded Price Template: {{$transaction->person->priceTemplate->name}} @if($transaction->person->priceTemplate->remarks) {{$transaction->person->priceTemplate->remarks}} @endif
                             </label>
                         </div>
                         @unless(count($transaction->person->priceTemplate->priceTemplateItems)>0)
-                            <td class="text-center" colspan="7">No Records Found</td>
+                            <td class="text-center" colspan="12">No Records Found</td>
                         @else
                         @foreach($transaction->person->priceTemplate->priceTemplateItems as $priceTemplateItem)
+                            @php
+                                $itemUomArr = [];
+                                if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+                                    foreach($uoms as $uomIndex => $uom) {
+                                        $itemUomArr[$uomIndex] = [
+                                            'id' => $uom->id,
+                                            'name' => $uom->name,
+                                            'key_name' => strtolower($uom->name),
+                                            'is_active' => false,
+                                        ];
+                                        foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+                                            if($uom->id == $priceTemplateItemUom->itemUom->uom->id) {
+                                                $itemUomArr[$uomIndex]['is_active'] = true;
+                                            }
+                                        }
+                                    }
+                                }else {
+                                    foreach($uoms as $uomIndex => $uom) {
+                                        $itemUomArr[$uomIndex] = [
+                                            'id' => $uom->id,
+                                            'name' => $uom->name,
+                                            'key_name' => strtolower($uom->name),
+                                            'is_active' => false,
+                                        ];
+                                    }
+                                    $itemUomArr[0]['is_active'] = true;
+                                }
+                            @endphp
                             <tr class="txtMult">
                                 <td class="col-md-5 col-xs-4 hidden-xs">
                                         <strong>{{$priceTemplateItem->item->product_id}}</strong></span>
@@ -61,17 +98,21 @@
                                         {{$priceTemplateItem->item->name}}<br>
                                         <small>{{$priceTemplateItem->item->remark}}</small>
                                 </td>
-                                <td class="col-md-1 col-xs-2">
-                                    @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
-                                    <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                                    @else
-                                        @can('transaction_view')
-                                        <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" readonly="readonly" />
+                                @if($itemUomArr)
+                                    @foreach($itemUomArr as $itemUom)
+                                    <th class="col-md-1 col-xs-1">
+                                        @if($transaction->status == 'Pending' or $transaction->status == 'Confirmed')
+                                            <input type="text" name="{{$itemUom['key_name']}}[{{$priceTemplateItem->item->id}}]" style="min-width: 70px; max-width: 100px;" class="qtyClass form-control" {{$disabledStr}} {{$itemUom['is_active'] ? '' : 'disabled'}}/>
                                         @else
-                                        <input type="text" name="qty[{{$priceTemplateItem->item->id}}]" style="min-width: 70px;" class="qtyClass form-control" {{$disabledStr}}/>
-                                        @endcan
-                                    @endif
-                                </td>
+                                            @can('transaction_view')
+                                            <input type="text" name="{{$itemUom['key_name']}}[{{$priceTemplateItem->item->id}}]" style="min-width: 70px; max-width: 100px;" class="qtyClass form-control" readonly="readonly"  {{$itemUom['is_active'] ? '' : 'disabled'}}/>
+                                            @else
+                                            <input type="text" name="{{$itemUom['key_name']}}[{{$priceTemplateItem->item->id}}]" style="min-width: 70px; max-width: 100px;" class="qtyClass form-control" {{$disabledStr}}  {{$itemUom['is_active'] ? '' : 'disabled'}}/>
+                                            @endcan
+                                        @endif
+                                    </th>
+                                    @endforeach
+                                @endif
                                 @if(!$transaction->is_discard)
                                 <td class="col-md-2 col-xs-2">
                                     <strong>
@@ -94,14 +135,14 @@
                                 @endif
                             </tr>
                         @endforeach
-                        @endunless
+                        @endunless --}}
+
                     @else
                         @unless(count($prices)>0)
                         <td class="text-center" colspan="7">No Records Found</td>
                         @else
                         @foreach($prices as $price)
                             @if($price->is_active)
-                            {{-- @if(($transaction->is_discard and $price->is_inventory) or !$transaction->is_discard) --}}
                             <tr class="txtMult">
                                 <td class="col-md-5 col-xs-4 hidden-xs">
                                         <strong>{{$price->product_id}}</strong></span>
@@ -144,7 +185,6 @@
                                         class="text-right form-control quoteClass" {{$disabledStr}}/>
                                     @endif
                                     </strong>
-                                    {{-- @if($price->quote_price != '' or $price->quote_price != null or $price->quote_price != 0 or $transaction->status == 'Cancelled')                             --}}
                                 </td>
                                 <td class="col-md-2 col-xs-2">
                                     <input type="text" name="amount[{{$price->item_id}}]"
@@ -152,7 +192,6 @@
                                 </td>
                                 @endif
                             </tr>
-                            {{-- @endif --}}
                             @endif
                         @endforeach
                         @endunless

@@ -24,4 +24,23 @@ class ItemUom extends Model
     {
         return $this->belongsTo(Uom::class);
     }
+
+    // getter
+    public function getIsBaseUnitAttribute($value)
+    {
+        if($value) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public function getIsTransactedUnitAttribute($value)
+    {
+        if($value) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

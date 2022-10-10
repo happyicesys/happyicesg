@@ -17,11 +17,16 @@ class PriceTemplateItem extends Model
     // relationships
     public function item()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(Item::class)->with('itemUoms');
     }
 
     public function priceTemplate()
     {
         return $this->belongsTo(PriceTemplate::class);
+    }
+
+    public function priceTemplateItemUoms()
+    {
+        return $this->hasMany(PriceTemplateItemUom::class)->with('itemUom');
     }
 }

@@ -9,7 +9,7 @@ class PotentialCustomer extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'name', 'attn_to', 'contact', 'address', 'postcode', 'remarks', 'custcategory_id', 'account_manager_id', 'created_by', 'updated_by', 'is_important', 'created_by', 'updated_by'
+        'name', 'attn_to', 'contact', 'address', 'postcode', 'remarks', 'custcategory_id', 'account_manager_id', 'created_by', 'updated_by', 'is_important'
     ];
 
     // relationships

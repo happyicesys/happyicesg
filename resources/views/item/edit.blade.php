@@ -1,3 +1,5 @@
+@inject('uoms', 'App\Uom')
+
 @extends('template')
 @section('title')
 {{ $ITEM_TITLE }}
@@ -51,7 +53,7 @@
                         UOM: {{$item->product_id}} - {{$item->name}}
                     </strong>
                 </span>
-                <button class="btn btn-success pull-right" disabled>
+                <button class="btn btn-success pull-right" ng-click="onItemUomCreateClicked($event)" data-toggle="modal" data-target="#uom-modal">
                     <i class="fa fa-plus"></i>
                     Create
                 </button>
@@ -84,7 +86,7 @@
                                 @{{ itemUom.uom.name }}
                             </td>
                             <td class="col-md-3 text-right">
-                                @{{ itemUom.value }}
+                                @{{ itemUom.value }} @{{ baseItemUom.uom.name }}
                             </td>
                             <td class="col-md-3 text-center">
                                 <span ng-if="itemUom.is_base_unit" class="badge badge-primary" style="background-color: #296192">
@@ -96,10 +98,10 @@
                             </td>
                             <td class="col-md-2 text-center">
                                 <div class="btn-group">
-                                    <a href="#" class="btn btn-default btn-sm" ng-click="onItemUomEditClicked($event)">
+                                    <a href="" class="btn btn-default btn-sm" ng-click="onItemUomEditClicked(itemUom)" data-toggle="modal" data-target="#uom-modal">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-sm" ng-click="onItemUomDeleteClicked($event)">
+                                    <a href="" class="btn btn-danger btn-sm" ng-click="onItemUomDeleteClicked(itemUom)">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </div>
@@ -179,38 +181,67 @@
             </label>
         </div>
     </div>
-    {{-- divider --}}
-</div>
 
-<div id="uom-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">
-                  @{{formUom.id ? 'Edit UOM' : 'New UOM'}}
-                  <span ng-if="form.id">
-                    @{{formUom.name}}
-                  </span>
-                </h4>
-            </div>
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="template-name">
-                  Name
-                </label>
-                <label style="color: red;">*</label>
-                <input type="text" class="form-control" ng-model="formUom.name">
-              </div>
-              <div class="form-group">
-                <label for="template-name">
-                  Template Desc
-                </label>
-                <textarea class="form-control" ng-model="form.remarks" rows="3"></textarea>
-              </div>
+    <div id="uom-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                      @{{formUom.id ? 'Edit UOM' : 'New UOM'}}
+                      <span ng-if="form.id">
+                        @{{formUom.name}}
+                      </span>
+                      for {{$item->product_id}} - {{$item->name}}
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="uom_id">
+                            UOM Name
+                        </label>
+                        <div ng-show="!formUom.id">
+                            <select ng-model="formUom.uom_id" class="select form-control" >
+                                <option value=""></option>
+                                @foreach($uoms::whereNotIn('id', $item->itemUoms->lists('uom_id'))->orderBy('sequence', 'asc')->get() as $uom)
+                                    <option value="{{$uom->id}}">
+                                        {{$uom->name}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" ng-model="formUom.uom.name" ng-if="formUom.id" disabled>
+                    </div>
+                  <div class="form-group">
+                    <label for="template-name">
+                        Value
+                    </label>
+                    <input type="number" class="form-control" ng-model="formUom.value" ng-disabled="formUom.is_base_unit">
+                </div>
+                  <div class="form-inline">
+                    <label>
+                        <input type="checkbox" ng-model="formUom.is_base_unit" ng-change="onIsBaseUnitChecked()" ng-true-value=true ng-false-value=false>
+                        <span style="padding-left: 5px; margin-top: 5px;">
+                            Base UOM? <small>(override other Base UOM)</small>
+                        </span>
+                    </label>
+
+                    <label style="padding-left: 10px;">
+                        <input type="checkbox" ng-model="formUom.is_transacted_unit" ng-true-value=true ng-false-value=false>
+                        <span style="padding-left: 5px; margin-top: 5px;">
+                            Transacted UOM? <small>(override other Transacted UOM)</small>
+                        </span>
+                    </label>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="onFormUomSaveClicked($event)" ng-disabled="!formUom.uom_id && !formUom.value">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 

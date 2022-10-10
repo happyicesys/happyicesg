@@ -54,11 +54,27 @@
                             Description
                         </th>
                         <th class="col-md-1 text-center">
-                            Pieces
+                            T.Qty (pcs)
                         </th>
-                        <th class="col-md-1 text-center">
-                            Quantity
+                        <th class="col-md-1 text-center" ng-if="transaction.person.price_template" ng-repeat="uom in uoms">
+                            @{{uom.name}}
                         </th>
+                        <th class="col-md-1 text-center" ng-if="!transaction.person.price_template">
+                            Qty
+                        </th>
+{{--
+                        @if($transaction->person->price_template_id)
+                            @foreach($uoms::orderBy('sequence', 'desc')->get() as $uom)
+                                <th class="col-md-1 text-center">
+                                    {{$uom->name}}
+                                </th>
+                            @endforeach
+                        @else
+                            <th class="col-md-1 text-center">
+                                Quantity
+                            </th>
+                        @endif --}}
+
                         @if(!$transaction->is_discard)
                             <th class="col-md-1 text-center">
                                 Unit Price
@@ -81,23 +97,57 @@
                             <td class="col-md-1 text-center">@{{ deal.product_id }}</td>
                             <td class="col-md-5">@{{ deal.item_name }}<br> <small>@{{ deal.item_remark }}</small></td>
                             <td class="col-md-1 text-right">@{{ deal.pieces }}</td>
-                            <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}">
-                                <span ng-if="!deal.divisor && deal.is_inventory === 1">
-                                    @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
-                                </span>
-                                <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
-                                    @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
-                                </span>
-                                <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
-                                    @{{deal.qty}}
-                                </span>
-                                <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
-                                    1 Unit
-                                </span>
-                                <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
-                                    @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
+
+                            <td class="col-md-1 text-right" ng-repeat="uom in uoms" style="background-color: @{{uom.color}}" ng-if="deal.qty_json && transaction.person.price_template">
+                                <span ng-if="deal.qty_json[uom.name]">
+                                    <strong>
+                                        @{{deal.qty_json[uom.name]}}
+                                    </strong>
                                 </span>
                             </td>
+                            <td class="col-md-1 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}" colspan="@{{uoms.length}}" ng-if="!deal.qty_json && transaction.person.price_template">
+                                <span>
+                                    <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
+                                        @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
+                                    </span>
+                                    <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
+                                        @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
+                                    </span>
+                                    <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
+                                        @{{deal.qty}}
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
+                                        1 Unit
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
+                                        @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
+                                    </span>
+                                </span>
+                            </td>
+
+                            <td class="col-md-2 @{{deal.is_inventory===1 ? 'text-right' : 'text-left'}}" ng-if="!transaction.person.price_template">
+                                <span ng-if="!deal.qty_json">
+                                    <span ng-if="!deal.divisor && deal.is_inventory === 1 ">
+                                        @{{ deal.qty % 1 == 0 ? Math.round(deal.qty) : deal.qty }} @{{ deal.unit }}
+                                    </span>
+                                    <span ng-if="(deal.divisor != 1.00 && deal.divisor != null)  && deal.is_inventory == 1">
+                                        @{{deal.dividend | removeZero}} / @{{deal.divisor | removeZero}}
+                                    </span>
+                                    <span ng-if="deal.divisor == 1.00 && deal.is_inventory == 1">
+                                        @{{deal.qty}}
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend == 1.00">
+                                        1 Unit
+                                    </span>
+                                    <span ng-if="deal.is_inventory === 0 && deal.dividend != 1.00">
+                                        @{{deal.dividend ? deal.dividend : 1 | removeZero}} Unit
+                                    </span>
+                                </span>
+                                <span ng-if="deal.qty_json">
+                                    @{{deal.qty_json}}
+                                </span>
+                            </td>
+
                             {{-- unit price --}}
                             @if(!$transaction->is_discard)
                                 <td class="col-md-1 text-right" ng-if="!deal.unit_price">@{{ (deal.amount / deal.dividend * deal.divisor) | currency: ""}}</td>
@@ -160,16 +210,12 @@
                             <td colspan="3" class="text-right">
                                 <strong>Delivery Fee</strong>
                             </td>
-                            <td colspan="3"></td>
+                            <td colspan="@{{uoms.length}}"></td>
                             <td class="col-md-1 text-right">
                                 <strong>@{{delivery}}</strong>
                             </td>
                         </tr>
                         @if($transaction->gst and $transaction->is_gst_inclusive)
-                        @php
-                            // dd('here1', $totalqtyModel, $totalModel, $subtotalModel);
-                        @endphp
-
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>GST ({{number_format($transaction->gst_rate)}}%)</strong>
@@ -177,7 +223,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="2"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>
@@ -189,7 +235,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="2"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : ''}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
@@ -201,7 +247,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{getTotalPieces()}}
                                 </td>
-                                <td class="col-md-1 text-right">
+                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
                                 @if(!$transaction->is_discard)
@@ -212,9 +258,6 @@
                                 </td>
                             </tr>
                         @elseif($transaction->gst and !$transaction->is_gst_inclusive)
-                        @php
-                            // dd('here2', $totalqtyModel, $totalModel, $subtotalModel);
-                        @endphp
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Subtotal</strong>
@@ -222,7 +265,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="2"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{subtotalModel}}
                                 </td>
@@ -234,7 +277,7 @@
                                 @if(!$transaction->is_discard)
                                 <td></td>
                                 @endif
-                                <td colspan="2"></td>
+                                <td colspan="@{{transaction.person.price_template_id ? uoms.length + 1 : '2'}}"></td>
                                 <td class="col-md-1 text-right">
                                     @{{taxModel}}
                                 </td>
@@ -246,7 +289,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{getTotalPieces()}}
                                 </td>
-                                <td class="col-md-1 text-right">
+                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
                                 @if(!$transaction->is_discard)
@@ -257,9 +300,6 @@
                                 </td>
                             </tr>
                         @else
-                        @php
-                            // dd('here3');
-                        @endphp
                             <tr ng-if="deals.length>0">
                                 <td colspan="3" class="text-right">
                                     <strong>Total</strong>
@@ -267,7 +307,7 @@
                                 <td class="col-md-1 text-right">
                                     @{{getTotalPieces()}}
                                 </td>
-                                <td class="col-md-1 text-right">
+                                <td class="col-md-1 text-center" colspan="@{{transaction.person.price_template_id ? uoms.length : ''}}">
                                     <strong>@{{totalqtyModel}}</strong>
                                 </td>
                                 @if(!$transaction->is_discard)
@@ -279,7 +319,7 @@
                             </tr>
                         @endif
                         <tr ng-show="(deals | filter:search).deals == 0 || ! deals.length">
-                            <td colspan="12" class="text-center">No Records Found!</td>
+                            <td colspan="18" class="text-center">No Records Found!</td>
                         </tr>
 
                     </tbody>

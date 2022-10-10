@@ -342,6 +342,7 @@ Route::post('/api/price-template/sort-sequence', 'PriceTemplateController@sortSe
 Route::post('/api/price-template/renumber-sequence', 'PriceTemplateController@renumberSequenceApi');
 Route::post('/api/price-template/{id}/attachment', 'PriceTemplateController@storeAttachmentApi');
 Route::post('/api/price-template/attachment/delete', 'PriceTemplateController@deleteAttachmentApi');
+Route::post('/api/price-template-item/{priceTemplateItemId}/item-uom/{itemUomId}/toggle', 'PriceTemplateController@togglePriceTemplateItemUomApi');
 
 Route::get('/route-template', 'RouteTemplateController@getRouteTemplateIndex');
 Route::post('/api/route-template', 'RouteTemplateController@getRouteTemplatesApi');
@@ -434,6 +435,9 @@ Route::get('/api/item/{id}/item-uom', 'ItemController@getItemUomApi');
 Route::post('/item/batchupdate/unitcost', 'ItemController@batchUpdateUnitcost');
 Route::get('/api/items/options', 'ItemController@getItemsOptionsApi');
 
+Route::post('/api/item/{id}/uom/create-update', 'ItemController@createUpdateItemUomApi');
+Route::delete('/api/item/item-uom/{itemUomId}', 'ItemController@deleteItemUomApi');
+Route::get('/api/uoms', 'ItemController@getAllUomApi');
 Route::resource('item', 'ItemController');
 
 Route::post('/api/item/group', 'ItemGroupController@getItemGroupsIndexApi');

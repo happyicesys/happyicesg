@@ -602,8 +602,8 @@
 
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <span class="row" ng-if="search.edited">
-                            <small>You have edited the filter, search?</small>
+                        <span class="row">
+                            <small ng-if="search.edited">You have edited the filter, search?</small>
                         </span>
                         <div class="btn-group hidden-xs">
                             <button class="btn btn-sm btn-success" ng-click="onSearchButtonClicked($event)">

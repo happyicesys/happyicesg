@@ -48,6 +48,11 @@ class Deal extends Model
     protected $fillable = [
         'item_id', 'transaction_id', 'qty', 'amount', 'unit_price', 'qty_status',
         'dividend', 'divisor', 'unit_cost', 'qty_before', 'qty_after', 'is_stock_action',
+        'qty_json'
+    ];
+
+    protected $casts = [
+        'qty_json' => 'array',
     ];
 
     // relationships
@@ -72,6 +77,16 @@ class Deal extends Model
             $this->attributes['qty'] = $value;
         }
     }
+
+    // public function setQtyJsonAttribute($value)
+    // {
+    //     $this->attributes['qty_json'] = serialize($value);
+    // }
+
+    // public function getQtyJsonAttribute($value)
+    // {
+    //     return unserialize($value);
+    // }
 
     // scopes
     public function scopeIsTransactionAnalog($query)

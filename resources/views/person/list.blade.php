@@ -33,21 +33,18 @@
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.cust_id',
                                                         'placeholder'=>'ID',
-                                                        'ng-change'=>'searchDB($event)',
-                                                        'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('custcategory', 'Cust Category', ['class'=>'control-label search-title']) !!}
                     <label class="pull-right">
-                        <input type="checkbox" name="excludeCustCat" ng-model="search.excludeCustCat" ng-change="searchDB($event)">
+                        <input type="checkbox" name="excludeCustCat" ng-model="search.excludeCustCat">
                         <span style="margin-top: 5px; margin-right: 5px; font-size: 12px;">
                             Exclude
                         </span>
                     </label>
-                    <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" ng-change="searchDB($event)" multiple>
+                    <select name="custcategory" class="selectmultiple form-control" ng-model="search.custcategory" multiple>
                         <option value="">All</option>
                         @foreach($custcategories::orderBy('name')->get() as $custcategory)
                         <option value="{{$custcategory->id}}">{{$custcategory->name}}</option>
@@ -64,24 +61,20 @@
                             'class'=>'selectmultiple form-control',
                             'ng-model'=>'search.custcategory_group',
                             'multiple'=>'multiple',
-                            'ng-change' => "searchDB($event)"
                         ])
                     !!}
                 </div>
-                <div class="form-group col-md-2 col-sm-4 col-xs-12">
+                <div class="col-md-2 col-sm-4 col-xs-12">
+                    <div class="form-group">
                     {!! Form::label('company', 'ID Name', ['class'=>'control-label search-title']) !!}
-                    <input type="text" class="form-control input-sm" ng-model="search.company" placeholder="ID Name" ng-change="searchDB($event)" ng-keydown="$event.keyCode === 13 && searchDB($event)" ng-model-options="{ debounce: 500 }">
-{{--
                     {!! Form::text('company', null,
                                                     [
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.company',
                                                         'placeholder'=>'ID Name',
-                                                        'ng-change'=>'searchDB($event)',
-                                                        'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
-                    !!} --}}
+                    !!}
+                    </div>
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('contact', 'Contact', ['class'=>'control-label search-title']) !!}
@@ -90,15 +83,12 @@
                                                         'class'=>'form-control input-sm',
                                                         'ng-model'=>'search.contact',
                                                         'placeholder'=>'Contact',
-                                                        'ng-change'=>'searchDB($event)',
-                                                        'ng-keydown' => '$event.keyCode === 13 && searchDB($event)',
-                                                        'ng-model-options'=>'{ debounce: 500 }'
                                                     ])
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('active', 'Status', ['class'=>'control-label search-title']) !!}
-                    <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" ng-change="searchDB($event)" multiple>
+                    <select name="active" id="active" class="selectmultiple form-control" ng-model="search.active" multiple>
                         <option value="">All</option>
                         <option value="Potential">Potential</option>
                         <option value="New">New</option>
@@ -117,7 +107,6 @@
                     {!! Form::select('profile_id', [''=>'All']+$profiles::filterUserProfile()->pluck('name', 'id')->all(), null, ['id'=>'profile_id',
                         'class'=>'select form-control',
                         'ng-model'=>'search.profile_id',
-                        'ng-change' => 'searchDB($event)'
                         ])
                     !!}
                 </div>
@@ -126,14 +115,13 @@
                     {!! Form::select('franchisee_id', [''=>'All', '0' => 'Own']+$franchisees::filterUserFranchise()->select(DB::raw("CONCAT(user_code,' (',name,')') AS full, id"))->orderBy('user_code')->pluck('full', 'id')->all(), null, ['id'=>'franchisee_id',
                         'class'=>'select form-control',
                         'ng-model'=>'search.franchisee_id',
-                        'ng-change' => 'searchDB($event)'
                         ])
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('account_manager', 'Account Manager', ['class'=>'control-label']) !!}
                     @if(auth()->user()->hasRole('merchandiser'))
-                        <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-change="searchDB($event)" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
+                        <select name="account_manager" class="select form-control" ng-model="search.account_manager" ng-init="merchandiserInit('{{auth()->user()->id}}')" disabled>
                             <option value="">All</option>
                             @foreach($users::whereIn('type', ['staff', 'admin'])->orderBy('name')->get() as $user)
                             <option value="{{$user->id}}">
@@ -148,8 +136,6 @@
                                 [
                                     'class'=>'select form-control',
                                     'ng-model'=>'search.account_manager',
-                                    'ng-change'=>'searchDB($event)',
-                                    'ng-keydown' => 'searchDB($event)'
                                 ])
                         !!}
                     @endif
@@ -162,13 +148,12 @@
                             [
                                 'class'=>'select form-control',
                                 'ng-model'=>'search.zone_id',
-                                'ng-change'=>'searchDB($event)'
                             ])
                     !!}
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('freezers', 'Freezer', ['class'=>'control-label search-title']) !!}
-                    <select name="freezers" id="freezers" class="selectmultiple form-control" ng-model="search.freezers" ng-change="searchDB($event)" multiple>
+                    <select name="freezers" id="freezers" class="selectmultiple form-control" ng-model="search.freezers" multiple>
                         @foreach($freezers::orderBy('name')->get() as $freezer)
                             <option value="{{$freezer->id}}">
                                 {{$freezer->name}}
@@ -179,7 +164,7 @@
                 @endif
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('created_month', 'Created Month', ['class'=>'control-label search-title']) !!}
-                    <select class="select form-control" name="created_month" ng-model="search.created_month" ng-change="searchDB()">
+                    <select class="select form-control" name="created_month" ng-model="search.created_month">
                         <option value="">All</option>
                         @foreach($month_options as $key => $value)
                             <option value="{{$key}}" selected="{{Carbon\Carbon::today()->month.'-'.Carbon\Carbon::today()->year ? 'selected' : ''}}">{{$value}}</option>
@@ -191,7 +176,7 @@
             <div class="row">
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('tags', 'Tags', ['class'=>'control-label search-title']) !!}
-                    <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" ng-change="searchDB($event)" multiple>
+                    <select name="tags" id="tags" class="selectmultiple form-control" ng-model="search.tags" multiple>
                         <option value="">All</option>
                         @foreach($persontags::orderBy('name')->get() as $persontag)
                             <option value="{{$persontag->id}}">
@@ -202,7 +187,7 @@
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('price_templates', 'Price Template', ['class'=>'control-label search-title']) !!}
-                    <select name="price_templates" id="price_templates" class="selectmultiple form-control" ng-model="search.priceTemplates" ng-change="searchDB($event)" multiple>
+                    <select name="price_templates" id="price_templates" class="selectmultiple form-control" ng-model="search.priceTemplates" multiple>
                         <option value="">All</option>
                         @foreach($priceTemplates::latest()->get() as $priceTemplate)
                             <option value="{{$priceTemplate->id}}">
@@ -213,7 +198,7 @@
                 </div>
                 <div class="form-group col-md-2 col-sm-4 col-xs-12">
                     {!! Form::label('is_pwp', 'Is PWP?', ['class'=>'control-label search-title']) !!}
-                    <select name="is_pwp" id="is_pwp" class="select form-control" ng-model="search.is_pwp" ng-change="searchDB($event)">
+                    <select name="is_pwp" id="is_pwp" class="select form-control" ng-model="search.is_pwp">
                         <option value="">All</option>
                         <option value="1">Yes</option>
                         <option value="0">No</option>

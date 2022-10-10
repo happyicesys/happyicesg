@@ -22,6 +22,8 @@ use App\Unitcost;
 use App\Item;
 use App\Person;
 use App\Price;
+use App\PriceTemplateItem;
+use App\PriceTemplateItemUom;
 use App\Deal;
 use Carbon\Carbon;
 use App\Profile;
@@ -41,6 +43,7 @@ use App\ServiceItem;
 use App\User;
 use App\Deliveryorder;
 use App\Transactionpersonasset;
+use App\Uom;
 use App\Services\DealService;
 use Illuminate\Support\Facades\Storage;
 // use App\Ftransaction;
@@ -476,18 +479,19 @@ class TransactionController extends Controller
         $total = 0;
         $subtotal = 0;
         $tax = 0;
+        $priceTemplateItems = [];
 
-        $transaction = Transaction::with(['person', 'deliveryorder', 'person.custcategory'])->findOrFail($transaction_id);
+        $transaction = Transaction::with(['person', 'deliveryorder', 'person.profile.currency', 'person.priceTemplate'])->findOrFail($transaction_id);
 
-        $deals = DB::table('deals')
+        $deals = Deal::query()
                     ->leftJoin('transactions', 'transactions.id', '=', 'deals.transaction_id')
                     ->leftJoin('people', 'people.id', '=', 'transactions.person_id')
                     ->leftJoin('profiles', 'profiles.id', '=', 'people.profile_id')
                     ->leftJoin('items', 'items.id', '=', 'deals.item_id')
                     ->select(
-                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id', 'deals.is_stock_action',
+                                'deals.transaction_id', 'deals.dividend', 'deals.divisor', 'deals.qty', 'deals.qty_before', 'deals.qty_after', 'deals.unit_price', 'deals.amount', 'deals.id AS deal_id', 'deals.is_stock_action', 'deals.qty_json',
                                 'items.id AS item_id', 'items.product_id', 'items.name AS item_name', 'items.remark AS item_remark', 'items.is_inventory', 'items.unit',
-                                'people.cust_id', 'people.company', 'people.name', 'people.id as person_id',
+                                'people.cust_id', 'people.company', 'people.name', 'people.id as person_id', 'people.price_template_id',
                                 'transactions.del_postcode', 'transactions.status', 'transactions.delivery_date', 'transactions.driver',
                                 DB::raw('ROUND((CASE WHEN transactions.gst=1 THEN (
                                                     CASE
@@ -547,8 +551,50 @@ class TransactionController extends Controller
             $total += number_format($delivery_fee, 2);
         }
 
+        // dd($transaction->person->priceTemplate->priceTemplateItems()->exists());
+        if($transaction->person->priceTemplate()->exists()) {
+            if($transaction->person->priceTemplate->priceTemplateItems()->exists()) {
+                $priceItems = $transaction
+                                        ->person
+                                        ->priceTemplate
+                                        ->priceTemplateItems()
+                                        ->with(['item', 'priceTemplate', 'priceTemplateItemUoms', 'priceTemplateItemUoms.itemUom'])
+                                        ->orderBy('sequence')
+                                        ->get();
+            }
+        }else {
+            $priceItems = $transaction
+                                    ->person
+                                    ->prices()
+                                    ->with(['item'])
+                                    ->leftJoin('items', 'items.id', '=', 'prices.item_id')
+                                    ->where('items.is_active', true)
+                                    ->orderBy('items.product_id')
+                                    ->get();
+        }
+
+        // $uomsArr = [];
+
+        // if($priceItems) {
+        //     foreach($priceItems as $priceItem) {
+        //         if(isset($priceItem->priceTemplateItemUoms) and $priceItem->priceTemplateItemUoms()->exists()) {
+        //             foreach($priceItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+
+        //             }
+        //             dd($priceItem->toArray());
+        //         }else {
+
+        //         }
+        //     }
+        // }
+        // dd($priceItems->toArray());
+        $uoms = Uom::orderBy('sequence', 'desc')->get();
+
+
+
         // die(var_dump($transaction));
         return $data = [
+            'priceItems' => $priceItems,
             'transaction' => $transaction,
             'deals' => $deals,
             'subtotal' => $subtotal,
@@ -557,6 +603,7 @@ class TransactionController extends Controller
             'total_qty' => $total_qty,
             'delivery_fee' => $delivery_fee,
             'isStockAction' => $isStockAction,
+            'uoms' => $uoms,
         ];
 
     }
@@ -851,59 +898,55 @@ class TransactionController extends Controller
         // operation worksheet management
         $this->operationDatesSync($transaction->id, $delivery_date, $previous_delivery_date);
 
-        $dealArr = [];
-        // dd($quantities, $amounts);
-        if($quantities or $amounts) {
-            // dd($quantities, $quotes, $amounts);
-            if((array_filter($quantities) != null and array_filter($amounts) != null) or ($transaction->is_discard and array_filter($quantities) != null)) {
-                $evenStockAmount = 0;
-                foreach($quantities as $index => $qty) {
-                    if($transaction->is_discard) {
-                        $price = Price::where('person_id', $transaction->person_id)->where('item_id', $index)->first();
-                        if($qty) {
-                            array_push($dealArr, [
-                                'item_id' => $index,
-                                'qty' => $qty,
-                                'quote' => $price->quote_price,
-                                'amount' => -($price->quote_price * $qty),
-                            ]);
-                        }
+        // dd($request['ctn'],$quantities, $amounts, $request->quote);
 
-                        if($transaction->person->is_vending or $transaction->person->is_dvm or $transaction->person->is_combi) {
-                            $evenStockAmount += $price->quote_price * $qty;
-                        }
-                    }else {
-                        if($qty) {
-                            array_push($dealArr, [
-                                'item_id' => $index,
-                                'qty' => $qty,
-                                'quote' => $quotes[$index],
-                                'amount' => $amounts[$index]
-                            ]);
+        $dealsArr = [];
+        if($transaction->person->price_template_id) {
+            foreach(Uom::orderby('sequence', 'desc')->get() as $uom) {
+                if($request->has($uom->name)) {
+                    foreach($request[$uom->name] as $priceTemplateItemId => $qty) {
+                        if($qty != null) {
+                            $dealsArr[$priceTemplateItemId]['qty'][$uom->name] = $qty;
                         }
                     }
                 }
-                if($evenStockAmount > 0) {
-                    $item = Item::where('product_id', '051a')->first();
-
-                    array_push($dealArr, [
-                        'item_id' => $item->id,
-                        'qty' => 1,
-                        'quote' => $evenStockAmount,
-                        'amount' => $evenStockAmount
-                    ]);
+                if($request->amount) {
+                    foreach($request->amount as $priceTemplateItemId => $amt) {
+                        if($amt != null) {
+                            $priceTemplateItem = PriceTemplateItem::findOrFail($priceTemplateItemId);
+                            $dealsArr[$priceTemplateItemId]['amount'] = $amt;
+                            $dealsArr[$priceTemplateItemId]['item_id'] = $priceTemplateItem->item->id;
+                        }
+                    }
+                }
+            }
+        }else {
+            if($request->qty or $request->amount) {
+                foreach($request->qty as $priceId => $qty) {
+                    if($qty != null) {
+                        $dealsArr[$priceId]['qty'] = $qty;
+                    }
+                }
+                foreach($request->amount as $priceId => $amt) {
+                    if($amt != null) {
+                        $price = Price::findOrFail($priceId);
+                        $dealsArr[$priceId]['amount'] = $amt;
+                        $dealsArr[$priceId]['item_id'] = $price->item->id;
+                    }
                 }
             }
         }
-        // dd($dealArr, $quantities);
+        if($dealsArr) {
+            foreach($dealsArr as $dealArrIndex => $dealArr) {
+                $dealsArr[$dealArrIndex]['quote'] = $request->quote[$dealArrIndex];
+            }
+        }
+
         // sync deals
         if($transaction->status === 'Confirmed'){
-            // dd($quantities, $amounts, $quotes);
-            // $this->syncDeal($transaction, $quantities, $amounts, $quotes, 1);
-            $this->syncDeal($transaction, $dealArr, 1);
+            $this->syncDeal($transaction, $dealsArr, 1);
         }else if($transaction->status === 'Delivered' or $transaction->status === 'Verified Owe' or $transaction->status === 'Verified Paid'){
-            // $this->syncDeal($transaction, $quantities, $amounts, $quotes, 2);
-            $this->syncDeal($transaction, $dealArr, 2);
+            $this->syncDeal($transaction, $dealsArr, 2);
         }
 
         if($transaction->person->cust_id[0] === 'D'){
@@ -1166,7 +1209,7 @@ class TransactionController extends Controller
                 ->setOption('enable-javascript', true)
                 ->setOption('javascript-delay', 3000)
                 ->setOption('enable-smart-shrinking', false)
-                ->setOption('print-media-type', true)
+                // ->setOption('print-media-type', true)
                 ->setOption('zoom', 2)
                 ->setOption('margin-top', 10)
                 ->setOption('margin-right', 6)
@@ -3070,20 +3113,47 @@ class TransactionController extends Controller
 
     // sync deals with email alert, deals and inventory deduction
     // private function syncDeal($transaction, $quantities, $amounts, $quotes, $status)
-    private function syncDeal($transaction, $dealArr, $status)
+    private function syncDeal($transaction, $dealsArr, $status)
     {
 
-        // dd($dealArr);
-        if($dealArr) {
+        // dd($dealsArr);
+        if($dealsArr) {
             $errors = [];
-            foreach($dealArr as $dealObj) {
+            foreach($dealsArr as $dealArrIndex => $dealArr) {
 
                 // discarded and melted ice cream
                 if($transaction->is_discard or $transaction->deals()->where('item_id', 76)->count() > 0) {
                     $status = 99;
                 }
 
-                $qty = $dealObj['qty'];
+                $qty = $dealArr['qty'];
+
+                if(is_array($qty)) {
+                    $uomQtyTotal = 0;
+                    $priceTemplateItem = PriceTemplateItem::findOrFail($dealArrIndex);
+                    if($priceTemplateItem->priceTemplateItemUoms()->exists()) {
+                        foreach($priceTemplateItem->priceTemplateItemUoms as $priceTemplateItemUom) {
+                            foreach($qty as $qtyKey => $qtyObj) {
+                                if($priceTemplateItemUom->itemUom->uom->name == $qtyKey) {
+
+                                    $uomQtyTotal += $qtyObj
+                                                * $priceTemplateItemUom->itemUom->value
+                                                / (
+                                                        $priceTemplateItem
+                                                        ->priceTemplateItemUoms()
+                                                        ->whereHas('itemUom', function($query) {
+                                                                $query->where('is_transacted_unit', true);
+                                                        })
+                                                        ->first()
+                                                        ->itemUom
+                                                        ->value ?? 1
+                                                    );
+                                }
+                            }
+                        }
+                    }
+                    $qty = $uomQtyTotal;
+                }
 
                 $dividend = 0;
                 $divisor = 1;
@@ -3092,12 +3162,10 @@ class TransactionController extends Controller
                     $divisor = explode('/', $qty)[1];
                     $qty = $this->fraction($qty);
                 }
+                // dd($dealsArr, $dealArr);
 
                 if($qty != NULL or $qty != 0 ){
-                    // dd('here0');
-                    // inventory lookup before saving to deals
-                    $item = Item::findOrFail($dealObj['item_id']);
-                    // dd($dealObj['item_id'], $dealObj, $item);
+                    $item = Item::findOrFail($dealArr['item_id']);
                     $unitcost = Unitcost::whereItemId($item->id)->whereProfileId($transaction->person->profile_id)->first();
                     // inventory email notification for stock running low
                     if($item->email_limit and !$item->is_vending and $item->is_inventory){
@@ -3115,37 +3183,41 @@ class TransactionController extends Controller
                         }
                     }
 
+
+        // $dealsArr[$priceTemplateItemId/$priceId] = [
+        //     'qty',
+        //     'qty.uom_name',
+        //     'amount',
+        //     'item_id',
+        //     'quote',
+        // ];
+
                     if($status == 1 and $this->calOrderLimit($qty, $item)) {
-                        // dd('here1');
                         array_push($errors, $item->product_id.' - '.$item->name);
                     }else if($status == 2 and $this->calActualLimit($qty, $item)) {
-                        // dd('here2');
                         array_push($errors, $item->product_id.' - '.$item->name);
                     }else {
-                        // dd('here3');
                         $deal = new Deal();
                         $deal->transaction_id = $transaction->id;
-                        $deal->item_id = $dealObj['item_id'];
+                        $deal->item_id = $dealArr['item_id'];
                         $deal->dividend = $dividend ? $dividend : $qty;
                         $deal->divisor = $divisor;
-                        $deal->amount = $dealObj['amount'];
-                        $deal->unit_price = $dealObj['quote'];
+                        $deal->amount = $dealArr['amount'];
+                        $deal->unit_price = $dealArr['quote'];
                         $deal->qty_status = $status;
                         $deal->unit_cost = $unitcost ? $unitcost->unit_cost : null;
                         $deal->qty = $qty;
+                        $deal->qty_json = $dealArr['qty'];
                         if($status == 2 and $item->is_inventory === 1) {
                             $deal->qty_before = $item->qty_now;
                             $deal->qty_after = $item->qty_now - $qty;
                             $item->qty_now = $item->qty_now - $qty;
                             $item->save();
-                            $this->loggingDebug($item, $deal);
                         }
                         $deal->save();
-                        $this->dealSyncOrder($dealObj['item_id']);
+                        $this->dealSyncOrder($dealArr['item_id']);
                     }
-                    // dd('here4');
                 }
-                // dd('here5');
             }
         }
 

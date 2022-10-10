@@ -24,7 +24,9 @@ function priceTemplateController($scope, $http) {
         sortName: ''
     }
     $scope.form = getDefaultForm()
+    $scope.uoms = [];
     // init page load
+    getUoms();
     getPage();
 
     function getDefaultForm() {
@@ -35,8 +37,15 @@ function priceTemplateController($scope, $http) {
             files: [],
             item: '',
             sequence: '',
-            price_template_items: []
+            price_template_items: [],
+            price_template_item_uoms: [],
         }
+    }
+
+    function getUoms() {
+        $http.get('/api/uoms').success(function (data) {
+            $scope.uoms = data;
+        });
     }
 
     angular.element(document).ready(function () {
@@ -127,6 +136,7 @@ function priceTemplateController($scope, $http) {
             sequence: sequence,
             retail_price: retail_price ? retail_price.toFixed(2) : 0,
             quote_price: quote_price ? quote_price.toFixed(2) : 0,
+
         });
         $scope.form.sequence = ''
         $scope.form.retail_price = ''
@@ -139,7 +149,34 @@ function priceTemplateController($scope, $http) {
         $('.select').select2({
             placeholder: 'Select...'
         });
+
         $scope.form = data
+        // if (data.price_template_items.length) {
+        //     angular.forEach(data.price_template_items, function (price_template_item, priceTemplateItemIndex) {
+        //         if (price_template_item.price_template_item_uom.length) {
+        //             angular.forEach(price_template_item.price_template_item_uom, function (value, index) {
+        //                 $scope.form.price_template_items[priceTemplateItemIndex].isActive[value.item_uom_id] = true;
+        //             });
+        //         }
+        //     });
+        // }
+
+    }
+
+    $scope.checkExistPriceTemplateItemUom = function (itemUomId, priceTemplateItem) {
+        let result = false;
+        let priceTemplateItemUomId = '';
+        if (priceTemplateItem.price_template_item_uoms.length) {
+            angular.forEach(priceTemplateItem.price_template_item_uoms, function (value, index) {
+                if (value.item_uom_id == itemUomId) {
+                    result = true;
+                }
+            })
+        }
+        return {
+            'result': result,
+            'priceTemplateItemUomId': priceTemplateItemUomId,
+        };
     }
 
     // delete single entry api
@@ -308,6 +345,12 @@ function priceTemplateController($scope, $http) {
             formData.append('image_file', value);
         });
     };
+
+    $scope.onPriceTemplateItemUomChanged = function (priceTemplateItem, itemUom) {
+        $http.post('/api/price-template-item/' + priceTemplateItem.id + '/item-uom/' + itemUom.id + '/toggle').success(function (data) {
+            getPage(1, false);
+        });
+    }
 
     // retrieve page w/wo search
     function getPage(pageNumber, first) {

@@ -103,14 +103,15 @@ function personController($scope, $http) {
     }
 
     // when hitting search button
-    $scope.searchDB = function (event) {
-        $scope.search.edited = true;
-        if (event.keyCode && event.keyCode === 13) {
-            $scope.search.sortName = '';
-            $scope.search.sortBy = true;
-        }
-        getPage(1, false);
-    }
+    // $scope.searchDB = function (event) {
+    // event.preventDefault();
+    // $scope.search.edited = true;
+    // if (event.keyCode && event.keyCode === 13) {
+    //     $scope.search.sortName = '';
+    //     $scope.search.sortBy = true;
+    // }
+    // getPage(1, false);
+    // }
 
     // retrieve franchisee id
     $scope.getFranchiseeId = function () {
